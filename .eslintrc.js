@@ -8,9 +8,14 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    project: './tsconfig.json',
   },
   rules: {
     semi: ['error', 'always'],
+    '@typescript-eslint/semi': ['error', 'always'],
     'comma-dangle': ['error', 'always-multiline'],
+    'no-else-return': 'error',
+    'prefer-const': 'error',
+    'no-console': ['warn', { allow: ['warn', 'error', 'debug'] }],
   },
 };
