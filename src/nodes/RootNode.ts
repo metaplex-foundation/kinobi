@@ -10,4 +10,9 @@ export class RootNode implements Visitable {
   visit(visitor: Visitor): void {
     visitor.visitRoot(this);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, class-methods-use-this
+  visitChildren(visitor: Visitor): void {
+    //
+  }
 }
