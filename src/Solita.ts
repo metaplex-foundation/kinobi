@@ -1,11 +1,12 @@
-import { RootNode } from './nodes';
+import type { Idl } from './idl';
+import { parseRootNode, RootNode } from './nodes';
 import type { Visitable, Visitor } from './visitors';
 
 export class Solita implements Visitable {
   readonly rootNode: RootNode;
 
-  constructor(idl: object) {
-    this.rootNode = new RootNode(idl);
+  constructor(idl: Partial<Idl>) {
+    this.rootNode = parseRootNode(idl);
   }
 
   visit(visitor: Visitor): void {

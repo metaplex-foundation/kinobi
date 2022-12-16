@@ -1,7 +1,7 @@
 import type { Visitable, Visitor } from '../visitors';
 
 export class TypeScalarNode implements Visitable {
-  type: ScalarType;
+  readonly type: ScalarType;
 
   constructor(type: ScalarType) {
     this.type = type;
