@@ -6,6 +6,7 @@ export type IdlType =
   | IdlTypeArray
   | IdlTypeMap
   | IdlTypeSet
+  | IdlTypeStruct
   | IdlTypeEnum
   | IdlTypeLeaf;
 
@@ -30,60 +31,40 @@ export type IdlTypeSet = IdlTypeHashSet | IdlTypeBTreeSet;
 export type IdlTypeHashSet = { hashSet: IdlType };
 export type IdlTypeBTreeSet = { bTreeSet: IdlType };
 
-// Enums.
-export type IdlTypeEnum = IdlTypeScalarEnum | IdlTypeDataEnum;
-export type IdlTypeScalarEnum = {
-  kind: 'enum';
-  name?: string;
-  variants: IdlEnumVariant[];
+// Struct.
+export type IdlTypeStruct = {
+  kind: 'struct';
+  fields: IdlTypeStructField[];
 };
-export type IdlTypeDataEnum = {
-  kind: 'enum';
-  name?: string;
-  variants: IdlDataEnumVariant[];
-};
-export type IdlEnumVariant = {
-  name: string;
-};
-export type IdlDataEnumVariant =
-  | IdlDataEnumVariantWithNamedFields
-  | IdlDataEnumVariantWithUnnamedFields
-  | IdlEnumVariant;
-export type IdlDataEnumVariantWithNamedFields = {
-  name: string;
-  fields: IdlField[];
-};
-export type IdlDataEnumVariantWithUnnamedFields = {
-  name: string;
-  fields: IdlType[];
-};
-
-// Fields.
-export type IdlTypeFields = {
-  kind: 'struct' | 'enum';
-  fields: IdlField[];
-};
-export type IdlField = {
+export type IdlTypeStructField = {
   name: string;
   type: IdlType;
-  attrs?: string[];
+  docs?: string[];
 };
 
+// Enums.
+export type IdlTypeEnum = {
+  kind: 'enum';
+  name?: string;
+  variants: IdlTypeEnumVariant[];
+};
+export type IdlTypeEnumVariant = { name: string; fields?: IdlTypeEnumFields };
+export type IdlTypeEnumFields = IdlTypeEnumField[] | IdlType[];
+export type IdlTypeEnumField = { name: string; type: IdlType; docs?: string[] };
+
 // Leaves.
-export type IdlTypeLeaf = IdlTypeNumber | 'string' | 'publicKey';
+export type IdlTypeLeaf = IdlTypeNumber | 'string' | 'publicKey' | 'bytes';
 export type IdlTypeNumber =
+  | 'bool'
   | 'u8'
   | 'u16'
   | 'u32'
   | 'u64'
   | 'u128'
-  | 'u256'
-  | 'u512'
   | 'i8'
   | 'i16'
   | 'i32'
   | 'i64'
   | 'i128'
-  | 'i256'
-  | 'i512'
-  | 'bool';
+  | 'f32'
+  | 'f64';

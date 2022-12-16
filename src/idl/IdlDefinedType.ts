@@ -1,6 +1,7 @@
-import type { IdlTypeEnum, IdlTypeFields } from './IdlType';
+import type { IdlTypeEnum, IdlTypeStruct } from './IdlType';
 
 export type IdlDefinedType = {
   name: string;
-  type: IdlTypeFields | IdlTypeEnum;
+  type: IdlTypeStruct | IdlTypeEnum;
+  docs?: string[];
 };

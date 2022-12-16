@@ -1,7 +1,7 @@
-import type { IdlTypeFields } from './IdlType';
+import type { IdlTypeStruct } from './IdlType';
 
 export type IdlAccount = {
   name: string;
-  desc?: string;
-  type: IdlTypeFields;
+  type: IdlTypeStruct;
+  docs?: string[];
 };
