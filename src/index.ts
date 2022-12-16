@@ -1,10 +1,3 @@
-const foo: boolean = false;
-
-function someFunction() {
-  if (foo) {
-    return 'foo';
-  }
-  return 'bar';
-}
-
-someFunction();
+export * from './nodes';
+export * from './Solita';
+export * from './visitors';

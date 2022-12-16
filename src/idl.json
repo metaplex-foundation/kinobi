@@ -1,0 +1,497 @@
+{
+  "version": "0.1.1",
+  "name": "mpl_token_auth_rules",
+  "instructions": [
+    {
+      "name": "Create",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "desc": "Payer and creator of the RuleSet"
+        },
+        {
+          "name": "ruleSetPda",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The PDA account where the RuleSet is stored"
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "System program"
+        }
+      ],
+      "args": [
+        {
+          "name": "createArgs",
+          "type": {
+            "defined": "CreateArgs"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 0
+      }
+    },
+    {
+      "name": "Validate",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "desc": "Payer and creator of the RuleSet"
+        },
+        {
+          "name": "ruleSet",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The PDA account where the RuleSet is stored"
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "System program"
+        },
+        {
+          "name": "optRuleSigner1",
+          "isMut": false,
+          "isSigner": true,
+          "desc": "Optional rule validation signer 1",
+          "optional": true
+        },
+        {
+          "name": "optRuleSigner2",
+          "isMut": false,
+          "isSigner": true,
+          "desc": "Optional rule validation signer 2",
+          "optional": true
+        },
+        {
+          "name": "optRuleSigner3",
+          "isMut": false,
+          "isSigner": true,
+          "desc": "Optional rule validation signer 3",
+          "optional": true
+        },
+        {
+          "name": "optRuleSigner4",
+          "isMut": false,
+          "isSigner": true,
+          "desc": "Optional rule validation signer 4",
+          "optional": true
+        },
+        {
+          "name": "optRuleSigner5",
+          "isMut": false,
+          "isSigner": true,
+          "desc": "Optional rule validation signer 5",
+          "optional": true
+        },
+        {
+          "name": "optRuleNonsigner1",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Optional rule validation non-signer 1",
+          "optional": true
+        },
+        {
+          "name": "optRuleNonsigner2",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Optional rule validation non-signer 2",
+          "optional": true
+        },
+        {
+          "name": "optRuleNonsigner3",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Optional rule validation non-signer 3",
+          "optional": true
+        },
+        {
+          "name": "optRuleNonsigner4",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Optional rule validation non-signer 4",
+          "optional": true
+        },
+        {
+          "name": "optRuleNonsigner5",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Optional rule validation non-signer 5",
+          "optional": true
+        }
+      ],
+      "args": [
+        {
+          "name": "validateArgs",
+          "type": {
+            "defined": "ValidateArgs"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 1
+      }
+    },
+    {
+      "name": "CreateFrequencyRule",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "desc": "Payer and creator of the Frequency Rule"
+        },
+        {
+          "name": "frequencyPda",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The PDA account where the Frequency Rule is stored"
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "System program"
+        }
+      ],
+      "args": [
+        {
+          "name": "createFrequencyRuleArgs",
+          "type": {
+            "defined": "CreateFrequencyRuleArgs"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 2
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "name": "FrequencyAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "defined": "Key"
+            }
+          },
+          {
+            "name": "lastUpdate",
+            "type": "i64"
+          },
+          {
+            "name": "period",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "CreateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ruleSetName",
+            "type": "string"
+          },
+          {
+            "name": "serializedRuleSet",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ruleSetName",
+            "type": "string"
+          },
+          {
+            "name": "operation",
+            "type": {
+              "defined": "Operation"
+            }
+          },
+          {
+            "name": "payload",
+            "type": {
+              "defined": "Payload"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateFrequencyRuleArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ruleSetName",
+            "type": "string"
+          },
+          {
+            "name": "freqRuleName",
+            "type": "string"
+          },
+          {
+            "name": "lastUpdate",
+            "type": "i64"
+          },
+          {
+            "name": "period",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SeedsVec",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seeds",
+            "type": {
+              "vec": "bytes"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LeafInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "leaf",
+            "type": {
+              "array": ["u8", 32]
+            }
+          },
+          {
+            "name": "proof",
+            "type": {
+              "vec": {
+                "array": ["u8", 32]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Payload",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": {
+              "hashMap": [
+                {
+                  "defined": "PayloadKey"
+                },
+                {
+                  "defined": "PayloadType"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PayloadType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pubkey",
+            "fields": ["publicKey"]
+          },
+          {
+            "name": "Seeds",
+            "fields": [
+              {
+                "defined": "SeedsVec"
+              }
+            ]
+          },
+          {
+            "name": "MerkleProof",
+            "fields": [
+              {
+                "defined": "LeafInfo"
+              }
+            ]
+          },
+          {
+            "name": "Number",
+            "fields": ["u64"]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PayloadKey",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Target"
+          },
+          {
+            "name": "Holder"
+          },
+          {
+            "name": "Authority"
+          },
+          {
+            "name": "Amount"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Operation",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Transfer"
+          },
+          {
+            "name": "Delegate"
+          },
+          {
+            "name": "SaleTransfer"
+          },
+          {
+            "name": "MigrateClass"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Key",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Uninitialized"
+          },
+          {
+            "name": "Frequency"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 0,
+      "name": "NumericalOverflow",
+      "msg": "Numerical Overflow"
+    },
+    {
+      "code": 1,
+      "name": "DataTypeMismatch",
+      "msg": "Data type mismatch"
+    },
+    {
+      "code": 2,
+      "name": "IncorrectOwner",
+      "msg": "Incorrect account owner"
+    },
+    {
+      "code": 3,
+      "name": "PayloadVecIndexError",
+      "msg": "Could not index into PayloadVec"
+    },
+    {
+      "code": 4,
+      "name": "DerivedKeyInvalid",
+      "msg": "Derived key invalid"
+    },
+    {
+      "code": 5,
+      "name": "AdditionalSignerCheckFailed",
+      "msg": "Additional Signer check failed"
+    },
+    {
+      "code": 6,
+      "name": "PubkeyMatchCheckFailed",
+      "msg": "Pubkey Match check failed"
+    },
+    {
+      "code": 7,
+      "name": "DerivedKeyMatchCheckFailed",
+      "msg": "Derived Key Match check failed"
+    },
+    {
+      "code": 8,
+      "name": "ProgramOwnedCheckFailed",
+      "msg": "Program Owned check failed"
+    },
+    {
+      "code": 9,
+      "name": "AmountCheckFailed",
+      "msg": "Amount checked failed"
+    },
+    {
+      "code": 10,
+      "name": "FrequencyCheckFailed",
+      "msg": "Frequency check failed"
+    },
+    {
+      "code": 11,
+      "name": "PubkeyTreeMatchCheckFailed",
+      "msg": "Pubkey Tree Match check failed"
+    },
+    {
+      "code": 12,
+      "name": "PayerIsNotSigner",
+      "msg": "Payer is not a signer"
+    },
+    {
+      "code": 13,
+      "name": "NotImplemented",
+      "msg": "Not implemented"
+    },
+    {
+      "code": 14,
+      "name": "BorshSerializationError",
+      "msg": "Borsh Serialization Error"
+    }
+  ],
+  "metadata": {
+    "origin": "shank",
+    "address": "auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg",
+    "binaryVersion": "0.0.11",
+    "libVersion": "0.0.11"
+  }
+}

@@ -11,6 +11,8 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.json',
   },
-  rules: {},
+  rules: {
+    'import/prefer-default-export': 'off',
+  },
   ignorePatterns: ['dist/**'],
 };
