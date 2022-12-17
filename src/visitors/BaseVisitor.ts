@@ -8,11 +8,11 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitAccount(account: nodes.AccountNode): void {
-    //
+    account.visitChildren(this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    //
+    instruction.visitChildren(this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {

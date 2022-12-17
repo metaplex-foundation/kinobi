@@ -26,6 +26,13 @@ export class PrintVisitor extends BaseVisitor {
     this.indent -= 1;
   }
 
+  visitInstruction(instruction: nodes.InstructionNode): void {
+    this.printIndentedText(`[InstructionNode] ${instruction.name}`);
+    this.indent += 1;
+    instruction.visitChildren(this); // TODO
+    this.indent -= 1;
+  }
+
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
     this.printIndentedText(`[DefinedTypeNode] ${definedType.name}`);
     this.indent += 1;
