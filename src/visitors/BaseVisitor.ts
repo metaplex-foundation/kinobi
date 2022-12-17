@@ -1,41 +1,61 @@
 /* eslint-disable class-methods-use-this, @typescript-eslint/no-unused-vars */
-import {
-  AccountNode,
-  DefinedTypeNode,
-  InstructionNode,
-  RootNode,
-  TypeDefinedLinkNode,
-  TypeLeafNode,
-  TypeStructNode,
-} from 'src/nodes';
+import * as nodes from 'src/nodes';
 import type { Visitor } from './Visitor';
 
 export abstract class BaseVisitor implements Visitor {
-  visitRoot(root: RootNode): void {
+  visitRoot(root: nodes.RootNode): void {
     root.visitChildren(this);
   }
 
-  visitAccount(account: AccountNode): void {
+  visitAccount(account: nodes.AccountNode): void {
     //
   }
 
-  visitInstruction(instruction: InstructionNode): void {
+  visitInstruction(instruction: nodes.InstructionNode): void {
     //
   }
 
-  visitDefinedType(definedType: DefinedTypeNode): void {
+  visitDefinedType(definedType: nodes.DefinedTypeNode): void {
     //
   }
 
-  visitTypeDefinedLink(typeDefinedLink: TypeDefinedLinkNode): void {
+  visitTypeArray(typeArray: nodes.TypeArrayNode): void {
     //
   }
 
-  visitTypeLeaf(typeLeaf: TypeLeafNode): void {
+  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): void {
     //
   }
 
-  visitTypeStruct(typeStruct: TypeStructNode): void {
+  visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
+    //
+  }
+
+  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): void {
+    //
+  }
+
+  visitTypeMap(typeMap: nodes.TypeMapNode): void {
+    //
+  }
+
+  visitTypeOption(typeOption: nodes.TypeOptionNode): void {
+    //
+  }
+
+  visitTypeSet(typeSet: nodes.TypeSetNode): void {
+    //
+  }
+
+  visitTypeStruct(typeStruct: nodes.TypeStructNode): void {
     typeStruct.visitChildren(this);
+  }
+
+  visitTypeTuple(typeTuple: nodes.TypeTupleNode): void {
+    //
+  }
+
+  visitTypeVec(typeVec: nodes.TypeVecNode): void {
+    //
   }
 }

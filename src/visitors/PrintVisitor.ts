@@ -1,11 +1,5 @@
 /* eslint-disable no-console */
-import type {
-  AccountNode,
-  RootNode,
-  TypeDefinedLinkNode,
-  TypeLeafNode,
-  TypeStructNode,
-} from 'src/nodes';
+import type * as nodes from '../nodes';
 import { BaseVisitor } from './BaseVisitor';
 
 export class PrintVisitor extends BaseVisitor {
@@ -18,31 +12,31 @@ export class PrintVisitor extends BaseVisitor {
     this.separator = separator;
   }
 
-  visitRoot(root: RootNode) {
+  visitRoot(root: nodes.RootNode) {
     this.printIndentedText('[RootNode]');
     this.indent += 1;
     root.visitChildren(this);
     this.indent -= 1;
   }
 
-  visitAccount(account: AccountNode): void {
+  visitAccount(account: nodes.AccountNode): void {
     this.printIndentedText(`[AccountNode] ${account.name}`);
     this.indent += 1;
     account.visitChildren(this);
     this.indent -= 1;
   }
 
-  visitTypeDefinedLink(typeDefinedLink: TypeDefinedLinkNode): void {
+  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): void {
     this.printIndentedText(
       `[TypeDefinedLinkNode] ${typeDefinedLink.definedType}`,
     );
   }
 
-  visitTypeLeaf(typeLeaf: TypeLeafNode): void {
+  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): void {
     this.printIndentedText(`[TypeLeafNode] ${typeLeaf.type}`);
   }
 
-  visitTypeStruct(typeStruct: TypeStructNode): void {
+  visitTypeStruct(typeStruct: nodes.TypeStructNode): void {
     this.printIndentedText('[TypeStructNode]');
     this.indent += 1;
     typeStruct.fields.forEach((field) => {

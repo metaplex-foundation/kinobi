@@ -1,24 +1,23 @@
-import type {
-  AccountNode,
-  DefinedTypeNode,
-  InstructionNode,
-  RootNode,
-  TypeDefinedLinkNode,
-  TypeLeafNode,
-  TypeStructNode,
-} from 'src/nodes';
+import type * as nodes from '../nodes';
 
 export interface Visitor {
   // Root.
-  visitRoot: (root: RootNode) => void;
+  visitRoot: (root: nodes.RootNode) => void;
 
   // Components.
-  visitAccount: (account: AccountNode) => void;
-  visitInstruction: (instruction: InstructionNode) => void;
-  visitDefinedType: (definedType: DefinedTypeNode) => void;
+  visitAccount: (account: nodes.AccountNode) => void;
+  visitInstruction: (instruction: nodes.InstructionNode) => void;
+  visitDefinedType: (definedType: nodes.DefinedTypeNode) => void;
 
   // Types.
-  visitTypeDefinedLink: (typeDefinedLink: TypeDefinedLinkNode) => void;
-  visitTypeLeaf: (typeLeaf: TypeLeafNode) => void;
-  visitTypeStruct: (typeStruct: TypeStructNode) => void;
+  visitTypeArray: (typeArray: nodes.TypeArrayNode) => void;
+  visitTypeDefinedLink: (typeDefinedLink: nodes.TypeDefinedLinkNode) => void;
+  visitTypeEnum: (typeEnum: nodes.TypeEnumNode) => void;
+  visitTypeLeaf: (typeLeaf: nodes.TypeLeafNode) => void;
+  visitTypeMap: (typeMap: nodes.TypeMapNode) => void;
+  visitTypeOption: (typeOption: nodes.TypeOptionNode) => void;
+  visitTypeSet: (typeSet: nodes.TypeSetNode) => void;
+  visitTypeStruct: (typeStruct: nodes.TypeStructNode) => void;
+  visitTypeTuple: (typeTuple: nodes.TypeTupleNode) => void;
+  visitTypeVec: (typeVec: nodes.TypeVecNode) => void;
 }
