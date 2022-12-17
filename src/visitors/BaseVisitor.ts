@@ -4,6 +4,7 @@ import {
   DefinedTypeNode,
   InstructionNode,
   RootNode,
+  TypeDefinedLinkNode,
   TypeLeafNode,
   TypeStructNode,
 } from 'src/nodes';
@@ -23,6 +24,10 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitDefinedType(definedType: DefinedTypeNode): void {
+    //
+  }
+
+  visitTypeDefinedLink(typeDefinedLink: TypeDefinedLinkNode): void {
     //
   }
 

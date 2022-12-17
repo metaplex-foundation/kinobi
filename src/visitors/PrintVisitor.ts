@@ -2,6 +2,7 @@
 import type {
   AccountNode,
   RootNode,
+  TypeDefinedLinkNode,
   TypeLeafNode,
   TypeStructNode,
 } from 'src/nodes';
@@ -31,6 +32,12 @@ export class PrintVisitor extends BaseVisitor {
     this.indent -= 1;
   }
 
+  visitTypeDefinedLink(typeDefinedLink: TypeDefinedLinkNode): void {
+    this.printIndentedText(
+      `[TypeDefinedLinkNode] ${typeDefinedLink.definedType}`,
+    );
+  }
+
   visitTypeLeaf(typeLeaf: TypeLeafNode): void {
     this.printIndentedText(`[TypeLeafNode] ${typeLeaf.type}`);
   }
@@ -38,7 +45,12 @@ export class PrintVisitor extends BaseVisitor {
   visitTypeStruct(typeStruct: TypeStructNode): void {
     this.printIndentedText('[TypeStructNode]');
     this.indent += 1;
-    typeStruct.visitChildren(this);
+    typeStruct.fields.forEach((field) => {
+      this.printIndentedText(`${field.name}:`);
+      this.indent += 1;
+      field.type.visit(this);
+      this.indent -= 1;
+    });
     this.indent -= 1;
   }
 

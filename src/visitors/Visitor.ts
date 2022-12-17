@@ -3,6 +3,7 @@ import type {
   DefinedTypeNode,
   InstructionNode,
   RootNode,
+  TypeDefinedLinkNode,
   TypeLeafNode,
   TypeStructNode,
 } from 'src/nodes';
@@ -17,6 +18,7 @@ export interface Visitor {
   visitDefinedType: (definedType: DefinedTypeNode) => void;
 
   // Types.
+  visitTypeDefinedLink: (typeDefinedLink: TypeDefinedLinkNode) => void;
   visitTypeLeaf: (typeLeaf: TypeLeafNode) => void;
   visitTypeStruct: (typeStruct: TypeStructNode) => void;
 }
