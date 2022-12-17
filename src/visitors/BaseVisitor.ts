@@ -44,7 +44,7 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): void {
-    //
+    typeSet.visitChildren(this);
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): void {

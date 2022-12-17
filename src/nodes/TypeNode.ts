@@ -65,7 +65,10 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     return TypeOptionNode.fromIdl(idlType);
   }
 
-  // TODO: Set.
+  // Set.
+  if ('hashSet' in idlType || 'bTreeSet' in idlType) {
+    return TypeSetNode.fromIdl(idlType);
+  }
 
   // Struct.
   if ('kind' in idlType && idlType.kind === 'struct') {
