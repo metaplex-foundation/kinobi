@@ -47,10 +47,14 @@ export class PrintVisitor extends BaseVisitor {
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
-    this.printIndentedText(`[TypeEnumNode] ${typeEnum.name}`);
+    this.printIndentedText(
+      `[TypeEnumNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`,
+    );
     typeEnum.variants.forEach((variant) => {
       this.indent += 1;
-      this.printIndentedText(`${variant.name}:`);
+      const variantSuffix =
+        variant.kind === 'empty' ? '' : ` (${variant.kind}):`;
+      this.printIndentedText(`${variant.name}${variantSuffix}`);
       if (variant.kind === 'struct') {
         this.indent += 1;
         variant.type.visit(this);
