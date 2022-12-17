@@ -13,6 +13,7 @@ module.exports = {
   },
   rules: {
     'import/prefer-default-export': 'off',
+    'import/no-cycle': 'off',
   },
   ignorePatterns: ['dist/**'],
 };

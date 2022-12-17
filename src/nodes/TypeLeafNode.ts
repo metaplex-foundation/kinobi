@@ -1,4 +1,4 @@
-import type { IdlTypeLeaf } from 'src/idl';
+import type { IdlTypeLeaf } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 
 export class TypeLeafNode implements Visitable {

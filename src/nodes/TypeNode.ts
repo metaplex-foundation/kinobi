@@ -1,4 +1,4 @@
-import type { IdlType } from 'src/idl';
+import type { IdlType } from '../idl';
 import { TypeLeafNode } from './TypeLeafNode';
 import { TypeStructNode } from './TypeStructNode';
 
@@ -17,13 +17,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 
   // Handle struct types with fields.
   if ('kind' in idlType && idlType.kind === 'struct') {
-    const fields = idlType.fields.map((field) => ({
-      name: field.name ?? '',
-      type: createTypeNodeFromIdl(field.type),
-      docs: field.docs ?? [],
-    }));
-
-    return new TypeStructNode(fields);
+    return TypeStructNode.fromIdl(idlType);
   }
 
   // Throw an error for unsupported types.

@@ -1,4 +1,4 @@
-import type { IdlAccount } from 'src/idl';
+import type { IdlAccount } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
