@@ -1,26 +1,28 @@
-import type { IdlTypeEnum } from 'src/idl';
+import type { IdlType, IdlTypeEnum, IdlTypeEnumField } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { TypeStructNode } from './TypeStructNode';
 
-export type TypeEnumNodeVariant = {
+export type TypeEnumNodeVariant =
+  | TypeEnumNodeStructVariant
+  | TypeEnumNodeTupleVariant
+  | TypeEnumNodeEmptyVariant;
+
+export type TypeEnumNodeStructVariant = {
+  kind: 'struct';
   name: string;
-  fields:
-    | TypeEnumNodeVariantNamedField[]
-    | TypeEnumNodeVariantTupleField[]
-    | null;
+  type: TypeStructNode;
 };
 
-export type TypeEnumNodeVariantNamedField = {
-  kind: 'named';
-  name: string;
-  type: TypeNode;
-  docs: string[];
-};
-
-export type TypeEnumNodeVariantTupleField = {
+export type TypeEnumNodeTupleVariant = {
   kind: 'tuple';
-  type: TypeNode;
-  docs: string[];
+  name: string;
+  fields: TypeNode[];
+};
+
+export type TypeEnumNodeEmptyVariant = {
+  kind: 'empty';
+  name: string;
 };
 
 export class TypeEnumNode implements Visitable {
@@ -34,21 +36,36 @@ export class TypeEnumNode implements Visitable {
   static fromIdl(idl: IdlTypeEnum): TypeEnumNode {
     const name = idl.name ?? null;
     const variants = idl.variants.map((variant): TypeEnumNodeVariant => {
-      const fields = (variant.fields ?? []).map((field) => {
-        if (typeof field === 'object' && 'name' in field && 'type' in field) {
-          return {
-            kind: 'named',
-            name: field.name,
-            type: createTypeNodeFromIdl(field.type),
-            docs: field.docs ?? [],
-          };
-        }
-        return { kind: 'tuple', type: createTypeNodeFromIdl(field) };
-      }) as TypeEnumNodeVariantNamedField[] | TypeEnumNodeVariantTupleField[];
+      const variantName = variant.name ?? '';
 
+      if (!variant.fields || variant.fields.length <= 0) {
+        return { kind: 'empty', name: variantName };
+      }
+
+      function isStructField(field: any): boolean {
+        return typeof field === 'object' && 'name' in field && 'type' in field;
+      }
+
+      if (isStructField(variant.fields[0])) {
+        const variantFields = variant.fields as IdlTypeEnumField[];
+        return {
+          kind: 'struct',
+          name: variantName,
+          type: new TypeStructNode(
+            variantFields.map((field) => ({
+              name: field.name,
+              type: createTypeNodeFromIdl(field.type),
+              docs: field.docs ?? [],
+            })),
+          ),
+        };
+      }
+
+      const variantFields = variant.fields as IdlType[];
       return {
-        name: variant.name,
-        fields: fields.length === 0 ? null : fields,
+        kind: 'tuple',
+        name: variantName,
+        fields: variantFields.map((field) => createTypeNodeFromIdl(field)),
       };
     });
 
@@ -61,9 +78,11 @@ export class TypeEnumNode implements Visitable {
 
   visitChildren(visitor: Visitor): void {
     this.variants.forEach((variant) => {
-      (variant.fields ?? []).forEach((field) => {
-        field.type.visit(visitor);
-      });
+      if (variant.kind === 'struct') {
+        variant.type.visit(visitor);
+      } else if (variant.kind === 'tuple') {
+        variant.fields.forEach((field) => field.visit(visitor));
+      }
     });
   }
 }

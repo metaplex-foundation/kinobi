@@ -39,13 +39,20 @@ export class PrintVisitor extends BaseVisitor {
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
     this.printIndentedText(`[TypeEnumNode] ${typeEnum.name}`);
-    // typeEnum.variants.forEach((variant) => {
-    //   (variant.fields ?? []).forEach((field) => {
-    //     this.indent += 1;
-    //     field.type.visit(this);
-    //     this.indent -= 1;
-    //   });
-    // });
+    typeEnum.variants.forEach((variant) => {
+      this.indent += 1;
+      this.printIndentedText(`${variant.name}:`);
+      if (variant.kind === 'struct') {
+        this.indent += 1;
+        variant.type.visit(this);
+        this.indent -= 1;
+      } else if (variant.kind === 'tuple') {
+        this.indent += 1;
+        variant.fields.forEach((field) => field.visit(this));
+        this.indent -= 1;
+      }
+      this.indent -= 1;
+    });
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): void {
