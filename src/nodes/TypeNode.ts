@@ -1,4 +1,3 @@
-import type { TypeDefinedNode } from './TypeDefinedNode';
-import type { TypeScalarNode } from './TypeScalarNode';
+import type { TypeLeafNode } from './TypeLeafNode';
 
-export type TypeNode = TypeDefinedNode | TypeScalarNode;
+export type TypeNode = TypeLeafNode;

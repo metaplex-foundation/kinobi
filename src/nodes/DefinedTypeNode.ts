@@ -1,7 +1,7 @@
 import type { Visitable, Visitor } from '../visitors';
 
-export class TypeDefinedNode implements Visitable {
+export class DefinedTypeNode implements Visitable {
   visit(visitor: Visitor): void {
-    visitor.visitTypeDefined(this);
+    visitor.visitDefinedType(this);
   }
 }

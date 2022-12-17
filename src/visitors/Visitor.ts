@@ -1,15 +1,20 @@
 import type {
   AccountNode,
+  DefinedTypeNode,
   InstructionNode,
   RootNode,
-  TypeDefinedNode,
-  TypeScalarNode,
+  TypeLeafNode,
 } from 'src/nodes';
 
 export interface Visitor {
+  // Root.
   visitRoot: (root: RootNode) => void;
+
+  // Components.
   visitAccount: (account: AccountNode) => void;
   visitInstruction: (instruction: InstructionNode) => void;
-  visitTypeScalar: (typeScalar: TypeScalarNode) => void;
-  visitTypeDefined: (typeDefined: TypeDefinedNode) => void;
+  visitDefinedType: (definedType: DefinedTypeNode) => void;
+
+  // Types.
+  visitTypeLeaf: (typeLeaf: TypeLeafNode) => void;
 }

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this, @typescript-eslint/no-unused-vars */
 import { AccountNode, RootNode } from 'src/nodes';
 import type { Visitor } from './Visitor';
 
@@ -14,7 +13,7 @@ export abstract class BaseVisitor implements Visitor {
 
   visitInstruction(): void {}
 
-  visitTypeScalar(): void {}
+  visitTypeLeaf(): void {}
 
-  visitTypeDefined(): void {}
+  visitDefinedType(): void {}
 }

@@ -8,13 +8,13 @@ export class AccountNode implements Visitable {
     readonly docs: string[] = [],
   ) {}
 
+  static fromIdl(idl: Partial<IdlAccount>): AccountNode {
+    const name = idl.name ?? '';
+    const docs = idl.docs ?? [];
+    return new AccountNode(name, docs);
+  }
+
   visit(visitor: Visitor): void {
     visitor.visitAccount(this);
   }
-}
-
-export function parseAccountNode(idl: Partial<IdlAccount>): AccountNode {
-  const name = idl.name ?? '';
-  const docs = idl.docs ?? [];
-  return new AccountNode(name, docs);
 }
