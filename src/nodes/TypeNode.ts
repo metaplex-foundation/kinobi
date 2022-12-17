@@ -47,7 +47,11 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     return new TypeDefinedLinkNode(idlType.defined);
   }
 
-  // TODO: Enum.
+  // Enum.
+  if ('kind' in idlType && idlType.kind === 'enum' && 'variants' in idlType) {
+    return TypeEnumNode.fromIdl(idlType);
+  }
+
   // TODO: Map.
   // TODO: Option.
   // TODO: Set.

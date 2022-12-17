@@ -28,7 +28,7 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
-    //
+    typeEnum.visitChildren(this);
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): void {

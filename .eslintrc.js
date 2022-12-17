@@ -12,6 +12,8 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
+    indent: 'off',
+    '@typescript-eslint/indent': 'off',
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'operator-linebreak': ['error', 'after'],
