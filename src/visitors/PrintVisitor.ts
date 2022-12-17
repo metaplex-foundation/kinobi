@@ -30,9 +30,34 @@ export class PrintVisitor extends BaseVisitor {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    this.printIndentedText(`[InstructionNode] ${instruction.name}`);
+    const discriminator =
+      instruction.discriminator?.value !== undefined
+        ? ` (discriminator: ${instruction.discriminator?.value})`
+        : '';
+    this.printIndentedText(
+      `[InstructionNode] ${instruction.name}${discriminator}`,
+    );
     this.indent += 1;
-    instruction.visitChildren(this); // TODO
+    this.printIndentedText('accounts:');
+    this.indent += 1;
+    instruction.accounts.forEach((account) => {
+      const tags = [];
+      if (account.isMutable) tags.push('mutable');
+      if (account.isSigner) tags.push('signer');
+      if (account.isOptional) tags.push('optional');
+      const tagsAsString = tags.length > 0 ? ` (${tags.join(', ')})` : '';
+      this.printIndentedText(account.name + tagsAsString);
+    });
+    this.indent -= 1;
+    this.printIndentedText('arguments:');
+    this.indent += 1;
+    instruction.args.forEach((arg) => {
+      this.printIndentedText(`${arg.name}:`);
+      this.indent += 1;
+      arg.type.visit(this);
+      this.indent -= 1;
+    });
+    this.indent -= 1;
     this.indent -= 1;
   }
 

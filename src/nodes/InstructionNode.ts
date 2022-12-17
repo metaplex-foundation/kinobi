@@ -7,7 +7,7 @@ export type InstructionNodeAccount = {
   name: string;
   isMutable: boolean;
   isSigner: boolean;
-  optional: boolean;
+  isOptional: boolean;
   description: string;
 };
 
@@ -32,18 +32,22 @@ export class InstructionNode implements Visitable {
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
     const name = idl.name ?? '';
-    const accounts = (idl.accounts ?? []).map((account) => ({
-      name: account.name ?? '',
-      isMutable: account.isMut ?? false,
-      isSigner: account.isSigner ?? false,
-      optional: account.optional ?? false,
-      description: account.desc ?? '',
-    }));
-    const args = (idl.args ?? []).map((arg) => ({
-      name: arg.name ?? '',
-      type: createTypeNodeFromIdl(arg.type),
-    }));
-    const discriminator = idl.discriminant
+    const accounts = (idl.accounts ?? []).map(
+      (account): InstructionNodeAccount => ({
+        name: account.name ?? '',
+        isMutable: account.isMut ?? false,
+        isSigner: account.isSigner ?? false,
+        isOptional: account.optional ?? false,
+        description: account.desc ?? '',
+      }),
+    );
+    const args = (idl.args ?? []).map(
+      (arg): InstructionNodeArg => ({
+        name: arg.name ?? '',
+        type: createTypeNodeFromIdl(arg.type),
+      }),
+    );
+    const discriminator: InstructionNodeDiscriminator | null = idl.discriminant
       ? {
           type: createTypeNodeFromIdl(idl.discriminant.type) as TypeLeafNode,
           value: idl.discriminant.value,
