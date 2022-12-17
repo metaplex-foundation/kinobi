@@ -36,7 +36,7 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitTypeMap(typeMap: nodes.TypeMapNode): void {
-    //
+    typeMap.visitChildren(this);
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): void {

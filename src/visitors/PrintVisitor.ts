@@ -37,8 +37,33 @@ export class PrintVisitor extends BaseVisitor {
     );
   }
 
+  visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
+    this.printIndentedText(`[TypeEnumNode] ${typeEnum.name}`);
+    // typeEnum.variants.forEach((variant) => {
+    //   (variant.fields ?? []).forEach((field) => {
+    //     this.indent += 1;
+    //     field.type.visit(this);
+    //     this.indent -= 1;
+    //   });
+    // });
+  }
+
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): void {
     this.printIndentedText(`[TypeLeafNode] ${typeLeaf.type}`);
+  }
+
+  visitTypeMap(typeMap: nodes.TypeMapNode): void {
+    this.printIndentedText(`[TypeMapNode] ${typeMap.mapType}`);
+    this.indent += 1;
+    this.printIndentedText('keys:');
+    this.indent += 1;
+    typeMap.keyType.visit(this);
+    this.indent -= 1;
+    this.printIndentedText('values:');
+    this.indent += 1;
+    typeMap.valueType.visit(this);
+    this.indent -= 1;
+    this.indent -= 1;
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): void {

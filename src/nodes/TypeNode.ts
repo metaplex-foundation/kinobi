@@ -22,6 +22,10 @@ export type TypeNode =
   | TypeTupleNode
   | TypeVecNode;
 
+function isArrayOfSize(array: any, size: number): boolean {
+  return Array.isArray(array) && array.length === size;
+}
+
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
   if (typeof idlType === 'string' && TypeLeafNode.isValidType(idlType)) {
@@ -34,11 +38,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   }
 
   // Array.
-  if (
-    'array' in idlType &&
-    Array.isArray(idlType.array) &&
-    idlType.array.length === 2
-  ) {
+  if ('array' in idlType && isArrayOfSize(idlType.array, 2)) {
     return TypeArrayNode.fromIdl(idlType);
   }
 
@@ -52,7 +52,14 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     return TypeEnumNode.fromIdl(idlType);
   }
 
-  // TODO: Map.
+  // Map.
+  if (
+    ('hashMap' in idlType && isArrayOfSize(idlType.hashMap, 2)) ||
+    ('bTreeMap' in idlType && isArrayOfSize(idlType.bTreeMap, 2))
+  ) {
+    return TypeMapNode.fromIdl(idlType);
+  }
+
   // TODO: Option.
   // TODO: Set.
 
