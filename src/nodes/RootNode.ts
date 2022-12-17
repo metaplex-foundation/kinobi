@@ -2,7 +2,7 @@ import type { Idl } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { AccountNode } from './AccountNode';
 import { DefinedTypeNode } from './DefinedTypeNode';
-import type { InstructionNode } from './InstructionNode';
+import { InstructionNode } from './InstructionNode';
 
 export class RootNode implements Visitable {
   constructor(
@@ -19,8 +19,19 @@ export class RootNode implements Visitable {
     const name = idl.name ?? '';
     const address = idl.metadata?.address ?? '';
     const accounts = (idl.accounts ?? []).map(AccountNode.fromIdl);
+    const instructions = (idl.instructions ?? []).map(InstructionNode.fromIdl);
     const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
-    return new RootNode(idl, name, address, accounts, [], definedTypes, null);
+    const origin = idl.metadata?.origin ?? null;
+
+    return new RootNode(
+      idl,
+      name,
+      address,
+      accounts,
+      instructions,
+      definedTypes,
+      origin,
+    );
   }
 
   visit(visitor: Visitor): void {

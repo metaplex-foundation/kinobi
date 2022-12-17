@@ -13,7 +13,10 @@ export class PrintVisitor extends BaseVisitor {
   }
 
   visitRoot(root: nodes.RootNode) {
-    this.printIndentedText('[RootNode]');
+    const origin = root.origin ? `, origin: ${root.origin}` : '';
+    this.printIndentedText(
+      `[RootNode] ${root.name} (address: ${root.address}${origin})`,
+    );
     this.indent += 1;
     root.visitChildren(this);
     this.indent -= 1;
