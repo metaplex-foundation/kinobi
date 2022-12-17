@@ -10,8 +10,8 @@ import {
 import type { Visitor } from './Visitor';
 
 export abstract class BaseVisitor implements Visitor {
-  visitRoot(rootNode: RootNode): void {
-    rootNode.visitChildren(this);
+  visitRoot(root: RootNode): void {
+    root.visitChildren(this);
   }
 
   visitAccount(account: AccountNode): void {

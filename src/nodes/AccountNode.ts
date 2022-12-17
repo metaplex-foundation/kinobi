@@ -22,4 +22,8 @@ export class AccountNode implements Visitable {
   visit(visitor: Visitor): void {
     visitor.visitAccount(this);
   }
+
+  visitChildren(visitor: Visitor): void {
+    this.type.visit(visitor);
+  }
 }
