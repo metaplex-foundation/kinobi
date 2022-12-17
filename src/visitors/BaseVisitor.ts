@@ -16,7 +16,7 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
-    //
+    definedType.visitChildren(this);
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): void {
