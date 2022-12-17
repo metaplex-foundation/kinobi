@@ -1,6 +1,6 @@
 import type { Idl } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
-import type { AccountNode } from './AccountNode';
+import { AccountNode, parseAccountNode } from './AccountNode';
 import type { InstructionNode } from './InstructionNode';
 import type { TypeNode } from './TypeNode';
 
@@ -29,5 +29,6 @@ export class RootNode implements Visitable {
 export function parseRootNode(idl: Partial<Idl>): RootNode {
   const name = idl.name ?? '';
   const address = idl.metadata?.address ?? '';
-  return new RootNode(idl, name, address, [], [], [], null);
+  const accounts = idl.accounts?.map(parseAccountNode) ?? [];
+  return new RootNode(idl, name, address, accounts, [], [], null);
 }

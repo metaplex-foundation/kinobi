@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { RootNode } from 'src/nodes';
+import type { AccountNode, RootNode } from 'src/nodes';
 import { BaseVisitor } from './BaseVisitor';
 
 export class PrintVisitor extends BaseVisitor {
@@ -13,10 +13,14 @@ export class PrintVisitor extends BaseVisitor {
   }
 
   visitRoot(rootNode: RootNode) {
-    this.printIndentedText('RootNode');
+    this.printIndentedText('[RootNode]');
     this.indent += 1;
     rootNode.visitChildren(this);
     this.indent -= 1;
+  }
+
+  visitAccount(account: AccountNode): void {
+    this.printIndentedText(`[AccountNode] ${account.name}`);
   }
 
   getIndentedText(text: string) {
