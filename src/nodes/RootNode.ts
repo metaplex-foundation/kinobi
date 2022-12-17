@@ -1,8 +1,8 @@
 import type { Idl } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { AccountNode } from './AccountNode';
+import { DefinedTypeNode } from './DefinedTypeNode';
 import type { InstructionNode } from './InstructionNode';
-import type { TypeNode } from './TypeNode';
 
 export class RootNode implements Visitable {
   constructor(
@@ -11,7 +11,7 @@ export class RootNode implements Visitable {
     readonly address: string,
     readonly accounts: AccountNode[],
     readonly instructions: InstructionNode[],
-    readonly types: TypeNode[],
+    readonly definedTypes: DefinedTypeNode[],
     readonly origin: 'shank' | 'anchor' | null,
   ) {}
 
@@ -19,7 +19,8 @@ export class RootNode implements Visitable {
     const name = idl.name ?? '';
     const address = idl.metadata?.address ?? '';
     const accounts = (idl.accounts ?? []).map(AccountNode.fromIdl);
-    return new RootNode(idl, name, address, accounts, [], [], null);
+    const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
+    return new RootNode(idl, name, address, accounts, [], definedTypes, null);
   }
 
   visit(visitor: Visitor): void {
@@ -29,6 +30,6 @@ export class RootNode implements Visitable {
   visitChildren(visitor: Visitor): void {
     this.accounts.forEach((account) => account.visit(visitor));
     this.instructions.forEach((instruction) => instruction.visit(visitor));
-    this.types.forEach((type) => type.visit(visitor));
+    this.definedTypes.forEach((type) => type.visit(visitor));
   }
 }
