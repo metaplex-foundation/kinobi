@@ -2,11 +2,9 @@ import type { IdlTypeLeaf } from 'src/idl';
 import type { Visitable, Visitor } from '../visitors';
 
 export class TypeLeafNode implements Visitable {
-  readonly type: IdlTypeLeaf;
+  readonly nodeType = 'leaf' as const;
 
-  constructor(type: IdlTypeLeaf) {
-    this.type = type;
-  }
+  constructor(readonly type: IdlTypeLeaf) {}
 
   visit(visitor: Visitor): void {
     visitor.visitTypeLeaf(this);

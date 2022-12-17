@@ -4,6 +4,7 @@ import type {
   InstructionNode,
   RootNode,
   TypeLeafNode,
+  TypeStructNode,
 } from 'src/nodes';
 
 export interface Visitor {
@@ -17,4 +18,5 @@ export interface Visitor {
 
   // Types.
   visitTypeLeaf: (typeLeaf: TypeLeafNode) => void;
+  visitTypeStruct: (typeStruct: TypeStructNode) => void;
 }

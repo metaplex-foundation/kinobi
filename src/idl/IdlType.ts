@@ -1,5 +1,5 @@
 export type IdlType =
-  | IdlTypeDefined
+  | IdlTypeDefinedLink
   | IdlTypeOption
   | IdlTypeTuple
   | IdlTypeVec
@@ -11,7 +11,7 @@ export type IdlType =
   | IdlTypeLeaf;
 
 // Defined.
-export type IdlTypeDefined = { defined: string };
+export type IdlTypeDefinedLink = { defined: string };
 
 // Options.
 export type IdlTypeOption = { option: IdlType };
