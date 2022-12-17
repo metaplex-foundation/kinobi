@@ -1,4 +1,4 @@
-import type { IdlTypeArray } from 'src/idl';
+import type { IdlTypeArray } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 

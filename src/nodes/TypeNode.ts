@@ -60,7 +60,11 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     return TypeMapNode.fromIdl(idlType);
   }
 
-  // TODO: Option.
+  // Option.
+  if ('option' in idlType || 'coption' in idlType) {
+    return TypeOptionNode.fromIdl(idlType);
+  }
+
   // TODO: Set.
 
   // Struct.

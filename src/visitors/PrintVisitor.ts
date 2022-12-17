@@ -73,6 +73,13 @@ export class PrintVisitor extends BaseVisitor {
     this.indent -= 1;
   }
 
+  visitTypeOption(typeOption: nodes.TypeOptionNode): void {
+    this.printIndentedText('[TypeOptionNode]');
+    this.indent += 1;
+    typeOption.visitChildren(this);
+    this.indent -= 1;
+  }
+
   visitTypeStruct(typeStruct: nodes.TypeStructNode): void {
     this.printIndentedText('[TypeStructNode]');
     this.indent += 1;

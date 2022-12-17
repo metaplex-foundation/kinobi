@@ -14,7 +14,7 @@ export type IdlType =
 export type IdlTypeDefinedLink = { defined: string };
 
 // Options.
-export type IdlTypeOption = { option: IdlType };
+export type IdlTypeOption = { option: IdlType } | { coption: IdlType };
 
 // Lists.
 export type IdlTypeTuple = { tuple: IdlType[] };

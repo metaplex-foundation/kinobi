@@ -1,4 +1,4 @@
-import { IdlTypeMap } from 'src/idl';
+import type { IdlTypeMap } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 

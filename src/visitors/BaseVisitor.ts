@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this, @typescript-eslint/no-unused-vars */
-import * as nodes from 'src/nodes';
+import * as nodes from '../nodes';
 import type { Visitor } from './Visitor';
 
 export abstract class BaseVisitor implements Visitor {
@@ -40,7 +40,7 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): void {
-    //
+    typeOption.visitChildren(this);
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): void {
