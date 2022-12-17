@@ -52,10 +52,10 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): void {
-    //
+    typeTuple.visitChildren(this);
   }
 
   visitTypeVec(typeVec: nodes.TypeVecNode): void {
-    //
+    typeVec.visitChildren(this);
   }
 }

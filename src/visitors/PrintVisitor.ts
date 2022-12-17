@@ -99,6 +99,20 @@ export class PrintVisitor extends BaseVisitor {
     this.indent -= 1;
   }
 
+  visitTypeTuple(typeTuple: nodes.TypeTupleNode): void {
+    this.printIndentedText('[TypeTupleNode]');
+    this.indent += 1;
+    typeTuple.visitChildren(this);
+    this.indent -= 1;
+  }
+
+  visitTypeVec(typeVec: nodes.TypeVecNode): void {
+    this.printIndentedText('[TypeVecNode]');
+    this.indent += 1;
+    typeVec.visitChildren(this);
+    this.indent -= 1;
+  }
+
   getIndentedText(text: string) {
     return this.separator.repeat(this.indent) + text;
   }

@@ -75,8 +75,15 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     return TypeStructNode.fromIdl(idlType);
   }
 
-  // TODO: Tuple.
-  // TODO: Vec.
+  // Tuple.
+  if ('tuple' in idlType && Array.isArray(idlType.tuple)) {
+    return TypeTupleNode.fromIdl(idlType);
+  }
+
+  // Vec.
+  if ('vec' in idlType) {
+    return TypeVecNode.fromIdl(idlType);
+  }
 
   // Throw an error for unsupported types.
   throw new Error(`TypeNode: Unsupported type ${JSON.stringify(idlType)}`);

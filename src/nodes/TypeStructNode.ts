@@ -13,7 +13,7 @@ export class TypeStructNode implements Visitable {
 
   constructor(readonly fields: TypeStructNodeField[]) {}
 
-  static fromIdl(idl: Partial<IdlTypeStruct>): TypeStructNode {
+  static fromIdl(idl: IdlTypeStruct): TypeStructNode {
     const fields = (idl.fields ?? []).map((field) => ({
       name: field.name ?? '',
       type: createTypeNodeFromIdl(field.type),
