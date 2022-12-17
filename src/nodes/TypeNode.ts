@@ -23,8 +23,8 @@ export type TypeNode =
   | TypeVecNode;
 
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
-  // Handle leaf types such as 'u8', 'u64', 'publicKey', etc.
-  if (typeof idlType === 'string') {
+  // Leaf.
+  if (typeof idlType === 'string' && TypeLeafNode.isValidType(idlType)) {
     return new TypeLeafNode(idlType);
   }
 
@@ -33,7 +33,14 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     throw new Error(`TypeNode: Unsupported type ${JSON.stringify(idlType)}`);
   }
 
-  // TODO: Array.
+  // Array.
+  if (
+    'array' in idlType &&
+    Array.isArray(idlType.array) &&
+    idlType.array.length === 2
+  ) {
+    return TypeArrayNode.fromIdl(idlType);
+  }
 
   // Defined link.
   if ('defined' in idlType && typeof idlType.defined === 'string') {

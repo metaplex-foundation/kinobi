@@ -20,7 +20,7 @@ export abstract class BaseVisitor implements Visitor {
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): void {
-    //
+    typeArray.visitChildren(this);
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): void {

@@ -12,8 +12,9 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
-    'import/prefer-default-export': 'off',
     'import/no-cycle': 'off',
+    'import/prefer-default-export': 'off',
+    'operator-linebreak': ['error', 'after'],
   },
   ignorePatterns: ['dist/**'],
 };

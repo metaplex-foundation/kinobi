@@ -26,6 +26,11 @@ export class PrintVisitor extends BaseVisitor {
     this.indent -= 1;
   }
 
+  visitTypeArray(typeArray: nodes.TypeArrayNode): void {
+    this.printIndentedText(`[TypeArrayNode] Size: ${typeArray.size}`);
+    typeArray.visitChildren(this);
+  }
+
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): void {
     this.printIndentedText(
       `[TypeDefinedLinkNode] ${typeDefinedLink.definedType}`,
