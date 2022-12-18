@@ -13,7 +13,29 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
 
   visitRoot(root: nodes.RootNode): nodes.Node {
     // TODO: remove defined types from root.
-    return super.visitRoot(root);
+    return new nodes.RootNode(
+      root.idl,
+      root.name,
+      root.address,
+      root.accounts.map((account) => {
+        const child = account.accept(this);
+        nodes.assertAccountNode(child);
+        return child;
+      }),
+      root.instructions.map((instruction) => {
+        const child = instruction.accept(this);
+        nodes.assertInstructionNode(child);
+        return child;
+      }),
+      root.definedTypes
+        .filter((definedType) => !this.definedTypes.has(definedType.name))
+        .map((definedType) => {
+          const child = definedType.accept(this);
+          nodes.assertDefinedTypeNode(child);
+          return child;
+        }),
+      root.origin,
+    );
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
@@ -23,6 +45,6 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
       return typeDefinedLink;
     }
 
-    return definedType.type;
+    return definedType.type.accept(this);
   }
 }
