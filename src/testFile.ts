@@ -2,18 +2,27 @@
 import type { Idl } from './idl';
 import idl from './idl.json';
 import { Solita } from './Solita';
-import { PrintVisitor, TransformU8ArraysToBytesVisitor } from './visitors';
-import { InlineDefinedTypesVisitor } from './visitors/InlineDefinedTypesVisitor';
+import {
+  GetDefinedTypeHistogramVisitor,
+  InlineDefinedTypesVisitor,
+  PrintVisitor,
+  TransformU8ArraysToBytesVisitor,
+} from './visitors';
 
 const solita = new Solita(idl as Partial<Idl>);
 solita.accept(new PrintVisitor());
 
 console.log('---------');
-console.log('AFTER VISITOR');
+console.log('AFTER VISITORS');
 console.log('---------');
 
-const { definedTypes } = solita.rootNode;
+const histogram = solita.accept(new GetDefinedTypeHistogramVisitor());
+const definedTypesToInline = solita.rootNode.definedTypes.filter(
+  (definedType) =>
+    (histogram[definedType.name] ?? 0) === 1 &&
+    definedType.name.endsWith('Args'),
+);
 
-solita.updateRootNode(new InlineDefinedTypesVisitor(definedTypes));
+solita.updateRootNode(new InlineDefinedTypesVisitor(definedTypesToInline));
 solita.updateRootNode(new TransformU8ArraysToBytesVisitor());
 solita.accept(new PrintVisitor());

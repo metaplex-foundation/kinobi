@@ -99,7 +99,6 @@ export class GetDefinedTypeHistogramVisitor
   ): DefinedTypeHistogram {
     const result: DefinedTypeHistogram = {};
 
-    console.log('MERGE HISTOGRAMS', histograms);
     histograms.forEach((histogram) => {
       Object.keys(histogram).forEach((key) => {
         if (result[key] === undefined) {
@@ -109,7 +108,6 @@ export class GetDefinedTypeHistogramVisitor
         }
       });
     });
-    console.log('MERGE HISTOGRAMS RESULT >>> ', result);
 
     return result;
   }
