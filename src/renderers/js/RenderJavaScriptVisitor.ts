@@ -22,9 +22,18 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   }
 
   visitRoot(root: RootNode): void {
-    const context = { username: 'Loris' };
-    const content = this.resolveTemplate('hello.stub', context);
-    createFile(`${this.path}/render.txt`, content);
-    console.log(root.name);
+    const context = { ...root };
+
+    // Root index.
+    createFile(
+      `${this.path}/index.ts`,
+      this.resolveTemplate('rootIndex.stub', context),
+    );
+
+    // Types index.
+    createFile(
+      `${this.path}/types/index.ts`,
+      this.resolveTemplate('definedTypesIndex.stub', context),
+    );
   }
 }

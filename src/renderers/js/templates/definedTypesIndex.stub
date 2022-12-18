@@ -1,0 +1,3 @@
+{% for definedType in definedTypes | sort(false, false, 'name') %}
+export * from './{{ definedType.name }}';
+{% endfor %}

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import nunjucks from 'nunjucks';
+import nunjucks, { ConfigureOptions } from 'nunjucks';
 
 export const createDirectory = (path: string): void => {
   fs.mkdirSync(path, { recursive: true });
@@ -13,8 +13,14 @@ export const createFile = (path: string, content: string): void => {
   fs.writeFileSync(path, content);
 };
 
-export const resolveTemplate = (path: string, context?: object): string =>
-  nunjucks.render(`${__dirname}/${path}`, context);
+export const resolveTemplate = (
+  path: string,
+  context?: object,
+  options?: ConfigureOptions,
+): string => {
+  const env = nunjucks.configure({ trimBlocks: true, ...options });
+  return env.render(`${__dirname}/${path}`, context);
+};
 
 export type ResolveTemplateFunction = (
   path: string,
