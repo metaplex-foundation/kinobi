@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.json",
+    "build": "rimraf dist && tsc -p tsconfig.json && pnpm build:stub",
+    "build:stub": "copyfiles -u 1 src/**/*.stub dist/",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +18,7 @@
     "@types/nunjucks": "^3.2.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.46.1",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.0.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
