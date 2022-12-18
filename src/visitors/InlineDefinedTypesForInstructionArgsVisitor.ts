@@ -7,10 +7,10 @@ import { InlineDefinedTypesVisitor } from './InlineDefinedTypesVisitor';
 export class InlineDefinedTypesForInstructionArgsVisitor extends BaseRootVisitor {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     const histogram = root.accept(new GetDefinedTypeHistogramVisitor());
-    const definedTypesToInline = root.definedTypes.filter(
-      (definedType) =>
-        (histogram[definedType.name].total ?? 0) === 1 &&
-        (histogram[definedType.name].directlyAsInstructionArgs ?? 0) === 1,
+    const definedTypesToInline = Object.keys(histogram).filter(
+      (key) =>
+        (histogram[key].total ?? 0) === 1 &&
+        (histogram[key].directlyAsInstructionArgs ?? 0) === 1,
     );
     const inlineVisitor = new InlineDefinedTypesVisitor(definedTypesToInline);
     const newRoot = root.accept(inlineVisitor);

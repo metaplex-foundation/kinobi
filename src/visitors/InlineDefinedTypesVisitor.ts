@@ -4,14 +4,18 @@ import { BaseNodeVisitor } from './BaseNodeVisitor';
 export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
   protected definedTypes = new Map<string, nodes.DefinedTypeNode>();
 
-  constructor(definedTypes: nodes.DefinedTypeNode[]) {
+  protected typesToInline: string[] | '*';
+
+  constructor(typesToInline: string[] | '*' = '*') {
     super();
-    definedTypes.forEach((definedType) => {
-      this.definedTypes.set(definedType.name, definedType);
-    });
+    this.typesToInline = typesToInline;
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node {
+    root.definedTypes.forEach((definedType) => {
+      this.definedTypes.set(definedType.name, definedType);
+    });
+
     return new nodes.RootNode(
       root.idl,
       root.name,
@@ -27,7 +31,7 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
         return child;
       }),
       root.definedTypes
-        .filter((definedType) => !this.definedTypes.has(definedType.name))
+        .filter((definedType) => !this.shouldInline(definedType.name))
         .map((definedType) => {
           const child = definedType.accept(this);
           nodes.assertDefinedTypeNode(child);
@@ -38,12 +42,26 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
+    const shouldInline = this.shouldInline(typeDefinedLink.definedType);
     const definedType = this.definedTypes.get(typeDefinedLink.definedType);
 
-    if (definedType === undefined) {
+    if (!shouldInline) {
       return typeDefinedLink;
     }
 
+    if (definedType === undefined) {
+      throw new Error(
+        `Trying to inline missing defined type [${typeDefinedLink.definedType}]. ` +
+          `Ensure this visitor starts from the root node to access all defined types.`,
+      );
+    }
+
     return definedType.type.accept(this);
+  }
+
+  protected shouldInline(definedTypeName: string): boolean {
+    return (
+      this.typesToInline === '*' || this.typesToInline.includes(definedTypeName)
+    );
   }
 }
