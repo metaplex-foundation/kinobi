@@ -17,6 +17,8 @@ module.exports = {
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'operator-linebreak': 'off',
+    'implicit-arrow-linebreak': 'off',
+    'function-paren-newline': 'off',
   },
   ignorePatterns: ['dist/**'],
 };

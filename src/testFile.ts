@@ -6,4 +6,4 @@ import { PrintVisitor } from './visitors/PrintVisitor';
 
 const solita = new Solita(idl as Partial<Idl>);
 const printVisitor = new PrintVisitor();
-solita.visit(printVisitor);
+solita.accept(printVisitor);

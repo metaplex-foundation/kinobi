@@ -1,4 +1,5 @@
 import type { IdlType } from '../idl';
+import type { Node } from './Node';
 import { TypeArrayNode } from './TypeArrayNode';
 import { TypeDefinedLinkNode } from './TypeDefinedLinkNode';
 import { TypeEnumNode } from './TypeEnumNode';
@@ -21,6 +22,19 @@ export type TypeNode =
   | TypeStructNode
   | TypeTupleNode
   | TypeVecNode;
+
+const TYPE_NODE_CLASSES = [
+  'TypeArrayNode',
+  'TypeDefinedLinkNode',
+  'TypeEnumNode',
+  'TypeLeafNode',
+  'TypeMapNode',
+  'TypeOptionNode',
+  'TypeSetNode',
+  'TypeStructNode',
+  'TypeTupleNode',
+  'TypeVecNode',
+];
 
 function isArrayOfSize(array: any, size: number): boolean {
   return Array.isArray(array) && array.length === size;
@@ -88,3 +102,31 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Throw an error for unsupported types.
   throw new Error(`TypeNode: Unsupported type ${JSON.stringify(idlType)}`);
 };
+
+export function isTypeNode(node: Node): node is TypeNode {
+  return TYPE_NODE_CLASSES.includes(node.nodeClass);
+}
+
+export function assertTypeNode(node: Node): asserts node is TypeNode {
+  if (!isTypeNode(node)) {
+    throw new Error(`Expected TypeNode, got ${node.nodeClass}.`);
+  }
+}
+
+export function isTypeStructOrEnumNode(
+  node: Node,
+): node is TypeStructNode | TypeEnumNode {
+  return (
+    node.nodeClass === 'TypeStructNode' || node.nodeClass === 'TypeEnumNode'
+  );
+}
+
+export function assertTypeStructOrEnumNode(
+  node: Node,
+): asserts node is TypeStructNode | TypeEnumNode {
+  if (!isTypeStructOrEnumNode(node)) {
+    throw new Error(
+      `Expected TypeStructNode | TypeEnumNode, got ${node.nodeClass}.`,
+    );
+  }
+}

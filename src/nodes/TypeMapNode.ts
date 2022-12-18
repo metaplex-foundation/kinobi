@@ -1,9 +1,10 @@
 import type { IdlTypeMap } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import type { Node } from './Node';
 
 export class TypeMapNode implements Visitable {
-  readonly nodeType = 'map' as const;
+  readonly nodeClass = 'TypeMapNode' as const;
 
   constructor(
     readonly mapType: 'hashMap' | 'bTreeMap',
@@ -19,12 +20,17 @@ export class TypeMapNode implements Visitable {
     return new TypeMapNode(mapType, keyType, valueType);
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeMap(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeMap(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.keyType.visit(visitor);
-    this.valueType.visit(visitor);
+export function isTypeMapNode(node: Node): node is TypeMapNode {
+  return node.nodeClass === 'TypeMapNode';
+}
+
+export function assertTypeMapNode(node: Node): asserts node is TypeMapNode {
+  if (!isTypeMapNode(node)) {
+    throw new Error(`Expected TypeMapNode, got ${node.nodeClass}.`);
   }
 }

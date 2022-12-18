@@ -2,6 +2,7 @@ import type { IdlType, IdlTypeEnum, IdlTypeEnumField } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
+import type { Node } from './Node';
 
 export type TypeEnumNodeVariant =
   | TypeEnumNodeStructVariant
@@ -26,7 +27,7 @@ export type TypeEnumNodeEmptyVariant = {
 };
 
 export class TypeEnumNode implements Visitable {
-  readonly nodeType = 'enum' as const;
+  readonly nodeClass = 'TypeEnumNode' as const;
 
   constructor(
     readonly name: string | null,
@@ -72,17 +73,17 @@ export class TypeEnumNode implements Visitable {
     return new TypeEnumNode(name, variants);
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeEnum(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeEnum(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.variants.forEach((variant) => {
-      if (variant.kind === 'struct') {
-        variant.type.visit(visitor);
-      } else if (variant.kind === 'tuple') {
-        variant.fields.forEach((field) => field.visit(visitor));
-      }
-    });
+export function isTypeEnumNode(node: Node): node is TypeEnumNode {
+  return node.nodeClass === 'TypeEnumNode';
+}
+
+export function assertTypeEnumNode(node: Node): asserts node is TypeEnumNode {
+  if (!isTypeEnumNode(node)) {
+    throw new Error(`Expected TypeEnumNode, got ${node.nodeClass}.`);
   }
 }

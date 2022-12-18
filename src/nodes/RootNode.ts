@@ -3,8 +3,11 @@ import type { Visitable, Visitor } from '../visitors';
 import { AccountNode } from './AccountNode';
 import { DefinedTypeNode } from './DefinedTypeNode';
 import { InstructionNode } from './InstructionNode';
+import type { Node } from './Node';
 
 export class RootNode implements Visitable {
+  readonly nodeClass = 'RootNode' as const;
+
   constructor(
     readonly idl: Partial<Idl>,
     readonly name: string,
@@ -34,13 +37,17 @@ export class RootNode implements Visitable {
     );
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitRoot(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitRoot(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.accounts.forEach((account) => account.visit(visitor));
-    this.instructions.forEach((instruction) => instruction.visit(visitor));
-    this.definedTypes.forEach((type) => type.visit(visitor));
+export function isRootNode(node: Node): node is RootNode {
+  return node.nodeClass === 'RootNode';
+}
+
+export function assertRootNode(node: Node): asserts node is RootNode {
+  if (!isRootNode(node)) {
+    throw new Error(`Expected RootNode, got ${node.nodeClass}.`);
   }
 }

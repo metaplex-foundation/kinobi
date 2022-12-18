@@ -1,10 +1,13 @@
 import type { IdlDefinedType } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
-import { TypeEnumNode } from './TypeEnumNode';
+import type { Node } from './Node';
+import type { TypeEnumNode } from './TypeEnumNode';
 import { createTypeNodeFromIdl } from './TypeNode';
-import { TypeStructNode } from './TypeStructNode';
+import type { TypeStructNode } from './TypeStructNode';
 
 export class DefinedTypeNode implements Visitable {
+  readonly nodeClass = 'DefinedTypeNode' as const;
+
   constructor(
     readonly name: string,
     readonly type: TypeStructNode | TypeEnumNode,
@@ -20,11 +23,19 @@ export class DefinedTypeNode implements Visitable {
     return new DefinedTypeNode(name, type, docs);
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitDefinedType(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitDefinedType(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.type.visit(visitor);
+export function isDefinedTypeNode(node: Node): node is DefinedTypeNode {
+  return node.nodeClass === 'DefinedTypeNode';
+}
+
+export function assertDefinedTypeNode(
+  node: Node,
+): asserts node is DefinedTypeNode {
+  if (!isDefinedTypeNode(node)) {
+    throw new Error(`Expected DefinedTypeNode, got ${node.nodeClass}.`);
   }
 }

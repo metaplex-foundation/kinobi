@@ -1,4 +1,5 @@
 import type { Visitable, Visitor } from '../visitors';
+import type { Node } from './Node';
 
 export const LEAF_TYPES = [
   'string',
@@ -22,7 +23,7 @@ export const LEAF_TYPES = [
 export type LeafType = typeof LEAF_TYPES[number];
 
 export class TypeLeafNode implements Visitable {
-  readonly nodeType = 'leaf' as const;
+  readonly nodeClass = 'TypeLeafNode' as const;
 
   constructor(readonly type: LeafType) {}
 
@@ -30,7 +31,17 @@ export class TypeLeafNode implements Visitable {
     return LEAF_TYPES.includes(type as LeafType);
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeLeaf(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeLeaf(this);
+  }
+}
+
+export function isTypeLeafNode(node: Node): node is TypeLeafNode {
+  return node.nodeClass === 'TypeLeafNode';
+}
+
+export function assertTypeLeafNode(node: Node): asserts node is TypeLeafNode {
+  if (!isTypeLeafNode(node)) {
+    throw new Error(`Expected TypeLeafNode, got ${node.nodeClass}.`);
   }
 }

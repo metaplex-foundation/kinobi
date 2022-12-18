@@ -1,23 +1,23 @@
 import type * as nodes from '../nodes';
 
-export interface Visitor {
+export interface Visitor<T = void> {
   // Root.
-  visitRoot: (root: nodes.RootNode) => void;
+  visitRoot: (root: nodes.RootNode) => T;
 
   // Components.
-  visitAccount: (account: nodes.AccountNode) => void;
-  visitInstruction: (instruction: nodes.InstructionNode) => void;
-  visitDefinedType: (definedType: nodes.DefinedTypeNode) => void;
+  visitAccount: (account: nodes.AccountNode) => T;
+  visitInstruction: (instruction: nodes.InstructionNode) => T;
+  visitDefinedType: (definedType: nodes.DefinedTypeNode) => T;
 
   // Types.
-  visitTypeArray: (typeArray: nodes.TypeArrayNode) => void;
-  visitTypeDefinedLink: (typeDefinedLink: nodes.TypeDefinedLinkNode) => void;
-  visitTypeEnum: (typeEnum: nodes.TypeEnumNode) => void;
-  visitTypeLeaf: (typeLeaf: nodes.TypeLeafNode) => void;
-  visitTypeMap: (typeMap: nodes.TypeMapNode) => void;
-  visitTypeOption: (typeOption: nodes.TypeOptionNode) => void;
-  visitTypeSet: (typeSet: nodes.TypeSetNode) => void;
-  visitTypeStruct: (typeStruct: nodes.TypeStructNode) => void;
-  visitTypeTuple: (typeTuple: nodes.TypeTupleNode) => void;
-  visitTypeVec: (typeVec: nodes.TypeVecNode) => void;
+  visitTypeArray: (typeArray: nodes.TypeArrayNode) => T;
+  visitTypeDefinedLink: (typeDefinedLink: nodes.TypeDefinedLinkNode) => T;
+  visitTypeEnum: (typeEnum: nodes.TypeEnumNode) => T;
+  visitTypeLeaf: (typeLeaf: nodes.TypeLeafNode) => T;
+  visitTypeMap: (typeMap: nodes.TypeMapNode) => T;
+  visitTypeOption: (typeOption: nodes.TypeOptionNode) => T;
+  visitTypeSet: (typeSet: nodes.TypeSetNode) => T;
+  visitTypeStruct: (typeStruct: nodes.TypeStructNode) => T;
+  visitTypeTuple: (typeTuple: nodes.TypeTupleNode) => T;
+  visitTypeVec: (typeVec: nodes.TypeVecNode) => T;
 }

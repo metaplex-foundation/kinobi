@@ -1,9 +1,10 @@
 import type { IdlTypeTuple } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import type { Node } from './Node';
 
 export class TypeTupleNode implements Visitable {
-  readonly nodeType = 'tuple' as const;
+  readonly nodeClass = 'TypeTupleNode' as const;
 
   constructor(readonly itemTypes: TypeNode[]) {}
 
@@ -11,11 +12,17 @@ export class TypeTupleNode implements Visitable {
     return new TypeTupleNode(idl.tuple.map(createTypeNodeFromIdl));
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeTuple(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeTuple(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.itemTypes.forEach((type) => type.visit(visitor));
+export function isTypeTupleNode(node: Node): node is TypeTupleNode {
+  return node.nodeClass === 'TypeTupleNode';
+}
+
+export function assertTypeTupleNode(node: Node): asserts node is TypeTupleNode {
+  if (!isTypeTupleNode(node)) {
+    throw new Error(`Expected TypeTupleNode, got ${node.nodeClass}.`);
   }
 }

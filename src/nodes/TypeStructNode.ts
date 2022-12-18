@@ -1,6 +1,7 @@
 import type { IdlTypeStruct } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import type { Node } from './Node';
 
 export type TypeStructNodeField = {
   name: string;
@@ -9,7 +10,7 @@ export type TypeStructNodeField = {
 };
 
 export class TypeStructNode implements Visitable {
-  readonly nodeType = 'struct' as const;
+  readonly nodeClass = 'TypeStructNode' as const;
 
   constructor(readonly fields: TypeStructNodeField[]) {}
 
@@ -23,11 +24,19 @@ export class TypeStructNode implements Visitable {
     return new TypeStructNode(fields);
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeStruct(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeStruct(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.fields.forEach((field) => field.type.visit(visitor));
+export function isTypeStructNode(node: Node): node is TypeStructNode {
+  return node.nodeClass === 'TypeStructNode';
+}
+
+export function assertTypeStructNode(
+  node: Node,
+): asserts node is TypeStructNode {
+  if (!isTypeStructNode(node)) {
+    throw new Error(`Expected TypeStructNode, got ${node.nodeClass}.`);
   }
 }

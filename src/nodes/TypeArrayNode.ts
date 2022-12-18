@@ -1,9 +1,10 @@
 import type { IdlTypeArray } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
+import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 
 export class TypeArrayNode implements Visitable {
-  readonly nodeType = 'array' as const;
+  readonly nodeClass = 'TypeArrayNode' as const;
 
   constructor(readonly itemType: TypeNode, readonly size: number) {}
 
@@ -12,11 +13,17 @@ export class TypeArrayNode implements Visitable {
     return new TypeArrayNode(itemType, idl.array[1]);
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeArray(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeArray(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.itemType.visit(visitor);
+export function isTypeArrayNode(node: Node): node is TypeArrayNode {
+  return node.nodeClass === 'TypeArrayNode';
+}
+
+export function assertTypeArrayNode(node: Node): asserts node is TypeArrayNode {
+  if (!isTypeArrayNode(node)) {
+    throw new Error(`Expected TypeArrayNode, got ${node.nodeClass}.`);
   }
 }

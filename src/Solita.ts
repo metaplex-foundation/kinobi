@@ -9,7 +9,7 @@ export class Solita implements Visitable {
     this.rootNode = RootNode.fromIdl(idl);
   }
 
-  visit(visitor: Visitor): void {
-    return this.rootNode.visit(visitor);
+  accept<T>(visitor: Visitor<T>): T {
+    return this.rootNode.accept(visitor);
   }
 }

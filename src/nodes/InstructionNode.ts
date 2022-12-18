@@ -1,6 +1,7 @@
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
-import { TypeLeafNode } from './TypeLeafNode';
+import type { Node } from './Node';
+import type { TypeLeafNode } from './TypeLeafNode';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 
 export type InstructionNodeAccount = {
@@ -22,6 +23,8 @@ export type InstructionNodeDiscriminator = {
 };
 
 export class InstructionNode implements Visitable {
+  readonly nodeClass = 'InstructionNode' as const;
+
   constructor(
     readonly name: string,
     readonly accounts: InstructionNodeAccount[],
@@ -64,12 +67,19 @@ export class InstructionNode implements Visitable {
     );
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitInstruction(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitInstruction(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.args.forEach((arg) => arg.type.visit(visitor));
-    this.discriminator?.type.visit(visitor);
+export function isInstructionNode(node: Node): node is InstructionNode {
+  return node.nodeClass === 'InstructionNode';
+}
+
+export function assertInstructionNode(
+  node: Node,
+): asserts node is InstructionNode {
+  if (!isInstructionNode(node)) {
+    throw new Error(`Expected InstructionNode, got ${node.nodeClass}.`);
   }
 }

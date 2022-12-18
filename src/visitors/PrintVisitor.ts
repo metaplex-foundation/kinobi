@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import type * as nodes from '../nodes';
-import { BaseVisitor } from './BaseVisitor';
+import { BaseVoidVisitor } from './BaseVoidVisitor';
 
-export class PrintVisitor extends BaseVisitor {
+export class PrintVisitor extends BaseVoidVisitor {
   indent = 0;
 
   readonly separator: string;
@@ -18,14 +18,14 @@ export class PrintVisitor extends BaseVisitor {
       `[RootNode] ${root.name} (address: ${root.address}${origin})`,
     );
     this.indent += 1;
-    root.visitChildren(this);
+    super.visitRoot(root);
     this.indent -= 1;
   }
 
   visitAccount(account: nodes.AccountNode): void {
     this.printIndentedText(`[AccountNode] ${account.name}`);
     this.indent += 1;
-    account.visitChildren(this);
+    super.visitAccount(account);
     this.indent -= 1;
   }
 
@@ -54,7 +54,7 @@ export class PrintVisitor extends BaseVisitor {
     instruction.args.forEach((arg) => {
       this.printIndentedText(`${arg.name}:`);
       this.indent += 1;
-      arg.type.visit(this);
+      arg.type.accept(this);
       this.indent -= 1;
     });
     this.indent -= 1;
@@ -64,14 +64,14 @@ export class PrintVisitor extends BaseVisitor {
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
     this.printIndentedText(`[DefinedTypeNode] ${definedType.name}`);
     this.indent += 1;
-    definedType.visitChildren(this);
+    super.visitDefinedType(definedType);
     this.indent -= 1;
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): void {
     this.printIndentedText(`[TypeArrayNode] Size: ${typeArray.size}`);
     this.indent += 1;
-    typeArray.visitChildren(this);
+    super.visitTypeArray(typeArray);
     this.indent -= 1;
   }
 
@@ -92,11 +92,11 @@ export class PrintVisitor extends BaseVisitor {
       this.printIndentedText(`${variant.name}${variantSuffix}`);
       if (variant.kind === 'struct') {
         this.indent += 1;
-        variant.type.visit(this);
+        variant.type.accept(this);
         this.indent -= 1;
       } else if (variant.kind === 'tuple') {
         this.indent += 1;
-        variant.fields.forEach((field) => field.visit(this));
+        variant.fields.forEach((field) => field.accept(this));
         this.indent -= 1;
       }
       this.indent -= 1;
@@ -112,11 +112,11 @@ export class PrintVisitor extends BaseVisitor {
     this.indent += 1;
     this.printIndentedText('keys:');
     this.indent += 1;
-    typeMap.keyType.visit(this);
+    typeMap.keyType.accept(this);
     this.indent -= 1;
     this.printIndentedText('values:');
     this.indent += 1;
-    typeMap.valueType.visit(this);
+    typeMap.valueType.accept(this);
     this.indent -= 1;
     this.indent -= 1;
   }
@@ -124,14 +124,14 @@ export class PrintVisitor extends BaseVisitor {
   visitTypeOption(typeOption: nodes.TypeOptionNode): void {
     this.printIndentedText('[TypeOptionNode]');
     this.indent += 1;
-    typeOption.visitChildren(this);
+    super.visitTypeOption(typeOption);
     this.indent -= 1;
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): void {
     this.printIndentedText(`[TypeSetNode] ${typeSet.setType}`);
     this.indent += 1;
-    typeSet.visitChildren(this);
+    super.visitTypeSet(typeSet);
     this.indent -= 1;
   }
 
@@ -141,7 +141,7 @@ export class PrintVisitor extends BaseVisitor {
     typeStruct.fields.forEach((field) => {
       this.printIndentedText(`${field.name}:`);
       this.indent += 1;
-      field.type.visit(this);
+      field.type.accept(this);
       this.indent -= 1;
     });
     this.indent -= 1;
@@ -150,14 +150,14 @@ export class PrintVisitor extends BaseVisitor {
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): void {
     this.printIndentedText('[TypeTupleNode]');
     this.indent += 1;
-    typeTuple.visitChildren(this);
+    super.visitTypeTuple(typeTuple);
     this.indent -= 1;
   }
 
   visitTypeVec(typeVec: nodes.TypeVecNode): void {
     this.printIndentedText('[TypeVecNode]');
     this.indent += 1;
-    typeVec.visitChildren(this);
+    super.visitTypeVec(typeVec);
     this.indent -= 1;
   }
 

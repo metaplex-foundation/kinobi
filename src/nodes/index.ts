@@ -1,6 +1,7 @@
 export * from './AccountNode';
 export * from './DefinedTypeNode';
 export * from './InstructionNode';
+export * from './Node';
 export * from './RootNode';
 export * from './TypeArrayNode';
 export * from './TypeDefinedLinkNode';

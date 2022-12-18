@@ -1,5 +1,5 @@
 import type { Visitor } from './Visitor';
 
 export interface Visitable {
-  visit(visitor: Visitor): void;
+  accept<T>(visitor: Visitor<T>): T;
 }

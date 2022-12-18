@@ -1,9 +1,10 @@
 import type { IdlTypeVec } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import type { Node } from './Node';
 
 export class TypeVecNode implements Visitable {
-  readonly nodeType = 'vec' as const;
+  readonly nodeClass = 'TypeVecNode' as const;
 
   constructor(readonly itemType: TypeNode) {}
 
@@ -11,11 +12,17 @@ export class TypeVecNode implements Visitable {
     return new TypeVecNode(createTypeNodeFromIdl(idl.vec));
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeVec(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeVec(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.itemType.visit(visitor);
+export function isTypeVecNode(node: Node): node is TypeVecNode {
+  return node.nodeClass === 'TypeVecNode';
+}
+
+export function assertTypeVecNode(node: Node): asserts node is TypeVecNode {
+  if (!isTypeVecNode(node)) {
+    throw new Error(`Expected TypeVecNode, got ${node.nodeClass}.`);
   }
 }

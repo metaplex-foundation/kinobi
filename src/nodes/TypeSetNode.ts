@@ -1,9 +1,10 @@
 import type { IdlTypeSet } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import type { Node } from './Node';
 
 export class TypeSetNode implements Visitable {
-  readonly nodeType = 'set' as const;
+  readonly nodeClass = 'TypeSetNode' as const;
 
   constructor(
     readonly setType: 'hashSet' | 'bTreeSet',
@@ -16,11 +17,17 @@ export class TypeSetNode implements Visitable {
     return new TypeSetNode(setType, createTypeNodeFromIdl(idlType));
   }
 
-  visit(visitor: Visitor): void {
-    visitor.visitTypeSet(this);
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeSet(this);
   }
+}
 
-  visitChildren(visitor: Visitor): void {
-    this.type.visit(visitor);
+export function isTypeSetNode(node: Node): node is TypeSetNode {
+  return node.nodeClass === 'TypeSetNode';
+}
+
+export function assertTypeSetNode(node: Node): asserts node is TypeSetNode {
+  if (!isTypeSetNode(node)) {
+    throw new Error(`Expected TypeSetNode, got ${node.nodeClass}.`);
   }
 }
