@@ -18,7 +18,7 @@ console.log('AFTER VISITORS');
 console.log('---------');
 console.log('\n');
 
-solita.updateRootNode(new TransformU8ArraysToBytesVisitor());
-solita.updateRootNode(new InlineDefinedTypesForInstructionArgsVisitor());
-solita.updateRootNode(new InlineStructsForInstructionArgsVisitor());
+solita.update(new TransformU8ArraysToBytesVisitor());
+solita.update(new InlineDefinedTypesForInstructionArgsVisitor());
+solita.update(new InlineStructsForInstructionArgsVisitor());
 solita.accept(new PrintVisitor());

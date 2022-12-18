@@ -13,7 +13,7 @@ export class Solita implements Visitable {
     return this.rootNode.accept(visitor);
   }
 
-  updateRootNode(visitor: Visitor<Node>): Solita {
+  update(visitor: Visitor<Node>): Solita {
     const newRoot = this.rootNode.accept(visitor);
     assertRootNode(newRoot);
     this.rootNode = newRoot;
