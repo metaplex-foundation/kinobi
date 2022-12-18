@@ -6,7 +6,7 @@ import type { Node } from './Node';
 export type TypeStructNodeField = {
   name: string;
   type: TypeNode;
-  docs?: string[];
+  docs: string[];
 };
 
 export class TypeStructNode implements Visitable {
