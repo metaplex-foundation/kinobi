@@ -30,6 +30,18 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       this.resolveTemplate('rootIndex.stub', context),
     );
 
+    // Account index.
+    createFile(
+      `${this.path}/accounts/index.ts`,
+      this.resolveTemplate('accountsIndex.stub', context),
+    );
+
+    // Instructions index.
+    createFile(
+      `${this.path}/instructions/index.ts`,
+      this.resolveTemplate('instructionsIndex.stub', context),
+    );
+
     // Types index.
     createFile(
       `${this.path}/types/index.ts`,

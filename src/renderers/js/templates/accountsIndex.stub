@@ -1,0 +1,3 @@
+{% for account in accounts | sort(false, false, 'name') %}
+export * from './{{ account.name }}';
+{% endfor %}

@@ -1,0 +1,3 @@
+{% for instruction in instructions | sort(false, false, 'name') %}
+export * from './{{ instruction.name }}';
+{% endfor %}
