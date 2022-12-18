@@ -1,4 +1,4 @@
-import idl from './src/idl.json';
+import idl from './idl.json';
 import {
   RenderJavaScriptVisitor,
   Solita,

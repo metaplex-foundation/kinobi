@@ -8,8 +8,8 @@
     "build:stub": "copyfiles -u 1 src/**/*.stub dist/",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
-    "test:cjs": "pnpm build && node ./testFile.cjs",
-    "test:mjs": "pnpm build && node ./testFile.mjs"
+    "test:cjs": "pnpm build && node ./tests/testFile.cjs",
+    "test:mjs": "pnpm build && node ./tests/testFile.mjs"
   },
   "keywords": [],
   "author": "",

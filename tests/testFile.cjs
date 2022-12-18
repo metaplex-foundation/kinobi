@@ -1,4 +1,4 @@
-const idl = require('./src/idl.json');
+const idl = require('./idl.json');
 const {
   RenderJavaScriptVisitor,
   Solita,
@@ -7,7 +7,7 @@ const {
   InlineStructsForInstructionArgsVisitor,
   PrintVisitor,
   TransformU8ArraysToBytesVisitor,
-} = require('./dist/index.js');
+} = require('../dist/index.js');
 
 const solita = new Solita(idl);
 solita.accept(new PrintVisitor());
