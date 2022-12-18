@@ -7,5 +7,9 @@ import { PrintVisitor, TransformU8ArraysToBytesVisitor } from './visitors';
 const solita = new Solita(idl as Partial<Idl>);
 solita.accept(new PrintVisitor());
 
-const solitaWithBytes = solita.accept(new TransformU8ArraysToBytesVisitor());
-solitaWithBytes.accept(new PrintVisitor());
+console.log('---------');
+console.log('AFTER VISITOR');
+console.log('---------');
+
+solita.updateRootNode(new TransformU8ArraysToBytesVisitor());
+solita.accept(new PrintVisitor());

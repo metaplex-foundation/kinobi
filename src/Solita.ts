@@ -1,9 +1,9 @@
 import type { Idl } from './idl';
-import { RootNode } from './nodes';
+import { assertRootNode, Node, RootNode } from './nodes';
 import type { Visitable, Visitor } from './visitors';
 
 export class Solita implements Visitable {
-  readonly rootNode: RootNode;
+  public rootNode: RootNode;
 
   constructor(idl: Partial<Idl>) {
     this.rootNode = RootNode.fromIdl(idl);
@@ -11,5 +11,12 @@ export class Solita implements Visitable {
 
   accept<T>(visitor: Visitor<T>): T {
     return this.rootNode.accept(visitor);
+  }
+
+  updateRootNode(visitor: Visitor<Node>): Solita {
+    const newRoot = this.rootNode.accept(visitor);
+    assertRootNode(newRoot);
+    this.rootNode = newRoot;
+    return this;
   }
 }
