@@ -2,12 +2,22 @@ import * as nodes from '../nodes';
 import { Visitor } from './Visitor';
 
 export type DefinedTypeHistogram = {
-  [key: string]: number;
+  [key: string]: {
+    total: number;
+    inAccounts: number;
+    inDefinedTypes: number;
+    inInstructionArgs: number;
+    directlyAsInstructionArgs: number;
+  };
 };
 
 export class GetDefinedTypeHistogramVisitor
   implements Visitor<DefinedTypeHistogram>
 {
+  private mode: 'account' | 'instruction' | 'definedType' | null = null;
+
+  private stackLevel = 0;
+
   visitRoot(root: nodes.RootNode): DefinedTypeHistogram {
     return this.mergeHistograms([
       ...root.accounts.map((account) => account.accept(this)),
@@ -17,34 +27,63 @@ export class GetDefinedTypeHistogramVisitor
   }
 
   visitAccount(account: nodes.AccountNode): DefinedTypeHistogram {
-    return account.type.accept(this);
+    this.mode = 'account';
+    this.stackLevel = 0;
+    const histogram = account.type.accept(this);
+    this.mode = null;
+    return histogram;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): DefinedTypeHistogram {
-    return this.mergeHistograms([
-      ...instruction.args.map((arg) => arg.type.accept(this)),
-      ...(instruction.discriminator
-        ? [instruction.discriminator.type.accept(this)]
-        : []),
-    ]);
+    this.mode = 'instruction';
+    this.stackLevel = 0;
+    let histogram = this.mergeHistograms(
+      instruction.args.map((arg) => arg.type.accept(this)),
+    );
+    this.mode = null;
+    if (instruction.discriminator) {
+      histogram = this.mergeHistograms([
+        histogram,
+        instruction.discriminator.type.accept(this),
+      ]);
+    }
+    return histogram;
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): DefinedTypeHistogram {
-    return definedType.type.accept(this);
+    this.mode = 'definedType';
+    this.stackLevel = 0;
+    const histogram = definedType.type.accept(this);
+    this.mode = null;
+    return histogram;
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): DefinedTypeHistogram {
-    return typeArray.itemType.accept(this);
+    this.stackLevel += 1;
+    const histogram = typeArray.itemType.accept(this);
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode,
   ): DefinedTypeHistogram {
-    return { [typeDefinedLink.definedType]: 1 };
+    return {
+      [typeDefinedLink.definedType]: {
+        total: 1,
+        inAccounts: Number(this.mode === 'account'),
+        inDefinedTypes: Number(this.mode === 'definedType'),
+        inInstructionArgs: Number(this.mode === 'instruction'),
+        directlyAsInstructionArgs: Number(
+          this.mode === 'instruction' && this.stackLevel <= 2,
+        ),
+      },
+    };
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): DefinedTypeHistogram {
-    return this.mergeHistograms(
+    this.stackLevel += 1;
+    const histogram = this.mergeHistograms(
       typeEnum.variants.map((variant) => {
         if (variant.kind === 'struct') {
           return variant.type.accept(this);
@@ -57,6 +96,8 @@ export class GetDefinedTypeHistogramVisitor
         return {};
       }),
     );
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   visitTypeLeaf(): DefinedTypeHistogram {
@@ -64,34 +105,52 @@ export class GetDefinedTypeHistogramVisitor
   }
 
   visitTypeMap(typeMap: nodes.TypeMapNode): DefinedTypeHistogram {
-    return this.mergeHistograms([
+    this.stackLevel += 1;
+    const histogram = this.mergeHistograms([
       typeMap.keyType.accept(this),
       typeMap.valueType.accept(this),
     ]);
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): DefinedTypeHistogram {
-    return typeOption.type.accept(this);
+    this.stackLevel += 1;
+    const histogram = typeOption.type.accept(this);
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): DefinedTypeHistogram {
-    return typeSet.type.accept(this);
+    this.stackLevel += 1;
+    const histogram = typeSet.type.accept(this);
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): DefinedTypeHistogram {
-    return this.mergeHistograms(
+    this.stackLevel += 1;
+    const histogram = this.mergeHistograms(
       typeStruct.fields.map((field) => field.type.accept(this)),
     );
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): DefinedTypeHistogram {
-    return this.mergeHistograms(
+    this.stackLevel += 1;
+    const histogram = this.mergeHistograms(
       typeTuple.itemTypes.map((type) => type.accept(this)),
     );
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   visitTypeVec(typeVec: nodes.TypeVecNode): DefinedTypeHistogram {
-    return typeVec.itemType.accept(this);
+    this.stackLevel += 1;
+    const histogram = typeVec.itemType.accept(this);
+    this.stackLevel -= 1;
+    return histogram;
   }
 
   protected mergeHistograms(
@@ -104,7 +163,12 @@ export class GetDefinedTypeHistogramVisitor
         if (result[key] === undefined) {
           result[key] = histogram[key];
         } else {
-          result[key] += histogram[key];
+          result[key].total += histogram[key].total;
+          result[key].inAccounts += histogram[key].inAccounts;
+          result[key].inDefinedTypes += histogram[key].inAccounts;
+          result[key].inInstructionArgs += histogram[key].inInstructionArgs;
+          result[key].directlyAsInstructionArgs +=
+            histogram[key].directlyAsInstructionArgs;
         }
       });
     });

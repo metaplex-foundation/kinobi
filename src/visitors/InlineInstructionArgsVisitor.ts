@@ -9,8 +9,8 @@ export class InlineInstructionArgsVisitor extends BaseRootVisitor {
     const histogram = root.accept(new GetDefinedTypeHistogramVisitor());
     const definedTypesToInline = root.definedTypes.filter(
       (definedType) =>
-        (histogram[definedType.name] ?? 0) === 1 &&
-        definedType.name.endsWith('Args'),
+        (histogram[definedType.name].total ?? 0) === 1 &&
+        (histogram[definedType.name].directlyAsInstructionArgs ?? 0) === 1,
     );
 
     const newRoot = root.accept(
