@@ -3,7 +3,8 @@ import type { Idl } from './idl';
 import idl from './idl.json';
 import { Solita } from './Solita';
 import {
-  InlineDefinedTypesForDirectInstructionArgsVisitor,
+  InlineDefinedTypesForInstructionArgsVisitor,
+  InlineStructsForInstructionArgsVisitor,
   PrintVisitor,
   TransformU8ArraysToBytesVisitor,
 } from './visitors';
@@ -18,5 +19,6 @@ console.log('---------');
 console.log('\n');
 
 solita.updateRootNode(new TransformU8ArraysToBytesVisitor());
-solita.updateRootNode(new InlineDefinedTypesForDirectInstructionArgsVisitor());
+solita.updateRootNode(new InlineDefinedTypesForInstructionArgsVisitor());
+solita.updateRootNode(new InlineStructsForInstructionArgsVisitor());
 solita.accept(new PrintVisitor());

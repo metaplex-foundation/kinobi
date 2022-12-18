@@ -4,7 +4,7 @@ import { BaseRootVisitor } from './BaseRootVisitor';
 import { GetDefinedTypeHistogramVisitor } from './GetDefinedTypeHistogramVisitor';
 import { InlineDefinedTypesVisitor } from './InlineDefinedTypesVisitor';
 
-export class InlineDefinedTypesForDirectInstructionArgsVisitor extends BaseRootVisitor {
+export class InlineDefinedTypesForInstructionArgsVisitor extends BaseRootVisitor {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     const histogram = root.accept(new GetDefinedTypeHistogramVisitor());
     const definedTypesToInline = root.definedTypes.filter(
