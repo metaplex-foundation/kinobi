@@ -12,7 +12,6 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node {
-    // TODO: remove defined types from root.
     return new nodes.RootNode(
       root.idl,
       root.name,

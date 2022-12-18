@@ -67,7 +67,6 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return new nodes.TypeArrayNode(type, typeArray.size);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
     return typeDefinedLink;
   }
@@ -94,7 +93,6 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return new nodes.TypeEnumNode(typeEnum.name, variants);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node {
     return typeLeaf;
   }

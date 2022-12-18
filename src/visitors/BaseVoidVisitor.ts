@@ -25,7 +25,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     typeArray.itemType.accept(this);
   }
 
-  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): void {
     //
   }
@@ -40,7 +40,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): void {
     //
   }
