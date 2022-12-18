@@ -1,4 +1,3 @@
-import idl from './idl.json';
 import {
   RenderJavaScriptVisitor,
   Solita,
@@ -7,9 +6,9 @@ import {
   InlineStructsForInstructionArgsVisitor,
   PrintVisitor,
   TransformU8ArraysToBytesVisitor,
-} from './dist/index.js';
+} from '../dist/index.js';
 
-const solita = new Solita(idl);
+const solita = new Solita('./tests/idl.json');
 solita.accept(new PrintVisitor());
 console.log('\n', '--- AFTER VISITORS ---', '\n');
 solita.update(new TransformU8ArraysToBytesVisitor());

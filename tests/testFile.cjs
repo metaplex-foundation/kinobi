@@ -1,4 +1,3 @@
-const idl = require('./idl.json');
 const {
   RenderJavaScriptVisitor,
   Solita,
@@ -9,7 +8,7 @@ const {
   TransformU8ArraysToBytesVisitor,
 } = require('../dist/index.js');
 
-const solita = new Solita(idl);
+const solita = new Solita(__dirname + '/idl.json');
 solita.accept(new PrintVisitor());
 console.log('\n', '--- AFTER VISITORS ---', '\n');
 solita.update(new TransformU8ArraysToBytesVisitor());

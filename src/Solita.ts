@@ -1,3 +1,4 @@
+import fs from 'fs';
 import type { Idl } from './idl';
 import { assertRootNode, Node, RootNode } from './nodes';
 import type { Visitable, Visitor } from './visitors';
@@ -5,8 +6,12 @@ import type { Visitable, Visitor } from './visitors';
 export class Solita implements Visitable {
   public rootNode: RootNode;
 
-  constructor(idl: Partial<Idl>) {
-    this.rootNode = RootNode.fromIdl(idl);
+  constructor(idl: string | Partial<Idl>) {
+    const parsedIdl: Partial<Idl> =
+      typeof idl === 'string'
+        ? (JSON.parse(fs.readFileSync(idl, 'utf-8')) as Partial<Idl>)
+        : idl;
+    this.rootNode = RootNode.fromIdl(parsedIdl);
   }
 
   accept<T>(visitor: Visitor<T>): T {
