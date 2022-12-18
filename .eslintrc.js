@@ -3,7 +3,7 @@ module.exports = {
     browser: false,
     es2021: true,
   },
-  extends: ['airbnb-base', 'airbnb-typescript/base'],
+  extends: ['airbnb-base', 'airbnb-typescript/base', 'prettier'],
   plugins: ['prettier'],
   overrides: [],
   parserOptions: {
@@ -12,13 +12,8 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
-    indent: 'off',
-    '@typescript-eslint/indent': 'off',
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
-    'operator-linebreak': 'off',
-    'implicit-arrow-linebreak': 'off',
-    'function-paren-newline': 'off',
   },
   ignorePatterns: ['dist/**'],
 };
