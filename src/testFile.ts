@@ -2,8 +2,10 @@
 import type { Idl } from './idl';
 import idl from './idl.json';
 import { Solita } from './Solita';
-import { PrintVisitor } from './visitors/PrintVisitor';
+import { PrintVisitor, TransformU8ArraysToBytesVisitor } from './visitors';
 
 const solita = new Solita(idl as Partial<Idl>);
-const printVisitor = new PrintVisitor();
-solita.accept(printVisitor);
+solita.accept(new PrintVisitor());
+
+const solitaWithBytes = solita.accept(new TransformU8ArraysToBytesVisitor());
+solitaWithBytes.accept(new PrintVisitor());
