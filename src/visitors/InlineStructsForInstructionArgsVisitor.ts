@@ -25,7 +25,9 @@ export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
       [],
     );
 
-    const hasConflictingNames = false;
+    const inlinedArgsNames = inlinedArgs.map((arg) => arg.name);
+    const hasConflictingNames =
+      new Set(inlinedArgsNames).size !== inlinedArgsNames.length;
 
     return new nodes.InstructionNode(
       instruction.name,
