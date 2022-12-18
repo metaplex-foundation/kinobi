@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/node': ^18.11.17
+  '@types/nunjucks': ^3.2.1
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.46.1
   eslint: ^8.0.1
@@ -19,6 +20,7 @@ dependencies:
 
 devDependencies:
   '@types/node': 18.11.17
+  '@types/nunjucks': 3.2.1
   '@typescript-eslint/eslint-plugin': 5.46.1_imrg37k3svwu377c6q7gkarwmi
   '@typescript-eslint/parser': 5.46.1_ha6vam6werchizxrnqvarmz2zu
   eslint: 8.29.0
@@ -100,6 +102,10 @@ packages:
 
   /@types/node/18.11.17:
     resolution: {integrity: sha512-HJSUJmni4BeDHhfzn6nF0sVmd1SMezP7/4F0Lq+aXzmp2xm9O7WXrUtHW/CHlYVtZUbByEvWidHqRtcJXGF2Ng==}
+    dev: true
+
+  /@types/nunjucks/3.2.1:
+    resolution: {integrity: sha512-hUh5HIC7peH+0MvlYU5KM2RydWxG1mBceivHsQGwlelU9zlczLICyJmjMwgjkI3m0+N50n46GVHkw35lIim6LQ==}
     dev: true
 
   /@types/semver/7.3.13:
