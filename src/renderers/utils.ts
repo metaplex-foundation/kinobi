@@ -1,13 +1,27 @@
 import fs from 'fs';
+import nunjucks from 'nunjucks';
 
-export function createDirectory(path: string): void {
+export const createDirectory = (path: string): void => {
   fs.mkdirSync(path, { recursive: true });
-}
+};
 
-export function createFile(path: string, content: string): void {
+export const createFile = (path: string, content: string): void => {
   const directory = path.substring(0, path.lastIndexOf('/'));
   if (!fs.existsSync(directory)) {
     createDirectory(directory);
   }
   fs.writeFileSync(path, content);
-}
+};
+
+export const resolveTemplate = (path: string, context?: object): string =>
+  nunjucks.render(`${__dirname}/${path}`, context);
+
+export type ResolveTemplateFunction = (
+  path: string,
+  context?: object,
+) => string;
+
+export const resolveTemplateInsideDir =
+  (directory: string) =>
+  (template: string, context?: object): string =>
+    resolveTemplate(`${directory}/${template}`, context);
