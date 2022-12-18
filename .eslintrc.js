@@ -16,5 +16,5 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
   },
-  ignorePatterns: ['dist/**'],
+  ignorePatterns: ['dist/**', 'test**'],
 };
