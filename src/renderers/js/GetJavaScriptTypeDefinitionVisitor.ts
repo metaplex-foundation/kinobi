@@ -109,7 +109,7 @@ export class GetJavaScriptTypeDefinitionVisitor
     const mergedVariants = this.mergeTypeDefinitions(inlinedVariants);
     return {
       ...mergedVariants,
-      type: variantNames.join(' | '),
+      type: variantNames.map((name) => typeEnum.name + name).join(' | '),
       inlinedTypes: [
         ...mergedVariants.inlinedTypes,
         ...inlinedVariants.map((variant) => variant.type),
