@@ -17,6 +17,7 @@
   "devDependencies": {
     "@types/node": "^18.11.17",
     "@types/nunjucks": "^3.2.1",
+    "@types/prettier": "^2.7.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.46.1",
     "copyfiles": "^2.4.1",
@@ -25,11 +26,11 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.1",
     "rimraf": "^3.0.2",
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "nunjucks": "^3.2.3"
+    "nunjucks": "^3.2.3",
+    "prettier": "^2.8.1"
   }
 }

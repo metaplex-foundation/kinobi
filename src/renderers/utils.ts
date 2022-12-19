@@ -25,13 +25,3 @@ export const resolveTemplate = (
   });
   return env.render(`${__dirname}/${path}`, context);
 };
-
-export type ResolveTemplateFunction = (
-  path: string,
-  context?: object,
-) => string;
-
-export const resolveTemplateInsideDir =
-  (directory: string) =>
-  (template: string, context?: object): string =>
-    resolveTemplate(`${directory}/${template}`, context);

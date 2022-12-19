@@ -1,20 +1,29 @@
+import type { ConfigureOptions } from 'nunjucks';
+import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
 import { BaseVoidVisitor } from '../../visitors';
-import {
-  createFile,
-  ResolveTemplateFunction,
-  resolveTemplateInsideDir,
-} from '../utils';
+import { createFile, resolveTemplate } from '../utils';
 import { GetJavaScriptTypeDefinitionVisitor } from './GetJavaScriptTypeDefinitionVisitor';
 
+const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
+  semi: true,
+  singleQuote: true,
+  trailingComma: 'es5',
+  useTabs: false,
+  tabWidth: 2,
+  arrowParens: 'always',
+  printWidth: 80,
+  parser: 'typescript',
+};
+
 export type RenderJavaScriptOptions = {
-  //
+  prettier?: PrettierOptions;
 };
 
 export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   readonly typeDefinitionVisitor: GetJavaScriptTypeDefinitionVisitor;
 
-  readonly resolveTemplate: ResolveTemplateFunction;
+  readonly prettierOptions: PrettierOptions;
 
   constructor(
     readonly path: string,
@@ -22,7 +31,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   ) {
     super();
     this.typeDefinitionVisitor = new GetJavaScriptTypeDefinitionVisitor();
-    this.resolveTemplate = resolveTemplateInsideDir('js/templates');
+    this.prettierOptions = { ...DEFAULT_PRETTIER_OPTIONS, ...options.prettier };
   }
 
   visitRoot(root: nodes.RootNode): void {
@@ -63,6 +72,17 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     createFile(
       `${this.path}/types/${definedType.name}.ts`,
       this.resolveTemplate('definedTypesPage.stub', context),
+    );
+  }
+
+  protected resolveTemplate(
+    path: string,
+    context?: object,
+    options?: ConfigureOptions,
+  ): string {
+    return formatCode(
+      resolveTemplate(`js/templates/${path}`, context, options),
+      this.prettierOptions,
     );
   }
 }

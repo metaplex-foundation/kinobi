@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@types/node': ^18.11.17
   '@types/nunjucks': ^3.2.1
+  '@types/prettier': ^2.7.1
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.46.1
   copyfiles: ^2.4.1
@@ -18,10 +19,12 @@ specifiers:
 
 dependencies:
   nunjucks: 3.2.3
+  prettier: 2.8.1
 
 devDependencies:
   '@types/node': 18.11.17
   '@types/nunjucks': 3.2.1
+  '@types/prettier': 2.7.1
   '@typescript-eslint/eslint-plugin': 5.46.1_imrg37k3svwu377c6q7gkarwmi
   '@typescript-eslint/parser': 5.46.1_ha6vam6werchizxrnqvarmz2zu
   copyfiles: 2.4.1
@@ -30,7 +33,6 @@ devDependencies:
   eslint-config-prettier: 8.5.0_eslint@8.29.0
   eslint-plugin-import: 2.26.0_z7hwuz3w5sq2sbhy7d4iqrnsvq
   eslint-plugin-prettier: 4.2.1_5dgjrgoi64tgrv3zzn3walur3u
-  prettier: 2.8.1
   rimraf: 3.0.2
   typescript: 4.9.4
 
@@ -108,6 +110,10 @@ packages:
 
   /@types/nunjucks/3.2.1:
     resolution: {integrity: sha512-hUh5HIC7peH+0MvlYU5KM2RydWxG1mBceivHsQGwlelU9zlczLICyJmjMwgjkI3m0+N50n46GVHkw35lIim6LQ==}
+    dev: true
+
+  /@types/prettier/2.7.1:
+    resolution: {integrity: sha512-ri0UmynRRvZiiUJdiz38MmIblKK+oH30MztdBVR95dv/Ubw6neWSb8u1XpRb72L4qsZOhz+L+z9JD40SJmfWow==}
     dev: true
 
   /@types/semver/7.3.13:
@@ -1379,7 +1385,6 @@ packages:
     resolution: {integrity: sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-    dev: true
 
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
