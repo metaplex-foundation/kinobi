@@ -57,6 +57,12 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
-    console.log(definedType.accept(this.typeDefinitionVisitor));
+    const typeDefinition = definedType.accept(this.typeDefinitionVisitor);
+    const context = { ...definedType, typeDefinition };
+
+    createFile(
+      `${this.path}/types/${definedType.name}.ts`,
+      this.resolveTemplate('definedTypesPage.stub', context),
+    );
   }
 }

@@ -1,0 +1,12 @@
+{% if docs.length > 0 %}
+/**
+{% for doc in docs %}
+ * {{ doc }}
+{% endfor %}
+ */
+{% endif %}
+{% if typeDefinition.isEnum %}
+export enum {{ name }} {{ typeDefinition.type }};
+{% else %}
+export type {{ name }} = {{ typeDefinition.type }};
+{% endif %}
