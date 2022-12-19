@@ -12,12 +12,11 @@ export type JavaScriptTypeDefinition = {
 export class GetJavaScriptTypeDefinitionVisitor
   implements Visitor<JavaScriptTypeDefinition>
 {
-  visitRoot(root: nodes.RootNode): JavaScriptTypeDefinition {
-    return this.mergeRootTypeDefinitions([
-      ...root.accounts.map((account) => account.accept(this)),
-      ...root.instructions.map((ix) => ix.accept(this)),
-      ...root.definedTypes.map((type) => type.accept(this)),
-    ]);
+  visitRoot(): JavaScriptTypeDefinition {
+    throw new Error(
+      'Cannot get type definition for root node. ' +
+        'Please select a child node.',
+    );
   }
 
   visitAccount(account: nodes.AccountNode): JavaScriptTypeDefinition {
@@ -218,27 +217,6 @@ export class GetJavaScriptTypeDefinitionVisitor
       ),
       coreImports: this.mergeSets(typeDefinitions.map((td) => td.coreImports)),
       inlinedTypes: typeDefinitions.flatMap((td) => td.inlinedTypes),
-    };
-  }
-
-  /**
-   * For debugging purposes.
-   * @deprecated
-   */
-  protected mergeRootTypeDefinitions(
-    typeDefinitions: JavaScriptTypeDefinition[],
-  ): JavaScriptTypeDefinition {
-    return {
-      type: '',
-      isEnum: false,
-      definedTypeImports: this.mergeSets(
-        typeDefinitions.map((td) => td.definedTypeImports),
-      ),
-      coreImports: this.mergeSets(typeDefinitions.map((td) => td.coreImports)),
-      inlinedTypes: typeDefinitions.flatMap((td) => [
-        td.type,
-        ...td.inlinedTypes,
-      ]),
     };
   }
 }

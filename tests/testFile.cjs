@@ -18,7 +18,4 @@ solita.update(new InlineDefinedTypesVisitor(['Payload', 'SeedsVec']));
 solita.update(new InlineDefinedTypesForInstructionArgsVisitor());
 solita.update(new InlineStructsForInstructionArgsVisitor());
 solita.accept(new PrintVisitor());
-console.log('\n', '--- TYPES ---', '\n');
-const types = solita.accept(new GetJavaScriptTypeDefinitionVisitor());
-console.log(types);
 solita.accept(new RenderJavaScriptVisitor('./generated'));
