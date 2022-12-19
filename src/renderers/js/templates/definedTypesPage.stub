@@ -1,8 +1,12 @@
-{% if typeDefinition.coreImports.length > 0 %}
-import { {{ typeDefinition.coreImports | join(', ') }} } from '@metaplex-foundation/js-core';
+{% if typeDefinition.imports.size > 0 %}
+{% for importKey, importValues in typeDefinition.imports %}
+{% if importKey === 'core' %}
+{% set importKey = "@metaplex-foundation/js" %}
+{% else %}
+{% set importKey = "." %}
 {% endif %}
-{% if typeDefinition.definedTypeImports.length > 0 %}
-import { {{ typeDefinition.definedTypeImports | join(', ') }} } from '.';
+import { {{ importValues | join(', ') }} } from '{{ importKey }}';
+{% endfor %}
 {% endif %}
 
 {% if docs.length > 0 %}
