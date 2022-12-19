@@ -1,8 +1,9 @@
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
-import { InstructionArgsNode } from './InstructionArgsNode';
-import { InstructionDiscriminatorNode } from './InstructionDiscriminatorNode';
 import type { Node } from './Node';
+import { assertTypeLeafNode, TypeLeafNode } from './TypeLeafNode';
+import { createTypeNodeFromIdl } from './TypeNode';
+import { TypeStructNode } from './TypeStructNode';
 
 export type InstructionNodeAccount = {
   name: string;
@@ -12,19 +13,23 @@ export type InstructionNodeAccount = {
   description: string;
 };
 
+export type InstructionNodeDiscriminator = {
+  type: TypeLeafNode;
+  value: number;
+};
+
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
 
   constructor(
     readonly name: string,
     readonly accounts: InstructionNodeAccount[],
-    readonly args: InstructionArgsNode,
-    readonly discriminator: InstructionDiscriminatorNode | null = null,
+    readonly args: TypeStructNode,
+    readonly discriminator: InstructionNodeDiscriminator | null = null,
     readonly defaultOptionalAccounts = false,
   ) {}
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
-    const name = idl.name ?? '';
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => ({
         name: account.name ?? '',
@@ -34,14 +39,21 @@ export class InstructionNode implements Visitable {
         description: account.desc ?? '',
       }),
     );
+    let discriminator: InstructionNodeDiscriminator | null = null;
+    if (idl.discriminant) {
+      const discriminatorType = createTypeNodeFromIdl(idl.discriminant.type);
+      assertTypeLeafNode(discriminatorType);
+      discriminator = {
+        type: discriminatorType,
+        value: idl.discriminant.value,
+      };
+    }
 
     return new InstructionNode(
-      name,
+      idl.name ?? '',
       accounts,
-      InstructionArgsNode.fromIdl(idl.args ?? []),
-      idl.discriminant
-        ? InstructionDiscriminatorNode.fromIdl(idl.discriminant)
-        : null,
+      TypeStructNode.fromIdl({ kind: 'struct', fields: idl.args ?? [] }),
+      discriminator,
       idl.defaultOptionalAccounts ?? false,
     );
   }

@@ -7,10 +7,6 @@ export interface Visitor<T = void> {
   // Components.
   visitAccount: (account: nodes.AccountNode) => T;
   visitInstruction: (instruction: nodes.InstructionNode) => T;
-  visitInstructionArgs: (instruction: nodes.InstructionArgsNode) => T;
-  visitInstructionDiscriminator: (
-    instruction: nodes.InstructionDiscriminatorNode,
-  ) => T;
   visitDefinedType: (definedType: nodes.DefinedTypeNode) => T;
 
   // Types.

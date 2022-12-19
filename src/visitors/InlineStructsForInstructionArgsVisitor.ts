@@ -6,8 +6,8 @@ export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
     return account;
   }
 
-  visitInstructionArgs(instructionArgs: nodes.InstructionArgsNode): nodes.Node {
-    const visitedArgs = instructionArgs.args.accept(this);
+  visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
+    const visitedArgs = instruction.args.accept(this);
     nodes.assertTypeStructNode(visitedArgs);
 
     const inlinedArgs = visitedArgs.fields.reduce<nodes.TypeStructNodeField[]>(
@@ -26,8 +26,12 @@ export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
     const hasConflictingNames =
       new Set(inlinedArgsNames).size !== inlinedArgsNames.length;
 
-    return new nodes.InstructionArgsNode(
+    return new nodes.InstructionNode(
+      instruction.name,
+      instruction.accounts,
       hasConflictingNames ? visitedArgs : new nodes.TypeStructNode(inlinedArgs),
+      instruction.discriminator,
+      instruction.defaultOptionalAccounts,
     );
   }
 

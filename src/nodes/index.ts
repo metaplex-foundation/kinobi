@@ -1,7 +1,5 @@
 export * from './AccountNode';
 export * from './DefinedTypeNode';
-export * from './InstructionArgsNode';
-export * from './InstructionDiscriminatorNode';
 export * from './InstructionNode';
 export * from './Node';
 export * from './RootNode';

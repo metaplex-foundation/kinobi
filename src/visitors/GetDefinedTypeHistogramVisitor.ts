@@ -42,22 +42,10 @@ export class GetDefinedTypeHistogramVisitor
     if (instruction.discriminator) {
       histogram = this.mergeHistograms([
         histogram,
-        instruction.discriminator.accept(this),
+        instruction.discriminator.type.accept(this),
       ]);
     }
     return histogram;
-  }
-
-  visitInstructionArgs(
-    instructionArgs: nodes.InstructionArgsNode,
-  ): DefinedTypeHistogram {
-    return instructionArgs.args.accept(this);
-  }
-
-  visitInstructionDiscriminator(
-    instructionDiscriminator: nodes.InstructionDiscriminatorNode,
-  ): DefinedTypeHistogram {
-    return instructionDiscriminator.type.accept(this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): DefinedTypeHistogram {

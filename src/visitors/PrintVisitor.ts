@@ -30,7 +30,13 @@ export class PrintVisitor extends BaseVoidVisitor {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    this.printIndentedText(`[InstructionNode] ${instruction.name}`);
+    const discriminator =
+      instruction.discriminator?.value !== undefined
+        ? ` (discriminator: ${instruction.discriminator?.value})`
+        : '';
+    this.printIndentedText(
+      `[InstructionNode] ${instruction.name}${discriminator}`,
+    );
     this.indent += 1;
     this.printIndentedText('accounts:');
     this.indent += 1;
@@ -43,25 +49,10 @@ export class PrintVisitor extends BaseVoidVisitor {
       this.printIndentedText(account.name + tagsAsString);
     });
     this.indent -= 1;
+    this.printIndentedText('arguments:');
+    this.indent += 1;
     instruction.args.accept(this);
-    instruction.discriminator?.accept(this);
     this.indent -= 1;
-  }
-
-  visitInstructionArgs(instructionArgs: nodes.InstructionArgsNode): void {
-    this.printIndentedText(`[InstructionArgsNode]`);
-    this.indent += 1;
-    instructionArgs.args.accept(this);
-    this.indent -= 1;
-  }
-
-  visitInstructionDiscriminator(
-    instructionDiscriminator: nodes.InstructionDiscriminatorNode,
-  ): void {
-    const { value } = instructionDiscriminator;
-    this.printIndentedText(`[InstructionDiscriminatorNode] Value: ${value}`);
-    this.indent += 1;
-    instructionDiscriminator.type.accept(this);
     this.indent -= 1;
   }
 

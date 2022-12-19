@@ -27,24 +27,7 @@ export class GetJavaScriptTypeDefinitionVisitor
   visitInstruction(
     instruction: nodes.InstructionNode,
   ): JavaScriptTypeDefinition {
-    return this.mergeRootTypeDefinitions([
-      instruction.args.accept(this),
-      ...(instruction.discriminator
-        ? [instruction.discriminator.accept(this)]
-        : []),
-    ]);
-  }
-
-  visitInstructionArgs(
-    instructionArgs: nodes.InstructionArgsNode,
-  ): JavaScriptTypeDefinition {
-    return instructionArgs.args.accept(this);
-  }
-
-  visitInstructionDiscriminator(
-    instructionDiscriminator: nodes.InstructionDiscriminatorNode,
-  ): JavaScriptTypeDefinition {
-    return instructionDiscriminator.type.accept(this);
+    return instruction.args.accept(this);
   }
 
   visitDefinedType(
