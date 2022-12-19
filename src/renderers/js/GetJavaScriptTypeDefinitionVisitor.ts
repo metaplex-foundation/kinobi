@@ -1,12 +1,12 @@
 import { Visitor } from '../../visitors';
 import * as nodes from '../../nodes';
 
+type ImportMap = Map<'core' | 'types', string[]>;
+
 export type JavaScriptTypeDefinition = {
   type: string;
   isEnum: boolean;
-  definedTypeImports: Set<string>;
-  coreImports: Set<string>;
-  inlinedTypes: string[];
+  imports: ImportMap;
 };
 
 export class GetJavaScriptTypeDefinitionVisitor
@@ -49,9 +49,7 @@ export class GetJavaScriptTypeDefinitionVisitor
     return {
       type: typeDefinedLink.definedType,
       isEnum: false,
-      definedTypeImports: new Set([typeDefinedLink.definedType]),
-      coreImports: new Set(),
-      inlinedTypes: [],
+      imports: new Map().set('types', [typeDefinedLink.definedType]),
     };
   }
 
@@ -65,9 +63,7 @@ export class GetJavaScriptTypeDefinitionVisitor
       return {
         type: `{ ${variantNames.join(', ')} }`,
         isEnum: true,
-        definedTypeImports: new Set(),
-        coreImports: new Set(),
-        inlinedTypes: [],
+        imports: new Map(),
       };
     }
 
@@ -95,9 +91,7 @@ export class GetJavaScriptTypeDefinitionVisitor
         return {
           type: `{ ${kindAttribute} }`,
           isEnum: false,
-          definedTypeImports: new Set(),
-          coreImports: new Set(),
-          inlinedTypes: [],
+          imports: new Map(),
         };
       },
     );
@@ -111,9 +105,7 @@ export class GetJavaScriptTypeDefinitionVisitor
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): JavaScriptTypeDefinition {
     const base: Omit<JavaScriptTypeDefinition, 'type'> = {
       isEnum: false,
-      definedTypeImports: new Set(),
-      coreImports: new Set(),
-      inlinedTypes: [],
+      imports: new Map(),
     };
 
     switch (typeLeaf.type) {
@@ -125,7 +117,7 @@ export class GetJavaScriptTypeDefinitionVisitor
         return {
           ...base,
           type: 'PublicKey',
-          coreImports: new Set(['PublicKey']),
+          imports: new Map().set('core', ['PublicKey']),
         };
       case 'bool':
         return { ...base, type: 'boolean' };
@@ -153,7 +145,10 @@ export class GetJavaScriptTypeDefinitionVisitor
     return {
       ...child,
       type: `Option<${child.type}>`,
-      coreImports: this.mergeSets([new Set(['Option']), child.coreImports]),
+      imports: this.mergeImports([
+        new Map().set('core', ['Option']),
+        child.imports,
+      ]),
     };
   }
 
@@ -198,13 +193,18 @@ export class GetJavaScriptTypeDefinitionVisitor
     };
   }
 
-  protected mergeSets<T>(sets: Set<T>[]): Set<T> {
-    return sets.reduce((acc, set) => {
-      set.forEach((item) => {
-        acc.add(item);
+  protected mergeImports(maps: ImportMap[]): ImportMap {
+    return maps.reduce((all, one) => {
+      one.forEach((value, key) => {
+        const existing = all.get(key);
+        if (existing) {
+          all.set(key, [...new Set([...existing, ...value])]);
+        } else {
+          all.set(key, value);
+        }
       });
-      return acc;
-    }, new Set());
+      return all;
+    }, new Map());
   }
 
   protected mergeTypeDefinitions(
@@ -212,11 +212,7 @@ export class GetJavaScriptTypeDefinitionVisitor
   ): Omit<JavaScriptTypeDefinition, 'type'> {
     return {
       isEnum: false,
-      definedTypeImports: this.mergeSets(
-        typeDefinitions.map((td) => td.definedTypeImports),
-      ),
-      coreImports: this.mergeSets(typeDefinitions.map((td) => td.coreImports)),
-      inlinedTypes: typeDefinitions.flatMap((td) => td.inlinedTypes),
+      imports: this.mergeImports(typeDefinitions.map((td) => td.imports)),
     };
   }
 }

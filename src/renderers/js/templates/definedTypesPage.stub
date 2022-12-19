@@ -1,7 +1,14 @@
+{% if typeDefinition.coreImports.length > 0 %}
+import { {{ typeDefinition.coreImports | join(', ') }} } from '@metaplex-foundation/js-core';
+{% endif %}
+{% if typeDefinition.definedTypeImports.length > 0 %}
+import { {{ typeDefinition.definedTypeImports | join(', ') }} } from '.';
+{% endif %}
+
 {% if docs.length > 0 %}
 /**
 {% for doc in docs %}
- * {{ doc }}
+* {{ doc }}
 {% endfor %}
  */
 {% endif %}
