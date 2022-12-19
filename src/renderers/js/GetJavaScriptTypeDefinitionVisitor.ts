@@ -59,14 +59,14 @@ export class GetJavaScriptTypeDefinitionVisitor
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptTypeDefinition {
+    const variantNames = typeEnum.variants.map((variant) => variant.name);
     const allVariantsAreEmpty = typeEnum.variants.every(
       (variant) => variant.kind === 'empty',
     );
 
     if (allVariantsAreEmpty) {
-      const names = typeEnum.variants.map((variant) => variant.name);
       return {
-        type: `{ ${names.join(', ')} }`,
+        type: `{ ${variantNames.join(', ')} }`,
         isEnum: true,
         definedTypeImports: new Set(),
         coreImports: new Set(),
@@ -74,12 +74,46 @@ export class GetJavaScriptTypeDefinitionVisitor
       };
     }
 
+    const inlinedVariants = typeEnum.variants.map(
+      (variant): JavaScriptTypeDefinition => {
+        const exportVariant = `export type ${typeEnum.name}${variant.name}`;
+        const kindAttribute = `__kind: "${variant.name}"`;
+        if (variant.kind === 'struct') {
+          const struct = variant.type.accept(this);
+          const inlinesStruct = struct.type.slice(1, -1);
+          return {
+            ...struct,
+            type: `${exportVariant} = { ${kindAttribute},${inlinesStruct}};`,
+          };
+        }
+        if (variant.kind === 'tuple') {
+          const fields = variant.fields.map((field) => field.accept(this));
+          const fieldsAttribute = `fields: [${fields
+            .map((field) => field.type)
+            .join(', ')}]`;
+          return {
+            ...this.mergeTypeDefinitions(fields),
+            type: `${exportVariant} = { ${kindAttribute}, ${fieldsAttribute} };`,
+          };
+        }
+        return {
+          type: `${exportVariant} = { ${kindAttribute} };`,
+          isEnum: false,
+          definedTypeImports: new Set(),
+          coreImports: new Set(),
+          inlinedTypes: [],
+        };
+      },
+    );
+
+    const mergedVariants = this.mergeTypeDefinitions(inlinedVariants);
     return {
-      type: 'ENUM',
-      isEnum: false,
-      definedTypeImports: new Set(),
-      coreImports: new Set(),
-      inlinedTypes: [],
+      ...mergedVariants,
+      type: variantNames.join(' | '),
+      inlinedTypes: [
+        ...mergedVariants.inlinedTypes,
+        ...inlinedVariants.map((variant) => variant.type),
+      ],
     };
   }
 

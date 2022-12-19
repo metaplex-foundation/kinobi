@@ -18,6 +18,7 @@ export type TypeEnumNodeStructVariant = {
 export type TypeEnumNodeTupleVariant = {
   kind: 'tuple';
   name: string;
+  // TODO(loris): Refactor to a Tuple node? (i.e. type: TypeTupleNode;)
   fields: TypeNode[];
 };
 
