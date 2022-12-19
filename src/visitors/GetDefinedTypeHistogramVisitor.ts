@@ -37,17 +37,27 @@ export class GetDefinedTypeHistogramVisitor
   visitInstruction(instruction: nodes.InstructionNode): DefinedTypeHistogram {
     this.mode = 'instruction';
     this.stackLevel = 0;
-    let histogram = this.mergeHistograms(
-      instruction.args.map((arg) => arg.type.accept(this)),
-    );
+    let histogram = instruction.args.accept(this);
     this.mode = null;
     if (instruction.discriminator) {
       histogram = this.mergeHistograms([
         histogram,
-        instruction.discriminator.type.accept(this),
+        instruction.discriminator.accept(this),
       ]);
     }
     return histogram;
+  }
+
+  visitInstructionArgs(
+    instructionArgs: nodes.InstructionArgsNode,
+  ): DefinedTypeHistogram {
+    return instructionArgs.args.accept(this);
+  }
+
+  visitInstructionDiscriminator(
+    instructionDiscriminator: nodes.InstructionDiscriminatorNode,
+  ): DefinedTypeHistogram {
+    return instructionDiscriminator.type.accept(this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): DefinedTypeHistogram {

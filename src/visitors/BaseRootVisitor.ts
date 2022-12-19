@@ -14,6 +14,14 @@ export class BaseRootVisitor implements Visitor<nodes.RootNode> {
     throw new Error('This visitor is meant to be used from the RootNode only.');
   }
 
+  visitInstructionArgs(): nodes.RootNode {
+    throw new Error('This visitor is meant to be used from the RootNode only.');
+  }
+
+  visitInstructionDiscriminator(): nodes.RootNode {
+    throw new Error('This visitor is meant to be used from the RootNode only.');
+  }
+
   visitDefinedType(): nodes.RootNode {
     throw new Error('This visitor is meant to be used from the RootNode only.');
   }

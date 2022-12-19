@@ -33,26 +33,36 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
-    let newDiscriminator: nodes.InstructionNodeDiscriminator | null = null;
+    const args = instruction.args.accept(this);
+    nodes.assertInstructionArgsNode(args);
+    let discriminator: nodes.InstructionDiscriminatorNode | null = null;
     if (instruction.discriminator) {
-      const newDiscriminatorType = instruction.discriminator.type.accept(this);
-      nodes.assertTypeLeafNode(newDiscriminatorType);
-      newDiscriminator = {
-        type: newDiscriminatorType,
-        value: instruction.discriminator.value,
-      };
+      const visitedDiscriminator = instruction.discriminator.accept(this);
+      nodes.assertInstructionDiscriminatorNode(visitedDiscriminator);
+      discriminator = visitedDiscriminator;
     }
     return new nodes.InstructionNode(
       instruction.name,
       instruction.accounts,
-      instruction.args.map((arg) => {
-        const childType = arg.type.accept(this);
-        nodes.assertTypeNode(childType);
-        return { name: arg.name, type: childType };
-      }),
-      newDiscriminator,
+      args,
+      discriminator,
       instruction.defaultOptionalAccounts,
     );
+  }
+
+  visitInstructionArgs(instructionArgs: nodes.InstructionArgsNode): nodes.Node {
+    const args = instructionArgs.args.accept(this);
+    nodes.assertTypeStructNode(args);
+    return new nodes.InstructionArgsNode(args);
+  }
+
+  visitInstructionDiscriminator(
+    instructionDiscriminator: nodes.InstructionDiscriminatorNode,
+  ): nodes.Node {
+    const type = instructionDiscriminator.type.accept(this);
+    nodes.assertTypeLeafNode(type);
+    const { value } = instructionDiscriminator;
+    return new nodes.InstructionDiscriminatorNode(type, value);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node {

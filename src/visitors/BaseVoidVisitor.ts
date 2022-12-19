@@ -13,8 +13,18 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    instruction.args.forEach((arg) => arg.type.accept(this));
-    instruction.discriminator?.type.accept(this);
+    instruction.args.accept(this);
+    instruction.discriminator?.accept(this);
+  }
+
+  visitInstructionArgs(instructionArgs: nodes.InstructionArgsNode): void {
+    instructionArgs.args.accept(this);
+  }
+
+  visitInstructionDiscriminator(
+    instructionDiscriminator: nodes.InstructionDiscriminatorNode,
+  ): void {
+    instructionDiscriminator.type.accept(this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {

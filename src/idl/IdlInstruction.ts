@@ -5,10 +5,7 @@ export type IdlInstruction = {
   accounts: IdlInstructionAccount[];
   args: IdlInstructionArg[];
   defaultOptionalAccounts?: boolean;
-  discriminant?: {
-    type: IdlType;
-    value: number;
-  };
+  discriminant?: IdlInstructionDiscriminant;
 };
 
 export type IdlInstructionAccount = {
@@ -22,4 +19,9 @@ export type IdlInstructionAccount = {
 export type IdlInstructionArg = {
   name: string;
   type: IdlType;
+};
+
+export type IdlInstructionDiscriminant = {
+  type: IdlType;
+  value: number;
 };

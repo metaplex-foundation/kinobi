@@ -1,8 +1,8 @@
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
+import { InstructionArgsNode } from './InstructionArgsNode';
+import { InstructionDiscriminatorNode } from './InstructionDiscriminatorNode';
 import type { Node } from './Node';
-import type { TypeLeafNode } from './TypeLeafNode';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 
 export type InstructionNodeAccount = {
   name: string;
@@ -12,24 +12,14 @@ export type InstructionNodeAccount = {
   description: string;
 };
 
-export type InstructionNodeArg = {
-  name: string;
-  type: TypeNode;
-};
-
-export type InstructionNodeDiscriminator = {
-  type: TypeLeafNode;
-  value: number;
-};
-
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
 
   constructor(
     readonly name: string,
     readonly accounts: InstructionNodeAccount[],
-    readonly args: InstructionNodeArg[],
-    readonly discriminator: InstructionNodeDiscriminator | null = null,
+    readonly args: InstructionArgsNode,
+    readonly discriminator: InstructionDiscriminatorNode | null = null,
     readonly defaultOptionalAccounts = false,
   ) {}
 
@@ -44,26 +34,15 @@ export class InstructionNode implements Visitable {
         description: account.desc ?? '',
       }),
     );
-    const args = (idl.args ?? []).map(
-      (arg): InstructionNodeArg => ({
-        name: arg.name ?? '',
-        type: createTypeNodeFromIdl(arg.type),
-      }),
-    );
-    const discriminator: InstructionNodeDiscriminator | null = idl.discriminant
-      ? {
-          type: createTypeNodeFromIdl(idl.discriminant.type) as TypeLeafNode,
-          value: idl.discriminant.value,
-        }
-      : null;
-    const defaultOptionalAccounts = idl.defaultOptionalAccounts ?? false;
 
     return new InstructionNode(
       name,
       accounts,
-      args,
-      discriminator,
-      defaultOptionalAccounts,
+      InstructionArgsNode.fromIdl(idl.args ?? []),
+      idl.discriminant
+        ? InstructionDiscriminatorNode.fromIdl(idl.discriminant)
+        : null,
+      idl.defaultOptionalAccounts ?? false,
     );
   }
 
