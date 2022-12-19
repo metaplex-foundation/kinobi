@@ -15,6 +15,7 @@ module.exports = {
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
+    'no-underscore-dangle': 'off',
   },
   ignorePatterns: ['dist/**', 'test**', 'generated/**'],
 };
