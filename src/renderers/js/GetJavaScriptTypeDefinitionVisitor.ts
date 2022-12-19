@@ -76,14 +76,13 @@ export class GetJavaScriptTypeDefinitionVisitor
 
     const inlinedVariants = typeEnum.variants.map(
       (variant): JavaScriptTypeDefinition => {
-        const exportVariant = `export type ${typeEnum.name}${variant.name}`;
         const kindAttribute = `__kind: "${variant.name}"`;
         if (variant.kind === 'struct') {
           const struct = variant.type.accept(this);
           const inlinesStruct = struct.type.slice(1, -1);
           return {
             ...struct,
-            type: `${exportVariant} = { ${kindAttribute},${inlinesStruct}};`,
+            type: `{ ${kindAttribute},${inlinesStruct}}`,
           };
         }
         if (variant.kind === 'tuple') {
@@ -93,11 +92,11 @@ export class GetJavaScriptTypeDefinitionVisitor
             .join(', ')}]`;
           return {
             ...this.mergeTypeDefinitions(fields),
-            type: `${exportVariant} = { ${kindAttribute}, ${fieldsAttribute} };`,
+            type: `{ ${kindAttribute}, ${fieldsAttribute} }`,
           };
         }
         return {
-          type: `${exportVariant} = { ${kindAttribute} };`,
+          type: `{ ${kindAttribute} }`,
           isEnum: false,
           definedTypeImports: new Set(),
           coreImports: new Set(),
@@ -106,14 +105,9 @@ export class GetJavaScriptTypeDefinitionVisitor
       },
     );
 
-    const mergedVariants = this.mergeTypeDefinitions(inlinedVariants);
     return {
-      ...mergedVariants,
-      type: variantNames.map((name) => typeEnum.name + name).join(' | '),
-      inlinedTypes: [
-        ...mergedVariants.inlinedTypes,
-        ...inlinedVariants.map((variant) => variant.type),
-      ],
+      ...this.mergeTypeDefinitions(inlinedVariants),
+      type: inlinedVariants.map((v) => v.type).join(' | '),
     };
   }
 
