@@ -1,9 +1,16 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import { BaseVoidVisitor } from '../../visitors';
+import { BaseVoidVisitor, Visitor } from '../../visitors';
 import { createFile, resolveTemplate } from '../utils';
-import { GetJavaScriptTypeDefinitionVisitor } from './GetJavaScriptTypeDefinitionVisitor';
+import {
+  GetJavaScriptSerializerVisitor,
+  JavaScriptSerializer,
+} from './GetJavaScriptSerializerVisitor';
+import {
+  GetJavaScriptTypeDefinitionVisitor,
+  JavaScriptTypeDefinition,
+} from './GetJavaScriptTypeDefinitionVisitor';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -19,20 +26,31 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
 export type RenderJavaScriptOptions = {
   formatCode?: boolean;
   prettier?: PrettierOptions;
+  typeDefinitionVisitor?: Visitor<JavaScriptTypeDefinition>;
+  serializerVisitor?: Visitor<JavaScriptSerializer>;
 };
 
 export class RenderJavaScriptVisitor extends BaseVoidVisitor {
-  readonly typeDefinitionVisitor: GetJavaScriptTypeDefinitionVisitor;
+  readonly formatCode: boolean;
 
   readonly prettierOptions: PrettierOptions;
+
+  readonly typeDefinitionVisitor: Visitor<JavaScriptTypeDefinition>;
+
+  readonly serializerVisitor: Visitor<JavaScriptSerializer>;
 
   constructor(
     readonly path: string,
     readonly options: RenderJavaScriptOptions = {},
   ) {
     super();
-    this.typeDefinitionVisitor = new GetJavaScriptTypeDefinitionVisitor();
+    this.formatCode = options.formatCode ?? true;
     this.prettierOptions = { ...DEFAULT_PRETTIER_OPTIONS, ...options.prettier };
+    this.typeDefinitionVisitor =
+      this.options.typeDefinitionVisitor ??
+      new GetJavaScriptTypeDefinitionVisitor();
+    this.serializerVisitor =
+      this.options.serializerVisitor ?? new GetJavaScriptSerializerVisitor();
   }
 
   visitRoot(root: nodes.RootNode): void {
@@ -102,8 +120,6 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     options?: ConfigureOptions,
   ): string {
     const code = resolveTemplate('js/templates', path, context, options);
-    return this.options.formatCode ?? true
-      ? formatCode(code, this.prettierOptions)
-      : code;
+    return this.formatCode ? formatCode(code, this.prettierOptions) : code;
   }
 }
