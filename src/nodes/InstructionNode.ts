@@ -17,7 +17,7 @@ export type InstructionNodeAccount = {
 
 export type InstructionNodeDiscriminator = {
   type: TypeLeafNode;
-  value: number;
+  value: number; // TODO(loris): open up to strings and bytes?
 };
 
 export class InstructionNode implements Visitable {

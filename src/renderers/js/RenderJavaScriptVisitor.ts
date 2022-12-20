@@ -103,12 +103,21 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const argsSerializer = instruction.accept(this.serializerVisitor);
     imports.mergeWith(argsTypeDefinition.imports, argsSerializer.imports);
 
+    // Discriminator.
+    const discriminatorTypeDefinition = instruction.discriminator?.type.accept(
+      this.typeDefinitionVisitor,
+    );
+    if (discriminatorTypeDefinition) {
+      imports.mergeWith(discriminatorTypeDefinition.imports);
+    }
+
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       instruction,
       imports,
       accounts,
       argsTypeDefinition,
       argsSerializer,
+      discriminatorTypeDefinition,
       name: instruction.name,
       camelCaseName: camelCase(instruction.name),
     });
