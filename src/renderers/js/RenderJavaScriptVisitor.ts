@@ -87,7 +87,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitAccount(account: nodes.AccountNode): void {
     const typeDefinition = account.accept(this.typeDefinitionVisitor);
-    const context = { ...account, typeDefinition };
+    const serializer = account.accept(this.serializerVisitor);
+    const imports = new ImportMap()
+      .mergeWith(typeDefinition.imports, serializer.imports)
+      .add('core', ['Context', 'Serializer']);
+    const context = { ...account, typeDefinition, serializer, imports };
 
     createFile(
       `${this.path}/accounts/${account.name}.ts`,
@@ -110,7 +114,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const serializer = definedType.accept(this.serializerVisitor);
     const imports = new ImportMap()
       .mergeWith(typeDefinition.imports, serializer.imports)
-      .addAll('core', ['Context', 'Serializer']);
+      .add('core', ['Context', 'Serializer']);
     const context = { ...definedType, imports, typeDefinition, serializer };
 
     createFile(

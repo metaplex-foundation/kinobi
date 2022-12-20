@@ -6,13 +6,16 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
 export class ImportMap {
   protected readonly _imports: Map<string, Set<string>> = new Map();
 
-  add(module: string, dependency: string): ImportMap {
-    return this.addAll(module, [dependency]);
-  }
-
-  addAll(module: string, dependencies: string[] | Set<string>): ImportMap {
+  add(
+    module: string,
+    dependencies: string | string[] | Set<string>,
+  ): ImportMap {
     const currentDependencies = this._imports.get(module) ?? new Set();
-    dependencies.forEach((dependency) => currentDependencies.add(dependency));
+    const newDependencies =
+      typeof dependencies === 'string' ? [dependencies] : dependencies;
+    newDependencies.forEach((dependency) =>
+      currentDependencies.add(dependency),
+    );
     this._imports.set(module, currentDependencies);
     return this;
   }
@@ -20,7 +23,7 @@ export class ImportMap {
   mergeWith(...others: ImportMap[]): ImportMap {
     others.forEach((other) => {
       other._imports.forEach((dependencies, module) => {
-        this.addAll(module, dependencies);
+        this.add(module, dependencies);
       });
     });
     return this;

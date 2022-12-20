@@ -2,8 +2,10 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{{ macros.imports(typeDefinition.imports) }}
+{{ macros.imports(imports) }}
 
 {{ macros.docblock(docs) }}
 {{ macros.exportType(name, typeDefinition) }}
+
+{{ macros.exportSerializer(name, serializer) }}
 {% endblock %}
