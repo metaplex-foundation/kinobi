@@ -43,7 +43,7 @@ export class GetJavaScriptSerializerVisitor
   ): JavaScriptSerializer {
     const serializerName = `get${typeDefinedLink.definedType}Serializer`;
     return {
-      code: serializerName,
+      code: `${serializerName}(context)`,
       imports: new ImportMap().add('types', serializerName),
     };
   }

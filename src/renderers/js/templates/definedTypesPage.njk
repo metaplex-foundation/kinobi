@@ -7,8 +7,5 @@
 {{ macros.docblock(docs) }}
 {{ macros.exportType(name, typeDefinition) }}
 
-export function get{{ name }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}> {
-  const s = context.serializer;
-  return {{ serializer.code }};
-}
+{{ macros.exportSerializer(name, serializer) }}
 {% endblock %}

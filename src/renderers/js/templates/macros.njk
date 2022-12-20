@@ -26,3 +26,17 @@ export enum {{ name }} {{ typeDefinition.type }};
 export type {{ name }} = {{ typeDefinition.type }};
 {% endif %}
 {% endmacro %}
+
+{# Export a serializer. #}
+{% macro exportSerializer(name, serializer) %}
+export function get{{ name }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}> {
+  const s = context.serializer;
+  return {{ serializer.code }};
+}
+export function serialize{{ name }}(context: Pick<Context, 'serializer'>, value: {{ name }}): Uint8Array {
+  return get{{ name }}Serializer(context).serialize(value);
+}
+export function deserialize{{ name }}(context: Pick<Context, 'serializer'>, buffer: Uint8Array, offset?: number): [{{ name }}, number] {
+  return get{{ name }}Serializer(context).deserialize(buffer, offset);
+}
+{% endmacro %}
