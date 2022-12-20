@@ -56,32 +56,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitRoot(root: nodes.RootNode): void {
     const context = { ...root };
-
-    // Root index.
-    createFile(
-      `${this.path}/index.ts`,
-      this.resolveTemplate('rootIndex.njk', context),
-    );
-
-    // Account index.
-    createFile(
-      `${this.path}/accounts/index.ts`,
-      this.resolveTemplate('accountsIndex.njk', context),
-    );
-
-    // Instructions index.
-    createFile(
-      `${this.path}/instructions/index.ts`,
-      this.resolveTemplate('instructionsIndex.njk', context),
-    );
-
-    // Types index.
-    createFile(
-      `${this.path}/types/index.ts`,
-      this.resolveTemplate('definedTypesIndex.njk', context),
-    );
-
-    // Children.
+    this.render('rootIndex.njk', 'index.ts', context);
+    this.render('accountsIndex.njk', 'accounts/index.ts', context);
+    this.render('instructionsIndex.njk', 'instructions/index.ts', context);
+    this.render('definedTypesIndex.njk', 'types/index.ts', context);
     super.visitRoot(root);
   }
 
@@ -91,12 +69,13 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const imports = new ImportMap()
       .mergeWith(typeDefinition.imports, serializer.imports)
       .add('core', ['Context', 'Serializer']);
-    const context = { ...account, typeDefinition, serializer, imports };
 
-    createFile(
-      `${this.path}/accounts/${account.name}.ts`,
-      this.resolveTemplate('accountsPage.njk', context),
-    );
+    this.render('accountsPage.njk', `accounts/${account.name}.ts`, {
+      ...account,
+      typeDefinition,
+      serializer,
+      imports,
+    });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
@@ -105,17 +84,13 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const imports = new ImportMap()
       .mergeWith(argsTypeDefinition.imports, argsSerializer.imports)
       .add('core', ['Context', 'Serializer']);
-    const context = {
+
+    this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       ...instruction,
       argsTypeDefinition,
       argsSerializer,
       imports,
-    };
-
-    createFile(
-      `${this.path}/instructions/${instruction.name}.ts`,
-      this.resolveTemplate('instructionsPage.njk', context),
-    );
+    });
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
@@ -124,20 +99,33 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const imports = new ImportMap()
       .mergeWith(typeDefinition.imports, serializer.imports)
       .add('core', ['Context', 'Serializer']);
-    const context = { ...definedType, imports, typeDefinition, serializer };
 
-    createFile(
-      `${this.path}/types/${definedType.name}.ts`,
-      this.resolveTemplate('definedTypesPage.njk', context),
-    );
+    this.render('definedTypesPage.njk', `types/${definedType.name}.ts`, {
+      ...definedType,
+      imports,
+      typeDefinition,
+      serializer,
+    });
   }
 
   protected resolveTemplate(
-    path: string,
+    template: string,
     context?: object,
     options?: ConfigureOptions,
   ): string {
-    const code = resolveTemplate('js/templates', path, context, options);
+    const code = resolveTemplate('js/templates', template, context, options);
     return this.formatCode ? formatCode(code, this.prettierOptions) : code;
+  }
+
+  protected render(
+    template: string,
+    path: string,
+    context?: object,
+    options?: ConfigureOptions,
+  ): void {
+    createFile(
+      `${this.path}/${path}`,
+      this.resolveTemplate(template, context, options),
+    );
   }
 }

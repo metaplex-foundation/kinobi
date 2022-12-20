@@ -4,7 +4,29 @@
 {% block main %}
 {{ macros.imports(imports) }}
 
-{{ macros.exportType(name + 'Args', argsTypeDefinition) }}
+{% if accounts.length > 0 %}
+// Accounts.
+export type {{ name }}InstructionAccounts = {
+{% for account in accounts %}
+{% if account.isOptionalSigner %}
+{% set accountType = 'PublicKey | Signer' %}
+{% elif account.isSigner %}
+{% set accountType = 'Signer' %}
+{% else %}
+{% set accountType = 'PublicKey' %}
+{% endif %}
+{% if account.isOptional %}
+  {{ account.name }}?: {{ accountType }};
+{% else %}
+  {{ account.name }}: {{ accountType }};
+{% endif %}
+{% endfor %}
+};
+{% endif %}
 
-{{ macros.exportSerializer(name + 'Args', argsSerializer) }}
+// Arguments.
+{{ macros.exportType(name + 'InstructionArgs', argsTypeDefinition) }}
+
+// Arguments Serializer.
+{{ macros.exportSerializer(name + 'InstructionArgs', argsSerializer) }}
 {% endblock %}
