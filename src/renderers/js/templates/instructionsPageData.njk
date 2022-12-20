@@ -1,5 +1,24 @@
 {% if instruction.hasData %}
 // Data.
-// TODO
+{% if instruction.hasArgs && instruction.hasDiscriminator %}
+export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
+  const s = context.serializer;
+  const discriminator = get{{ name }}InstructionDiscriminator();
+  const serializer: Serializer<{{ name }}InstructionArgs & { discriminator: {{ name }}InstructionDiscriminator }> = {{ dataSerializer.code }};
+  return mapSerializer(serializer, (value: {{ name }}InstructionArgs) => ({ ...value, discriminator }));
+}
+{% elif instruction.hasArgs %}
+export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
+  const s = context.serializer;
+  return {{ dataSerializer.code }};
+}
+{% else %}
+export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{}> {
+  const s = context.serializer;
+  const discriminator = get{{ name }}InstructionDiscriminator();
+  const serializer = {{ dataSerializer.code }};
+  return mapSerializer(serializer, (value) => ({ ...value, discriminator }));
+}
+{% endif %}
 
 {% endif %}

@@ -128,7 +128,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
         ...instruction.args.fields,
       ]);
       dataSerializer = struct.accept(this.serializerVisitor);
-      imports.mergeWith(dataSerializer.imports);
+      imports.mergeWith(dataSerializer.imports).add('core', 'mapSerializer');
     }
 
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
