@@ -21,4 +21,60 @@ export type {{ name }}InstructionAccounts = {
 
 // Arguments Serializer.
 {{ macros.exportSerializer(name + 'InstructionArgs', argsSerializer) }}
+
+// Instruction.
+export function {{ camelCaseName }}(
+  context: {
+    serializer: Context['serializer'];
+    eddsa: Context['eddsa'];
+    programs?: Context['programs'];
+  },
+  accounts: {{ name }}InstructionAccounts,
+  args: {{ name }}InstructionArgs,
+): WrappedInstruction {
+  const signers: Signer[] = [];
+  const keys: AccountMeta[] = [];
+
+  {% for account in accounts %}
+  {% set isWritableString = 'true' if account.isWritable else 'false' %}
+  // {{ account.titleCaseName }}{% if account.isOptional %} (optional){% endif %}.
+  {% if account.isOptional %}
+  if (accounts.{{ account.name }}) {
+  {% endif %}
+    {% if account.isOptionalSigner %}
+    if (isSigner(accounts.{{ account.name }})) {
+      signers.push(accounts.{{ account.name }});
+      keys.push({
+        pubkey: accounts.{{ account.name }}.publicKey,
+        isSigner: true,
+        isWritable: {{ isWritableString }},
+      });
+    } else {
+      keys.push({
+        pubkey: accounts.{{ account.name }},
+        isSigner: false,
+        isWritable: {{ isWritableString }},
+      });
+    }
+    {% elif account.isSigner  %}
+    signers.push(accounts.{{ account.name }});
+    keys.push({ pubkey: accounts.{{ account.name }}.publicKey, isSigner: true, isWritable: {{ isWritableString }} });
+    {% else %}
+    keys.push({ pubkey: accounts.{{ account.name }}, isSigner: false, isWritable: {{ isWritableString }} });
+    {% endif %}
+  {% if account.isOptional %}
+  }
+  {% endif %}
+
+  {% endfor %}
+  return {
+    instruction: {
+      keys,
+      // programId,
+      // data,
+    }
+    signers,
+    bytesCreatedOnChain: 0,
+  }
+}
 {% endblock %}

@@ -1,6 +1,7 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
+import { camelCase, titleCase } from '../../utils';
 import { BaseVoidVisitor, Visitor } from '../../visitors';
 import { createFile, resolveTemplate } from '../utils';
 import {
@@ -80,13 +81,20 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitInstruction(instruction: nodes.InstructionNode): void {
     // Imports.
-    const imports = new ImportMap().add('core', ['Context', 'Serializer']);
+    const imports = new ImportMap().add('core', [
+      'AccountMeta',
+      'Context',
+      'Serializer',
+      'Signer',
+      'WrappedInstruction',
+    ]);
 
     // Accounts.
     const accounts = instruction.accounts.map((account) => ({
       ...account,
       type: this.getInstructionAccountType(account),
       optionalSign: account.isOptional ? '?' : '',
+      titleCaseName: titleCase(account.name),
     }));
     imports.mergeWith(this.getInstructionAccountImports(accounts));
 
@@ -97,10 +105,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       ...instruction,
+      imports,
       accounts,
       argsTypeDefinition,
       argsSerializer,
-      imports,
+      camelCaseName: camelCase(instruction.name),
     });
   }
 
@@ -132,7 +141,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const imports = new ImportMap();
     accounts.forEach((account) => {
       if (account.isOptionalSigner) {
-        imports.add('core', ['PublicKey', 'Signer']);
+        imports.add('core', ['PublicKey', 'Signer', 'isSigner']);
       } else if (account.isSigner) {
         imports.add('core', 'Signer');
       } else {
