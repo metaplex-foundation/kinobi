@@ -61,28 +61,24 @@ export class GetJavaScriptSerializerVisitor
         const type = variant.type.accept(this);
         return {
           ...type,
-          code: `['${variant.name}', ${type.code}]`, // TODO
+          code: `['${variant.name}', ${type.code}]`,
         };
       }
 
       if (variant.kind === 'tuple') {
         const struct = new nodes.TypeStructNode([
-          {
-            name: 'fields',
-            type: new nodes.TypeTupleNode(variant.fields),
-            docs: [],
-          },
+          { name: 'fields', type: variant.type, docs: [] },
         ]);
         const type = struct.accept(this);
         return {
           ...type,
-          code: `['${variant.name}', ${type.code}]`, // TODO
+          code: `['${variant.name}', ${type.code}]`,
         };
       }
 
       return {
         imports: new ImportMap(),
-        code: `['${variant.name}']`, // TODO
+        code: `['${variant.name}']`,
       };
     });
     const variantCodes = variants.map((variant) => variant.code).join(', ');

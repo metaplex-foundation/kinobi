@@ -82,17 +82,9 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeEnum.variants.map((variant) => {
-        if (variant.kind === 'struct') {
-          return variant.type.accept(this);
-        }
-        if (variant.kind === 'tuple') {
-          return this.mergeHistograms(
-            variant.fields.map((field) => field.accept(this)),
-          );
-        }
-        return {};
-      }),
+      typeEnum.variants.map((variant) =>
+        variant.kind === 'empty' ? {} : variant.type.accept(this),
+      ),
     );
     this.stackLevel -= 1;
     return histogram;

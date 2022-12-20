@@ -66,24 +66,23 @@ export class GetJavaScriptTypeDefinitionVisitor
     const inlinedVariants = typeEnum.variants.map(
       (variant): JavaScriptTypeDefinition => {
         const kindAttribute = `__kind: "${variant.name}"`;
+
         if (variant.kind === 'struct') {
           const struct = variant.type.accept(this);
-          const inlinesStruct = struct.type.slice(1, -1);
           return {
             ...struct,
-            type: `{ ${kindAttribute},${inlinesStruct}}`,
+            type: `{ ${kindAttribute},${struct.type.slice(1, -1)}}`,
           };
         }
+
         if (variant.kind === 'tuple') {
-          const fields = variant.fields.map((field) => field.accept(this));
-          const fieldsAttribute = `fields: [${fields
-            .map((field) => field.type)
-            .join(', ')}]`;
+          const tuple = variant.type.accept(this);
           return {
-            ...this.mergeTypeDefinitions(fields),
-            type: `{ ${kindAttribute}, ${fieldsAttribute} }`,
+            ...tuple,
+            type: `{ ${kindAttribute}, fields: ${tuple.type} }`,
           };
         }
+
         return {
           type: `{ ${kindAttribute} }`,
           isEnum: false,
