@@ -1,17 +1,12 @@
 {% extends "layout.njk" %}
+{% import "macros.njk" as macros %}
 
 {% block main %}
 {% if not typeDefinition.imports.isEmpty() %}
 {{ typeDefinition.imports.toString({ types: '.' }) }}
 {% endif %}
 
-{% if docs.length > 0 %}
-/**
-{% for doc in docs %}
-* {{ doc }}
-{% endfor %}
- */
-{% endif %}
+{{ macros.docblock(docs) }}
 {% if typeDefinition.isEnum %}
 export enum {{ name }} {{ typeDefinition.type }};
 {% else %}

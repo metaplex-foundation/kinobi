@@ -326,6 +326,7 @@
     },
     {
       "name": "PayloadType",
+      "docs": ["This is a union of all the possible payload types."],
       "type": {
         "kind": "enum",
         "variants": [
