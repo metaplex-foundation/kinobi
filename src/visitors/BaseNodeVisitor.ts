@@ -78,12 +78,9 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
           return { ...variant, type: newType };
         }
         if (variant.kind === 'tuple') {
-          const newFields = variant.fields.map((field) => {
-            const fieldType = field.accept(this);
-            nodes.assertTypeNode(fieldType);
-            return fieldType;
-          });
-          return { ...variant, fields: newFields };
+          const newType = variant.type.accept(this);
+          nodes.assertTypeTupleNode(newType);
+          return { ...variant, type: newType };
         }
         return variant;
       },

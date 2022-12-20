@@ -91,7 +91,7 @@ export class PrintVisitor extends BaseVoidVisitor {
         this.indent -= 1;
       } else if (variant.kind === 'tuple') {
         this.indent += 1;
-        variant.fields.forEach((field) => field.accept(this));
+        variant.type.accept(this);
         this.indent -= 1;
       }
       this.indent -= 1;

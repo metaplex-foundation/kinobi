@@ -32,10 +32,8 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
     typeEnum.variants.forEach((variant) => {
-      if (variant.kind === 'struct') {
+      if (variant.kind !== 'empty') {
         variant.type.accept(this);
-      } else if (variant.kind === 'tuple') {
-        variant.fields.forEach((field) => field.accept(this));
       }
     });
   }
