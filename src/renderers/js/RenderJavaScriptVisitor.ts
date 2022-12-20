@@ -40,25 +40,25 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     // Root index.
     createFile(
       `${this.path}/index.ts`,
-      this.resolveTemplate('rootIndex.stub', context),
+      this.resolveTemplate('rootIndex.njk', context),
     );
 
     // Account index.
     createFile(
       `${this.path}/accounts/index.ts`,
-      this.resolveTemplate('accountsIndex.stub', context),
+      this.resolveTemplate('accountsIndex.njk', context),
     );
 
     // Instructions index.
     createFile(
       `${this.path}/instructions/index.ts`,
-      this.resolveTemplate('instructionsIndex.stub', context),
+      this.resolveTemplate('instructionsIndex.njk', context),
     );
 
     // Types index.
     createFile(
       `${this.path}/types/index.ts`,
-      this.resolveTemplate('definedTypesIndex.stub', context),
+      this.resolveTemplate('definedTypesIndex.njk', context),
     );
 
     // Children.
@@ -71,7 +71,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
     createFile(
       `${this.path}/types/${definedType.name}.ts`,
-      this.resolveTemplate('definedTypesPage.stub', context),
+      this.resolveTemplate('definedTypesPage.njk', context),
     );
   }
 
