@@ -34,7 +34,7 @@ export class GetJavaScriptSerializerVisitor
     const itemType = typeArray.itemType.accept(this);
     return {
       ...itemType,
-      code: `${this.s('array')}(${itemType.code}, ${typeArray.size})`, // TODO
+      code: `${this.s('array')}(${itemType.code}, ${typeArray.size})`,
     };
   }
 
@@ -89,14 +89,12 @@ export class GetJavaScriptSerializerVisitor
 
     return {
       ...this.mergeSerializers(variants),
-      code: `${this.s('dataEnum')}([${variantCodes}])`, // TODO
+      code: `${this.s('dataEnum')}([${variantCodes}])`,
     };
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): JavaScriptSerializer {
     switch (typeLeaf.type) {
-      case 'bytes':
-        return { imports: new ImportMap(), code: this.s('bytes') };
       default:
         return { imports: new ImportMap(), code: this.s(typeLeaf.type) };
     }
@@ -107,7 +105,7 @@ export class GetJavaScriptSerializerVisitor
     const value = typeMap.valueType.accept(this);
     return {
       ...this.mergeSerializers([key, value]),
-      code: `${this.s('map')}(${key.code}, ${value.code})`, // TODO
+      code: `${this.s('map')}(${key.code}, ${value.code})`,
     };
   }
 
@@ -115,7 +113,7 @@ export class GetJavaScriptSerializerVisitor
     const child = typeOption.type.accept(this);
     return {
       ...child,
-      code: `${this.s('option')}(${child.code})`, // TODO
+      code: `${this.s('option')}(${child.code})`,
     };
   }
 
@@ -123,7 +121,7 @@ export class GetJavaScriptSerializerVisitor
     const child = typeSet.type.accept(this);
     return {
       ...child,
-      code: `${this.s('set')}(${child.code})`, // TODO
+      code: `${this.s('set')}(${child.code})`,
     };
   }
 
@@ -138,7 +136,7 @@ export class GetJavaScriptSerializerVisitor
     const fieldCodes = fields.map((field) => field.code).join(', ');
     return {
       ...this.mergeSerializers(fields),
-      code: `${this.s('struct')}([${fieldCodes}])`, // TODO
+      code: `${this.s('struct')}([${fieldCodes}])`,
     };
   }
 
@@ -147,7 +145,7 @@ export class GetJavaScriptSerializerVisitor
     const itemCodes = items.map((item) => item.code).join(', ');
     return {
       ...this.mergeSerializers(items),
-      code: `${this.s('tuple')}([${itemCodes}])`, // TODO
+      code: `${this.s('tuple')}([${itemCodes}])`,
     };
   }
 
@@ -155,7 +153,7 @@ export class GetJavaScriptSerializerVisitor
     const itemType = typeVec.itemType.accept(this);
     return {
       ...itemType,
-      code: `${this.s('vec')}(${itemType.code})`, // TODO
+      code: `${this.s('vec')}(${itemType.code})`,
     };
   }
 
