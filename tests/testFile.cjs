@@ -6,7 +6,6 @@ const {
   InlineStructsForInstructionArgsVisitor,
   PrintVisitor,
   TransformU8ArraysToBytesVisitor,
-  GetJavaScriptTypeDefinitionVisitor,
 } = require('../dist/index.js');
 
 const solita = new Solita(__dirname + '/idl.json');
