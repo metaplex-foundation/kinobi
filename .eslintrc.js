@@ -17,5 +17,5 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-underscore-dangle': 'off',
   },
-  ignorePatterns: ['dist/**', 'test**', 'generated/**'],
+  ignorePatterns: ['dist/**', 'test**', 'package/**'],
 };
