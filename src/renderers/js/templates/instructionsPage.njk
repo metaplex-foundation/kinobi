@@ -8,6 +8,9 @@
 // Accounts.
 export type {{ name }}InstructionAccounts = {
 {% for account in accounts %}
+{% if account.description.length > 0 %}
+  {{ macros.docblock([account.description]) }}
+{% endif %}
   {{ account.name }}{{ account.optionalSign }}: {{ account.type }};
 {% endfor %}
 };
