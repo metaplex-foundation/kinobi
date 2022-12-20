@@ -99,9 +99,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     imports.mergeWith(this.getInstructionAccountImports(accounts));
 
     // Arguments.
-    const argsTypeDefinition = instruction.accept(this.typeDefinitionVisitor);
-    const argsSerializer = instruction.accept(this.serializerVisitor);
-    imports.mergeWith(argsTypeDefinition.imports, argsSerializer.imports);
+    const argsTypeDefinition = instruction.args.accept(
+      this.typeDefinitionVisitor,
+    );
+    imports.mergeWith(argsTypeDefinition.imports);
 
     // Discriminator.
     const discriminatorTypeDefinition = instruction.discriminator?.type.accept(
@@ -111,13 +112,32 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       imports.mergeWith(discriminatorTypeDefinition.imports);
     }
 
+    // Data.
+    let dataSerializer: JavaScriptSerializer | undefined;
+    if (instruction.hasData) {
+      const struct = new nodes.TypeStructNode([
+        ...(instruction.discriminator
+          ? [
+              {
+                name: 'discriminator',
+                type: instruction.discriminator.type,
+                docs: [],
+              },
+            ]
+          : []),
+        ...instruction.args.fields,
+      ]);
+      dataSerializer = struct.accept(this.serializerVisitor);
+      imports.mergeWith(dataSerializer.imports);
+    }
+
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       instruction,
       imports,
       accounts,
       argsTypeDefinition,
-      argsSerializer,
       discriminatorTypeDefinition,
+      dataSerializer,
       name: instruction.name,
       camelCaseName: camelCase(instruction.name),
     });
