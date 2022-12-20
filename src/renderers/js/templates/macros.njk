@@ -1,7 +1,9 @@
 {% macro docblock(docs) %}
-{% if docs.length > 0 %}/**
+{% if docs.length > 0 %}
+/**
 {% for doc in docs %}
  * {{ doc }}
 {% endfor %}
- */{% endif %}
+ */
+{%- endif -%}
 {% endmacro %}

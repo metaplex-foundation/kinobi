@@ -17,6 +17,7 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
 };
 
 export type RenderJavaScriptOptions = {
+  formatCode?: boolean;
   prettier?: PrettierOptions;
 };
 
@@ -80,9 +81,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     context?: object,
     options?: ConfigureOptions,
   ): string {
-    return formatCode(
-      resolveTemplate('js/templates', path, context, options),
-      this.prettierOptions,
-    );
+    const code = resolveTemplate('js/templates', path, context, options);
+    return this.options.formatCode ?? true
+      ? formatCode(code, this.prettierOptions)
+      : code;
   }
 }
