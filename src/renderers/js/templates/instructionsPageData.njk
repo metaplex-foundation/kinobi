@@ -1,6 +1,6 @@
 {% if instruction.hasData %}
 // Data.
-{% if instruction.hasArgs && instruction.hasDiscriminator %}
+{% if instruction.hasArgs and instruction.hasDiscriminator %}
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
