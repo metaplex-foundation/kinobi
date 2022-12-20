@@ -8,18 +8,7 @@
 // Accounts.
 export type {{ name }}InstructionAccounts = {
 {% for account in accounts %}
-{% if account.isOptionalSigner %}
-{% set accountType = 'PublicKey | Signer' %}
-{% elif account.isSigner %}
-{% set accountType = 'Signer' %}
-{% else %}
-{% set accountType = 'PublicKey' %}
-{% endif %}
-{% if account.isOptional %}
-  {{ account.name }}?: {{ accountType }};
-{% else %}
-  {{ account.name }}: {{ accountType }};
-{% endif %}
+  {{ account.name }}{{ account.optionalSign }}: {{ account.type }};
 {% endfor %}
 };
 {% endif %}

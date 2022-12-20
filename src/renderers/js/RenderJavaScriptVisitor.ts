@@ -79,14 +79,25 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
+    // Imports.
+    const imports = new ImportMap().add('core', ['Context', 'Serializer']);
+
+    // Accounts.
+    const accounts = instruction.accounts.map((account) => ({
+      ...account,
+      type: this.getInstructionAccountType(account),
+      optionalSign: account.isOptional ? '?' : '',
+    }));
+    imports.mergeWith(this.getInstructionAccountImports(accounts));
+
+    // Arguments.
     const argsTypeDefinition = instruction.accept(this.typeDefinitionVisitor);
     const argsSerializer = instruction.accept(this.serializerVisitor);
-    const imports = new ImportMap()
-      .mergeWith(argsTypeDefinition.imports, argsSerializer.imports)
-      .add('core', ['Context', 'Serializer']);
+    imports.mergeWith(argsTypeDefinition.imports, argsSerializer.imports);
 
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       ...instruction,
+      accounts,
       argsTypeDefinition,
       argsSerializer,
       imports,
@@ -106,6 +117,29 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       typeDefinition,
       serializer,
     });
+  }
+
+  protected getInstructionAccountType(
+    account: nodes.InstructionNodeAccount,
+  ): string {
+    if (account.isOptionalSigner) return 'PublicKey | Signer';
+    return account.isSigner ? 'Signer' : 'PublicKey';
+  }
+
+  protected getInstructionAccountImports(
+    accounts: nodes.InstructionNodeAccount[],
+  ): ImportMap {
+    const imports = new ImportMap();
+    accounts.forEach((account) => {
+      if (account.isOptionalSigner) {
+        imports.add('core', ['PublicKey', 'Signer']);
+      } else if (account.isSigner) {
+        imports.add('core', 'Signer');
+      } else {
+        imports.add('core', 'PublicKey');
+      }
+    });
+    return imports;
   }
 
   protected resolveTemplate(
