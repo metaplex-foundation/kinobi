@@ -28,6 +28,7 @@ export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
 
     return new nodes.InstructionNode(
       instruction.name,
+      instruction.program,
       instruction.accounts,
       hasConflictingNames ? visitedArgs : new nodes.TypeStructNode(inlinedArgs),
       instruction.discriminator,

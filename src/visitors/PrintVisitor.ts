@@ -13,11 +13,17 @@ export class PrintVisitor extends BaseVoidVisitor {
   }
 
   visitRoot(root: nodes.RootNode) {
-    const origin = root.origin ? `, origin: ${root.origin}` : '';
-    this.printIndentedText(
-      `[RootNode] ${root.name} (address: ${root.address}${origin})`,
-    );
+    this.printIndentedText('[RootNode]');
     this.indent += 1;
+    this.printIndentedText('programs:');
+    this.indent += 1;
+    root.programs.forEach((program) => {
+      const origin = program.origin ? `, origin: ${program.origin}` : '';
+      this.printIndentedText(
+        `${program.name} (address: ${program.address}${origin})`,
+      );
+    });
+    this.indent -= 1;
     super.visitRoot(root);
     this.indent -= 1;
   }

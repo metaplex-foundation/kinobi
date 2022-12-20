@@ -18,8 +18,7 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
 
     return new nodes.RootNode(
       root.idl,
-      root.name,
-      root.address,
+      root.programs,
       root.accounts.map((account) => {
         const child = account.accept(this);
         nodes.assertAccountNode(child);
@@ -37,7 +36,6 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
           nodes.assertDefinedTypeNode(child);
           return child;
         }),
-      root.origin,
     );
   }
 
