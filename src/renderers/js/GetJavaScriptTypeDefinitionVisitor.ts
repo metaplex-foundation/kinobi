@@ -1,7 +1,6 @@
-import { Visitor } from '../../visitors';
 import * as nodes from '../../nodes';
-
-type ImportMap = Map<'core' | 'types', string[]>;
+import { Visitor } from '../../visitors';
+import { ImportMap } from './ImportMap';
 
 export type JavaScriptTypeDefinition = {
   type: string;
@@ -49,7 +48,7 @@ export class GetJavaScriptTypeDefinitionVisitor
     return {
       type: typeDefinedLink.definedType,
       isEnum: false,
-      imports: new Map().set('types', [typeDefinedLink.definedType]),
+      imports: new ImportMap().add('types', typeDefinedLink.definedType),
     };
   }
 
@@ -63,7 +62,7 @@ export class GetJavaScriptTypeDefinitionVisitor
       return {
         type: `{ ${variantNames.join(', ')} }`,
         isEnum: true,
-        imports: new Map(),
+        imports: new ImportMap(),
       };
     }
 
@@ -91,7 +90,7 @@ export class GetJavaScriptTypeDefinitionVisitor
         return {
           type: `{ ${kindAttribute} }`,
           isEnum: false,
-          imports: new Map(),
+          imports: new ImportMap(),
         };
       },
     );
@@ -105,7 +104,7 @@ export class GetJavaScriptTypeDefinitionVisitor
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): JavaScriptTypeDefinition {
     const base: Omit<JavaScriptTypeDefinition, 'type'> = {
       isEnum: false,
-      imports: new Map(),
+      imports: new ImportMap(),
     };
 
     switch (typeLeaf.type) {
@@ -117,7 +116,7 @@ export class GetJavaScriptTypeDefinitionVisitor
         return {
           ...base,
           type: 'PublicKey',
-          imports: new Map().set('core', ['PublicKey']),
+          imports: new ImportMap().add('core', 'PublicKey'),
         };
       case 'bool':
         return { ...base, type: 'boolean' };
@@ -145,10 +144,7 @@ export class GetJavaScriptTypeDefinitionVisitor
     return {
       ...child,
       type: `Option<${child.type}>`,
-      imports: this.mergeImports([
-        new Map().set('core', ['Option']),
-        child.imports,
-      ]),
+      imports: child.imports.add('core', 'Option'),
     };
   }
 
@@ -193,26 +189,14 @@ export class GetJavaScriptTypeDefinitionVisitor
     };
   }
 
-  protected mergeImports(maps: ImportMap[]): ImportMap {
-    return maps.reduce((all, one) => {
-      one.forEach((value, key) => {
-        const existing = all.get(key);
-        if (existing) {
-          all.set(key, [...new Set([...existing, ...value])]);
-        } else {
-          all.set(key, value);
-        }
-      });
-      return all;
-    }, new Map());
-  }
-
   protected mergeTypeDefinitions(
     typeDefinitions: JavaScriptTypeDefinition[],
   ): Omit<JavaScriptTypeDefinition, 'type'> {
     return {
       isEnum: false,
-      imports: this.mergeImports(typeDefinitions.map((td) => td.imports)),
+      imports: new ImportMap().mergeWith(
+        ...typeDefinitions.map((td) => td.imports),
+      ),
     };
   }
 }

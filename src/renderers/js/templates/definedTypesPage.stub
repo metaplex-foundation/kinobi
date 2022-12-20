@@ -1,12 +1,5 @@
-{% if typeDefinition.imports.size > 0 %}
-{% for importKey, importValues in typeDefinition.imports %}
-{% if importKey === 'core' %}
-{% set importKey = "@metaplex-foundation/js" %}
-{% else %}
-{% set importKey = "." %}
-{% endif %}
-import { {{ importValues | join(', ') }} } from '{{ importKey }}';
-{% endfor %}
+{% if not typeDefinition.imports.isEmpty() %}
+{{ typeDefinition.imports.toString({ types: '.' }) }}
 {% endif %}
 
 {% if docs.length > 0 %}
