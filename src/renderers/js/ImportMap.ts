@@ -1,5 +1,6 @@
 const DEFAULT_MODULE_MAP: Record<string, string> = {
-  core: '@metaplex-foundation/js-core',
+  // core: '@metaplex-foundation/js-core',
+  core: '@lorisleiva/js-core',
   types: '../types',
 };
 
