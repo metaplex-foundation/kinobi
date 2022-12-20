@@ -67,11 +67,19 @@ export function {{ camelCaseName }}(
   {% endif %}
 
   {% endfor %}
+  // Program ID.
+  const programId: PublicKey = context.programs
+    ? context.programs.get('{{ program.name }}')
+    : context.eddsa.createPublicKey('{{ program.address }}');
+
+  // Data.
+  const data = new Uint8Array(); // TODO
+
   return {
     instruction: {
       keys,
-      // programId,
-      // data,
+      programId,
+      data,
     },
     signers,
     bytesCreatedOnChain: 0,
