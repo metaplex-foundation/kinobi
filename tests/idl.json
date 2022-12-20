@@ -188,11 +188,13 @@
             "name": "key",
             "type": {
               "defined": "Key"
-            }
+            },
+            "docs": ["Test with only one line."]
           },
           {
             "name": "lastUpdate",
-            "type": "i64"
+            "type": "i64",
+            "docs": ["Test with multiple lines", "and this is the second line."]
           },
           {
             "name": "period",

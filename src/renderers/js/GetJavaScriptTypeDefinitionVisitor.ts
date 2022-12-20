@@ -154,16 +154,16 @@ export class GetJavaScriptTypeDefinitionVisitor
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): JavaScriptTypeDefinition {
     const fields = typeStruct.fields.map((field) => {
-      // TODO(loris): Add comments.
       const fieldType = field.type.accept(this);
+      const docblock = this.createDocblock(field.docs);
       return {
         ...fieldType,
-        type: `${field.name}: ${fieldType.type}`,
+        type: `${docblock}${field.name}: ${fieldType.type};`,
       };
     });
     return {
       ...this.mergeTypeDefinitions(fields),
-      type: `{ ${fields.map((field) => field.type).join(', ')} }`,
+      type: `{ ${fields.map((field) => field.type).join(' ')} }`,
     };
   }
 
@@ -194,5 +194,12 @@ export class GetJavaScriptTypeDefinitionVisitor
         ...typeDefinitions.map((td) => td.imports),
       ),
     };
+  }
+
+  protected createDocblock(docs: string[]): string {
+    if (docs.length <= 0) return '';
+    if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
+    const lines = docs.map((doc) => ` * ${doc}`);
+    return `\n/**\n${lines.join('\n')}\n */\n`;
   }
 }
