@@ -54,11 +54,8 @@ export class GetJavaScriptTypeDefinitionVisitor
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptTypeDefinition {
     const variantNames = typeEnum.variants.map((variant) => variant.name);
-    const allVariantsAreEmpty = typeEnum.variants.every(
-      (variant) => variant.kind === 'empty',
-    );
 
-    if (allVariantsAreEmpty) {
+    if (typeEnum.isScalarEnum()) {
       return {
         type: `{ ${variantNames.join(', ')} }`,
         isEnum: true,

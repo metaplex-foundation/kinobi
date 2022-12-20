@@ -77,6 +77,14 @@ export class TypeEnumNode implements Visitable {
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypeEnum(this);
   }
+
+  isScalarEnum(): boolean {
+    return this.variants.every((variant) => variant.kind === 'empty');
+  }
+
+  isDataEnum(): boolean {
+    return !this.isScalarEnum();
+  }
 }
 
 export function isTypeEnumNode(node: Node): node is TypeEnumNode {
