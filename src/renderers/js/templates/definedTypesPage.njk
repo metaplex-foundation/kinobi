@@ -2,14 +2,8 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{% if not typeDefinition.imports.isEmpty() %}
-{{ typeDefinition.imports.toString({ types: '.' }) }}
-{% endif %}
+{{ macros.imports(typeDefinition.imports, { types: '.' }) }}
 
 {{ macros.docblock(docs) }}
-{% if typeDefinition.isEnum %}
-export enum {{ name }} {{ typeDefinition.type }};
-{% else %}
-export type {{ name }} = {{ typeDefinition.type }};
-{% endif %}
+{{ macros.exportType(name, typeDefinition) }}
 {% endblock %}

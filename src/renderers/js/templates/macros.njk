@@ -1,3 +1,4 @@
+{# Write a docblock from an array of strings. #}
 {% macro docblock(docs) %}
 {%- if docs.length === 1 -%}
 /** {{ docs[0] }} */
@@ -7,5 +8,21 @@
  * {{ doc }}
 {% endfor %}
  */
+{% endif %}
+{% endmacro %}
+
+{# Import dependencies from provided modules. #}
+{% macro imports(importMap, moduleMap = {}) %}
+{%- if not importMap.isEmpty() -%}
+{{ importMap.toString(moduleMap) }}
+{% endif %}
+{% endmacro %}
+
+{# Export a type or an enum. #}
+{% macro exportType(name, typeDefinition) %}
+{%- if typeDefinition.isEnum -%}
+export enum {{ name }} {{ typeDefinition.type }};
+{%- else -%}
+export type {{ name }} = {{ typeDefinition.type }};
 {% endif %}
 {% endmacro %}
