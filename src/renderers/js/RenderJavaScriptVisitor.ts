@@ -101,7 +101,16 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitInstruction(instruction: nodes.InstructionNode): void {
     const argsTypeDefinition = instruction.accept(this.typeDefinitionVisitor);
-    const context = { ...instruction, argsTypeDefinition };
+    const argsSerializer = instruction.accept(this.serializerVisitor);
+    const imports = new ImportMap()
+      .mergeWith(argsTypeDefinition.imports, argsSerializer.imports)
+      .add('core', ['Context', 'Serializer']);
+    const context = {
+      ...instruction,
+      argsTypeDefinition,
+      argsSerializer,
+      imports,
+    };
 
     createFile(
       `${this.path}/instructions/${instruction.name}.ts`,

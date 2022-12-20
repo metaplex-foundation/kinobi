@@ -2,7 +2,9 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{{ macros.imports(argsTypeDefinition.imports) }}
+{{ macros.imports(imports) }}
 
 {{ macros.exportType(name + 'Args', argsTypeDefinition) }}
+
+{{ macros.exportSerializer(name + 'Args', argsSerializer) }}
 {% endblock %}
