@@ -66,6 +66,16 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     super.visitRoot(root);
   }
 
+  visitAccount(account: nodes.AccountNode): void {
+    const typeDefinition = account.accept(this.typeDefinitionVisitor);
+    const context = { ...account, typeDefinition };
+
+    createFile(
+      `${this.path}/accounts/${account.name}.ts`,
+      this.resolveTemplate('accountsPage.njk', context),
+    );
+  }
+
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
     const typeDefinition = definedType.accept(this.typeDefinitionVisitor);
     const context = { ...definedType, typeDefinition };

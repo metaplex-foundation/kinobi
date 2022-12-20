@@ -1,0 +1,9 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as macros %}
+
+{% block main %}
+{{ macros.imports(typeDefinition.imports, { types: '../types' }) }}
+
+{{ macros.docblock(docs) }}
+{{ macros.exportType(name, typeDefinition) }}
+{% endblock %}
