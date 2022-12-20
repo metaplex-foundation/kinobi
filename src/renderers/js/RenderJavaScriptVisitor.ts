@@ -56,11 +56,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   }
 
   visitRoot(root: nodes.RootNode): void {
-    const context = { ...root };
-    this.render('rootIndex.njk', 'index.ts', context);
-    this.render('accountsIndex.njk', 'accounts/index.ts', context);
-    this.render('instructionsIndex.njk', 'instructions/index.ts', context);
-    this.render('definedTypesIndex.njk', 'types/index.ts', context);
+    this.render('rootIndex.njk', 'index.ts', root);
+    this.render('accountsIndex.njk', 'accounts/index.ts', root);
+    this.render('instructionsIndex.njk', 'instructions/index.ts', root);
+    this.render('definedTypesIndex.njk', 'types/index.ts', root);
     super.visitRoot(root);
   }
 
@@ -72,10 +71,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       .add('core', ['Context', 'Serializer']);
 
     this.render('accountsPage.njk', `accounts/${account.name}.ts`, {
-      ...account,
+      account,
+      imports,
       typeDefinition,
       serializer,
-      imports,
+      name: account.name,
     });
   }
 
@@ -104,11 +104,12 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     imports.mergeWith(argsTypeDefinition.imports, argsSerializer.imports);
 
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
-      ...instruction,
+      instruction,
       imports,
       accounts,
       argsTypeDefinition,
       argsSerializer,
+      name: instruction.name,
       camelCaseName: camelCase(instruction.name),
     });
   }
@@ -121,10 +122,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       .add('core', ['Context', 'Serializer']);
 
     this.render('definedTypesPage.njk', `types/${definedType.name}.ts`, {
-      ...definedType,
+      definedType,
       imports,
       typeDefinition,
       serializer,
+      name: definedType.name,
     });
   }
 

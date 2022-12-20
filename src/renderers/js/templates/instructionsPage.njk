@@ -4,23 +4,8 @@
 {% block main %}
 {{ macros.imports(imports) }}
 
-{% if accounts.length > 0 %}
-// Accounts.
-export type {{ name }}InstructionAccounts = {
-{% for account in accounts %}
-{% if account.description.length > 0 %}
-  {{ macros.docblock([account.description]) }}
-{% endif %}
-  {{ account.name }}{{ account.optionalSign }}: {{ account.type }};
-{% endfor %}
-};
-{% endif %}
-
-// Arguments.
-{{ macros.exportType(name + 'InstructionArgs', argsTypeDefinition) }}
-
-// Arguments Serializer.
-{{ macros.exportSerializer(name + 'InstructionArgs', argsSerializer) }}
+{% include "InstructionsPageAccounts.njk" %}
+{% include "InstructionsPageArgs.njk" %}
 
 // Instruction.
 export function {{ camelCaseName }}(
@@ -69,18 +54,14 @@ export function {{ camelCaseName }}(
   {% endfor %}
   // Program ID.
   const programId: PublicKey = context.programs
-    ? context.programs.get('{{ program.name }}')
-    : context.eddsa.createPublicKey('{{ program.address }}');
+    ? context.programs.get('{{ instruction.program.name }}')
+    : context.eddsa.createPublicKey('{{ instruction.program.address }}');
 
   // Data.
   const data = new Uint8Array(); // TODO
 
   return {
-    instruction: {
-      keys,
-      programId,
-      data,
-    },
+    instruction: { keys, programId, data },
     signers,
     bytesCreatedOnChain: 0,
   }

@@ -69,6 +69,22 @@ export class InstructionNode implements Visitable {
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitInstruction(this);
   }
+
+  get hasAccounts(): boolean {
+    return this.accounts.length > 0;
+  }
+
+  get hasDiscriminator(): boolean {
+    return Boolean(this.discriminator);
+  }
+
+  get hasArgs(): boolean {
+    return this.args.fields.length > 0;
+  }
+
+  get hasData(): boolean {
+    return this.hasArgs || this.hasDiscriminator;
+  }
 }
 
 export function isInstructionNode(node: Node): node is InstructionNode {
