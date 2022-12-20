@@ -12,6 +12,7 @@ export type IdlInstructionAccount = {
   name: string;
   isMut: boolean;
   isSigner: boolean;
+  isOptionalSigner?: boolean;
   desc?: string;
   optional?: boolean;
 };

@@ -9,6 +9,7 @@ export type InstructionNodeAccount = {
   name: string;
   isMutable: boolean;
   isSigner: boolean;
+  isOptionalSigner: boolean;
   isOptional: boolean;
   description: string;
 };
@@ -35,6 +36,7 @@ export class InstructionNode implements Visitable {
         name: account.name ?? '',
         isMutable: account.isMut ?? false,
         isSigner: account.isSigner ?? false,
+        isOptionalSigner: account.isOptionalSigner ?? false,
         isOptional: account.optional ?? false,
         description: account.desc ?? '',
       }),
