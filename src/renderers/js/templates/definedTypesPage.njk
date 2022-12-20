@@ -1,3 +1,6 @@
+{% extends "layout.njk" %}
+
+{% block main %}
 {% if not typeDefinition.imports.isEmpty() %}
 {{ typeDefinition.imports.toString({ types: '.' }) }}
 {% endif %}
@@ -14,3 +17,4 @@ export enum {{ name }} {{ typeDefinition.type }};
 {% else %}
 export type {{ name }} = {{ typeDefinition.type }};
 {% endif %}
+{% endblock %}
