@@ -2,8 +2,13 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{{ macros.imports(typeDefinition.imports, { types: '.' }) }}
+{{ macros.imports(imports, { types: '.' }) }}
 
 {{ macros.docblock(docs) }}
 {{ macros.exportType(name, typeDefinition) }}
+
+export function get{{ name }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}> {
+  const s = context.serializer;
+  return {{ serializer.code }};
+}
 {% endblock %}

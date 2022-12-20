@@ -11,6 +11,7 @@ import {
   GetJavaScriptTypeDefinitionVisitor,
   JavaScriptTypeDefinition,
 } from './GetJavaScriptTypeDefinitionVisitor';
+import { ImportMap } from './ImportMap';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -106,7 +107,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
     const typeDefinition = definedType.accept(this.typeDefinitionVisitor);
-    const context = { ...definedType, typeDefinition };
+    const serializer = definedType.accept(this.serializerVisitor);
+    const imports = new ImportMap()
+      .mergeWith(typeDefinition.imports, serializer.imports)
+      .addAll('core', ['Context', 'Serializer']);
+    const context = { ...definedType, imports, typeDefinition, serializer };
 
     createFile(
       `${this.path}/types/${definedType.name}.ts`,

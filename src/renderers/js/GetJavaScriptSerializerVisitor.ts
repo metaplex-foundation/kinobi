@@ -34,7 +34,7 @@ export class GetJavaScriptSerializerVisitor
     const itemType = typeArray.itemType.accept(this);
     return {
       ...itemType,
-      code: `${this.s('array')}(${itemType.code})`, // TODO
+      code: `${this.s('array')}(${itemType.code}, ${typeArray.size})`, // TODO
     };
   }
 
@@ -51,14 +51,45 @@ export class GetJavaScriptSerializerVisitor
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptSerializer {
     if (typeEnum.isScalarEnum()) {
       return {
-        code: this.s('enum'), // TODO
+        code: `${this.s('enum')}`, // TODO (get enum name first :/).
         imports: new ImportMap(),
       };
     }
 
+    const variants = typeEnum.variants.map((variant): JavaScriptSerializer => {
+      if (variant.kind === 'struct') {
+        const type = variant.type.accept(this);
+        return {
+          ...type,
+          code: `['${variant.name}', ${type.code}]`, // TODO
+        };
+      }
+
+      if (variant.kind === 'tuple') {
+        const struct = new nodes.TypeStructNode([
+          {
+            name: 'fields',
+            type: new nodes.TypeTupleNode(variant.fields),
+            docs: [],
+          },
+        ]);
+        const type = struct.accept(this);
+        return {
+          ...type,
+          code: `['${variant.name}', ${type.code}]`, // TODO
+        };
+      }
+
+      return {
+        imports: new ImportMap(),
+        code: `['${variant.name}']`, // TODO
+      };
+    });
+    const variantCodes = variants.map((variant) => variant.code).join(', ');
+
     return {
-      code: this.s('dataEnum'), // TODO
-      imports: new ImportMap(),
+      ...this.mergeSerializers(variants),
+      code: `${this.s('dataEnum')}([${variantCodes}])`, // TODO
     };
   }
 
@@ -75,7 +106,7 @@ export class GetJavaScriptSerializerVisitor
     const key = typeMap.keyType.accept(this);
     const value = typeMap.valueType.accept(this);
     return {
-      ...this.mergeTypeDefinitions([key, value]),
+      ...this.mergeSerializers([key, value]),
       code: `${this.s('map')}(${key.code}, ${value.code})`, // TODO
     };
   }
@@ -101,12 +132,12 @@ export class GetJavaScriptSerializerVisitor
       const fieldType = field.type.accept(this);
       return {
         ...fieldType,
-        code: `[${field.name}, ${fieldType.code}]`,
+        code: `['${field.name}', ${fieldType.code}]`,
       };
     });
     const fieldCodes = fields.map((field) => field.code).join(', ');
     return {
-      ...this.mergeTypeDefinitions(fields),
+      ...this.mergeSerializers(fields),
       code: `${this.s('struct')}([${fieldCodes}])`, // TODO
     };
   }
@@ -115,7 +146,7 @@ export class GetJavaScriptSerializerVisitor
     const items = typeTuple.itemTypes.map((itemType) => itemType.accept(this));
     const itemCodes = items.map((item) => item.code).join(', ');
     return {
-      ...this.mergeTypeDefinitions(items),
+      ...this.mergeSerializers(items),
       code: `${this.s('tuple')}([${itemCodes}])`, // TODO
     };
   }
@@ -128,7 +159,7 @@ export class GetJavaScriptSerializerVisitor
     };
   }
 
-  protected mergeTypeDefinitions(
+  protected mergeSerializers(
     typeDefinitions: JavaScriptSerializer[],
   ): Omit<JavaScriptSerializer, 'code'> {
     return {
