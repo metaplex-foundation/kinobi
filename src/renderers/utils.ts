@@ -14,14 +14,15 @@ export const createFile = (path: string, content: string): void => {
 };
 
 export const resolveTemplate = (
-  path: string,
+  directory: string,
+  file: string,
   context?: object,
   options?: ConfigureOptions,
 ): string => {
-  const env = nunjucks.configure({
+  const env = nunjucks.configure(`${__dirname}/${directory}`, {
     trimBlocks: true,
     autoescape: false,
     ...options,
   });
-  return env.render(`${__dirname}/${path}`, context);
+  return env.render(file, context);
 };

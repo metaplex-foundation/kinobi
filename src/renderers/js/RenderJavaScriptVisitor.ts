@@ -81,7 +81,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     options?: ConfigureOptions,
   ): string {
     return formatCode(
-      resolveTemplate(`js/templates/${path}`, context, options),
+      resolveTemplate('js/templates', path, context, options),
       this.prettierOptions,
     );
   }

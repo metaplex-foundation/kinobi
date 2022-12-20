@@ -1,3 +1,7 @@
+{% extends "layout.stub" %}
+
+{% block main %}
 {% for definedType in definedTypes | sort(false, false, 'name') %}
 export * from './{{ definedType.name }}';
 {% endfor %}
+{% endblock %}
