@@ -16,8 +16,8 @@ export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 's
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{}> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
-  const serializer = {{ dataSerializer.code }};
-  return mapSerializer(serializer, (value) => ({ ...value, discriminator }));
+  const serializer: Serializer<{ discriminator: {{ name }}InstructionDiscriminator }> = {{ dataSerializer.code }};
+  return mapSerializer(serializer, () => ({ discriminator }));
 }
 {% endif %}
 
