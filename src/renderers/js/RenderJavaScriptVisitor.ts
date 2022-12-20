@@ -76,6 +76,16 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     );
   }
 
+  visitInstruction(instruction: nodes.InstructionNode): void {
+    const argsTypeDefinition = instruction.accept(this.typeDefinitionVisitor);
+    const context = { ...instruction, argsTypeDefinition };
+
+    createFile(
+      `${this.path}/instructions/${instruction.name}.ts`,
+      this.resolveTemplate('instructionsPage.njk', context),
+    );
+  }
+
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
     const typeDefinition = definedType.accept(this.typeDefinitionVisitor);
     const context = { ...definedType, typeDefinition };
