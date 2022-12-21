@@ -75,14 +75,14 @@ export class GetJavaScriptSerializerVisitor
         code:
           `${this.s('enum')}<${definedName}>` +
           `(${definedName}, '${definedName}')`,
-        imports: new ImportMap().add('types', definedName),
+        imports: new ImportMap(),
       };
     }
 
     const variants = typeEnum.variants.map((variant): JavaScriptSerializer => {
-      // this.definedName = definedName
-      //   ? `${definedName} & { __kind: '${variant.name}' }`
-      //   : null;
+      this.definedName = definedName
+        ? `Omit<${definedName} & { __kind: '${variant.name}' }, '__kind'>`
+        : null;
 
       if (variant.kind === 'struct') {
         const type = variant.type.accept(this);
@@ -116,11 +116,8 @@ export class GetJavaScriptSerializerVisitor
     const description =
       typeEnum.name || definedName ? `, '${typeEnum.name || definedName}'` : '';
 
-    const { imports } = this.mergeSerializers(variants);
-    if (definedName) imports.add('types', definedName);
-
     return {
-      imports,
+      ...this.mergeSerializers(variants),
       code:
         `${this.s('dataEnum')}<${definedName || 'any'}>` +
         `([${variantCodes}]${description})`,
@@ -178,11 +175,9 @@ export class GetJavaScriptSerializerVisitor
 
     const fieldCodes = fields.map((field) => field.code).join(', ');
     const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
-    const { imports } = this.mergeSerializers(fields);
-    if (definedName) imports.add('types', definedName);
 
     return {
-      imports,
+      ...this.mergeSerializers(fields),
       code:
         `${this.s('struct')}<${definedName || 'any'}>` +
         `([${fieldCodes}]${structDescription})`,
