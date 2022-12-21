@@ -2,7 +2,7 @@ import type { IdlDefinedType } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import type { TypeEnumNode } from './TypeEnumNode';
-import { createTypeNodeFromIdl } from './TypeNode';
+import { assertTypeStructOrEnumNode, createTypeNodeFromIdl } from './TypeNode';
 import type { TypeStructNode } from './TypeStructNode';
 
 export class DefinedTypeNode implements Visitable {
@@ -16,9 +16,9 @@ export class DefinedTypeNode implements Visitable {
 
   static fromIdl(idl: Partial<IdlDefinedType>): DefinedTypeNode {
     const name = idl.name ?? '';
-    const type = createTypeNodeFromIdl(
-      idl.type ?? { kind: 'struct', fields: [] },
-    ) as TypeStructNode | TypeEnumNode;
+    const idlType = idl.type ?? { kind: 'struct', fields: [] };
+    const type = createTypeNodeFromIdl({ name, ...idlType });
+    assertTypeStructOrEnumNode(type);
     const docs = idl.docs ?? [];
     return new DefinedTypeNode(name, type, docs);
   }
