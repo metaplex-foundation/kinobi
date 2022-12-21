@@ -80,8 +80,13 @@ export class GetJavaScriptSerializerVisitor
     }
 
     const variants = typeEnum.variants.map((variant): JavaScriptSerializer => {
+      // this.definedName = definedName
+      //   ? `${definedName} & { __kind: '${variant.name}' }`
+      //   : null;
+
       if (variant.kind === 'struct') {
         const type = variant.type.accept(this);
+        this.definedName = null;
         return {
           ...type,
           code: `['${variant.name}', ${type.code}]`,
@@ -93,12 +98,14 @@ export class GetJavaScriptSerializerVisitor
           { name: 'fields', type: variant.type, docs: [] },
         ]);
         const type = struct.accept(this);
+        this.definedName = null;
         return {
           ...type,
           code: `['${variant.name}', ${type.code}]`,
         };
       }
 
+      this.definedName = null;
       return {
         imports: new ImportMap(),
         code: `['${variant.name}']`,
