@@ -116,22 +116,21 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     // Data.
     let dataSerializer: JavaScriptSerializer | undefined;
     if (instruction.hasData) {
-      const struct = new nodes.TypeStructNode(
-        `${instruction.name}InstructionData`,
-        [
-          ...(instruction.discriminator
-            ? [
-                {
-                  name: 'discriminator',
-                  type: instruction.discriminator.type,
-                  docs: [],
-                },
-              ]
-            : []),
-          ...instruction.args.fields,
-        ],
-      );
-      dataSerializer = struct.accept(this.serializerVisitor);
+      const ixDataName = `${instruction.name}InstructionData`;
+      const struct = new nodes.TypeStructNode(ixDataName, [
+        ...(instruction.discriminator
+          ? [
+              {
+                name: 'discriminator',
+                type: instruction.discriminator.type,
+                docs: [],
+              },
+            ]
+          : []),
+        ...instruction.args.fields,
+      ]);
+      const definedType = new nodes.DefinedTypeNode(ixDataName, struct, []);
+      dataSerializer = definedType.accept(this.serializerVisitor);
       imports.mergeWith(dataSerializer.imports);
       if (instruction.hasDiscriminator) {
         imports.add('core', 'mapSerializer');
