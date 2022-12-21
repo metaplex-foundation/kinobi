@@ -1,7 +1,7 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import { camelCase, titleCase } from '../../utils';
+import { camelCase, pascalCase, titleCase } from '../../utils';
 import { BaseVoidVisitor, Visitor } from '../../visitors';
 import { createFile, deleteFolder, resolveTemplate } from '../utils';
 import {
@@ -112,6 +112,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
         type: this.getInstructionAccountType(account),
         optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
         titleCaseName: titleCase(account.name),
+        pascalCaseName: pascalCase(account.name),
         hasDefaultValue,
       };
     });

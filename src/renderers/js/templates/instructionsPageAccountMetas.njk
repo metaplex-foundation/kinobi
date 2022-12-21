@@ -2,17 +2,22 @@
   {% set isWritableString = 'true' if account.isWritable else 'false' %}
   // {{ account.titleCaseName }}{% if account.isOptional %} (optional){% endif %}.
   {% if account.hasDefaultValue %}
-    keys.push({
       {% if account.defaultsTo.kind === 'program' %}
-        pubkey: accounts.{{ account.name }} ?? (context.programs
-          ? context.programs.get('{{ account.defaultsTo.program.name }}').address
-          : context.eddsa.createPublicKey('{{ account.defaultsTo.program.address }}')),
+        const default{{ account.pascalCaseName }} = context.eddsa.createPublicKey('{{ account.defaultsTo.program.address }}');
+        keys.push({
+          pubkey: accounts.{{ account.name }}
+            ?? context.programs?.getAddress('{{ account.defaultsTo.program.name }}', default{{ account.pascalCaseName }})
+            ?? default{{ account.pascalCaseName }},
+          isSigner: false,
+          isWritable: {{ isWritableString }},
+        });
       {% else %}
-        pubkey: accounts.{{ account.name }} ?? context.eddsa.createPublicKey('{{ account.defaultsTo.address }}'),
+        keys.push({
+          pubkey: accounts.{{ account.name }} ?? context.eddsa.createPublicKey('{{ account.defaultsTo.address }}'),
+          isSigner: false,
+          isWritable: {{ isWritableString }},
+        });
       {% endif %}
-      isSigner: false,
-      isWritable: {{ isWritableString }},
-    });
   {% else %}
     {% if account.isOptional %}
     if (accounts.{{ account.name }}) {
