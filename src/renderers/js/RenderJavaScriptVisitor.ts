@@ -68,10 +68,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const serializer = account.accept(this.serializerVisitor);
     const imports = new ImportMap()
       .mergeWith(typeDefinition.imports, serializer.imports)
-      .add('core', ['Context', 'Serializer']);
-
-    // Remove imports from the same module.
-    imports.remove('types', [account.name]);
+      .add('core', ['Context', 'Serializer'])
+      .remove('types', [account.name]);
 
     this.render('accountsPage.njk', `accounts/${account.name}.ts`, {
       account,
@@ -164,10 +162,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const serializer = definedType.accept(this.serializerVisitor);
     const imports = new ImportMap()
       .mergeWith(typeDefinition.imports, serializer.imports)
-      .add('core', ['Context', 'Serializer']);
-
-    // Remove imports from the same module.
-    imports.remove('types', [definedType.name]);
+      .add('core', ['Context', 'Serializer'])
+      .remove('types', [definedType.name]);
 
     this.render('definedTypesPage.njk', `types/${definedType.name}.ts`, {
       definedType,
