@@ -30,6 +30,7 @@ export type RenderJavaScriptOptions = {
   prettier?: PrettierOptions;
   typeDefinitionVisitor?: Visitor<JavaScriptTypeDefinition>;
   serializerVisitor?: Visitor<JavaScriptSerializer>;
+  deleteFolderBeforeRendering?: boolean;
 };
 
 export class RenderJavaScriptVisitor extends BaseVoidVisitor {
@@ -40,6 +41,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   readonly typeDefinitionVisitor: Visitor<JavaScriptTypeDefinition>;
 
   readonly serializerVisitor: Visitor<JavaScriptSerializer>;
+
+  readonly deleteFolderBeforeRendering: boolean;
 
   constructor(
     readonly path: string,
@@ -53,9 +56,15 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       new GetJavaScriptTypeDefinitionVisitor();
     this.serializerVisitor =
       this.options.serializerVisitor ?? new GetJavaScriptSerializerVisitor();
+    this.deleteFolderBeforeRendering =
+      options.deleteFolderBeforeRendering ?? true;
   }
 
   visitRoot(root: nodes.RootNode): void {
+    if (this.deleteFolderBeforeRendering) {
+      //
+    }
+
     this.render('rootIndex.njk', 'index.ts', root);
     this.render('accountsIndex.njk', 'accounts/index.ts', root);
     this.render('instructionsIndex.njk', 'instructions/index.ts', root);
@@ -202,7 +211,12 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     context?: object,
     options?: ConfigureOptions,
   ): string {
-    const code = resolveTemplate('js/templates', template, context, options);
+    const code = resolveTemplate(
+      `${__dirname}/templates`,
+      template,
+      context,
+      options,
+    );
     return this.formatCode ? formatCode(code, this.prettierOptions) : code;
   }
 

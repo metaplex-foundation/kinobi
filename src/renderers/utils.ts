@@ -19,7 +19,7 @@ export const resolveTemplate = (
   context?: object,
   options?: ConfigureOptions,
 ): string => {
-  const env = nunjucks.configure(`${__dirname}/${directory}`, {
+  const env = nunjucks.configure(directory, {
     trimBlocks: true,
     autoescape: false,
     ...options,
