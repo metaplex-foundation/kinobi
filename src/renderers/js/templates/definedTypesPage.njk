@@ -29,7 +29,7 @@ export function create{{ name }}<K extends {{ name }}['__kind']>(
 export function is{{ name }}<K extends {{ name }}['__kind']>(
   kind: K,
   value: {{ name }},
-): value is {{ name }} & { __kind: K } => {
+): value is {{ name }} & { __kind: K } {
   return value.__kind === kind;
 };
 {% endif %}
