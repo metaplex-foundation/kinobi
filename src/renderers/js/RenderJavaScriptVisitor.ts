@@ -94,8 +94,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const imports = new ImportMap().add('core', [
       'AccountMeta',
       'Context',
-      'Signer',
+      'getProgramAddressWithFallback',
       'PublicKey',
+      'Signer',
       'WrappedInstruction',
       ...(instruction.hasAccounts || instruction.hasData ? ['Serializer'] : []),
     ]);
