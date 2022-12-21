@@ -17,9 +17,11 @@ export class AccountNode implements Visitable {
 
   static fromIdl(idl: Partial<IdlAccount>, program: Program): AccountNode {
     const name = idl.name ?? '';
-    const type = createTypeNodeFromIdl(
-      idl.type ?? { kind: 'struct', fields: [] },
-    ) as TypeStructNode;
+    const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
+    const type = createTypeNodeFromIdl({
+      name,
+      ...idlStruct,
+    }) as TypeStructNode;
     const docs = idl.docs ?? [];
     return new AccountNode(name, program, type, docs);
   }
