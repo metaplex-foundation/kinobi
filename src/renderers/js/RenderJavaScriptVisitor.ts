@@ -101,12 +101,20 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     ]);
 
     // Accounts.
-    const accounts = instruction.accounts.map((account) => ({
-      ...account,
-      type: this.getInstructionAccountType(account),
-      optionalSign: account.isOptional ? '?' : '',
-      titleCaseName: titleCase(account.name),
-    }));
+    const accounts = instruction.accounts.map((account) => {
+      const hasDefaultValue =
+        account.defaultsTo &&
+        !account.isOptional &&
+        !account.isSigner &&
+        !account.isOptionalSigner;
+      return {
+        ...account,
+        type: this.getInstructionAccountType(account),
+        optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
+        titleCaseName: titleCase(account.name),
+        hasDefaultValue,
+      };
+    });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
 
     // Arguments.
