@@ -83,12 +83,13 @@ export class GetJavaScriptSerializerVisitor
     });
 
     const variantCodes = variants.map((variant) => variant.code).join(', ');
+    const enumTypeParam = typeEnum.name ? `<${typeEnum.name}>` : '';
     const { imports } = this.mergeSerializers(variants);
-    imports.add('types', typeEnum.name);
+    if (typeEnum.name) imports.add('types', typeEnum.name);
 
     return {
       imports,
-      code: `${this.s('dataEnum')}<${typeEnum.name}>([${variantCodes}])`,
+      code: `${this.s('dataEnum')}${enumTypeParam}([${variantCodes}])`,
     };
   }
 
