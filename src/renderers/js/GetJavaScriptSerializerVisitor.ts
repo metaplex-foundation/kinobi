@@ -51,7 +51,7 @@ export class GetJavaScriptSerializerVisitor
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptSerializer {
     if (typeEnum.isScalarEnum()) {
       return {
-        code: `${this.s('enum')}`, // TODO (get enum name first :/).
+        code: `${this.s('enum')}(${typeEnum.name})`, // TODO (get enum name first :/).
         imports: new ImportMap(),
       };
     }
