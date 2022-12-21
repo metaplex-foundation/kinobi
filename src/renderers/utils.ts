@@ -26,3 +26,9 @@ export const resolveTemplate = (
   });
   return env.render(file, context);
 };
+
+export const deleteFolder = (path: string): void => {
+  if (fs.existsSync(path)) {
+    fs.rmSync(path, { recursive: true });
+  }
+};

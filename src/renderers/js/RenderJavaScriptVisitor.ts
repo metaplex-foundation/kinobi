@@ -3,7 +3,7 @@ import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
 import { camelCase, titleCase } from '../../utils';
 import { BaseVoidVisitor, Visitor } from '../../visitors';
-import { createFile, resolveTemplate } from '../utils';
+import { createFile, deleteFolder, resolveTemplate } from '../utils';
 import {
   GetJavaScriptSerializerVisitor,
   JavaScriptSerializer,
@@ -62,7 +62,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitRoot(root: nodes.RootNode): void {
     if (this.deleteFolderBeforeRendering) {
-      //
+      deleteFolder(this.path);
     }
 
     this.render('rootIndex.njk', 'index.ts', root);
