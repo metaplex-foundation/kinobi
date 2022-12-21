@@ -6,6 +6,11 @@ import { assertTypeLeafNode, TypeLeafNode } from './TypeLeafNode';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 
+export type InstructionNodeAccountDefaults =
+  | { kind: 'address'; address: string }
+  | { kind: 'program'; program: Program }
+  | null;
+
 export type InstructionNodeAccount = {
   name: string;
   isMutable: boolean;
@@ -13,6 +18,7 @@ export type InstructionNodeAccount = {
   isOptionalSigner: boolean;
   isOptional: boolean;
   description: string;
+  defaultsTo: InstructionNodeAccountDefaults;
 };
 
 export type InstructionNodeDiscriminator = {
@@ -44,6 +50,7 @@ export class InstructionNode implements Visitable {
         isOptionalSigner: account.isOptionalSigner ?? false,
         isOptional: account.optional ?? false,
         description: account.desc ?? '',
+        defaultsTo: null,
       }),
     );
     let discriminator: InstructionNodeDiscriminator | null = null;
