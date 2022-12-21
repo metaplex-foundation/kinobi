@@ -38,12 +38,9 @@ export class TypeEnumNode implements Visitable {
     const name = idl.name ?? '';
     const variants = idl.variants.map((variant): TypeEnumNodeVariant => {
       const variantName = variant.name ?? '';
-      const namespacedVariantName = [name, variantName]
-        .filter((n) => !!n)
-        .join('.');
 
       if (!variant.fields || variant.fields.length <= 0) {
-        return { kind: 'empty', name: namespacedVariantName };
+        return { kind: 'empty', name: variantName };
       }
 
       function isStructField(field: any): boolean {
@@ -53,7 +50,7 @@ export class TypeEnumNode implements Visitable {
       if (isStructField(variant.fields[0])) {
         return {
           kind: 'struct',
-          name: namespacedVariantName,
+          name: variantName,
           type: TypeStructNode.fromIdl({
             kind: 'struct',
             name: variantName,
@@ -64,7 +61,7 @@ export class TypeEnumNode implements Visitable {
 
       return {
         kind: 'tuple',
-        name: namespacedVariantName,
+        name: variantName,
         type: TypeTupleNode.fromIdl({ tuple: variant.fields as IdlType[] }),
       };
     });
