@@ -60,7 +60,11 @@ export class InstructionNode implements Visitable {
       idl.name ?? '',
       program,
       accounts,
-      TypeStructNode.fromIdl({ kind: 'struct', fields: idl.args ?? [] }),
+      TypeStructNode.fromIdl({
+        kind: 'struct',
+        name: idl.name ? `${idl.name}InstructionArgs` : '',
+        fields: idl.args ?? [],
+      }),
       discriminator,
       idl.defaultOptionalAccounts ?? false,
     );

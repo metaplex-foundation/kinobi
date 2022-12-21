@@ -118,6 +118,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node {
     return new nodes.TypeStructNode(
+      typeStruct.name,
       typeStruct.fields.map((field): nodes.TypeStructNodeField => {
         const fieldType = field.type.accept(this);
         nodes.assertTypeNode(fieldType);

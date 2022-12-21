@@ -66,7 +66,7 @@ export class GetJavaScriptSerializerVisitor
       }
 
       if (variant.kind === 'tuple') {
-        const struct = new nodes.TypeStructNode([
+        const struct = new nodes.TypeStructNode(variant.name, [
           { name: 'fields', type: variant.type, docs: [] },
         ]);
         const type = struct.accept(this);

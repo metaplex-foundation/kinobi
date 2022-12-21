@@ -30,7 +30,7 @@ export class TypeEnumNode implements Visitable {
   readonly nodeClass = 'TypeEnumNode' as const;
 
   constructor(
-    readonly name: string | null,
+    readonly name: string,
     readonly variants: TypeEnumNodeVariant[],
   ) {}
 
@@ -53,6 +53,7 @@ export class TypeEnumNode implements Visitable {
           name: variantName,
           type: TypeStructNode.fromIdl({
             kind: 'struct',
+            name: variantName,
             fields: variant.fields as IdlTypeEnumField[],
           }),
         };
@@ -65,7 +66,7 @@ export class TypeEnumNode implements Visitable {
       };
     });
 
-    return new TypeEnumNode(name, variants);
+    return new TypeEnumNode(name ?? '', variants);
   }
 
   accept<T>(visitor: Visitor<T>): T {

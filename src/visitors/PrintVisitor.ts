@@ -137,7 +137,7 @@ export class PrintVisitor extends BaseVoidVisitor {
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): void {
-    this.printIndentedText('[TypeStructNode]');
+    this.printIndentedText(`[TypeStructNode] ${typeStruct.name}`);
     this.indent += 1;
     typeStruct.fields.forEach((field) => {
       this.printIndentedText(`${field.name}:`);

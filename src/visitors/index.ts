@@ -1,6 +1,7 @@
 export * from './BaseNodeVisitor';
 export * from './BaseRootVisitor';
 export * from './BaseVoidVisitor';
+export * from './FillStructAndEnumNamesVisitor';
 export * from './GetDefinedTypeHistogramVisitor';
 export * from './InlineDefinedTypesForInstructionArgsVisitor';
 export * from './InlineDefinedTypesVisitor';

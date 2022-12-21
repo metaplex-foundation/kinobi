@@ -12,7 +12,7 @@ export type TypeStructNodeField = {
 export class TypeStructNode implements Visitable {
   readonly nodeClass = 'TypeStructNode' as const;
 
-  constructor(readonly fields: TypeStructNodeField[]) {}
+  constructor(readonly name: string, readonly fields: TypeStructNodeField[]) {}
 
   static fromIdl(idl: IdlTypeStruct): TypeStructNode {
     const fields = (idl.fields ?? []).map((field) => ({
@@ -21,7 +21,7 @@ export class TypeStructNode implements Visitable {
       docs: field.docs ?? [],
     }));
 
-    return new TypeStructNode(fields);
+    return new TypeStructNode(idl.name ?? '', fields);
   }
 
   accept<T>(visitor: Visitor<T>): T {

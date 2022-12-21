@@ -34,6 +34,7 @@ export type IdlTypeBTreeSet = { bTreeSet: IdlType };
 // Struct.
 export type IdlTypeStruct = {
   kind: 'struct';
+  name?: string;
   fields: IdlTypeStructField[];
 };
 export type IdlTypeStructField = {
