@@ -3,11 +3,11 @@
   // {{ account.titleCaseName }}{% if account.isOptional %} (optional){% endif %}.
   {% if account.hasDefaultValue %}
       {% if account.defaultsTo.kind === 'program' %}
-        const default{{ account.pascalCaseName }} = context.eddsa.createPublicKey('{{ account.defaultsTo.program.address }}');
+        const fallback{{ account.pascalCaseName }} = context.eddsa.createPublicKey('{{ account.defaultsTo.program.address }}');
         keys.push({
           pubkey: accounts.{{ account.name }}
-            ?? context.programs?.getAddress('{{ account.defaultsTo.program.name }}', default{{ account.pascalCaseName }})
-            ?? default{{ account.pascalCaseName }},
+            ?? context.programs?.getAddress('{{ account.defaultsTo.program.name }}', fallback{{ account.pascalCaseName }})
+            ?? fallback{{ account.pascalCaseName }},
           isSigner: false,
           isWritable: {{ isWritableString }},
         });

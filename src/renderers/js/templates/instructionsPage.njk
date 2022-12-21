@@ -28,8 +28,8 @@ export function {{ camelCaseName }}(
 
   {% include "instructionsPageAccountMetas.njk" %}
   // Program ID.
-  const programId: PublicKey = context.programs?.getAddress('{{ account.defaultsTo.program.name }}', context.eddsa.createPublicKey('{{ instruction.program.address }}'))
-    ?? context.eddsa.createPublicKey('{{ instruction.program.address }}'),
+  const defaultProgramId = context.eddsa.createPublicKey('{{ instruction.program.address }}');
+  const programId: PublicKey = context.programs?.getAddress('{{ account.defaultsTo.program.name }}', defaultProgramId) ?? defaultProgramId,
 
   // Data.
   {% if instruction.hasArgs %}
