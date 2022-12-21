@@ -4,10 +4,10 @@
 {% block main %}
 {{ macros.imports(imports) }}
 
-{% include "InstructionsPageAccounts.njk" %}
-{% include "InstructionsPageArgs.njk" %}
-{% include "InstructionsPageDiscriminator.njk" %}
-{% include "InstructionsPageData.njk" %}
+{% include "instructionsPageAccounts.njk" %}
+{% include "instructionsPageArgs.njk" %}
+{% include "instructionsPageDiscriminator.njk" %}
+{% include "instructionsPageData.njk" %}
 
 // Instruction.
 export function {{ camelCaseName }}(
@@ -26,7 +26,7 @@ export function {{ camelCaseName }}(
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
-  {% include "InstructionsPageAccountMetas.njk" %}
+  {% include "instructionsPageAccountMetas.njk" %}
   // Program ID.
   const programId: PublicKey = context.programs
     ? context.programs.get('{{ instruction.program.name }}').address
