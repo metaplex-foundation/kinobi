@@ -10,6 +10,8 @@ export type JavaScriptSerializer = {
 export class GetJavaScriptSerializerVisitor
   implements Visitor<JavaScriptSerializer>
 {
+  private definedName: string | null = null;
+
   constructor(readonly serializerVariable = 's') {}
 
   visitRoot(): JavaScriptSerializer {
@@ -19,15 +21,24 @@ export class GetJavaScriptSerializerVisitor
   }
 
   visitAccount(account: nodes.AccountNode): JavaScriptSerializer {
-    return account.type.accept(this);
+    this.definedName = account.name;
+    const child = account.type.accept(this);
+    this.definedName = null;
+    return child;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): JavaScriptSerializer {
-    return instruction.args.accept(this);
+    this.definedName = `${instruction.name}InstructionArgs`;
+    const child = instruction.args.accept(this);
+    this.definedName = null;
+    return child;
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): JavaScriptSerializer {
-    return definedType.type.accept(this);
+    this.definedName = definedType.name;
+    const child = definedType.type.accept(this);
+    this.definedName = null;
+    return child;
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): JavaScriptSerializer {
@@ -49,10 +60,22 @@ export class GetJavaScriptSerializerVisitor
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptSerializer {
+    const { definedName } = this;
+    this.definedName = null;
+
     if (typeEnum.isScalarEnum()) {
+      if (definedName === null) {
+        throw new Error(
+          'Scalar enums cannot be inlined and must be introduced ' +
+            'via a defined type. Ensure you are not inlining a ' +
+            ' defined type that is a scalar enum through a visitor.',
+        );
+      }
       return {
-        code: `${this.s('enum')}<${typeEnum.name || 'any'}>(${typeEnum.name})`,
-        imports: new ImportMap().add('types', typeEnum.name),
+        code:
+          `${this.s('enum')}<${definedName}>` +
+          `(${definedName}, '${definedName}')`,
+        imports: new ImportMap().add('types', definedName),
       };
     }
 
@@ -83,14 +106,17 @@ export class GetJavaScriptSerializerVisitor
     });
 
     const variantCodes = variants.map((variant) => variant.code).join(', ');
+    const description =
+      typeEnum.name || definedName ? `, '${typeEnum.name || definedName}'` : '';
+
     const { imports } = this.mergeSerializers(variants);
-    if (typeEnum.name) imports.add('types', typeEnum.name);
+    if (definedName) imports.add('types', definedName);
 
     return {
       imports,
-      code: `${this.s('dataEnum')}<${
-        typeEnum.name || 'any'
-      }>([${variantCodes}])`,
+      code:
+        `${this.s('dataEnum')}<${definedName || 'any'}>` +
+        `([${variantCodes}]${description})`,
     };
   }
 
@@ -132,6 +158,9 @@ export class GetJavaScriptSerializerVisitor
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): JavaScriptSerializer {
+    const { definedName } = this;
+    this.definedName = null;
+
     const fields = typeStruct.fields.map((field) => {
       const fieldType = field.type.accept(this);
       return {
@@ -139,15 +168,16 @@ export class GetJavaScriptSerializerVisitor
         code: `['${field.name}', ${fieldType.code}]`,
       };
     });
+
     const fieldCodes = fields.map((field) => field.code).join(', ');
-    const structType = typeStruct.name ? `<${typeStruct.name}>` : '<any>';
     const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
     const { imports } = this.mergeSerializers(fields);
-    if (typeStruct.name) imports.add('types', typeStruct.name);
+    if (definedName) imports.add('types', definedName);
+
     return {
       imports,
       code:
-        `${this.s('struct')}${structType}` +
+        `${this.s('struct')}<${definedName || 'any'}>` +
         `([${fieldCodes}]${structDescription})`,
     };
   }

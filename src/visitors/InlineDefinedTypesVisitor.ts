@@ -54,19 +54,7 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
       );
     }
 
-    const inlinedType = definedType.type.accept(this);
-    nodes.assertTypeStructOrEnumNode(inlinedType);
-
-    if (nodes.isTypeEnumNode(inlinedType) && inlinedType.isScalarEnum()) {
-      throw Error(
-        'Cannot inline a scalar enum since ' +
-          'we need to reference its definition.',
-      );
-    }
-
-    return nodes.isTypeStructNode(inlinedType)
-      ? new nodes.TypeStructNode('', inlinedType.fields)
-      : new nodes.TypeEnumNode('', inlinedType.variants);
+    return definedType.type.accept(this);
   }
 
   protected shouldInline(definedTypeName: string): boolean {
