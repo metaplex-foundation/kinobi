@@ -51,6 +51,8 @@ export class PrintVisitor extends BaseVoidVisitor {
       if (account.isMutable) tags.push('mutable');
       if (account.isSigner) tags.push('signer');
       if (account.isOptional) tags.push('optional');
+      if (account.defaultsTo)
+        tags.push(`defaults to ${account.defaultsTo.kind}`);
       const tagsAsString = tags.length > 0 ? ` (${tags.join(', ')})` : '';
       this.printIndentedText(account.name + tagsAsString);
     });

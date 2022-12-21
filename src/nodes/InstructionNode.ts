@@ -8,7 +8,7 @@ import { TypeStructNode } from './TypeStructNode';
 
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
-  | { kind: 'program'; program: Program }
+  | { kind: 'program'; program: Pick<Program, 'name' | 'address'> }
   | null;
 
 export type InstructionNodeAccount = {

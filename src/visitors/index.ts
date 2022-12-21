@@ -2,6 +2,7 @@ export * from './BaseNodeVisitor';
 export * from './BaseRootVisitor';
 export * from './BaseVoidVisitor';
 export * from './GetDefinedTypeHistogramVisitor';
+export * from './IdentifyDefaultInstructionAccountsVisitor';
 export * from './InlineDefinedTypesForInstructionArgsVisitor';
 export * from './InlineDefinedTypesVisitor';
 export * from './InlineStructsForInstructionArgsVisitor';
