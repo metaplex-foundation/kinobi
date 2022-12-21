@@ -70,6 +70,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       .mergeWith(typeDefinition.imports, serializer.imports)
       .add('core', ['Context', 'Serializer']);
 
+    // Remove imports from the same module.
+    imports.remove('types', [account.name]);
+
     this.render('accountsPage.njk', `accounts/${account.name}.ts`, {
       account,
       imports,
@@ -137,6 +140,13 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       }
     }
 
+    // Remove imports from the same module.
+    imports.remove('types', [
+      `${instruction.name}InstructionAccounts`,
+      `${instruction.name}InstructionArgs`,
+      `${instruction.name}InstructionData`,
+    ]);
+
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       instruction,
       imports,
@@ -155,6 +165,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const imports = new ImportMap()
       .mergeWith(typeDefinition.imports, serializer.imports)
       .add('core', ['Context', 'Serializer']);
+
+    // Remove imports from the same module.
+    imports.remove('types', [definedType.name]);
 
     this.render('definedTypesPage.njk', `types/${definedType.name}.ts`, {
       definedType,

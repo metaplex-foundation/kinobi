@@ -51,7 +51,7 @@ export class GetJavaScriptSerializerVisitor
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptSerializer {
     if (typeEnum.isScalarEnum()) {
       return {
-        code: `${this.s('enum')}<${typeEnum.name}>(${typeEnum.name})`,
+        code: `${this.s('enum')}<${typeEnum.name || 'any'}>(${typeEnum.name})`,
         imports: new ImportMap().add('types', typeEnum.name),
       };
     }
@@ -83,18 +83,24 @@ export class GetJavaScriptSerializerVisitor
     });
 
     const variantCodes = variants.map((variant) => variant.code).join(', ');
-    const enumTypeParam = typeEnum.name ? `<${typeEnum.name}>` : '';
     const { imports } = this.mergeSerializers(variants);
     if (typeEnum.name) imports.add('types', typeEnum.name);
 
     return {
       imports,
-      code: `${this.s('dataEnum')}${enumTypeParam}([${variantCodes}])`,
+      code: `${this.s('dataEnum')}<${
+        typeEnum.name || 'any'
+      }>([${variantCodes}])`,
     };
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): JavaScriptSerializer {
     switch (typeLeaf.type) {
+      case 'publicKey':
+        return {
+          imports: new ImportMap(),
+          code: `${this.s('publicKey')}(context)`,
+        };
       default:
         return { imports: new ImportMap(), code: this.s(typeLeaf.type) };
     }
@@ -134,7 +140,7 @@ export class GetJavaScriptSerializerVisitor
       };
     });
     const fieldCodes = fields.map((field) => field.code).join(', ');
-    const structType = typeStruct.name ? `<${typeStruct.name}>` : '';
+    const structType = typeStruct.name ? `<${typeStruct.name}>` : '<any>';
     const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
     const { imports } = this.mergeSerializers(fields);
     if (typeStruct.name) imports.add('types', typeStruct.name);

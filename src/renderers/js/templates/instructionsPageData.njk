@@ -1,22 +1,25 @@
 {% if instruction.hasData %}
 // Data.
 {% if instruction.hasArgs and instruction.hasDiscriminator %}
+type {{ name }}InstructionData = {{ name }}InstructionArgs & { discriminator: {{ name }}InstructionDiscriminator };
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
-  const serializer: Serializer<{{ name }}InstructionArgs & { discriminator: {{ name }}InstructionDiscriminator }> = {{ dataSerializer.code }};
+  const serializer: Serializer<{{ name }}InstructionData> = {{ dataSerializer.code }};
   return mapSerializer(serializer, (value: {{ name }}InstructionArgs) => ({ ...value, discriminator }));
 }
 {% elif instruction.hasArgs %}
+type {{ name }}InstructionData = {{ name }}InstructionArgs;
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
   const s = context.serializer;
   return {{ dataSerializer.code }};
 }
 {% else %}
+type {{ name }}InstructionData = { discriminator: {{ name }}InstructionDiscriminator };
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{}> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
-  const serializer: Serializer<{ discriminator: {{ name }}InstructionDiscriminator }> = {{ dataSerializer.code }};
+  const serializer: Serializer<{{ name }}InstructionData> = {{ dataSerializer.code }};
   return mapSerializer(serializer, () => ({ discriminator }));
 }
 {% endif %}

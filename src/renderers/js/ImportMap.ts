@@ -21,6 +21,20 @@ export class ImportMap {
     return this;
   }
 
+  remove(
+    module: string,
+    dependencies: string | string[] | Set<string>,
+  ): ImportMap {
+    const currentDependencies = this._imports.get(module) ?? new Set();
+    const dependenciesToRemove =
+      typeof dependencies === 'string' ? [dependencies] : dependencies;
+    dependenciesToRemove.forEach((dependency) =>
+      currentDependencies.delete(dependency),
+    );
+    this._imports.set(module, currentDependencies);
+    return this;
+  }
+
   mergeWith(...others: ImportMap[]): ImportMap {
     others.forEach((other) => {
       other._imports.forEach((dependencies, module) => {
