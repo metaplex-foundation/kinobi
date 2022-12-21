@@ -31,7 +31,11 @@ export class ImportMap {
     dependenciesToRemove.forEach((dependency) =>
       currentDependencies.delete(dependency),
     );
-    this._imports.set(module, currentDependencies);
+    if (currentDependencies.size === 0) {
+      this._imports.delete(module);
+    } else {
+      this._imports.set(module, currentDependencies);
+    }
     return this;
   }
 
