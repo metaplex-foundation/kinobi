@@ -132,7 +132,7 @@ export class GetJavaScriptSerializerVisitor
     const fieldCodes = fields.map((field) => field.code).join(', ');
     return {
       ...this.mergeSerializers(fields),
-      code: `${this.s('struct')}('', [${fieldCodes}])`, // TODO (get struct name first :/).
+      code: `${this.s('struct')}([${fieldCodes}])`, // TODO (get struct name for description? :/).
     };
   }
 
