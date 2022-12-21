@@ -51,8 +51,8 @@ export class GetJavaScriptSerializerVisitor
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptSerializer {
     if (typeEnum.isScalarEnum()) {
       return {
-        code: `${this.s('enum')}(${typeEnum.name})`, // TODO (get enum name first :/).
-        imports: new ImportMap(),
+        code: `${this.s('enum')}<${typeEnum.name}>(${typeEnum.name})`,
+        imports: new ImportMap().add('types', typeEnum.name),
       };
     }
 
@@ -81,11 +81,14 @@ export class GetJavaScriptSerializerVisitor
         code: `['${variant.name}']`,
       };
     });
+
     const variantCodes = variants.map((variant) => variant.code).join(', ');
+    const { imports } = this.mergeSerializers(variants);
+    imports.add('types', typeEnum.name);
 
     return {
-      ...this.mergeSerializers(variants),
-      code: `${this.s('dataEnum')}([${variantCodes}])`,
+      imports,
+      code: `${this.s('dataEnum')}<${typeEnum.name}>([${variantCodes}])`,
     };
   }
 
@@ -130,9 +133,15 @@ export class GetJavaScriptSerializerVisitor
       };
     });
     const fieldCodes = fields.map((field) => field.code).join(', ');
+    const structType = typeStruct.name ? `<${typeStruct.name}>` : '';
+    const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
+    const { imports } = this.mergeSerializers(fields);
+    if (typeStruct.name) imports.add('types', typeStruct.name);
     return {
-      ...this.mergeSerializers(fields),
-      code: `${this.s('struct')}([${fieldCodes}])`, // TODO (get struct name for description? :/).
+      imports,
+      code:
+        `${this.s('struct')}${structType}` +
+        `([${fieldCodes}]${structDescription})`,
     };
   }
 
