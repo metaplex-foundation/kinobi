@@ -20,6 +20,12 @@ export class GetJavaScriptSerializerVisitor
     );
   }
 
+  visitProgram(): JavaScriptSerializer {
+    throw new Error(
+      'Cannot get serializer for program node. Please select a child node.',
+    );
+  }
+
   visitAccount(account: nodes.AccountNode): JavaScriptSerializer {
     this.definedName = account.name;
     const child = account.type.accept(this);

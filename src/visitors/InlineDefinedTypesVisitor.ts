@@ -11,32 +11,32 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
     this.typesToInline = typesToInline;
   }
 
-  visitRoot(root: nodes.RootNode): nodes.Node {
-    root.definedTypes.forEach((definedType) => {
+  visitProgram(program: nodes.ProgramNode): nodes.Node {
+    program.definedTypes.forEach((definedType) => {
       this.definedTypes.set(definedType.name, definedType);
     });
 
-    return new nodes.RootNode(
-      root.idl,
-      root.programs,
-      root.accounts.map((account) => {
+    return new nodes.ProgramNode(
+      program.idl,
+      program.metadata,
+      program.accounts.map((account) => {
         const child = account.accept(this);
         nodes.assertAccountNode(child);
         return child;
       }),
-      root.instructions.map((instruction) => {
+      program.instructions.map((instruction) => {
         const child = instruction.accept(this);
         nodes.assertInstructionNode(child);
         return child;
       }),
-      root.definedTypes
+      program.definedTypes
         .filter((definedType) => !this.shouldInline(definedType.name))
         .map((definedType) => {
           const child = definedType.accept(this);
           nodes.assertDefinedTypeNode(child);
           return child;
         }),
-      root.errors,
+      program.errors,
     );
   }
 

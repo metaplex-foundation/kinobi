@@ -65,14 +65,19 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       deleteFolder(this.path);
     }
 
-    this.render('rootIndex.njk', 'index.ts', root);
-    this.render('accountsIndex.njk', 'accounts/index.ts', root);
-    this.render('instructionsIndex.njk', 'instructions/index.ts', root);
-    this.render('definedTypesIndex.njk', 'types/index.ts', root);
-    root.accounts.forEach((account) => account.accept(this));
-    root.instructions.forEach((instruction) => instruction.accept(this));
-    root.definedTypes.forEach((type) => type.accept(this));
-    this.visitAllErrors(root.errors);
+    const context = { root };
+    this.render('rootIndex.njk', 'index.ts');
+    this.render('accountsIndex.njk', 'accounts/index.ts', context);
+    this.render('instructionsIndex.njk', 'instructions/index.ts', context);
+    this.render('definedTypesIndex.njk', 'types/index.ts', context);
+  }
+
+  visitProgram(program: nodes.ProgramNode): void {
+    program.accounts.forEach((account) => account.accept(this));
+    program.instructions.forEach((instruction) => instruction.accept(this));
+    program.definedTypes.forEach((type) => type.accept(this));
+    this.visitAllErrors(program.errors);
+    // TODO(loris): Create program page and error page per program.
   }
 
   visitAccount(account: nodes.AccountNode): void {

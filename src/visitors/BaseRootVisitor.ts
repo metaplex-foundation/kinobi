@@ -6,6 +6,10 @@ export class BaseRootVisitor implements Visitor<nodes.RootNode> {
     return root;
   }
 
+  visitProgram(): nodes.RootNode {
+    throw new Error('This visitor is meant to be used from the RootNode only.');
+  }
+
   visitAccount(): nodes.RootNode {
     throw new Error('This visitor is meant to be used from the RootNode only.');
   }

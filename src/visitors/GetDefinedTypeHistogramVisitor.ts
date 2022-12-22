@@ -19,10 +19,16 @@ export class GetDefinedTypeHistogramVisitor
   private stackLevel = 0;
 
   visitRoot(root: nodes.RootNode): DefinedTypeHistogram {
+    return this.mergeHistograms(
+      root.programs.map((program) => program.accept(this)),
+    );
+  }
+
+  visitProgram(program: nodes.ProgramNode): DefinedTypeHistogram {
     return this.mergeHistograms([
-      ...root.accounts.map((account) => account.accept(this)),
-      ...root.instructions.map((instruction) => instruction.accept(this)),
-      ...root.definedTypes.map((type) => type.accept(this)),
+      ...program.accounts.map((account) => account.accept(this)),
+      ...program.instructions.map((instruction) => instruction.accept(this)),
+      ...program.definedTypes.map((type) => type.accept(this)),
     ]);
   }
 

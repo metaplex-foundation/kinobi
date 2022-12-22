@@ -4,24 +4,34 @@ import * as nodes from '../nodes';
 export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitRoot(root: nodes.RootNode): nodes.Node {
     return new nodes.RootNode(
-      root.idl,
-      root.programs,
-      root.accounts.map((account) => {
+      root.programs.map((account) => {
+        const child = account.accept(this);
+        nodes.assertProgramNode(child);
+        return child;
+      }),
+    );
+  }
+
+  visitProgram(program: nodes.ProgramNode): nodes.Node {
+    return new nodes.ProgramNode(
+      program.idl,
+      program.metadata,
+      program.accounts.map((account) => {
         const child = account.accept(this);
         nodes.assertAccountNode(child);
         return child;
       }),
-      root.instructions.map((instruction) => {
+      program.instructions.map((instruction) => {
         const child = instruction.accept(this);
         nodes.assertInstructionNode(child);
         return child;
       }),
-      root.definedTypes.map((definedType) => {
+      program.definedTypes.map((definedType) => {
         const child = definedType.accept(this);
         nodes.assertDefinedTypeNode(child);
         return child;
       }),
-      root.errors.map((error) => {
+      program.errors.map((error) => {
         const child = error.accept(this);
         nodes.assertErrorNode(child);
         return child;
@@ -32,12 +42,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const accountType = account.type.accept(this);
     nodes.assertTypeStructNode(accountType);
-    return new nodes.AccountNode(
-      account.name,
-      account.program,
-      accountType,
-      account.docs,
-    );
+    return new nodes.AccountNode(account.name, accountType, account.docs);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
@@ -54,7 +59,6 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     }
     return new nodes.InstructionNode(
       instruction.name,
-      instruction.program,
       instruction.accounts,
       args,
       discriminator,

@@ -1,8 +1,9 @@
 import type * as nodes from '../nodes';
 
 export interface Visitor<T = void> {
-  // Root.
+  // Roots.
   visitRoot: (root: nodes.RootNode) => T;
+  visitProgram: (program: nodes.ProgramNode) => T;
 
   // Components.
   visitAccount: (account: nodes.AccountNode) => T;

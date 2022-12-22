@@ -12,19 +12,23 @@ export class PrintVisitor extends BaseVoidVisitor {
     this.separator = separator;
   }
 
-  visitRoot(root: nodes.RootNode) {
+  visitRoot(root: nodes.RootNode): void {
     this.printIndentedText('[RootNode]');
     this.indent += 1;
-    this.printIndentedText('programs:');
-    this.indent += 1;
-    root.programs.forEach((program) => {
-      const origin = program.origin ? `, origin: ${program.origin}` : '';
-      this.printIndentedText(
-        `${program.name} (address: ${program.address}${origin})`,
-      );
-    });
-    this.indent -= 1;
     super.visitRoot(root);
+    this.indent -= 1;
+  }
+
+  visitProgram(program: nodes.ProgramNode) {
+    const data = program.metadata;
+    const tags = [];
+    if (data.address) tags.push(`address: ${data.address}`);
+    if (data.version) tags.push(`version: ${data.version}`);
+    if (data.origin) tags.push(`origin: ${data.origin}`);
+    const tagsStr = tags.length > 0 ? ` (${tags.join(', ')})` : '';
+    this.printIndentedText(`[ProgramNode] ${program.namespacedName}${tagsStr}`);
+    this.indent += 1;
+    super.visitProgram(program);
     this.indent -= 1;
   }
 

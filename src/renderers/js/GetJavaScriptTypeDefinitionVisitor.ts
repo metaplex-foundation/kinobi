@@ -13,8 +13,13 @@ export class GetJavaScriptTypeDefinitionVisitor
 {
   visitRoot(): JavaScriptTypeDefinition {
     throw new Error(
-      'Cannot get type definition for root node. ' +
-        'Please select a child node.',
+      'Cannot get type definition for root node. Please select a child node.',
+    );
+  }
+
+  visitProgram(): JavaScriptTypeDefinition {
+    throw new Error(
+      'Cannot get type definition for program node. Please select a child node.',
     );
   }
 

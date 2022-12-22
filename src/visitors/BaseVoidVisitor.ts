@@ -3,10 +3,14 @@ import type { Visitor } from './Visitor';
 
 export abstract class BaseVoidVisitor implements Visitor<void> {
   visitRoot(root: nodes.RootNode): void {
-    root.accounts.forEach((account) => account.accept(this));
-    root.instructions.forEach((instruction) => instruction.accept(this));
-    root.definedTypes.forEach((type) => type.accept(this));
-    root.errors.forEach((type) => type.accept(this));
+    root.programs.forEach((program) => program.accept(this));
+  }
+
+  visitProgram(program: nodes.ProgramNode): void {
+    program.accounts.forEach((account) => account.accept(this));
+    program.instructions.forEach((instruction) => instruction.accept(this));
+    program.definedTypes.forEach((type) => type.accept(this));
+    program.errors.forEach((type) => type.accept(this));
   }
 
   visitAccount(account: nodes.AccountNode): void {

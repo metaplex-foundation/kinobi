@@ -8,7 +8,7 @@ type Rule =
     }
   | {
       pattern: RegExp;
-      program: Pick<nodes.Program, 'name' | 'address'>;
+      program: { name: string; address: string };
     }
   | {
       pattern: RegExp;
@@ -120,7 +120,6 @@ export class IdentifyDefaultInstructionAccountsVisitor extends BaseNodeVisitor {
 
     return new nodes.InstructionNode(
       instruction.name,
-      instruction.program,
       accounts,
       instruction.args,
       instruction.discriminator,

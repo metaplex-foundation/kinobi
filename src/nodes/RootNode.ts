@@ -1,59 +1,34 @@
 import type { Idl } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
-import { AccountNode } from './AccountNode';
-import { DefinedTypeNode } from './DefinedTypeNode';
-import { ErrorNode } from './ErrorNode';
-import { InstructionNode } from './InstructionNode';
+import type { AccountNode } from './AccountNode';
+import type { DefinedTypeNode } from './DefinedTypeNode';
+import type { InstructionNode } from './InstructionNode';
 import type { Node } from './Node';
-
-export type Program = {
-  /** Namespaces program name. E.g. "metaplex.tokenMetadata". */
-  name: string;
-  /** Base 58 representation of the program address. */
-  address: string;
-  /** The engine that generated the program's IDL. */
-  origin: 'shank' | 'anchor' | null;
-};
+import { ProgramNode } from './ProgramNode';
 
 export class RootNode implements Visitable {
   readonly nodeClass = 'RootNode' as const;
 
-  constructor(
-    readonly idl: Partial<Idl>,
-    readonly programs: Program[], // TODO(loris): ProgramNode[]
-    readonly accounts: AccountNode[],
-    readonly instructions: InstructionNode[],
-    readonly definedTypes: DefinedTypeNode[],
-    readonly errors: ErrorNode[],
-  ) {}
+  constructor(readonly programs: ProgramNode[]) {}
 
   static fromIdl(idl: Partial<Idl>): RootNode {
-    const program = {
-      name: idl.name ?? '',
-      address: idl.metadata?.address ?? '',
-      origin: idl.metadata?.origin ?? null,
-    };
-    const accounts = (idl.accounts ?? []).map((account) =>
-      AccountNode.fromIdl(account, program),
-    );
-    const instructions = (idl.instructions ?? []).map((instruction) =>
-      InstructionNode.fromIdl(instruction, program),
-    );
-    const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
-    const errors = (idl.errors ?? []).map(ErrorNode.fromIdl);
-
-    return new RootNode(
-      idl,
-      [program],
-      accounts,
-      instructions,
-      definedTypes,
-      errors,
-    );
+    return new RootNode([ProgramNode.fromIdl(idl)]);
   }
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitRoot(this);
+  }
+
+  get allAccounts(): AccountNode[] {
+    return this.programs.flatMap((program) => program.accounts);
+  }
+
+  get allInstructions(): InstructionNode[] {
+    return this.programs.flatMap((program) => program.instructions);
+  }
+
+  get allDefinedTypes(): DefinedTypeNode[] {
+    return this.programs.flatMap((program) => program.definedTypes);
   }
 }
 

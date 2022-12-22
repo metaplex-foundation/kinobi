@@ -1,14 +1,13 @@
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import type { Program } from './RootNode';
 import { assertTypeLeafNode, TypeLeafNode } from './TypeLeafNode';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
-  | { kind: 'program'; program: Pick<Program, 'name' | 'address'> }
+  | { kind: 'program'; program: { name: string; address: string } }
   | null;
 
 export type InstructionNodeAccount = {
@@ -31,17 +30,13 @@ export class InstructionNode implements Visitable {
 
   constructor(
     readonly name: string,
-    readonly program: Program,
     readonly accounts: InstructionNodeAccount[],
     readonly args: TypeStructNode,
     readonly discriminator: InstructionNodeDiscriminator | null = null,
     readonly defaultOptionalAccounts = false,
   ) {}
 
-  static fromIdl(
-    idl: Partial<IdlInstruction>,
-    program: Program,
-  ): InstructionNode {
+  static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => ({
         name: account.name ?? '',
@@ -65,7 +60,6 @@ export class InstructionNode implements Visitable {
 
     return new InstructionNode(
       idl.name ?? '',
-      program,
       accounts,
       TypeStructNode.fromIdl({
         kind: 'struct',
