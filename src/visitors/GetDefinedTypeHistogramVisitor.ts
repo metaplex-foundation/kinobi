@@ -56,6 +56,10 @@ export class GetDefinedTypeHistogramVisitor
     return histogram;
   }
 
+  visitError(): DefinedTypeHistogram {
+    return {};
+  }
+
   visitTypeArray(typeArray: nodes.TypeArrayNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = typeArray.itemType.accept(this);

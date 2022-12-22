@@ -2,6 +2,7 @@ import type { Idl } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { AccountNode } from './AccountNode';
 import { DefinedTypeNode } from './DefinedTypeNode';
+import { ErrorNode } from './ErrorNode';
 import { InstructionNode } from './InstructionNode';
 import type { Node } from './Node';
 
@@ -19,10 +20,11 @@ export class RootNode implements Visitable {
 
   constructor(
     readonly idl: Partial<Idl>,
-    readonly programs: Program[],
+    readonly programs: Program[], // TODO(loris): ProgramNode[]
     readonly accounts: AccountNode[],
     readonly instructions: InstructionNode[],
     readonly definedTypes: DefinedTypeNode[],
+    readonly errors: ErrorNode[],
   ) {}
 
   static fromIdl(idl: Partial<Idl>): RootNode {
@@ -38,8 +40,16 @@ export class RootNode implements Visitable {
       InstructionNode.fromIdl(instruction, program),
     );
     const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
+    const errors = (idl.errors ?? []).map(ErrorNode.fromIdl);
 
-    return new RootNode(idl, [program], accounts, instructions, definedTypes);
+    return new RootNode(
+      idl,
+      [program],
+      accounts,
+      instructions,
+      definedTypes,
+      errors,
+    );
   }
 
   accept<T>(visitor: Visitor<T>): T {

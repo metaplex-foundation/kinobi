@@ -8,6 +8,7 @@ export interface Visitor<T = void> {
   visitAccount: (account: nodes.AccountNode) => T;
   visitInstruction: (instruction: nodes.InstructionNode) => T;
   visitDefinedType: (definedType: nodes.DefinedTypeNode) => T;
+  visitError: (error: nodes.ErrorNode) => T;
 
   // Types.
   visitTypeArray: (typeArray: nodes.TypeArrayNode) => T;

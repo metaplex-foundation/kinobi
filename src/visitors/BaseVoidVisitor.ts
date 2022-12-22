@@ -21,6 +21,11 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     definedType.type.accept(this);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitError(error: nodes.ErrorNode): void {
+    //
+  }
+
   visitTypeArray(typeArray: nodes.TypeArrayNode): void {
     typeArray.itemType.accept(this);
   }

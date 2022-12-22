@@ -36,6 +36,7 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
           nodes.assertDefinedTypeNode(child);
           return child;
         }),
+      root.errors,
     );
   }
 

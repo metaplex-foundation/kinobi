@@ -21,6 +21,11 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
         nodes.assertDefinedTypeNode(child);
         return child;
       }),
+      root.errors.map((error) => {
+        const child = error.accept(this);
+        nodes.assertErrorNode(child);
+        return child;
+      }),
     );
   }
 
@@ -61,6 +66,10 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     const type = definedType.type.accept(this);
     nodes.assertTypeStructOrEnumNode(type);
     return new nodes.DefinedTypeNode(definedType.name, type, definedType.docs);
+  }
+
+  visitError(error: nodes.ErrorNode): nodes.Node {
+    return error;
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node {

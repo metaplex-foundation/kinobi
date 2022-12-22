@@ -71,6 +71,12 @@ export class PrintVisitor extends BaseVoidVisitor {
     this.indent -= 1;
   }
 
+  visitError(error: nodes.ErrorNode): void {
+    this.printIndentedText(
+      `[ErrorNode] ${error.name} (${error.code}): ${error.message}`,
+    );
+  }
+
   visitTypeArray(typeArray: nodes.TypeArrayNode): void {
     this.printIndentedText(`[TypeArrayNode] Size: ${typeArray.size}`);
     this.indent += 1;
