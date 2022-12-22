@@ -72,6 +72,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     this.render('accountsIndex.njk', 'accounts/index.ts', context);
     this.render('instructionsIndex.njk', 'instructions/index.ts', context);
     this.render('definedTypesIndex.njk', 'types/index.ts', context);
+    this.render('programsIndex.njk', `programs/index.ts`, context);
+    this.render('errorsIndex.njk', `errors/index.ts`, context);
     root.programs.forEach((program) => program.accept(this));
   }
 
@@ -80,7 +82,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     program.accounts.forEach((account) => account.accept(this));
     program.instructions.forEach((instruction) => instruction.accept(this));
     program.definedTypes.forEach((type) => type.accept(this));
-    this.render('errorsIndex.njk', `errors/index.ts`, {
+    this.render('errorsPage.njk', `errors/${program.metadata.name}.ts`, {
       imports: new ImportMap().add('core', ['ErrorWithCode']),
       errors: program.errors,
     });

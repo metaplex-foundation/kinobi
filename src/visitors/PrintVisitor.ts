@@ -26,7 +26,7 @@ export class PrintVisitor extends BaseVoidVisitor {
     if (data.version) tags.push(`version: ${data.version}`);
     if (data.origin) tags.push(`origin: ${data.origin}`);
     const tagsStr = tags.length > 0 ? ` (${tags.join(', ')})` : '';
-    this.printIndentedText(`[ProgramNode] ${program.namespacedName}${tagsStr}`);
+    this.printIndentedText(`[ProgramNode] ${data.name}${tagsStr}`);
     this.indent += 1;
     super.visitProgram(program);
     this.indent -= 1;

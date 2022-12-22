@@ -8,7 +8,6 @@ import { InstructionNode } from './InstructionNode';
 import type { Node } from './Node';
 
 export type ProgramNodeMetadata = {
-  namespace: string;
   name: string;
   address: string;
   version: string;
@@ -33,7 +32,6 @@ export class ProgramNode implements Visitable {
     const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
     const errors = (idl.errors ?? []).map(ErrorNode.fromIdl);
     const metadata = {
-      namespace: camelCase(''),
       name: camelCase(idl.name ?? ''),
       address: idl.metadata?.address ?? '',
       version: idl.version ?? '',
@@ -52,12 +50,6 @@ export class ProgramNode implements Visitable {
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitProgram(this);
-  }
-
-  get namespacedName(): string {
-    return this.metadata.namespace
-      ? `${this.metadata.namespace}.${this.metadata.name}`
-      : this.metadata.name;
   }
 }
 

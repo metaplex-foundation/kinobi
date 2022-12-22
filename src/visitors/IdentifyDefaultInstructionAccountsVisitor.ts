@@ -19,21 +19,21 @@ const DEFAULT_RULES: Rule[] = [
   {
     pattern: /^systemProgram$/,
     program: {
-      name: 'solana.system',
+      name: 'splSystem',
       address: '11111111111111111111111111111111',
     },
   },
   {
     pattern: /^tokenProgram$/,
     program: {
-      name: 'solana.token',
+      name: 'splToken',
       address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     },
   },
   {
     pattern: /^ataProgram$/,
     program: {
-      name: 'solana.associatedToken',
+      name: 'splAssociatedToken',
       address: 'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
     },
   },
