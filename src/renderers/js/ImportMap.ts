@@ -2,6 +2,7 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   // core: '@metaplex-foundation/js-core',
   core: '@lorisleiva/js-core',
   types: '../types',
+  errors: '../errors',
 };
 
 export class ImportMap {

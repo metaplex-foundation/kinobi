@@ -8,6 +8,15 @@ export function get{{ pascalCaseName }}Program(context: Pick<Context, 'eddsa'>):
   return {
     name: '{{ program.metadata.name }}',
     address: context.eddsa.createPublicKey('{{ program.metadata.address }}'),
+    getErrorFromCode(code: number, cause?: Error) {
+      return get{{ pascalCaseName }}ErrorFromCode(code, this, cause);
+    },
+    getErrorFromName(name: string, cause?: Error) {
+      return get{{ pascalCaseName }}ErrorFromName(name, this, cause);
+    },
+    isOnCluster(cluster) {
+      return true;
+    },
   };
 }
 {% endblock %}

@@ -80,18 +80,24 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   visitProgram(program: nodes.ProgramNode): void {
     this.program = program;
     const { name } = program.metadata;
+    const pascalCaseName = pascalCase(name);
     program.accounts.forEach((account) => account.accept(this));
     program.instructions.forEach((instruction) => instruction.accept(this));
     program.definedTypes.forEach((type) => type.accept(this));
     this.render('errorsPage.njk', `errors/${name}.ts`, {
       imports: new ImportMap().add('core', ['ProgramError', 'Program']),
       program,
-      pascalCaseName: pascalCase(name),
+      pascalCaseName,
     });
     this.render('programsPage.njk', `programs/${name}.ts`, {
-      imports: new ImportMap().add('core', ['Context', 'Program']),
+      imports: new ImportMap()
+        .add('core', ['Context', 'Program'])
+        .add('errors', [
+          `get${pascalCaseName}ErrorFromCode`,
+          `get${pascalCaseName}ErrorFromName`,
+        ]),
       program,
-      pascalCaseName: pascalCase(name),
+      pascalCaseName,
     });
     this.program = null;
   }
