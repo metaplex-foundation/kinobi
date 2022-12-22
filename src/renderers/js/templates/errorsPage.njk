@@ -4,39 +4,38 @@
 {% block main %}
 {{ macros.imports(imports) }}
 
-const codeToErrorMap: Map<number, () => ErrorWithCode> = new Map();
-const nameToErrorMap: Map<string, () => ErrorWithCode> = new Map();
+type ProgramErrorConstructor = new (program: Program, cause?: Error) => ProgramError;
+const codeToErrorMap: Map<number, ProgramErrorConstructor> = new Map();
+const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
 {% for error in program.errors | sort(false, false, 'code') %}
 {{ macros.docblock(error.docs) -}}
-export class {{ error.name }}Error extends Error {
-  readonly code: number = 0x{{ error.code.toString(16) }}; // {{ error.code }}
+class {{ error.name }}Error extends ProgramError {
   readonly name: string = '{{ error.name }}';
-  constructor() {
-    super('{{ error.message }}');
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, {{ error.name }}Error);
-    }
+  readonly code: number = 0x{{ error.code.toString(16) }}; // {{ error.code }}
+  constructor(program: Program, cause?: Error) {
+    super('{{ error.message }}', program, cause);
   }
 }
-
-codeToErrorMap.set(0x{{ error.code.toString(16) }}, () => new {{ error.name }}Error());
-nameToErrorMap.set('{{ error.name }}', () => new {{ error.name }}Error());
+codeToErrorMap.set(0x{{ error.code.toString(16) }}, {{ error.name }}Error);
+nameToErrorMap.set('{{ error.name }}', {{ error.name }}Error);
 
 {% endfor %}
 /**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors
  */
-export function errorFromCode(code: number): ErrorWithCode | null {
-  return codeToErrorMap.get(code)?.() ?? null;
+export function get{{ pascalCaseName }}ErrorFromCode(code: number, program: Program, cause?: Error): ProgramError | null {
+  const constructor = codeToErrorMap.get(code);
+  return constructor ? new constructor(program, cause) : null;
 }
 
 /**
  * Attempts to resolve a custom program error from the provided error name, i.e. 'Unauthorized'.
  * @category Errors
  */
-export function errorFromName(name: string): ErrorWithCode | null {
-  return nameToErrorMap.get(name)?.() ?? null;
+export function get{{ pascalCaseName }}ErrorFromName(name: string, program: Program, cause?: Error): ProgramError | null {
+  const constructor = nameToErrorMap.get(name);
+  return constructor ? new constructor(program, cause) : null;
 }
 {% endblock %}

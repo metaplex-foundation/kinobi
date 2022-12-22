@@ -84,8 +84,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     program.instructions.forEach((instruction) => instruction.accept(this));
     program.definedTypes.forEach((type) => type.accept(this));
     this.render('errorsPage.njk', `errors/${name}.ts`, {
-      imports: new ImportMap().add('core', ['ErrorWithCode']),
+      imports: new ImportMap().add('core', ['ProgramError', 'Program']),
       program,
+      pascalCaseName: pascalCase(name),
     });
     this.render('programsPage.njk', `programs/${name}.ts`, {
       imports: new ImportMap().add('core', ['Context', 'Program']),
