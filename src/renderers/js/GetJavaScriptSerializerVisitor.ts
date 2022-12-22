@@ -27,7 +27,7 @@ export class GetJavaScriptSerializerVisitor
   }
 
   visitAccount(account: nodes.AccountNode): JavaScriptSerializer {
-    this.definedName = account.name;
+    this.definedName = `${account.name}Data`;
     const child = account.type.accept(this);
     this.definedName = null;
     return child;
