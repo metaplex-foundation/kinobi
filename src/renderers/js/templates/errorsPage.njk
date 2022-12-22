@@ -7,7 +7,7 @@
 const codeToErrorMap: Map<number, () => ErrorWithCode> = new Map();
 const nameToErrorMap: Map<string, () => ErrorWithCode> = new Map();
 
-{% for error in errors | sort(false, false, 'code') %}
+{% for error in program.errors | sort(false, false, 'code') %}
 {{ macros.docblock(error.docs) -}}
 export class {{ error.name }}Error extends Error {
   readonly code: number = 0x{{ error.code.toString(16) }}; // {{ error.code }}

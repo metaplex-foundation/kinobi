@@ -79,14 +79,18 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitProgram(program: nodes.ProgramNode): void {
     this.program = program;
+    const { name } = program.metadata;
     program.accounts.forEach((account) => account.accept(this));
     program.instructions.forEach((instruction) => instruction.accept(this));
     program.definedTypes.forEach((type) => type.accept(this));
-    this.render('errorsPage.njk', `errors/${program.metadata.name}.ts`, {
+    this.render('errorsPage.njk', `errors/${name}.ts`, {
       imports: new ImportMap().add('core', ['ErrorWithCode']),
-      errors: program.errors,
+      program,
     });
-    // TODO(loris): Create program page and error page per program.
+    this.render('programsPage.njk', `programs/${name}.ts`, {
+      imports: new ImportMap(),
+      program,
+    });
     this.program = null;
   }
 
