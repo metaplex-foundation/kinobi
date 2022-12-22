@@ -3,7 +3,7 @@ import { assertRootNode, Node, RootNode } from './nodes';
 import { readJson } from './utils';
 import type { Visitable, Visitor } from './visitors';
 
-export class Solita implements Visitable {
+export class Kinobi implements Visitable {
   public rootNode: RootNode;
 
   constructor(idl: string | Partial<Idl>) {
@@ -14,7 +14,7 @@ export class Solita implements Visitable {
     return this.rootNode.accept(visitor);
   }
 
-  update(visitor: Visitor<Node>): Solita {
+  update(visitor: Visitor<Node>): Kinobi {
     const newRoot = this.rootNode.accept(visitor);
     assertRootNode(newRoot);
     this.rootNode = newRoot;
