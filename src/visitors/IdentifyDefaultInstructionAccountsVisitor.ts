@@ -103,8 +103,7 @@ export class IdentifyDefaultInstructionAccountsVisitor extends BaseNodeVisitor {
       // Use the instruction's program if the matched rule is "programId".
       if ('programId' in rule) {
         const defaultsTo: nodes.InstructionNodeAccountDefaults = {
-          kind: 'program',
-          program: instruction.program,
+          kind: 'programId',
         };
         return { ...account, defaultsTo };
       }

@@ -8,9 +8,15 @@
           isSigner: false,
           isWritable: {{ isWritableString }},
         });
-      {% else %}
+      {% elif account.defaultsTo.kind === 'address' %}
         keys.push({
           pubkey: accounts.{{ account.name }} ?? context.eddsa.createPublicKey('{{ account.defaultsTo.address }}'),
+          isSigner: false,
+          isWritable: {{ isWritableString }},
+        });
+      {% else %}
+        keys.push({
+          pubkey: accounts.{{ account.name }} ?? programId,
           isSigner: false,
           isWritable: {{ isWritableString }},
         });

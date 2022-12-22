@@ -26,9 +26,10 @@ export function {{ camelCaseName }}(
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
-  {% include "instructionsPageAccountMetas.njk" %}
   // Program ID.
   const programId: PublicKey = getProgramAddressWithFallback(context, '{{ instruction.program.name }}', '{{ instruction.program.address }}');
+
+  {% include "instructionsPageAccountMetas.njk" -%}
 
   // Data.
   {% if instruction.hasArgs %}
