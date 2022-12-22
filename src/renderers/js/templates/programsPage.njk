@@ -4,5 +4,10 @@
 {% block main %}
 {{ macros.imports(imports) }}
 
-// TODO
+export function get{{ pascalCaseName }}Program(context: Pick<Context, 'eddsa'>): Program {
+  return {
+    name: '{{ program.metadata.name }}',
+    address: context.eddsa.createPublicKey('{{ program.metadata.address }}'),
+  };
+}
 {% endblock %}

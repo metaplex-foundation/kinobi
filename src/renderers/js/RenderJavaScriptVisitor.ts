@@ -88,8 +88,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       program,
     });
     this.render('programsPage.njk', `programs/${name}.ts`, {
-      imports: new ImportMap(),
+      imports: new ImportMap().add('core', ['Context', 'Program']),
       program,
+      pascalCaseName: pascalCase(name),
     });
     this.program = null;
   }
