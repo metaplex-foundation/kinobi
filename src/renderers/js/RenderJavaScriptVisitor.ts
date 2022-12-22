@@ -107,7 +107,13 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const serializer = account.accept(this.serializerVisitor);
     const imports = new ImportMap()
       .mergeWith(typeDefinition.imports, serializer.imports)
-      .add('core', ['Context', 'Serializer', 'Account', 'RpcAccount'])
+      .add('core', [
+        'Context',
+        'Serializer',
+        'Account',
+        'RpcAccount',
+        'deserializeAccount',
+      ])
       .remove('types', [account.name]);
 
     this.render('accountsPage.njk', `accounts/${account.name}.ts`, {

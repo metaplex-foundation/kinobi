@@ -13,11 +13,7 @@ export function deserialize{{ name }}(
   context: Pick<Context, 'serializer' | 'eddsa'>,
   rawAccount: RpcAccount,
 ) {
-  const { data, publicKey, ...rest } = rawAccount;
-  const [parsedData] = get{{ name }}DataSerializer(context).deserialize(
-    rawAccount.data,
-  );
-  return { address: publicKey, header: rest, ...parsedData };
+  return deserializeAccount(rawAccount, get{{ name }}DataSerializer(context));
 }
 
 {{ macros.exportSerializer(name + 'Data', serializer) }}
