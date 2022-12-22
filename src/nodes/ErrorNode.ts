@@ -13,12 +13,13 @@ export class ErrorNode implements Visitable {
   ) {}
 
   static fromIdl(idl: Partial<IdlError>): ErrorNode {
-    return new ErrorNode(
-      idl.name ?? '',
-      idl.code ?? -1,
-      idl.msg ?? '',
-      idl.docs ?? [],
-    );
+    const name = idl.name ?? '';
+    const code = idl.code ?? -1;
+    const message = idl.msg ?? '';
+    // TODO(loris): add all category tags within a visitor instead.
+    const defaultDocs = [`${name}: '${message}'`, '@category Errors'];
+    const docs = idl.docs ?? defaultDocs;
+    return new ErrorNode(name, code, message, docs);
   }
 
   accept<T>(visitor: Visitor<T>): T {

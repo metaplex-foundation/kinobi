@@ -69,7 +69,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     this.render('accountsIndex.njk', 'accounts/index.ts', root);
     this.render('instructionsIndex.njk', 'instructions/index.ts', root);
     this.render('definedTypesIndex.njk', 'types/index.ts', root);
-    super.visitRoot(root);
+    root.accounts.forEach((account) => account.accept(this));
+    root.instructions.forEach((instruction) => instruction.accept(this));
+    root.definedTypes.forEach((type) => type.accept(this));
+    this.visitAllErrors(root.errors);
   }
 
   visitAccount(account: nodes.AccountNode): void {
@@ -193,9 +196,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitError(error: nodes.ErrorNode): void {
-    // TODO
+  visitAllErrors(errors: nodes.ErrorNode[]): void {
+    const imports = new ImportMap().add('core', ['ErrorWithCode']);
+    this.render('errorsIndex.njk', `errors/index.ts`, { imports, errors });
   }
 
   protected getInstructionAccountType(
