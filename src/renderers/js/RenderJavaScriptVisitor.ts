@@ -80,7 +80,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     program.accounts.forEach((account) => account.accept(this));
     program.instructions.forEach((instruction) => instruction.accept(this));
     program.definedTypes.forEach((type) => type.accept(this));
-    this.visitAllErrors(program.errors);
+    this.render('errorsIndex.njk', `errors/index.ts`, {
+      imports: new ImportMap().add('core', ['ErrorWithCode']),
+      errors: program.errors,
+    });
     // TODO(loris): Create program page and error page per program.
     this.program = null;
   }
@@ -200,11 +203,6 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       serializer,
       name: definedType.name,
     });
-  }
-
-  visitAllErrors(errors: nodes.ErrorNode[]): void {
-    const imports = new ImportMap().add('core', ['ErrorWithCode']);
-    this.render('errorsIndex.njk', `errors/index.ts`, { imports, errors });
   }
 
   protected getInstructionAccountType(
