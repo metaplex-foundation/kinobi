@@ -193,6 +193,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitError(error: nodes.ErrorNode): void {
+    // TODO
+  }
+
   protected getInstructionAccountType(
     account: nodes.InstructionNodeAccount,
   ): string {

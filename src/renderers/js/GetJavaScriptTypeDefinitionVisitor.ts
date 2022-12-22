@@ -52,6 +52,10 @@ export class GetJavaScriptTypeDefinitionVisitor
     };
   }
 
+  visitError(): JavaScriptTypeDefinition {
+    throw new Error('Cannot get type definition for error node.');
+  }
+
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptTypeDefinition {
     const variantNames = typeEnum.variants.map((variant) => variant.name);
 

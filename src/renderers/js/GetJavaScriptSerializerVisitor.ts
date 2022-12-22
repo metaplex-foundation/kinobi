@@ -41,6 +41,10 @@ export class GetJavaScriptSerializerVisitor
     return child;
   }
 
+  visitError(): JavaScriptSerializer {
+    throw new Error('Cannot get serializer for error node.');
+  }
+
   visitTypeArray(typeArray: nodes.TypeArrayNode): JavaScriptSerializer {
     const itemType = typeArray.itemType.accept(this);
     return {

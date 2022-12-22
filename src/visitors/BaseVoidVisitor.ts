@@ -6,6 +6,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     root.accounts.forEach((account) => account.accept(this));
     root.instructions.forEach((instruction) => instruction.accept(this));
     root.definedTypes.forEach((type) => type.accept(this));
+    root.errors.forEach((type) => type.accept(this));
   }
 
   visitAccount(account: nodes.AccountNode): void {
