@@ -44,6 +44,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   readonly deleteFolderBeforeRendering: boolean;
 
+  private program: nodes.ProgramNode | null = null;
+
   constructor(
     readonly path: string,
     readonly options: RenderJavaScriptOptions = {},
@@ -70,14 +72,17 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     this.render('accountsIndex.njk', 'accounts/index.ts', context);
     this.render('instructionsIndex.njk', 'instructions/index.ts', context);
     this.render('definedTypesIndex.njk', 'types/index.ts', context);
+    root.programs.forEach((program) => program.accept(this));
   }
 
   visitProgram(program: nodes.ProgramNode): void {
+    this.program = program;
     program.accounts.forEach((account) => account.accept(this));
     program.instructions.forEach((instruction) => instruction.accept(this));
     program.definedTypes.forEach((type) => type.accept(this));
     this.visitAllErrors(program.errors);
     // TODO(loris): Create program page and error page per program.
+    this.program = null;
   }
 
   visitAccount(account: nodes.AccountNode): void {
@@ -145,15 +150,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     let dataSerializer: JavaScriptSerializer | undefined;
     if (instruction.hasData) {
       const ixDataName = `${instruction.name}InstructionData`;
+      const discriminatorType = instruction.discriminator?.type;
       const struct = new nodes.TypeStructNode(ixDataName, [
-        ...(instruction.discriminator
-          ? [
-              {
-                name: 'discriminator',
-                type: instruction.discriminator.type,
-                docs: [],
-              },
-            ]
+        ...(discriminatorType
+          ? [{ name: 'discriminator', type: discriminatorType, docs: [] }]
           : []),
         ...instruction.args.fields,
       ]);
@@ -175,6 +175,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       instruction,
       imports,
+      program: this.program,
       accounts,
       argsTypeDefinition,
       discriminatorTypeDefinition,

@@ -27,7 +27,7 @@ export function {{ camelCaseName }}(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(context, '{{ instruction.program.name }}', '{{ instruction.program.address }}');
+  const programId: PublicKey = getProgramAddressWithFallback(context, '{{ program.name }}', '{{ program.address }}');
 
   {% include "instructionsPageAccountMetas.njk" -%}
 
