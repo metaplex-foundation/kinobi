@@ -1,16 +1,16 @@
-import fs from 'fs';
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import nunjucks, { ConfigureOptions } from 'nunjucks';
 
 export const createDirectory = (path: string): void => {
-  fs.mkdirSync(path, { recursive: true });
+  mkdirSync(path, { recursive: true });
 };
 
 export const createFile = (path: string, content: string): void => {
   const directory = path.substring(0, path.lastIndexOf('/'));
-  if (!fs.existsSync(directory)) {
+  if (!existsSync(directory)) {
     createDirectory(directory);
   }
-  fs.writeFileSync(path, content);
+  writeFileSync(path, content);
 };
 
 export const resolveTemplate = (
@@ -28,7 +28,7 @@ export const resolveTemplate = (
 };
 
 export const deleteFolder = (path: string): void => {
-  if (fs.existsSync(path)) {
-    fs.rmSync(path, { recursive: true });
+  if (existsSync(path)) {
+    rmSync(path, { recursive: true });
   }
 };
