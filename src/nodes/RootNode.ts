@@ -11,8 +11,9 @@ export class RootNode implements Visitable {
 
   constructor(readonly programs: ProgramNode[]) {}
 
-  static fromIdl(idl: Partial<Idl>): RootNode {
-    return new RootNode([ProgramNode.fromIdl(idl)]);
+  static fromIdls(idls: Partial<Idl>[]): RootNode {
+    const programs = idls.map((idl) => ProgramNode.fromIdl(idl));
+    return new RootNode(programs);
   }
 
   accept<T>(visitor: Visitor<T>): T {

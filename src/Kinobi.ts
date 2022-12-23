@@ -6,8 +6,9 @@ import type { Visitable, Visitor } from './visitors';
 export class Kinobi implements Visitable {
   public rootNode: RootNode;
 
-  constructor(idl: string | Partial<Idl>) {
-    this.rootNode = RootNode.fromIdl(readJson(idl));
+  constructor(idls: string | Partial<Idl> | (string | Partial<Idl>)[]) {
+    const idlArray = Array.isArray(idls) ? idls : [idls];
+    this.rootNode = RootNode.fromIdls(idlArray.map(readJson));
   }
 
   accept<T>(visitor: Visitor<T>): T {
