@@ -14,7 +14,7 @@ class {{ error.name }}Error extends ProgramError {
   readonly name: string = '{{ error.name }}';
   readonly code: number = 0x{{ error.code.toString(16) }}; // {{ error.code }}
   constructor(program: Program, cause?: Error) {
-    super('{{ error.message.replace("'", "\'") }}', program, cause);
+    super('{{ error.message.replace("'", "\\'") }}', program, cause);
   }
 }
 codeToErrorMap.set(0x{{ error.code.toString(16) }}, {{ error.name }}Error);
