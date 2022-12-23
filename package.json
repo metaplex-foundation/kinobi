@@ -12,9 +12,12 @@
     "test:cjs": "pnpm build && node ./tests/testFile.cjs",
     "test:mjs": "pnpm build && node ./tests/testFile.mjs"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^18.11.17",
     "@types/nunjucks": "^3.2.1",
