@@ -1,3 +1,4 @@
+export * from './idl';
 export * from './Kinobi';
 export * from './nodes';
 export * from './renderers';
