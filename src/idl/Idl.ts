@@ -13,5 +13,7 @@ export type Idl = {
   metadata: {
     address: string;
     origin?: 'anchor' | 'shank';
+    binaryVersion?: string;
+    libVersion?: string;
   };
 };
