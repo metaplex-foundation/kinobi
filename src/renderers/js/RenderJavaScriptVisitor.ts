@@ -202,8 +202,6 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
     if (accountsAndArgsConflicts.length > 0) {
       // TODO(loris): Log warning if accountsAndArgsConflicts is not empty.
-      // eslint-disable-next-line no-console
-      console.log(instruction.name, accountsAndArgsConflicts);
     }
 
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {

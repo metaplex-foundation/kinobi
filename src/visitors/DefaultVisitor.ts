@@ -4,6 +4,7 @@ import { IdentifyDefaultInstructionAccountsVisitor } from './IdentifyDefaultInst
 import { InlineDefinedTypesForInstructionArgsVisitor } from './InlineDefinedTypesForInstructionArgsVisitor';
 import { InlineStructsForInstructionArgsVisitor } from './InlineStructsForInstructionArgsVisitor';
 import { TransformU8ArraysToBytesVisitor } from './TransformU8ArraysToBytesVisitor';
+import { ValidateNodesVisitor } from './ValidateNodesVisitor';
 
 export class DefaultVisitor extends BaseRootVisitor {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {
@@ -12,6 +13,7 @@ export class DefaultVisitor extends BaseRootVisitor {
     root = root.accept(new InlineDefinedTypesForInstructionArgsVisitor());
     root = root.accept(new InlineStructsForInstructionArgsVisitor());
     root = root.accept(new TransformU8ArraysToBytesVisitor());
+    root.accept(new ValidateNodesVisitor());
     nodes.assertRootNode(root);
     return root;
   }
