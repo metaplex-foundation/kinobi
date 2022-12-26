@@ -2,14 +2,14 @@
 // Data Enum Helpers.
 {% for variant in definedType.type.variants %}
 {% if variant.kind === 'struct' %}
-export function create{{ name }}(kind: '{{ variant.name }}', data: Omit<{{ name }} & { __kind: '{{ variant.name }}' }, '__kind'>): {{ name }} & { __kind: '{{ variant.name }}' };
+export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: Omit<{{ name }} & { __kind: '{{ variant.name }}' }, '__kind'>): {{ name }} & { __kind: '{{ variant.name }}' };
 {% elif variant.kind === 'tuple' %}
-export function create{{ name }}(kind: '{{ variant.name }}', data: Omit<{{ name }} & { __kind: '{{ variant.name }}' }, '__kind'>['fields']): {{ name }} & { __kind: '{{ variant.name }}' };
+export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: Omit<{{ name }} & { __kind: '{{ variant.name }}' }, '__kind'>['fields']): {{ name }} & { __kind: '{{ variant.name }}' };
 {% else %}
-export function create{{ name }}(kind: '{{ variant.name }}'): {{ name }} & { __kind: '{{ variant.name }}' };
+export function {{ camelCaseName }}(kind: '{{ variant.name }}'): {{ name }} & { __kind: '{{ variant.name }}' };
 {% endif %}
 {% endfor %}
-export function create{{ name }}<K extends {{ name }}['__kind']>(
+export function {{ camelCaseName }}<K extends {{ name }}['__kind']>(
   kind: K,
   data?: any,
 ): {{ name }} & { __kind: K } {

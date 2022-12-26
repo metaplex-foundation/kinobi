@@ -224,6 +224,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       typeDefinition,
       serializer,
       name: definedType.name,
+      camelCaseName: camelCase(definedType.name),
     });
   }
 
