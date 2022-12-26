@@ -80,8 +80,15 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
     const items: ValidatorItem[] = [];
     if (!instruction.name) {
       items.push(this.error(instruction, 'Instruction has no name'));
+    } else {
+      const checkNameConflict = (name: string) => {
+        items.push(...this.checkNameConflict(instruction, name));
+      };
+      checkNameConflict(instruction.name);
+      checkNameConflict(`${instruction.name}InstructionAccounts`);
+      checkNameConflict(`${instruction.name}InstructionArgs`);
+      checkNameConflict(`${instruction.name}InstructionDiscriminator`);
     }
-    items.push(...this.checkNameConflict(instruction, instruction.name));
 
     items.push(...instruction.args.accept(this));
     items.push(...(instruction.discriminator?.type.accept(this) ?? []));
@@ -214,9 +221,6 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
     if (!typeStruct.name) {
       items.push(this.info(typeStruct, 'Struct has no name'));
     }
-    if (typeStruct.fields.length === 0) {
-      items.push(this.warning(typeStruct, 'Struct has no fields'));
-    }
     typeStruct.fields.forEach((field) => {
       if (!field.name) {
         items.push(this.error(typeStruct, 'Struct field has no name'));
@@ -248,15 +252,11 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
     return items;
   }
 
-  protected checkNameConflict(
-    node: nodes.Node,
-    name: string,
-    record = true
-  ): ValidatorItem[] {
+  protected checkNameConflict(node: nodes.Node, name: string): ValidatorItem[] {
     if (!name) return [];
     const conflict = this.nameConflict(node, name);
     if (conflict) return [conflict];
-    if (record) this.exportedNames.set(name, [...this.stack]);
+    this.exportedNames.set(name, [...this.stack]);
     return [];
   }
 
