@@ -5,16 +5,16 @@ import {
   ValidatorItem,
 } from './GetValidatorItemsVisitor';
 
-type Levels = ValidatorItem['level'];
+type Level = ValidatorItem['level'];
 
-const LEVEL_PRIORITY: Record<Levels, number> = {
+const LEVEL_PRIORITY: Record<Level, number> = {
   error: 0,
   warning: 1,
   info: 2,
 };
 
 export class ValidateNodesVisitor extends BaseRootVisitor {
-  constructor(readonly throwLevel: Levels = 'error') {
+  constructor(readonly throwLevel: Level = 'error') {
     super();
   }
 
@@ -28,8 +28,19 @@ export class ValidateNodesVisitor extends BaseRootVisitor {
     const levelHistogram = validatorItems.reduce((acc, item) => {
       acc[item.level] = (acc[item.level] ?? 0) + 1;
       return acc;
-    }, {} as Record<Levels, number>);
-    console.log(levelHistogram);
+    }, {} as Record<Level, number>);
+    const maxLevel = Object.keys(levelHistogram)
+      .map((level) => LEVEL_PRIORITY[level as Level])
+      .sort((a, b) => b - a)[0];
+
+    if (maxLevel >= LEVEL_PRIORITY[this.throwLevel]) {
+      const histogramString = Object.keys(levelHistogram)
+        .map((level) => `${level}s: ${levelHistogram[level as Level]}`)
+        .join(', ');
+      throw new Error(
+        `Failed to validate the nodes. Found ${histogramString}.`
+      );
+    }
 
     return root;
   }
