@@ -17,60 +17,60 @@ type Rule =
 
 const DEFAULT_RULES: Rule[] = [
   {
-    pattern: /^systemProgram$/,
+    pattern: /^systemProgram|splSystemProgram$/,
     program: {
       name: 'splSystem',
       address: '11111111111111111111111111111111',
     },
   },
   {
-    pattern: /^tokenProgram$/,
+    pattern: /^tokenProgram|splTokenProgram$/,
     program: {
       name: 'splToken',
       address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     },
   },
   {
-    pattern: /^ataProgram$/,
+    pattern: /^ataProgram|splAtaProgram$/,
     program: {
       name: 'splAssociatedToken',
       address: 'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
     },
   },
   {
-    pattern: /^clockSysvar$/,
+    pattern: /^clockSysvar|sysvarClockSysvar$/,
     address: 'SysvarC1ock11111111111111111111111111111111',
   },
   {
-    pattern: /^epochScheduleSysvar$/,
+    pattern: /^epochScheduleSysvar|sysvarEpochSchedule$/,
     address: 'SysvarEpochSchedu1e111111111111111111111111',
   },
   {
-    pattern: /^instructionsSysvar$/,
+    pattern: /^instructionsSysvar|sysvarInstructions$/,
     address: 'Sysvar1nstructions1111111111111111111111111',
   },
   {
-    pattern: /^recentBlockhashesSysvar$/,
+    pattern: /^recentBlockhashesSysvar|sysvarRecentBlockhashes$/,
     address: 'SysvarRecentB1ockHashes11111111111111111111',
   },
   {
-    pattern: /^rent|rentSysvar$/,
+    pattern: /^rent|rentSysvar|sysvarRent$/,
     address: 'SysvarRent111111111111111111111111111111111',
   },
   {
-    pattern: /^rewardsSysvar$/,
+    pattern: /^rewardsSysvar|sysvarRewards$/,
     address: 'SysvarRewards111111111111111111111111111111',
   },
   {
-    pattern: /^slotHashesSysvar$/,
+    pattern: /^slotHashesSysvar|sysvarSlotHashes$/,
     address: 'SysvarS1otHashes111111111111111111111111111',
   },
   {
-    pattern: /^slotHistorySysvar$/,
+    pattern: /^slotHistorySysvar|sysvarSlotHistory$/,
     address: 'SysvarS1otHistory11111111111111111111111111',
   },
   {
-    pattern: /^stakeHistorySysvar$/,
+    pattern: /^stakeHistorySysvar|sysvarStakeHistory$/,
     address: 'SysvarStakeHistory1111111111111111111111111',
   },
   {
