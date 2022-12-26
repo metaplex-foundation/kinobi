@@ -13,6 +13,8 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
 
   private exportedNames: Map<string, string[]> = new Map();
 
+  private definedTypes = new Set<string>();
+
   visitRoot(root: nodes.RootNode): ValidatorItem[] {
     this.stack.push('Root');
     const items = root.programs.flatMap((program) => program.accept(this));
@@ -26,6 +28,9 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
         ? `Program: ${program.metadata.name}`
         : 'Unnamed Program'
     );
+
+    // Register defined types to make sure links are valid.
+    program.definedTypes.forEach((type) => this.definedTypes.add(type.name));
 
     const items: ValidatorItem[] = [];
     if (!program.metadata.name) {
@@ -51,7 +56,7 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
 
   visitAccount(account: nodes.AccountNode): ValidatorItem[] {
     this.stack.push(
-      account.name ? `Account: ${account.name}` : 'Unnamed Program'
+      account.name ? `Account: ${account.name}` : 'Unnamed Account'
     );
 
     const items: ValidatorItem[] = [];
@@ -66,57 +71,173 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): ValidatorItem[] {
-    return [];
+    this.stack.push(
+      instruction.name
+        ? `Instruction: ${instruction.name}`
+        : 'Unnamed Instruction'
+    );
+
+    const items: ValidatorItem[] = [];
+    if (!instruction.name) {
+      items.push(this.error(instruction, 'Instruction has no name'));
+    }
+    items.push(...this.checkNameConflict(instruction, instruction.name));
+
+    items.push(...instruction.args.accept(this));
+    items.push(...(instruction.discriminator?.type.accept(this) ?? []));
+    this.stack.pop();
+    return items;
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): ValidatorItem[] {
-    return [];
+    this.stack.push(
+      definedType.name
+        ? `Defined Type: ${definedType.name}`
+        : 'Unnamed Defined Type'
+    );
+
+    const items: ValidatorItem[] = [];
+    if (!definedType.name) {
+      items.push(this.error(definedType, 'Defined type has no name'));
+    }
+    items.push(...this.checkNameConflict(definedType, definedType.name));
+
+    items.push(...definedType.type.accept(this));
+    this.stack.pop();
+    return items;
   }
 
   visitError(error: nodes.ErrorNode): ValidatorItem[] {
-    return [];
+    this.stack.push(error.name ? `Error: ${error.name}` : 'Unnamed Error');
+
+    const items: ValidatorItem[] = [];
+    if (!error.name) {
+      items.push(this.error(error, 'Error has no name'));
+    }
+    if (typeof error.code !== 'number') {
+      items.push(this.error(error, 'Error has no code'));
+    }
+    if (!error.message) {
+      items.push(this.warning(error, 'Error has no message'));
+    }
+    items.push(...this.checkNameConflict(error, `${error.name}Error`));
+
+    this.stack.pop();
+    return items;
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): ValidatorItem[] {
-    return [];
+    this.stack.push('Array');
+    const items = typeArray.itemType.accept(this);
+    this.stack.pop();
+    return items;
   }
 
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): ValidatorItem[] {
-    return [];
+    this.stack.push('Defined Link');
+    const items: ValidatorItem[] = [];
+    if (!typeDefinedLink.definedType) {
+      items.push(
+        this.error(typeDefinedLink, 'Pointing to a defined type with no name')
+      );
+    } else if (!this.definedTypes.has(typeDefinedLink.definedType)) {
+      items.push(
+        this.error(
+          typeDefinedLink,
+          `Pointing to a missing defined type named "${typeDefinedLink.definedType}"`
+        )
+      );
+    }
+    this.stack.pop();
+    return items;
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): ValidatorItem[] {
-    return [];
+    this.stack.push(typeEnum.name ? `Enum: ${typeEnum.name}` : 'Enum');
+
+    const items: ValidatorItem[] = [];
+    if (!typeEnum.name) {
+      items.push(this.info(typeEnum, 'Enum has no name'));
+    }
+
+    typeEnum.variants.forEach((variant) => {
+      if (!variant.name) {
+        items.push(this.error(typeEnum, 'Enum variant has no name'));
+      }
+    });
+
+    items.push(
+      ...typeEnum.variants.flatMap((variant) => {
+        if (variant.kind === 'empty') return [];
+        return variant.type.accept(this);
+      })
+    );
+    this.stack.pop();
+    return items;
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): ValidatorItem[] {
+  visitTypeLeaf(): ValidatorItem[] {
     return [];
   }
 
   visitTypeMap(typeMap: nodes.TypeMapNode): ValidatorItem[] {
-    return [];
+    this.stack.push('Map');
+    const items = [
+      ...typeMap.keyType.accept(this),
+      ...typeMap.valueType.accept(this),
+    ];
+    this.stack.pop();
+    return items;
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): ValidatorItem[] {
-    return [];
+    this.stack.push('Option');
+    const items = typeOption.type.accept(this);
+    this.stack.pop();
+    return items;
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): ValidatorItem[] {
-    return [];
+    this.stack.push('Set');
+    const items = typeSet.type.accept(this);
+    this.stack.pop();
+    return items;
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): ValidatorItem[] {
-    return [];
+    this.stack.push(typeStruct.name ? `Struct: ${typeStruct.name}` : 'Struct');
+    const items: ValidatorItem[] = [];
+    if (!typeStruct.name) {
+      items.push(this.info(typeStruct, 'Struct has no name'));
+    }
+
+    typeStruct.fields.forEach((field) => {
+      if (!field.name) {
+        items.push(this.error(typeStruct, 'Struct field has no name'));
+      }
+    });
+
+    items.push(
+      ...typeStruct.fields.flatMap((field) => field.type.accept(this))
+    );
+    this.stack.pop();
+    return items;
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): ValidatorItem[] {
-    return [];
+    this.stack.push('Tuple');
+    const items = typeTuple.itemTypes.flatMap((node) => node.accept(this));
+    this.stack.pop();
+    return items;
   }
 
   visitTypeVec(typeVec: nodes.TypeVecNode): ValidatorItem[] {
-    return [];
+    this.stack.push('Vec');
+    const items = typeVec.itemType.accept(this);
+    this.stack.pop();
+    return items;
   }
 
   protected checkNameConflict(
