@@ -161,7 +161,9 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
     if (!typeEnum.name) {
       items.push(this.info(typeEnum, 'Enum has no name'));
     }
-
+    if (typeEnum.variants.length === 0) {
+      items.push(this.warning(typeEnum, 'Enum has no variants'));
+    }
     typeEnum.variants.forEach((variant) => {
       if (!variant.name) {
         items.push(this.error(typeEnum, 'Enum variant has no name'));
@@ -212,7 +214,9 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
     if (!typeStruct.name) {
       items.push(this.info(typeStruct, 'Struct has no name'));
     }
-
+    if (typeStruct.fields.length === 0) {
+      items.push(this.warning(typeStruct, 'Struct has no fields'));
+    }
     typeStruct.fields.forEach((field) => {
       if (!field.name) {
         items.push(this.error(typeStruct, 'Struct field has no name'));
@@ -228,7 +232,11 @@ export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): ValidatorItem[] {
     this.stack.push('Tuple');
-    const items = typeTuple.itemTypes.flatMap((node) => node.accept(this));
+    const items: ValidatorItem[] = [];
+    if (typeTuple.itemTypes.length === 0) {
+      items.push(this.warning(typeTuple, 'Tuple has no items'));
+    }
+    items.push(...typeTuple.itemTypes.flatMap((node) => node.accept(this)));
     this.stack.pop();
     return items;
   }
