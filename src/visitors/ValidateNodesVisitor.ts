@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+import chalk from 'chalk';
 import * as nodes from '../nodes';
 import { BaseRootVisitor } from './BaseRootVisitor';
 import {
@@ -37,29 +39,47 @@ export class ValidateNodesVisitor extends BaseRootVisitor {
       const histogramString = Object.keys(levelHistogram)
         .map((level) => `${level}s: ${levelHistogram[level as Level]}`)
         .join(', ');
-      throw new Error(
-        `Failed to validate the nodes. Found ${histogramString}.`
+      console.log(
+        `${chalk.red(`Failed to validate the nodes.`)} ` +
+          `${chalk.red.bold(`Found ${histogramString}.`)}\n`
       );
+      process.exit(1);
     }
 
     return root;
   }
 
   protected logItem(item: ValidatorItem) {
-    const stack = `${item.stack.join(' > ')}`;
-
-    const message = `${item.message}.\n|> Stack: ${stack}.`;
+    const stack = chalk.dim(`\n|> Stack: ${item.stack.join(' > ')}.`);
 
     switch (item.level) {
       case 'error':
-        console.error(message);
+        console.log(
+          `${
+            chalk.bgRed.black(' Error ') +
+            chalk.red(` ${item.message}.`) +
+            stack
+          }\n`
+        );
         break;
       case 'warning':
-        console.warn(message);
+        console.log(
+          `${
+            chalk.bgYellow.black(' Warning ') +
+            chalk.yellow(` ${item.message}.`) +
+            stack
+          }\n`
+        );
         break;
       case 'info':
       default:
-        console.log(message);
+        console.log(
+          `${
+            chalk.bgBlue.black(' Info ') +
+            chalk.blue(` ${item.message}.`) +
+            stack
+          }\n`
+        );
         break;
     }
   }
