@@ -197,6 +197,15 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       `${instruction.name}InstructionData`,
     ]);
 
+    // canMergeAccountsAndArgs
+    const accountsAndArgsConflicts =
+      this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
+    if (accountsAndArgsConflicts.length > 0) {
+      // TODO(loris): Log warning if accountsAndArgsConflicts is not empty.
+      // eslint-disable-next-line no-console
+      console.log(instruction.name, accountsAndArgsConflicts);
+    }
+
     this.render('instructionsPage.njk', `instructions/${instruction.name}.ts`, {
       instruction,
       imports,
@@ -207,8 +216,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       dataSerializer,
       name: instruction.name,
       camelCaseName: camelCase(instruction.name),
-      canMergeAccountsAndArgs:
-        this.canMergeInstructionAccountsAndArgs(instruction),
+      canMergeAccountsAndArgs: accountsAndArgsConflicts.length === 0,
     });
   }
 
@@ -253,14 +261,15 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     return imports;
   }
 
-  protected canMergeInstructionAccountsAndArgs(
+  protected getMergeConflictsForInstructionAccountsAndArgs(
     instruction: nodes.InstructionNode
-  ): boolean {
+  ): string[] {
     const allNames = [
       ...instruction.accounts.map((account) => account.name),
       ...instruction.args.fields.map((field) => field.name),
     ];
-    return new Set(allNames).size === allNames.length;
+    const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
+    return [...new Set(duplicates)];
   }
 
   protected resolveTemplate(
