@@ -9,5 +9,6 @@ export * from './InlineDefinedTypesVisitor';
 export * from './InlineStructsForInstructionArgsVisitor';
 export * from './PrintVisitor';
 export * from './TransformU8ArraysToBytesVisitor';
+export * from './ValidateTreeVisitor';
 export * from './Visitable';
 export * from './Visitor';
