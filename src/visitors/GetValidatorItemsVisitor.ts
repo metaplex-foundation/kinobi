@@ -8,7 +8,7 @@ type ValidatorItem = {
   stack: string[];
 };
 
-export class ValidateTreeVisitor implements Visitor<ValidatorItem[]> {
+export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
   private stack: string[] = [];
 
   private exportedNames: Map<string, string[]> = new Map();
