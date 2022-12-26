@@ -29,7 +29,7 @@ export type {{ name }} = {{ typeDefinition.type }};
 
 {# Export a serializer. #}
 {% macro exportSerializer(name, serializer) %}
-export function get{{ name }}Serializer(context: Pick<Context, 'serializer' | 'eddsa'>): Serializer<{{ name }}> {
+export function get{{ name }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}> {
   const s = context.serializer;
   return {{ serializer.code }};
 }

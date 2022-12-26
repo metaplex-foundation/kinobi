@@ -2,7 +2,7 @@
 // Data.
 {% if instruction.hasArgs and instruction.hasDiscriminator %}
 type {{ name }}InstructionData = {{ name }}InstructionArgs & { discriminator: {{ name }}InstructionDiscriminator };
-export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer' | 'eddsa'>): Serializer<{{ name }}InstructionArgs> {
+export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
   const serializer: Serializer<{{ name }}InstructionData> = {{ dataSerializer.code }};
@@ -10,13 +10,13 @@ export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 's
 }
 {% elif instruction.hasArgs %}
 type {{ name }}InstructionData = {{ name }}InstructionArgs;
-export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer' | 'eddsa'>): Serializer<{{ name }}InstructionArgs> {
+export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
   const s = context.serializer;
   return {{ dataSerializer.code }};
 }
 {% else %}
 type {{ name }}InstructionData = { discriminator: {{ name }}InstructionDiscriminator };
-export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer' | 'eddsa'>): Serializer<{}> {
+export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{}> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
   const serializer: Serializer<{{ name }}InstructionData> = {{ dataSerializer.code }};

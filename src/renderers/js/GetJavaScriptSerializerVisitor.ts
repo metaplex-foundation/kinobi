@@ -136,11 +136,6 @@ export class GetJavaScriptSerializerVisitor
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): JavaScriptSerializer {
     switch (typeLeaf.type) {
-      case 'publicKey':
-        return {
-          imports: new ImportMap(),
-          code: `${this.s('publicKey')}(context)`,
-        };
       default:
         return { imports: new ImportMap(), code: this.s(typeLeaf.type) };
     }

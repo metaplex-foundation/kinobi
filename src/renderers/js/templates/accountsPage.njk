@@ -10,7 +10,7 @@ export type {{ name }} = Account<{{ name }}Data>
 {{ macros.exportType(name + 'Data', typeDefinition) }}
 
 export async function fetch{{ name }}(
-  context: Pick<Context, 'serializer' | 'eddsa' | 'rpc'>,
+  context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey,
 ): Promise<{{ name }}> {
   const maybeAccount = await context.rpc.getAccount(address);
@@ -19,7 +19,7 @@ export async function fetch{{ name }}(
 }
 
 export async function safeFetch{{ name }}(
-  context: Pick<Context, 'serializer' | 'eddsa' | 'rpc'>,
+  context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey,
 ): Promise<{{ name }} | null> {
   const maybeAccount = await context.rpc.getAccount(address);
@@ -29,7 +29,7 @@ export async function safeFetch{{ name }}(
 }
 
 export function deserialize{{ name }}(
-  context: Pick<Context, 'serializer' | 'eddsa'>,
+  context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount,
 ): {{ name }} {
   return deserializeAccount(rawAccount, get{{ name }}DataSerializer(context));
