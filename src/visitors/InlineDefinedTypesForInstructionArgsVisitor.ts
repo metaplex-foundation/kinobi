@@ -14,14 +14,11 @@ export class InlineDefinedTypesForInstructionArgsVisitor extends BaseRootVisitor
         (histogram[key].directlyAsInstructionArgs ?? 0) === 1
     );
 
-    // Filter out scalar enums which need to be defined as an external type.
+    // Filter out enums which are better defined as external types.
     const { allDefinedTypes } = root;
     definedTypesToInline = definedTypesToInline.filter((definedtype) => {
       const found = allDefinedTypes.find(({ name }) => name === definedtype);
-      if (!found) return false;
-      const isScalarEnum =
-        nodes.isTypeEnumNode(found.type) && found.type.isScalarEnum();
-      return !isScalarEnum;
+      return found && !nodes.isTypeEnumNode(found.type);
     });
 
     // Inline the identified defined types.
