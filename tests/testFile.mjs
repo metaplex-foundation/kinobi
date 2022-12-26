@@ -9,7 +9,7 @@ import {
   TransformU8ArraysToBytesVisitor,
 } from '../dist/index.js';
 
-const kinobi = new Kinobi('./tests/idl.json');
+const kinobi = new Kinobi('./tests/mpl_token_auth_rules.json');
 console.log('\n', '--- BEFORE VISITORS ---', '\n');
 kinobi.accept(new PrintVisitor());
 console.log('\n', '--- AFTER VISITORS ---', '\n');
