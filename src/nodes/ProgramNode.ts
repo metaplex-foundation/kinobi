@@ -23,7 +23,7 @@ export class ProgramNode implements Visitable {
     readonly accounts: AccountNode[],
     readonly instructions: InstructionNode[],
     readonly definedTypes: DefinedTypeNode[],
-    readonly errors: ErrorNode[],
+    readonly errors: ErrorNode[]
   ) {}
 
   static fromIdl(idl: Partial<Idl>): ProgramNode {
@@ -44,7 +44,7 @@ export class ProgramNode implements Visitable {
       accounts,
       instructions,
       definedTypes,
-      errors,
+      errors
     );
   }
 

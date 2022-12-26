@@ -34,7 +34,7 @@ export class InstructionNode implements Visitable {
     readonly accounts: InstructionNodeAccount[],
     readonly args: TypeStructNode,
     readonly discriminator: InstructionNodeDiscriminator | null = null,
-    readonly defaultOptionalAccounts = false,
+    readonly defaultOptionalAccounts = false
   ) {}
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
@@ -47,7 +47,7 @@ export class InstructionNode implements Visitable {
         isOptional: account.optional ?? false,
         description: account.desc ?? '',
         defaultsTo: null,
-      }),
+      })
     );
     let discriminator: InstructionNodeDiscriminator | null = null;
     if (idl.discriminant) {
@@ -68,7 +68,7 @@ export class InstructionNode implements Visitable {
         fields: idl.args ?? [],
       }),
       discriminator,
-      idl.defaultOptionalAccounts ?? false,
+      idl.defaultOptionalAccounts ?? false
     );
   }
 
@@ -98,7 +98,7 @@ export function isInstructionNode(node: Node): node is InstructionNode {
 }
 
 export function assertInstructionNode(
-  node: Node,
+  node: Node
 ): asserts node is InstructionNode {
   if (!isInstructionNode(node)) {
     throw new Error(`Expected InstructionNode, got ${node.nodeClass}.`);

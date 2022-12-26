@@ -10,7 +10,7 @@ export class InlineDefinedTypesForInstructionArgsVisitor extends BaseRootVisitor
     const definedTypesToInline = Object.keys(histogram).filter(
       (key) =>
         (histogram[key].total ?? 0) === 1 &&
-        (histogram[key].directlyAsInstructionArgs ?? 0) === 1,
+        (histogram[key].directlyAsInstructionArgs ?? 0) === 1
     );
     const inlineVisitor = new InlineDefinedTypesVisitor(definedTypesToInline);
     const newRoot = root.accept(inlineVisitor);

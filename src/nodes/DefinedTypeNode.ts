@@ -11,7 +11,7 @@ export class DefinedTypeNode implements Visitable {
   constructor(
     readonly name: string,
     readonly type: TypeStructNode | TypeEnumNode,
-    readonly docs: string[],
+    readonly docs: string[]
   ) {}
 
   static fromIdl(idl: Partial<IdlDefinedType>): DefinedTypeNode {
@@ -33,7 +33,7 @@ export function isDefinedTypeNode(node: Node): node is DefinedTypeNode {
 }
 
 export function assertDefinedTypeNode(
-  node: Node,
+  node: Node
 ): asserts node is DefinedTypeNode {
   if (!isDefinedTypeNode(node)) {
     throw new Error(`Expected DefinedTypeNode, got ${node.nodeClass}.`);

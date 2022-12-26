@@ -31,7 +31,7 @@ export class TypeEnumNode implements Visitable {
 
   constructor(
     readonly name: string,
-    readonly variants: TypeEnumNodeVariant[],
+    readonly variants: TypeEnumNodeVariant[]
   ) {}
 
   static fromIdl(idl: IdlTypeEnum): TypeEnumNode {

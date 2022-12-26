@@ -114,7 +114,7 @@ export function assertTypeNode(node: Node): asserts node is TypeNode {
 }
 
 export function isTypeStructOrEnumNode(
-  node: Node,
+  node: Node
 ): node is TypeStructNode | TypeEnumNode {
   return (
     node.nodeClass === 'TypeStructNode' || node.nodeClass === 'TypeEnumNode'
@@ -122,11 +122,11 @@ export function isTypeStructOrEnumNode(
 }
 
 export function assertTypeStructOrEnumNode(
-  node: Node,
+  node: Node
 ): asserts node is TypeStructNode | TypeEnumNode {
   if (!isTypeStructOrEnumNode(node)) {
     throw new Error(
-      `Expected TypeStructNode | TypeEnumNode, got ${node.nodeClass}.`,
+      `Expected TypeStructNode | TypeEnumNode, got ${node.nodeClass}.`
     );
   }
 }

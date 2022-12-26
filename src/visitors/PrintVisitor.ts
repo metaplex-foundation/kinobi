@@ -45,7 +45,7 @@ export class PrintVisitor extends BaseVoidVisitor {
         ? ` (discriminator: ${instruction.discriminator?.value})`
         : '';
     this.printIndentedText(
-      `[InstructionNode] ${instruction.name}${discriminator}`,
+      `[InstructionNode] ${instruction.name}${discriminator}`
     );
     this.indent += 1;
     this.printIndentedText('accounts:');
@@ -77,7 +77,7 @@ export class PrintVisitor extends BaseVoidVisitor {
 
   visitError(error: nodes.ErrorNode): void {
     this.printIndentedText(
-      `[ErrorNode] ${error.name} (${error.code}): ${error.message}`,
+      `[ErrorNode] ${error.name} (${error.code}): ${error.message}`
     );
   }
 
@@ -90,13 +90,13 @@ export class PrintVisitor extends BaseVoidVisitor {
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): void {
     this.printIndentedText(
-      `[TypeDefinedLinkNode] ${typeDefinedLink.definedType}`,
+      `[TypeDefinedLinkNode] ${typeDefinedLink.definedType}`
     );
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
     this.printIndentedText(
-      `[TypeEnumNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`,
+      `[TypeEnumNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`
     );
     typeEnum.variants.forEach((variant) => {
       this.indent += 1;

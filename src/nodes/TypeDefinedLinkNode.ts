@@ -16,7 +16,7 @@ export function isTypeDefinedLinkNode(node: Node): node is TypeDefinedLinkNode {
 }
 
 export function assertTypeDefinedLinkNode(
-  node: Node,
+  node: Node
 ): asserts node is TypeDefinedLinkNode {
   if (!isTypeDefinedLinkNode(node)) {
     throw new Error(`Expected TypeDefinedLinkNode, got ${node.nodeClass}.`);

@@ -9,7 +9,7 @@ export class TypeMapNode implements Visitable {
   constructor(
     readonly mapType: 'hashMap' | 'bTreeMap',
     readonly keyType: TypeNode,
-    readonly valueType: TypeNode,
+    readonly valueType: TypeNode
   ) {}
 
   static fromIdl(idl: IdlTypeMap): TypeMapNode {

@@ -36,7 +36,7 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
           nodes.assertDefinedTypeNode(child);
           return child;
         }),
-      program.errors,
+      program.errors
     );
   }
 
@@ -51,7 +51,7 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
     if (definedType === undefined) {
       throw new Error(
         `Trying to inline missing defined type [${typeDefinedLink.definedType}]. ` +
-          `Ensure this visitor starts from the root node to access all defined types.`,
+          `Ensure this visitor starts from the root node to access all defined types.`
       );
     }
 

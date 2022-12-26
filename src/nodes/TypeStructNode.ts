@@ -34,7 +34,7 @@ export function isTypeStructNode(node: Node): node is TypeStructNode {
 }
 
 export function assertTypeStructNode(
-  node: Node,
+  node: Node
 ): asserts node is TypeStructNode {
   if (!isTypeStructNode(node)) {
     throw new Error(`Expected TypeStructNode, got ${node.nodeClass}.`);

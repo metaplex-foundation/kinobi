@@ -9,7 +9,7 @@ export class ErrorNode implements Visitable {
     readonly name: string,
     readonly code: number,
     readonly message: string,
-    readonly docs: string[],
+    readonly docs: string[]
   ) {}
 
   static fromIdl(idl: Partial<IdlError>): ErrorNode {

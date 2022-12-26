@@ -48,7 +48,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   constructor(
     readonly path: string,
-    readonly options: RenderJavaScriptOptions = {},
+    readonly options: RenderJavaScriptOptions = {}
   ) {
     super();
     this.formatCode = options.formatCode ?? true;
@@ -159,13 +159,13 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
     // Arguments.
     const argsTypeDefinition = instruction.args.accept(
-      this.typeDefinitionVisitor,
+      this.typeDefinitionVisitor
     );
     imports.mergeWith(argsTypeDefinition.imports);
 
     // Discriminator.
     const discriminatorTypeDefinition = instruction.discriminator?.type.accept(
-      this.typeDefinitionVisitor,
+      this.typeDefinitionVisitor
     );
     if (discriminatorTypeDefinition) {
       imports.mergeWith(discriminatorTypeDefinition.imports);
@@ -228,14 +228,14 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   }
 
   protected getInstructionAccountType(
-    account: nodes.InstructionNodeAccount,
+    account: nodes.InstructionNodeAccount
   ): string {
     if (account.isOptionalSigner) return 'PublicKey | Signer';
     return account.isSigner ? 'Signer' : 'PublicKey';
   }
 
   protected getInstructionAccountImports(
-    accounts: nodes.InstructionNodeAccount[],
+    accounts: nodes.InstructionNodeAccount[]
   ): ImportMap {
     const imports = new ImportMap();
     accounts.forEach((account) => {
@@ -253,13 +253,13 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   protected resolveTemplate(
     template: string,
     context?: object,
-    options?: ConfigureOptions,
+    options?: ConfigureOptions
   ): string {
     const code = resolveTemplate(
       `${__dirname}/templates`,
       template,
       context,
-      options,
+      options
     );
     return this.formatCode ? formatCode(code, this.prettierOptions) : code;
   }
@@ -268,11 +268,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     template: string,
     path: string,
     context?: object,
-    options?: ConfigureOptions,
+    options?: ConfigureOptions
   ): void {
     createFile(
       `${this.path}/${path}`,
-      this.resolveTemplate(template, context, options),
+      this.resolveTemplate(template, context, options)
     );
   }
 }

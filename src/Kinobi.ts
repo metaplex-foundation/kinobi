@@ -8,7 +8,7 @@ export class Kinobi implements Visitable {
 
   constructor(
     idls: string | Partial<Idl> | (string | Partial<Idl>)[],
-    useDefaultVisitor = true,
+    useDefaultVisitor = true
   ) {
     const idlArray = Array.isArray(idls) ? idls : [idls];
     this.rootNode = RootNode.fromIdls(idlArray.map(readJson));

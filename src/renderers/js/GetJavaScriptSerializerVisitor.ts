@@ -16,13 +16,13 @@ export class GetJavaScriptSerializerVisitor
 
   visitRoot(): JavaScriptSerializer {
     throw new Error(
-      'Cannot get serializer for root node. Please select a child node.',
+      'Cannot get serializer for root node. Please select a child node.'
     );
   }
 
   visitProgram(): JavaScriptSerializer {
     throw new Error(
-      'Cannot get serializer for program node. Please select a child node.',
+      'Cannot get serializer for program node. Please select a child node.'
     );
   }
 
@@ -60,7 +60,7 @@ export class GetJavaScriptSerializerVisitor
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode,
+    typeDefinedLink: nodes.TypeDefinedLinkNode
   ): JavaScriptSerializer {
     const serializerName = `get${typeDefinedLink.definedType}Serializer`;
     return {
@@ -78,7 +78,7 @@ export class GetJavaScriptSerializerVisitor
         throw new Error(
           'Scalar enums cannot be inlined and must be introduced ' +
             'via a defined type. Ensure you are not inlining a ' +
-            ' defined type that is a scalar enum through a visitor.',
+            'defined type that is a scalar enum through a visitor.'
         );
       }
       return {
@@ -212,11 +212,11 @@ export class GetJavaScriptSerializerVisitor
   }
 
   protected mergeSerializers(
-    typeDefinitions: JavaScriptSerializer[],
+    typeDefinitions: JavaScriptSerializer[]
   ): Omit<JavaScriptSerializer, 'code'> {
     return {
       imports: new ImportMap().mergeWith(
-        ...typeDefinitions.map((td) => td.imports),
+        ...typeDefinitions.map((td) => td.imports)
       ),
     };
   }

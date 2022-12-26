@@ -8,7 +8,7 @@ export class TypeOptionNode implements Visitable {
 
   constructor(
     readonly optionType: 'option' | 'coption',
-    readonly type: TypeNode,
+    readonly type: TypeNode
   ) {}
 
   static fromIdl(idl: IdlTypeOption): TypeOptionNode {
@@ -27,7 +27,7 @@ export function isTypeOptionNode(node: Node): node is TypeOptionNode {
 }
 
 export function assertTypeOptionNode(
-  node: Node,
+  node: Node
 ): asserts node is TypeOptionNode {
   if (!isTypeOptionNode(node)) {
     throw new Error(`Expected TypeOptionNode, got ${node.nodeClass}.`);

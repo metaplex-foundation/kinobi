@@ -20,7 +20,7 @@ export class GetDefinedTypeHistogramVisitor
 
   visitRoot(root: nodes.RootNode): DefinedTypeHistogram {
     return this.mergeHistograms(
-      root.programs.map((program) => program.accept(this)),
+      root.programs.map((program) => program.accept(this))
     );
   }
 
@@ -74,7 +74,7 @@ export class GetDefinedTypeHistogramVisitor
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode,
+    typeDefinedLink: nodes.TypeDefinedLinkNode
   ): DefinedTypeHistogram {
     return {
       [typeDefinedLink.definedType]: {
@@ -83,7 +83,7 @@ export class GetDefinedTypeHistogramVisitor
         inDefinedTypes: Number(this.mode === 'definedType'),
         inInstructionArgs: Number(this.mode === 'instruction'),
         directlyAsInstructionArgs: Number(
-          this.mode === 'instruction' && this.stackLevel <= 2,
+          this.mode === 'instruction' && this.stackLevel <= 2
         ),
       },
     };
@@ -93,8 +93,8 @@ export class GetDefinedTypeHistogramVisitor
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
       typeEnum.variants.map((variant) =>
-        variant.kind === 'empty' ? {} : variant.type.accept(this),
-      ),
+        variant.kind === 'empty' ? {} : variant.type.accept(this)
+      )
     );
     this.stackLevel -= 1;
     return histogram;
@@ -131,7 +131,7 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeStruct(typeStruct: nodes.TypeStructNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeStruct.fields.map((field) => field.type.accept(this)),
+      typeStruct.fields.map((field) => field.type.accept(this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -140,7 +140,7 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeTuple.itemTypes.map((type) => type.accept(this)),
+      typeTuple.itemTypes.map((type) => type.accept(this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -154,7 +154,7 @@ export class GetDefinedTypeHistogramVisitor
   }
 
   protected mergeHistograms(
-    histograms: DefinedTypeHistogram[],
+    histograms: DefinedTypeHistogram[]
   ): DefinedTypeHistogram {
     const result: DefinedTypeHistogram = {};
 

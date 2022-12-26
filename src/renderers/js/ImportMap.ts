@@ -10,13 +10,13 @@ export class ImportMap {
 
   add(
     module: string,
-    dependencies: string | string[] | Set<string>,
+    dependencies: string | string[] | Set<string>
   ): ImportMap {
     const currentDependencies = this._imports.get(module) ?? new Set();
     const newDependencies =
       typeof dependencies === 'string' ? [dependencies] : dependencies;
     newDependencies.forEach((dependency) =>
-      currentDependencies.add(dependency),
+      currentDependencies.add(dependency)
     );
     this._imports.set(module, currentDependencies);
     return this;
@@ -24,13 +24,13 @@ export class ImportMap {
 
   remove(
     module: string,
-    dependencies: string | string[] | Set<string>,
+    dependencies: string | string[] | Set<string>
   ): ImportMap {
     const currentDependencies = this._imports.get(module) ?? new Set();
     const dependenciesToRemove =
       typeof dependencies === 'string' ? [dependencies] : dependencies;
     dependenciesToRemove.forEach((dependency) =>
-      currentDependencies.delete(dependency),
+      currentDependencies.delete(dependency)
     );
     if (currentDependencies.size === 0) {
       this._imports.delete(module);
@@ -61,7 +61,7 @@ export class ImportMap {
         const joinedDeps = Array.from(dependencies).sort().join(', ');
         const mappedModule: string = moduleMap[module] ?? module;
         return `import { ${joinedDeps} } from '${mappedModule}';`;
-      },
+      }
     );
     return importStatements.join('\n');
   }

@@ -13,13 +13,13 @@ export class GetJavaScriptTypeDefinitionVisitor
 {
   visitRoot(): JavaScriptTypeDefinition {
     throw new Error(
-      'Cannot get type definition for root node. Please select a child node.',
+      'Cannot get type definition for root node. Please select a child node.'
     );
   }
 
   visitProgram(): JavaScriptTypeDefinition {
     throw new Error(
-      'Cannot get type definition for program node. Please select a child node.',
+      'Cannot get type definition for program node. Please select a child node.'
     );
   }
 
@@ -28,13 +28,13 @@ export class GetJavaScriptTypeDefinitionVisitor
   }
 
   visitInstruction(
-    instruction: nodes.InstructionNode,
+    instruction: nodes.InstructionNode
   ): JavaScriptTypeDefinition {
     return instruction.args.accept(this);
   }
 
   visitDefinedType(
-    definedType: nodes.DefinedTypeNode,
+    definedType: nodes.DefinedTypeNode
   ): JavaScriptTypeDefinition {
     return definedType.type.accept(this);
   }
@@ -48,7 +48,7 @@ export class GetJavaScriptTypeDefinitionVisitor
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode,
+    typeDefinedLink: nodes.TypeDefinedLinkNode
   ): JavaScriptTypeDefinition {
     return {
       type: typeDefinedLink.definedType,
@@ -97,7 +97,7 @@ export class GetJavaScriptTypeDefinitionVisitor
           isEnum: false,
           imports: new ImportMap(),
         };
-      },
+      }
     );
 
     return {
@@ -178,7 +178,7 @@ export class GetJavaScriptTypeDefinitionVisitor
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): JavaScriptTypeDefinition {
     const children = typeTuple.itemTypes.map((itemType) =>
-      itemType.accept(this),
+      itemType.accept(this)
     );
     return {
       ...this.mergeTypeDefinitions(children),
@@ -195,12 +195,12 @@ export class GetJavaScriptTypeDefinitionVisitor
   }
 
   protected mergeTypeDefinitions(
-    typeDefinitions: JavaScriptTypeDefinition[],
+    typeDefinitions: JavaScriptTypeDefinition[]
   ): Omit<JavaScriptTypeDefinition, 'type'> {
     return {
       isEnum: false,
       imports: new ImportMap().mergeWith(
-        ...typeDefinitions.map((td) => td.imports),
+        ...typeDefinitions.map((td) => td.imports)
       ),
     };
   }

@@ -8,7 +8,7 @@ export class TypeSetNode implements Visitable {
 
   constructor(
     readonly setType: 'hashSet' | 'bTreeSet',
-    readonly type: TypeNode,
+    readonly type: TypeNode
   ) {}
 
   static fromIdl(idl: IdlTypeSet): TypeSetNode {

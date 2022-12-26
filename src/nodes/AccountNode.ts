@@ -10,7 +10,7 @@ export class AccountNode implements Visitable {
   constructor(
     readonly name: string,
     readonly type: TypeStructNode,
-    readonly docs: string[] = [],
+    readonly docs: string[] = []
   ) {}
 
   static fromIdl(idl: Partial<IdlAccount>): AccountNode {

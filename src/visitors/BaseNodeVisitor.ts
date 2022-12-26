@@ -8,7 +8,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
         const child = account.accept(this);
         nodes.assertProgramNode(child);
         return child;
-      }),
+      })
     );
   }
 
@@ -35,7 +35,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
         const child = error.accept(this);
         nodes.assertErrorNode(child);
         return child;
-      }),
+      })
     );
   }
 
@@ -62,7 +62,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
       instruction.accounts,
       args,
       discriminator,
-      instruction.defaultOptionalAccounts,
+      instruction.defaultOptionalAccounts
     );
   }
 
@@ -100,7 +100,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
           return { ...variant, type: newType };
         }
         return variant;
-      },
+      }
     );
     return new nodes.TypeEnumNode(typeEnum.name, variants);
   }
@@ -136,7 +136,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
         const fieldType = field.type.accept(this);
         nodes.assertTypeNode(fieldType);
         return { ...field, type: fieldType };
-      }),
+      })
     );
   }
 
@@ -146,7 +146,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
         const newType = type.accept(this);
         nodes.assertTypeNode(newType);
         return newType;
-      }),
+      })
     );
   }
 

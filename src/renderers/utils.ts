@@ -17,7 +17,7 @@ export const resolveTemplate = (
   directory: string,
   file: string,
   context?: object,
-  options?: ConfigureOptions,
+  options?: ConfigureOptions
 ): string => {
   const env = nunjucks.configure(directory, {
     trimBlocks: true,
