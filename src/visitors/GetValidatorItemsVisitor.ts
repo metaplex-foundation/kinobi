@@ -1,7 +1,7 @@
 import * as nodes from '../nodes';
 import { Visitor } from './Visitor';
 
-type ValidatorItem = {
+export type ValidatorItem = {
   message: string;
   level: 'error' | 'warning' | 'info';
   node: nodes.Node;
@@ -80,15 +80,8 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
     const items: ValidatorItem[] = [];
     if (!instruction.name) {
       items.push(this.error(instruction, 'Instruction has no name'));
-    } else {
-      const checkNameConflict = (name: string) => {
-        items.push(...this.checkNameConflict(instruction, name));
-      };
-      checkNameConflict(instruction.name);
-      checkNameConflict(`${instruction.name}InstructionAccounts`);
-      checkNameConflict(`${instruction.name}InstructionArgs`);
-      checkNameConflict(`${instruction.name}InstructionDiscriminator`);
     }
+    items.push(...this.checkNameConflict(instruction, instruction.name));
 
     items.push(...instruction.args.accept(this));
     items.push(...(instruction.discriminator?.type.accept(this) ?? []));
@@ -263,7 +256,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
   protected nameConflict(node: nodes.Node, name: string): ValidatorItem | null {
     if (!this.exportedNames.has(name)) return null;
     const conflictingStack = this.exportedNames.get(name) as string[];
-    const conflictingStackString = conflictingStack.join(' -> ');
+    const conflictingStackString = conflictingStack.join(' > ');
     const message = `Exported name "${name}" conflicts with the following node "${conflictingStackString}"`;
     return this.item('error', node, message);
   }

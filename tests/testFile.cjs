@@ -6,7 +6,7 @@ const {
   PrintVisitor,
   TransformU8ArraysToBytesVisitor,
   IdentifyDefaultInstructionAccountsVisitor,
-  GetValidatorItemsVisitor,
+  ValidateNodesVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi(__dirname + '/mpl_token_metadata.json', false);
@@ -18,14 +18,7 @@ kinobi.update(new TransformU8ArraysToBytesVisitor());
 kinobi.update(new InlineDefinedTypesForInstructionArgsVisitor());
 kinobi.update(new InlineStructsForInstructionArgsVisitor());
 kinobi.accept(new PrintVisitor());
-const items = kinobi.accept(new GetValidatorItemsVisitor());
-console.log(
-  items
-    .map(
-      (item) => `${item.level}: ${item.message}.\n[${item.stack.join(' -> ')}].`
-    )
-    .join('\n\n')
-);
+kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(
   new RenderJavaScriptVisitor('./package/src/generated', { formatCode: true })
 );

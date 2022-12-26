@@ -10,5 +10,6 @@ export * from './InlineDefinedTypesVisitor';
 export * from './InlineStructsForInstructionArgsVisitor';
 export * from './PrintVisitor';
 export * from './TransformU8ArraysToBytesVisitor';
+export * from './ValidateNodesVisitor';
 export * from './Visitable';
 export * from './Visitor';
