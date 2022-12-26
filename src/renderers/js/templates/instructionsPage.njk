@@ -16,11 +16,25 @@ export function {{ camelCaseName }}(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  {% if instruction.hasAccounts %}
-  accounts: {{ name }}InstructionAccounts,
-  {% endif %}
-  {% if instruction.hasArgs %}
-  args: {{ name }}InstructionArgs,
+  {% if canMergeAccountsAndArgs %}
+    {% set accountsObj = 'input' %}
+    {% set argsObj = 'input' %}
+    {% if instruction.hasAccounts and instruction.hasArgs %}
+      input: {{ name }}InstructionAccounts & {{ name }}InstructionArgs,
+    {% elif instruction.hasAccounts %}
+      input: {{ name }}InstructionAccounts,
+    {% elif instruction.hasArgs %}
+      input: {{ name }}InstructionArgs,
+    {% endif %}
+  {% else %}
+    {% set accountsObj = 'accounts' %}
+    {% set argsObj = 'args' %}
+    {% if instruction.hasAccounts %}
+      accounts: {{ name }}InstructionAccounts,
+    {% endif %}
+    {% if instruction.hasArgs %}
+      args: {{ name }}InstructionArgs,
+    {% endif %}
   {% endif %}
 ): WrappedInstruction {
   const signers: Signer[] = [];
@@ -33,7 +47,7 @@ export function {{ camelCaseName }}(
 
   // Data.
   {% if instruction.hasArgs %}
-  const data = get{{ name }}InstructionDataSerializer(context).serialize(args);
+  const data = get{{ name }}InstructionDataSerializer(context).serialize({{ argsObj }});
   {% elif instruction.hasDiscriminator %}
   const data = get{{ name }}InstructionDataSerializer(context).serialize({});
   {% else %}

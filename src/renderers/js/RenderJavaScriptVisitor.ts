@@ -207,6 +207,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       dataSerializer,
       name: instruction.name,
       camelCaseName: camelCase(instruction.name),
+      canMergeAccountsAndArgs:
+        this.canMergeInstructionAccountsAndArgs(instruction),
     });
   }
 
@@ -249,6 +251,16 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       }
     });
     return imports;
+  }
+
+  protected canMergeInstructionAccountsAndArgs(
+    instruction: nodes.InstructionNode
+  ): boolean {
+    const allNames = [
+      ...instruction.accounts.map((account) => account.name),
+      ...instruction.args.fields.map((field) => field.name),
+    ];
+    return new Set(allNames).size === allNames.length;
   }
 
   protected resolveTemplate(

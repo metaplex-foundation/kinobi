@@ -4,47 +4,47 @@
   {% if account.hasDefaultValue %}
       {% if account.defaultsTo.kind === 'program' %}
         keys.push({
-          pubkey: accounts.{{ account.name }} ?? getProgramAddressWithFallback(context, '{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.address }}'),
+          pubkey: {{ accountsObj }}.{{ account.name }} ?? getProgramAddressWithFallback(context, '{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.address }}'),
           isSigner: false,
           isWritable: {{ isWritableString }},
         });
       {% elif account.defaultsTo.kind === 'address' %}
         keys.push({
-          pubkey: accounts.{{ account.name }} ?? context.eddsa.createPublicKey('{{ account.defaultsTo.address }}'),
+          pubkey: {{ accountsObj }}.{{ account.name }} ?? context.eddsa.createPublicKey('{{ account.defaultsTo.address }}'),
           isSigner: false,
           isWritable: {{ isWritableString }},
         });
       {% else %}
         keys.push({
-          pubkey: accounts.{{ account.name }} ?? programId,
+          pubkey: {{ accountsObj }}.{{ account.name }} ?? programId,
           isSigner: false,
           isWritable: {{ isWritableString }},
         });
       {% endif %}
   {% else %}
     {% if account.isOptional %}
-    if (accounts.{{ account.name }}) {
+    if ({{ accountsObj }}.{{ account.name }}) {
     {% endif %}
       {% if account.isOptionalSigner %}
-        if (isSigner(accounts.{{ account.name }})) {
-          signers.push(accounts.{{ account.name }});
+        if (isSigner({{ accountsObj }}.{{ account.name }})) {
+          signers.push({{ accountsObj }}.{{ account.name }});
           keys.push({
-            pubkey: accounts.{{ account.name }}.publicKey,
+            pubkey: {{ accountsObj }}.{{ account.name }}.publicKey,
             isSigner: true,
             isWritable: {{ isWritableString }},
           });
         } else {
           keys.push({
-            pubkey: accounts.{{ account.name }},
+            pubkey: {{ accountsObj }}.{{ account.name }},
             isSigner: false,
             isWritable: {{ isWritableString }},
           });
         }
       {% elif account.isSigner  %}
-        signers.push(accounts.{{ account.name }});
-        keys.push({ pubkey: accounts.{{ account.name }}.publicKey, isSigner: true, isWritable: {{ isWritableString }} });
+        signers.push({{ accountsObj }}.{{ account.name }});
+        keys.push({ pubkey: {{ accountsObj }}.{{ account.name }}.publicKey, isSigner: true, isWritable: {{ isWritableString }} });
       {% else %}
-        keys.push({ pubkey: accounts.{{ account.name }}, isSigner: false, isWritable: {{ isWritableString }} });
+        keys.push({ pubkey: {{ accountsObj }}.{{ account.name }}, isSigner: false, isWritable: {{ isWritableString }} });
       {% endif %}
     {% if account.isOptional %}
     }
