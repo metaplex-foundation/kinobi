@@ -192,7 +192,8 @@ export class TransformNodesVisitor extends BaseNodeVisitor {
 
   protected applyTransforms(node: nodes.Node): nodes.Node {
     const stack = [...this.stack];
-    const found = this.transforms.find(({ selector }) => selector(node, stack));
-    return found ? found.transformer(node, stack) : node;
+    return this.transforms
+      .filter(({ selector }) => selector(node, stack))
+      .reduce((acc, { transformer }) => transformer(acc, stack), node);
   }
 }
