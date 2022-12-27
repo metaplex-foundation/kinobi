@@ -14,7 +14,7 @@ export function get{{ pascalCaseName }}Program(context: Pick<Context, 'eddsa'>):
     getErrorFromName(name: string, cause?: Error) {
       return get{{ pascalCaseName }}ErrorFromName(name, this, cause);
     },
-    isOnCluster(cluster) {
+    isOnCluster() {
       return true;
     },
   };

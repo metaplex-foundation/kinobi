@@ -141,7 +141,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       'PublicKey',
       'Signer',
       'WrappedInstruction',
-      ...(instruction.hasAccounts || instruction.hasData ? ['Serializer'] : []),
+      ...(instruction.hasData ? ['Serializer'] : []),
     ]);
 
     // Accounts.
