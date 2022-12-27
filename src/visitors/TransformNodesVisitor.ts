@@ -3,7 +3,11 @@ import { BaseNodeVisitor } from './BaseNodeVisitor';
 
 export type NodeTransform<T extends NodeSelector = NodeSelector> = {
   selector: T;
-  transformer: (node: nodes.Node, stack: nodes.Node[]) => nodes.Node;
+  transformer: (
+    node: nodes.Node,
+    stack: nodes.Node[],
+    program: nodes.ProgramNode | null
+  ) => nodes.Node;
 };
 
 export type NodeSelector =
@@ -16,13 +20,16 @@ export type NodeSelector =
 
 export type NodeSelectorFunction = (
   node: nodes.Node,
-  stack: nodes.Node[]
+  stack: nodes.Node[],
+  program: nodes.ProgramNode | null
 ) => boolean;
 
 export class TransformNodesVisitor extends BaseNodeVisitor {
   readonly transforms: NodeTransform<NodeSelectorFunction>[];
 
   readonly stack: nodes.Node[] = [];
+
+  protected program: nodes.ProgramNode | null = null;
 
   constructor(transforms: NodeTransform[]) {
     super();
@@ -41,7 +48,9 @@ export class TransformNodesVisitor extends BaseNodeVisitor {
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
     this.stack.push(program);
+    this.program = program;
     const visitedProgram = super.visitProgram(program);
+    this.program = null;
     this.stack.pop();
     return this.applyTransforms(visitedProgram);
   }
@@ -147,43 +156,37 @@ export class TransformNodesVisitor extends BaseNodeVisitor {
   protected parseNodeSelector(selector: NodeSelector): NodeSelectorFunction {
     if (typeof selector === 'function') return selector;
 
-    const checkParentProgram: NodeSelectorFunction = (node, stack) => {
-      if ('program' in selector) {
-        const program = stack.find(
-          (parent): parent is nodes.ProgramNode =>
-            parent.nodeClass === 'ProgramNode'
-        );
-        return !!(program && selector.program === program.metadata.name);
-      }
-      return true;
-    };
+    const checkProgram: NodeSelectorFunction = (node, stack, program) =>
+      'program' in selector
+        ? !!(program && selector.program === program.metadata.name)
+        : true;
 
     if ('instruction' in selector) {
-      return (node, stack) =>
+      return (node, stack, program) =>
         nodes.isInstructionNode(node) &&
         node.name === selector.instruction &&
-        checkParentProgram(node, stack);
+        checkProgram(node, stack, program);
     }
 
     if ('account' in selector) {
-      return (node, stack) =>
+      return (node, stack, program) =>
         nodes.isAccountNode(node) &&
         node.name === selector.account &&
-        checkParentProgram(node, stack);
+        checkProgram(node, stack, program);
     }
 
     if ('type' in selector) {
-      return (node, stack) =>
+      return (node, stack, program) =>
         nodes.isDefinedTypeNode(node) &&
         node.name === selector.type &&
-        checkParentProgram(node, stack);
+        checkProgram(node, stack, program);
     }
 
     if ('error' in selector) {
-      return (node, stack) =>
+      return (node, stack, program) =>
         nodes.isErrorNode(node) &&
         node.name === selector.error &&
-        checkParentProgram(node, stack);
+        checkProgram(node, stack, program);
     }
 
     return (node) =>
@@ -192,8 +195,9 @@ export class TransformNodesVisitor extends BaseNodeVisitor {
 
   protected applyTransforms(node: nodes.Node): nodes.Node {
     const stack = [...this.stack];
+    const { program } = this;
     return this.transforms
-      .filter(({ selector }) => selector(node, stack))
-      .reduce((acc, { transformer }) => transformer(acc, stack), node);
+      .filter(({ selector }) => selector(node, stack, program))
+      .reduce((acc, { transformer }) => transformer(acc, stack, program), node);
   }
 }
