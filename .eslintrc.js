@@ -12,9 +12,10 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
+    '@typescript-eslint/no-use-before-define': 'off',
+    'class-methods-use-this': 'off',
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
-    'class-methods-use-this': 'off',
     'no-underscore-dangle': 'off',
   },
   ignorePatterns: ['dist/**', 'test**', 'package/**'],

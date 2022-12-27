@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import * as nodes from '../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
