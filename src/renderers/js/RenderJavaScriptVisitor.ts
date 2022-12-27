@@ -169,11 +169,17 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     imports.mergeWith(argsTypeDefinition.imports);
 
     // Discriminator.
-    const discriminatorTypeDefinition = instruction.discriminator?.type.accept(
-      this.typeDefinitionVisitor
-    );
-    if (discriminatorTypeDefinition) {
-      imports.mergeWith(discriminatorTypeDefinition.imports);
+    const discriminator = instruction.discriminator
+      ? {
+          ...instruction.discriminator,
+          typeDefinition: instruction.discriminator.type.accept(
+            this.typeDefinitionVisitor
+          ),
+          renderedValue: JSON.stringify(instruction.discriminator.value),
+        }
+      : undefined;
+    if (discriminator) {
+      imports.mergeWith(discriminator.typeDefinition.imports);
     }
 
     // Data.
@@ -215,7 +221,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       program: this.program,
       accounts,
       argsTypeDefinition,
-      discriminatorTypeDefinition,
+      discriminator,
       dataSerializer,
       name: instruction.name,
       camelCaseName: camelCase(instruction.name),

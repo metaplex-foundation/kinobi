@@ -1,8 +1,8 @@
 {% if instruction.hasDiscriminator %}
 // Discriminator.
-{{ macros.exportType(name + 'InstructionDiscriminator', discriminatorTypeDefinition) -}}
+{{ macros.exportType(name + 'InstructionDiscriminator', discriminator.typeDefinition) -}}
 export function get{{ name }}InstructionDiscriminator(): {{ name }}InstructionDiscriminator {
-  return {{ JSON.stringify(instruction.discriminator.value) }};
+  return {{ discriminator.renderedValue }};
 }
 
 {% endif %}
