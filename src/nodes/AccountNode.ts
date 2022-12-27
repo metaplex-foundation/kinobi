@@ -1,3 +1,4 @@
+import { pascalCase } from '../utils';
 import type { IdlAccount } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -14,7 +15,7 @@ export class AccountNode implements Visitable {
   ) {}
 
   static fromIdl(idl: Partial<IdlAccount>): AccountNode {
-    const name = idl.name ?? '';
+    const name = pascalCase(idl.name ?? '');
     const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlStruct });
     assertTypeStructNode(type);

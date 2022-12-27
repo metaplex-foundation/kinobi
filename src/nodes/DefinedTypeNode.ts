@@ -1,3 +1,4 @@
+import { pascalCase } from '../utils';
 import type { IdlDefinedType } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -15,7 +16,7 @@ export class DefinedTypeNode implements Visitable {
   ) {}
 
   static fromIdl(idl: Partial<IdlDefinedType>): DefinedTypeNode {
-    const name = idl.name ?? '';
+    const name = pascalCase(idl.name ?? '');
     const idlType = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlType });
     assertTypeStructOrEnumNode(type);

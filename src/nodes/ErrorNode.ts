@@ -1,3 +1,4 @@
+import { pascalCase } from '../utils';
 import type { IdlError } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -13,7 +14,7 @@ export class ErrorNode implements Visitable {
   ) {}
 
   static fromIdl(idl: Partial<IdlError>): ErrorNode {
-    const name = idl.name ?? '';
+    const name = pascalCase(idl.name ?? '');
     const code = idl.code ?? -1;
     const message = idl.msg ?? '';
     // TODO(loris): add all category tags within a visitor instead.

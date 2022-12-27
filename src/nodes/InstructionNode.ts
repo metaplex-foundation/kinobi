@@ -1,3 +1,4 @@
+import { camelCase, pascalCase } from '../utils';
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -40,7 +41,7 @@ export class InstructionNode implements Visitable {
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => ({
-        name: account.name ?? '',
+        name: camelCase(account.name ?? ''),
         isMutable: account.isMut ?? false,
         isSigner: account.isSigner ?? false,
         isOptionalSigner: account.isOptionalSigner ?? false,
@@ -60,7 +61,7 @@ export class InstructionNode implements Visitable {
     }
 
     return new InstructionNode(
-      idl.name ?? '',
+      pascalCase(idl.name ?? ''),
       accounts,
       TypeStructNode.fromIdl({
         kind: 'struct',
