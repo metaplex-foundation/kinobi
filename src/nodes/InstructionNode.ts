@@ -2,7 +2,6 @@ import { camelCase, pascalCase } from '../utils';
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { assertTypeLeafNode } from './TypeLeafNode';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 
@@ -55,15 +54,6 @@ export class InstructionNode implements Visitable {
         defaultsTo: null,
       })
     );
-    let discriminator: InstructionNodeDiscriminator | null = null;
-    if (idl.discriminant) {
-      const discriminatorType = createTypeNodeFromIdl(idl.discriminant.type);
-      assertTypeLeafNode(discriminatorType);
-      discriminator = {
-        type: discriminatorType,
-        value: idl.discriminant.value,
-      };
-    }
 
     return new InstructionNode(
       pascalCase(idl.name ?? ''),
@@ -73,7 +63,12 @@ export class InstructionNode implements Visitable {
         name: idl.name ? `${idl.name}InstructionArgs` : '',
         fields: idl.args ?? [],
       }),
-      discriminator,
+      idl.discriminant
+        ? {
+            type: createTypeNodeFromIdl(idl.discriminant.type),
+            value: idl.discriminant.value,
+          }
+        : null,
       {
         idlName: idl.name ?? '',
         defaultOptionalAccounts: idl.defaultOptionalAccounts ?? false,

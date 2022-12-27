@@ -51,7 +51,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     let discriminator: nodes.InstructionNodeDiscriminator | null = null;
     if (instruction.discriminator) {
       const discriminatorType = instruction.discriminator.type.accept(this);
-      nodes.assertTypeLeafNode(discriminatorType);
+      nodes.assertTypeNode(discriminatorType);
       discriminator = {
         type: discriminatorType,
         value: instruction.discriminator.value,
