@@ -62,7 +62,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
       instruction.accounts,
       args,
       discriminator,
-      instruction.defaultOptionalAccounts
+      instruction.metadata
     );
   }
 

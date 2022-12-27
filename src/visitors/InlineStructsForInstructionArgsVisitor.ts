@@ -27,7 +27,7 @@ export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
         ? currentArgs
         : new nodes.TypeStructNode(currentArgs.name, inlinedArgs),
       instruction.discriminator,
-      instruction.defaultOptionalAccounts
+      instruction.metadata
     );
   }
 

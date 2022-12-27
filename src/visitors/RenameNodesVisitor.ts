@@ -105,7 +105,7 @@ function instructionNodeTransform(
           node.accounts,
           node.args,
           node.discriminator,
-          node.defaultOptionalAccounts
+          node.metadata
         );
       }
 
@@ -120,7 +120,7 @@ function instructionNodeTransform(
         })),
         mapStructFields(node.args, argMap, `${newName}InstructionArgs`),
         node.discriminator,
-        node.defaultOptionalAccounts
+        node.metadata
       );
     },
   };
