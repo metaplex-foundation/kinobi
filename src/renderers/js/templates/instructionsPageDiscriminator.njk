@@ -2,7 +2,7 @@
 // Discriminator.
 {{ macros.exportType(name + 'InstructionDiscriminator', discriminatorTypeDefinition) -}}
 export function get{{ name }}InstructionDiscriminator(): {{ name }}InstructionDiscriminator {
-  return {{ instruction.discriminator.value }};
+  return {{ JSON.stringify(instruction.discriminator.value) }};
 }
 
 {% endif %}

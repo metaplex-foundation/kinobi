@@ -1,3 +1,5 @@
+import { sha256 } from '@noble/hashes/sha256';
+import { snakeCase } from '../utils';
 import * as nodes from '../nodes';
 import { InstructionNodeDiscriminator } from '../nodes';
 import { BaseNodeVisitor } from './BaseNodeVisitor';
@@ -28,8 +30,11 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
       this.program?.metadata.origin === 'anchor' && !instruction.discriminator;
     if (!shouldUpdateDiscriminator) return instruction;
 
+    const idlName = snakeCase(instruction.metadata.idlName);
+    const hash = sha256(`global:${idlName}`).slice(0, 8);
+
     const discriminator: InstructionNodeDiscriminator = {
-      value: 'todo',
+      value: Array.from(hash),
       type: new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8),
     };
 
@@ -38,28 +43,7 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
       instruction.accounts,
       instruction.args,
       discriminator,
-      instruction.defaultOptionalAccounts
+      instruction.metadata
     );
   }
 }
-
-// renderValue() {
-//     return isShankIdlInstruction(this.ix)
-//       ? JSON.stringify(this.ix.discriminant.value)
-//       : JSON.stringify(Array.from(instructionDiscriminator(this.ix.name)))
-//   }
-
-// export function instructionDiscriminator(name: string): Buffer {
-//   return sighash(SIGHASH_GLOBAL_NAMESPACE, name);
-// }
-
-// function sighash(nameSpace: string, ixName: string): Buffer {
-//   const name = snakeCase(ixName);
-//   const preimage = `${nameSpace}:${name}`;
-//   return Buffer.from(sha256.digest(preimage)).slice(0, 8);
-// }
-
-// export function anchorDiscriminatorField(name: string) {
-//   const ty: IdlTypeArray = { array: ['u8', 8] };
-//   return { name, type: ty };
-// }

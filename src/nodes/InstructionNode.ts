@@ -27,6 +27,11 @@ export type InstructionNodeDiscriminator = {
   value: number | string | number[];
 };
 
+export type InstructionMetadata = {
+  idlName: string;
+  defaultOptionalAccounts: boolean;
+};
+
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
 
@@ -34,8 +39,8 @@ export class InstructionNode implements Visitable {
     readonly name: string,
     readonly accounts: InstructionNodeAccount[],
     readonly args: TypeStructNode,
-    readonly discriminator: InstructionNodeDiscriminator | null = null,
-    readonly defaultOptionalAccounts = false
+    readonly discriminator: InstructionNodeDiscriminator | null,
+    readonly metadata: InstructionMetadata
   ) {}
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
@@ -69,7 +74,10 @@ export class InstructionNode implements Visitable {
         fields: idl.args ?? [],
       }),
       discriminator,
-      idl.defaultOptionalAccounts ?? false
+      {
+        idlName: idl.name ?? '',
+        defaultOptionalAccounts: idl.defaultOptionalAccounts ?? false,
+      }
     );
   }
 
