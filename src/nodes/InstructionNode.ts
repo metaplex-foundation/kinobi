@@ -2,8 +2,8 @@ import { camelCase, pascalCase } from '../utils';
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { assertTypeLeafNode, TypeLeafNode } from './TypeLeafNode';
-import { createTypeNodeFromIdl } from './TypeNode';
+import { assertTypeLeafNode } from './TypeLeafNode';
+import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 
 export type InstructionNodeAccountDefaults =
@@ -23,8 +23,8 @@ export type InstructionNodeAccount = {
 };
 
 export type InstructionNodeDiscriminator = {
-  type: TypeLeafNode;
-  value: number; // TODO(loris): open up to strings and bytes?
+  type: TypeNode;
+  value: number | string | number[];
 };
 
 export class InstructionNode implements Visitable {

@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@noble/hashes': ^1.1.5
   '@types/node': ^18.11.17
   '@types/nunjucks': ^3.2.1
   '@types/prettier': ^2.7.1
@@ -19,6 +20,7 @@ specifiers:
   typescript: ^4.9.4
 
 dependencies:
+  '@noble/hashes': 1.1.5
   chalk: 4.1.2
   nunjucks: 3.2.3
   prettier: 2.8.1
@@ -76,6 +78,10 @@ packages:
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
+
+  /@noble/hashes/1.1.5:
+    resolution: {integrity: sha512-LTMZiiLc+V4v1Yi16TD6aX2gmtKszNye0pQgbaLqkvhIqP7nVsSaJsWloGQjJfJ8offaoP5GtX3yY5swbcJxxQ==}
+    dev: false
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}

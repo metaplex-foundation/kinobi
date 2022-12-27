@@ -2,6 +2,7 @@ export * from './BaseNodeVisitor';
 export * from './BaseRootVisitor';
 export * from './BaseVoidVisitor';
 export * from './DefaultVisitor';
+export * from './FillAnchorDiscriminatorVisitor';
 export * from './GetDefinedTypeHistogramVisitor';
 export * from './GetValidatorItemsVisitor';
 export * from './IdentifyDefaultInstructionAccountsVisitor';
