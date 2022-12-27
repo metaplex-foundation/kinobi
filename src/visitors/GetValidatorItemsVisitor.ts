@@ -1,3 +1,4 @@
+import { pascalCase } from '../utils';
 import * as nodes from '../nodes';
 import { Visitor } from './Visitor';
 
@@ -11,6 +12,8 @@ export type ValidatorItem = {
 export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
   private stack: string[] = [];
 
+  private program: nodes.ProgramNode | null = null;
+
   private exportedNames: Map<string, string[]> = new Map();
 
   private definedTypes = new Set<string>();
@@ -23,6 +26,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
   }
 
   visitProgram(program: nodes.ProgramNode): ValidatorItem[] {
+    this.program = program;
     this.stack.push(
       program.metadata.name
         ? `Program: ${program.metadata.name}`
@@ -51,6 +55,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
     items.push(...program.definedTypes.flatMap((node) => node.accept(this)));
     items.push(...program.errors.flatMap((node) => node.accept(this)));
     this.stack.pop();
+    this.program = null;
     return items;
   }
 
@@ -120,7 +125,10 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
     if (!error.message) {
       items.push(this.warning(error, 'Error has no message'));
     }
-    items.push(...this.checkNameConflict(error, `${error.name}Error`));
+
+    const programPrefix = pascalCase(this.program?.metadata.prefix ?? '');
+    const prefixedErrorName = `${programPrefix + pascalCase(error.name)}Error`;
+    items.push(...this.checkNameConflict(error, prefixedErrorName));
 
     this.stack.pop();
     return items;
