@@ -9,6 +9,7 @@ import type { Node } from './Node';
 
 export type ProgramNodeMetadata = {
   name: string;
+  prefix: string;
   address: string;
   version: string;
   origin: 'shank' | 'anchor' | null;
@@ -33,6 +34,7 @@ export class ProgramNode implements Visitable {
     const errors = (idl.errors ?? []).map(ErrorNode.fromIdl);
     const metadata = {
       name: camelCase(idl.name ?? ''),
+      prefix: '',
       address: idl.metadata?.address ?? '',
       version: idl.version ?? '',
       origin: idl.metadata?.origin ?? null,

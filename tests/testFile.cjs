@@ -10,6 +10,8 @@ const kinobi = new Kinobi(__dirname + '/mpl_token_metadata.json');
 kinobi.update(
   new RenameNodesVisitor({
     mplTokenMetadata: {
+      name: 'mplDigitalAsset',
+      prefix: 'Das',
       instructions: {
         Create: 'CreateDigitalAsset',
         Update: 'UpdateDigitalAsset',

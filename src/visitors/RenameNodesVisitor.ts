@@ -4,6 +4,8 @@ import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 type RenameMap = Record<
   string,
   {
+    name?: string;
+    prefix?: string;
     instructions?: Record<string, string>;
     accounts?: Record<string, string>;
     types?: Record<string, string>;

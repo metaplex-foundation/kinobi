@@ -88,6 +88,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       imports: new ImportMap().add('core', ['ProgramError', 'Program']),
       program,
       pascalCaseName,
+      errors: program.errors.map((error) => ({
+        ...error,
+        prefixedName:
+          pascalCase(program.metadata.prefix) + pascalCase(error.name),
+      })),
     });
     this.render('programsPage.njk', `programs/${name}.ts`, {
       imports: new ImportMap()
