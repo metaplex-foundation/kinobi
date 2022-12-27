@@ -9,6 +9,7 @@ export * from './InlineDefinedTypesForInstructionArgsVisitor';
 export * from './InlineDefinedTypesVisitor';
 export * from './InlineStructsForInstructionArgsVisitor';
 export * from './PrintVisitor';
+export * from './RenameNodesVisitor';
 export * from './TransformNodesVisitor';
 export * from './TransformU8ArraysToBytesVisitor';
 export * from './ValidateNodesVisitor';
