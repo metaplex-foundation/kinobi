@@ -118,7 +118,7 @@ export class GetJavaScriptSerializerVisitor
       this.definedName = null;
       return {
         imports: new ImportMap(),
-        code: `['${variant.name}']`,
+        code: `['${variant.name}', unit]`,
       };
     });
 
