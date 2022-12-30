@@ -91,7 +91,7 @@ export class GetJavaScriptSerializerVisitor
 
     const variants = typeEnum.variants.map((variant): JavaScriptSerializer => {
       this.definedName = definedName
-        ? `Omit<${definedName} & { __kind: '${variant.name}' }, '__kind'>`
+        ? `GetDataEnumKindContent<${definedName}, '${variant.name}'>`
         : null;
 
       if (variant.kind === 'struct') {
@@ -126,8 +126,13 @@ export class GetJavaScriptSerializerVisitor
     const description =
       typeEnum.name || definedName ? `, '${typeEnum.name || definedName}'` : '';
 
+    const { imports } = this.mergeSerializers(variants);
+
     return {
-      ...this.mergeSerializers(variants),
+      imports: imports.add('core', [
+        'GetDataEnumKindContent',
+        'GetDataEnumKind',
+      ]),
       code:
         `${this.s('dataEnum')}<${definedName || 'any'}>` +
         `([${variantCodes}]${description})`,

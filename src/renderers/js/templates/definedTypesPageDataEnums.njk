@@ -2,11 +2,11 @@
 // Data Enum Helpers.
 {% for variant in definedType.type.variants %}
 {% if variant.kind === 'struct' %}
-export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: Omit<{{ name }} & { __kind: '{{ variant.name }}' }, '__kind'>): {{ name }} & { __kind: '{{ variant.name }}' };
+export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: GetDataEnumKindContent<{{ name }}, '{{ variant.name }}'>): GetDataEnumKind<{{ name }}, '{{ variant.name }}'>;
 {% elif variant.kind === 'tuple' %}
-export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: Omit<{{ name }} & { __kind: '{{ variant.name }}' }, '__kind'>['fields']): {{ name }} & { __kind: '{{ variant.name }}' };
+export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: GetDataEnumKindContent<{{ name }}, '{{ variant.name }}'>['fields']): GetDataEnumKind<{{ name }}, '{{ variant.name }}'>;
 {% else %}
-export function {{ camelCaseName }}(kind: '{{ variant.name }}'): {{ name }} & { __kind: '{{ variant.name }}' };
+export function {{ camelCaseName }}(kind: '{{ variant.name }}'): GetDataEnumKind<{{ name }}, '{{ variant.name }}'>;
 {% endif %}
 {% endfor %}
 export function {{ camelCaseName }}<K extends {{ name }}['__kind']>(
