@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -66,7 +67,11 @@ export function getCreateMetadataAccountV2InstructionDataSerializer(
       ],
       'CreateMetadataAccountV2InstructionArgs'
     ),
-    (value) => ({ discriminator: 16, ...value })
+    (value) =>
+      ({
+        discriminator: 16,
+        ...value,
+      } as CreateMetadataAccountV2InstructionData)
   ) as Serializer<
     CreateMetadataAccountV2InstructionArgs,
     CreateMetadataAccountV2InstructionData

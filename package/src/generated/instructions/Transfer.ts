@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -78,7 +79,7 @@ export function getTransferInstructionDataSerializer(
       ],
       'TransferInstructionArgs'
     ),
-    (value) => ({ discriminator: 46, ...value })
+    (value) => ({ discriminator: 46, ...value } as TransferInstructionData)
   ) as Serializer<TransferInstructionArgs, TransferInstructionData>;
 }
 

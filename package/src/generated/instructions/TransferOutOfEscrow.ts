@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -72,7 +73,8 @@ export function getTransferOutOfEscrowInstructionDataSerializer(
       ],
       'TransferOutOfEscrowInstructionArgs'
     ),
-    (value) => ({ discriminator: 40, ...value })
+    (value) =>
+      ({ discriminator: 40, ...value } as TransferOutOfEscrowInstructionData)
   ) as Serializer<
     TransferOutOfEscrowInstructionArgs,
     TransferOutOfEscrowInstructionData

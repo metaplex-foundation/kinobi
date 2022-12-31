@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -58,7 +59,11 @@ export function getDeprecatedCreateReservationListInstructionDataSerializer(
       [['discriminator', s.u8]],
       'DeprecatedCreateReservationListInstructionArgs'
     ),
-    (value) => ({ discriminator: 6, ...value })
+    (value) =>
+      ({
+        discriminator: 6,
+        ...value,
+      } as DeprecatedCreateReservationListInstructionData)
   ) as Serializer<
     DeprecatedCreateReservationListInstructionArgs,
     DeprecatedCreateReservationListInstructionData

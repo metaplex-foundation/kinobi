@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -52,7 +53,8 @@ export function getVerifyCollectionInstructionDataSerializer(
       [['discriminator', s.u8]],
       'VerifyCollectionInstructionArgs'
     ),
-    (value) => ({ discriminator: 18, ...value })
+    (value) =>
+      ({ discriminator: 18, ...value } as VerifyCollectionInstructionData)
   ) as Serializer<
     VerifyCollectionInstructionArgs,
     VerifyCollectionInstructionData

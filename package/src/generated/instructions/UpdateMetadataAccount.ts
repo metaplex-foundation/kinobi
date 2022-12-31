@@ -11,6 +11,7 @@ import {
   Context,
   Option,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -60,7 +61,8 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
       ],
       'UpdateMetadataAccountInstructionArgs'
     ),
-    (value) => ({ discriminator: 1, ...value })
+    (value) =>
+      ({ discriminator: 1, ...value } as UpdateMetadataAccountInstructionData)
   ) as Serializer<
     UpdateMetadataAccountInstructionArgs,
     UpdateMetadataAccountInstructionData

@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -84,7 +85,11 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSeriali
       ],
       'MintNewEditionFromMasterEditionViaTokenInstructionArgs'
     ),
-    (value) => ({ discriminator: 11, ...value })
+    (value) =>
+      ({
+        discriminator: 11,
+        ...value,
+      } as MintNewEditionFromMasterEditionViaTokenInstructionData)
   ) as Serializer<
     MintNewEditionFromMasterEditionViaTokenInstructionArgs,
     MintNewEditionFromMasterEditionViaTokenInstructionData

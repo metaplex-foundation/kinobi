@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -61,7 +62,8 @@ export function getSetCollectionSizeInstructionDataSerializer(
       ],
       'SetCollectionSizeInstructionArgs'
     ),
-    (value) => ({ discriminator: 34, ...value })
+    (value) =>
+      ({ discriminator: 34, ...value } as SetCollectionSizeInstructionData)
   ) as Serializer<
     SetCollectionSizeInstructionArgs,
     SetCollectionSizeInstructionData

@@ -351,11 +351,12 @@ export class GetJavaScriptTypeManifestVisitor
       .join(', ');
     const mapSerializerTypeParams = definedName
       ? `${definedName.loose}, ${definedName.strict}, ${definedName.strict}`
-      : 'any';
+      : 'any, any, any';
+    const asReturnType = definedName ? ` as ${definedName.strict}` : '';
     const mappedSerializer =
       `mapSerializer<${mapSerializerTypeParams}>(` +
       `${baseManifest.serializer}, ` +
-      `(value) => ({ ${defaultValues}, ...value }) ` +
+      `(value) => ({ ${defaultValues}, ...value }${asReturnType}) ` +
       `)`;
 
     return {

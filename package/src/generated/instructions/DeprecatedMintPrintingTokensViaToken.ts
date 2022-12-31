@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -74,7 +75,11 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
       ],
       'DeprecatedMintPrintingTokensViaTokenInstructionArgs'
     ),
-    (value) => ({ discriminator: 8, ...value })
+    (value) =>
+      ({
+        discriminator: 8,
+        ...value,
+      } as DeprecatedMintPrintingTokensViaTokenInstructionData)
   ) as Serializer<
     DeprecatedMintPrintingTokensViaTokenInstructionArgs,
     DeprecatedMintPrintingTokensViaTokenInstructionData

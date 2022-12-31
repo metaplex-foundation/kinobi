@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -65,7 +66,7 @@ export function getMintInstructionDataSerializer(
       ],
       'MintInstructionArgs'
     ),
-    (value) => ({ discriminator: 42, ...value })
+    (value) => ({ discriminator: 42, ...value } as MintInstructionData)
   ) as Serializer<MintInstructionArgs, MintInstructionData>;
 }
 

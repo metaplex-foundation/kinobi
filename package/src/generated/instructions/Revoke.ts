@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -70,7 +71,7 @@ export function getRevokeInstructionDataSerializer(
       ],
       'RevokeInstructionArgs'
     ),
-    (value) => ({ discriminator: 49, ...value })
+    (value) => ({ discriminator: 49, ...value } as RevokeInstructionData)
   ) as Serializer<RevokeInstructionArgs, RevokeInstructionData>;
 }
 

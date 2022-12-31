@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -90,7 +91,11 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
       ],
       'MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs'
     ),
-    (value) => ({ discriminator: 13, ...value })
+    (value) =>
+      ({
+        discriminator: 13,
+        ...value,
+      } as MintNewEditionFromMasterEditionViaVaultProxyInstructionData)
   ) as Serializer<
     MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
     MintNewEditionFromMasterEditionViaVaultProxyInstructionData

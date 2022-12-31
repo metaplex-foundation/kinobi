@@ -11,6 +11,7 @@ import {
   Context,
   Option,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -69,7 +70,11 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
       ],
       'DeprecatedSetReservationListInstructionArgs'
     ),
-    (value) => ({ discriminator: 5, ...value })
+    (value) =>
+      ({
+        discriminator: 5,
+        ...value,
+      } as DeprecatedSetReservationListInstructionData)
   ) as Serializer<
     DeprecatedSetReservationListInstructionArgs,
     DeprecatedSetReservationListInstructionData

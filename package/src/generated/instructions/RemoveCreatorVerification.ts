@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -46,7 +47,11 @@ export function getRemoveCreatorVerificationInstructionDataSerializer(
       [['discriminator', s.u8]],
       'RemoveCreatorVerificationInstructionArgs'
     ),
-    (value) => ({ discriminator: 28, ...value })
+    (value) =>
+      ({
+        discriminator: 28,
+        ...value,
+      } as RemoveCreatorVerificationInstructionData)
   ) as Serializer<
     RemoveCreatorVerificationInstructionArgs,
     RemoveCreatorVerificationInstructionData

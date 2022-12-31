@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -48,7 +49,8 @@ export function getSetTokenStandardInstructionDataSerializer(
       [['discriminator', s.u8]],
       'SetTokenStandardInstructionArgs'
     ),
-    (value) => ({ discriminator: 35, ...value })
+    (value) =>
+      ({ discriminator: 35, ...value } as SetTokenStandardInstructionData)
   ) as Serializer<
     SetTokenStandardInstructionArgs,
     SetTokenStandardInstructionData

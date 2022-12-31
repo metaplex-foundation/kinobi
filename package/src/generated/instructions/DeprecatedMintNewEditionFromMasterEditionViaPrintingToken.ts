@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -75,7 +76,11 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
       [['discriminator', s.u8]],
       'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs'
     ),
-    (value) => ({ discriminator: 3, ...value })
+    (value) =>
+      ({
+        discriminator: 3,
+        ...value,
+      } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData)
   ) as Serializer<
     DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs,
     DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData

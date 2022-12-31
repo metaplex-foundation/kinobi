@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -63,7 +64,11 @@ export function getBubblegumSetCollectionSizeInstructionDataSerializer(
       ],
       'BubblegumSetCollectionSizeInstructionArgs'
     ),
-    (value) => ({ discriminator: 36, ...value })
+    (value) =>
+      ({
+        discriminator: 36,
+        ...value,
+      } as BubblegumSetCollectionSizeInstructionData)
   ) as Serializer<
     BubblegumSetCollectionSizeInstructionArgs,
     BubblegumSetCollectionSizeInstructionData

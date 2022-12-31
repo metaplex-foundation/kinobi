@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -58,7 +59,8 @@ export function getRevokeUseAuthorityInstructionDataSerializer(
       [['discriminator', s.u8]],
       'RevokeUseAuthorityInstructionArgs'
     ),
-    (value) => ({ discriminator: 21, ...value })
+    (value) =>
+      ({ discriminator: 21, ...value } as RevokeUseAuthorityInstructionData)
   ) as Serializer<
     RevokeUseAuthorityInstructionArgs,
     RevokeUseAuthorityInstructionData

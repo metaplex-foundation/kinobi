@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -48,7 +49,11 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
       [['discriminator', s.u8]],
       'UpdatePrimarySaleHappenedViaTokenInstructionArgs'
     ),
-    (value) => ({ discriminator: 4, ...value })
+    (value) =>
+      ({
+        discriminator: 4,
+        ...value,
+      } as UpdatePrimarySaleHappenedViaTokenInstructionData)
   ) as Serializer<
     UpdatePrimarySaleHappenedViaTokenInstructionArgs,
     UpdatePrimarySaleHappenedViaTokenInstructionData

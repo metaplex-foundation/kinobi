@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -58,7 +59,8 @@ export function getCreateEscrowAccountInstructionDataSerializer(
       [['discriminator', s.u8]],
       'CreateEscrowAccountInstructionArgs'
     ),
-    (value) => ({ discriminator: 38, ...value })
+    (value) =>
+      ({ discriminator: 38, ...value } as CreateEscrowAccountInstructionData)
   ) as Serializer<
     CreateEscrowAccountInstructionArgs,
     CreateEscrowAccountInstructionData

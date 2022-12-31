@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -74,7 +75,8 @@ export function getCreateMasterEditionV3InstructionDataSerializer(
       ],
       'CreateMasterEditionV3InstructionArgs'
     ),
-    (value) => ({ discriminator: 17, ...value })
+    (value) =>
+      ({ discriminator: 17, ...value } as CreateMasterEditionV3InstructionData)
   ) as Serializer<
     CreateMasterEditionV3InstructionArgs,
     CreateMasterEditionV3InstructionData

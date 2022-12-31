@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -50,7 +51,8 @@ export function getFreezeDelegatedAccountInstructionDataSerializer(
       [['discriminator', s.u8]],
       'FreezeDelegatedAccountInstructionArgs'
     ),
-    (value) => ({ discriminator: 26, ...value })
+    (value) =>
+      ({ discriminator: 26, ...value } as FreezeDelegatedAccountInstructionData)
   ) as Serializer<
     FreezeDelegatedAccountInstructionArgs,
     FreezeDelegatedAccountInstructionData

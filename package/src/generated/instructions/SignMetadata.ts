@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -41,7 +42,7 @@ export function getSignMetadataInstructionDataSerializer(
       [['discriminator', s.u8]],
       'SignMetadataInstructionArgs'
     ),
-    (value) => ({ discriminator: 7, ...value })
+    (value) => ({ discriminator: 7, ...value } as SignMetadataInstructionData)
   ) as Serializer<SignMetadataInstructionArgs, SignMetadataInstructionData>;
 }
 

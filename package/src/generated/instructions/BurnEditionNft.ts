@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -57,7 +58,8 @@ export function getBurnEditionNftInstructionDataSerializer(
       [['discriminator', s.u8]],
       'BurnEditionNftInstructionArgs'
     ),
-    (value) => ({ discriminator: 37, ...value })
+    (value) =>
+      ({ discriminator: 37, ...value } as BurnEditionNftInstructionData)
   ) as Serializer<BurnEditionNftInstructionArgs, BurnEditionNftInstructionData>;
 }
 

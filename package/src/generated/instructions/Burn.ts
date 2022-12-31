@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -59,7 +60,7 @@ export function getBurnInstructionDataSerializer(
       ],
       'BurnInstructionArgs'
     ),
-    (value) => ({ discriminator: 44, ...value })
+    (value) => ({ discriminator: 44, ...value } as BurnInstructionData)
   ) as Serializer<BurnInstructionArgs, BurnInstructionData>;
 }
 

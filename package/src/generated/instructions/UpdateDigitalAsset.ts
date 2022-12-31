@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -67,7 +68,8 @@ export function getUpdateDigitalAssetInstructionDataSerializer(
       ],
       'UpdateInstructionArgs'
     ),
-    (value) => ({ discriminator: 43, ...value })
+    (value) =>
+      ({ discriminator: 43, ...value } as UpdateDigitalAssetInstructionData)
   ) as Serializer<
     UpdateDigitalAssetInstructionArgs,
     UpdateDigitalAssetInstructionData

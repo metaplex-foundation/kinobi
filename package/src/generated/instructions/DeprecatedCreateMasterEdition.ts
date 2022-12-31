@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -82,7 +83,11 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
       ],
       'DeprecatedCreateMasterEditionInstructionArgs'
     ),
-    (value) => ({ discriminator: 2, ...value })
+    (value) =>
+      ({
+        discriminator: 2,
+        ...value,
+      } as DeprecatedCreateMasterEditionInstructionData)
   ) as Serializer<
     DeprecatedCreateMasterEditionInstructionArgs,
     DeprecatedCreateMasterEditionInstructionData

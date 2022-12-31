@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -58,7 +59,11 @@ export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(
       [['discriminator', s.u8]],
       'SetAndVerifySizedCollectionItemInstructionArgs'
     ),
-    (value) => ({ discriminator: 32, ...value })
+    (value) =>
+      ({
+        discriminator: 32,
+        ...value,
+      } as SetAndVerifySizedCollectionItemInstructionData)
   ) as Serializer<
     SetAndVerifySizedCollectionItemInstructionArgs,
     SetAndVerifySizedCollectionItemInstructionData

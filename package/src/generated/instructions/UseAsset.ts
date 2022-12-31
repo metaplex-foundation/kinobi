@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -70,7 +71,7 @@ export function getUseAssetInstructionDataSerializer(
       ],
       'UseAssetInstructionArgs'
     ),
-    (value) => ({ discriminator: 45, ...value })
+    (value) => ({ discriminator: 45, ...value } as UseAssetInstructionData)
   ) as Serializer<UseAssetInstructionArgs, UseAssetInstructionData>;
 }
 

@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   PublicKey,
+  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -48,7 +49,11 @@ export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
       [['discriminator', s.u8]],
       'ConvertMasterEditionV1ToV2InstructionArgs'
     ),
-    (value) => ({ discriminator: 12, ...value })
+    (value) =>
+      ({
+        discriminator: 12,
+        ...value,
+      } as ConvertMasterEditionV1ToV2InstructionData)
   ) as Serializer<
     ConvertMasterEditionV1ToV2InstructionArgs,
     ConvertMasterEditionV1ToV2InstructionData
