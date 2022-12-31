@@ -6,8 +6,6 @@
 
 {% include "instructionsPageAccounts.njk" %}
 {% include "instructionsPageArgs.njk" %}
-{% include "instructionsPageDiscriminator.njk" %}
-{% include "instructionsPageData.njk" %}
 
 // Instruction.
 export function {{ camelCaseName }}(
@@ -48,8 +46,6 @@ export function {{ camelCaseName }}(
   // Data.
   {% if instruction.hasArgs %}
   const data = get{{ name }}InstructionDataSerializer(context).serialize({{ argsObj }});
-  {% elif instruction.hasDiscriminator %}
-  const data = get{{ name }}InstructionDataSerializer(context).serialize({});
   {% else %}
   const data = new Uint8Array();
   {% endif %}

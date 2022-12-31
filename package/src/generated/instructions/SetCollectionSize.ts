@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -36,39 +35,37 @@ export type SetCollectionSizeInstructionAccounts = {
 
 // Arguments.
 export type SetCollectionSizeInstructionData = {
+  discriminator: number;
   setCollectionSizeArgs: SetCollectionSizeArgs;
 };
 export type SetCollectionSizeInstructionArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
-// Discriminator.
-export type SetCollectionSizeInstructionDiscriminator = number;
-export function getSetCollectionSizeInstructionDiscriminator(): SetCollectionSizeInstructionDiscriminator {
-  return 34;
-}
-
-// Data.
-type SetCollectionSizeInstructionData = SetCollectionSizeInstructionArgs & {
-  discriminator: SetCollectionSizeInstructionDiscriminator;
-};
 export function getSetCollectionSizeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<SetCollectionSizeInstructionArgs> {
+): Serializer<
+  SetCollectionSizeInstructionArgs,
+  SetCollectionSizeInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getSetCollectionSizeInstructionDiscriminator();
-  const serializer: Serializer<SetCollectionSizeInstructionData> =
+  return mapSerializer<
+    SetCollectionSizeInstructionArgs,
+    SetCollectionSizeInstructionData,
+    SetCollectionSizeInstructionData
+  >(
     s.struct<SetCollectionSizeInstructionData>(
       [
         ['discriminator', s.u8],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer(context)],
       ],
-      'SetCollectionSizeInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: SetCollectionSizeInstructionArgs) => ({ ...value, discriminator })
-  );
+      'SetCollectionSizeInstructionArgs'
+    ),
+    (value) => ({ discriminator: 34, ...value })
+  ) as Serializer<
+    SetCollectionSizeInstructionArgs,
+    SetCollectionSizeInstructionData
+  >;
 }
 
 // Instruction.

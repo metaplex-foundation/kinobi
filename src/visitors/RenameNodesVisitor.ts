@@ -104,7 +104,6 @@ function instructionNodeTransform(
           options,
           node.accounts,
           node.args,
-          node.discriminator,
           node.metadata
         );
       }
@@ -119,7 +118,6 @@ function instructionNodeTransform(
           name: accountMap[account.name] ?? account.name,
         })),
         mapStructFields(node.args, argMap, `${newName}InstructionArgs`),
-        node.discriminator,
         node.metadata
       );
     },

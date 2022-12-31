@@ -48,20 +48,10 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const args = instruction.args.accept(this);
     nodes.assertTypeStructNode(args);
-    let discriminator: nodes.InstructionNodeDiscriminator | null = null;
-    if (instruction.discriminator) {
-      const discriminatorType = instruction.discriminator.type.accept(this);
-      nodes.assertTypeNode(discriminatorType);
-      discriminator = {
-        type: discriminatorType,
-        value: instruction.discriminator.value,
-      };
-    }
     return new nodes.InstructionNode(
       instruction.name,
       instruction.accounts,
       args,
-      discriminator,
       instruction.metadata
     );
   }

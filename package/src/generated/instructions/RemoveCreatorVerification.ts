@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -25,27 +24,33 @@ export type RemoveCreatorVerificationInstructionAccounts = {
   creator: Signer;
 };
 
-// Discriminator.
-export type RemoveCreatorVerificationInstructionDiscriminator = number;
-export function getRemoveCreatorVerificationInstructionDiscriminator(): RemoveCreatorVerificationInstructionDiscriminator {
-  return 28;
-}
-
-// Data.
-type RemoveCreatorVerificationInstructionData = {
-  discriminator: RemoveCreatorVerificationInstructionDiscriminator;
+// Arguments.
+export type RemoveCreatorVerificationInstructionData = {
+  discriminator: number;
 };
+export type RemoveCreatorVerificationInstructionArgs = {};
+
 export function getRemoveCreatorVerificationInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  RemoveCreatorVerificationInstructionArgs,
+  RemoveCreatorVerificationInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getRemoveCreatorVerificationInstructionDiscriminator();
-  const serializer: Serializer<RemoveCreatorVerificationInstructionData> =
+  return mapSerializer<
+    RemoveCreatorVerificationInstructionArgs,
+    RemoveCreatorVerificationInstructionData,
+    RemoveCreatorVerificationInstructionData
+  >(
     s.struct<RemoveCreatorVerificationInstructionData>(
       [['discriminator', s.u8]],
-      'RemoveCreatorVerificationInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'RemoveCreatorVerificationInstructionArgs'
+    ),
+    (value) => ({ discriminator: 28, ...value })
+  ) as Serializer<
+    RemoveCreatorVerificationInstructionArgs,
+    RemoveCreatorVerificationInstructionData
+  >;
 }
 
 // Instruction.
@@ -55,7 +60,8 @@ export function removeCreatorVerification(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: RemoveCreatorVerificationInstructionAccounts
+  input: RemoveCreatorVerificationInstructionAccounts &
+    RemoveCreatorVerificationInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -79,9 +85,10 @@ export function removeCreatorVerification(
   });
 
   // Data.
-  const data = getRemoveCreatorVerificationInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getRemoveCreatorVerificationInstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

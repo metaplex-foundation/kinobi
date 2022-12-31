@@ -26,7 +26,6 @@ export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
       hasConflictingNames
         ? currentArgs
         : new nodes.TypeStructNode(currentArgs.name, inlinedArgs),
-      instruction.discriminator,
       instruction.metadata
     );
   }

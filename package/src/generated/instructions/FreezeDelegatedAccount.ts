@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -31,27 +30,31 @@ export type FreezeDelegatedAccountInstructionAccounts = {
   tokenProgram?: PublicKey;
 };
 
-// Discriminator.
-export type FreezeDelegatedAccountInstructionDiscriminator = number;
-export function getFreezeDelegatedAccountInstructionDiscriminator(): FreezeDelegatedAccountInstructionDiscriminator {
-  return 26;
-}
+// Arguments.
+export type FreezeDelegatedAccountInstructionData = { discriminator: number };
+export type FreezeDelegatedAccountInstructionArgs = {};
 
-// Data.
-type FreezeDelegatedAccountInstructionData = {
-  discriminator: FreezeDelegatedAccountInstructionDiscriminator;
-};
 export function getFreezeDelegatedAccountInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  FreezeDelegatedAccountInstructionArgs,
+  FreezeDelegatedAccountInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getFreezeDelegatedAccountInstructionDiscriminator();
-  const serializer: Serializer<FreezeDelegatedAccountInstructionData> =
+  return mapSerializer<
+    FreezeDelegatedAccountInstructionArgs,
+    FreezeDelegatedAccountInstructionData,
+    FreezeDelegatedAccountInstructionData
+  >(
     s.struct<FreezeDelegatedAccountInstructionData>(
       [['discriminator', s.u8]],
-      'FreezeDelegatedAccountInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'FreezeDelegatedAccountInstructionArgs'
+    ),
+    (value) => ({ discriminator: 26, ...value })
+  ) as Serializer<
+    FreezeDelegatedAccountInstructionArgs,
+    FreezeDelegatedAccountInstructionData
+  >;
 }
 
 // Instruction.
@@ -61,7 +64,8 @@ export function freezeDelegatedAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: FreezeDelegatedAccountInstructionAccounts
+  input: FreezeDelegatedAccountInstructionAccounts &
+    FreezeDelegatedAccountInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -104,9 +108,10 @@ export function freezeDelegatedAccount(
   });
 
   // Data.
-  const data = getFreezeDelegatedAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getFreezeDelegatedAccountInstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -23,27 +22,25 @@ export type PuffMetadataInstructionAccounts = {
   metadata: PublicKey;
 };
 
-// Discriminator.
-export type PuffMetadataInstructionDiscriminator = number;
-export function getPuffMetadataInstructionDiscriminator(): PuffMetadataInstructionDiscriminator {
-  return 14;
-}
+// Arguments.
+export type PuffMetadataInstructionData = { discriminator: number };
+export type PuffMetadataInstructionArgs = {};
 
-// Data.
-type PuffMetadataInstructionData = {
-  discriminator: PuffMetadataInstructionDiscriminator;
-};
 export function getPuffMetadataInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<PuffMetadataInstructionArgs, PuffMetadataInstructionData> {
   const s = context.serializer;
-  const discriminator = getPuffMetadataInstructionDiscriminator();
-  const serializer: Serializer<PuffMetadataInstructionData> =
+  return mapSerializer<
+    PuffMetadataInstructionArgs,
+    PuffMetadataInstructionData,
+    PuffMetadataInstructionData
+  >(
     s.struct<PuffMetadataInstructionData>(
       [['discriminator', s.u8]],
-      'PuffMetadataInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'PuffMetadataInstructionArgs'
+    ),
+    (value) => ({ discriminator: 14, ...value })
+  ) as Serializer<PuffMetadataInstructionArgs, PuffMetadataInstructionData>;
 }
 
 // Instruction.
@@ -53,7 +50,7 @@ export function puffMetadata(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: PuffMetadataInstructionAccounts
+  input: PuffMetadataInstructionAccounts & PuffMetadataInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -69,7 +66,8 @@ export function puffMetadata(
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
 
   // Data.
-  const data = getPuffMetadataInstructionDataSerializer(context).serialize({});
+  const data =
+    getPuffMetadataInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

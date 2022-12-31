@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -31,27 +30,31 @@ export type ThawDelegatedAccountInstructionAccounts = {
   tokenProgram?: PublicKey;
 };
 
-// Discriminator.
-export type ThawDelegatedAccountInstructionDiscriminator = number;
-export function getThawDelegatedAccountInstructionDiscriminator(): ThawDelegatedAccountInstructionDiscriminator {
-  return 27;
-}
+// Arguments.
+export type ThawDelegatedAccountInstructionData = { discriminator: number };
+export type ThawDelegatedAccountInstructionArgs = {};
 
-// Data.
-type ThawDelegatedAccountInstructionData = {
-  discriminator: ThawDelegatedAccountInstructionDiscriminator;
-};
 export function getThawDelegatedAccountInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  ThawDelegatedAccountInstructionArgs,
+  ThawDelegatedAccountInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getThawDelegatedAccountInstructionDiscriminator();
-  const serializer: Serializer<ThawDelegatedAccountInstructionData> =
+  return mapSerializer<
+    ThawDelegatedAccountInstructionArgs,
+    ThawDelegatedAccountInstructionData,
+    ThawDelegatedAccountInstructionData
+  >(
     s.struct<ThawDelegatedAccountInstructionData>(
       [['discriminator', s.u8]],
-      'ThawDelegatedAccountInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'ThawDelegatedAccountInstructionArgs'
+    ),
+    (value) => ({ discriminator: 27, ...value })
+  ) as Serializer<
+    ThawDelegatedAccountInstructionArgs,
+    ThawDelegatedAccountInstructionData
+  >;
 }
 
 // Instruction.
@@ -61,7 +64,8 @@ export function thawDelegatedAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: ThawDelegatedAccountInstructionAccounts
+  input: ThawDelegatedAccountInstructionAccounts &
+    ThawDelegatedAccountInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -104,9 +108,8 @@ export function thawDelegatedAccount(
   });
 
   // Data.
-  const data = getThawDelegatedAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getThawDelegatedAccountInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

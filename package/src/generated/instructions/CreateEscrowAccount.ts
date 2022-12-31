@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -39,27 +38,31 @@ export type CreateEscrowAccountInstructionAccounts = {
   authority?: Signer;
 };
 
-// Discriminator.
-export type CreateEscrowAccountInstructionDiscriminator = number;
-export function getCreateEscrowAccountInstructionDiscriminator(): CreateEscrowAccountInstructionDiscriminator {
-  return 38;
-}
+// Arguments.
+export type CreateEscrowAccountInstructionData = { discriminator: number };
+export type CreateEscrowAccountInstructionArgs = {};
 
-// Data.
-type CreateEscrowAccountInstructionData = {
-  discriminator: CreateEscrowAccountInstructionDiscriminator;
-};
 export function getCreateEscrowAccountInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  CreateEscrowAccountInstructionArgs,
+  CreateEscrowAccountInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCreateEscrowAccountInstructionDiscriminator();
-  const serializer: Serializer<CreateEscrowAccountInstructionData> =
+  return mapSerializer<
+    CreateEscrowAccountInstructionArgs,
+    CreateEscrowAccountInstructionData,
+    CreateEscrowAccountInstructionData
+  >(
     s.struct<CreateEscrowAccountInstructionData>(
       [['discriminator', s.u8]],
-      'CreateEscrowAccountInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'CreateEscrowAccountInstructionArgs'
+    ),
+    (value) => ({ discriminator: 38, ...value })
+  ) as Serializer<
+    CreateEscrowAccountInstructionArgs,
+    CreateEscrowAccountInstructionData
+  >;
 }
 
 // Instruction.
@@ -69,7 +72,8 @@ export function createEscrowAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: CreateEscrowAccountInstructionAccounts
+  input: CreateEscrowAccountInstructionAccounts &
+    CreateEscrowAccountInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -139,9 +143,8 @@ export function createEscrowAccount(
   }
 
   // Data.
-  const data = getCreateEscrowAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getCreateEscrowAccountInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

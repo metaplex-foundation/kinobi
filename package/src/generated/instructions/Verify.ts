@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -33,35 +32,30 @@ export type VerifyInstructionAccounts = {
 };
 
 // Arguments.
-export type VerifyInstructionData = { verifyArgs: VerifyArgs };
-
-// Discriminator.
-export type VerifyInstructionDiscriminator = number;
-export function getVerifyInstructionDiscriminator(): VerifyInstructionDiscriminator {
-  return 47;
-}
-
-// Data.
-type VerifyInstructionData = VerifyInstructionArgs & {
-  discriminator: VerifyInstructionDiscriminator;
+export type VerifyInstructionData = {
+  discriminator: number;
+  verifyArgs: VerifyArgs;
 };
+export type VerifyInstructionArgs = { verifyArgs: VerifyArgs };
+
 export function getVerifyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<VerifyInstructionArgs> {
+): Serializer<VerifyInstructionArgs, VerifyInstructionData> {
   const s = context.serializer;
-  const discriminator = getVerifyInstructionDiscriminator();
-  const serializer: Serializer<VerifyInstructionData> =
+  return mapSerializer<
+    VerifyInstructionArgs,
+    VerifyInstructionData,
+    VerifyInstructionData
+  >(
     s.struct<VerifyInstructionData>(
       [
         ['discriminator', s.u8],
         ['verifyArgs', getVerifyArgsSerializer(context)],
       ],
-      'VerifyInstructionData'
-    );
-  return mapSerializer(serializer, (value: VerifyInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'VerifyInstructionArgs'
+    ),
+    (value) => ({ discriminator: 47, ...value })
+  ) as Serializer<VerifyInstructionArgs, VerifyInstructionData>;
 }
 
 // Instruction.

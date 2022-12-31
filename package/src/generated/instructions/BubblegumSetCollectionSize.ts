@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -38,43 +37,37 @@ export type BubblegumSetCollectionSizeInstructionAccounts = {
 
 // Arguments.
 export type BubblegumSetCollectionSizeInstructionData = {
+  discriminator: number;
   setCollectionSizeArgs: SetCollectionSizeArgs;
 };
 export type BubblegumSetCollectionSizeInstructionArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
-// Discriminator.
-export type BubblegumSetCollectionSizeInstructionDiscriminator = number;
-export function getBubblegumSetCollectionSizeInstructionDiscriminator(): BubblegumSetCollectionSizeInstructionDiscriminator {
-  return 36;
-}
-
-// Data.
-type BubblegumSetCollectionSizeInstructionData =
-  BubblegumSetCollectionSizeInstructionArgs & {
-    discriminator: BubblegumSetCollectionSizeInstructionDiscriminator;
-  };
 export function getBubblegumSetCollectionSizeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<BubblegumSetCollectionSizeInstructionArgs> {
+): Serializer<
+  BubblegumSetCollectionSizeInstructionArgs,
+  BubblegumSetCollectionSizeInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getBubblegumSetCollectionSizeInstructionDiscriminator();
-  const serializer: Serializer<BubblegumSetCollectionSizeInstructionData> =
+  return mapSerializer<
+    BubblegumSetCollectionSizeInstructionArgs,
+    BubblegumSetCollectionSizeInstructionData,
+    BubblegumSetCollectionSizeInstructionData
+  >(
     s.struct<BubblegumSetCollectionSizeInstructionData>(
       [
         ['discriminator', s.u8],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer(context)],
       ],
-      'BubblegumSetCollectionSizeInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: BubblegumSetCollectionSizeInstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'BubblegumSetCollectionSizeInstructionArgs'
+    ),
+    (value) => ({ discriminator: 36, ...value })
+  ) as Serializer<
+    BubblegumSetCollectionSizeInstructionArgs,
+    BubblegumSetCollectionSizeInstructionData
+  >;
 }
 
 // Instruction.

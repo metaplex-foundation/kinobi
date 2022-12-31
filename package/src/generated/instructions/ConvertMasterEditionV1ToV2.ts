@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -27,27 +26,33 @@ export type ConvertMasterEditionV1ToV2InstructionAccounts = {
   printingMint: PublicKey;
 };
 
-// Discriminator.
-export type ConvertMasterEditionV1ToV2InstructionDiscriminator = number;
-export function getConvertMasterEditionV1ToV2InstructionDiscriminator(): ConvertMasterEditionV1ToV2InstructionDiscriminator {
-  return 12;
-}
-
-// Data.
-type ConvertMasterEditionV1ToV2InstructionData = {
-  discriminator: ConvertMasterEditionV1ToV2InstructionDiscriminator;
+// Arguments.
+export type ConvertMasterEditionV1ToV2InstructionData = {
+  discriminator: number;
 };
+export type ConvertMasterEditionV1ToV2InstructionArgs = {};
+
 export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  ConvertMasterEditionV1ToV2InstructionArgs,
+  ConvertMasterEditionV1ToV2InstructionData
+> {
   const s = context.serializer;
-  const discriminator = getConvertMasterEditionV1ToV2InstructionDiscriminator();
-  const serializer: Serializer<ConvertMasterEditionV1ToV2InstructionData> =
+  return mapSerializer<
+    ConvertMasterEditionV1ToV2InstructionArgs,
+    ConvertMasterEditionV1ToV2InstructionData,
+    ConvertMasterEditionV1ToV2InstructionData
+  >(
     s.struct<ConvertMasterEditionV1ToV2InstructionData>(
       [['discriminator', s.u8]],
-      'ConvertMasterEditionV1ToV2InstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'ConvertMasterEditionV1ToV2InstructionArgs'
+    ),
+    (value) => ({ discriminator: 12, ...value })
+  ) as Serializer<
+    ConvertMasterEditionV1ToV2InstructionArgs,
+    ConvertMasterEditionV1ToV2InstructionData
+  >;
 }
 
 // Instruction.
@@ -57,7 +62,8 @@ export function convertMasterEditionV1ToV2(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: ConvertMasterEditionV1ToV2InstructionAccounts
+  input: ConvertMasterEditionV1ToV2InstructionAccounts &
+    ConvertMasterEditionV1ToV2InstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -83,9 +89,10 @@ export function convertMasterEditionV1ToV2(
   keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: false });
 
   // Data.
-  const data = getConvertMasterEditionV1ToV2InstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getConvertMasterEditionV1ToV2InstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

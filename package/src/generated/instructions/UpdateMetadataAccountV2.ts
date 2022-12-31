@@ -11,7 +11,6 @@ import {
   Context,
   Option,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -29,6 +28,7 @@ export type UpdateMetadataAccountV2InstructionAccounts = {
 
 // Arguments.
 export type UpdateMetadataAccountV2InstructionData = {
+  discriminator: number;
   data: Option<DataV2>;
   updateAuthority: Option<PublicKey>;
   primarySaleHappened: Option<boolean>;
@@ -41,23 +41,18 @@ export type UpdateMetadataAccountV2InstructionArgs = {
   isMutable: Option<boolean>;
 };
 
-// Discriminator.
-export type UpdateMetadataAccountV2InstructionDiscriminator = number;
-export function getUpdateMetadataAccountV2InstructionDiscriminator(): UpdateMetadataAccountV2InstructionDiscriminator {
-  return 15;
-}
-
-// Data.
-type UpdateMetadataAccountV2InstructionData =
-  UpdateMetadataAccountV2InstructionArgs & {
-    discriminator: UpdateMetadataAccountV2InstructionDiscriminator;
-  };
 export function getUpdateMetadataAccountV2InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UpdateMetadataAccountV2InstructionArgs> {
+): Serializer<
+  UpdateMetadataAccountV2InstructionArgs,
+  UpdateMetadataAccountV2InstructionData
+> {
   const s = context.serializer;
-  const discriminator = getUpdateMetadataAccountV2InstructionDiscriminator();
-  const serializer: Serializer<UpdateMetadataAccountV2InstructionData> =
+  return mapSerializer<
+    UpdateMetadataAccountV2InstructionArgs,
+    UpdateMetadataAccountV2InstructionData,
+    UpdateMetadataAccountV2InstructionData
+  >(
     s.struct<UpdateMetadataAccountV2InstructionData>(
       [
         ['discriminator', s.u8],
@@ -66,15 +61,13 @@ export function getUpdateMetadataAccountV2InstructionDataSerializer(
         ['primarySaleHappened', s.option(s.bool)],
         ['isMutable', s.option(s.bool)],
       ],
-      'UpdateMetadataAccountV2InstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: UpdateMetadataAccountV2InstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'UpdateMetadataAccountV2InstructionArgs'
+    ),
+    (value) => ({ discriminator: 15, ...value })
+  ) as Serializer<
+    UpdateMetadataAccountV2InstructionArgs,
+    UpdateMetadataAccountV2InstructionData
+  >;
 }
 
 // Instruction.

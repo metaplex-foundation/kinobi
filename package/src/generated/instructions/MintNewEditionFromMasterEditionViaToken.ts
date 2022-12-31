@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -56,31 +55,25 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionAccounts = {
 
 // Arguments.
 export type MintNewEditionFromMasterEditionViaTokenInstructionData = {
+  discriminator: number;
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
 };
 export type MintNewEditionFromMasterEditionViaTokenInstructionArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };
 
-// Discriminator.
-export type MintNewEditionFromMasterEditionViaTokenInstructionDiscriminator =
-  number;
-export function getMintNewEditionFromMasterEditionViaTokenInstructionDiscriminator(): MintNewEditionFromMasterEditionViaTokenInstructionDiscriminator {
-  return 11;
-}
-
-// Data.
-type MintNewEditionFromMasterEditionViaTokenInstructionData =
-  MintNewEditionFromMasterEditionViaTokenInstructionArgs & {
-    discriminator: MintNewEditionFromMasterEditionViaTokenInstructionDiscriminator;
-  };
 export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MintNewEditionFromMasterEditionViaTokenInstructionArgs> {
+): Serializer<
+  MintNewEditionFromMasterEditionViaTokenInstructionArgs,
+  MintNewEditionFromMasterEditionViaTokenInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getMintNewEditionFromMasterEditionViaTokenInstructionDiscriminator();
-  const serializer: Serializer<MintNewEditionFromMasterEditionViaTokenInstructionData> =
+  return mapSerializer<
+    MintNewEditionFromMasterEditionViaTokenInstructionArgs,
+    MintNewEditionFromMasterEditionViaTokenInstructionData,
+    MintNewEditionFromMasterEditionViaTokenInstructionData
+  >(
     s.struct<MintNewEditionFromMasterEditionViaTokenInstructionData>(
       [
         ['discriminator', s.u8],
@@ -89,15 +82,13 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSeriali
           getMintNewEditionFromMasterEditionViaTokenArgsSerializer(context),
         ],
       ],
-      'MintNewEditionFromMasterEditionViaTokenInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: MintNewEditionFromMasterEditionViaTokenInstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'MintNewEditionFromMasterEditionViaTokenInstructionArgs'
+    ),
+    (value) => ({ discriminator: 11, ...value })
+  ) as Serializer<
+    MintNewEditionFromMasterEditionViaTokenInstructionArgs,
+    MintNewEditionFromMasterEditionViaTokenInstructionData
+  >;
 }
 
 // Instruction.

@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -41,35 +40,27 @@ export type BurnInstructionAccounts = {
 };
 
 // Arguments.
-export type BurnInstructionData = { burnArgs: BurnArgs };
+export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
+export type BurnInstructionArgs = { burnArgs: BurnArgs };
 
-// Discriminator.
-export type BurnInstructionDiscriminator = number;
-export function getBurnInstructionDiscriminator(): BurnInstructionDiscriminator {
-  return 44;
-}
-
-// Data.
-type BurnInstructionData = BurnInstructionArgs & {
-  discriminator: BurnInstructionDiscriminator;
-};
 export function getBurnInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<BurnInstructionArgs> {
+): Serializer<BurnInstructionArgs, BurnInstructionData> {
   const s = context.serializer;
-  const discriminator = getBurnInstructionDiscriminator();
-  const serializer: Serializer<BurnInstructionData> =
+  return mapSerializer<
+    BurnInstructionArgs,
+    BurnInstructionData,
+    BurnInstructionData
+  >(
     s.struct<BurnInstructionData>(
       [
         ['discriminator', s.u8],
         ['burnArgs', getBurnArgsSerializer(context)],
       ],
-      'BurnInstructionData'
-    );
-  return mapSerializer(serializer, (value: BurnInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'BurnInstructionArgs'
+    ),
+    (value) => ({ discriminator: 44, ...value })
+  ) as Serializer<BurnInstructionArgs, BurnInstructionData>;
 }
 
 // Instruction.

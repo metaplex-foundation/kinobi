@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -54,30 +53,25 @@ export type DeprecatedCreateMasterEditionInstructionAccounts = {
 
 // Arguments.
 export type DeprecatedCreateMasterEditionInstructionData = {
+  discriminator: number;
   createMasterEditionArgs: CreateMasterEditionArgs;
 };
 export type DeprecatedCreateMasterEditionInstructionArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
-// Discriminator.
-export type DeprecatedCreateMasterEditionInstructionDiscriminator = number;
-export function getDeprecatedCreateMasterEditionInstructionDiscriminator(): DeprecatedCreateMasterEditionInstructionDiscriminator {
-  return 2;
-}
-
-// Data.
-type DeprecatedCreateMasterEditionInstructionData =
-  DeprecatedCreateMasterEditionInstructionArgs & {
-    discriminator: DeprecatedCreateMasterEditionInstructionDiscriminator;
-  };
 export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DeprecatedCreateMasterEditionInstructionArgs> {
+): Serializer<
+  DeprecatedCreateMasterEditionInstructionArgs,
+  DeprecatedCreateMasterEditionInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getDeprecatedCreateMasterEditionInstructionDiscriminator();
-  const serializer: Serializer<DeprecatedCreateMasterEditionInstructionData> =
+  return mapSerializer<
+    DeprecatedCreateMasterEditionInstructionArgs,
+    DeprecatedCreateMasterEditionInstructionData,
+    DeprecatedCreateMasterEditionInstructionData
+  >(
     s.struct<DeprecatedCreateMasterEditionInstructionData>(
       [
         ['discriminator', s.u8],
@@ -86,15 +80,13 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
           getCreateMasterEditionArgsSerializer(context),
         ],
       ],
-      'DeprecatedCreateMasterEditionInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: DeprecatedCreateMasterEditionInstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'DeprecatedCreateMasterEditionInstructionArgs'
+    ),
+    (value) => ({ discriminator: 2, ...value })
+  ) as Serializer<
+    DeprecatedCreateMasterEditionInstructionArgs,
+    DeprecatedCreateMasterEditionInstructionData
+  >;
 }
 
 // Instruction.

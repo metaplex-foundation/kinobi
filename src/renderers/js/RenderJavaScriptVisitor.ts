@@ -137,7 +137,6 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       'PublicKey',
       'Signer',
       'WrappedInstruction',
-      ...(instruction.hasData ? ['Serializer'] : []),
     ]);
 
     // Accounts.
@@ -159,48 +158,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     imports.mergeWith(this.getInstructionAccountImports(accounts));
 
     // Arguments.
-    const argsTypeManifest = instruction.args.accept(this.typeManifestVisitor);
-    imports.mergeWith(argsTypeManifest.imports);
-
-    // Discriminator.
-    const discriminator = instruction.discriminator
-      ? {
-          ...instruction.discriminator,
-          typeManifest: instruction.discriminator.type.accept(
-            this.typeManifestVisitor
-          ),
-          renderedValue: JSON.stringify(instruction.discriminator.value),
-        }
-      : undefined;
-    if (discriminator) {
-      imports.mergeWith(discriminator.typeManifest.imports);
-    }
-
-    // Data.
-    let dataTypeManifest: JavaScriptTypeManifest | undefined;
-    if (instruction.hasData) {
-      const ixDataName = `${instruction.name}InstructionData`;
-      const discriminatorType = instruction.discriminator?.type;
-      const struct = new nodes.TypeStructNode(ixDataName, [
-        ...(discriminatorType
-          ? [
-              {
-                name: 'discriminator',
-                type: discriminatorType,
-                docs: [],
-                defaultsTo: null,
-              },
-            ]
-          : []),
-        ...instruction.args.fields,
-      ]);
-      const definedType = new nodes.DefinedTypeNode(ixDataName, struct, []);
-      dataTypeManifest = definedType.accept(this.typeManifestVisitor);
-      imports.mergeWith(dataTypeManifest.imports);
-      if (instruction.hasDiscriminator) {
-        imports.add('core', 'mapSerializer');
-      }
-    }
+    const typeManifest = instruction.accept(this.typeManifestVisitor);
+    imports.mergeWith(typeManifest.imports);
 
     // Remove imports from the same module.
     imports.remove('types', [
@@ -221,9 +180,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       imports,
       program: this.program,
       accounts,
-      argsTypeManifest,
-      discriminator,
-      dataTypeManifest,
+      typeManifest,
       name: instruction.name,
       camelCaseName: camelCase(instruction.name),
       canMergeAccountsAndArgs: accountsAndArgsConflicts.length === 0,

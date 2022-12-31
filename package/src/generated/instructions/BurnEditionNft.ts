@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -41,27 +40,25 @@ export type BurnEditionNftInstructionAccounts = {
   splTokenProgram?: PublicKey;
 };
 
-// Discriminator.
-export type BurnEditionNftInstructionDiscriminator = number;
-export function getBurnEditionNftInstructionDiscriminator(): BurnEditionNftInstructionDiscriminator {
-  return 37;
-}
+// Arguments.
+export type BurnEditionNftInstructionData = { discriminator: number };
+export type BurnEditionNftInstructionArgs = {};
 
-// Data.
-type BurnEditionNftInstructionData = {
-  discriminator: BurnEditionNftInstructionDiscriminator;
-};
 export function getBurnEditionNftInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<BurnEditionNftInstructionArgs, BurnEditionNftInstructionData> {
   const s = context.serializer;
-  const discriminator = getBurnEditionNftInstructionDiscriminator();
-  const serializer: Serializer<BurnEditionNftInstructionData> =
+  return mapSerializer<
+    BurnEditionNftInstructionArgs,
+    BurnEditionNftInstructionData,
+    BurnEditionNftInstructionData
+  >(
     s.struct<BurnEditionNftInstructionData>(
       [['discriminator', s.u8]],
-      'BurnEditionNftInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'BurnEditionNftInstructionArgs'
+    ),
+    (value) => ({ discriminator: 37, ...value })
+  ) as Serializer<BurnEditionNftInstructionArgs, BurnEditionNftInstructionData>;
 }
 
 // Instruction.
@@ -71,7 +68,7 @@ export function burnEditionNft(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: BurnEditionNftInstructionAccounts
+  input: BurnEditionNftInstructionAccounts & BurnEditionNftInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -157,9 +154,8 @@ export function burnEditionNft(
   });
 
   // Data.
-  const data = getBurnEditionNftInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data =
+    getBurnEditionNftInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

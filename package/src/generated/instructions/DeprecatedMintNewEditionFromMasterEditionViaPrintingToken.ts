@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -54,30 +53,33 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
     reservationList?: PublicKey;
   };
 
-// Discriminator.
-export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDiscriminator =
-  number;
-export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDiscriminator(): DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDiscriminator {
-  return 3;
-}
+// Arguments.
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData =
+  { discriminator: number };
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs =
+  {};
 
-// Data.
-type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData =
-  {
-    discriminator: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDiscriminator;
-  };
 export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs,
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDiscriminator();
-  const serializer: Serializer<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData> =
+  return mapSerializer<
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs,
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData,
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
+  >(
     s.struct<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>(
       [['discriminator', s.u8]],
-      'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs'
+    ),
+    (value) => ({ discriminator: 3, ...value })
+  ) as Serializer<
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs,
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
+  >;
 }
 
 // Instruction.
@@ -87,7 +89,8 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts &
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -220,7 +223,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   const data =
     getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(
       context
-    ).serialize({});
+    ).serialize(input);
 
   return {
     instruction: { keys, programId, data },

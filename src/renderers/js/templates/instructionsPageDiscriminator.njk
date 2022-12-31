@@ -1,8 +1,0 @@
-{% if instruction.hasDiscriminator %}
-// Discriminator.
-{{ macros.exportType(name + 'InstructionDiscriminator', name + 'InstructionDiscriminator', discriminator.typeManifest) -}}
-export function get{{ name }}InstructionDiscriminator(): {{ name }}InstructionDiscriminator {
-  return {{ discriminator.renderedValue }};
-}
-
-{% endif %}

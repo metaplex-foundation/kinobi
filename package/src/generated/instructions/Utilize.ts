@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -44,36 +43,30 @@ export type UtilizeInstructionAccounts = {
 };
 
 // Arguments.
-export type UtilizeInstructionData = { numberOfUses: bigint };
+export type UtilizeInstructionData = {
+  discriminator: number;
+  numberOfUses: bigint;
+};
 export type UtilizeInstructionArgs = { numberOfUses: number | bigint };
 
-// Discriminator.
-export type UtilizeInstructionDiscriminator = number;
-export function getUtilizeInstructionDiscriminator(): UtilizeInstructionDiscriminator {
-  return 19;
-}
-
-// Data.
-type UtilizeInstructionData = UtilizeInstructionArgs & {
-  discriminator: UtilizeInstructionDiscriminator;
-};
 export function getUtilizeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UtilizeInstructionArgs> {
+): Serializer<UtilizeInstructionArgs, UtilizeInstructionData> {
   const s = context.serializer;
-  const discriminator = getUtilizeInstructionDiscriminator();
-  const serializer: Serializer<UtilizeInstructionData> =
+  return mapSerializer<
+    UtilizeInstructionArgs,
+    UtilizeInstructionData,
+    UtilizeInstructionData
+  >(
     s.struct<UtilizeInstructionData>(
       [
         ['discriminator', s.u8],
         ['numberOfUses', s.u64],
       ],
-      'UtilizeInstructionData'
-    );
-  return mapSerializer(serializer, (value: UtilizeInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'UtilizeInstructionArgs'
+    ),
+    (value) => ({ discriminator: 19, ...value })
+  ) as Serializer<UtilizeInstructionArgs, UtilizeInstructionData>;
 }
 
 // Instruction.

@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -35,27 +34,33 @@ export type VerifySizedCollectionItemInstructionAccounts = {
   collectionAuthorityRecord?: PublicKey;
 };
 
-// Discriminator.
-export type VerifySizedCollectionItemInstructionDiscriminator = number;
-export function getVerifySizedCollectionItemInstructionDiscriminator(): VerifySizedCollectionItemInstructionDiscriminator {
-  return 30;
-}
-
-// Data.
-type VerifySizedCollectionItemInstructionData = {
-  discriminator: VerifySizedCollectionItemInstructionDiscriminator;
+// Arguments.
+export type VerifySizedCollectionItemInstructionData = {
+  discriminator: number;
 };
+export type VerifySizedCollectionItemInstructionArgs = {};
+
 export function getVerifySizedCollectionItemInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  VerifySizedCollectionItemInstructionArgs,
+  VerifySizedCollectionItemInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getVerifySizedCollectionItemInstructionDiscriminator();
-  const serializer: Serializer<VerifySizedCollectionItemInstructionData> =
+  return mapSerializer<
+    VerifySizedCollectionItemInstructionArgs,
+    VerifySizedCollectionItemInstructionData,
+    VerifySizedCollectionItemInstructionData
+  >(
     s.struct<VerifySizedCollectionItemInstructionData>(
       [['discriminator', s.u8]],
-      'VerifySizedCollectionItemInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'VerifySizedCollectionItemInstructionArgs'
+    ),
+    (value) => ({ discriminator: 30, ...value })
+  ) as Serializer<
+    VerifySizedCollectionItemInstructionArgs,
+    VerifySizedCollectionItemInstructionData
+  >;
 }
 
 // Instruction.
@@ -65,7 +70,8 @@ export function verifySizedCollectionItem(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: VerifySizedCollectionItemInstructionAccounts
+  input: VerifySizedCollectionItemInstructionAccounts &
+    VerifySizedCollectionItemInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -123,9 +129,10 @@ export function verifySizedCollectionItem(
   }
 
   // Data.
-  const data = getVerifySizedCollectionItemInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getVerifySizedCollectionItemInstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

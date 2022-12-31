@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -33,27 +32,31 @@ export type VerifyCollectionInstructionAccounts = {
   collectionMasterEditionAccount: PublicKey;
 };
 
-// Discriminator.
-export type VerifyCollectionInstructionDiscriminator = number;
-export function getVerifyCollectionInstructionDiscriminator(): VerifyCollectionInstructionDiscriminator {
-  return 18;
-}
+// Arguments.
+export type VerifyCollectionInstructionData = { discriminator: number };
+export type VerifyCollectionInstructionArgs = {};
 
-// Data.
-type VerifyCollectionInstructionData = {
-  discriminator: VerifyCollectionInstructionDiscriminator;
-};
 export function getVerifyCollectionInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  VerifyCollectionInstructionArgs,
+  VerifyCollectionInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getVerifyCollectionInstructionDiscriminator();
-  const serializer: Serializer<VerifyCollectionInstructionData> =
+  return mapSerializer<
+    VerifyCollectionInstructionArgs,
+    VerifyCollectionInstructionData,
+    VerifyCollectionInstructionData
+  >(
     s.struct<VerifyCollectionInstructionData>(
       [['discriminator', s.u8]],
-      'VerifyCollectionInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'VerifyCollectionInstructionArgs'
+    ),
+    (value) => ({ discriminator: 18, ...value })
+  ) as Serializer<
+    VerifyCollectionInstructionArgs,
+    VerifyCollectionInstructionData
+  >;
 }
 
 // Instruction.
@@ -63,7 +66,7 @@ export function verifyCollection(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: VerifyCollectionInstructionAccounts
+  input: VerifyCollectionInstructionAccounts & VerifyCollectionInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -112,9 +115,8 @@ export function verifyCollection(
   });
 
   // Data.
-  const data = getVerifyCollectionInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data =
+    getVerifyCollectionInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

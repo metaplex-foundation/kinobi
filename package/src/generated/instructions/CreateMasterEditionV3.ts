@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -46,29 +45,25 @@ export type CreateMasterEditionV3InstructionAccounts = {
 
 // Arguments.
 export type CreateMasterEditionV3InstructionData = {
+  discriminator: number;
   createMasterEditionArgs: CreateMasterEditionArgs;
 };
 export type CreateMasterEditionV3InstructionArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
-// Discriminator.
-export type CreateMasterEditionV3InstructionDiscriminator = number;
-export function getCreateMasterEditionV3InstructionDiscriminator(): CreateMasterEditionV3InstructionDiscriminator {
-  return 17;
-}
-
-// Data.
-type CreateMasterEditionV3InstructionData =
-  CreateMasterEditionV3InstructionArgs & {
-    discriminator: CreateMasterEditionV3InstructionDiscriminator;
-  };
 export function getCreateMasterEditionV3InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateMasterEditionV3InstructionArgs> {
+): Serializer<
+  CreateMasterEditionV3InstructionArgs,
+  CreateMasterEditionV3InstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCreateMasterEditionV3InstructionDiscriminator();
-  const serializer: Serializer<CreateMasterEditionV3InstructionData> =
+  return mapSerializer<
+    CreateMasterEditionV3InstructionArgs,
+    CreateMasterEditionV3InstructionData,
+    CreateMasterEditionV3InstructionData
+  >(
     s.struct<CreateMasterEditionV3InstructionData>(
       [
         ['discriminator', s.u8],
@@ -77,15 +72,13 @@ export function getCreateMasterEditionV3InstructionDataSerializer(
           getCreateMasterEditionArgsSerializer(context),
         ],
       ],
-      'CreateMasterEditionV3InstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: CreateMasterEditionV3InstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'CreateMasterEditionV3InstructionArgs'
+    ),
+    (value) => ({ discriminator: 17, ...value })
+  ) as Serializer<
+    CreateMasterEditionV3InstructionArgs,
+    CreateMasterEditionV3InstructionData
+  >;
 }
 
 // Instruction.

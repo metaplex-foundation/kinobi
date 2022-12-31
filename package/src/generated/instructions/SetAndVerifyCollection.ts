@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -37,27 +36,31 @@ export type SetAndVerifyCollectionInstructionAccounts = {
   collectionAuthorityRecord?: PublicKey;
 };
 
-// Discriminator.
-export type SetAndVerifyCollectionInstructionDiscriminator = number;
-export function getSetAndVerifyCollectionInstructionDiscriminator(): SetAndVerifyCollectionInstructionDiscriminator {
-  return 25;
-}
+// Arguments.
+export type SetAndVerifyCollectionInstructionData = { discriminator: number };
+export type SetAndVerifyCollectionInstructionArgs = {};
 
-// Data.
-type SetAndVerifyCollectionInstructionData = {
-  discriminator: SetAndVerifyCollectionInstructionDiscriminator;
-};
 export function getSetAndVerifyCollectionInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  SetAndVerifyCollectionInstructionArgs,
+  SetAndVerifyCollectionInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getSetAndVerifyCollectionInstructionDiscriminator();
-  const serializer: Serializer<SetAndVerifyCollectionInstructionData> =
+  return mapSerializer<
+    SetAndVerifyCollectionInstructionArgs,
+    SetAndVerifyCollectionInstructionData,
+    SetAndVerifyCollectionInstructionData
+  >(
     s.struct<SetAndVerifyCollectionInstructionData>(
       [['discriminator', s.u8]],
-      'SetAndVerifyCollectionInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'SetAndVerifyCollectionInstructionArgs'
+    ),
+    (value) => ({ discriminator: 25, ...value })
+  ) as Serializer<
+    SetAndVerifyCollectionInstructionArgs,
+    SetAndVerifyCollectionInstructionData
+  >;
 }
 
 // Instruction.
@@ -67,7 +70,8 @@ export function setAndVerifyCollection(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SetAndVerifyCollectionInstructionAccounts
+  input: SetAndVerifyCollectionInstructionAccounts &
+    SetAndVerifyCollectionInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -132,9 +136,10 @@ export function setAndVerifyCollection(
   }
 
   // Data.
-  const data = getSetAndVerifyCollectionInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getSetAndVerifyCollectionInstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

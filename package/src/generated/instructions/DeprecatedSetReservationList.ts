@@ -11,7 +11,6 @@ import {
   Context,
   Option,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -35,6 +34,7 @@ export type DeprecatedSetReservationListInstructionAccounts = {
 
 // Arguments.
 export type DeprecatedSetReservationListInstructionData = {
+  discriminator: number;
   reservations: Array<Reservation>;
   totalReservationSpots: Option<bigint>;
   offset: bigint;
@@ -47,24 +47,18 @@ export type DeprecatedSetReservationListInstructionArgs = {
   totalSpotOffset: number | bigint;
 };
 
-// Discriminator.
-export type DeprecatedSetReservationListInstructionDiscriminator = number;
-export function getDeprecatedSetReservationListInstructionDiscriminator(): DeprecatedSetReservationListInstructionDiscriminator {
-  return 5;
-}
-
-// Data.
-type DeprecatedSetReservationListInstructionData =
-  DeprecatedSetReservationListInstructionArgs & {
-    discriminator: DeprecatedSetReservationListInstructionDiscriminator;
-  };
 export function getDeprecatedSetReservationListInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DeprecatedSetReservationListInstructionArgs> {
+): Serializer<
+  DeprecatedSetReservationListInstructionArgs,
+  DeprecatedSetReservationListInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getDeprecatedSetReservationListInstructionDiscriminator();
-  const serializer: Serializer<DeprecatedSetReservationListInstructionData> =
+  return mapSerializer<
+    DeprecatedSetReservationListInstructionArgs,
+    DeprecatedSetReservationListInstructionData,
+    DeprecatedSetReservationListInstructionData
+  >(
     s.struct<DeprecatedSetReservationListInstructionData>(
       [
         ['discriminator', s.u8],
@@ -73,15 +67,13 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
         ['offset', s.u64],
         ['totalSpotOffset', s.u64],
       ],
-      'DeprecatedSetReservationListInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: DeprecatedSetReservationListInstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'DeprecatedSetReservationListInstructionArgs'
+    ),
+    (value) => ({ discriminator: 5, ...value })
+  ) as Serializer<
+    DeprecatedSetReservationListInstructionArgs,
+    DeprecatedSetReservationListInstructionData
+  >;
 }
 
 // Instruction.

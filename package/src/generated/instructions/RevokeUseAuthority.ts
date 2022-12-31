@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -39,27 +38,31 @@ export type RevokeUseAuthorityInstructionAccounts = {
   rent?: PublicKey;
 };
 
-// Discriminator.
-export type RevokeUseAuthorityInstructionDiscriminator = number;
-export function getRevokeUseAuthorityInstructionDiscriminator(): RevokeUseAuthorityInstructionDiscriminator {
-  return 21;
-}
+// Arguments.
+export type RevokeUseAuthorityInstructionData = { discriminator: number };
+export type RevokeUseAuthorityInstructionArgs = {};
 
-// Data.
-type RevokeUseAuthorityInstructionData = {
-  discriminator: RevokeUseAuthorityInstructionDiscriminator;
-};
 export function getRevokeUseAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  RevokeUseAuthorityInstructionArgs,
+  RevokeUseAuthorityInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getRevokeUseAuthorityInstructionDiscriminator();
-  const serializer: Serializer<RevokeUseAuthorityInstructionData> =
+  return mapSerializer<
+    RevokeUseAuthorityInstructionArgs,
+    RevokeUseAuthorityInstructionData,
+    RevokeUseAuthorityInstructionData
+  >(
     s.struct<RevokeUseAuthorityInstructionData>(
       [['discriminator', s.u8]],
-      'RevokeUseAuthorityInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'RevokeUseAuthorityInstructionArgs'
+    ),
+    (value) => ({ discriminator: 21, ...value })
+  ) as Serializer<
+    RevokeUseAuthorityInstructionArgs,
+    RevokeUseAuthorityInstructionData
+  >;
 }
 
 // Instruction.
@@ -69,7 +72,8 @@ export function revokeUseAuthority(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: RevokeUseAuthorityInstructionAccounts
+  input: RevokeUseAuthorityInstructionAccounts &
+    RevokeUseAuthorityInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -144,9 +148,8 @@ export function revokeUseAuthority(
   }
 
   // Data.
-  const data = getRevokeUseAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getRevokeUseAuthorityInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

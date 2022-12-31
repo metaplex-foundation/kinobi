@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -46,31 +45,25 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionAccounts = {
 
 // Arguments.
 export type DeprecatedMintPrintingTokensViaTokenInstructionData = {
+  discriminator: number;
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgs;
 };
 export type DeprecatedMintPrintingTokensViaTokenInstructionArgs = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
 };
 
-// Discriminator.
-export type DeprecatedMintPrintingTokensViaTokenInstructionDiscriminator =
-  number;
-export function getDeprecatedMintPrintingTokensViaTokenInstructionDiscriminator(): DeprecatedMintPrintingTokensViaTokenInstructionDiscriminator {
-  return 8;
-}
-
-// Data.
-type DeprecatedMintPrintingTokensViaTokenInstructionData =
-  DeprecatedMintPrintingTokensViaTokenInstructionArgs & {
-    discriminator: DeprecatedMintPrintingTokensViaTokenInstructionDiscriminator;
-  };
 export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DeprecatedMintPrintingTokensViaTokenInstructionArgs> {
+): Serializer<
+  DeprecatedMintPrintingTokensViaTokenInstructionArgs,
+  DeprecatedMintPrintingTokensViaTokenInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getDeprecatedMintPrintingTokensViaTokenInstructionDiscriminator();
-  const serializer: Serializer<DeprecatedMintPrintingTokensViaTokenInstructionData> =
+  return mapSerializer<
+    DeprecatedMintPrintingTokensViaTokenInstructionArgs,
+    DeprecatedMintPrintingTokensViaTokenInstructionData,
+    DeprecatedMintPrintingTokensViaTokenInstructionData
+  >(
     s.struct<DeprecatedMintPrintingTokensViaTokenInstructionData>(
       [
         ['discriminator', s.u8],
@@ -79,15 +72,13 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
           getMintPrintingTokensViaTokenArgsSerializer(context),
         ],
       ],
-      'DeprecatedMintPrintingTokensViaTokenInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: DeprecatedMintPrintingTokensViaTokenInstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'DeprecatedMintPrintingTokensViaTokenInstructionArgs'
+    ),
+    (value) => ({ discriminator: 8, ...value })
+  ) as Serializer<
+    DeprecatedMintPrintingTokensViaTokenInstructionArgs,
+    DeprecatedMintPrintingTokensViaTokenInstructionData
+  >;
 }
 
 // Instruction.

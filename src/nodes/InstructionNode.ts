@@ -2,7 +2,7 @@ import { camelCase, pascalCase } from '../utils';
 import type { IdlInstruction } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 
 export type InstructionNodeAccountDefaults =
@@ -20,11 +20,6 @@ export type InstructionNodeAccount = {
   defaultsTo: InstructionNodeAccountDefaults | null;
 };
 
-export type InstructionNodeDiscriminator = {
-  type: TypeNode;
-  value: number | string | number[];
-};
-
 export type InstructionMetadata = {
   idlName: string;
   defaultOptionalAccounts: boolean;
@@ -37,7 +32,6 @@ export class InstructionNode implements Visitable {
     readonly name: string,
     readonly accounts: InstructionNodeAccount[],
     readonly args: TypeStructNode,
-    readonly discriminator: InstructionNodeDiscriminator | null,
     readonly metadata: InstructionMetadata
   ) {}
 
@@ -54,25 +48,32 @@ export class InstructionNode implements Visitable {
       })
     );
 
-    return new InstructionNode(
-      pascalCase(idl.name ?? ''),
-      accounts,
-      TypeStructNode.fromIdl({
-        kind: 'struct',
-        name: idl.name ? `${idl.name}InstructionArgs` : '',
-        fields: idl.args ?? [],
-      }),
-      idl.discriminant
-        ? {
-            type: createTypeNodeFromIdl(idl.discriminant.type),
-            value: idl.discriminant.value,
-          }
-        : null,
-      {
-        idlName: idl.name ?? '',
-        defaultOptionalAccounts: idl.defaultOptionalAccounts ?? false,
-      }
-    );
+    let args = TypeStructNode.fromIdl({
+      kind: 'struct',
+      name: idl.name ? `${idl.name}InstructionArgs` : '',
+      fields: idl.args ?? [],
+    });
+
+    if (idl.discriminant) {
+      const discriminatorField = {
+        name: 'discriminator',
+        type: createTypeNodeFromIdl(idl.discriminant.type),
+        docs: [],
+        defaultsTo: {
+          value: idl.discriminant.value,
+          strategy: 'omitted' as const,
+        },
+      };
+      args = new TypeStructNode(args.name, [
+        discriminatorField,
+        ...args.fields,
+      ]);
+    }
+
+    return new InstructionNode(pascalCase(idl.name ?? ''), accounts, args, {
+      idlName: idl.name ?? '',
+      defaultOptionalAccounts: idl.defaultOptionalAccounts ?? false,
+    });
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -83,16 +84,8 @@ export class InstructionNode implements Visitable {
     return this.accounts.length > 0;
   }
 
-  get hasDiscriminator(): boolean {
-    return Boolean(this.discriminator);
-  }
-
   get hasArgs(): boolean {
     return this.args.fields.length > 0;
-  }
-
-  get hasData(): boolean {
-    return this.hasArgs || this.hasDiscriminator;
   }
 }
 

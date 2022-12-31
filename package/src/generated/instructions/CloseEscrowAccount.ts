@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -37,27 +36,31 @@ export type CloseEscrowAccountInstructionAccounts = {
   sysvarInstructions?: PublicKey;
 };
 
-// Discriminator.
-export type CloseEscrowAccountInstructionDiscriminator = number;
-export function getCloseEscrowAccountInstructionDiscriminator(): CloseEscrowAccountInstructionDiscriminator {
-  return 39;
-}
+// Arguments.
+export type CloseEscrowAccountInstructionData = { discriminator: number };
+export type CloseEscrowAccountInstructionArgs = {};
 
-// Data.
-type CloseEscrowAccountInstructionData = {
-  discriminator: CloseEscrowAccountInstructionDiscriminator;
-};
 export function getCloseEscrowAccountInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  CloseEscrowAccountInstructionArgs,
+  CloseEscrowAccountInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCloseEscrowAccountInstructionDiscriminator();
-  const serializer: Serializer<CloseEscrowAccountInstructionData> =
+  return mapSerializer<
+    CloseEscrowAccountInstructionArgs,
+    CloseEscrowAccountInstructionData,
+    CloseEscrowAccountInstructionData
+  >(
     s.struct<CloseEscrowAccountInstructionData>(
       [['discriminator', s.u8]],
-      'CloseEscrowAccountInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'CloseEscrowAccountInstructionArgs'
+    ),
+    (value) => ({ discriminator: 39, ...value })
+  ) as Serializer<
+    CloseEscrowAccountInstructionArgs,
+    CloseEscrowAccountInstructionData
+  >;
 }
 
 // Instruction.
@@ -67,7 +70,8 @@ export function closeEscrowAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: CloseEscrowAccountInstructionAccounts
+  input: CloseEscrowAccountInstructionAccounts &
+    CloseEscrowAccountInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -127,9 +131,8 @@ export function closeEscrowAccount(
   });
 
   // Data.
-  const data = getCloseEscrowAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getCloseEscrowAccountInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

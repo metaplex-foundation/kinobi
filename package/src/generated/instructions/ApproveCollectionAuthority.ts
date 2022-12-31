@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -37,27 +36,33 @@ export type ApproveCollectionAuthorityInstructionAccounts = {
   rent?: PublicKey;
 };
 
-// Discriminator.
-export type ApproveCollectionAuthorityInstructionDiscriminator = number;
-export function getApproveCollectionAuthorityInstructionDiscriminator(): ApproveCollectionAuthorityInstructionDiscriminator {
-  return 23;
-}
-
-// Data.
-type ApproveCollectionAuthorityInstructionData = {
-  discriminator: ApproveCollectionAuthorityInstructionDiscriminator;
+// Arguments.
+export type ApproveCollectionAuthorityInstructionData = {
+  discriminator: number;
 };
+export type ApproveCollectionAuthorityInstructionArgs = {};
+
 export function getApproveCollectionAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  ApproveCollectionAuthorityInstructionArgs,
+  ApproveCollectionAuthorityInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getApproveCollectionAuthorityInstructionDiscriminator();
-  const serializer: Serializer<ApproveCollectionAuthorityInstructionData> =
+  return mapSerializer<
+    ApproveCollectionAuthorityInstructionArgs,
+    ApproveCollectionAuthorityInstructionData,
+    ApproveCollectionAuthorityInstructionData
+  >(
     s.struct<ApproveCollectionAuthorityInstructionData>(
       [['discriminator', s.u8]],
-      'ApproveCollectionAuthorityInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'ApproveCollectionAuthorityInstructionArgs'
+    ),
+    (value) => ({ discriminator: 23, ...value })
+  ) as Serializer<
+    ApproveCollectionAuthorityInstructionArgs,
+    ApproveCollectionAuthorityInstructionData
+  >;
 }
 
 // Instruction.
@@ -67,7 +72,8 @@ export function approveCollectionAuthority(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: ApproveCollectionAuthorityInstructionAccounts
+  input: ApproveCollectionAuthorityInstructionAccounts &
+    ApproveCollectionAuthorityInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -134,9 +140,10 @@ export function approveCollectionAuthority(
   }
 
   // Data.
-  const data = getApproveCollectionAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getApproveCollectionAuthorityInstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

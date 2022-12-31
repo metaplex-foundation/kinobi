@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -62,31 +61,25 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionAccounts = {
 
 // Arguments.
 export type MintNewEditionFromMasterEditionViaVaultProxyInstructionData = {
+  discriminator: number;
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
 };
 export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };
 
-// Discriminator.
-export type MintNewEditionFromMasterEditionViaVaultProxyInstructionDiscriminator =
-  number;
-export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDiscriminator(): MintNewEditionFromMasterEditionViaVaultProxyInstructionDiscriminator {
-  return 13;
-}
-
-// Data.
-type MintNewEditionFromMasterEditionViaVaultProxyInstructionData =
-  MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs & {
-    discriminator: MintNewEditionFromMasterEditionViaVaultProxyInstructionDiscriminator;
-  };
 export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs> {
+): Serializer<
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getMintNewEditionFromMasterEditionViaVaultProxyInstructionDiscriminator();
-  const serializer: Serializer<MintNewEditionFromMasterEditionViaVaultProxyInstructionData> =
+  return mapSerializer<
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionData,
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionData
+  >(
     s.struct<MintNewEditionFromMasterEditionViaVaultProxyInstructionData>(
       [
         ['discriminator', s.u8],
@@ -95,15 +88,13 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
           getMintNewEditionFromMasterEditionViaTokenArgsSerializer(context),
         ],
       ],
-      'MintNewEditionFromMasterEditionViaVaultProxyInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs'
+    ),
+    (value) => ({ discriminator: 13, ...value })
+  ) as Serializer<
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionData
+  >;
 }
 
 // Instruction.

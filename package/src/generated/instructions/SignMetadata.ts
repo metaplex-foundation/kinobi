@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -25,27 +24,25 @@ export type SignMetadataInstructionAccounts = {
   creator: Signer;
 };
 
-// Discriminator.
-export type SignMetadataInstructionDiscriminator = number;
-export function getSignMetadataInstructionDiscriminator(): SignMetadataInstructionDiscriminator {
-  return 7;
-}
+// Arguments.
+export type SignMetadataInstructionData = { discriminator: number };
+export type SignMetadataInstructionArgs = {};
 
-// Data.
-type SignMetadataInstructionData = {
-  discriminator: SignMetadataInstructionDiscriminator;
-};
 export function getSignMetadataInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<SignMetadataInstructionArgs, SignMetadataInstructionData> {
   const s = context.serializer;
-  const discriminator = getSignMetadataInstructionDiscriminator();
-  const serializer: Serializer<SignMetadataInstructionData> =
+  return mapSerializer<
+    SignMetadataInstructionArgs,
+    SignMetadataInstructionData,
+    SignMetadataInstructionData
+  >(
     s.struct<SignMetadataInstructionData>(
       [['discriminator', s.u8]],
-      'SignMetadataInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'SignMetadataInstructionArgs'
+    ),
+    (value) => ({ discriminator: 7, ...value })
+  ) as Serializer<SignMetadataInstructionArgs, SignMetadataInstructionData>;
 }
 
 // Instruction.
@@ -55,7 +52,7 @@ export function signMetadata(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SignMetadataInstructionAccounts
+  input: SignMetadataInstructionAccounts & SignMetadataInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -79,7 +76,8 @@ export function signMetadata(
   });
 
   // Data.
-  const data = getSignMetadataInstructionDataSerializer(context).serialize({});
+  const data =
+    getSignMetadataInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

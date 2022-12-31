@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -41,36 +40,36 @@ export type CreateDigitalAssetInstructionAccounts = {
 };
 
 // Arguments.
-export type CreateDigitalAssetInstructionData = { createArgs: CreateArgs };
+export type CreateDigitalAssetInstructionData = {
+  discriminator: number;
+  createArgs: CreateArgs;
+};
 export type CreateDigitalAssetInstructionArgs = { createArgs: CreateArgsArgs };
 
-// Discriminator.
-export type CreateDigitalAssetInstructionDiscriminator = number;
-export function getCreateDigitalAssetInstructionDiscriminator(): CreateDigitalAssetInstructionDiscriminator {
-  return 41;
-}
-
-// Data.
-type CreateDigitalAssetInstructionData = CreateDigitalAssetInstructionArgs & {
-  discriminator: CreateDigitalAssetInstructionDiscriminator;
-};
 export function getCreateDigitalAssetInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateDigitalAssetInstructionArgs> {
+): Serializer<
+  CreateDigitalAssetInstructionArgs,
+  CreateDigitalAssetInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCreateDigitalAssetInstructionDiscriminator();
-  const serializer: Serializer<CreateDigitalAssetInstructionData> =
+  return mapSerializer<
+    CreateDigitalAssetInstructionArgs,
+    CreateDigitalAssetInstructionData,
+    CreateDigitalAssetInstructionData
+  >(
     s.struct<CreateDigitalAssetInstructionData>(
       [
         ['discriminator', s.u8],
         ['createArgs', getCreateArgsSerializer(context)],
       ],
-      'CreateDigitalAssetInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: CreateDigitalAssetInstructionArgs) => ({ ...value, discriminator })
-  );
+      'CreateInstructionArgs'
+    ),
+    (value) => ({ discriminator: 41, ...value })
+  ) as Serializer<
+    CreateDigitalAssetInstructionArgs,
+    CreateDigitalAssetInstructionData
+  >;
 }
 
 // Instruction.

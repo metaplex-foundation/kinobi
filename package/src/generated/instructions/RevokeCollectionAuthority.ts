@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -31,27 +30,33 @@ export type RevokeCollectionAuthorityInstructionAccounts = {
   mint: PublicKey;
 };
 
-// Discriminator.
-export type RevokeCollectionAuthorityInstructionDiscriminator = number;
-export function getRevokeCollectionAuthorityInstructionDiscriminator(): RevokeCollectionAuthorityInstructionDiscriminator {
-  return 24;
-}
-
-// Data.
-type RevokeCollectionAuthorityInstructionData = {
-  discriminator: RevokeCollectionAuthorityInstructionDiscriminator;
+// Arguments.
+export type RevokeCollectionAuthorityInstructionData = {
+  discriminator: number;
 };
+export type RevokeCollectionAuthorityInstructionArgs = {};
+
 export function getRevokeCollectionAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  RevokeCollectionAuthorityInstructionArgs,
+  RevokeCollectionAuthorityInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getRevokeCollectionAuthorityInstructionDiscriminator();
-  const serializer: Serializer<RevokeCollectionAuthorityInstructionData> =
+  return mapSerializer<
+    RevokeCollectionAuthorityInstructionArgs,
+    RevokeCollectionAuthorityInstructionData,
+    RevokeCollectionAuthorityInstructionData
+  >(
     s.struct<RevokeCollectionAuthorityInstructionData>(
       [['discriminator', s.u8]],
-      'RevokeCollectionAuthorityInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'RevokeCollectionAuthorityInstructionArgs'
+    ),
+    (value) => ({ discriminator: 24, ...value })
+  ) as Serializer<
+    RevokeCollectionAuthorityInstructionArgs,
+    RevokeCollectionAuthorityInstructionData
+  >;
 }
 
 // Instruction.
@@ -61,7 +66,8 @@ export function revokeCollectionAuthority(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: RevokeCollectionAuthorityInstructionAccounts
+  input: RevokeCollectionAuthorityInstructionAccounts &
+    RevokeCollectionAuthorityInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -102,9 +108,10 @@ export function revokeCollectionAuthority(
   keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
 
   // Data.
-  const data = getRevokeCollectionAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getRevokeCollectionAuthorityInstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

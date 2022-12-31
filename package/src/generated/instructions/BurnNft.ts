@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -35,27 +34,25 @@ export type BurnNftInstructionAccounts = {
   collectionMetadata?: PublicKey;
 };
 
-// Discriminator.
-export type BurnNftInstructionDiscriminator = number;
-export function getBurnNftInstructionDiscriminator(): BurnNftInstructionDiscriminator {
-  return 29;
-}
+// Arguments.
+export type BurnNftInstructionData = { discriminator: number };
+export type BurnNftInstructionArgs = {};
 
-// Data.
-type BurnNftInstructionData = {
-  discriminator: BurnNftInstructionDiscriminator;
-};
 export function getBurnNftInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<BurnNftInstructionArgs, BurnNftInstructionData> {
   const s = context.serializer;
-  const discriminator = getBurnNftInstructionDiscriminator();
-  const serializer: Serializer<BurnNftInstructionData> =
+  return mapSerializer<
+    BurnNftInstructionArgs,
+    BurnNftInstructionData,
+    BurnNftInstructionData
+  >(
     s.struct<BurnNftInstructionData>(
       [['discriminator', s.u8]],
-      'BurnNftInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'BurnNftInstructionArgs'
+    ),
+    (value) => ({ discriminator: 29, ...value })
+  ) as Serializer<BurnNftInstructionArgs, BurnNftInstructionData>;
 }
 
 // Instruction.
@@ -65,7 +62,7 @@ export function burnNft(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: BurnNftInstructionAccounts
+  input: BurnNftInstructionAccounts & BurnNftInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -124,7 +121,7 @@ export function burnNft(
   }
 
   // Data.
-  const data = getBurnNftInstructionDataSerializer(context).serialize({});
+  const data = getBurnNftInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

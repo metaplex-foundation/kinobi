@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -57,36 +56,30 @@ export type TransferInstructionAccounts = {
 };
 
 // Arguments.
-export type TransferInstructionData = { transferArgs: TransferArgs };
+export type TransferInstructionData = {
+  discriminator: number;
+  transferArgs: TransferArgs;
+};
 export type TransferInstructionArgs = { transferArgs: TransferArgsArgs };
 
-// Discriminator.
-export type TransferInstructionDiscriminator = number;
-export function getTransferInstructionDiscriminator(): TransferInstructionDiscriminator {
-  return 46;
-}
-
-// Data.
-type TransferInstructionData = TransferInstructionArgs & {
-  discriminator: TransferInstructionDiscriminator;
-};
 export function getTransferInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TransferInstructionArgs> {
+): Serializer<TransferInstructionArgs, TransferInstructionData> {
   const s = context.serializer;
-  const discriminator = getTransferInstructionDiscriminator();
-  const serializer: Serializer<TransferInstructionData> =
+  return mapSerializer<
+    TransferInstructionArgs,
+    TransferInstructionData,
+    TransferInstructionData
+  >(
     s.struct<TransferInstructionData>(
       [
         ['discriminator', s.u8],
         ['transferArgs', getTransferArgsSerializer(context)],
       ],
-      'TransferInstructionData'
-    );
-  return mapSerializer(serializer, (value: TransferInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'TransferInstructionArgs'
+    ),
+    (value) => ({ discriminator: 46, ...value })
+  ) as Serializer<TransferInstructionArgs, TransferInstructionData>;
 }
 
 // Instruction.

@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -38,6 +37,7 @@ export type CreateMetadataAccountV2InstructionAccounts = {
 
 // Arguments.
 export type CreateMetadataAccountV2InstructionData = {
+  discriminator: number;
   data: DataV2;
   isMutable: boolean;
 };
@@ -46,38 +46,31 @@ export type CreateMetadataAccountV2InstructionArgs = {
   isMutable: boolean;
 };
 
-// Discriminator.
-export type CreateMetadataAccountV2InstructionDiscriminator = number;
-export function getCreateMetadataAccountV2InstructionDiscriminator(): CreateMetadataAccountV2InstructionDiscriminator {
-  return 16;
-}
-
-// Data.
-type CreateMetadataAccountV2InstructionData =
-  CreateMetadataAccountV2InstructionArgs & {
-    discriminator: CreateMetadataAccountV2InstructionDiscriminator;
-  };
 export function getCreateMetadataAccountV2InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateMetadataAccountV2InstructionArgs> {
+): Serializer<
+  CreateMetadataAccountV2InstructionArgs,
+  CreateMetadataAccountV2InstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCreateMetadataAccountV2InstructionDiscriminator();
-  const serializer: Serializer<CreateMetadataAccountV2InstructionData> =
+  return mapSerializer<
+    CreateMetadataAccountV2InstructionArgs,
+    CreateMetadataAccountV2InstructionData,
+    CreateMetadataAccountV2InstructionData
+  >(
     s.struct<CreateMetadataAccountV2InstructionData>(
       [
         ['discriminator', s.u8],
         ['data', getDataV2Serializer(context)],
         ['isMutable', s.bool],
       ],
-      'CreateMetadataAccountV2InstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: CreateMetadataAccountV2InstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'CreateMetadataAccountV2InstructionArgs'
+    ),
+    (value) => ({ discriminator: 16, ...value })
+  ) as Serializer<
+    CreateMetadataAccountV2InstructionArgs,
+    CreateMetadataAccountV2InstructionData
+  >;
 }
 
 // Instruction.

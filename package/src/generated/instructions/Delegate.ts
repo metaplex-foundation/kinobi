@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -53,36 +52,30 @@ export type DelegateInstructionAccounts = {
 };
 
 // Arguments.
-export type DelegateInstructionData = { delegateArgs: DelegateArgs };
+export type DelegateInstructionData = {
+  discriminator: number;
+  delegateArgs: DelegateArgs;
+};
 export type DelegateInstructionArgs = { delegateArgs: DelegateArgsArgs };
 
-// Discriminator.
-export type DelegateInstructionDiscriminator = number;
-export function getDelegateInstructionDiscriminator(): DelegateInstructionDiscriminator {
-  return 48;
-}
-
-// Data.
-type DelegateInstructionData = DelegateInstructionArgs & {
-  discriminator: DelegateInstructionDiscriminator;
-};
 export function getDelegateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateInstructionArgs> {
+): Serializer<DelegateInstructionArgs, DelegateInstructionData> {
   const s = context.serializer;
-  const discriminator = getDelegateInstructionDiscriminator();
-  const serializer: Serializer<DelegateInstructionData> =
+  return mapSerializer<
+    DelegateInstructionArgs,
+    DelegateInstructionData,
+    DelegateInstructionData
+  >(
     s.struct<DelegateInstructionData>(
       [
         ['discriminator', s.u8],
         ['delegateArgs', getDelegateArgsSerializer(context)],
       ],
-      'DelegateInstructionData'
-    );
-  return mapSerializer(serializer, (value: DelegateInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'DelegateInstructionArgs'
+    ),
+    (value) => ({ discriminator: 48, ...value })
+  ) as Serializer<DelegateInstructionArgs, DelegateInstructionData>;
 }
 
 // Instruction.

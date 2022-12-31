@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -27,28 +26,33 @@ export type UpdatePrimarySaleHappenedViaTokenInstructionAccounts = {
   token: PublicKey;
 };
 
-// Discriminator.
-export type UpdatePrimarySaleHappenedViaTokenInstructionDiscriminator = number;
-export function getUpdatePrimarySaleHappenedViaTokenInstructionDiscriminator(): UpdatePrimarySaleHappenedViaTokenInstructionDiscriminator {
-  return 4;
-}
-
-// Data.
-type UpdatePrimarySaleHappenedViaTokenInstructionData = {
-  discriminator: UpdatePrimarySaleHappenedViaTokenInstructionDiscriminator;
+// Arguments.
+export type UpdatePrimarySaleHappenedViaTokenInstructionData = {
+  discriminator: number;
 };
+export type UpdatePrimarySaleHappenedViaTokenInstructionArgs = {};
+
 export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  UpdatePrimarySaleHappenedViaTokenInstructionArgs,
+  UpdatePrimarySaleHappenedViaTokenInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getUpdatePrimarySaleHappenedViaTokenInstructionDiscriminator();
-  const serializer: Serializer<UpdatePrimarySaleHappenedViaTokenInstructionData> =
+  return mapSerializer<
+    UpdatePrimarySaleHappenedViaTokenInstructionArgs,
+    UpdatePrimarySaleHappenedViaTokenInstructionData,
+    UpdatePrimarySaleHappenedViaTokenInstructionData
+  >(
     s.struct<UpdatePrimarySaleHappenedViaTokenInstructionData>(
       [['discriminator', s.u8]],
-      'UpdatePrimarySaleHappenedViaTokenInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'UpdatePrimarySaleHappenedViaTokenInstructionArgs'
+    ),
+    (value) => ({ discriminator: 4, ...value })
+  ) as Serializer<
+    UpdatePrimarySaleHappenedViaTokenInstructionArgs,
+    UpdatePrimarySaleHappenedViaTokenInstructionData
+  >;
 }
 
 // Instruction.
@@ -58,7 +62,8 @@ export function updatePrimarySaleHappenedViaToken(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: UpdatePrimarySaleHappenedViaTokenInstructionAccounts
+  input: UpdatePrimarySaleHappenedViaTokenInstructionAccounts &
+    UpdatePrimarySaleHappenedViaTokenInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -85,9 +90,10 @@ export function updatePrimarySaleHappenedViaToken(
   keys.push({ pubkey: input.token, isSigner: false, isWritable: false });
 
   // Data.
-  const data = getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
+      context
+    ).serialize(input);
 
   return {
     instruction: { keys, programId, data },

@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -47,36 +46,27 @@ export type MintInstructionAccounts = {
 };
 
 // Arguments.
-export type MintInstructionData = { mintArgs: MintArgs };
+export type MintInstructionData = { discriminator: number; mintArgs: MintArgs };
 export type MintInstructionArgs = { mintArgs: MintArgsArgs };
 
-// Discriminator.
-export type MintInstructionDiscriminator = number;
-export function getMintInstructionDiscriminator(): MintInstructionDiscriminator {
-  return 42;
-}
-
-// Data.
-type MintInstructionData = MintInstructionArgs & {
-  discriminator: MintInstructionDiscriminator;
-};
 export function getMintInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MintInstructionArgs> {
+): Serializer<MintInstructionArgs, MintInstructionData> {
   const s = context.serializer;
-  const discriminator = getMintInstructionDiscriminator();
-  const serializer: Serializer<MintInstructionData> =
+  return mapSerializer<
+    MintInstructionArgs,
+    MintInstructionData,
+    MintInstructionData
+  >(
     s.struct<MintInstructionData>(
       [
         ['discriminator', s.u8],
         ['mintArgs', getMintArgsSerializer(context)],
       ],
-      'MintInstructionData'
-    );
-  return mapSerializer(serializer, (value: MintInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'MintInstructionArgs'
+    ),
+    (value) => ({ discriminator: 42, ...value })
+  ) as Serializer<MintInstructionArgs, MintInstructionData>;
 }
 
 // Instruction.

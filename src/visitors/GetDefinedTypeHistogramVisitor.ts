@@ -43,14 +43,8 @@ export class GetDefinedTypeHistogramVisitor
   visitInstruction(instruction: nodes.InstructionNode): DefinedTypeHistogram {
     this.mode = 'instruction';
     this.stackLevel = 0;
-    let histogram = instruction.args.accept(this);
+    const histogram = instruction.args.accept(this);
     this.mode = null;
-    if (instruction.discriminator) {
-      histogram = this.mergeHistograms([
-        histogram,
-        instruction.discriminator.type.accept(this),
-      ]);
-    }
     return histogram;
   }
 

@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -46,28 +45,25 @@ export type CreateMasterEditionInstructionAccounts = {
 
 // Arguments.
 export type CreateMasterEditionInstructionData = {
+  discriminator: number;
   createMasterEditionArgs: CreateMasterEditionArgs;
 };
 export type CreateMasterEditionInstructionArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
-// Discriminator.
-export type CreateMasterEditionInstructionDiscriminator = number;
-export function getCreateMasterEditionInstructionDiscriminator(): CreateMasterEditionInstructionDiscriminator {
-  return 10;
-}
-
-// Data.
-type CreateMasterEditionInstructionData = CreateMasterEditionInstructionArgs & {
-  discriminator: CreateMasterEditionInstructionDiscriminator;
-};
 export function getCreateMasterEditionInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateMasterEditionInstructionArgs> {
+): Serializer<
+  CreateMasterEditionInstructionArgs,
+  CreateMasterEditionInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCreateMasterEditionInstructionDiscriminator();
-  const serializer: Serializer<CreateMasterEditionInstructionData> =
+  return mapSerializer<
+    CreateMasterEditionInstructionArgs,
+    CreateMasterEditionInstructionData,
+    CreateMasterEditionInstructionData
+  >(
     s.struct<CreateMasterEditionInstructionData>(
       [
         ['discriminator', s.u8],
@@ -76,12 +72,13 @@ export function getCreateMasterEditionInstructionDataSerializer(
           getCreateMasterEditionArgsSerializer(context),
         ],
       ],
-      'CreateMasterEditionInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: CreateMasterEditionInstructionArgs) => ({ ...value, discriminator })
-  );
+      'CreateMasterEditionInstructionArgs'
+    ),
+    (value) => ({ discriminator: 10, ...value })
+  ) as Serializer<
+    CreateMasterEditionInstructionArgs,
+    CreateMasterEditionInstructionData
+  >;
 }
 
 // Instruction.

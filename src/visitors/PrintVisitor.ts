@@ -40,13 +40,7 @@ export class PrintVisitor extends BaseVoidVisitor {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    const discriminator =
-      instruction.discriminator?.value !== undefined
-        ? ` (discriminator: ${instruction.discriminator?.value})`
-        : '';
-    this.printIndentedText(
-      `[InstructionNode] ${instruction.name}${discriminator}`
-    );
+    this.printIndentedText(`[InstructionNode] ${instruction.name}`);
     this.indent += 1;
     this.printIndentedText('accounts:');
     this.indent += 1;

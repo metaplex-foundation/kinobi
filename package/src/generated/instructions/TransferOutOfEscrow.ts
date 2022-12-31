@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -48,36 +47,36 @@ export type TransferOutOfEscrowInstructionAccounts = {
 };
 
 // Arguments.
-export type TransferOutOfEscrowInstructionData = { amount: bigint };
+export type TransferOutOfEscrowInstructionData = {
+  discriminator: number;
+  amount: bigint;
+};
 export type TransferOutOfEscrowInstructionArgs = { amount: number | bigint };
 
-// Discriminator.
-export type TransferOutOfEscrowInstructionDiscriminator = number;
-export function getTransferOutOfEscrowInstructionDiscriminator(): TransferOutOfEscrowInstructionDiscriminator {
-  return 40;
-}
-
-// Data.
-type TransferOutOfEscrowInstructionData = TransferOutOfEscrowInstructionArgs & {
-  discriminator: TransferOutOfEscrowInstructionDiscriminator;
-};
 export function getTransferOutOfEscrowInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TransferOutOfEscrowInstructionArgs> {
+): Serializer<
+  TransferOutOfEscrowInstructionArgs,
+  TransferOutOfEscrowInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getTransferOutOfEscrowInstructionDiscriminator();
-  const serializer: Serializer<TransferOutOfEscrowInstructionData> =
+  return mapSerializer<
+    TransferOutOfEscrowInstructionArgs,
+    TransferOutOfEscrowInstructionData,
+    TransferOutOfEscrowInstructionData
+  >(
     s.struct<TransferOutOfEscrowInstructionData>(
       [
         ['discriminator', s.u8],
         ['amount', s.u64],
       ],
-      'TransferOutOfEscrowInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: TransferOutOfEscrowInstructionArgs) => ({ ...value, discriminator })
-  );
+      'TransferOutOfEscrowInstructionArgs'
+    ),
+    (value) => ({ discriminator: 40, ...value })
+  ) as Serializer<
+    TransferOutOfEscrowInstructionArgs,
+    TransferOutOfEscrowInstructionData
+  >;
 }
 
 // Instruction.

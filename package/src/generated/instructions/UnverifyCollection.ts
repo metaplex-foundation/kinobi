@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -33,27 +32,31 @@ export type UnverifyCollectionInstructionAccounts = {
   collectionAuthorityRecord?: PublicKey;
 };
 
-// Discriminator.
-export type UnverifyCollectionInstructionDiscriminator = number;
-export function getUnverifyCollectionInstructionDiscriminator(): UnverifyCollectionInstructionDiscriminator {
-  return 22;
-}
+// Arguments.
+export type UnverifyCollectionInstructionData = { discriminator: number };
+export type UnverifyCollectionInstructionArgs = {};
 
-// Data.
-type UnverifyCollectionInstructionData = {
-  discriminator: UnverifyCollectionInstructionDiscriminator;
-};
 export function getUnverifyCollectionInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  UnverifyCollectionInstructionArgs,
+  UnverifyCollectionInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getUnverifyCollectionInstructionDiscriminator();
-  const serializer: Serializer<UnverifyCollectionInstructionData> =
+  return mapSerializer<
+    UnverifyCollectionInstructionArgs,
+    UnverifyCollectionInstructionData,
+    UnverifyCollectionInstructionData
+  >(
     s.struct<UnverifyCollectionInstructionData>(
       [['discriminator', s.u8]],
-      'UnverifyCollectionInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'UnverifyCollectionInstructionArgs'
+    ),
+    (value) => ({ discriminator: 22, ...value })
+  ) as Serializer<
+    UnverifyCollectionInstructionArgs,
+    UnverifyCollectionInstructionData
+  >;
 }
 
 // Instruction.
@@ -63,7 +66,8 @@ export function unverifyCollection(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: UnverifyCollectionInstructionAccounts
+  input: UnverifyCollectionInstructionAccounts &
+    UnverifyCollectionInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -113,9 +117,8 @@ export function unverifyCollection(
   }
 
   // Data.
-  const data = getUnverifyCollectionInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getUnverifyCollectionInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

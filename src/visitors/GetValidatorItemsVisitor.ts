@@ -89,7 +89,6 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
     items.push(...this.checkNameConflict(instruction, instruction.name));
 
     items.push(...instruction.args.accept(this));
-    items.push(...(instruction.discriminator?.type.accept(this) ?? []));
     this.stack.pop();
     return items;
   }

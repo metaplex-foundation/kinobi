@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -38,6 +37,7 @@ export type CreateMetadataAccountInstructionAccounts = {
 
 // Arguments.
 export type CreateMetadataAccountInstructionData = {
+  discriminator: number;
   data: Data;
   isMutable: boolean;
 };
@@ -46,38 +46,31 @@ export type CreateMetadataAccountInstructionArgs = {
   isMutable: boolean;
 };
 
-// Discriminator.
-export type CreateMetadataAccountInstructionDiscriminator = number;
-export function getCreateMetadataAccountInstructionDiscriminator(): CreateMetadataAccountInstructionDiscriminator {
-  return 0;
-}
-
-// Data.
-type CreateMetadataAccountInstructionData =
-  CreateMetadataAccountInstructionArgs & {
-    discriminator: CreateMetadataAccountInstructionDiscriminator;
-  };
 export function getCreateMetadataAccountInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateMetadataAccountInstructionArgs> {
+): Serializer<
+  CreateMetadataAccountInstructionArgs,
+  CreateMetadataAccountInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCreateMetadataAccountInstructionDiscriminator();
-  const serializer: Serializer<CreateMetadataAccountInstructionData> =
+  return mapSerializer<
+    CreateMetadataAccountInstructionArgs,
+    CreateMetadataAccountInstructionData,
+    CreateMetadataAccountInstructionData
+  >(
     s.struct<CreateMetadataAccountInstructionData>(
       [
         ['discriminator', s.u8],
         ['data', getDataSerializer(context)],
         ['isMutable', s.bool],
       ],
-      'CreateMetadataAccountInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: CreateMetadataAccountInstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'CreateMetadataAccountInstructionArgs'
+    ),
+    (value) => ({ discriminator: 0, ...value })
+  ) as Serializer<
+    CreateMetadataAccountInstructionArgs,
+    CreateMetadataAccountInstructionData
+  >;
 }
 
 // Instruction.

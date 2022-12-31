@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -29,27 +28,31 @@ export type SetTokenStandardInstructionAccounts = {
   edition?: PublicKey;
 };
 
-// Discriminator.
-export type SetTokenStandardInstructionDiscriminator = number;
-export function getSetTokenStandardInstructionDiscriminator(): SetTokenStandardInstructionDiscriminator {
-  return 35;
-}
+// Arguments.
+export type SetTokenStandardInstructionData = { discriminator: number };
+export type SetTokenStandardInstructionArgs = {};
 
-// Data.
-type SetTokenStandardInstructionData = {
-  discriminator: SetTokenStandardInstructionDiscriminator;
-};
 export function getSetTokenStandardInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  SetTokenStandardInstructionArgs,
+  SetTokenStandardInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getSetTokenStandardInstructionDiscriminator();
-  const serializer: Serializer<SetTokenStandardInstructionData> =
+  return mapSerializer<
+    SetTokenStandardInstructionArgs,
+    SetTokenStandardInstructionData,
+    SetTokenStandardInstructionData
+  >(
     s.struct<SetTokenStandardInstructionData>(
       [['discriminator', s.u8]],
-      'SetTokenStandardInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'SetTokenStandardInstructionArgs'
+    ),
+    (value) => ({ discriminator: 35, ...value })
+  ) as Serializer<
+    SetTokenStandardInstructionArgs,
+    SetTokenStandardInstructionData
+  >;
 }
 
 // Instruction.
@@ -59,7 +62,7 @@ export function setTokenStandard(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SetTokenStandardInstructionAccounts
+  input: SetTokenStandardInstructionAccounts & SetTokenStandardInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -91,9 +94,8 @@ export function setTokenStandard(
   }
 
   // Data.
-  const data = getSetTokenStandardInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data =
+    getSetTokenStandardInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },

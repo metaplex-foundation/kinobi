@@ -11,7 +11,6 @@ import {
   Context,
   Option,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -46,6 +45,7 @@ export type CreateMetadataAccountV3InstructionAccounts = {
 
 // Arguments.
 export type CreateMetadataAccountV3InstructionData = {
+  discriminator: number;
   data: DataV2;
   isMutable: boolean;
   collectionDetails: Option<CollectionDetails>;
@@ -56,23 +56,18 @@ export type CreateMetadataAccountV3InstructionArgs = {
   collectionDetails: Option<CollectionDetailsArgs>;
 };
 
-// Discriminator.
-export type CreateMetadataAccountV3InstructionDiscriminator = number;
-export function getCreateMetadataAccountV3InstructionDiscriminator(): CreateMetadataAccountV3InstructionDiscriminator {
-  return 33;
-}
-
-// Data.
-type CreateMetadataAccountV3InstructionData =
-  CreateMetadataAccountV3InstructionArgs & {
-    discriminator: CreateMetadataAccountV3InstructionDiscriminator;
-  };
 export function getCreateMetadataAccountV3InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateMetadataAccountV3InstructionArgs> {
+): Serializer<
+  CreateMetadataAccountV3InstructionArgs,
+  CreateMetadataAccountV3InstructionData
+> {
   const s = context.serializer;
-  const discriminator = getCreateMetadataAccountV3InstructionDiscriminator();
-  const serializer: Serializer<CreateMetadataAccountV3InstructionData> =
+  return mapSerializer<
+    CreateMetadataAccountV3InstructionArgs,
+    CreateMetadataAccountV3InstructionData,
+    CreateMetadataAccountV3InstructionData
+  >(
     s.struct<CreateMetadataAccountV3InstructionData>(
       [
         ['discriminator', s.u8],
@@ -83,15 +78,13 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(
           s.option(getCollectionDetailsSerializer(context)),
         ],
       ],
-      'CreateMetadataAccountV3InstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: CreateMetadataAccountV3InstructionArgs) => ({
-      ...value,
-      discriminator,
-    })
-  );
+      'CreateMetadataAccountV3InstructionArgs'
+    ),
+    (value) => ({ discriminator: 33, ...value })
+  ) as Serializer<
+    CreateMetadataAccountV3InstructionArgs,
+    CreateMetadataAccountV3InstructionData
+  >;
 }
 
 // Instruction.

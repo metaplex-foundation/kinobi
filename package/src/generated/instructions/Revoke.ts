@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -49,35 +48,30 @@ export type RevokeInstructionAccounts = {
 };
 
 // Arguments.
-export type RevokeInstructionData = { revokeArgs: RevokeArgs };
-
-// Discriminator.
-export type RevokeInstructionDiscriminator = number;
-export function getRevokeInstructionDiscriminator(): RevokeInstructionDiscriminator {
-  return 49;
-}
-
-// Data.
-type RevokeInstructionData = RevokeInstructionArgs & {
-  discriminator: RevokeInstructionDiscriminator;
+export type RevokeInstructionData = {
+  discriminator: number;
+  revokeArgs: RevokeArgs;
 };
+export type RevokeInstructionArgs = { revokeArgs: RevokeArgs };
+
 export function getRevokeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<RevokeInstructionArgs> {
+): Serializer<RevokeInstructionArgs, RevokeInstructionData> {
   const s = context.serializer;
-  const discriminator = getRevokeInstructionDiscriminator();
-  const serializer: Serializer<RevokeInstructionData> =
+  return mapSerializer<
+    RevokeInstructionArgs,
+    RevokeInstructionData,
+    RevokeInstructionData
+  >(
     s.struct<RevokeInstructionData>(
       [
         ['discriminator', s.u8],
         ['revokeArgs', getRevokeArgsSerializer(context)],
       ],
-      'RevokeInstructionData'
-    );
-  return mapSerializer(serializer, (value: RevokeInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'RevokeInstructionArgs'
+    ),
+    (value) => ({ discriminator: 49, ...value })
+  ) as Serializer<RevokeInstructionArgs, RevokeInstructionData>;
 }
 
 // Instruction.

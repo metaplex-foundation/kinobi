@@ -121,7 +121,6 @@ export class IdentifyDefaultInstructionAccountsVisitor extends BaseNodeVisitor {
       instruction.name,
       accounts,
       instruction.args,
-      instruction.discriminator,
       instruction.metadata
     );
   }

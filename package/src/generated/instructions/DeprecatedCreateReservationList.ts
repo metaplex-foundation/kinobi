@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -37,28 +36,33 @@ export type DeprecatedCreateReservationListInstructionAccounts = {
   rent?: PublicKey;
 };
 
-// Discriminator.
-export type DeprecatedCreateReservationListInstructionDiscriminator = number;
-export function getDeprecatedCreateReservationListInstructionDiscriminator(): DeprecatedCreateReservationListInstructionDiscriminator {
-  return 6;
-}
-
-// Data.
-type DeprecatedCreateReservationListInstructionData = {
-  discriminator: DeprecatedCreateReservationListInstructionDiscriminator;
+// Arguments.
+export type DeprecatedCreateReservationListInstructionData = {
+  discriminator: number;
 };
+export type DeprecatedCreateReservationListInstructionArgs = {};
+
 export function getDeprecatedCreateReservationListInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  DeprecatedCreateReservationListInstructionArgs,
+  DeprecatedCreateReservationListInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getDeprecatedCreateReservationListInstructionDiscriminator();
-  const serializer: Serializer<DeprecatedCreateReservationListInstructionData> =
+  return mapSerializer<
+    DeprecatedCreateReservationListInstructionArgs,
+    DeprecatedCreateReservationListInstructionData,
+    DeprecatedCreateReservationListInstructionData
+  >(
     s.struct<DeprecatedCreateReservationListInstructionData>(
       [['discriminator', s.u8]],
-      'DeprecatedCreateReservationListInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'DeprecatedCreateReservationListInstructionArgs'
+    ),
+    (value) => ({ discriminator: 6, ...value })
+  ) as Serializer<
+    DeprecatedCreateReservationListInstructionArgs,
+    DeprecatedCreateReservationListInstructionData
+  >;
 }
 
 // Instruction.
@@ -68,7 +72,8 @@ export function deprecatedCreateReservationList(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: DeprecatedCreateReservationListInstructionAccounts
+  input: DeprecatedCreateReservationListInstructionAccounts &
+    DeprecatedCreateReservationListInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -141,9 +146,10 @@ export function deprecatedCreateReservationList(
   });
 
   // Data.
-  const data = getDeprecatedCreateReservationListInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getDeprecatedCreateReservationListInstructionDataSerializer(
+      context
+    ).serialize(input);
 
   return {
     instruction: { keys, programId, data },

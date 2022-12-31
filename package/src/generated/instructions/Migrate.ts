@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -43,35 +42,30 @@ export type MigrateInstructionAccounts = {
 };
 
 // Arguments.
-export type MigrateInstructionData = { migrateArgs: MigrateArgs };
-
-// Discriminator.
-export type MigrateInstructionDiscriminator = number;
-export function getMigrateInstructionDiscriminator(): MigrateInstructionDiscriminator {
-  return 50;
-}
-
-// Data.
-type MigrateInstructionData = MigrateInstructionArgs & {
-  discriminator: MigrateInstructionDiscriminator;
+export type MigrateInstructionData = {
+  discriminator: number;
+  migrateArgs: MigrateArgs;
 };
+export type MigrateInstructionArgs = { migrateArgs: MigrateArgs };
+
 export function getMigrateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MigrateInstructionArgs> {
+): Serializer<MigrateInstructionArgs, MigrateInstructionData> {
   const s = context.serializer;
-  const discriminator = getMigrateInstructionDiscriminator();
-  const serializer: Serializer<MigrateInstructionData> =
+  return mapSerializer<
+    MigrateInstructionArgs,
+    MigrateInstructionData,
+    MigrateInstructionData
+  >(
     s.struct<MigrateInstructionData>(
       [
         ['discriminator', s.u8],
         ['migrateArgs', getMigrateArgsSerializer(context)],
       ],
-      'MigrateInstructionData'
-    );
-  return mapSerializer(serializer, (value: MigrateInstructionArgs) => ({
-    ...value,
-    discriminator,
-  }));
+      'MigrateInstructionArgs'
+    ),
+    (value) => ({ discriminator: 50, ...value })
+  ) as Serializer<MigrateInstructionArgs, MigrateInstructionData>;
 }
 
 // Instruction.

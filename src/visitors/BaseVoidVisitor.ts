@@ -19,7 +19,6 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
 
   visitInstruction(instruction: nodes.InstructionNode): void {
     instruction.args.accept(this);
-    instruction.discriminator?.type.accept(this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {

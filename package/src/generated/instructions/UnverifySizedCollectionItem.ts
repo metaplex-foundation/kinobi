@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -35,28 +34,33 @@ export type UnverifySizedCollectionItemInstructionAccounts = {
   collectionAuthorityRecord?: PublicKey;
 };
 
-// Discriminator.
-export type UnverifySizedCollectionItemInstructionDiscriminator = number;
-export function getUnverifySizedCollectionItemInstructionDiscriminator(): UnverifySizedCollectionItemInstructionDiscriminator {
-  return 31;
-}
-
-// Data.
-type UnverifySizedCollectionItemInstructionData = {
-  discriminator: UnverifySizedCollectionItemInstructionDiscriminator;
+// Arguments.
+export type UnverifySizedCollectionItemInstructionData = {
+  discriminator: number;
 };
+export type UnverifySizedCollectionItemInstructionArgs = {};
+
 export function getUnverifySizedCollectionItemInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<{}> {
+): Serializer<
+  UnverifySizedCollectionItemInstructionArgs,
+  UnverifySizedCollectionItemInstructionData
+> {
   const s = context.serializer;
-  const discriminator =
-    getUnverifySizedCollectionItemInstructionDiscriminator();
-  const serializer: Serializer<UnverifySizedCollectionItemInstructionData> =
+  return mapSerializer<
+    UnverifySizedCollectionItemInstructionArgs,
+    UnverifySizedCollectionItemInstructionData,
+    UnverifySizedCollectionItemInstructionData
+  >(
     s.struct<UnverifySizedCollectionItemInstructionData>(
       [['discriminator', s.u8]],
-      'UnverifySizedCollectionItemInstructionData'
-    );
-  return mapSerializer(serializer, () => ({ discriminator }));
+      'UnverifySizedCollectionItemInstructionArgs'
+    ),
+    (value) => ({ discriminator: 31, ...value })
+  ) as Serializer<
+    UnverifySizedCollectionItemInstructionArgs,
+    UnverifySizedCollectionItemInstructionData
+  >;
 }
 
 // Instruction.
@@ -66,7 +70,8 @@ export function unverifySizedCollectionItem(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: UnverifySizedCollectionItemInstructionAccounts
+  input: UnverifySizedCollectionItemInstructionAccounts &
+    UnverifySizedCollectionItemInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -124,9 +129,10 @@ export function unverifySizedCollectionItem(
   }
 
   // Data.
-  const data = getUnverifySizedCollectionItemInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getUnverifySizedCollectionItemInstructionDataSerializer(context).serialize(
+      input
+    );
 
   return {
     instruction: { keys, programId, data },

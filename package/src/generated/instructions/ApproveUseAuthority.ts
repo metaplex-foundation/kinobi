@@ -10,7 +10,6 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
@@ -44,38 +43,38 @@ export type ApproveUseAuthorityInstructionAccounts = {
 };
 
 // Arguments.
-export type ApproveUseAuthorityInstructionData = { numberOfUses: bigint };
+export type ApproveUseAuthorityInstructionData = {
+  discriminator: number;
+  numberOfUses: bigint;
+};
 export type ApproveUseAuthorityInstructionArgs = {
   numberOfUses: number | bigint;
 };
 
-// Discriminator.
-export type ApproveUseAuthorityInstructionDiscriminator = number;
-export function getApproveUseAuthorityInstructionDiscriminator(): ApproveUseAuthorityInstructionDiscriminator {
-  return 20;
-}
-
-// Data.
-type ApproveUseAuthorityInstructionData = ApproveUseAuthorityInstructionArgs & {
-  discriminator: ApproveUseAuthorityInstructionDiscriminator;
-};
 export function getApproveUseAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ApproveUseAuthorityInstructionArgs> {
+): Serializer<
+  ApproveUseAuthorityInstructionArgs,
+  ApproveUseAuthorityInstructionData
+> {
   const s = context.serializer;
-  const discriminator = getApproveUseAuthorityInstructionDiscriminator();
-  const serializer: Serializer<ApproveUseAuthorityInstructionData> =
+  return mapSerializer<
+    ApproveUseAuthorityInstructionArgs,
+    ApproveUseAuthorityInstructionData,
+    ApproveUseAuthorityInstructionData
+  >(
     s.struct<ApproveUseAuthorityInstructionData>(
       [
         ['discriminator', s.u8],
         ['numberOfUses', s.u64],
       ],
-      'ApproveUseAuthorityInstructionData'
-    );
-  return mapSerializer(
-    serializer,
-    (value: ApproveUseAuthorityInstructionArgs) => ({ ...value, discriminator })
-  );
+      'ApproveUseAuthorityInstructionArgs'
+    ),
+    (value) => ({ discriminator: 20, ...value })
+  ) as Serializer<
+    ApproveUseAuthorityInstructionArgs,
+    ApproveUseAuthorityInstructionData
+  >;
 }
 
 // Instruction.
