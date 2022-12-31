@@ -176,13 +176,14 @@ export class GetJavaScriptTypeManifestVisitor
       typeEnum.name || definedName
         ? `, '${typeEnum.name || definedName?.strict}'`
         : '';
+    const serializerTypeParams = definedName ? definedName.strict : 'any';
 
     return {
       ...mergedManifest,
       strictType: variants.map((v) => v.strictType).join(' | '),
       looseType: variants.map((v) => v.looseType).join(' | '),
       serializer:
-        `${this.s('dataEnum')}<${definedName || 'any'}>` +
+        `${this.s('dataEnum')}<${serializerTypeParams}>` +
         `([${variantSerializers}]${description})`,
       imports: mergedManifest.imports.add('core', [
         'GetDataEnumKindContent',
@@ -276,19 +277,14 @@ export class GetJavaScriptTypeManifestVisitor
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
     const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
-    let structTypeParams = 'any';
-    if (definedName && mergedManifest.hasLooseType) {
-      structTypeParams = `${definedName.loose}, ${definedName.strict}`;
-    } else if (definedName) {
-      structTypeParams = definedName.strict;
-    }
+    const serializerTypeParams = definedName ? definedName.strict : 'any';
 
     return {
       ...mergedManifest,
       strictType: `{ ${fields.map((field) => field.strictType).join(' ')} }`,
       looseType: `{ ${fields.map((field) => field.looseType).join(' ')} }`,
       serializer:
-        `${this.s('struct')}<${structTypeParams}>` +
+        `${this.s('struct')}<${serializerTypeParams}>` +
         `([${fieldSerializers}]${structDescription})`,
     };
   }

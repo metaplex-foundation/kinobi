@@ -5,7 +5,7 @@
 {{ macros.imports(imports) }}
 
 {{ macros.docblock(definedType.docs) }}
-{{ macros.exportType(name, typeDefinition) }}
+{{ macros.exportType(name, typeManifest) }}
 
 export async function fetch{{ name }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -33,5 +33,5 @@ export function deserialize{{ name }}(
   return deserializeAccount(rawAccount, get{{ name }}Serializer(context));
 }
 
-{{ macros.exportSerializer(name, serializer) }}
+{{ macros.exportSerializer(name, typeManifest) }}
 {% endblock %}

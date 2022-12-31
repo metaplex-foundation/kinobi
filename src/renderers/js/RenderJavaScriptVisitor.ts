@@ -5,13 +5,9 @@ import { camelCase, pascalCase, titleCase } from '../../utils';
 import { BaseVoidVisitor, Visitor } from '../../visitors';
 import { createFile, deleteFolder, resolveTemplate } from '../utils';
 import {
-  GetJavaScriptSerializerVisitor,
-  JavaScriptSerializer,
-} from './GetJavaScriptSerializerVisitor';
-import {
-  GetJavaScriptTypeDefinitionVisitor,
-  JavaScriptTypeDefinition,
-} from './GetJavaScriptTypeDefinitionVisitor';
+  GetJavaScriptTypeManifestVisitor,
+  JavaScriptTypeManifest,
+} from './GetJavaScriptTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
@@ -28,8 +24,7 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
 export type RenderJavaScriptOptions = {
   formatCode?: boolean;
   prettier?: PrettierOptions;
-  typeDefinitionVisitor?: Visitor<JavaScriptTypeDefinition>;
-  serializerVisitor?: Visitor<JavaScriptSerializer>;
+  typeManifestVisitor?: Visitor<JavaScriptTypeManifest>;
   deleteFolderBeforeRendering?: boolean;
 };
 
@@ -38,9 +33,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   readonly prettierOptions: PrettierOptions;
 
-  readonly typeDefinitionVisitor: Visitor<JavaScriptTypeDefinition>;
-
-  readonly serializerVisitor: Visitor<JavaScriptSerializer>;
+  readonly typeManifestVisitor: Visitor<JavaScriptTypeManifest>;
 
   readonly deleteFolderBeforeRendering: boolean;
 
@@ -53,11 +46,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     super();
     this.formatCode = options.formatCode ?? true;
     this.prettierOptions = { ...DEFAULT_PRETTIER_OPTIONS, ...options.prettier };
-    this.typeDefinitionVisitor =
-      this.options.typeDefinitionVisitor ??
-      new GetJavaScriptTypeDefinitionVisitor();
-    this.serializerVisitor =
-      this.options.serializerVisitor ?? new GetJavaScriptSerializerVisitor();
+    this.typeManifestVisitor =
+      this.options.typeManifestVisitor ??
+      new GetJavaScriptTypeManifestVisitor();
     this.deleteFolderBeforeRendering =
       options.deleteFolderBeforeRendering ?? true;
   }
@@ -108,10 +99,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   }
 
   visitAccount(account: nodes.AccountNode): void {
-    const typeDefinition = account.accept(this.typeDefinitionVisitor);
-    const serializer = account.accept(this.serializerVisitor);
+    const typeManifest = account.accept(this.typeManifestVisitor);
     const imports = new ImportMap()
-      .mergeWith(typeDefinition.imports, serializer.imports)
+      .mergeWith(typeManifest.imports)
       .add('core', [
         'Account',
         'assertAccountExists',
@@ -126,8 +116,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     this.render('accountsPage.njk', `accounts/${account.name}.ts`, {
       account,
       imports,
-      typeDefinition,
-      serializer,
+      typeManifest,
       name: account.name,
     });
   }
@@ -163,27 +152,25 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     imports.mergeWith(this.getInstructionAccountImports(accounts));
 
     // Arguments.
-    const argsTypeDefinition = instruction.args.accept(
-      this.typeDefinitionVisitor
-    );
-    imports.mergeWith(argsTypeDefinition.imports);
+    const argsTypeManifest = instruction.args.accept(this.typeManifestVisitor);
+    imports.mergeWith(argsTypeManifest.imports);
 
     // Discriminator.
     const discriminator = instruction.discriminator
       ? {
           ...instruction.discriminator,
-          typeDefinition: instruction.discriminator.type.accept(
-            this.typeDefinitionVisitor
+          typeManifest: instruction.discriminator.type.accept(
+            this.typeManifestVisitor
           ),
           renderedValue: JSON.stringify(instruction.discriminator.value),
         }
       : undefined;
     if (discriminator) {
-      imports.mergeWith(discriminator.typeDefinition.imports);
+      imports.mergeWith(discriminator.typeManifest.imports);
     }
 
     // Data.
-    let dataSerializer: JavaScriptSerializer | undefined;
+    let dataTypeManifest: JavaScriptTypeManifest | undefined;
     if (instruction.hasData) {
       const ixDataName = `${instruction.name}InstructionData`;
       const discriminatorType = instruction.discriminator?.type;
@@ -194,8 +181,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
         ...instruction.args.fields,
       ]);
       const definedType = new nodes.DefinedTypeNode(ixDataName, struct, []);
-      dataSerializer = definedType.accept(this.serializerVisitor);
-      imports.mergeWith(dataSerializer.imports);
+      dataTypeManifest = definedType.accept(this.typeManifestVisitor);
+      imports.mergeWith(dataTypeManifest.imports);
       if (instruction.hasDiscriminator) {
         imports.add('core', 'mapSerializer');
       }
@@ -220,9 +207,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       imports,
       program: this.program,
       accounts,
-      argsTypeDefinition,
+      argsTypeManifest,
       discriminator,
-      dataSerializer,
+      dataTypeManifest,
       name: instruction.name,
       camelCaseName: camelCase(instruction.name),
       canMergeAccountsAndArgs: accountsAndArgsConflicts.length === 0,
@@ -230,18 +217,16 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
-    const typeDefinition = definedType.accept(this.typeDefinitionVisitor);
-    const serializer = definedType.accept(this.serializerVisitor);
+    const typeManifest = definedType.accept(this.typeManifestVisitor);
     const imports = new ImportMap()
-      .mergeWith(typeDefinition.imports, serializer.imports)
+      .mergeWith(typeManifest.imports)
       .add('core', ['Context', 'Serializer'])
       .remove('types', [definedType.name]);
 
     this.render('definedTypesPage.njk', `types/${definedType.name}.ts`, {
       definedType,
       imports,
-      typeDefinition,
-      serializer,
+      typeManifest,
       name: definedType.name,
       camelCaseName: camelCase(definedType.name),
     });
