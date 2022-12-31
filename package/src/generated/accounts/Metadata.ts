@@ -8,19 +8,13 @@
 
 import {
   Collection,
-  CollectionArgs,
   CollectionDetails,
   CollectionDetailsArgs,
   Data,
-  DataArgs,
   DelegateState,
-  DelegateStateArgs,
   Key,
-  KeyArgs,
   ProgrammableConfig,
-  ProgrammableConfigArgs,
   TokenStandard,
-  TokenStandardArgs,
   Uses,
   UsesArgs,
   getCollectionDetailsSerializer,
@@ -59,19 +53,19 @@ export type Metadata = {
   delegateState: Option<DelegateState>;
 };
 export type MetadataArgs = {
-  key: KeyArgs;
+  key: Key;
   updateAuthority: PublicKey;
   mint: PublicKey;
-  data: DataArgs;
+  data: Data;
   primarySaleHappened: boolean;
   isMutable: boolean;
   editionNonce: Option<number>;
-  tokenStandard: Option<TokenStandardArgs>;
-  collection: Option<CollectionArgs>;
+  tokenStandard: Option<TokenStandard>;
+  collection: Option<Collection>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
-  programmableConfig: Option<ProgrammableConfigArgs>;
-  delegateState: Option<DelegateStateArgs>;
+  programmableConfig: Option<ProgrammableConfig>;
+  delegateState: Option<DelegateState>;
 };
 
 export async function fetchMetadata(

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { DelegateRole, DelegateRoleArgs, getDelegateRoleSerializer } from '.';
+import { DelegateRole, getDelegateRoleSerializer } from '.';
 import { Context, PublicKey, Serializer } from '@lorisleiva/js-core';
 
 export type DelegateState = {
@@ -14,15 +14,10 @@ export type DelegateState = {
   delegate: PublicKey;
   hasData: boolean;
 };
-export type DelegateStateArgs = {
-  role: DelegateRoleArgs;
-  delegate: PublicKey;
-  hasData: boolean;
-};
 
 export function getDelegateStateSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateStateArgs, DelegateState> {
+): Serializer<DelegateState> {
   const s = context.serializer;
   return s.struct<DelegateState>(
     [
@@ -31,5 +26,5 @@ export function getDelegateStateSerializer(
       ['hasData', s.bool],
     ],
     'DelegateState'
-  ) as Serializer<DelegateStateArgs, DelegateState>;
+  );
 }

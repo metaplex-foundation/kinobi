@@ -8,9 +8,7 @@
 
 import {
   Key,
-  KeyArgs,
   ReservationV1,
-  ReservationV1Args,
   getKeySerializer,
   getReservationV1Serializer,
 } from '../types';
@@ -32,10 +30,10 @@ export type ReservationListV1 = {
   reservations: Array<ReservationV1>;
 };
 export type ReservationListV1Args = {
-  key: KeyArgs;
+  key: Key;
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
-  reservations: Array<ReservationV1Args>;
+  reservations: Array<ReservationV1>;
 };
 
 export async function fetchReservationListV1(

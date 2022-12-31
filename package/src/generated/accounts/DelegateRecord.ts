@@ -8,9 +8,7 @@
 
 import {
   DelegateRole,
-  DelegateRoleArgs,
   Key,
-  KeyArgs,
   getDelegateRoleSerializer,
   getKeySerializer,
 } from '../types';
@@ -25,11 +23,6 @@ import {
 } from '@lorisleiva/js-core';
 
 export type DelegateRecord = { key: Key; role: DelegateRole; bump: number };
-export type DelegateRecordArgs = {
-  key: KeyArgs;
-  role: DelegateRoleArgs;
-  bump: number;
-};
 
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -59,7 +52,7 @@ export function deserializeDelegateRecord(
 
 export function getDelegateRecordSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateRecordArgs, DelegateRecord> {
+): Serializer<DelegateRecord> {
   const s = context.serializer;
   return s.struct<DelegateRecord>(
     [
@@ -68,5 +61,5 @@ export function getDelegateRecordSerializer(
       ['bump', s.u8],
     ],
     'DelegateRecord'
-  ) as Serializer<DelegateRecordArgs, DelegateRecord>;
+  );
 }

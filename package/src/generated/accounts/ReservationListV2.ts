@@ -8,7 +8,6 @@
 
 import {
   Key,
-  KeyArgs,
   Reservation,
   ReservationArgs,
   getKeySerializer,
@@ -34,7 +33,7 @@ export type ReservationListV2 = {
   currentReservationSpots: bigint;
 };
 export type ReservationListV2Args = {
-  key: KeyArgs;
+  key: Key;
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
   reservations: Array<ReservationArgs>;

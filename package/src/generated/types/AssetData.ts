@@ -9,17 +9,12 @@
 import { Context, Option, PublicKey, Serializer } from '@lorisleiva/js-core';
 import {
   Collection,
-  CollectionArgs,
   CollectionDetails,
   CollectionDetailsArgs,
   Creator,
-  CreatorArgs,
   DelegateState,
-  DelegateStateArgs,
   ProgrammableConfig,
-  ProgrammableConfigArgs,
   TokenStandard,
-  TokenStandardArgs,
   Uses,
   UsesArgs,
   getCollectionDetailsSerializer,
@@ -54,16 +49,16 @@ export type AssetDataArgs = {
   symbol: string;
   uri: string;
   sellerFeeBasisPoints: number;
-  creators: Option<Array<CreatorArgs>>;
+  creators: Option<Array<Creator>>;
   primarySaleHappened: boolean;
   isMutable: boolean;
   editionNonce: Option<number>;
-  tokenStandard: TokenStandardArgs;
-  collection: Option<CollectionArgs>;
+  tokenStandard: TokenStandard;
+  collection: Option<Collection>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
-  programmableConfig: Option<ProgrammableConfigArgs>;
-  delegateState: Option<DelegateStateArgs>;
+  programmableConfig: Option<ProgrammableConfig>;
+  delegateState: Option<DelegateState>;
 };
 
 export function getAssetDataSerializer(

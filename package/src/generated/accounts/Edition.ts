@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, KeyArgs, getKeySerializer } from '../types';
+import { Key, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -19,7 +19,7 @@ import {
 
 export type Edition = { key: Key; parent: PublicKey; edition: bigint };
 export type EditionArgs = {
-  key: KeyArgs;
+  key: Key;
   parent: PublicKey;
   edition: number | bigint;
 };

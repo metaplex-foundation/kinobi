@@ -8,9 +8,7 @@
 
 import {
   EscrowAuthority,
-  EscrowAuthorityArgs,
   Key,
-  KeyArgs,
   getEscrowAuthoritySerializer,
   getKeySerializer,
 } from '../types';
@@ -28,12 +26,6 @@ export type TokenOwnedEscrow = {
   key: Key;
   baseToken: PublicKey;
   authority: EscrowAuthority;
-  bump: number;
-};
-export type TokenOwnedEscrowArgs = {
-  key: KeyArgs;
-  baseToken: PublicKey;
-  authority: EscrowAuthorityArgs;
   bump: number;
 };
 
@@ -65,7 +57,7 @@ export function deserializeTokenOwnedEscrow(
 
 export function getTokenOwnedEscrowSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TokenOwnedEscrowArgs, TokenOwnedEscrow> {
+): Serializer<TokenOwnedEscrow> {
   const s = context.serializer;
   return s.struct<TokenOwnedEscrow>(
     [
@@ -75,5 +67,5 @@ export function getTokenOwnedEscrowSerializer(
       ['bump', s.u8],
     ],
     'TokenOwnedEscrow'
-  ) as Serializer<TokenOwnedEscrowArgs, TokenOwnedEscrow>;
+  );
 }

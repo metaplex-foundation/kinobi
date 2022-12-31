@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, KeyArgs, getKeySerializer } from '../types';
+import { Key, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -23,7 +23,7 @@ export type UseAuthorityRecord = {
   bump: number;
 };
 export type UseAuthorityRecordArgs = {
-  key: KeyArgs;
+  key: Key;
   allowedUses: number | bigint;
   bump: number;
 };

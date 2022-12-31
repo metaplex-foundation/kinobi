@@ -8,9 +8,7 @@
 
 import {
   Collection,
-  CollectionArgs,
   Creator,
-  CreatorArgs,
   Uses,
   UsesArgs,
   getCollectionSerializer,
@@ -33,8 +31,8 @@ export type DataV2Args = {
   symbol: string;
   uri: string;
   sellerFeeBasisPoints: number;
-  creators: Option<Array<CreatorArgs>>;
-  collection: Option<CollectionArgs>;
+  creators: Option<Array<Creator>>;
+  collection: Option<Collection>;
   uses: Option<UsesArgs>;
 };
 

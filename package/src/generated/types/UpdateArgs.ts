@@ -8,21 +8,15 @@
 
 import {
   AuthorityType,
-  AuthorityTypeArgs,
   AuthorizationData,
   AuthorizationDataArgs,
   Collection,
-  CollectionArgs,
   CollectionDetails,
   CollectionDetailsArgs,
   Data,
-  DataArgs,
   DelegateState,
-  DelegateStateArgs,
   ProgrammableConfig,
-  ProgrammableConfigArgs,
   TokenStandard,
-  TokenStandardArgs,
   Uses,
   UsesArgs,
   getAuthorityTypeSerializer,
@@ -63,16 +57,16 @@ export type UpdateArgsArgs = {
   __kind: 'V1';
   authorization_data: Option<AuthorizationDataArgs>;
   new_update_authority: Option<PublicKey>;
-  data: Option<DataArgs>;
+  data: Option<Data>;
   primary_sale_happened: Option<boolean>;
   is_mutable: Option<boolean>;
-  token_standard: Option<TokenStandardArgs>;
-  collection: Option<CollectionArgs>;
+  token_standard: Option<TokenStandard>;
+  collection: Option<Collection>;
   uses: Option<UsesArgs>;
   collection_details: Option<CollectionDetailsArgs>;
-  programmable_config: Option<ProgrammableConfigArgs>;
-  delegate_state: Option<DelegateStateArgs>;
-  authority_type: AuthorityTypeArgs;
+  programmable_config: Option<ProgrammableConfig>;
+  delegate_state: Option<DelegateState>;
+  authority_type: AuthorityType;
 };
 
 export function getUpdateArgsSerializer(

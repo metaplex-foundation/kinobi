@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, KeyArgs, getKeySerializer } from '../types';
+import { Key, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -24,7 +24,7 @@ export type MasterEditionV2 = {
   maxSupply: Option<bigint>;
 };
 export type MasterEditionV2Args = {
-  key: KeyArgs;
+  key: Key;
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
 };

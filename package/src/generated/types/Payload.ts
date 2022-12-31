@@ -8,7 +8,6 @@
 
 import {
   PayloadKey,
-  PayloadKeyArgs,
   PayloadType,
   PayloadTypeArgs,
   getPayloadKeySerializer,
@@ -17,7 +16,7 @@ import {
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type Payload = { map: Map<PayloadKey, PayloadType> };
-export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
+export type PayloadArgs = { map: Map<PayloadKey, PayloadTypeArgs> };
 
 export function getPayloadSerializer(
   context: Pick<Context, 'serializer'>

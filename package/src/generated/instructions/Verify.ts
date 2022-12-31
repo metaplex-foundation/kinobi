@@ -16,7 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
+import { VerifyArgs, getVerifyArgsSerializer } from '../types';
 
 // Accounts.
 export type VerifyInstructionAccounts = {
@@ -34,7 +34,6 @@ export type VerifyInstructionAccounts = {
 
 // Arguments.
 export type VerifyInstructionData = { verifyArgs: VerifyArgs };
-export type VerifyInstructionArgs = { verifyArgs: VerifyArgsArgs };
 
 // Discriminator.
 export type VerifyInstructionDiscriminator = number;

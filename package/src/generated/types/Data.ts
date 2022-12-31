@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Creator, CreatorArgs, getCreatorSerializer } from '.';
+import { Creator, getCreatorSerializer } from '.';
 import { Context, Option, Serializer } from '@lorisleiva/js-core';
 
 export type Data = {
@@ -16,17 +16,10 @@ export type Data = {
   sellerFeeBasisPoints: number;
   creators: Option<Array<Creator>>;
 };
-export type DataArgs = {
-  name: string;
-  symbol: string;
-  uri: string;
-  sellerFeeBasisPoints: number;
-  creators: Option<Array<CreatorArgs>>;
-};
 
 export function getDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DataArgs, Data> {
+): Serializer<Data> {
   const s = context.serializer;
   return s.struct<Data>(
     [
@@ -37,5 +30,5 @@ export function getDataSerializer(
       ['creators', s.option(s.vec(getCreatorSerializer(context)))],
     ],
     'Data'
-  ) as Serializer<DataArgs, Data>;
+  );
 }

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, KeyArgs, getKeySerializer } from '../types';
+import { Key, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -20,11 +20,6 @@ import {
 
 export type CollectionAuthorityRecord = {
   key: Key;
-  bump: number;
-  updateAuthority: Option<PublicKey>;
-};
-export type CollectionAuthorityRecordArgs = {
-  key: KeyArgs;
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
@@ -60,7 +55,7 @@ export function deserializeCollectionAuthorityRecord(
 
 export function getCollectionAuthorityRecordSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CollectionAuthorityRecordArgs, CollectionAuthorityRecord> {
+): Serializer<CollectionAuthorityRecord> {
   const s = context.serializer;
   return s.struct<CollectionAuthorityRecord>(
     [
@@ -69,5 +64,5 @@ export function getCollectionAuthorityRecordSerializer(
       ['updateAuthority', s.option(s.publicKey)],
     ],
     'CollectionAuthorityRecord'
-  ) as Serializer<CollectionAuthorityRecordArgs, CollectionAuthorityRecord>;
+  );
 }

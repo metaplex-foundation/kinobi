@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, KeyArgs, getKeySerializer } from '../types';
+import { Key, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -26,7 +26,7 @@ export type MasterEditionV1 = {
   oneTimePrintingAuthorizationMint: PublicKey;
 };
 export type MasterEditionV1Args = {
-  key: KeyArgs;
+  key: Key;
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
   printingMint: PublicKey;
