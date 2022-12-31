@@ -5,21 +5,21 @@ type {{ name }}InstructionData = {{ name }}InstructionArgs & { discriminator: {{
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
-  const serializer: Serializer<{{ name }}InstructionData> = {{ dataSerializer.code }};
+  const serializer: Serializer<{{ name }}InstructionData> = {{ dataTypeManifest.serializer }};
   return mapSerializer(serializer, (value: {{ name }}InstructionArgs) => ({ ...value, discriminator }));
 }
 {% elif instruction.hasArgs %}
 type {{ name }}InstructionData = {{ name }}InstructionArgs;
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{{ name }}InstructionArgs> {
   const s = context.serializer;
-  return {{ dataSerializer.code }};
+  return {{ dataTypeManifest.serializer }};
 }
 {% else %}
 type {{ name }}InstructionData = { discriminator: {{ name }}InstructionDiscriminator };
 export function get{{ name }}InstructionDataSerializer(context: Pick<Context, 'serializer'>): Serializer<{}> {
   const s = context.serializer;
   const discriminator = get{{ name }}InstructionDiscriminator();
-  const serializer: Serializer<{{ name }}InstructionData> = {{ dataSerializer.code }};
+  const serializer: Serializer<{{ name }}InstructionData> = {{ dataTypeManifest.serializer }};
   return mapSerializer(serializer, () => ({ discriminator }));
 }
 {% endif %}
