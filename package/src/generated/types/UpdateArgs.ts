@@ -14,6 +14,7 @@ import {
   CollectionDetails,
   CollectionDetailsArgs,
   Data,
+  DataArgs,
   DelegateState,
   ProgrammableConfig,
   TokenStandard,
@@ -57,7 +58,7 @@ export type UpdateArgsArgs = {
   __kind: 'V1';
   authorization_data: Option<AuthorizationDataArgs>;
   new_update_authority: Option<PublicKey>;
-  data: Option<Data>;
+  data: Option<DataArgs>;
   primary_sale_happened: Option<boolean>;
   is_mutable: Option<boolean>;
   token_standard: Option<TokenStandard>;

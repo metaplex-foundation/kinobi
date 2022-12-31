@@ -12,6 +12,7 @@ import {
   CollectionDetails,
   CollectionDetailsArgs,
   Creator,
+  CreatorArgs,
   DelegateState,
   ProgrammableConfig,
   TokenStandard,
@@ -49,7 +50,7 @@ export type AssetDataArgs = {
   symbol: string;
   uri: string;
   sellerFeeBasisPoints: number;
-  creators: Option<Array<Creator>>;
+  creators: Option<Array<CreatorArgs>>;
   primarySaleHappened: boolean;
   isMutable: boolean;
   editionNonce: Option<number>;

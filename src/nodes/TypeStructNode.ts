@@ -23,9 +23,11 @@ export class TypeStructNode implements Visitable {
       name: field.name ?? '',
       type: createTypeNodeFromIdl(field.type),
       docs: field.docs ?? [],
-      defaultsTo: null,
+      defaultsTo:
+        field.defaultsValue !== undefined
+          ? { strategy: 'optional' as const, value: field.defaultsValue }
+          : null,
     }));
-
     return new TypeStructNode(idl.name ?? '', fields);
   }
 

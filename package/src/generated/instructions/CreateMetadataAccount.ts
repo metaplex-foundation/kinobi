@@ -16,7 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { Data, getDataSerializer } from '../types';
+import { Data, DataArgs, getDataSerializer } from '../types';
 
 // Accounts.
 export type CreateMetadataAccountInstructionAccounts = {
@@ -39,6 +39,10 @@ export type CreateMetadataAccountInstructionAccounts = {
 // Arguments.
 export type CreateMetadataAccountInstructionData = {
   data: Data;
+  isMutable: boolean;
+};
+export type CreateMetadataAccountInstructionArgs = {
+  data: DataArgs;
   isMutable: boolean;
 };
 

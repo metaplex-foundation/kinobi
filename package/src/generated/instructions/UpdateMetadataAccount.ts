@@ -17,7 +17,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { Data, getDataSerializer } from '../types';
+import { Data, DataArgs, getDataSerializer } from '../types';
 
 // Accounts.
 export type UpdateMetadataAccountInstructionAccounts = {
@@ -30,6 +30,11 @@ export type UpdateMetadataAccountInstructionAccounts = {
 // Arguments.
 export type UpdateMetadataAccountInstructionData = {
   data: Option<Data>;
+  updateAuthority: Option<PublicKey>;
+  primarySaleHappened: Option<boolean>;
+};
+export type UpdateMetadataAccountInstructionArgs = {
+  data: Option<DataArgs>;
   updateAuthority: Option<PublicKey>;
   primarySaleHappened: Option<boolean>;
 };

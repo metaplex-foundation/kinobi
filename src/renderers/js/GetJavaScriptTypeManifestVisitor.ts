@@ -347,8 +347,8 @@ export class GetJavaScriptTypeManifestVisitor
     }
 
     const defaultValues = optionalFields
-      .map((f) => `${f.name}: ${JSON.stringify(f.defaultsTo?.value)},`)
-      .join(' ');
+      .map((f) => `${f.name}: ${JSON.stringify(f.defaultsTo?.value)}`)
+      .join(', ');
     const mapSerializerTypeParams = definedName
       ? `${definedName.loose}, ${definedName.strict}`
       : 'any';

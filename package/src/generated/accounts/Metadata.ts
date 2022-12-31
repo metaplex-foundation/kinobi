@@ -11,6 +11,7 @@ import {
   CollectionDetails,
   CollectionDetailsArgs,
   Data,
+  DataArgs,
   DelegateState,
   Key,
   ProgrammableConfig,
@@ -56,7 +57,7 @@ export type MetadataArgs = {
   key: Key;
   updateAuthority: PublicKey;
   mint: PublicKey;
-  data: Data;
+  data: DataArgs;
   primarySaleHappened: boolean;
   isMutable: boolean;
   editionNonce: Option<number>;
