@@ -14,12 +14,24 @@ export type JavaScriptTypeManifest = {
 export class GetJavaScriptTypeManifestVisitor
   implements Visitor<JavaScriptTypeManifest>
 {
+  private availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
+
+  private visitedDefinedTypes = new Map<string, JavaScriptTypeManifest>();
+
+  private definedTypeStack: string[] = [];
+
   private definedName: {
     strict: string;
     loose: string;
   } | null = null;
 
   constructor(readonly serializerVariable = 's') {}
+
+  registerDefinedTypes(definedTypes: nodes.DefinedTypeNode[]): void {
+    definedTypes.forEach((definedType) => {
+      this.availableDefinedTypes.set(definedType.name, definedType);
+    });
+  }
 
   visitRoot(): JavaScriptTypeManifest {
     throw new Error(
@@ -54,12 +66,19 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): JavaScriptTypeManifest {
+    if (this.visitedDefinedTypes.has(definedType.name)) {
+      return this.visitedDefinedTypes.get(definedType.name)!;
+    }
+
+    this.definedTypeStack.push(definedType.name);
     this.definedName = {
       strict: definedType.name,
       loose: `${definedType.name}Args`,
     };
     const child = definedType.type.accept(this);
     this.definedName = null;
+    this.definedTypeStack.pop();
+    this.visitedDefinedTypes.set(definedType.name, child);
     return child;
   }
 
@@ -82,18 +101,38 @@ export class GetJavaScriptTypeManifestVisitor
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): JavaScriptTypeManifest {
+    const linkedDefinedType = this.availableDefinedTypes.get(
+      typeDefinedLink.definedType
+    );
+    if (!linkedDefinedType) {
+      throw new Error(
+        `Cannot find linked defined type ${typeDefinedLink.definedType}.`
+      );
+    }
+
+    let linkedDefinedTypeHasLooseType = false;
+    if (this.definedTypeStack.includes(linkedDefinedType.name)) {
+      linkedDefinedTypeHasLooseType = true;
+    } else {
+      const linkedManifest = linkedDefinedType.accept(this);
+      linkedDefinedTypeHasLooseType = linkedManifest.hasLooseType;
+    }
+
     const serializerName = `get${typeDefinedLink.definedType}Serializer`;
     return {
       strictType: typeDefinedLink.definedType,
-      // TODO: Check if the linked type has a loose type first???
-      looseType: `${typeDefinedLink.definedType}Args`,
-      hasLooseType: true,
+      looseType: linkedDefinedTypeHasLooseType
+        ? `${typeDefinedLink.definedType}Args`
+        : typeDefinedLink.definedType,
+      hasLooseType: linkedDefinedTypeHasLooseType,
       isEnum: false,
       serializer: `${serializerName}(context)`,
       imports: new ImportMap().add('types', [
         serializerName,
         typeDefinedLink.definedType,
-        `${typeDefinedLink.definedType}Args`,
+        ...(linkedDefinedTypeHasLooseType
+          ? [`${typeDefinedLink.definedType}Args`]
+          : []),
       ]),
     };
   }

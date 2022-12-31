@@ -33,7 +33,9 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   readonly prettierOptions: PrettierOptions;
 
-  readonly typeManifestVisitor: Visitor<JavaScriptTypeManifest>;
+  readonly typeManifestVisitor: Visitor<JavaScriptTypeManifest> & {
+    registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
+  };
 
   readonly deleteFolderBeforeRendering: boolean;
 
@@ -70,6 +72,11 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitProgram(program: nodes.ProgramNode): void {
     this.program = program;
+
+    if (this.typeManifestVisitor.registerDefinedTypes) {
+      this.typeManifestVisitor.registerDefinedTypes(program.definedTypes);
+    }
+
     const { name } = program.metadata;
     const pascalCaseName = pascalCase(name);
     program.accounts.forEach((account) => account.accept(this));
