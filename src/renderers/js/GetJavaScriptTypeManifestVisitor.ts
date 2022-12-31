@@ -112,6 +112,8 @@ export class GetJavaScriptTypeManifestVisitor
 
     let linkedDefinedTypeHasLooseType = false;
     if (this.definedTypeStack.includes(linkedDefinedType.name)) {
+      // This prevents infinite recursion by using loose types
+      // for all types in a cyclic dependency.
       linkedDefinedTypeHasLooseType = true;
     } else {
       const linkedManifest = linkedDefinedType.accept(this);
