@@ -183,7 +183,14 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       const discriminatorType = instruction.discriminator?.type;
       const struct = new nodes.TypeStructNode(ixDataName, [
         ...(discriminatorType
-          ? [{ name: 'discriminator', type: discriminatorType, docs: [] }]
+          ? [
+              {
+                name: 'discriminator',
+                type: discriminatorType,
+                docs: [],
+                defaultsTo: null,
+              },
+            ]
           : []),
         ...instruction.args.fields,
       ]);

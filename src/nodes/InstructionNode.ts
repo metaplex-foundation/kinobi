@@ -8,8 +8,7 @@ import { TypeStructNode } from './TypeStructNode';
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
   | { kind: 'program'; program: { name: string; address: string } }
-  | { kind: 'programId' }
-  | null;
+  | { kind: 'programId' };
 
 export type InstructionNodeAccount = {
   name: string;
@@ -18,7 +17,7 @@ export type InstructionNodeAccount = {
   isOptionalSigner: boolean;
   isOptional: boolean;
   description: string;
-  defaultsTo: InstructionNodeAccountDefaults;
+  defaultsTo: InstructionNodeAccountDefaults | null;
 };
 
 export type InstructionNodeDiscriminator = {

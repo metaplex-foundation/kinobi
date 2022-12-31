@@ -187,7 +187,7 @@ export class GetJavaScriptTypeManifestVisitor
 
         if (variant.kind === 'tuple') {
           const struct = new nodes.TypeStructNode(variant.name, [
-            { name: 'fields', type: variant.type, docs: [] },
+            { name: 'fields', type: variant.type, docs: [], defaultsTo: null },
           ]);
           const type = struct.accept(this);
           this.definedName = null;
@@ -309,26 +309,59 @@ export class GetJavaScriptTypeManifestVisitor
     const fields = typeStruct.fields.map((field) => {
       const fieldType = field.type.accept(this);
       const docblock = this.createDocblock(field.docs);
-      return {
+      const baseField = {
         ...fieldType,
-        strictType: `${docblock}${field.name}: ${fieldType.strictType};`,
-        looseType: `${docblock}${field.name}: ${fieldType.looseType};`,
+        strictType: `${docblock}${field.name}: ${fieldType.strictType}; `,
+        looseType: `${docblock}${field.name}: ${fieldType.looseType}; `,
         serializer: `['${field.name}', ${fieldType.serializer}]`,
       };
+      if (!field.defaultsTo) {
+        return baseField;
+      }
+      if (field.defaultsTo.strategy === 'optional') {
+        return {
+          ...baseField,
+          hasLooseType: true,
+          looseType: `${docblock}${field.name}?: ${fieldType.looseType}; `,
+        };
+      }
+      return { ...baseField, hasLooseType: true, looseType: '' };
     });
 
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
     const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
     const serializerTypeParams = definedName ? definedName.strict : 'any';
-
-    return {
+    const baseManifest = {
       ...mergedManifest,
-      strictType: `{ ${fields.map((field) => field.strictType).join(' ')} }`,
-      looseType: `{ ${fields.map((field) => field.looseType).join(' ')} }`,
+      strictType: `{ ${fields.map((field) => field.strictType).join('')} }`,
+      looseType: `{ ${fields.map((field) => field.looseType).join('')} }`,
       serializer:
         `${this.s('struct')}<${serializerTypeParams}>` +
         `([${fieldSerializers}]${structDescription})`,
+    };
+
+    const optionalFields = typeStruct.fields.filter((f) => !!f.defaultsTo);
+    if (optionalFields.length === 0) {
+      return baseManifest;
+    }
+
+    const defaultValues = optionalFields
+      .map((f) => `${f.name}: ${JSON.stringify(f.defaultsTo?.value)},`)
+      .join(' ');
+    const mapSerializerTypeParams = definedName
+      ? `${definedName.loose}, ${definedName.strict}`
+      : 'any';
+    const mappedSerializer =
+      `mapSerializer<${mapSerializerTypeParams}>(` +
+      `${baseManifest.serializer}, ` +
+      `(value) => ({ ${defaultValues}, ...value }) ` +
+      `)`;
+
+    return {
+      ...baseManifest,
+      serializer: mappedSerializer,
+      imports: baseManifest.imports.add('core', 'mapSerializer'),
     };
   }
 

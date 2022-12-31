@@ -7,6 +7,10 @@ export type TypeStructNodeField = {
   name: string;
   type: TypeNode;
   docs: string[];
+  defaultsTo: {
+    value: any;
+    strategy: 'optional' | 'omitted';
+  } | null;
 };
 
 export class TypeStructNode implements Visitable {
@@ -19,6 +23,7 @@ export class TypeStructNode implements Visitable {
       name: field.name ?? '',
       type: createTypeNodeFromIdl(field.type),
       docs: field.docs ?? [],
+      defaultsTo: null,
     }));
 
     return new TypeStructNode(idl.name ?? '', fields);
