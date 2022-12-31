@@ -1,0 +1,16 @@
+{
+  "name": "@lorisleiva/dummy-generated",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@lorisleiva/js-core": "^0.0.17"
+  }
+}
