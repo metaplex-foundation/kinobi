@@ -5,9 +5,9 @@
 {{ macros.imports(imports, { types: '.' }) }}
 
 {{ macros.docblock(definedType.docs) }}
-{{ macros.exportType(name, typeManifest) }}
+{{ macros.exportType(name, name + 'Args', typeManifest) }}
 
-{{ macros.exportSerializer(name, typeManifest) }}
+{{ macros.exportSerializer(name, name + 'Args', typeManifest) }}
 
 {% include "definedTypesPageDataEnums.njk" %}
 {% endblock %}

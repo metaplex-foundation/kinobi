@@ -6,14 +6,19 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { UseMethod, getUseMethodSerializer } from '.';
+import { UseMethod, UseMethodArgs, getUseMethodSerializer } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type Uses = { useMethod: UseMethod; remaining: bigint; total: bigint };
+export type UsesArgs = {
+  useMethod: UseMethodArgs;
+  remaining: number | bigint;
+  total: number | bigint;
+};
 
 export function getUsesSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<Uses> {
+): Serializer<UsesArgs, Uses> {
   const s = context.serializer;
   return s.struct<Uses>(
     [
@@ -22,5 +27,5 @@ export function getUsesSerializer(
       ['total', s.u64],
     ],
     'Uses'
-  );
+  ) as Serializer<UsesArgs, Uses>;
 }

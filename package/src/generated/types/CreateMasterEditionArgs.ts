@@ -9,13 +9,16 @@
 import { Context, Option, Serializer } from '@lorisleiva/js-core';
 
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };
+export type CreateMasterEditionArgsArgs = {
+  maxSupply: Option<number | bigint>;
+};
 
 export function getCreateMasterEditionArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateMasterEditionArgs> {
+): Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs> {
   const s = context.serializer;
   return s.struct<CreateMasterEditionArgs>(
     [['maxSupply', s.option(s.u64)]],
     'CreateMasterEditionArgs'
-  );
+  ) as Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs>;
 }

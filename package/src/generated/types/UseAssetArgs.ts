@@ -14,10 +14,11 @@ import {
 } from '@lorisleiva/js-core';
 
 export type UseAssetArgs = { __kind: 'V1'; use_count: bigint };
+export type UseAssetArgsArgs = { __kind: 'V1'; use_count: number | bigint };
 
 export function getUseAssetArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UseAssetArgs> {
+): Serializer<UseAssetArgsArgs, UseAssetArgs> {
   const s = context.serializer;
   return s.dataEnum<UseAssetArgs>(
     [
@@ -30,7 +31,7 @@ export function getUseAssetArgsSerializer(
       ],
     ],
     'UseAssetArgs'
-  );
+  ) as Serializer<UseAssetArgsArgs, UseAssetArgs>;
 }
 
 // Data Enum Helpers.

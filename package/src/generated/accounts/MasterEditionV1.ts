@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, getKeySerializer } from '../types';
+import { Key, KeyArgs, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -22,6 +22,13 @@ export type MasterEditionV1 = {
   key: Key;
   supply: bigint;
   maxSupply: Option<bigint>;
+  printingMint: PublicKey;
+  oneTimePrintingAuthorizationMint: PublicKey;
+};
+export type MasterEditionV1Args = {
+  key: KeyArgs;
+  supply: number | bigint;
+  maxSupply: Option<number | bigint>;
   printingMint: PublicKey;
   oneTimePrintingAuthorizationMint: PublicKey;
 };
@@ -54,7 +61,7 @@ export function deserializeMasterEditionV1(
 
 export function getMasterEditionV1Serializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MasterEditionV1> {
+): Serializer<MasterEditionV1Args, MasterEditionV1> {
   const s = context.serializer;
   return s.struct<MasterEditionV1>(
     [
@@ -65,5 +72,5 @@ export function getMasterEditionV1Serializer(
       ['oneTimePrintingAuthorizationMint', s.publicKey],
     ],
     'MasterEditionV1'
-  );
+  ) as Serializer<MasterEditionV1Args, MasterEditionV1>;
 }

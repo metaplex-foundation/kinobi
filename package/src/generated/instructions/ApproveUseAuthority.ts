@@ -44,7 +44,10 @@ export type ApproveUseAuthorityInstructionAccounts = {
 };
 
 // Arguments.
-export type ApproveUseAuthorityInstructionArgs = { numberOfUses: bigint };
+export type ApproveUseAuthorityInstructionData = { numberOfUses: bigint };
+export type ApproveUseAuthorityInstructionArgs = {
+  numberOfUses: number | bigint;
+};
 
 // Discriminator.
 export type ApproveUseAuthorityInstructionDiscriminator = number;

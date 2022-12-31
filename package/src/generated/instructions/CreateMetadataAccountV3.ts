@@ -19,7 +19,9 @@ import {
 } from '@lorisleiva/js-core';
 import {
   CollectionDetails,
+  CollectionDetailsArgs,
   DataV2,
+  DataV2Args,
   getCollectionDetailsSerializer,
   getDataV2Serializer,
 } from '../types';
@@ -43,10 +45,15 @@ export type CreateMetadataAccountV3InstructionAccounts = {
 };
 
 // Arguments.
-export type CreateMetadataAccountV3InstructionArgs = {
+export type CreateMetadataAccountV3InstructionData = {
   data: DataV2;
   isMutable: boolean;
   collectionDetails: Option<CollectionDetails>;
+};
+export type CreateMetadataAccountV3InstructionArgs = {
+  data: DataV2Args;
+  isMutable: boolean;
+  collectionDetails: Option<CollectionDetailsArgs>;
 };
 
 // Discriminator.

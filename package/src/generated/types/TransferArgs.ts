@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { AuthorizationData, getAuthorizationDataSerializer } from '.';
+import {
+  AuthorizationData,
+  AuthorizationDataArgs,
+  getAuthorizationDataSerializer,
+} from '.';
 import {
   Context,
   GetDataEnumKind,
@@ -20,10 +24,15 @@ export type TransferArgs = {
   authorization_data: Option<AuthorizationData>;
   amount: bigint;
 };
+export type TransferArgsArgs = {
+  __kind: 'V1';
+  authorization_data: Option<AuthorizationDataArgs>;
+  amount: number | bigint;
+};
 
 export function getTransferArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TransferArgs> {
+): Serializer<TransferArgsArgs, TransferArgs> {
   const s = context.serializer;
   return s.dataEnum<TransferArgs>(
     [
@@ -42,7 +51,7 @@ export function getTransferArgsSerializer(
       ],
     ],
     'TransferArgs'
-  );
+  ) as Serializer<TransferArgsArgs, TransferArgs>;
 }
 
 // Data Enum Helpers.

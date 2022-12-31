@@ -9,13 +9,20 @@
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type MintPrintingTokensViaTokenArgs = { supply: bigint };
+export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
 export function getMintPrintingTokensViaTokenArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MintPrintingTokensViaTokenArgs> {
+): Serializer<
+  MintPrintingTokensViaTokenArgsArgs,
+  MintPrintingTokensViaTokenArgs
+> {
   const s = context.serializer;
   return s.struct<MintPrintingTokensViaTokenArgs>(
     [['supply', s.u64]],
     'MintPrintingTokensViaTokenArgs'
-  );
+  ) as Serializer<
+    MintPrintingTokensViaTokenArgsArgs,
+    MintPrintingTokensViaTokenArgs
+  >;
 }

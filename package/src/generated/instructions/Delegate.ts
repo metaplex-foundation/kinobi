@@ -16,7 +16,11 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { DelegateArgs, getDelegateArgsSerializer } from '../types';
+import {
+  DelegateArgs,
+  DelegateArgsArgs,
+  getDelegateArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type DelegateInstructionAccounts = {
@@ -49,7 +53,8 @@ export type DelegateInstructionAccounts = {
 };
 
 // Arguments.
-export type DelegateInstructionArgs = { delegateArgs: DelegateArgs };
+export type DelegateInstructionData = { delegateArgs: DelegateArgs };
+export type DelegateInstructionArgs = { delegateArgs: DelegateArgsArgs };
 
 // Discriminator.
 export type DelegateInstructionDiscriminator = number;

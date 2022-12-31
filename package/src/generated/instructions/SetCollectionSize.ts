@@ -18,6 +18,7 @@ import {
 } from '@lorisleiva/js-core';
 import {
   SetCollectionSizeArgs,
+  SetCollectionSizeArgsArgs,
   getSetCollectionSizeArgsSerializer,
 } from '../types';
 
@@ -34,8 +35,11 @@ export type SetCollectionSizeInstructionAccounts = {
 };
 
 // Arguments.
-export type SetCollectionSizeInstructionArgs = {
+export type SetCollectionSizeInstructionData = {
   setCollectionSizeArgs: SetCollectionSizeArgs;
+};
+export type SetCollectionSizeInstructionArgs = {
+  setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
 // Discriminator.

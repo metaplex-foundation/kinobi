@@ -16,7 +16,11 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { TransferArgs, getTransferArgsSerializer } from '../types';
+import {
+  TransferArgs,
+  TransferArgsArgs,
+  getTransferArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type TransferInstructionAccounts = {
@@ -53,7 +57,8 @@ export type TransferInstructionAccounts = {
 };
 
 // Arguments.
-export type TransferInstructionArgs = { transferArgs: TransferArgs };
+export type TransferInstructionData = { transferArgs: TransferArgs };
+export type TransferInstructionArgs = { transferArgs: TransferArgsArgs };
 
 // Discriminator.
 export type TransferInstructionDiscriminator = number;

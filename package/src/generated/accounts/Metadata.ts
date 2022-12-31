@@ -8,13 +8,21 @@
 
 import {
   Collection,
+  CollectionArgs,
   CollectionDetails,
+  CollectionDetailsArgs,
   Data,
+  DataArgs,
   DelegateState,
+  DelegateStateArgs,
   Key,
+  KeyArgs,
   ProgrammableConfig,
+  ProgrammableConfigArgs,
   TokenStandard,
+  TokenStandardArgs,
   Uses,
+  UsesArgs,
   getCollectionDetailsSerializer,
   getCollectionSerializer,
   getDataSerializer,
@@ -50,6 +58,21 @@ export type Metadata = {
   programmableConfig: Option<ProgrammableConfig>;
   delegateState: Option<DelegateState>;
 };
+export type MetadataArgs = {
+  key: KeyArgs;
+  updateAuthority: PublicKey;
+  mint: PublicKey;
+  data: DataArgs;
+  primarySaleHappened: boolean;
+  isMutable: boolean;
+  editionNonce: Option<number>;
+  tokenStandard: Option<TokenStandardArgs>;
+  collection: Option<CollectionArgs>;
+  uses: Option<UsesArgs>;
+  collectionDetails: Option<CollectionDetailsArgs>;
+  programmableConfig: Option<ProgrammableConfigArgs>;
+  delegateState: Option<DelegateStateArgs>;
+};
 
 export async function fetchMetadata(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -79,7 +102,7 @@ export function deserializeMetadata(
 
 export function getMetadataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<Metadata> {
+): Serializer<MetadataArgs, Metadata> {
   const s = context.serializer;
   return s.struct<Metadata>(
     [
@@ -101,5 +124,5 @@ export function getMetadataSerializer(
       ['delegateState', s.option(getDelegateStateSerializer(context))],
     ],
     'Metadata'
-  );
+  ) as Serializer<MetadataArgs, Metadata>;
 }

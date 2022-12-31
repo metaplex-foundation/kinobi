@@ -18,6 +18,7 @@ import {
 } from '@lorisleiva/js-core';
 import {
   MintPrintingTokensViaTokenArgs,
+  MintPrintingTokensViaTokenArgsArgs,
   getMintPrintingTokensViaTokenArgsSerializer,
 } from '../types';
 
@@ -44,8 +45,11 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionAccounts = {
 };
 
 // Arguments.
-export type DeprecatedMintPrintingTokensViaTokenInstructionArgs = {
+export type DeprecatedMintPrintingTokensViaTokenInstructionData = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgs;
+};
+export type DeprecatedMintPrintingTokensViaTokenInstructionArgs = {
+  mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
 };
 
 // Discriminator.

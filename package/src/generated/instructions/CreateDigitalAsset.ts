@@ -16,7 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { CreateArgs, getCreateArgsSerializer } from '../types';
+import { CreateArgs, CreateArgsArgs, getCreateArgsSerializer } from '../types';
 
 // Accounts.
 export type CreateDigitalAssetInstructionAccounts = {
@@ -41,7 +41,8 @@ export type CreateDigitalAssetInstructionAccounts = {
 };
 
 // Arguments.
-export type CreateDigitalAssetInstructionArgs = { createArgs: CreateArgs };
+export type CreateDigitalAssetInstructionData = { createArgs: CreateArgs };
+export type CreateDigitalAssetInstructionArgs = { createArgs: CreateArgsArgs };
 
 // Discriminator.
 export type CreateDigitalAssetInstructionDiscriminator = number;

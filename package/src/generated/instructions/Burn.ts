@@ -16,7 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { BurnArgs, getBurnArgsSerializer } from '../types';
+import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
 
 // Accounts.
 export type BurnInstructionAccounts = {
@@ -41,7 +41,8 @@ export type BurnInstructionAccounts = {
 };
 
 // Arguments.
-export type BurnInstructionArgs = { burnArgs: BurnArgs };
+export type BurnInstructionData = { burnArgs: BurnArgs };
+export type BurnInstructionArgs = { burnArgs: BurnArgsArgs };
 
 // Discriminator.
 export type BurnInstructionDiscriminator = number;

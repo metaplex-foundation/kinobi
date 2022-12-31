@@ -17,10 +17,14 @@ export type DelegateArgs =
   | { __kind: 'CollectionV1' }
   | { __kind: 'SaleV1'; amount: bigint }
   | { __kind: 'TransferV1'; amount: bigint };
+export type DelegateArgsArgs =
+  | { __kind: 'CollectionV1' }
+  | { __kind: 'SaleV1'; amount: number | bigint }
+  | { __kind: 'TransferV1'; amount: number | bigint };
 
 export function getDelegateArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateArgs> {
+): Serializer<DelegateArgsArgs, DelegateArgs> {
   const s = context.serializer;
   return s.dataEnum<DelegateArgs>(
     [
@@ -41,7 +45,7 @@ export function getDelegateArgsSerializer(
       ],
     ],
     'DelegateArgs'
-  );
+  ) as Serializer<DelegateArgsArgs, DelegateArgs>;
 }
 
 // Data Enum Helpers.

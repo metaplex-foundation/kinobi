@@ -9,13 +9,22 @@
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type MintNewEditionFromMasterEditionViaTokenArgs = { edition: bigint };
+export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
+  edition: number | bigint;
+};
 
 export function getMintNewEditionFromMasterEditionViaTokenArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MintNewEditionFromMasterEditionViaTokenArgs> {
+): Serializer<
+  MintNewEditionFromMasterEditionViaTokenArgsArgs,
+  MintNewEditionFromMasterEditionViaTokenArgs
+> {
   const s = context.serializer;
   return s.struct<MintNewEditionFromMasterEditionViaTokenArgs>(
     [['edition', s.u64]],
     'MintNewEditionFromMasterEditionViaTokenArgs'
-  );
+  ) as Serializer<
+    MintNewEditionFromMasterEditionViaTokenArgsArgs,
+    MintNewEditionFromMasterEditionViaTokenArgs
+  >;
 }

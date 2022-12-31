@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { AssetData, getAssetDataSerializer } from '.';
+import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 import {
   Context,
   GetDataEnumKind,
@@ -21,10 +21,16 @@ export type CreateArgs = {
   decimals: Option<number>;
   max_supply: Option<bigint>;
 };
+export type CreateArgsArgs = {
+  __kind: 'V1';
+  asset_data: AssetDataArgs;
+  decimals: Option<number>;
+  max_supply: Option<number | bigint>;
+};
 
 export function getCreateArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateArgs> {
+): Serializer<CreateArgsArgs, CreateArgs> {
   const s = context.serializer;
   return s.dataEnum<CreateArgs>(
     [
@@ -41,7 +47,7 @@ export function getCreateArgsSerializer(
       ],
     ],
     'CreateArgs'
-  );
+  ) as Serializer<CreateArgsArgs, CreateArgs>;
 }
 
 // Data Enum Helpers.

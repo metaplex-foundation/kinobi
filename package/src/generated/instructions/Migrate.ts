@@ -16,7 +16,11 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { MigrateArgs, getMigrateArgsSerializer } from '../types';
+import {
+  MigrateArgs,
+  MigrateArgsArgs,
+  getMigrateArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type MigrateInstructionAccounts = {
@@ -43,7 +47,8 @@ export type MigrateInstructionAccounts = {
 };
 
 // Arguments.
-export type MigrateInstructionArgs = { migrateArgs: MigrateArgs };
+export type MigrateInstructionData = { migrateArgs: MigrateArgs };
+export type MigrateInstructionArgs = { migrateArgs: MigrateArgsArgs };
 
 // Discriminator.
 export type MigrateInstructionDiscriminator = number;

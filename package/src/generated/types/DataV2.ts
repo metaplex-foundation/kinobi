@@ -8,8 +8,11 @@
 
 import {
   Collection,
+  CollectionArgs,
   Creator,
+  CreatorArgs,
   Uses,
+  UsesArgs,
   getCollectionSerializer,
   getCreatorSerializer,
   getUsesSerializer,
@@ -25,10 +28,19 @@ export type DataV2 = {
   collection: Option<Collection>;
   uses: Option<Uses>;
 };
+export type DataV2Args = {
+  name: string;
+  symbol: string;
+  uri: string;
+  sellerFeeBasisPoints: number;
+  creators: Option<Array<CreatorArgs>>;
+  collection: Option<CollectionArgs>;
+  uses: Option<UsesArgs>;
+};
 
 export function getDataV2Serializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DataV2> {
+): Serializer<DataV2Args, DataV2> {
   const s = context.serializer;
   return s.struct<DataV2>(
     [
@@ -41,5 +53,5 @@ export function getDataV2Serializer(
       ['uses', s.option(getUsesSerializer(context))],
     ],
     'DataV2'
-  );
+  ) as Serializer<DataV2Args, DataV2>;
 }

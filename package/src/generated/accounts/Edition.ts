@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, getKeySerializer } from '../types';
+import { Key, KeyArgs, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -18,6 +18,11 @@ import {
 } from '@lorisleiva/js-core';
 
 export type Edition = { key: Key; parent: PublicKey; edition: bigint };
+export type EditionArgs = {
+  key: KeyArgs;
+  parent: PublicKey;
+  edition: number | bigint;
+};
 
 export async function fetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -45,7 +50,7 @@ export function deserializeEdition(
 
 export function getEditionSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<Edition> {
+): Serializer<EditionArgs, Edition> {
   const s = context.serializer;
   return s.struct<Edition>(
     [
@@ -54,5 +59,5 @@ export function getEditionSerializer(
       ['edition', s.u64],
     ],
     'Edition'
-  );
+  ) as Serializer<EditionArgs, Edition>;
 }

@@ -13,10 +13,15 @@ export type Reservation = {
   spotsRemaining: bigint;
   totalSpots: bigint;
 };
+export type ReservationArgs = {
+  address: PublicKey;
+  spotsRemaining: number | bigint;
+  totalSpots: number | bigint;
+};
 
 export function getReservationSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<Reservation> {
+): Serializer<ReservationArgs, Reservation> {
   const s = context.serializer;
   return s.struct<Reservation>(
     [
@@ -25,5 +30,5 @@ export function getReservationSerializer(
       ['totalSpots', s.u64],
     ],
     'Reservation'
-  );
+  ) as Serializer<ReservationArgs, Reservation>;
 }

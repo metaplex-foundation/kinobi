@@ -16,7 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { MintArgs, getMintArgsSerializer } from '../types';
+import { MintArgs, MintArgsArgs, getMintArgsSerializer } from '../types';
 
 // Accounts.
 export type MintInstructionAccounts = {
@@ -47,7 +47,8 @@ export type MintInstructionAccounts = {
 };
 
 // Arguments.
-export type MintInstructionArgs = { mintArgs: MintArgs };
+export type MintInstructionData = { mintArgs: MintArgs };
+export type MintInstructionArgs = { mintArgs: MintArgsArgs };
 
 // Discriminator.
 export type MintInstructionDiscriminator = number;

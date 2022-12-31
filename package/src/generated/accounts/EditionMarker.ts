@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, getKeySerializer } from '../types';
+import { Key, KeyArgs, getKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -18,6 +18,7 @@ import {
 } from '@lorisleiva/js-core';
 
 export type EditionMarker = { key: Key; ledger: Array<number> };
+export type EditionMarkerArgs = { key: KeyArgs; ledger: Array<number> };
 
 export async function fetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -47,7 +48,7 @@ export function deserializeEditionMarker(
 
 export function getEditionMarkerSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<EditionMarker> {
+): Serializer<EditionMarkerArgs, EditionMarker> {
   const s = context.serializer;
   return s.struct<EditionMarker>(
     [
@@ -55,5 +56,5 @@ export function getEditionMarkerSerializer(
       ['ledger', s.array(s.u8, 31)],
     ],
     'EditionMarker'
-  );
+  ) as Serializer<EditionMarkerArgs, EditionMarker>;
 }

@@ -48,7 +48,8 @@ export type TransferOutOfEscrowInstructionAccounts = {
 };
 
 // Arguments.
-export type TransferOutOfEscrowInstructionArgs = { amount: bigint };
+export type TransferOutOfEscrowInstructionData = { amount: bigint };
+export type TransferOutOfEscrowInstructionArgs = { amount: number | bigint };
 
 // Discriminator.
 export type TransferOutOfEscrowInstructionDiscriminator = number;

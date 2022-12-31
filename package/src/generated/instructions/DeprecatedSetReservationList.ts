@@ -17,7 +17,11 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { Reservation, getReservationSerializer } from '../types';
+import {
+  Reservation,
+  ReservationArgs,
+  getReservationSerializer,
+} from '../types';
 
 // Accounts.
 export type DeprecatedSetReservationListInstructionAccounts = {
@@ -30,11 +34,17 @@ export type DeprecatedSetReservationListInstructionAccounts = {
 };
 
 // Arguments.
-export type DeprecatedSetReservationListInstructionArgs = {
+export type DeprecatedSetReservationListInstructionData = {
   reservations: Array<Reservation>;
   totalReservationSpots: Option<bigint>;
   offset: bigint;
   totalSpotOffset: bigint;
+};
+export type DeprecatedSetReservationListInstructionArgs = {
+  reservations: Array<ReservationArgs>;
+  totalReservationSpots: Option<number | bigint>;
+  offset: number | bigint;
+  totalSpotOffset: number | bigint;
 };
 
 // Discriminator.

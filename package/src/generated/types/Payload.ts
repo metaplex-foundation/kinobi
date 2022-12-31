@@ -8,17 +8,20 @@
 
 import {
   PayloadKey,
+  PayloadKeyArgs,
   PayloadType,
+  PayloadTypeArgs,
   getPayloadKeySerializer,
   getPayloadTypeSerializer,
 } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type Payload = { map: Map<PayloadKey, PayloadType> };
+export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
 
 export function getPayloadSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<Payload> {
+): Serializer<PayloadArgs, Payload> {
   const s = context.serializer;
   return s.struct<Payload>(
     [
@@ -31,5 +34,5 @@ export function getPayloadSerializer(
       ],
     ],
     'Payload'
-  );
+  ) as Serializer<PayloadArgs, Payload>;
 }

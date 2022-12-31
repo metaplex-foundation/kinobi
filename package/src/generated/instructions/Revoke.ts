@@ -16,7 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { RevokeArgs, getRevokeArgsSerializer } from '../types';
+import { RevokeArgs, RevokeArgsArgs, getRevokeArgsSerializer } from '../types';
 
 // Accounts.
 export type RevokeInstructionAccounts = {
@@ -49,7 +49,8 @@ export type RevokeInstructionAccounts = {
 };
 
 // Arguments.
-export type RevokeInstructionArgs = { revokeArgs: RevokeArgs };
+export type RevokeInstructionData = { revokeArgs: RevokeArgs };
+export type RevokeInstructionArgs = { revokeArgs: RevokeArgsArgs };
 
 // Discriminator.
 export type RevokeInstructionDiscriminator = number;

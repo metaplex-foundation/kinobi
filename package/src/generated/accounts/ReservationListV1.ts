@@ -8,7 +8,9 @@
 
 import {
   Key,
+  KeyArgs,
   ReservationV1,
+  ReservationV1Args,
   getKeySerializer,
   getReservationV1Serializer,
 } from '../types';
@@ -28,6 +30,12 @@ export type ReservationListV1 = {
   masterEdition: PublicKey;
   supplySnapshot: Option<bigint>;
   reservations: Array<ReservationV1>;
+};
+export type ReservationListV1Args = {
+  key: KeyArgs;
+  masterEdition: PublicKey;
+  supplySnapshot: Option<number | bigint>;
+  reservations: Array<ReservationV1Args>;
 };
 
 export async function fetchReservationListV1(
@@ -61,7 +69,7 @@ export function deserializeReservationListV1(
 
 export function getReservationListV1Serializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV1> {
+): Serializer<ReservationListV1Args, ReservationListV1> {
   const s = context.serializer;
   return s.struct<ReservationListV1>(
     [
@@ -71,5 +79,5 @@ export function getReservationListV1Serializer(
       ['reservations', s.vec(getReservationV1Serializer(context))],
     ],
     'ReservationListV1'
-  );
+  ) as Serializer<ReservationListV1Args, ReservationListV1>;
 }

@@ -16,7 +16,11 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { UseAssetArgs, getUseAssetArgsSerializer } from '../types';
+import {
+  UseAssetArgs,
+  UseAssetArgsArgs,
+  getUseAssetArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type UseAssetInstructionAccounts = {
@@ -45,7 +49,8 @@ export type UseAssetInstructionAccounts = {
 };
 
 // Arguments.
-export type UseAssetInstructionArgs = { useAssetArgs: UseAssetArgs };
+export type UseAssetInstructionData = { useAssetArgs: UseAssetArgs };
+export type UseAssetInstructionArgs = { useAssetArgs: UseAssetArgsArgs };
 
 // Discriminator.
 export type UseAssetInstructionDiscriminator = number;

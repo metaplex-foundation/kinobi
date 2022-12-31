@@ -16,7 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { UpdateArgs, getUpdateArgsSerializer } from '../types';
+import { UpdateArgs, UpdateArgsArgs, getUpdateArgsSerializer } from '../types';
 
 // Accounts.
 export type UpdateDigitalAssetInstructionAccounts = {
@@ -43,7 +43,8 @@ export type UpdateDigitalAssetInstructionAccounts = {
 };
 
 // Arguments.
-export type UpdateDigitalAssetInstructionArgs = { updateArgs: UpdateArgs };
+export type UpdateDigitalAssetInstructionData = { updateArgs: UpdateArgs };
+export type UpdateDigitalAssetInstructionArgs = { updateArgs: UpdateArgsArgs };
 
 // Discriminator.
 export type UpdateDigitalAssetInstructionDiscriminator = number;

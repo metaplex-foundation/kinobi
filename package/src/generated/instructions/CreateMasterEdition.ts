@@ -18,6 +18,7 @@ import {
 } from '@lorisleiva/js-core';
 import {
   CreateMasterEditionArgs,
+  CreateMasterEditionArgsArgs,
   getCreateMasterEditionArgsSerializer,
 } from '../types';
 
@@ -44,8 +45,11 @@ export type CreateMasterEditionInstructionAccounts = {
 };
 
 // Arguments.
-export type CreateMasterEditionInstructionArgs = {
+export type CreateMasterEditionInstructionData = {
   createMasterEditionArgs: CreateMasterEditionArgs;
+};
+export type CreateMasterEditionInstructionArgs = {
+  createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
 // Discriminator.

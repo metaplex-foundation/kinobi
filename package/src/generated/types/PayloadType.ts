@@ -15,7 +15,9 @@ import {
 } from '@lorisleiva/js-core';
 import {
   LeafInfo,
+  LeafInfoArgs,
   SeedsVec,
+  SeedsVecArgs,
   getLeafInfoSerializer,
   getSeedsVecSerializer,
 } from '.';
@@ -25,10 +27,15 @@ export type PayloadType =
   | { __kind: 'Seeds'; fields: { fields: [SeedsVec] } }
   | { __kind: 'MerkleProof'; fields: { fields: [LeafInfo] } }
   | { __kind: 'Number'; fields: { fields: [bigint] } };
+export type PayloadTypeArgs =
+  | { __kind: 'Pubkey'; fields: { fields: [PublicKey] } }
+  | { __kind: 'Seeds'; fields: { fields: [SeedsVecArgs] } }
+  | { __kind: 'MerkleProof'; fields: { fields: [LeafInfoArgs] } }
+  | { __kind: 'Number'; fields: { fields: [number | bigint] } };
 
 export function getPayloadTypeSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<PayloadType> {
+): Serializer<PayloadTypeArgs, PayloadType> {
   const s = context.serializer;
   return s.dataEnum<PayloadType>(
     [
@@ -62,7 +69,7 @@ export function getPayloadTypeSerializer(
       ],
     ],
     'PayloadType'
-  );
+  ) as Serializer<PayloadTypeArgs, PayloadType>;
 }
 
 // Data Enum Helpers.

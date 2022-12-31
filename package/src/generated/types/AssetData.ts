@@ -9,12 +9,19 @@
 import { Context, Option, PublicKey, Serializer } from '@lorisleiva/js-core';
 import {
   Collection,
+  CollectionArgs,
   CollectionDetails,
+  CollectionDetailsArgs,
   Creator,
+  CreatorArgs,
   DelegateState,
+  DelegateStateArgs,
   ProgrammableConfig,
+  ProgrammableConfigArgs,
   TokenStandard,
+  TokenStandardArgs,
   Uses,
+  UsesArgs,
   getCollectionDetailsSerializer,
   getCollectionSerializer,
   getCreatorSerializer,
@@ -41,10 +48,27 @@ export type AssetData = {
   programmableConfig: Option<ProgrammableConfig>;
   delegateState: Option<DelegateState>;
 };
+export type AssetDataArgs = {
+  updateAuthority: PublicKey;
+  name: string;
+  symbol: string;
+  uri: string;
+  sellerFeeBasisPoints: number;
+  creators: Option<Array<CreatorArgs>>;
+  primarySaleHappened: boolean;
+  isMutable: boolean;
+  editionNonce: Option<number>;
+  tokenStandard: TokenStandardArgs;
+  collection: Option<CollectionArgs>;
+  uses: Option<UsesArgs>;
+  collectionDetails: Option<CollectionDetailsArgs>;
+  programmableConfig: Option<ProgrammableConfigArgs>;
+  delegateState: Option<DelegateStateArgs>;
+};
 
 export function getAssetDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<AssetData> {
+): Serializer<AssetDataArgs, AssetData> {
   const s = context.serializer;
   return s.struct<AssetData>(
     [
@@ -68,5 +92,5 @@ export function getAssetDataSerializer(
       ['delegateState', s.option(getDelegateStateSerializer(context))],
     ],
     'AssetData'
-  );
+  ) as Serializer<AssetDataArgs, AssetData>;
 }

@@ -44,7 +44,8 @@ export type UtilizeInstructionAccounts = {
 };
 
 // Arguments.
-export type UtilizeInstructionArgs = { numberOfUses: bigint };
+export type UtilizeInstructionData = { numberOfUses: bigint };
+export type UtilizeInstructionArgs = { numberOfUses: number | bigint };
 
 // Discriminator.
 export type UtilizeInstructionDiscriminator = number;

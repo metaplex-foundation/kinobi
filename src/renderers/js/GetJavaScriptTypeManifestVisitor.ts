@@ -85,13 +85,15 @@ export class GetJavaScriptTypeManifestVisitor
     const serializerName = `get${typeDefinedLink.definedType}Serializer`;
     return {
       strictType: typeDefinedLink.definedType,
-      looseType: typeDefinedLink.definedType, // TODO: Access linked loose type?
-      hasLooseType: false,
+      // TODO: Check if the linked type has a loose type first???
+      looseType: `${typeDefinedLink.definedType}Args`,
+      hasLooseType: true,
       isEnum: false,
       serializer: `${serializerName}(context)`,
       imports: new ImportMap().add('types', [
         serializerName,
         typeDefinedLink.definedType,
+        `${typeDefinedLink.definedType}Args`,
       ]),
     };
   }

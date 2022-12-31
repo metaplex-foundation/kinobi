@@ -18,6 +18,7 @@ import {
 } from '@lorisleiva/js-core';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
+  MintNewEditionFromMasterEditionViaTokenArgsArgs,
   getMintNewEditionFromMasterEditionViaTokenArgsSerializer,
 } from '../types';
 
@@ -60,8 +61,11 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionAccounts = {
 };
 
 // Arguments.
-export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs = {
+export type MintNewEditionFromMasterEditionViaVaultProxyInstructionData = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
+};
+export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs = {
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };
 
 // Discriminator.
