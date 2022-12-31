@@ -24,7 +24,7 @@ export function getCreatorSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<CreatorArgs, Creator> {
   const s = context.serializer;
-  return mapSerializer<CreatorArgs, Creator>(
+  return mapSerializer<CreatorArgs, Creator, Creator>(
     s.struct<Creator>(
       [
         ['address', s.publicKey],

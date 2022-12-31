@@ -350,7 +350,7 @@ export class GetJavaScriptTypeManifestVisitor
       .map((f) => `${f.name}: ${JSON.stringify(f.defaultsTo?.value)}`)
       .join(', ');
     const mapSerializerTypeParams = definedName
-      ? `${definedName.loose}, ${definedName.strict}`
+      ? `${definedName.loose}, ${definedName.strict}, ${definedName.strict}`
       : 'any';
     const mappedSerializer =
       `mapSerializer<${mapSerializerTypeParams}>(` +
