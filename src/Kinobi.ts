@@ -19,7 +19,7 @@ export class Kinobi implements Visitable {
     return this.rootNode.accept(visitor);
   }
 
-  update(visitor: Visitor<Node>): Kinobi {
+  update(visitor: Visitor<Node | null>): Kinobi {
     const newRoot = this.rootNode.accept(visitor);
     assertRootNode(newRoot);
     this.rootNode = newRoot;
