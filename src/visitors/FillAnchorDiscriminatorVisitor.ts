@@ -31,9 +31,7 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
     const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
     if (!shouldAddDiscriminator) return account;
 
-    // TODO: Lock IDL name like instruction nodes.
-    // const idlName = snakeCase(account.metadata.idlName);
-    const idlName = snakeCase(account.name);
+    const idlName = snakeCase(account.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
     const discriminatorField = {
