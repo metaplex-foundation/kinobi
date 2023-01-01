@@ -1,4 +1,4 @@
-export * from './DeduplicateDefinedTypesVisitor';
+export * from './DeduplicateIdenticalDefinedTypesVisitor';
 export * from './DeleteNodesVisitor';
 export * from './FillAnchorDiscriminatorVisitor';
 export * from './IdentifyDefaultInstructionAccountsVisitor';

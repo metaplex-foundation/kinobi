@@ -9,7 +9,7 @@ type DefinedTypeWithProgram = {
   type: nodes.DefinedTypeNode;
 };
 
-export class DeduplicateDefinedTypesVisitor extends BaseRootVisitor {
+export class DeduplicateIdenticalDefinedTypesVisitor extends BaseRootVisitor {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     const typeMap = new Map<string, DefinedTypeWithProgram[]>();
 

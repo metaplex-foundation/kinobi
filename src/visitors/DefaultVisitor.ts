@@ -1,7 +1,7 @@
 import * as nodes from '../nodes';
 import { BaseRootVisitor } from './BaseRootVisitor';
 import {
-  DeduplicateDefinedTypesVisitor,
+  DeduplicateIdenticalDefinedTypesVisitor,
   FillAnchorDiscriminatorVisitor,
   IdentifyDefaultInstructionAccountsVisitor,
   InlineDefinedTypesForInstructionArgsVisitor,
@@ -16,7 +16,7 @@ export class DefaultVisitor extends BaseRootVisitor {
     root = root.accept(new FillAnchorDiscriminatorVisitor());
 
     // Defined types.
-    root = root.accept(new DeduplicateDefinedTypesVisitor());
+    root = root.accept(new DeduplicateIdenticalDefinedTypesVisitor());
     root = root.accept(new InlineDefinedTypesForInstructionArgsVisitor());
 
     // Instructions.
