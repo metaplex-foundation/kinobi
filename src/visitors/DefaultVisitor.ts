@@ -2,7 +2,7 @@ import * as nodes from '../nodes';
 import { BaseRootVisitor } from './BaseRootVisitor';
 import {
   DeduplicateIdenticalDefinedTypesVisitor,
-  FillAnchorDiscriminatorVisitor,
+  SetAnchorDiscriminatorsVisitor,
   SetInstructionAccountDefaultValuesVisitor,
   InlineDefinedTypesForInstructionArgsVisitor,
   InlineStructsForInstructionArgsVisitor,
@@ -13,7 +13,7 @@ export class DefaultVisitor extends BaseRootVisitor {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {
     let root: nodes.Node = currentRoot;
     // Anchor discriminators.
-    root = root.accept(new FillAnchorDiscriminatorVisitor());
+    root = root.accept(new SetAnchorDiscriminatorsVisitor());
 
     // Defined types.
     root = root.accept(new DeduplicateIdenticalDefinedTypesVisitor());

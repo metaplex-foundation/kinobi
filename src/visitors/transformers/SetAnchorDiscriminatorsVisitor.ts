@@ -3,7 +3,7 @@ import { snakeCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
-export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
+export class SetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
   protected program: nodes.ProgramNode | null = null;
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
