@@ -5,6 +5,7 @@ const {
   ValidateNodesVisitor,
   ConsoleLogVisitor,
   GetNodeTreeStringVisitor,
+  DeduplicateDefinedTypesVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -29,7 +30,7 @@ kinobi.update(
       types: {
         Key: 'TaKey',
         Payload: 'TaPayload',
-        PayloadKey: 'TaPayloadKey',
+        // PayloadKey: 'TaPayloadKey',
         PayloadType: 'TaPayloadType',
         SeedsVec: 'TaSeedsVec',
         LeafInfo: 'TaLeafInfo',
@@ -45,7 +46,7 @@ kinobi.update(
       types: {
         Key: 'TmKey',
         Payload: 'TmPayload',
-        PayloadKey: 'TmPayloadKey',
+        // PayloadKey: 'TmPayloadKey',
         PayloadType: 'TmPayloadType',
         SeedsVec: 'TmSeedsVec',
         LeafInfo: 'TmLeafInfo',
@@ -54,6 +55,7 @@ kinobi.update(
     },
   })
 );
-kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
+kinobi.accept(new DeduplicateDefinedTypesVisitor());
+kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));

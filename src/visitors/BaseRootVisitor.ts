@@ -1,5 +1,5 @@
-import type { Visitor } from './Visitor';
 import * as nodes from '../nodes';
+import type { Visitor } from './Visitor';
 
 export class BaseRootVisitor implements Visitor<nodes.RootNode> {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
