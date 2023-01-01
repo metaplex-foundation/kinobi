@@ -118,10 +118,9 @@ export class IdentifyDefaultInstructionAccountsVisitor extends BaseNodeVisitor {
     });
 
     return new nodes.InstructionNode(
-      instruction.name,
+      instruction.metadata,
       accounts,
-      instruction.args,
-      instruction.metadata
+      instruction.args
     );
   }
 

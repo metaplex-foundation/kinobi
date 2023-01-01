@@ -13,13 +13,13 @@ export type ProgramNodeMetadata = {
   address: string;
   version: string;
   origin: 'shank' | 'anchor' | null;
+  idl: Partial<Idl>;
 };
 
 export class ProgramNode implements Visitable {
   readonly nodeClass = 'ProgramNode' as const;
 
   constructor(
-    readonly idl: Partial<Idl>,
     readonly metadata: ProgramNodeMetadata,
     readonly accounts: AccountNode[],
     readonly instructions: InstructionNode[],
@@ -38,10 +38,10 @@ export class ProgramNode implements Visitable {
       address: idl.metadata?.address ?? '',
       version: idl.version ?? '',
       origin: idl.metadata?.origin ?? null,
+      idl,
     };
 
     return new ProgramNode(
-      idl,
       metadata,
       accounts,
       instructions,
@@ -52,6 +52,10 @@ export class ProgramNode implements Visitable {
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitProgram(this);
+  }
+
+  get name(): string {
+    return this.metadata.name;
   }
 }
 

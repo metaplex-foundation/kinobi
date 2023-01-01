@@ -6,6 +6,7 @@ export type IdlInstruction = {
   args: IdlInstructionArg[];
   defaultOptionalAccounts?: boolean;
   discriminant?: IdlInstructionDiscriminant;
+  docs?: string[];
 };
 
 export type IdlInstructionAccount = {

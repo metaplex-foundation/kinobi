@@ -21,12 +21,11 @@ export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
       new Set(inlinedArgsNames).size !== inlinedArgsNames.length;
 
     return new nodes.InstructionNode(
-      instruction.name,
+      instruction.metadata,
       instruction.accounts,
       hasConflictingNames
         ? currentArgs
-        : new nodes.TypeStructNode(currentArgs.name, inlinedArgs),
-      instruction.metadata
+        : new nodes.TypeStructNode(currentArgs.name, inlinedArgs)
     );
   }
 

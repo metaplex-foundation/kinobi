@@ -71,7 +71,6 @@ function programNodeTransform(
       transformer: (node: nodes.Node) => {
         nodes.assertProgramNode(node);
         return new nodes.ProgramNode(
-          node.idl,
           {
             ...node.metadata,
             name: newProgramName ?? node.metadata.name,
@@ -101,10 +100,9 @@ function instructionNodeTransform(
 
       if (typeof options === 'string') {
         return new nodes.InstructionNode(
-          options,
+          { ...node.metadata, name: options },
           node.accounts,
-          node.args,
-          node.metadata
+          node.args
         );
       }
 
@@ -112,13 +110,12 @@ function instructionNodeTransform(
       const accountMap = options.accounts ?? {};
       const argMap = options.args ?? {};
       return new nodes.InstructionNode(
-        newName,
+        { ...node.metadata, name: newName },
         node.accounts.map((account) => ({
           ...account,
           name: accountMap[account.name] ?? account.name,
         })),
-        mapStructFields(node.args, argMap, `${newName}InstructionArgs`),
-        node.metadata
+        mapStructFields(node.args, argMap, `${newName}InstructionArgs`)
       );
     },
   };
@@ -135,14 +132,16 @@ function accountNodeTransform(
       nodes.assertAccountNode(node);
 
       if (typeof options === 'string') {
-        return new nodes.AccountNode(options, node.type, node.docs);
+        return new nodes.AccountNode(
+          { ...node.metadata, name: options },
+          node.type
+        );
       }
 
       const newName = options.name ?? node.name;
       return new nodes.AccountNode(
-        newName,
-        mapStructFields(node.type, options.fields ?? {}, newName),
-        node.docs
+        { ...node.metadata, name: newName },
+        mapStructFields(node.type, options.fields ?? {}, newName)
       );
     },
   };
@@ -161,16 +160,18 @@ function typeNodeTransform(
         nodes.assertDefinedTypeNode(node);
 
         if (typeof options === 'string') {
-          return new nodes.DefinedTypeNode(options, node.type, node.docs);
+          return new nodes.DefinedTypeNode(
+            { ...node.metadata, name: options },
+            node.type
+          );
         }
 
         const fieldMap = options.fields ?? {};
         return new nodes.DefinedTypeNode(
-          newName ?? node.name,
+          { ...node.metadata, name: newName ?? node.name },
           nodes.isTypeStructNode(node.type)
-            ? mapStructFields(node.type, fieldMap, newName)
-            : mapEnumVariants(node.type, fieldMap, newName),
-          node.docs
+            ? mapStructFields(node.type, fieldMap, newName ?? node.name)
+            : mapEnumVariants(node.type, fieldMap, newName ?? node.name)
         );
       },
     },
@@ -198,7 +199,11 @@ function errorNodeTransform(
     selector: { error, program },
     transformer: (node: nodes.Node) => {
       nodes.assertErrorNode(node);
-      return new nodes.ErrorNode(options, node.code, node.message, node.docs);
+      return new nodes.ErrorNode(
+        { ...node.metadata, name: options },
+        node.code,
+        node.message
+      );
     },
   };
 }

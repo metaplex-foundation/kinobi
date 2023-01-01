@@ -14,7 +14,6 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
     return new nodes.ProgramNode(
-      program.idl,
       program.metadata,
       program.accounts.map((account) => {
         const child = account.accept(this);
@@ -42,24 +41,23 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const accountType = account.type.accept(this);
     nodes.assertTypeStructNode(accountType);
-    return new nodes.AccountNode(account.name, accountType, account.docs);
+    return new nodes.AccountNode(account.metadata, accountType);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const args = instruction.args.accept(this);
     nodes.assertTypeStructNode(args);
     return new nodes.InstructionNode(
-      instruction.name,
+      instruction.metadata,
       instruction.accounts,
-      args,
-      instruction.metadata
+      args
     );
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node {
     const type = definedType.type.accept(this);
     nodes.assertTypeStructOrEnumNode(type);
-    return new nodes.DefinedTypeNode(definedType.name, type, definedType.docs);
+    return new nodes.DefinedTypeNode(definedType.metadata, type);
   }
 
   visitError(error: nodes.ErrorNode): nodes.Node {

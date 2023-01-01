@@ -6,26 +6,40 @@ import type { TypeEnumNode } from './TypeEnumNode';
 import { assertTypeStructOrEnumNode, createTypeNodeFromIdl } from './TypeNode';
 import type { TypeStructNode } from './TypeStructNode';
 
+export type DefinedTypeNodeMetadata = {
+  name: string;
+  idlName: string;
+  docs: string[];
+};
+
 export class DefinedTypeNode implements Visitable {
   readonly nodeClass = 'DefinedTypeNode' as const;
 
   constructor(
-    readonly name: string,
-    readonly type: TypeStructNode | TypeEnumNode,
-    readonly docs: string[]
+    readonly metadata: DefinedTypeNodeMetadata,
+    readonly type: TypeStructNode | TypeEnumNode
   ) {}
 
   static fromIdl(idl: Partial<IdlDefinedType>): DefinedTypeNode {
-    const name = pascalCase(idl.name ?? '');
+    const idlName = idl.name ?? '';
+    const name = pascalCase(idlName);
+    const docs = idl.docs ?? [];
     const idlType = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlType });
     assertTypeStructOrEnumNode(type);
-    const docs = idl.docs ?? [];
-    return new DefinedTypeNode(name, type, docs);
+    return new DefinedTypeNode({ name, idlName, docs }, type);
   }
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitDefinedType(this);
+  }
+
+  get name(): string {
+    return this.metadata.name;
+  }
+
+  get docs(): string[] {
+    return this.metadata.docs;
   }
 }
 

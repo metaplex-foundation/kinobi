@@ -17,7 +17,6 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
     });
 
     return new nodes.ProgramNode(
-      program.idl,
       program.metadata,
       program.accounts.map((account) => {
         const child = account.accept(this);

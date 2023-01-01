@@ -9,7 +9,6 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
   visitProgram(program: nodes.ProgramNode): nodes.Node {
     this.program = program;
     const visitedProgram = new nodes.ProgramNode(
-      program.idl,
       program.metadata,
       program.accounts.map((account) => {
         const child = account.accept(this);
@@ -48,12 +47,11 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
     };
 
     return new nodes.AccountNode(
-      account.name,
+      account.metadata,
       new nodes.TypeStructNode(account.type.name, [
         discriminatorField,
         ...account.type.fields,
-      ]),
-      account.docs
+      ])
     );
   }
 
@@ -75,13 +73,12 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
     };
 
     return new nodes.InstructionNode(
-      instruction.name,
+      instruction.metadata,
       instruction.accounts,
       new nodes.TypeStructNode(instruction.args.name, [
         discriminatorField,
         ...instruction.args.fields,
-      ]),
-      instruction.metadata
+      ])
     );
   }
 }

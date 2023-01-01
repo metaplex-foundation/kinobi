@@ -20,8 +20,10 @@ export type InstructionNodeAccount = {
   defaultsTo: InstructionNodeAccountDefaults | null;
 };
 
-export type InstructionMetadata = {
+export type InstructionNodeMetadata = {
+  name: string;
   idlName: string;
+  docs: string[];
   defaultOptionalAccounts: boolean;
 };
 
@@ -29,13 +31,20 @@ export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
 
   constructor(
-    readonly name: string,
+    readonly metadata: InstructionNodeMetadata,
     readonly accounts: InstructionNodeAccount[],
-    readonly args: TypeStructNode,
-    readonly metadata: InstructionMetadata
+    readonly args: TypeStructNode
   ) {}
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
+    const idlName = idl.name ?? '';
+    const metadata = {
+      name: pascalCase(idlName),
+      idlName,
+      docs: idl.docs ?? [],
+      defaultOptionalAccounts: idl.defaultOptionalAccounts ?? false,
+    };
+
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => ({
         name: camelCase(account.name ?? ''),
@@ -70,14 +79,19 @@ export class InstructionNode implements Visitable {
       ]);
     }
 
-    return new InstructionNode(pascalCase(idl.name ?? ''), accounts, args, {
-      idlName: idl.name ?? '',
-      defaultOptionalAccounts: idl.defaultOptionalAccounts ?? false,
-    });
+    return new InstructionNode(metadata, accounts, args);
   }
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitInstruction(this);
+  }
+
+  get name(): string {
+    return this.metadata.name;
+  }
+
+  get docs(): string[] {
+    return this.metadata.docs;
   }
 
   get hasAccounts(): boolean {
