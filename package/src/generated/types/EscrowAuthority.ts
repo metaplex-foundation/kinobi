@@ -16,7 +16,7 @@ import {
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }
-  | { __kind: 'Creator'; fields: { fields: [PublicKey] } };
+  | { __kind: 'Creator'; fields: [PublicKey] };
 
 export function getEscrowAuthoritySerializer(
   context: Pick<Context, 'serializer'>

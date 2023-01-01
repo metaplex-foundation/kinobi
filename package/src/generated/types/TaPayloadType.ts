@@ -22,15 +22,15 @@ import {
 
 /** This is a union of all the possible payload types. */
 export type TaPayloadType =
-  | { __kind: 'Pubkey'; fields: { fields: [PublicKey] } }
-  | { __kind: 'Seeds'; fields: { fields: [TaSeedsVec] } }
-  | { __kind: 'MerkleProof'; fields: { fields: [TaLeafInfo] } }
-  | { __kind: 'Number'; fields: { fields: [bigint] } };
+  | { __kind: 'Pubkey'; fields: [PublicKey] }
+  | { __kind: 'Seeds'; fields: [TaSeedsVec] }
+  | { __kind: 'MerkleProof'; fields: [TaLeafInfo] }
+  | { __kind: 'Number'; fields: [bigint] };
 export type TaPayloadTypeArgs =
-  | { __kind: 'Pubkey'; fields: { fields: [PublicKey] } }
-  | { __kind: 'Seeds'; fields: { fields: [TaSeedsVec] } }
-  | { __kind: 'MerkleProof'; fields: { fields: [TaLeafInfo] } }
-  | { __kind: 'Number'; fields: { fields: [number | bigint] } };
+  | { __kind: 'Pubkey'; fields: [PublicKey] }
+  | { __kind: 'Seeds'; fields: [TaSeedsVec] }
+  | { __kind: 'MerkleProof'; fields: [TaLeafInfo] }
+  | { __kind: 'Number'; fields: [number | bigint] };
 
 export function getTaPayloadTypeSerializer(
   context: Pick<Context, 'serializer'>

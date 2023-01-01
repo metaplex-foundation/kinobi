@@ -21,15 +21,15 @@ import {
 } from '.';
 
 export type TmPayloadType =
-  | { __kind: 'Pubkey'; fields: { fields: [PublicKey] } }
-  | { __kind: 'Seeds'; fields: { fields: [TmSeedsVec] } }
-  | { __kind: 'MerkleProof'; fields: { fields: [TmLeafInfo] } }
-  | { __kind: 'Number'; fields: { fields: [bigint] } };
+  | { __kind: 'Pubkey'; fields: [PublicKey] }
+  | { __kind: 'Seeds'; fields: [TmSeedsVec] }
+  | { __kind: 'MerkleProof'; fields: [TmLeafInfo] }
+  | { __kind: 'Number'; fields: [bigint] };
 export type TmPayloadTypeArgs =
-  | { __kind: 'Pubkey'; fields: { fields: [PublicKey] } }
-  | { __kind: 'Seeds'; fields: { fields: [TmSeedsVec] } }
-  | { __kind: 'MerkleProof'; fields: { fields: [TmLeafInfo] } }
-  | { __kind: 'Number'; fields: { fields: [number | bigint] } };
+  | { __kind: 'Pubkey'; fields: [PublicKey] }
+  | { __kind: 'Seeds'; fields: [TmSeedsVec] }
+  | { __kind: 'MerkleProof'; fields: [TmLeafInfo] }
+  | { __kind: 'Number'; fields: [number | bigint] };
 
 export function getTmPayloadTypeSerializer(
   context: Pick<Context, 'serializer'>

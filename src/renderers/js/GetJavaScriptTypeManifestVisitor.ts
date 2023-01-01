@@ -193,8 +193,8 @@ export class GetJavaScriptTypeManifestVisitor
           this.definedName = null;
           return {
             ...type,
-            strictType: `{ ${kindAttribute}, fields: ${type.strictType} }`,
-            looseType: `{ ${kindAttribute}, fields: ${type.looseType} }`,
+            strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
+            looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
             serializer: `['${variant.name}', ${type.serializer}]`,
           };
         }
