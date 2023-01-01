@@ -2,9 +2,9 @@ import * as nodes from '../../nodes';
 import { assertRootNode } from '../../nodes';
 import { BaseRootVisitor } from '../BaseRootVisitor';
 import { GetDefinedTypeHistogramVisitor } from '../aggregators/GetDefinedTypeHistogramVisitor';
-import { InlineDefinedTypesVisitor } from './InlineDefinedTypesVisitor';
+import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 
-export class InlineDefinedTypesForInstructionArgsVisitor extends BaseRootVisitor {
+export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseRootVisitor {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     // Get all defined types used exactly once as an instruction argument.
     const histogram = root.accept(new GetDefinedTypeHistogramVisitor());
@@ -22,7 +22,7 @@ export class InlineDefinedTypesForInstructionArgsVisitor extends BaseRootVisitor
     });
 
     // Inline the identified defined types.
-    const inlineVisitor = new InlineDefinedTypesVisitor(definedTypesToInline);
+    const inlineVisitor = new UnwrapDefinedTypesVisitor(definedTypesToInline);
     const newRoot = root.accept(inlineVisitor);
     assertRootNode(newRoot);
     return newRoot;

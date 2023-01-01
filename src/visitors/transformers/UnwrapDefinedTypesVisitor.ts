@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
-export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
+export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   protected availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
 
   protected typesToInline: string[] | '*';

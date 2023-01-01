@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
-export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
+export class UnwrapInstructionArgsStructVisitor extends BaseNodeVisitor {
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const currentArgs = instruction.args;
     const inlinedArgs = currentArgs.fields.reduce<nodes.TypeStructNodeField[]>(

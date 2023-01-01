@@ -4,8 +4,8 @@ import {
   DeduplicateIdenticalDefinedTypesVisitor,
   SetAnchorDiscriminatorsVisitor,
   SetInstructionAccountDefaultValuesVisitor,
-  InlineDefinedTypesForInstructionArgsVisitor,
-  InlineStructsForInstructionArgsVisitor,
+  UnwrapInstructionArgsDefinedTypesVisitor,
+  UnwrapInstructionArgsStructVisitor,
   TransformU8ArraysToBytesVisitor,
 } from './transformers';
 
@@ -17,11 +17,11 @@ export class DefaultVisitor extends BaseRootVisitor {
 
     // Defined types.
     root = root.accept(new DeduplicateIdenticalDefinedTypesVisitor());
-    root = root.accept(new InlineDefinedTypesForInstructionArgsVisitor());
+    root = root.accept(new UnwrapInstructionArgsDefinedTypesVisitor());
 
     // Instructions.
     root = root.accept(new SetInstructionAccountDefaultValuesVisitor());
-    root = root.accept(new InlineStructsForInstructionArgsVisitor());
+    root = root.accept(new UnwrapInstructionArgsStructVisitor());
 
     // Extras.
     root = root.accept(new TransformU8ArraysToBytesVisitor());
