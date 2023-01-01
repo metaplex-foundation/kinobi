@@ -3,14 +3,16 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
+export type TypeStructNodeFieldDefaults = {
+  value: any;
+  strategy: 'optional' | 'omitted';
+};
+
 export type TypeStructNodeField = {
   name: string;
   type: TypeNode;
   docs: string[];
-  defaultsTo: {
-    value: any;
-    strategy: 'optional' | 'omitted';
-  } | null;
+  defaultsTo: TypeStructNodeFieldDefaults | null;
 };
 
 export class TypeStructNode implements Visitable {
