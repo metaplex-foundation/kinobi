@@ -8,6 +8,7 @@
 
 import {
   Collection,
+  CollectionArgs,
   CollectionDetails,
   CollectionDetailsArgs,
   Data,
@@ -36,6 +37,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type Metadata = {
@@ -54,7 +56,6 @@ export type Metadata = {
   delegateState: Option<DelegateState>;
 };
 export type MetadataArgs = {
-  key: TmKey;
   updateAuthority: PublicKey;
   mint: PublicKey;
   data: DataArgs;
@@ -62,7 +63,7 @@ export type MetadataArgs = {
   isMutable: boolean;
   editionNonce: Option<number>;
   tokenStandard: Option<TokenStandard>;
-  collection: Option<Collection>;
+  collection: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
   programmableConfig: Option<ProgrammableConfig>;
@@ -99,25 +100,31 @@ export function getMetadataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MetadataArgs, Metadata> {
   const s = context.serializer;
-  return s.struct<Metadata>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['updateAuthority', s.publicKey],
-      ['mint', s.publicKey],
-      ['data', getDataSerializer(context)],
-      ['primarySaleHappened', s.bool],
-      ['isMutable', s.bool],
-      ['editionNonce', s.option(s.u8)],
-      ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-      ['collection', s.option(getCollectionSerializer(context))],
-      ['uses', s.option(getUsesSerializer(context))],
-      ['collectionDetails', s.option(getCollectionDetailsSerializer(context))],
+  return mapSerializer<MetadataArgs, Metadata, Metadata>(
+    s.struct<Metadata>(
       [
-        'programmableConfig',
-        s.option(getProgrammableConfigSerializer(context)),
+        ['key', getTmKeySerializer(context)],
+        ['updateAuthority', s.publicKey],
+        ['mint', s.publicKey],
+        ['data', getDataSerializer(context)],
+        ['primarySaleHappened', s.bool],
+        ['isMutable', s.bool],
+        ['editionNonce', s.option(s.u8)],
+        ['tokenStandard', s.option(getTokenStandardSerializer(context))],
+        ['collection', s.option(getCollectionSerializer(context))],
+        ['uses', s.option(getUsesSerializer(context))],
+        [
+          'collectionDetails',
+          s.option(getCollectionDetailsSerializer(context)),
+        ],
+        [
+          'programmableConfig',
+          s.option(getProgrammableConfigSerializer(context)),
+        ],
+        ['delegateState', s.option(getDelegateStateSerializer(context))],
       ],
-      ['delegateState', s.option(getDelegateStateSerializer(context))],
-    ],
-    'Metadata'
+      'Metadata'
+    ),
+    (value) => ({ key: 1, ...value } as Metadata)
   ) as Serializer<MetadataArgs, Metadata>;
 }

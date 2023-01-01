@@ -9,6 +9,7 @@
 import { Context, Option, PublicKey, Serializer } from '@lorisleiva/js-core';
 import {
   Collection,
+  CollectionArgs,
   CollectionDetails,
   CollectionDetailsArgs,
   Creator,
@@ -55,7 +56,7 @@ export type AssetDataArgs = {
   isMutable: boolean;
   editionNonce: Option<number>;
   tokenStandard: TokenStandard;
-  collection: Option<Collection>;
+  collection: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
   programmableConfig: Option<ProgrammableConfig>;

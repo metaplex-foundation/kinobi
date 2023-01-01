@@ -8,6 +8,7 @@
 
 import {
   Collection,
+  CollectionArgs,
   Creator,
   CreatorArgs,
   Uses,
@@ -33,7 +34,7 @@ export type DataV2Args = {
   uri: string;
   sellerFeeBasisPoints: number;
   creators: Option<Array<CreatorArgs>>;
-  collection: Option<Collection>;
+  collection: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
 };
 

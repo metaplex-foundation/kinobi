@@ -11,6 +11,7 @@ import {
   AuthorizationData,
   AuthorizationDataArgs,
   Collection,
+  CollectionArgs,
   CollectionDetails,
   CollectionDetailsArgs,
   Data,
@@ -62,7 +63,7 @@ export type UpdateArgsArgs = {
   primary_sale_happened: Option<boolean>;
   is_mutable: Option<boolean>;
   token_standard: Option<TokenStandard>;
-  collection: Option<Collection>;
+  collection: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collection_details: Option<CollectionDetailsArgs>;
   programmable_config: Option<ProgrammableConfig>;

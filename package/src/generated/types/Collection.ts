@@ -6,19 +6,28 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, PublicKey, Serializer } from '@lorisleiva/js-core';
+import {
+  Context,
+  PublicKey,
+  Serializer,
+  mapSerializer,
+} from '@lorisleiva/js-core';
 
 export type Collection = { verified: boolean; key: PublicKey };
+export type CollectionArgs = { verified?: boolean; key: PublicKey };
 
 export function getCollectionSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<Collection> {
+): Serializer<CollectionArgs, Collection> {
   const s = context.serializer;
-  return s.struct<Collection>(
-    [
-      ['verified', s.bool],
-      ['key', s.publicKey],
-    ],
-    'Collection'
-  );
+  return mapSerializer<CollectionArgs, Collection, Collection>(
+    s.struct<Collection>(
+      [
+        ['verified', s.bool],
+        ['key', s.publicKey],
+      ],
+      'Collection'
+    ),
+    (value) => ({ verified: false, ...value } as Collection)
+  ) as Serializer<CollectionArgs, Collection>;
 }
