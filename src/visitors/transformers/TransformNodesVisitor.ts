@@ -12,7 +12,7 @@ export type NodeTransform<T extends NodeSelector = NodeSelector> = {
     node: nodes.Node,
     stack: nodes.Node[],
     program: nodes.ProgramNode | null
-  ) => nodes.Node;
+  ) => nodes.Node | null;
 };
 
 export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
@@ -152,6 +152,10 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     const { program } = this;
     return this.transforms
       .filter(({ selector }) => selector(node, stack, program))
-      .reduce((acc, { transformer }) => transformer(acc, stack, program), node);
+      .reduce(
+        (acc, { transformer }) =>
+          acc === null ? null : transformer(acc, stack, program),
+        node as nodes.Node | null
+      );
   }
 }

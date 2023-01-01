@@ -1,3 +1,4 @@
+export * from './DeleteNodesVisitor';
 export * from './FillAnchorDiscriminatorVisitor';
 export * from './IdentifyDefaultInstructionAccountsVisitor';
 export * from './InlineDefinedTypesForInstructionArgsVisitor';
