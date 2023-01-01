@@ -1,9 +1,10 @@
 const {
   RenderJavaScriptVisitor,
   Kinobi,
-  PrintVisitor,
   RenameNodesVisitor,
   ValidateNodesVisitor,
+  ConsoleLogVisitor,
+  GetNodeTreeStringVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -54,5 +55,5 @@ kinobi.update(
   })
 );
 kinobi.accept(new ValidateNodesVisitor());
-kinobi.accept(new PrintVisitor());
+kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));
