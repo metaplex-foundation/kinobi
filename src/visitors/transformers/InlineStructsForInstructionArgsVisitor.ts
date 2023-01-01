@@ -1,5 +1,5 @@
-import * as nodes from '../nodes';
-import { BaseNodeVisitor } from './BaseNodeVisitor';
+import * as nodes from '../../nodes';
+import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
 export class InlineStructsForInstructionArgsVisitor extends BaseNodeVisitor {
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {

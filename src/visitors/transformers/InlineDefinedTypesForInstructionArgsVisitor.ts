@@ -1,7 +1,7 @@
-import * as nodes from '../nodes';
-import { assertRootNode } from '../nodes';
-import { BaseRootVisitor } from './BaseRootVisitor';
-import { GetDefinedTypeHistogramVisitor } from './GetDefinedTypeHistogramVisitor';
+import * as nodes from '../../nodes';
+import { assertRootNode } from '../../nodes';
+import { BaseRootVisitor } from '../BaseRootVisitor';
+import { GetDefinedTypeHistogramVisitor } from '../aggregators/GetDefinedTypeHistogramVisitor';
 import { InlineDefinedTypesVisitor } from './InlineDefinedTypesVisitor';
 
 export class InlineDefinedTypesForInstructionArgsVisitor extends BaseRootVisitor {

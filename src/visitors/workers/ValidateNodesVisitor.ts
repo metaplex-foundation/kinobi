@@ -1,11 +1,8 @@
 /* eslint-disable no-console */
 import chalk from 'chalk';
-import * as nodes from '../nodes';
-import { BaseRootVisitor } from './BaseRootVisitor';
-import {
-  GetValidatorItemsVisitor,
-  ValidatorItem,
-} from './GetValidatorItemsVisitor';
+import * as nodes from '../../nodes';
+import { BaseRootVisitor } from '../BaseRootVisitor';
+import { GetValidatorItemsVisitor, ValidatorItem } from '../aggregators';
 
 type Level = ValidatorItem['level'];
 

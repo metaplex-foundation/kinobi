@@ -1,4 +1,4 @@
-import * as nodes from '../nodes';
+import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 type RenameMap = Record<string, string | ProgramOptions>;

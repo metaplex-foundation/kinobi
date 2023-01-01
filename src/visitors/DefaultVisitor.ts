@@ -1,10 +1,12 @@
 import * as nodes from '../nodes';
 import { BaseRootVisitor } from './BaseRootVisitor';
-import { FillAnchorDiscriminatorVisitor } from './FillAnchorDiscriminatorVisitor';
-import { IdentifyDefaultInstructionAccountsVisitor } from './IdentifyDefaultInstructionAccountsVisitor';
-import { InlineDefinedTypesForInstructionArgsVisitor } from './InlineDefinedTypesForInstructionArgsVisitor';
-import { InlineStructsForInstructionArgsVisitor } from './InlineStructsForInstructionArgsVisitor';
-import { TransformU8ArraysToBytesVisitor } from './TransformU8ArraysToBytesVisitor';
+import {
+  FillAnchorDiscriminatorVisitor,
+  IdentifyDefaultInstructionAccountsVisitor,
+  InlineDefinedTypesForInstructionArgsVisitor,
+  InlineStructsForInstructionArgsVisitor,
+  TransformU8ArraysToBytesVisitor,
+} from './transformers';
 
 export class DefaultVisitor extends BaseRootVisitor {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {

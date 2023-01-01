@@ -1,7 +1,7 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { snakeCase } from '../utils';
-import * as nodes from '../nodes';
-import { BaseNodeVisitor } from './BaseNodeVisitor';
+import { snakeCase } from '../../utils';
+import * as nodes from '../../nodes';
+import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
 export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
   protected program: nodes.ProgramNode | null = null;

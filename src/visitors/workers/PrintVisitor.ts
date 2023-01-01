@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import type * as nodes from '../nodes';
-import { BaseVoidVisitor } from './BaseVoidVisitor';
+import type * as nodes from '../../nodes';
+import { BaseVoidVisitor } from '../BaseVoidVisitor';
 
 export class PrintVisitor extends BaseVoidVisitor {
   indent = 0;

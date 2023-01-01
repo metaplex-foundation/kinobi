@@ -1,5 +1,5 @@
-import * as nodes from '../nodes';
-import { BaseNodeVisitor } from './BaseNodeVisitor';
+import * as nodes from '../../nodes';
+import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
 export type NodeTransform<T extends NodeSelector = NodeSelector> = {
   selector: T;

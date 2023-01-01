@@ -1,5 +1,5 @@
-import * as nodes from '../nodes';
-import { Visitor } from './Visitor';
+import * as nodes from '../../nodes';
+import { Visitor } from '../Visitor';
 
 export type DefinedTypeHistogram = {
   [key: string]: {

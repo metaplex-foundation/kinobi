@@ -1,6 +1,6 @@
-import { pascalCase } from '../utils';
-import * as nodes from '../nodes';
-import { Visitor } from './Visitor';
+import { pascalCase } from '../../utils';
+import * as nodes from '../../nodes';
+import { Visitor } from '../Visitor';
 
 export type ValidatorItem = {
   message: string;

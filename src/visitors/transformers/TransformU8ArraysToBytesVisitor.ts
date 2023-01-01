@@ -1,5 +1,5 @@
-import * as nodes from '../nodes';
-import { BaseNodeVisitor } from './BaseNodeVisitor';
+import * as nodes from '../../nodes';
+import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
 export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
   constructor(readonly sizes: number[] | '*' = [32, 64]) {
