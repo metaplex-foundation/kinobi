@@ -11,7 +11,11 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
     const visitedProgram = new nodes.ProgramNode(
       program.idl,
       program.metadata,
-      program.accounts,
+      program.accounts.map((account) => {
+        const child = account.accept(this);
+        nodes.assertAccountNode(child);
+        return child;
+      }),
       program.instructions.map((instruction) => {
         const child = instruction.accept(this);
         nodes.assertInstructionNode(child);
@@ -24,10 +28,38 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
     return visitedProgram;
   }
 
+  visitAccount(account: nodes.AccountNode): nodes.Node {
+    const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
+    if (!shouldAddDiscriminator) return account;
+
+    // TODO: Lock IDL name like instruction nodes.
+    // const idlName = snakeCase(account.metadata.idlName);
+    const idlName = snakeCase(account.name);
+    const hash = sha256(`global:${idlName}`).slice(0, 8);
+
+    const discriminatorField = {
+      name: 'discriminator',
+      type: new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8),
+      docs: [],
+      defaultsTo: {
+        value: Array.from(hash),
+        strategy: 'omitted' as const,
+      },
+    };
+
+    return new nodes.AccountNode(
+      account.name,
+      new nodes.TypeStructNode(account.type.name, [
+        discriminatorField,
+        ...account.type.fields,
+      ]),
+      account.docs
+    );
+  }
+
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
-    const shouldUpdateDiscriminator =
-      this.program?.metadata.origin === 'anchor';
-    if (!shouldUpdateDiscriminator) return instruction;
+    const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
+    if (!shouldAddDiscriminator) return instruction;
 
     const idlName = snakeCase(instruction.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);

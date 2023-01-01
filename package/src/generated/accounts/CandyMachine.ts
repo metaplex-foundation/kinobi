@@ -14,6 +14,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 import {
   CandyMachineData,
@@ -22,6 +23,7 @@ import {
 } from '../types';
 
 export type CandyMachine = {
+  discriminator: Array<number>;
   /** Features versioning flags. */
   features: bigint;
   /** Authority address. */
@@ -80,15 +82,23 @@ export function getCandyMachineSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<CandyMachineArgs, CandyMachine> {
   const s = context.serializer;
-  return s.struct<CandyMachine>(
-    [
-      ['features', s.u64],
-      ['authority', s.publicKey],
-      ['mintAuthority', s.publicKey],
-      ['collectionMint', s.publicKey],
-      ['itemsRedeemed', s.u64],
-      ['data', getCandyMachineDataSerializer(context)],
-    ],
-    'CandyMachine'
+  return mapSerializer<CandyMachineArgs, CandyMachine, CandyMachine>(
+    s.struct<CandyMachine>(
+      [
+        ['discriminator', s.array(s.u8, 8)],
+        ['features', s.u64],
+        ['authority', s.publicKey],
+        ['mintAuthority', s.publicKey],
+        ['collectionMint', s.publicKey],
+        ['itemsRedeemed', s.u64],
+        ['data', getCandyMachineDataSerializer(context)],
+      ],
+      'CandyMachine'
+    ),
+    (value) =>
+      ({
+        discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
+        ...value,
+      } as CandyMachine)
   ) as Serializer<CandyMachineArgs, CandyMachine>;
 }
