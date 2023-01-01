@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, getKeySerializer } from '../types';
+import { TmKey, getTmKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -18,12 +18,12 @@ import {
 } from '@lorisleiva/js-core';
 
 export type UseAuthorityRecord = {
-  key: Key;
+  key: TmKey;
   allowedUses: bigint;
   bump: number;
 };
 export type UseAuthorityRecordArgs = {
-  key: Key;
+  key: TmKey;
   allowedUses: number | bigint;
   bump: number;
 };
@@ -63,7 +63,7 @@ export function getUseAuthorityRecordSerializer(
   const s = context.serializer;
   return s.struct<UseAuthorityRecord>(
     [
-      ['key', getKeySerializer(context)],
+      ['key', getTmKeySerializer(context)],
       ['allowedUses', s.u64],
       ['bump', s.u8],
     ],

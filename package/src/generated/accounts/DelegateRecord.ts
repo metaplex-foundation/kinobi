@@ -8,9 +8,9 @@
 
 import {
   DelegateRole,
-  Key,
+  TmKey,
   getDelegateRoleSerializer,
-  getKeySerializer,
+  getTmKeySerializer,
 } from '../types';
 import {
   Account,
@@ -22,7 +22,7 @@ import {
   deserializeAccount,
 } from '@lorisleiva/js-core';
 
-export type DelegateRecord = { key: Key; role: DelegateRole; bump: number };
+export type DelegateRecord = { key: TmKey; role: DelegateRole; bump: number };
 
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -56,7 +56,7 @@ export function getDelegateRecordSerializer(
   const s = context.serializer;
   return s.struct<DelegateRecord>(
     [
-      ['key', getKeySerializer(context)],
+      ['key', getTmKeySerializer(context)],
       ['role', getDelegateRoleSerializer(context)],
       ['bump', s.u8],
     ],

@@ -8,11 +8,17 @@
 
 import { Context, Serializer } from '@lorisleiva/js-core';
 
-export type SeedsVec = { seeds: Array<Uint8Array> };
+export type TmLeafInfo = { leaf: Uint8Array; proof: Array<Uint8Array> };
 
-export function getSeedsVecSerializer(
+export function getTmLeafInfoSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<SeedsVec> {
+): Serializer<TmLeafInfo> {
   const s = context.serializer;
-  return s.struct<SeedsVec>([['seeds', s.vec(s.bytes)]], 'SeedsVec');
+  return s.struct<TmLeafInfo>(
+    [
+      ['leaf', s.bytes],
+      ['proof', s.vec(s.bytes)],
+    ],
+    'LeafInfo'
+  );
 }

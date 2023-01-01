@@ -16,7 +16,11 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
-import { CreateArgs, CreateArgsArgs, getCreateArgsSerializer } from '../types';
+import {
+  TmCreateArgs,
+  TmCreateArgsArgs,
+  getTmCreateArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type CreateDigitalAssetInstructionAccounts = {
@@ -43,9 +47,11 @@ export type CreateDigitalAssetInstructionAccounts = {
 // Arguments.
 export type CreateDigitalAssetInstructionData = {
   discriminator: number;
-  createArgs: CreateArgs;
+  createArgs: TmCreateArgs;
 };
-export type CreateDigitalAssetInstructionArgs = { createArgs: CreateArgsArgs };
+export type CreateDigitalAssetInstructionArgs = {
+  createArgs: TmCreateArgsArgs;
+};
 
 export function getCreateDigitalAssetInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
@@ -62,7 +68,7 @@ export function getCreateDigitalAssetInstructionDataSerializer(
     s.struct<CreateDigitalAssetInstructionData>(
       [
         ['discriminator', s.u8],
-        ['createArgs', getCreateArgsSerializer(context)],
+        ['createArgs', getTmCreateArgsSerializer(context)],
       ],
       'CreateInstructionArgs'
     ),

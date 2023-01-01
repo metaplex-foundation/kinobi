@@ -8,9 +8,9 @@
 
 import {
   EscrowAuthority,
-  Key,
+  TmKey,
   getEscrowAuthoritySerializer,
-  getKeySerializer,
+  getTmKeySerializer,
 } from '../types';
 import {
   Account,
@@ -23,7 +23,7 @@ import {
 } from '@lorisleiva/js-core';
 
 export type TokenOwnedEscrow = {
-  key: Key;
+  key: TmKey;
   baseToken: PublicKey;
   authority: EscrowAuthority;
   bump: number;
@@ -61,7 +61,7 @@ export function getTokenOwnedEscrowSerializer(
   const s = context.serializer;
   return s.struct<TokenOwnedEscrow>(
     [
-      ['key', getKeySerializer(context)],
+      ['key', getTmKeySerializer(context)],
       ['baseToken', s.publicKey],
       ['authority', getEscrowAuthoritySerializer(context)],
       ['bump', s.u8],

@@ -7,10 +7,10 @@
  */
 
 import {
-  Key,
   ReservationV1,
-  getKeySerializer,
+  TmKey,
   getReservationV1Serializer,
+  getTmKeySerializer,
 } from '../types';
 import {
   Account,
@@ -24,13 +24,13 @@ import {
 } from '@lorisleiva/js-core';
 
 export type ReservationListV1 = {
-  key: Key;
+  key: TmKey;
   masterEdition: PublicKey;
   supplySnapshot: Option<bigint>;
   reservations: Array<ReservationV1>;
 };
 export type ReservationListV1Args = {
-  key: Key;
+  key: TmKey;
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
   reservations: Array<ReservationV1>;
@@ -71,7 +71,7 @@ export function getReservationListV1Serializer(
   const s = context.serializer;
   return s.struct<ReservationListV1>(
     [
-      ['key', getKeySerializer(context)],
+      ['key', getTmKeySerializer(context)],
       ['masterEdition', s.publicKey],
       ['supplySnapshot', s.option(s.u64)],
       ['reservations', s.vec(getReservationV1Serializer(context))],

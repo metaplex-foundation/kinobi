@@ -15,28 +15,28 @@ import {
   Serializer,
 } from '@lorisleiva/js-core';
 
-export type CreateArgs = {
+export type TmCreateArgs = {
   __kind: 'V1';
   asset_data: AssetData;
   decimals: Option<number>;
   max_supply: Option<bigint>;
 };
-export type CreateArgsArgs = {
+export type TmCreateArgsArgs = {
   __kind: 'V1';
   asset_data: AssetDataArgs;
   decimals: Option<number>;
   max_supply: Option<number | bigint>;
 };
 
-export function getCreateArgsSerializer(
+export function getTmCreateArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateArgsArgs, CreateArgs> {
+): Serializer<TmCreateArgsArgs, TmCreateArgs> {
   const s = context.serializer;
-  return s.dataEnum<CreateArgs>(
+  return s.dataEnum<TmCreateArgs>(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<CreateArgs, 'V1'>>(
+        s.struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>(
           [
             ['asset_data', getAssetDataSerializer(context)],
             ['decimals', s.option(s.u8)],
@@ -47,25 +47,25 @@ export function getCreateArgsSerializer(
       ],
     ],
     'CreateArgs'
-  ) as Serializer<CreateArgsArgs, CreateArgs>;
+  ) as Serializer<TmCreateArgsArgs, TmCreateArgs>;
 }
 
 // Data Enum Helpers.
-export function createArgs(
+export function tmCreateArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<CreateArgs, 'V1'>
-): GetDataEnumKind<CreateArgs, 'V1'>;
-export function createArgs<K extends CreateArgs['__kind']>(
+  data: GetDataEnumKindContent<TmCreateArgs, 'V1'>
+): GetDataEnumKind<TmCreateArgs, 'V1'>;
+export function tmCreateArgs<K extends TmCreateArgs['__kind']>(
   kind: K,
   data?: any
-): CreateArgs & { __kind: K } {
+): TmCreateArgs & { __kind: K } {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
-export function isCreateArgs<K extends CreateArgs['__kind']>(
+export function isTmCreateArgs<K extends TmCreateArgs['__kind']>(
   kind: K,
-  value: CreateArgs
-): value is CreateArgs & { __kind: K } {
+  value: TmCreateArgs
+): value is TmCreateArgs & { __kind: K } {
   return value.__kind === kind;
 }

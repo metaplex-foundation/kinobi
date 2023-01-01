@@ -13,8 +13,8 @@ import {
   Data,
   DataArgs,
   DelegateState,
-  Key,
   ProgrammableConfig,
+  TmKey,
   TokenStandard,
   Uses,
   UsesArgs,
@@ -22,8 +22,8 @@ import {
   getCollectionSerializer,
   getDataSerializer,
   getDelegateStateSerializer,
-  getKeySerializer,
   getProgrammableConfigSerializer,
+  getTmKeySerializer,
   getTokenStandardSerializer,
   getUsesSerializer,
 } from '../types';
@@ -39,7 +39,7 @@ import {
 } from '@lorisleiva/js-core';
 
 export type Metadata = {
-  key: Key;
+  key: TmKey;
   updateAuthority: PublicKey;
   mint: PublicKey;
   data: Data;
@@ -54,7 +54,7 @@ export type Metadata = {
   delegateState: Option<DelegateState>;
 };
 export type MetadataArgs = {
-  key: Key;
+  key: TmKey;
   updateAuthority: PublicKey;
   mint: PublicKey;
   data: DataArgs;
@@ -101,7 +101,7 @@ export function getMetadataSerializer(
   const s = context.serializer;
   return s.struct<Metadata>(
     [
-      ['key', getKeySerializer(context)],
+      ['key', getTmKeySerializer(context)],
       ['updateAuthority', s.publicKey],
       ['mint', s.publicKey],
       ['data', getDataSerializer(context)],

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, getKeySerializer } from '../types';
+import { TmKey, getTmKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -19,7 +19,7 @@ import {
 } from '@lorisleiva/js-core';
 
 export type CollectionAuthorityRecord = {
-  key: Key;
+  key: TmKey;
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
@@ -59,7 +59,7 @@ export function getCollectionAuthorityRecordSerializer(
   const s = context.serializer;
   return s.struct<CollectionAuthorityRecord>(
     [
-      ['key', getKeySerializer(context)],
+      ['key', getTmKeySerializer(context)],
       ['bump', s.u8],
       ['updateAuthority', s.option(s.publicKey)],
     ],

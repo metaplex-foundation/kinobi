@@ -8,7 +8,7 @@ const {
 
 const kinobi = new Kinobi([
   __dirname + '/mpl_candy_machine_core.json',
-  // __dirname + '/mpl_token_auth_rules.json',
+  __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
 ]);
 kinobi.update(
@@ -24,13 +24,31 @@ kinobi.update(
       },
     },
     mplTokenAuthRules: {
-      prefix: 'Auth',
+      prefix: 'Ta',
+      types: {
+        Key: 'TaKey',
+        Payload: 'TaPayload',
+        PayloadKey: 'TaPayloadKey',
+        PayloadType: 'TaPayloadType',
+        SeedsVec: 'TaSeedsVec',
+        LeafInfo: 'TaLeafInfo',
+        CreateArgs: 'TaCreateArgs',
+      },
     },
     mplTokenMetadata: {
       prefix: 'Tm',
       instructions: {
         Create: 'CreateDigitalAsset',
         Update: 'UpdateDigitalAsset',
+      },
+      types: {
+        Key: 'TmKey',
+        Payload: 'TmPayload',
+        PayloadKey: 'TmPayloadKey',
+        PayloadType: 'TmPayloadType',
+        SeedsVec: 'TmSeedsVec',
+        LeafInfo: 'TmLeafInfo',
+        CreateArgs: 'TmCreateArgs',
       },
     },
   })

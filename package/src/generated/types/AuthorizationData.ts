@@ -6,18 +6,18 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Payload, PayloadArgs, getPayloadSerializer } from '.';
+import { TmPayload, TmPayloadArgs, getTmPayloadSerializer } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
 
-export type AuthorizationData = { payload: Payload };
-export type AuthorizationDataArgs = { payload: PayloadArgs };
+export type AuthorizationData = { payload: TmPayload };
+export type AuthorizationDataArgs = { payload: TmPayloadArgs };
 
 export function getAuthorizationDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<AuthorizationDataArgs, AuthorizationData> {
   const s = context.serializer;
   return s.struct<AuthorizationData>(
-    [['payload', getPayloadSerializer(context)]],
+    [['payload', getTmPayloadSerializer(context)]],
     'AuthorizationData'
   ) as Serializer<AuthorizationDataArgs, AuthorizationData>;
 }

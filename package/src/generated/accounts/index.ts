@@ -11,6 +11,7 @@ export * from './CollectionAuthorityRecord';
 export * from './DelegateRecord';
 export * from './Edition';
 export * from './EditionMarker';
+export * from './FrequencyAccount';
 export * from './MasterEditionV1';
 export * from './MasterEditionV2';
 export * from './Metadata';

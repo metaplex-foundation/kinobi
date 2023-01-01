@@ -8,17 +8,16 @@
 
 import { Context, Serializer } from '@lorisleiva/js-core';
 
-export type LeafInfo = { leaf: Uint8Array; proof: Array<Uint8Array> };
+export enum Operation {
+  Transfer,
+  Delegate,
+  SaleTransfer,
+  MigrateClass,
+}
 
-export function getLeafInfoSerializer(
+export function getOperationSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<LeafInfo> {
+): Serializer<Operation> {
   const s = context.serializer;
-  return s.struct<LeafInfo>(
-    [
-      ['leaf', s.bytes],
-      ['proof', s.vec(s.bytes)],
-    ],
-    'LeafInfo'
-  );
+  return s.enum<Operation>(Operation, 'Operation');
 }

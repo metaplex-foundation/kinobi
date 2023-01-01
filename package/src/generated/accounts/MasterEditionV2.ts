@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Key, getKeySerializer } from '../types';
+import { TmKey, getTmKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -19,12 +19,12 @@ import {
 } from '@lorisleiva/js-core';
 
 export type MasterEditionV2 = {
-  key: Key;
+  key: TmKey;
   supply: bigint;
   maxSupply: Option<bigint>;
 };
 export type MasterEditionV2Args = {
-  key: Key;
+  key: TmKey;
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
 };
@@ -61,7 +61,7 @@ export function getMasterEditionV2Serializer(
   const s = context.serializer;
   return s.struct<MasterEditionV2>(
     [
-      ['key', getKeySerializer(context)],
+      ['key', getTmKeySerializer(context)],
       ['supply', s.u64],
       ['maxSupply', s.option(s.u64)],
     ],

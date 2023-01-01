@@ -8,16 +8,17 @@
 
 import { Context, Serializer } from '@lorisleiva/js-core';
 
-export enum PayloadKey {
-  Target,
-  Holder,
-  Authority,
-  Amount,
-}
+export type TaLeafInfo = { leaf: Uint8Array; proof: Array<Uint8Array> };
 
-export function getPayloadKeySerializer(
+export function getTaLeafInfoSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<PayloadKey> {
+): Serializer<TaLeafInfo> {
   const s = context.serializer;
-  return s.enum<PayloadKey>(PayloadKey, 'PayloadKey');
+  return s.struct<TaLeafInfo>(
+    [
+      ['leaf', s.bytes],
+      ['proof', s.vec(s.bytes)],
+    ],
+    'LeafInfo'
+  );
 }
