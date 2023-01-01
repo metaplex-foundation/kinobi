@@ -2,7 +2,7 @@ import * as nodes from '../nodes';
 import { BaseNodeVisitor } from './BaseNodeVisitor';
 
 export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
-  protected definedTypes = new Map<string, nodes.DefinedTypeNode>();
+  protected availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
 
   protected typesToInline: string[] | '*';
 
@@ -11,11 +11,15 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
     this.typesToInline = typesToInline;
   }
 
-  visitProgram(program: nodes.ProgramNode): nodes.Node {
-    program.definedTypes.forEach((definedType) => {
-      this.definedTypes.set(definedType.name, definedType);
+  visitRoot(root: nodes.RootNode): nodes.Node {
+    root.allDefinedTypes.forEach((definedType) => {
+      this.availableDefinedTypes.set(definedType.name, definedType);
     });
 
+    return super.visitRoot(root);
+  }
+
+  visitProgram(program: nodes.ProgramNode): nodes.Node {
     return new nodes.ProgramNode(
       program.metadata,
       program.accounts.map((account) => {
@@ -40,7 +44,9 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
-    const definedType = this.definedTypes.get(typeDefinedLink.definedType);
+    const definedType = this.availableDefinedTypes.get(
+      typeDefinedLink.definedType
+    );
 
     if (definedType === undefined) {
       throw new Error(
