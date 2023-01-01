@@ -60,6 +60,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       deleteFolder(this.path);
     }
 
+    if (this.typeManifestVisitor.registerDefinedTypes) {
+      this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
+    }
+
     const context = { root };
     this.render('rootIndex.njk', 'index.ts');
     this.render('accountsIndex.njk', 'accounts/index.ts', context);
@@ -72,11 +76,6 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitProgram(program: nodes.ProgramNode): void {
     this.program = program;
-
-    if (this.typeManifestVisitor.registerDefinedTypes) {
-      this.typeManifestVisitor.registerDefinedTypes(program.definedTypes);
-    }
-
     const { name } = program.metadata;
     const pascalCaseName = pascalCase(name);
     program.accounts.forEach((account) => account.accept(this));

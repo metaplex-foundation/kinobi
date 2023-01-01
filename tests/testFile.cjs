@@ -7,7 +7,7 @@ const {
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
-  // __dirname + '/mpl_candy_machine_core.json',
+  __dirname + '/mpl_candy_machine_core.json',
   // __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
 ]);
@@ -16,6 +16,12 @@ kinobi.update(
     candyMachineCore: {
       name: 'mplCandyMachineCore',
       prefix: 'Cm',
+      instructions: {
+        Mint: 'MintFromCandyMachine',
+      },
+      types: {
+        Creator: 'CmCreator',
+      },
     },
     mplTokenAuthRules: {
       prefix: 'Auth',

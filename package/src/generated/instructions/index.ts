@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+export * from './AddConfigLines';
 export * from './ApproveCollectionAuthority';
 export * from './ApproveUseAuthority';
 export * from './BubblegumSetCollectionSize';
@@ -29,8 +30,10 @@ export * from './DeprecatedMintPrintingTokens';
 export * from './DeprecatedMintPrintingTokensViaToken';
 export * from './DeprecatedSetReservationList';
 export * from './FreezeDelegatedAccount';
+export * from './Initialize';
 export * from './Migrate';
 export * from './Mint';
+export * from './MintFromCandyMachine';
 export * from './MintNewEditionFromMasterEditionViaToken';
 export * from './MintNewEditionFromMasterEditionViaVaultProxy';
 export * from './PuffMetadata';
@@ -40,7 +43,10 @@ export * from './RevokeCollectionAuthority';
 export * from './RevokeUseAuthority';
 export * from './SetAndVerifyCollection';
 export * from './SetAndVerifySizedCollectionItem';
+export * from './SetAuthority';
+export * from './SetCollection';
 export * from './SetCollectionSize';
+export * from './SetMintAuthority';
 export * from './SetTokenStandard';
 export * from './SignMetadata';
 export * from './ThawDelegatedAccount';
@@ -48,6 +54,7 @@ export * from './Transfer';
 export * from './TransferOutOfEscrow';
 export * from './UnverifyCollection';
 export * from './UnverifySizedCollectionItem';
+export * from './Update';
 export * from './UpdateDigitalAsset';
 export * from './UpdateMetadataAccount';
 export * from './UpdateMetadataAccountV2';
@@ -57,3 +64,4 @@ export * from './Utilize';
 export * from './Verify';
 export * from './VerifyCollection';
 export * from './VerifySizedCollectionItem';
+export * from './Withdraw';

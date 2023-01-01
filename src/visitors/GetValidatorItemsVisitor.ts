@@ -20,6 +20,10 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
 
   visitRoot(root: nodes.RootNode): ValidatorItem[] {
     this.stack.push('Root');
+
+    // Register defined types to make sure links are valid.
+    root.allDefinedTypes.forEach((type) => this.definedTypes.add(type.name));
+
     const items = root.programs.flatMap((program) => program.accept(this));
     this.stack.pop();
     return items;
@@ -32,9 +36,6 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
         ? `Program: ${program.metadata.name}`
         : 'Unnamed Program'
     );
-
-    // Register defined types to make sure links are valid.
-    program.definedTypes.forEach((type) => this.definedTypes.add(type.name));
 
     const items: ValidatorItem[] = [];
     if (!program.metadata.name) {
