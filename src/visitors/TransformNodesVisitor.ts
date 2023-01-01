@@ -15,6 +15,7 @@ export type NodeSelector =
   | { instruction: string; program?: string }
   | { account: string; program?: string }
   | { type: string; program?: string }
+  | { typeLink: string; program?: string }
   | { error: string; program?: string }
   | NodeSelectorFunction;
 
@@ -179,6 +180,13 @@ export class TransformNodesVisitor extends BaseNodeVisitor {
       return (node, stack, program) =>
         nodes.isDefinedTypeNode(node) &&
         node.name === selector.type &&
+        checkProgram(node, stack, program);
+    }
+
+    if ('typeLink' in selector) {
+      return (node, stack, program) =>
+        nodes.isTypeDefinedLinkNode(node) &&
+        node.definedType === selector.typeLink &&
         checkProgram(node, stack, program);
     }
 

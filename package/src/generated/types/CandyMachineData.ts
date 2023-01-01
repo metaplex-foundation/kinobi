@@ -7,12 +7,11 @@
  */
 
 import {
+  CmCreator,
   ConfigLineSettings,
-  Creator,
-  CreatorArgs,
   HiddenSettings,
+  getCmCreatorSerializer,
   getConfigLineSettingsSerializer,
-  getCreatorSerializer,
   getHiddenSettingsSerializer,
 } from '.';
 import { Context, Option, Serializer } from '@lorisleiva/js-core';
@@ -30,7 +29,7 @@ export type CandyMachineData = {
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
   /** List of creators */
-  creators: Array<Creator>;
+  creators: Array<CmCreator>;
   /** Config line settings */
   configLineSettings: Option<ConfigLineSettings>;
   /** Hidden setttings */
@@ -48,7 +47,7 @@ export type CandyMachineDataArgs = {
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
   /** List of creators */
-  creators: Array<CreatorArgs>;
+  creators: Array<CmCreator>;
   /** Config line settings */
   configLineSettings: Option<ConfigLineSettings>;
   /** Hidden setttings */
@@ -66,7 +65,7 @@ export function getCandyMachineDataSerializer(
       ['sellerFeeBasisPoints', s.u16],
       ['maxSupply', s.u64],
       ['isMutable', s.bool],
-      ['creators', s.vec(getCreatorSerializer(context))],
+      ['creators', s.vec(getCmCreatorSerializer(context))],
       [
         'configLineSettings',
         s.option(getConfigLineSettingsSerializer(context)),

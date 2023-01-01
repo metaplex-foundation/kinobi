@@ -42,8 +42,8 @@ export class RenameNodesVisitor extends TransformNodesVisitor {
           ...Object.entries(programOptions.accounts ?? {}).map(
             (args): NodeTransform => accountNodeTransform(program, ...args)
           ),
-          ...Object.entries(programOptions.types ?? {}).map(
-            (args): NodeTransform => typeNodeTransform(program, ...args)
+          ...Object.entries(programOptions.types ?? {}).flatMap(
+            (args): NodeTransform[] => typeNodeTransform(program, ...args)
           ),
           ...Object.entries(programOptions.errors ?? {}).map(
             (args): NodeTransform => errorNodeTransform(program, ...args)
@@ -152,27 +152,41 @@ function typeNodeTransform(
   program: string,
   type: string,
   options: string | TypeOptions
-): NodeTransform {
-  return {
-    selector: { type, program },
-    transformer: (node: nodes.Node) => {
-      nodes.assertDefinedTypeNode(node);
+): NodeTransform[] {
+  const newName = typeof options === 'string' ? options : options.name;
+  const transforms: NodeTransform[] = [
+    {
+      selector: { type, program },
+      transformer: (node: nodes.Node) => {
+        nodes.assertDefinedTypeNode(node);
 
-      if (typeof options === 'string') {
-        return new nodes.DefinedTypeNode(options, node.type, node.docs);
-      }
+        if (typeof options === 'string') {
+          return new nodes.DefinedTypeNode(options, node.type, node.docs);
+        }
 
-      const newName = options.name ?? node.name;
-      const fieldMap = options.fields ?? {};
-      return new nodes.DefinedTypeNode(
-        newName,
-        nodes.isTypeStructNode(node.type)
-          ? mapStructFields(node.type, fieldMap, newName)
-          : mapEnumVariants(node.type, fieldMap, newName),
-        node.docs
-      );
+        const fieldMap = options.fields ?? {};
+        return new nodes.DefinedTypeNode(
+          newName ?? node.name,
+          nodes.isTypeStructNode(node.type)
+            ? mapStructFields(node.type, fieldMap, newName)
+            : mapEnumVariants(node.type, fieldMap, newName),
+          node.docs
+        );
+      },
     },
-  };
+  ];
+
+  if (newName) {
+    transforms.push({
+      selector: { typeLink: type, program },
+      transformer: (node: nodes.Node) => {
+        nodes.assertTypeDefinedLinkNode(node);
+        return new nodes.TypeDefinedLinkNode(newName);
+      },
+    });
+  }
+
+  return transforms;
 }
 
 function errorNodeTransform(
