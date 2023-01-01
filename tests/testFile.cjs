@@ -5,7 +5,6 @@ const {
   ValidateNodesVisitor,
   ConsoleLogVisitor,
   GetNodeTreeStringVisitor,
-  DeduplicateDefinedTypesVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -46,6 +45,5 @@ kinobi.update(
   })
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
-kinobi.update(new DeduplicateDefinedTypesVisitor());
 kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));
