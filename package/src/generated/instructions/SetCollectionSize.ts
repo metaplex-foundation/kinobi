@@ -85,7 +85,7 @@ export function setCollectionSize(
   // Program ID.
   const programId: PublicKey = getProgramAddressWithFallback(
     context,
-    'mplDigitalAsset',
+    'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 

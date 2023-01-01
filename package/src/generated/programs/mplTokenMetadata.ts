@@ -8,23 +8,23 @@
 
 import { Context, Program } from '@lorisleiva/js-core';
 import {
-  getMplDigitalAssetErrorFromCode,
-  getMplDigitalAssetErrorFromName,
+  getMplTokenMetadataErrorFromCode,
+  getMplTokenMetadataErrorFromName,
 } from '../errors';
 
-export function getMplDigitalAssetProgram(
+export function getMplTokenMetadataProgram(
   context: Pick<Context, 'eddsa'>
 ): Program {
   return {
-    name: 'mplDigitalAsset',
+    name: 'mplTokenMetadata',
     address: context.eddsa.createPublicKey(
       'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
     ),
     getErrorFromCode(code: number, cause?: Error) {
-      return getMplDigitalAssetErrorFromCode(code, this, cause);
+      return getMplTokenMetadataErrorFromCode(code, this, cause);
     },
     getErrorFromName(name: string, cause?: Error) {
-      return getMplDigitalAssetErrorFromName(name, this, cause);
+      return getMplTokenMetadataErrorFromName(name, this, cause);
     },
     isOnCluster() {
       return true;
