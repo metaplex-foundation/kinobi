@@ -42,12 +42,14 @@ export class AccountNode implements Visitable {
   }
 }
 
-export function isAccountNode(node: Node): node is AccountNode {
-  return node.nodeClass === 'AccountNode';
+export function isAccountNode(node: Node | null): node is AccountNode {
+  return !!node && node.nodeClass === 'AccountNode';
 }
 
-export function assertAccountNode(node: Node): asserts node is AccountNode {
+export function assertAccountNode(
+  node: Node | null
+): asserts node is AccountNode {
   if (!isAccountNode(node)) {
-    throw new Error(`Expected AccountNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected AccountNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

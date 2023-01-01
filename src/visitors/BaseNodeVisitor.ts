@@ -4,37 +4,27 @@ import * as nodes from '../nodes';
 export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitRoot(root: nodes.RootNode): nodes.Node {
     return new nodes.RootNode(
-      root.programs.map((account) => {
-        const child = account.accept(this);
-        nodes.assertProgramNode(child);
-        return child;
-      })
+      root.programs
+        .map((program) => program.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertProgramNode))
     );
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
     return new nodes.ProgramNode(
       program.metadata,
-      program.accounts.map((account) => {
-        const child = account.accept(this);
-        nodes.assertAccountNode(child);
-        return child;
-      }),
-      program.instructions.map((instruction) => {
-        const child = instruction.accept(this);
-        nodes.assertInstructionNode(child);
-        return child;
-      }),
-      program.definedTypes.map((definedType) => {
-        const child = definedType.accept(this);
-        nodes.assertDefinedTypeNode(child);
-        return child;
-      }),
-      program.errors.map((error) => {
-        const child = error.accept(this);
-        nodes.assertErrorNode(child);
-        return child;
-      })
+      program.accounts
+        .map((account) => account.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
+      program.instructions
+        .map((instruction) => instruction.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
+      program.definedTypes
+        .map((type) => type.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertDefinedTypeNode)),
+      program.errors
+        .map((error) => error.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertErrorNode))
     );
   }
 

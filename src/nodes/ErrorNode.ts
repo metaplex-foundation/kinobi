@@ -42,12 +42,12 @@ export class ErrorNode implements Visitable {
   }
 }
 
-export function isErrorNode(node: Node): node is ErrorNode {
-  return node.nodeClass === 'ErrorNode';
+export function isErrorNode(node: Node | null): node is ErrorNode {
+  return !!node && node.nodeClass === 'ErrorNode';
 }
 
-export function assertErrorNode(node: Node): asserts node is ErrorNode {
+export function assertErrorNode(node: Node | null): asserts node is ErrorNode {
   if (!isErrorNode(node)) {
-    throw new Error(`Expected ErrorNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected ErrorNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

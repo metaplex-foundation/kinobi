@@ -33,12 +33,12 @@ export class RootNode implements Visitable {
   }
 }
 
-export function isRootNode(node: Node): node is RootNode {
-  return node.nodeClass === 'RootNode';
+export function isRootNode(node: Node | null): node is RootNode {
+  return !!node && node.nodeClass === 'RootNode';
 }
 
-export function assertRootNode(node: Node): asserts node is RootNode {
+export function assertRootNode(node: Node | null): asserts node is RootNode {
   if (!isRootNode(node)) {
-    throw new Error(`Expected RootNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected RootNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

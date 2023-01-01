@@ -18,12 +18,16 @@ export class TypeArrayNode implements Visitable {
   }
 }
 
-export function isTypeArrayNode(node: Node): node is TypeArrayNode {
-  return node.nodeClass === 'TypeArrayNode';
+export function isTypeArrayNode(node: Node | null): node is TypeArrayNode {
+  return !!node && node.nodeClass === 'TypeArrayNode';
 }
 
-export function assertTypeArrayNode(node: Node): asserts node is TypeArrayNode {
+export function assertTypeArrayNode(
+  node: Node | null
+): asserts node is TypeArrayNode {
   if (!isTypeArrayNode(node)) {
-    throw new Error(`Expected TypeArrayNode, got ${node.nodeClass}.`);
+    throw new Error(
+      `Expected TypeArrayNode, got ${node?.nodeClass ?? 'null'}.`
+    );
   }
 }

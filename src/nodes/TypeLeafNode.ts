@@ -36,12 +36,14 @@ export class TypeLeafNode implements Visitable {
   }
 }
 
-export function isTypeLeafNode(node: Node): node is TypeLeafNode {
-  return node.nodeClass === 'TypeLeafNode';
+export function isTypeLeafNode(node: Node | null): node is TypeLeafNode {
+  return !!node && node.nodeClass === 'TypeLeafNode';
 }
 
-export function assertTypeLeafNode(node: Node): asserts node is TypeLeafNode {
+export function assertTypeLeafNode(
+  node: Node | null
+): asserts node is TypeLeafNode {
   if (!isTypeLeafNode(node)) {
-    throw new Error(`Expected TypeLeafNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected TypeLeafNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

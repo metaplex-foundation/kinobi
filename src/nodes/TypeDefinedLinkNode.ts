@@ -11,14 +11,18 @@ export class TypeDefinedLinkNode implements Visitable {
   }
 }
 
-export function isTypeDefinedLinkNode(node: Node): node is TypeDefinedLinkNode {
-  return node.nodeClass === 'TypeDefinedLinkNode';
+export function isTypeDefinedLinkNode(
+  node: Node | null
+): node is TypeDefinedLinkNode {
+  return !!node && node.nodeClass === 'TypeDefinedLinkNode';
 }
 
 export function assertTypeDefinedLinkNode(
-  node: Node
+  node: Node | null
 ): asserts node is TypeDefinedLinkNode {
   if (!isTypeDefinedLinkNode(node)) {
-    throw new Error(`Expected TypeDefinedLinkNode, got ${node.nodeClass}.`);
+    throw new Error(
+      `Expected TypeDefinedLinkNode, got ${node?.nodeClass ?? 'null'}.`
+    );
   }
 }

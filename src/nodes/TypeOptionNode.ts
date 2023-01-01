@@ -22,14 +22,16 @@ export class TypeOptionNode implements Visitable {
   }
 }
 
-export function isTypeOptionNode(node: Node): node is TypeOptionNode {
-  return node.nodeClass === 'TypeOptionNode';
+export function isTypeOptionNode(node: Node | null): node is TypeOptionNode {
+  return !!node && node.nodeClass === 'TypeOptionNode';
 }
 
 export function assertTypeOptionNode(
-  node: Node
+  node: Node | null
 ): asserts node is TypeOptionNode {
   if (!isTypeOptionNode(node)) {
-    throw new Error(`Expected TypeOptionNode, got ${node.nodeClass}.`);
+    throw new Error(
+      `Expected TypeOptionNode, got ${node?.nodeClass ?? 'null'}.`
+    );
   }
 }

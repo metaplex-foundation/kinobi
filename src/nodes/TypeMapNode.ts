@@ -25,12 +25,14 @@ export class TypeMapNode implements Visitable {
   }
 }
 
-export function isTypeMapNode(node: Node): node is TypeMapNode {
-  return node.nodeClass === 'TypeMapNode';
+export function isTypeMapNode(node: Node | null): node is TypeMapNode {
+  return !!node && node.nodeClass === 'TypeMapNode';
 }
 
-export function assertTypeMapNode(node: Node): asserts node is TypeMapNode {
+export function assertTypeMapNode(
+  node: Node | null
+): asserts node is TypeMapNode {
   if (!isTypeMapNode(node)) {
-    throw new Error(`Expected TypeMapNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected TypeMapNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

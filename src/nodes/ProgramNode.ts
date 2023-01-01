@@ -59,12 +59,14 @@ export class ProgramNode implements Visitable {
   }
 }
 
-export function isProgramNode(node: Node): node is ProgramNode {
-  return node.nodeClass === 'ProgramNode';
+export function isProgramNode(node: Node | null): node is ProgramNode {
+  return !!node && node.nodeClass === 'ProgramNode';
 }
 
-export function assertProgramNode(node: Node): asserts node is ProgramNode {
+export function assertProgramNode(
+  node: Node | null
+): asserts node is ProgramNode {
   if (!isProgramNode(node)) {
-    throw new Error(`Expected ProgramNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected ProgramNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

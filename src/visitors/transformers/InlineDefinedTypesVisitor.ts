@@ -22,23 +22,16 @@ export class InlineDefinedTypesVisitor extends BaseNodeVisitor {
   visitProgram(program: nodes.ProgramNode): nodes.Node {
     return new nodes.ProgramNode(
       program.metadata,
-      program.accounts.map((account) => {
-        const child = account.accept(this);
-        nodes.assertAccountNode(child);
-        return child;
-      }),
-      program.instructions.map((instruction) => {
-        const child = instruction.accept(this);
-        nodes.assertInstructionNode(child);
-        return child;
-      }),
+      program.accounts
+        .map((account) => account.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
+      program.instructions
+        .map((instruction) => instruction.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
       program.definedTypes
         .filter((definedType) => !this.shouldInline(definedType))
-        .map((definedType) => {
-          const child = definedType.accept(this);
-          nodes.assertDefinedTypeNode(child);
-          return child;
-        }),
+        .map((type) => type.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertDefinedTypeNode)),
       program.errors
     );
   }

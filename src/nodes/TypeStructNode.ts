@@ -36,14 +36,16 @@ export class TypeStructNode implements Visitable {
   }
 }
 
-export function isTypeStructNode(node: Node): node is TypeStructNode {
-  return node.nodeClass === 'TypeStructNode';
+export function isTypeStructNode(node: Node | null): node is TypeStructNode {
+  return !!node && node.nodeClass === 'TypeStructNode';
 }
 
 export function assertTypeStructNode(
-  node: Node
+  node: Node | null
 ): asserts node is TypeStructNode {
   if (!isTypeStructNode(node)) {
-    throw new Error(`Expected TypeStructNode, got ${node.nodeClass}.`);
+    throw new Error(
+      `Expected TypeStructNode, got ${node?.nodeClass ?? 'null'}.`
+    );
   }
 }

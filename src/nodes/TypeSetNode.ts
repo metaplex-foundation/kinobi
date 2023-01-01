@@ -22,12 +22,14 @@ export class TypeSetNode implements Visitable {
   }
 }
 
-export function isTypeSetNode(node: Node): node is TypeSetNode {
-  return node.nodeClass === 'TypeSetNode';
+export function isTypeSetNode(node: Node | null): node is TypeSetNode {
+  return !!node && node.nodeClass === 'TypeSetNode';
 }
 
-export function assertTypeSetNode(node: Node): asserts node is TypeSetNode {
+export function assertTypeSetNode(
+  node: Node | null
+): asserts node is TypeSetNode {
   if (!isTypeSetNode(node)) {
-    throw new Error(`Expected TypeSetNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected TypeSetNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

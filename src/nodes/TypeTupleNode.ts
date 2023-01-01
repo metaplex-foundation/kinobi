@@ -17,12 +17,16 @@ export class TypeTupleNode implements Visitable {
   }
 }
 
-export function isTypeTupleNode(node: Node): node is TypeTupleNode {
-  return node.nodeClass === 'TypeTupleNode';
+export function isTypeTupleNode(node: Node | null): node is TypeTupleNode {
+  return !!node && node.nodeClass === 'TypeTupleNode';
 }
 
-export function assertTypeTupleNode(node: Node): asserts node is TypeTupleNode {
+export function assertTypeTupleNode(
+  node: Node | null
+): asserts node is TypeTupleNode {
   if (!isTypeTupleNode(node)) {
-    throw new Error(`Expected TypeTupleNode, got ${node.nodeClass}.`);
+    throw new Error(
+      `Expected TypeTupleNode, got ${node?.nodeClass ?? 'null'}.`
+    );
   }
 }

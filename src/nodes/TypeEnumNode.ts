@@ -82,12 +82,14 @@ export class TypeEnumNode implements Visitable {
   }
 }
 
-export function isTypeEnumNode(node: Node): node is TypeEnumNode {
-  return node.nodeClass === 'TypeEnumNode';
+export function isTypeEnumNode(node: Node | null): node is TypeEnumNode {
+  return !!node && node.nodeClass === 'TypeEnumNode';
 }
 
-export function assertTypeEnumNode(node: Node): asserts node is TypeEnumNode {
+export function assertTypeEnumNode(
+  node: Node | null
+): asserts node is TypeEnumNode {
   if (!isTypeEnumNode(node)) {
-    throw new Error(`Expected TypeEnumNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected TypeEnumNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

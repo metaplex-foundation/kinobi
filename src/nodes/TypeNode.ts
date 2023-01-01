@@ -103,30 +103,33 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   throw new Error(`TypeNode: Unsupported type ${JSON.stringify(idlType)}`);
 };
 
-export function isTypeNode(node: Node): node is TypeNode {
-  return TYPE_NODE_CLASSES.includes(node.nodeClass);
+export function isTypeNode(node: Node | null): node is TypeNode {
+  return !!node && TYPE_NODE_CLASSES.includes(node.nodeClass);
 }
 
-export function assertTypeNode(node: Node): asserts node is TypeNode {
+export function assertTypeNode(node: Node | null): asserts node is TypeNode {
   if (!isTypeNode(node)) {
-    throw new Error(`Expected TypeNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected TypeNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }
 
 export function isTypeStructOrEnumNode(
-  node: Node
+  node: Node | null
 ): node is TypeStructNode | TypeEnumNode {
   return (
-    node.nodeClass === 'TypeStructNode' || node.nodeClass === 'TypeEnumNode'
+    !!node &&
+    (node.nodeClass === 'TypeStructNode' || node.nodeClass === 'TypeEnumNode')
   );
 }
 
 export function assertTypeStructOrEnumNode(
-  node: Node
+  node: Node | null
 ): asserts node is TypeStructNode | TypeEnumNode {
   if (!isTypeStructOrEnumNode(node)) {
     throw new Error(
-      `Expected TypeStructNode | TypeEnumNode, got ${node.nodeClass}.`
+      `Expected TypeStructNode | TypeEnumNode, got ${
+        node?.nodeClass ?? 'null'
+      }.`
     );
   }
 }

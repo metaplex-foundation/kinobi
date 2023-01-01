@@ -103,14 +103,16 @@ export class InstructionNode implements Visitable {
   }
 }
 
-export function isInstructionNode(node: Node): node is InstructionNode {
-  return node.nodeClass === 'InstructionNode';
+export function isInstructionNode(node: Node | null): node is InstructionNode {
+  return !!node && node.nodeClass === 'InstructionNode';
 }
 
 export function assertInstructionNode(
-  node: Node
+  node: Node | null
 ): asserts node is InstructionNode {
   if (!isInstructionNode(node)) {
-    throw new Error(`Expected InstructionNode, got ${node.nodeClass}.`);
+    throw new Error(
+      `Expected InstructionNode, got ${node?.nodeClass ?? 'null'}.`
+    );
   }
 }

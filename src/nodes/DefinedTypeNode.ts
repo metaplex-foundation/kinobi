@@ -43,14 +43,16 @@ export class DefinedTypeNode implements Visitable {
   }
 }
 
-export function isDefinedTypeNode(node: Node): node is DefinedTypeNode {
-  return node.nodeClass === 'DefinedTypeNode';
+export function isDefinedTypeNode(node: Node | null): node is DefinedTypeNode {
+  return !!node && node.nodeClass === 'DefinedTypeNode';
 }
 
 export function assertDefinedTypeNode(
-  node: Node
+  node: Node | null
 ): asserts node is DefinedTypeNode {
   if (!isDefinedTypeNode(node)) {
-    throw new Error(`Expected DefinedTypeNode, got ${node.nodeClass}.`);
+    throw new Error(
+      `Expected DefinedTypeNode, got ${node?.nodeClass ?? 'null'}.`
+    );
   }
 }

@@ -17,12 +17,14 @@ export class TypeVecNode implements Visitable {
   }
 }
 
-export function isTypeVecNode(node: Node): node is TypeVecNode {
-  return node.nodeClass === 'TypeVecNode';
+export function isTypeVecNode(node: Node | null): node is TypeVecNode {
+  return !!node && node.nodeClass === 'TypeVecNode';
 }
 
-export function assertTypeVecNode(node: Node): asserts node is TypeVecNode {
+export function assertTypeVecNode(
+  node: Node | null
+): asserts node is TypeVecNode {
   if (!isTypeVecNode(node)) {
-    throw new Error(`Expected TypeVecNode, got ${node.nodeClass}.`);
+    throw new Error(`Expected TypeVecNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

@@ -10,16 +10,12 @@ export class FillAnchorDiscriminatorVisitor extends BaseNodeVisitor {
     this.program = program;
     const visitedProgram = new nodes.ProgramNode(
       program.metadata,
-      program.accounts.map((account) => {
-        const child = account.accept(this);
-        nodes.assertAccountNode(child);
-        return child;
-      }),
-      program.instructions.map((instruction) => {
-        const child = instruction.accept(this);
-        nodes.assertInstructionNode(child);
-        return child;
-      }),
+      program.accounts
+        .map((account) => account.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
+      program.instructions
+        .map((instruction) => instruction.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
       program.definedTypes,
       program.errors
     );
