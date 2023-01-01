@@ -21,6 +21,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type ReservationListV1 = {
@@ -30,7 +31,6 @@ export type ReservationListV1 = {
   reservations: Array<ReservationV1>;
 };
 export type ReservationListV1Args = {
-  key: TmKey;
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
   reservations: Array<ReservationV1>;
@@ -69,13 +69,20 @@ export function getReservationListV1Serializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<ReservationListV1Args, ReservationListV1> {
   const s = context.serializer;
-  return s.struct<ReservationListV1>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['masterEdition', s.publicKey],
-      ['supplySnapshot', s.option(s.u64)],
-      ['reservations', s.vec(getReservationV1Serializer(context))],
-    ],
-    'ReservationListV1'
+  return mapSerializer<
+    ReservationListV1Args,
+    ReservationListV1,
+    ReservationListV1
+  >(
+    s.struct<ReservationListV1>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['masterEdition', s.publicKey],
+        ['supplySnapshot', s.option(s.u64)],
+        ['reservations', s.vec(getReservationV1Serializer(context))],
+      ],
+      'ReservationListV1'
+    ),
+    (value) => ({ key: 3, ...value } as ReservationListV1)
   ) as Serializer<ReservationListV1Args, ReservationListV1>;
 }

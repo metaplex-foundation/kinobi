@@ -125,6 +125,6 @@ export function getMetadataSerializer(
       ],
       'Metadata'
     ),
-    (value) => ({ key: 1, ...value } as Metadata)
+    (value) => ({ key: 4, ...value } as Metadata)
   ) as Serializer<MetadataArgs, Metadata>;
 }

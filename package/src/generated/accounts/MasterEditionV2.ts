@@ -16,6 +16,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type MasterEditionV2 = {
@@ -24,7 +25,6 @@ export type MasterEditionV2 = {
   maxSupply: Option<bigint>;
 };
 export type MasterEditionV2Args = {
-  key: TmKey;
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
 };
@@ -59,12 +59,15 @@ export function getMasterEditionV2Serializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MasterEditionV2Args, MasterEditionV2> {
   const s = context.serializer;
-  return s.struct<MasterEditionV2>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['supply', s.u64],
-      ['maxSupply', s.option(s.u64)],
-    ],
-    'MasterEditionV2'
+  return mapSerializer<MasterEditionV2Args, MasterEditionV2, MasterEditionV2>(
+    s.struct<MasterEditionV2>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['supply', s.u64],
+        ['maxSupply', s.option(s.u64)],
+      ],
+      'MasterEditionV2'
+    ),
+    (value) => ({ key: 6, ...value } as MasterEditionV2)
   ) as Serializer<MasterEditionV2Args, MasterEditionV2>;
 }

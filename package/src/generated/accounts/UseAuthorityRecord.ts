@@ -15,6 +15,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type UseAuthorityRecord = {
@@ -23,7 +24,6 @@ export type UseAuthorityRecord = {
   bump: number;
 };
 export type UseAuthorityRecordArgs = {
-  key: TmKey;
   allowedUses: number | bigint;
   bump: number;
 };
@@ -61,12 +61,19 @@ export function getUseAuthorityRecordSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<UseAuthorityRecordArgs, UseAuthorityRecord> {
   const s = context.serializer;
-  return s.struct<UseAuthorityRecord>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['allowedUses', s.u64],
-      ['bump', s.u8],
-    ],
-    'UseAuthorityRecord'
+  return mapSerializer<
+    UseAuthorityRecordArgs,
+    UseAuthorityRecord,
+    UseAuthorityRecord
+  >(
+    s.struct<UseAuthorityRecord>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['allowedUses', s.u64],
+        ['bump', s.u8],
+      ],
+      'UseAuthorityRecord'
+    ),
+    (value) => ({ key: 8, ...value } as UseAuthorityRecord)
   ) as Serializer<UseAuthorityRecordArgs, UseAuthorityRecord>;
 }

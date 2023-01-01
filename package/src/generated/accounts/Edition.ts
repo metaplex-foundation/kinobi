@@ -15,14 +15,11 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type Edition = { key: TmKey; parent: PublicKey; edition: bigint };
-export type EditionArgs = {
-  key: TmKey;
-  parent: PublicKey;
-  edition: number | bigint;
-};
+export type EditionArgs = { parent: PublicKey; edition: number | bigint };
 
 export async function fetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -52,12 +49,15 @@ export function getEditionSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<EditionArgs, Edition> {
   const s = context.serializer;
-  return s.struct<Edition>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['parent', s.publicKey],
-      ['edition', s.u64],
-    ],
-    'Edition'
+  return mapSerializer<EditionArgs, Edition, Edition>(
+    s.struct<Edition>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['parent', s.publicKey],
+        ['edition', s.u64],
+      ],
+      'Edition'
+    ),
+    (value) => ({ key: 1, ...value } as Edition)
   ) as Serializer<EditionArgs, Edition>;
 }

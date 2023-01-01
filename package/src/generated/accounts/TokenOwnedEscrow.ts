@@ -20,10 +20,16 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type TokenOwnedEscrow = {
   key: TmKey;
+  baseToken: PublicKey;
+  authority: EscrowAuthority;
+  bump: number;
+};
+export type TokenOwnedEscrowArgs = {
   baseToken: PublicKey;
   authority: EscrowAuthority;
   bump: number;
@@ -57,15 +63,22 @@ export function deserializeTokenOwnedEscrow(
 
 export function getTokenOwnedEscrowSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TokenOwnedEscrow> {
+): Serializer<TokenOwnedEscrowArgs, TokenOwnedEscrow> {
   const s = context.serializer;
-  return s.struct<TokenOwnedEscrow>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['baseToken', s.publicKey],
-      ['authority', getEscrowAuthoritySerializer(context)],
-      ['bump', s.u8],
-    ],
-    'TokenOwnedEscrow'
-  );
+  return mapSerializer<
+    TokenOwnedEscrowArgs,
+    TokenOwnedEscrow,
+    TokenOwnedEscrow
+  >(
+    s.struct<TokenOwnedEscrow>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['baseToken', s.publicKey],
+        ['authority', getEscrowAuthoritySerializer(context)],
+        ['bump', s.u8],
+      ],
+      'TokenOwnedEscrow'
+    ),
+    (value) => ({ key: 10, ...value } as TokenOwnedEscrow)
+  ) as Serializer<TokenOwnedEscrowArgs, TokenOwnedEscrow>;
 }

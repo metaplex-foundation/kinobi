@@ -15,9 +15,11 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type EditionMarker = { key: TmKey; ledger: Array<number> };
+export type EditionMarkerArgs = { ledger: Array<number> };
 
 export async function fetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -47,13 +49,16 @@ export function deserializeEditionMarker(
 
 export function getEditionMarkerSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<EditionMarker> {
+): Serializer<EditionMarkerArgs, EditionMarker> {
   const s = context.serializer;
-  return s.struct<EditionMarker>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['ledger', s.array(s.u8, 31)],
-    ],
-    'EditionMarker'
-  );
+  return mapSerializer<EditionMarkerArgs, EditionMarker, EditionMarker>(
+    s.struct<EditionMarker>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['ledger', s.array(s.u8, 31)],
+      ],
+      'EditionMarker'
+    ),
+    (value) => ({ key: 7, ...value } as EditionMarker)
+  ) as Serializer<EditionMarkerArgs, EditionMarker>;
 }

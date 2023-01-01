@@ -20,9 +20,11 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type DelegateRecord = { key: TmKey; role: DelegateRole; bump: number };
+export type DelegateRecordArgs = { role: DelegateRole; bump: number };
 
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -52,14 +54,17 @@ export function deserializeDelegateRecord(
 
 export function getDelegateRecordSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateRecord> {
+): Serializer<DelegateRecordArgs, DelegateRecord> {
   const s = context.serializer;
-  return s.struct<DelegateRecord>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['role', getDelegateRoleSerializer(context)],
-      ['bump', s.u8],
-    ],
-    'DelegateRecord'
-  );
+  return mapSerializer<DelegateRecordArgs, DelegateRecord, DelegateRecord>(
+    s.struct<DelegateRecord>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['role', getDelegateRoleSerializer(context)],
+        ['bump', s.u8],
+      ],
+      'DelegateRecord'
+    ),
+    (value) => ({ key: 11, ...value } as DelegateRecord)
+  ) as Serializer<DelegateRecordArgs, DelegateRecord>;
 }

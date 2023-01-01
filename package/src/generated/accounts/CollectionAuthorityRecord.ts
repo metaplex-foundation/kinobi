@@ -16,10 +16,15 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type CollectionAuthorityRecord = {
   key: TmKey;
+  bump: number;
+  updateAuthority: Option<PublicKey>;
+};
+export type CollectionAuthorityRecordArgs = {
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
@@ -55,14 +60,21 @@ export function deserializeCollectionAuthorityRecord(
 
 export function getCollectionAuthorityRecordSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CollectionAuthorityRecord> {
+): Serializer<CollectionAuthorityRecordArgs, CollectionAuthorityRecord> {
   const s = context.serializer;
-  return s.struct<CollectionAuthorityRecord>(
-    [
-      ['key', getTmKeySerializer(context)],
-      ['bump', s.u8],
-      ['updateAuthority', s.option(s.publicKey)],
-    ],
-    'CollectionAuthorityRecord'
-  );
+  return mapSerializer<
+    CollectionAuthorityRecordArgs,
+    CollectionAuthorityRecord,
+    CollectionAuthorityRecord
+  >(
+    s.struct<CollectionAuthorityRecord>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['bump', s.u8],
+        ['updateAuthority', s.option(s.publicKey)],
+      ],
+      'CollectionAuthorityRecord'
+    ),
+    (value) => ({ key: 9, ...value } as CollectionAuthorityRecord)
+  ) as Serializer<CollectionAuthorityRecordArgs, CollectionAuthorityRecord>;
 }
