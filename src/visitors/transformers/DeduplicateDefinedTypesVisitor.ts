@@ -2,6 +2,7 @@ import * as nodes from '../../nodes';
 import { GetNodeInlineStringVisitor } from '../aggregators';
 import { BaseRootVisitor } from '../BaseRootVisitor';
 import { NodeSelector } from '../NodeSelector';
+import { DeleteNodesVisitor } from './DeleteNodesVisitor';
 
 type DefinedTypeWithProgram = {
   program: nodes.ProgramNode;
@@ -58,7 +59,12 @@ export class DeduplicateDefinedTypesVisitor extends BaseRootVisitor {
         })
       );
 
-    console.log(deleteSelectors);
+    // Delete the identified nodes if any.
+    if (deleteSelectors.length > 0) {
+      const newRoot = root.accept(new DeleteNodesVisitor(deleteSelectors));
+      nodes.assertRootNode(newRoot);
+      return newRoot;
+    }
 
     return root;
   }
