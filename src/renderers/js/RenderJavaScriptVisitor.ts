@@ -88,7 +88,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       errors: program.errors.map((error) => ({
         ...error,
         prefixedName:
-          pascalCase(program.metadata.prefix) + pascalCase(error.name),
+          pascalCase(program.metadata.prefix) + pascalCase(error.metadata.name),
       })),
     });
     this.render('programsPage.njk', `programs/${name}.ts`, {
