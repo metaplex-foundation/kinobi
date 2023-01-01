@@ -3,7 +3,7 @@ import { BaseRootVisitor } from './BaseRootVisitor';
 import {
   DeduplicateIdenticalDefinedTypesVisitor,
   FillAnchorDiscriminatorVisitor,
-  IdentifyDefaultInstructionAccountsVisitor,
+  SetInstructionAccountDefaultValuesVisitor,
   InlineDefinedTypesForInstructionArgsVisitor,
   InlineStructsForInstructionArgsVisitor,
   TransformU8ArraysToBytesVisitor,
@@ -20,7 +20,7 @@ export class DefaultVisitor extends BaseRootVisitor {
     root = root.accept(new InlineDefinedTypesForInstructionArgsVisitor());
 
     // Instructions.
-    root = root.accept(new IdentifyDefaultInstructionAccountsVisitor());
+    root = root.accept(new SetInstructionAccountDefaultValuesVisitor());
     root = root.accept(new InlineStructsForInstructionArgsVisitor());
 
     // Extras.

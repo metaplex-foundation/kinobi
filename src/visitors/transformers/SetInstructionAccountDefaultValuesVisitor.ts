@@ -79,7 +79,7 @@ const DEFAULT_RULES: Rule[] = [
   },
 ];
 
-export class IdentifyDefaultInstructionAccountsVisitor extends BaseNodeVisitor {
+export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
   protected readonly rules: Rule[];
 
   constructor(rules: Rule[] = [], includeDefaultRules = true) {
