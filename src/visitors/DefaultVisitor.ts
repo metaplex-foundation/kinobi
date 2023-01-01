@@ -17,10 +17,10 @@ export class DefaultVisitor extends BaseRootVisitor {
 
     // Defined types.
     root = root.accept(new DeduplicateIdenticalDefinedTypesVisitor());
-    root = root.accept(new UnwrapInstructionArgsDefinedTypesVisitor());
 
     // Instructions.
     root = root.accept(new SetInstructionAccountDefaultValuesVisitor());
+    root = root.accept(new UnwrapInstructionArgsDefinedTypesVisitor());
     root = root.accept(new UnwrapInstructionArgsStructVisitor());
 
     // Extras.
