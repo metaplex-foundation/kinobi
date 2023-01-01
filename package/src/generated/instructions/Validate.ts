@@ -19,10 +19,10 @@ import {
 } from '@lorisleiva/js-core';
 import {
   Operation,
-  TaPayload,
-  TaPayloadArgs,
+  Payload,
+  PayloadArgs,
   getOperationSerializer,
-  getTaPayloadSerializer,
+  getPayloadSerializer,
 } from '../types';
 
 // Accounts.
@@ -59,12 +59,12 @@ export type ValidateInstructionData = {
   discriminator: number;
   ruleSetName: string;
   operation: Operation;
-  payload: TaPayload;
+  payload: Payload;
 };
 export type ValidateInstructionArgs = {
   ruleSetName: string;
   operation: Operation;
-  payload: TaPayloadArgs;
+  payload: PayloadArgs;
 };
 
 export function getValidateInstructionDataSerializer(
@@ -81,7 +81,7 @@ export function getValidateInstructionDataSerializer(
         ['discriminator', s.u8],
         ['ruleSetName', s.string],
         ['operation', getOperationSerializer(context)],
-        ['payload', getTaPayloadSerializer(context)],
+        ['payload', getPayloadSerializer(context)],
       ],
       'ValidateInstructionArgs'
     ),

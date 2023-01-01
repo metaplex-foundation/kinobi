@@ -29,11 +29,6 @@ kinobi.update(
       prefix: 'Ta',
       types: {
         Key: 'TaKey',
-        Payload: 'TaPayload',
-        // PayloadKey: 'TaPayloadKey',
-        PayloadType: 'TaPayloadType',
-        SeedsVec: 'TaSeedsVec',
-        LeafInfo: 'TaLeafInfo',
         CreateArgs: 'TaCreateArgs',
       },
     },
@@ -45,11 +40,6 @@ kinobi.update(
       },
       types: {
         Key: 'TmKey',
-        Payload: 'TmPayload',
-        // PayloadKey: 'TmPayloadKey',
-        PayloadType: 'TmPayloadType',
-        SeedsVec: 'TmSeedsVec',
-        LeafInfo: 'TmLeafInfo',
         CreateArgs: 'TmCreateArgs',
       },
     },

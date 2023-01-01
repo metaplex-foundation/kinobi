@@ -8,13 +8,13 @@
 
 import { Context, Serializer } from '@lorisleiva/js-core';
 
-export type TaLeafInfo = { leaf: Uint8Array; proof: Array<Uint8Array> };
+export type LeafInfo = { leaf: Uint8Array; proof: Array<Uint8Array> };
 
-export function getTaLeafInfoSerializer(
+export function getLeafInfoSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TaLeafInfo> {
+): Serializer<LeafInfo> {
   const s = context.serializer;
-  return s.struct<TaLeafInfo>(
+  return s.struct<LeafInfo>(
     [
       ['leaf', s.bytes],
       ['proof', s.vec(s.bytes)],
