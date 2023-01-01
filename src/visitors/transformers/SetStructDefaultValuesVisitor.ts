@@ -7,15 +7,6 @@ type StructDefaultValue =
   | nodes.TypeStructNodeFieldDefaults;
 type StructDefaultValueMap = Record<string, Record<string, StructDefaultValue>>;
 
-// const bar: StructDefaultValueMap = {
-//   'mplTokenMetadata.Create.Foo': {
-//     field1: 42,
-//     field2: { value: 42 },
-//     field3: { value: 42, strategy: 'optional' },
-//     field4: { value: 42, strategy: 'omitted' },
-//   },
-// };
-
 export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
   constructor(readonly map: StructDefaultValueMap) {
     const transforms = Object.entries(map).map(
@@ -29,8 +20,19 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
           return matchStackWithNames(stack, selectorStack);
         },
         transformer: (node) => {
-          console.log(node, defaultValues);
-          return node;
+          nodes.assertTypeStructNode(node);
+          const fields = node.fields.map((field): nodes.TypeStructNodeField => {
+            const defaultValue = defaultValues[field.name];
+            if (defaultValue === undefined) return field;
+            return {
+              ...field,
+              defaultsTo:
+                typeof defaultValue === 'object' && 'value' in defaultValue
+                  ? { strategy: 'optional', ...defaultValue }
+                  : { strategy: 'optional', value: defaultValue },
+            };
+          });
+          return new nodes.TypeStructNode(node.name, fields);
         },
       })
     );
