@@ -7,16 +7,16 @@
  */
 
 import {
-  TmPayloadKey,
+  PayloadKey,
   TmPayloadType,
   TmPayloadTypeArgs,
-  getTmPayloadKeySerializer,
+  getPayloadKeySerializer,
   getTmPayloadTypeSerializer,
 } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
 
-export type TmPayload = { map: Map<TmPayloadKey, TmPayloadType> };
-export type TmPayloadArgs = { map: Map<TmPayloadKey, TmPayloadTypeArgs> };
+export type TmPayload = { map: Map<PayloadKey, TmPayloadType> };
+export type TmPayloadArgs = { map: Map<PayloadKey, TmPayloadTypeArgs> };
 
 export function getTmPayloadSerializer(
   context: Pick<Context, 'serializer'>
@@ -27,7 +27,7 @@ export function getTmPayloadSerializer(
       [
         'map',
         s.map(
-          getTmPayloadKeySerializer(context),
+          getPayloadKeySerializer(context),
           getTmPayloadTypeSerializer(context)
         ),
       ],

@@ -56,6 +56,6 @@ kinobi.update(
   })
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
-kinobi.accept(new DeduplicateDefinedTypesVisitor());
+kinobi.update(new DeduplicateDefinedTypesVisitor());
 kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));

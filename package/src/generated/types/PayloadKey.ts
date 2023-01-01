@@ -8,16 +8,16 @@
 
 import { Context, Serializer } from '@lorisleiva/js-core';
 
-export enum TmPayloadKey {
+export enum PayloadKey {
   Target,
   Holder,
   Authority,
   Amount,
 }
 
-export function getTmPayloadKeySerializer(
+export function getPayloadKeySerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TmPayloadKey> {
+): Serializer<PayloadKey> {
   const s = context.serializer;
-  return s.enum<TmPayloadKey>(TmPayloadKey, 'TmPayloadKey');
+  return s.enum<PayloadKey>(PayloadKey, 'PayloadKey');
 }
