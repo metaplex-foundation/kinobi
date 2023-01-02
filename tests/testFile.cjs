@@ -46,7 +46,6 @@ kinobi.update(
     },
   })
 );
-kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 const omitted = (v) => ({ value: v, strategy: 'omitted' });
 kinobi.update(
   new SetStructDefaultValuesVisitor({
@@ -65,6 +64,7 @@ kinobi.update(
     'mplTokenMetadata.Collection': { verified: false },
   })
 );
+kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new SetMissingDefinedTypesVisitor());
 kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));

@@ -11,7 +11,7 @@ export class SetMissingDefinedTypesVisitor extends BaseRootVisitor {
       return total > 0 && !availableTypes.includes(name);
     });
 
-    console.log(missingTypes);
+    console.log({ missingTypes });
 
     return root;
   }

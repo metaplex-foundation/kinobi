@@ -29,7 +29,7 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
         .map((instruction) => instruction.accept(this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
       program.definedTypes
-        .filter((definedType) => !this.shouldInline(definedType))
+        .filter((definedType) => !this.shouldInline(definedType.name))
         .map((type) => type.accept(this))
         .filter(nodes.assertNodeFilter(nodes.assertDefinedTypeNode)),
       program.errors
@@ -37,6 +37,10 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
+    if (!this.shouldInline(typeDefinedLink.definedType)) {
+      return typeDefinedLink;
+    }
+
     const definedType = this.availableDefinedTypes.get(
       typeDefinedLink.definedType
     );
@@ -48,17 +52,12 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
       );
     }
 
-    if (!this.shouldInline(definedType)) {
-      return typeDefinedLink;
-    }
-
     return definedType.type.accept(this);
   }
 
-  protected shouldInline(definedType: nodes.DefinedTypeNode): boolean {
+  protected shouldInline(definedType: string): boolean {
     return (
-      this.typesToInline === '*' ||
-      this.typesToInline.includes(definedType.name)
+      this.typesToInline === '*' || this.typesToInline.includes(definedType)
     );
   }
 }

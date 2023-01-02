@@ -6,25 +6,30 @@ import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 
 export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseRootVisitor {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
-    // Get all defined types used exactly once as an instruction argument.
     const histogram = root.accept(new GetDefinedTypeHistogramVisitor());
-    let definedTypesToInline: string[] = Object.keys(histogram).filter(
-      (key) =>
-        (histogram[key].total ?? 0) === 1 &&
-        (histogram[key].directlyAsInstructionArgs ?? 0) === 1
-    );
-
-    // Filter out enums which are better defined as external types.
     const { allDefinedTypes } = root;
-    definedTypesToInline = definedTypesToInline.filter((definedtype) => {
-      const found = allDefinedTypes.find(({ name }) => name === definedtype);
-      return found && !nodes.isTypeEnumNode(found.type);
-    });
 
-    // Inline the identified defined types.
-    const inlineVisitor = new UnwrapDefinedTypesVisitor(definedTypesToInline);
-    const newRoot = root.accept(inlineVisitor);
-    assertRootNode(newRoot);
-    return newRoot;
+    const definedTypesToInline: string[] = Object.keys(histogram)
+      // Get all defined types used exactly once as an instruction argument.
+      .filter(
+        (name) =>
+          (histogram[name].total ?? 0) === 1 &&
+          (histogram[name].directlyAsInstructionArgs ?? 0) === 1
+      )
+      // Filter out enums which are better defined as external types.
+      .filter((name) => {
+        const found = allDefinedTypes.find((type) => type.name === name);
+        return found && !nodes.isTypeEnumNode(found.type);
+      });
+
+    // Inline the identified defined types if any.
+    if (definedTypesToInline.length > 0) {
+      const inlineVisitor = new UnwrapDefinedTypesVisitor(definedTypesToInline);
+      const newRoot = root.accept(inlineVisitor);
+      assertRootNode(newRoot);
+      return newRoot;
+    }
+
+    return root;
   }
 }
