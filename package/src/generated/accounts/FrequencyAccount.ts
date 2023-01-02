@@ -15,6 +15,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 
 export type FrequencyAccount = {
@@ -28,8 +29,6 @@ export type FrequencyAccount = {
   period: bigint;
 };
 export type FrequencyAccountArgs = {
-  /** Test with only one line. */
-  key: TaKey;
   /**
    * Test with multiple lines
    * and this is the second line.
@@ -68,12 +67,19 @@ export function getFrequencyAccountSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<FrequencyAccountArgs, FrequencyAccount> {
   const s = context.serializer;
-  return s.struct<FrequencyAccount>(
-    [
-      ['key', getTaKeySerializer(context)],
-      ['lastUpdate', s.i64],
-      ['period', s.i64],
-    ],
-    'FrequencyAccount'
+  return mapSerializer<
+    FrequencyAccountArgs,
+    FrequencyAccount,
+    FrequencyAccount
+  >(
+    s.struct<FrequencyAccount>(
+      [
+        ['key', getTaKeySerializer(context)],
+        ['lastUpdate', s.i64],
+        ['period', s.i64],
+      ],
+      'FrequencyAccount'
+    ),
+    (value) => ({ key: 1, ...value } as FrequencyAccount)
   ) as Serializer<FrequencyAccountArgs, FrequencyAccount>;
 }

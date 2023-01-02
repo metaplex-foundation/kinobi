@@ -60,6 +60,7 @@ kinobi.update(
     'mplTokenMetadata.CollectionAuthorityRecord': { key: omitted(9) },
     'mplTokenMetadata.TokenOwnedEscrow': { key: omitted(10) },
     'mplTokenMetadata.DelegateRecord': { key: omitted(11) },
+    'mplTokenAuthRules.FrequencyAccount': { key: omitted(1) },
     'mplTokenMetadata.Collection': { verified: false },
   })
 );
