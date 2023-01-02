@@ -159,7 +159,7 @@ export class GetDefinedTypeHistogramVisitor
         } else {
           result[key].total += histogram[key].total;
           result[key].inAccounts += histogram[key].inAccounts;
-          result[key].inDefinedTypes += histogram[key].inAccounts;
+          result[key].inDefinedTypes += histogram[key].inDefinedTypes;
           result[key].inInstructionArgs += histogram[key].inInstructionArgs;
           result[key].directlyAsInstructionArgs +=
             histogram[key].directlyAsInstructionArgs;

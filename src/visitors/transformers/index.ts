@@ -3,6 +3,7 @@ export * from './DeleteNodesVisitor';
 export * from './RenameNodesVisitor';
 export * from './SetAnchorDiscriminatorsVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
+export * from './SetMissingDefinedTypesVisitor';
 export * from './SetStructDefaultValuesVisitor';
 export * from './TransformNodesVisitor';
 export * from './TransformU8ArraysToBytesVisitor';

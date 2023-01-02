@@ -6,6 +6,7 @@ const {
   ConsoleLogVisitor,
   GetNodeTreeStringVisitor,
   SetStructDefaultValuesVisitor,
+  SetMissingDefinedTypesVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -64,5 +65,6 @@ kinobi.update(
     'mplTokenMetadata.Collection': { verified: false },
   })
 );
+kinobi.accept(new SetMissingDefinedTypesVisitor());
 kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));
