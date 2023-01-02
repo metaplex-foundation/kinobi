@@ -10,17 +10,17 @@ import {
   logWarn,
 } from '../../logs';
 import * as nodes from '../../nodes';
-import { GetValidatorItemsVisitor, ValidatorItem } from '../aggregators';
+import { GetDefaultValidatorItemsVisitor, ValidatorItem } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
-export class ValidateNodesVisitor extends BaseThrowVisitor<nodes.RootNode> {
+export class ThrowValidatorItemsVisitor extends BaseThrowVisitor<nodes.RootNode> {
   constructor(readonly throwLevel: LogLevel = 'error') {
     super();
   }
 
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     const validatorItems = root
-      .accept(new GetValidatorItemsVisitor())
+      .accept(new GetDefaultValidatorItemsVisitor())
       .sort((a, b) => getLevelIndex(b.level) - getLevelIndex(a.level));
 
     validatorItems.forEach((item) => this.logItem(item));

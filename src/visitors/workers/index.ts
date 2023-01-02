@@ -1,2 +1,2 @@
 export * from './ConsoleLogVisitor';
-export * from './ValidateNodesVisitor';
+export * from './ThrowValidatorItemsVisitor';

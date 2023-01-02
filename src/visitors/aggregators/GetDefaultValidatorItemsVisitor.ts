@@ -10,7 +10,9 @@ export type ValidatorItem = {
   stack: string[];
 };
 
-export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
+export class GetDefaultValidatorItemsVisitor
+  implements Visitor<ValidatorItem[]>
+{
   private stack: string[] = [];
 
   private program: nodes.ProgramNode | null = null;
@@ -283,7 +285,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
   }
 
   protected item(
-    level: ValidatorItem['level'],
+    level: LogLevel,
     node: nodes.Node,
     message: string
   ): ValidatorItem {
