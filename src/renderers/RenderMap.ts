@@ -1,3 +1,5 @@
+import { createFile } from './utils';
+
 export class RenderMap {
   protected readonly _map: Map<string, string> = new Map();
 
@@ -22,5 +24,11 @@ export class RenderMap {
 
   isEmpty(): boolean {
     return this._map.size === 0;
+  }
+
+  write(path: string): void {
+    this._map.forEach((code, relativePath) => {
+      createFile(`${path}/${relativePath}`, code);
+    });
   }
 }
