@@ -191,7 +191,8 @@ export class GetDefaultValidatorItemsVisitor
     return items;
   }
 
-  visitTypeLeaf(): ValidatorItem[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): ValidatorItem[] {
     return [];
   }
 
