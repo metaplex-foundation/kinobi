@@ -2,22 +2,23 @@ import { LogLevel } from '../../logs';
 import { pascalCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { Visitor } from '../Visitor';
+import { NodeStack } from '../NodeStack';
 
 export type ValidatorItem = {
   message: string;
   level: LogLevel;
   node: nodes.Node;
-  stack: string[];
+  stack: NodeStack;
 };
 
 export class GetDefaultValidatorItemsVisitor
   implements Visitor<ValidatorItem[]>
 {
-  protected stack: nodes.Node[] = [];
+  protected stack: NodeStack = new NodeStack();
 
   protected program: nodes.ProgramNode | null = null;
 
-  protected exportedNames: Map<string, nodes.Node[]> = new Map();
+  protected exportedNames: Map<string, NodeStack> = new Map();
 
   protected definedTypes = new Set<string>();
 
@@ -240,17 +241,14 @@ export class GetDefaultValidatorItemsVisitor
     if (!name) return [];
     const conflict = this.nameConflict(node, name);
     if (conflict) return [conflict];
-    this.exportedNames.set(name, [...this.stack]);
+    this.exportedNames.set(name, this.stack.clone());
     return [];
   }
 
   protected nameConflict(node: nodes.Node, name: string): ValidatorItem | null {
     if (!this.exportedNames.has(name)) return null;
-    const conflictingStack = this.getStackStrings(
-      this.exportedNames.get(name) as nodes.Node[]
-    );
-    const conflictingStackString = conflictingStack.join(' > ');
-    const message = `Exported name "${name}" conflicts with the following node "${conflictingStackString}"`;
+    const conflictingStack = this.exportedNames.get(name) as NodeStack;
+    const message = `Exported name "${name}" conflicts with the following node "${conflictingStack.toString()}"`;
     return this.item('error', node, message);
   }
 
@@ -279,53 +277,7 @@ export class GetDefaultValidatorItemsVisitor
     node: nodes.Node,
     message: string
   ): ValidatorItem {
-    return { message, level, node, stack: this.getStackStrings(this.stack) };
-  }
-
-  protected getStackStrings(stack: nodes.Node[]): string[] {
-    return stack.map((node): string => {
-      switch (node.nodeClass) {
-        case 'RootNode':
-          return 'Root';
-        case 'ProgramNode':
-          return node.name ? `Program: ${node.name}` : 'Unnamed Program';
-        case 'AccountNode':
-          return node.name ? `Account: ${node.name}` : 'Unnamed Account';
-        case 'InstructionNode':
-          return node.name
-            ? `Instruction: ${node.name}`
-            : 'Unnamed Instruction';
-        case 'DefinedTypeNode':
-          return node.name
-            ? `Defined Type: ${node.name}`
-            : 'Unnamed Defined Type';
-        case 'ErrorNode':
-          return node.name ? `Error: ${node.name}` : 'Unnamed Error';
-        case 'TypeArrayNode':
-          return 'Array';
-        case 'TypeDefinedLinkNode':
-          return 'Defined Link';
-        case 'TypeEnumNode':
-          return node.name ? `Enum: ${node.name}` : 'Enum';
-        case 'TypeLeafNode':
-          return 'Leaf';
-        case 'TypeMapNode':
-          return 'Map';
-        case 'TypeOptionNode':
-          return 'Option';
-        case 'TypeSetNode':
-          return 'Set';
-        case 'TypeStructNode':
-          return node.name ? `Struct: ${node.name}` : 'Struct';
-        case 'TypeTupleNode':
-          return 'Tuple';
-        case 'TypeVecNode':
-          return 'Vec';
-        default:
-          // @ts-ignore
-          throw new Error(`Unknown node type: ${node.nodeClass}`);
-      }
-    });
+    return { message, level, node, stack: this.stack.clone() };
   }
 
   protected pushNode(node: nodes.Node): void {

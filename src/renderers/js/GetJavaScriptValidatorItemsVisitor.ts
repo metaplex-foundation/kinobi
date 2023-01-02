@@ -20,7 +20,7 @@ export class GetJavaScriptValidatorItemsVisitor extends GetDefaultValidatorItems
     this.pushNode(account);
     if (account.name === 'Metadata') {
       items.push(
-        this.info(
+        this.debug(
           account,
           `You cannot use Metadata as an account name. ${chalk.bold(
             'Because I say so!'

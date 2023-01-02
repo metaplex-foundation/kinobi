@@ -52,7 +52,7 @@ export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<
   }
 
   protected logItem(item: ValidatorItem) {
-    const hint = `Stack: ${item.stack.join(' > ')}.`;
+    const hint = `Stack: ${item.stack.toString()}.`;
 
     switch (item.level) {
       case 'error':
