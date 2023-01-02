@@ -50,7 +50,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     this.prettierOptions = { ...DEFAULT_PRETTIER_OPTIONS, ...options.prettier };
     this.typeManifestVisitor =
       this.options.typeManifestVisitor ??
-      new GetJavaScriptTypeManifestVisitor(); // TODO: Pass in loose type map here somehow...
+      new GetJavaScriptTypeManifestVisitor();
     this.deleteFolderBeforeRendering =
       options.deleteFolderBeforeRendering ?? true;
   }
