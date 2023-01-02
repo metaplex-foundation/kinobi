@@ -1,37 +1,26 @@
 /* eslint-disable no-console */
 import chalk from 'chalk';
-import {
-  getLevelIndex,
-  logDebug,
-  logError,
-  logInfo,
-  LogLevel,
-  logTrace,
-  logWarn,
-} from '../../logs';
-import { ValidatorItem } from '../aggregators';
+import { getLevelIndex, LogLevel } from '../../logs';
 import { BaseDelegateVisitor } from '../BaseDelegateVisitor';
+import { ValidatorBag } from '../ValidatorBag';
 import { Visitor } from '../Visitor';
 
 export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<
-  ValidatorItem[],
+  ValidatorBag,
   void
 > {
   constructor(
-    validator: Visitor<ValidatorItem[]>,
+    validator: Visitor<ValidatorBag>,
     readonly throwLevel: LogLevel = 'error'
   ) {
     super(validator);
   }
 
-  map(items: ValidatorItem[]): void {
-    const validatorItems = items.sort(
-      (a, b) => getLevelIndex(b.level) - getLevelIndex(a.level)
-    );
+  map(validatorBag: ValidatorBag): void {
+    const bag = validatorBag.orderByLevel();
+    bag.log();
 
-    validatorItems.forEach((item) => this.logItem(item));
-
-    const levelHistogram = validatorItems.reduce((acc, item) => {
+    const levelHistogram = bag.items.reduce((acc, item) => {
       acc[item.level] = (acc[item.level] ?? 0) + 1;
       return acc;
     }, {} as Record<LogLevel, number>);
@@ -48,29 +37,6 @@ export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<
           `${chalk.red.bold(`Found ${histogramString}.`)}\n`
       );
       process.exit(1);
-    }
-  }
-
-  protected logItem(item: ValidatorItem) {
-    const hint = `Stack: ${item.stack.toString()}.`;
-
-    switch (item.level) {
-      case 'error':
-        logError(item.message, hint);
-        break;
-      case 'warn':
-        logWarn(item.message, hint);
-        break;
-      case 'info':
-        logInfo(item.message, hint);
-        break;
-      case 'trace':
-        logTrace(item.message, hint);
-        break;
-      case 'debug':
-      default:
-        logDebug(item.message, undefined, hint);
-        break;
     }
   }
 }

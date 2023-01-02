@@ -1,19 +1,10 @@
-import { LogLevel } from '../../logs';
 import { pascalCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { Visitor } from '../Visitor';
 import { NodeStack } from '../NodeStack';
+import { ValidatorBag } from '../ValidatorBag';
 
-export type ValidatorItem = {
-  message: string;
-  level: LogLevel;
-  node: nodes.Node;
-  stack: NodeStack;
-};
-
-export class GetDefaultValidatorItemsVisitor
-  implements Visitor<ValidatorItem[]>
-{
+export class GetDefaultValidatorItemsVisitor implements Visitor<ValidatorBag> {
   protected stack: NodeStack = new NodeStack();
 
   protected program: nodes.ProgramNode | null = null;
@@ -22,262 +13,237 @@ export class GetDefaultValidatorItemsVisitor
 
   protected definedTypes = new Set<string>();
 
-  visitRoot(root: nodes.RootNode): ValidatorItem[] {
+  visitRoot(root: nodes.RootNode): ValidatorBag {
     this.pushNode(root);
 
     // Register defined types to make sure links are valid.
     root.allDefinedTypes.forEach((type) => this.definedTypes.add(type.name));
 
-    const items = root.programs.flatMap((program) => program.accept(this));
+    const bags = root.programs.map((program) => program.accept(this));
     this.popNode();
-    return items;
+    return new ValidatorBag().mergeWith(bags);
   }
 
-  visitProgram(program: nodes.ProgramNode): ValidatorItem[] {
+  visitProgram(program: nodes.ProgramNode): ValidatorBag {
     this.pushNode(program);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!program.metadata.name) {
-      items.push(this.error(program, 'Program has no name'));
+      bag.error('Program has no name', program, this.stack);
     }
     if (!program.metadata.address) {
-      items.push(this.error(program, 'Program has no address'));
+      bag.error('Program has no address', program, this.stack);
     }
     if (!program.metadata.version) {
-      items.push(this.warn(program, 'Program has no version'));
+      bag.warn('Program has no version', program, this.stack);
     }
     if (!program.metadata.origin) {
-      items.push(this.info(program, 'Program has no origin'));
+      bag.info('Program has no origin', program, this.stack);
     }
 
-    items.push(...program.accounts.flatMap((node) => node.accept(this)));
-    items.push(...program.instructions.flatMap((node) => node.accept(this)));
-    items.push(...program.definedTypes.flatMap((node) => node.accept(this)));
-    items.push(...program.errors.flatMap((node) => node.accept(this)));
+    bag.mergeWith([
+      ...program.accounts.map((node) => node.accept(this)),
+      ...program.instructions.map((node) => node.accept(this)),
+      ...program.definedTypes.map((node) => node.accept(this)),
+      ...program.errors.map((node) => node.accept(this)),
+    ]);
+
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitAccount(account: nodes.AccountNode): ValidatorItem[] {
+  visitAccount(account: nodes.AccountNode): ValidatorBag {
     this.pushNode(account);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!account.name) {
-      items.push(this.error(account, 'Account has no name'));
+      bag.error('Account has no name', account, this.stack);
     }
-    items.push(...this.checkNameConflict(account, account.name));
-
-    items.push(...account.type.accept(this));
+    bag.mergeWith([
+      this.nameConflict(account, account.name),
+      account.type.accept(this),
+    ]);
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitInstruction(instruction: nodes.InstructionNode): ValidatorItem[] {
+  visitInstruction(instruction: nodes.InstructionNode): ValidatorBag {
     this.pushNode(instruction);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!instruction.name) {
-      items.push(this.error(instruction, 'Instruction has no name'));
+      bag.error('Instruction has no name', instruction, this.stack);
     }
-    items.push(...this.checkNameConflict(instruction, instruction.name));
-
-    items.push(...instruction.args.accept(this));
+    bag.mergeWith([
+      this.nameConflict(instruction, instruction.name),
+      instruction.args.accept(this),
+    ]);
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitDefinedType(definedType: nodes.DefinedTypeNode): ValidatorItem[] {
+  visitDefinedType(definedType: nodes.DefinedTypeNode): ValidatorBag {
     this.pushNode(definedType);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!definedType.name) {
-      items.push(this.error(definedType, 'Defined type has no name'));
+      bag.error('Defined type has no name', definedType, this.stack);
     }
-    items.push(...this.checkNameConflict(definedType, definedType.name));
-
-    items.push(...definedType.type.accept(this));
+    bag.mergeWith([
+      this.nameConflict(definedType, definedType.name),
+      definedType.type.accept(this),
+    ]);
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitError(error: nodes.ErrorNode): ValidatorItem[] {
+  visitError(error: nodes.ErrorNode): ValidatorBag {
     this.pushNode(error);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!error.name) {
-      items.push(this.error(error, 'Error has no name'));
+      bag.error('Error has no name', error, this.stack);
     }
     if (typeof error.code !== 'number') {
-      items.push(this.error(error, 'Error has no code'));
+      bag.error('Error has no code', error, this.stack);
     }
     if (!error.message) {
-      items.push(this.warn(error, 'Error has no message'));
+      bag.warn('Error has no message', error, this.stack);
     }
 
     const programPrefix = pascalCase(this.program?.metadata.prefix ?? '');
     const prefixedErrorName = `${programPrefix + pascalCase(error.name)}Error`;
-    items.push(...this.checkNameConflict(error, prefixedErrorName));
+    bag.mergeWith([this.nameConflict(error, prefixedErrorName)]);
 
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): ValidatorItem[] {
+  visitTypeArray(typeArray: nodes.TypeArrayNode): ValidatorBag {
     this.pushNode(typeArray);
-    const items = typeArray.itemType.accept(this);
+    const bag = typeArray.itemType.accept(this);
     this.popNode();
-    return items;
+    return bag;
   }
 
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode
-  ): ValidatorItem[] {
+  ): ValidatorBag {
     this.pushNode(typeDefinedLink);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!typeDefinedLink.definedType) {
-      items.push(
-        this.error(typeDefinedLink, 'Pointing to a defined type with no name')
+      bag.error(
+        'Pointing to a defined type with no name',
+        typeDefinedLink,
+        this.stack
       );
     } else if (!this.definedTypes.has(typeDefinedLink.definedType)) {
-      items.push(
-        this.error(
-          typeDefinedLink,
-          `Pointing to a missing defined type named "${typeDefinedLink.definedType}"`
-        )
+      bag.error(
+        `Pointing to a missing defined type named "${typeDefinedLink.definedType}"`,
+        typeDefinedLink,
+        this.stack
       );
     }
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): ValidatorItem[] {
+  visitTypeEnum(typeEnum: nodes.TypeEnumNode): ValidatorBag {
     this.pushNode(typeEnum);
 
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!typeEnum.name) {
-      items.push(this.info(typeEnum, 'Enum has no name'));
+      bag.info('Enum has no name', typeEnum, this.stack);
     }
     if (typeEnum.variants.length === 0) {
-      items.push(this.warn(typeEnum, 'Enum has no variants'));
+      bag.warn('Enum has no variants', typeEnum, this.stack);
     }
     typeEnum.variants.forEach((variant) => {
       if (!variant.name) {
-        items.push(this.error(typeEnum, 'Enum variant has no name'));
+        bag.error('Enum variant has no name', typeEnum, this.stack);
       }
     });
 
-    items.push(
-      ...typeEnum.variants.flatMap((variant) => {
-        if (variant.kind === 'empty') return [];
+    bag.mergeWith(
+      typeEnum.variants.map((variant) => {
+        if (variant.kind === 'empty') return new ValidatorBag();
         return variant.type.accept(this);
       })
     );
     this.popNode();
-    return items;
+    return bag;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): ValidatorItem[] {
-    return [];
+  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): ValidatorBag {
+    return new ValidatorBag();
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): ValidatorItem[] {
+  visitTypeMap(typeMap: nodes.TypeMapNode): ValidatorBag {
     this.pushNode(typeMap);
-    const items = [
-      ...typeMap.keyType.accept(this),
-      ...typeMap.valueType.accept(this),
-    ];
+    const bag = new ValidatorBag();
+    bag.mergeWith([
+      typeMap.keyType.accept(this),
+      typeMap.valueType.accept(this),
+    ]);
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): ValidatorItem[] {
+  visitTypeOption(typeOption: nodes.TypeOptionNode): ValidatorBag {
     this.pushNode(typeOption);
-    const items = typeOption.type.accept(this);
+    const bag = typeOption.type.accept(this);
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): ValidatorItem[] {
+  visitTypeSet(typeSet: nodes.TypeSetNode): ValidatorBag {
     this.pushNode(typeSet);
-    const items = typeSet.type.accept(this);
+    const bag = typeSet.type.accept(this);
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): ValidatorItem[] {
+  visitTypeStruct(typeStruct: nodes.TypeStructNode): ValidatorBag {
     this.pushNode(typeStruct);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (!typeStruct.name) {
-      items.push(this.info(typeStruct, 'Struct has no name'));
+      bag.info('Struct has no name', typeStruct, this.stack);
     }
     typeStruct.fields.forEach((field) => {
       if (!field.name) {
-        items.push(this.error(typeStruct, 'Struct field has no name'));
+        bag.error('Struct field has no name', typeStruct, this.stack);
       }
     });
 
-    items.push(
-      ...typeStruct.fields.flatMap((field) => field.type.accept(this))
-    );
+    bag.mergeWith(typeStruct.fields.map((field) => field.type.accept(this)));
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): ValidatorItem[] {
+  visitTypeTuple(typeTuple: nodes.TypeTupleNode): ValidatorBag {
     this.pushNode(typeTuple);
-    const items: ValidatorItem[] = [];
+    const bag = new ValidatorBag();
     if (typeTuple.itemTypes.length === 0) {
-      items.push(this.warn(typeTuple, 'Tuple has no items'));
+      bag.warn('Tuple has no items', typeTuple, this.stack);
     }
-    items.push(...typeTuple.itemTypes.flatMap((node) => node.accept(this)));
+    bag.mergeWith(typeTuple.itemTypes.map((node) => node.accept(this)));
     this.popNode();
-    return items;
+    return bag;
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): ValidatorItem[] {
+  visitTypeVec(typeVec: nodes.TypeVecNode): ValidatorBag {
     this.pushNode(typeVec);
-    const items = typeVec.itemType.accept(this);
+    const bag = typeVec.itemType.accept(this);
     this.popNode();
-    return items;
+    return bag;
   }
 
-  protected checkNameConflict(node: nodes.Node, name: string): ValidatorItem[] {
-    if (!name) return [];
-    const conflict = this.nameConflict(node, name);
-    if (conflict) return [conflict];
-    this.exportedNames.set(name, this.stack.clone());
-    return [];
-  }
-
-  protected nameConflict(node: nodes.Node, name: string): ValidatorItem | null {
-    if (!this.exportedNames.has(name)) return null;
+  protected nameConflict(node: nodes.Node, name: string): ValidatorBag {
+    if (!name) return new ValidatorBag();
+    const hasConflict = this.exportedNames.has(name);
+    if (!hasConflict) {
+      this.exportedNames.set(name, this.stack.clone());
+      return new ValidatorBag();
+    }
     const conflictingStack = this.exportedNames.get(name) as NodeStack;
     const message = `Exported name "${name}" conflicts with the following node "${conflictingStack.toString()}"`;
-    return this.item('error', node, message);
-  }
-
-  protected error(node: nodes.Node, message: string): ValidatorItem {
-    return this.item('error', node, message);
-  }
-
-  protected warn(node: nodes.Node, message: string): ValidatorItem {
-    return this.item('warn', node, message);
-  }
-
-  protected info(node: nodes.Node, message: string): ValidatorItem {
-    return this.item('info', node, message);
-  }
-
-  protected trace(node: nodes.Node, message: string): ValidatorItem {
-    return this.item('trace', node, message);
-  }
-
-  protected debug(node: nodes.Node, message: string): ValidatorItem {
-    return this.item('debug', node, message);
-  }
-
-  protected item(
-    level: LogLevel,
-    node: nodes.Node,
-    message: string
-  ): ValidatorItem {
-    return { message, level, node, stack: this.stack.clone() };
+    return new ValidatorBag().error(message, node, this.stack);
   }
 
   protected pushNode(node: nodes.Node): void {
