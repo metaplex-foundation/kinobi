@@ -1,10 +1,10 @@
 import * as nodes from '../../nodes';
 import { assertRootNode } from '../../nodes';
-import { BaseRootVisitor } from '../BaseRootVisitor';
 import { GetDefinedTypeHistogramVisitor } from '../aggregators/GetDefinedTypeHistogramVisitor';
 import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
+import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
-export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseRootVisitor {
+export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     const histogram = root.accept(new GetDefinedTypeHistogramVisitor());
     const { allDefinedTypes } = root;

@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
 import { GetNodeInlineStringVisitor } from '../aggregators';
-import { BaseRootVisitor } from '../BaseRootVisitor';
+import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { NodeSelector } from '../NodeSelector';
 import { DeleteNodesVisitor } from './DeleteNodesVisitor';
 
@@ -9,7 +9,7 @@ type DefinedTypeWithProgram = {
   type: nodes.DefinedTypeNode;
 };
 
-export class DeduplicateIdenticalDefinedTypesVisitor extends BaseRootVisitor {
+export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     const typeMap = new Map<string, DefinedTypeWithProgram[]>();
 

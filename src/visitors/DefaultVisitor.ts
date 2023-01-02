@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import { BaseRootVisitor } from './BaseRootVisitor';
+import { BaseThrowVisitor } from './BaseThrowVisitor';
 import {
   DeduplicateIdenticalDefinedTypesVisitor,
   SetAnchorDiscriminatorsVisitor,
@@ -9,7 +9,7 @@ import {
   TransformU8ArraysToBytesVisitor,
 } from './transformers';
 
-export class DefaultVisitor extends BaseRootVisitor {
+export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {
     let root: nodes.Node = currentRoot;
     // Anchor discriminators.

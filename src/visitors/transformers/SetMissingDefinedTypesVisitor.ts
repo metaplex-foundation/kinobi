@@ -1,8 +1,8 @@
 import * as nodes from '../../nodes';
 import { GetDefinedTypeHistogramVisitor } from '../aggregators';
-import { BaseRootVisitor } from '../BaseRootVisitor';
+import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
-export class SetMissingDefinedTypesVisitor extends BaseRootVisitor {
+export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   readonly programs: nodes.ProgramNode[] = [];
 
   constructor(programs: nodes.ProgramInputs) {

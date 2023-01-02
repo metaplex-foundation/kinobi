@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import chalk from 'chalk';
 import * as nodes from '../../nodes';
-import { BaseRootVisitor } from '../BaseRootVisitor';
 import { GetValidatorItemsVisitor, ValidatorItem } from '../aggregators';
+import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
 type Level = ValidatorItem['level'];
 
@@ -12,7 +12,7 @@ const LEVEL_PRIORITY: Record<Level, number> = {
   info: 2,
 };
 
-export class ValidateNodesVisitor extends BaseRootVisitor {
+export class ValidateNodesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   constructor(readonly throwLevel: Level = 'error') {
     super();
   }

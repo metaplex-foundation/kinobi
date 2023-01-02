@@ -2,7 +2,7 @@ import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
 import { camelCase, pascalCase, titleCase } from '../../utils';
-import { Visitor } from '../../visitors';
+import { Visitor, BaseThrowVisitor } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
 import {
@@ -30,12 +30,13 @@ export type GetJavaScriptRenderMapOptions = {
   };
 };
 
-export class GetJavaScriptRenderMapVisitor implements Visitor<RenderMap> {
+export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   readonly options: Required<GetJavaScriptRenderMapOptions>;
 
   private program: nodes.ProgramNode | null = null;
 
   constructor(options: GetJavaScriptRenderMapOptions = {}) {
+    super();
     this.options = {
       formatCode: options.formatCode ?? true,
       prettierOptions: {
@@ -219,50 +220,6 @@ export class GetJavaScriptRenderMapVisitor implements Visitor<RenderMap> {
         camelCaseName: camelCase(definedType.name),
       })
     );
-  }
-
-  visitError(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeArray(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeDefinedLink(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeEnum(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeLeaf(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeMap(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeOption(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeSet(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeStruct(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeTuple(): RenderMap {
-    throw new Error('Operation not supported');
-  }
-
-  visitTypeVec(): RenderMap {
-    throw new Error('Operation not supported');
   }
 
   get typeManifestVisitor() {
