@@ -1,5 +1,10 @@
+import { LogLevel } from '../../logs';
 import * as nodes from '../../nodes';
-import { BaseThrowVisitor } from '../../visitors';
+import {
+  BaseThrowVisitor,
+  GetDefaultValidatorItemsVisitor,
+  ThrowValidatorItemsVisitor,
+} from '../../visitors';
 import { deleteFolder } from '../utils';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
 import {
@@ -9,6 +14,7 @@ import {
 
 export type RenderJavaScriptOptions = GetJavaScriptRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
+  throwLevel?: LogLevel;
 };
 
 export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
@@ -20,6 +26,14 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
   }
 
   visitRoot(root: nodes.RootNode): void {
+    // Validate nodes.
+    root.accept(
+      new ThrowValidatorItemsVisitor(
+        new GetDefaultValidatorItemsVisitor(),
+        this.options.throwLevel
+      )
+    );
+
     // Delete existing generated folder.
     if (this.options.deleteFolderBeforeRendering ?? true) {
       deleteFolder(this.path);

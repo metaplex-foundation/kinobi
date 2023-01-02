@@ -9,19 +9,25 @@ import {
   logTrace,
   logWarn,
 } from '../../logs';
-import * as nodes from '../../nodes';
-import { GetDefaultValidatorItemsVisitor, ValidatorItem } from '../aggregators';
-import { BaseThrowVisitor } from '../BaseThrowVisitor';
+import { ValidatorItem } from '../aggregators';
+import { BaseDelegateVisitor } from '../BaseDelegateVisitor';
+import { Visitor } from '../Visitor';
 
-export class ThrowValidatorItemsVisitor extends BaseThrowVisitor<nodes.RootNode> {
-  constructor(readonly throwLevel: LogLevel = 'error') {
-    super();
+export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<
+  ValidatorItem[],
+  void
+> {
+  constructor(
+    validator: Visitor<ValidatorItem[]>,
+    readonly throwLevel: LogLevel = 'error'
+  ) {
+    super(validator);
   }
 
-  visitRoot(root: nodes.RootNode): nodes.RootNode {
-    const validatorItems = root
-      .accept(new GetDefaultValidatorItemsVisitor())
-      .sort((a, b) => getLevelIndex(b.level) - getLevelIndex(a.level));
+  map(items: ValidatorItem[]): void {
+    const validatorItems = items.sort(
+      (a, b) => getLevelIndex(b.level) - getLevelIndex(a.level)
+    );
 
     validatorItems.forEach((item) => this.logItem(item));
 
@@ -43,8 +49,6 @@ export class ThrowValidatorItemsVisitor extends BaseThrowVisitor<nodes.RootNode>
       );
       process.exit(1);
     }
-
-    return root;
   }
 
   protected logItem(item: ValidatorItem) {
