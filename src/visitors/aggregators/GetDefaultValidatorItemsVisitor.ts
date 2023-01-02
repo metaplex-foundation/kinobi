@@ -13,13 +13,13 @@ export type ValidatorItem = {
 export class GetDefaultValidatorItemsVisitor
   implements Visitor<ValidatorItem[]>
 {
-  private stack: string[] = [];
+  protected stack: string[] = [];
 
-  private program: nodes.ProgramNode | null = null;
+  protected program: nodes.ProgramNode | null = null;
 
-  private exportedNames: Map<string, string[]> = new Map();
+  protected exportedNames: Map<string, string[]> = new Map();
 
-  private definedTypes = new Set<string>();
+  protected definedTypes = new Set<string>();
 
   visitRoot(root: nodes.RootNode): ValidatorItem[] {
     this.stack.push('Root');

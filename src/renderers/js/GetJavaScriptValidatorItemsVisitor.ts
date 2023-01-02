@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import * as nodes from '../../nodes';
 import { GetDefaultValidatorItemsVisitor, ValidatorItem } from '../../visitors';
 
@@ -15,7 +16,22 @@ export class GetJavaScriptValidatorItemsVisitor extends GetDefaultValidatorItems
   }
 
   visitAccount(account: nodes.AccountNode): ValidatorItem[] {
-    return super.visitAccount(account);
+    const items = super.visitAccount(account);
+    this.stack.push(
+      account.name ? `Account: ${account.name}` : 'Unnamed Account'
+    );
+    if (account.name === 'Metadata') {
+      items.push(
+        this.info(
+          account,
+          `You cannot use Metadata as an account name. ${chalk.bold(
+            'Because I say so!'
+          )}`
+        )
+      );
+    }
+    this.stack.pop();
+    return items;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): ValidatorItem[] {
