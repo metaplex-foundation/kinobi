@@ -1,9 +1,7 @@
 import { readFileSync } from 'fs';
 
-export function readJson<T extends object>(value: string | T): T {
-  return typeof value === 'string'
-    ? (JSON.parse(readFileSync(value, 'utf-8')) as T)
-    : value;
+export function readJson<T extends object>(value: string): T {
+  return JSON.parse(readFileSync(value, 'utf-8')) as T;
 }
 
 export function capitalize(str: string): string {

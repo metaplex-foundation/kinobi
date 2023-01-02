@@ -1,17 +1,11 @@
-import type { Idl } from './idl';
-import { assertRootNode, Node, RootNode } from './nodes';
-import { readJson } from './utils';
+import { assertRootNode, Node, ProgramInputs, RootNode } from './nodes';
 import { DefaultVisitor, Visitable, Visitor } from './visitors';
 
 export class Kinobi implements Visitable {
   public rootNode: RootNode;
 
-  constructor(
-    idls: string | Partial<Idl> | (string | Partial<Idl>)[],
-    useDefaultVisitor = true
-  ) {
-    const idlArray = Array.isArray(idls) ? idls : [idls];
-    this.rootNode = RootNode.fromIdls(idlArray.map(readJson));
+  constructor(idls: ProgramInputs, useDefaultVisitor = true) {
+    this.rootNode = RootNode.fromProgramInputs(idls);
     if (useDefaultVisitor) this.update(new DefaultVisitor());
   }
 
