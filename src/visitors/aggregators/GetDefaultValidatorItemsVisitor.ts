@@ -13,33 +13,27 @@ export type ValidatorItem = {
 export class GetDefaultValidatorItemsVisitor
   implements Visitor<ValidatorItem[]>
 {
-  protected stack: string[] = [];
+  protected stack: nodes.Node[] = [];
 
   protected program: nodes.ProgramNode | null = null;
 
-  protected exportedNames: Map<string, string[]> = new Map();
+  protected exportedNames: Map<string, nodes.Node[]> = new Map();
 
   protected definedTypes = new Set<string>();
 
   visitRoot(root: nodes.RootNode): ValidatorItem[] {
-    this.stack.push('Root');
+    this.pushNode(root);
 
     // Register defined types to make sure links are valid.
     root.allDefinedTypes.forEach((type) => this.definedTypes.add(type.name));
 
     const items = root.programs.flatMap((program) => program.accept(this));
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitProgram(program: nodes.ProgramNode): ValidatorItem[] {
-    this.program = program;
-    this.stack.push(
-      program.metadata.name
-        ? `Program: ${program.metadata.name}`
-        : 'Unnamed Program'
-    );
-
+    this.pushNode(program);
     const items: ValidatorItem[] = [];
     if (!program.metadata.name) {
       items.push(this.error(program, 'Program has no name'));
@@ -58,16 +52,12 @@ export class GetDefaultValidatorItemsVisitor
     items.push(...program.instructions.flatMap((node) => node.accept(this)));
     items.push(...program.definedTypes.flatMap((node) => node.accept(this)));
     items.push(...program.errors.flatMap((node) => node.accept(this)));
-    this.stack.pop();
-    this.program = null;
+    this.popNode();
     return items;
   }
 
   visitAccount(account: nodes.AccountNode): ValidatorItem[] {
-    this.stack.push(
-      account.name ? `Account: ${account.name}` : 'Unnamed Account'
-    );
-
+    this.pushNode(account);
     const items: ValidatorItem[] = [];
     if (!account.name) {
       items.push(this.error(account, 'Account has no name'));
@@ -75,17 +65,12 @@ export class GetDefaultValidatorItemsVisitor
     items.push(...this.checkNameConflict(account, account.name));
 
     items.push(...account.type.accept(this));
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): ValidatorItem[] {
-    this.stack.push(
-      instruction.name
-        ? `Instruction: ${instruction.name}`
-        : 'Unnamed Instruction'
-    );
-
+    this.pushNode(instruction);
     const items: ValidatorItem[] = [];
     if (!instruction.name) {
       items.push(this.error(instruction, 'Instruction has no name'));
@@ -93,17 +78,12 @@ export class GetDefaultValidatorItemsVisitor
     items.push(...this.checkNameConflict(instruction, instruction.name));
 
     items.push(...instruction.args.accept(this));
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): ValidatorItem[] {
-    this.stack.push(
-      definedType.name
-        ? `Defined Type: ${definedType.name}`
-        : 'Unnamed Defined Type'
-    );
-
+    this.pushNode(definedType);
     const items: ValidatorItem[] = [];
     if (!definedType.name) {
       items.push(this.error(definedType, 'Defined type has no name'));
@@ -111,13 +91,12 @@ export class GetDefaultValidatorItemsVisitor
     items.push(...this.checkNameConflict(definedType, definedType.name));
 
     items.push(...definedType.type.accept(this));
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitError(error: nodes.ErrorNode): ValidatorItem[] {
-    this.stack.push(error.name ? `Error: ${error.name}` : 'Unnamed Error');
-
+    this.pushNode(error);
     const items: ValidatorItem[] = [];
     if (!error.name) {
       items.push(this.error(error, 'Error has no name'));
@@ -133,21 +112,21 @@ export class GetDefaultValidatorItemsVisitor
     const prefixedErrorName = `${programPrefix + pascalCase(error.name)}Error`;
     items.push(...this.checkNameConflict(error, prefixedErrorName));
 
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): ValidatorItem[] {
-    this.stack.push('Array');
+    this.pushNode(typeArray);
     const items = typeArray.itemType.accept(this);
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): ValidatorItem[] {
-    this.stack.push('Defined Link');
+    this.pushNode(typeDefinedLink);
     const items: ValidatorItem[] = [];
     if (!typeDefinedLink.definedType) {
       items.push(
@@ -161,12 +140,12 @@ export class GetDefaultValidatorItemsVisitor
         )
       );
     }
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): ValidatorItem[] {
-    this.stack.push(typeEnum.name ? `Enum: ${typeEnum.name}` : 'Enum');
+    this.pushNode(typeEnum);
 
     const items: ValidatorItem[] = [];
     if (!typeEnum.name) {
@@ -187,7 +166,7 @@ export class GetDefaultValidatorItemsVisitor
         return variant.type.accept(this);
       })
     );
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
@@ -197,31 +176,31 @@ export class GetDefaultValidatorItemsVisitor
   }
 
   visitTypeMap(typeMap: nodes.TypeMapNode): ValidatorItem[] {
-    this.stack.push('Map');
+    this.pushNode(typeMap);
     const items = [
       ...typeMap.keyType.accept(this),
       ...typeMap.valueType.accept(this),
     ];
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): ValidatorItem[] {
-    this.stack.push('Option');
+    this.pushNode(typeOption);
     const items = typeOption.type.accept(this);
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): ValidatorItem[] {
-    this.stack.push('Set');
+    this.pushNode(typeSet);
     const items = typeSet.type.accept(this);
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): ValidatorItem[] {
-    this.stack.push(typeStruct.name ? `Struct: ${typeStruct.name}` : 'Struct');
+    this.pushNode(typeStruct);
     const items: ValidatorItem[] = [];
     if (!typeStruct.name) {
       items.push(this.info(typeStruct, 'Struct has no name'));
@@ -235,25 +214,25 @@ export class GetDefaultValidatorItemsVisitor
     items.push(
       ...typeStruct.fields.flatMap((field) => field.type.accept(this))
     );
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): ValidatorItem[] {
-    this.stack.push('Tuple');
+    this.pushNode(typeTuple);
     const items: ValidatorItem[] = [];
     if (typeTuple.itemTypes.length === 0) {
       items.push(this.warn(typeTuple, 'Tuple has no items'));
     }
     items.push(...typeTuple.itemTypes.flatMap((node) => node.accept(this)));
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
   visitTypeVec(typeVec: nodes.TypeVecNode): ValidatorItem[] {
-    this.stack.push('Vec');
+    this.pushNode(typeVec);
     const items = typeVec.itemType.accept(this);
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
@@ -267,7 +246,9 @@ export class GetDefaultValidatorItemsVisitor
 
   protected nameConflict(node: nodes.Node, name: string): ValidatorItem | null {
     if (!this.exportedNames.has(name)) return null;
-    const conflictingStack = this.exportedNames.get(name) as string[];
+    const conflictingStack = this.getStackStrings(
+      this.exportedNames.get(name) as nodes.Node[]
+    );
     const conflictingStackString = conflictingStack.join(' > ');
     const message = `Exported name "${name}" conflicts with the following node "${conflictingStackString}"`;
     return this.item('error', node, message);
@@ -285,11 +266,80 @@ export class GetDefaultValidatorItemsVisitor
     return this.item('info', node, message);
   }
 
+  protected trace(node: nodes.Node, message: string): ValidatorItem {
+    return this.item('trace', node, message);
+  }
+
+  protected debug(node: nodes.Node, message: string): ValidatorItem {
+    return this.item('debug', node, message);
+  }
+
   protected item(
     level: LogLevel,
     node: nodes.Node,
     message: string
   ): ValidatorItem {
-    return { message, level, node, stack: [...this.stack] };
+    return { message, level, node, stack: this.getStackStrings(this.stack) };
+  }
+
+  protected getStackStrings(stack: nodes.Node[]): string[] {
+    return stack.map((node): string => {
+      switch (node.nodeClass) {
+        case 'RootNode':
+          return 'Root';
+        case 'ProgramNode':
+          return node.name ? `Program: ${node.name}` : 'Unnamed Program';
+        case 'AccountNode':
+          return node.name ? `Account: ${node.name}` : 'Unnamed Account';
+        case 'InstructionNode':
+          return node.name
+            ? `Instruction: ${node.name}`
+            : 'Unnamed Instruction';
+        case 'DefinedTypeNode':
+          return node.name
+            ? `Defined Type: ${node.name}`
+            : 'Unnamed Defined Type';
+        case 'ErrorNode':
+          return node.name ? `Error: ${node.name}` : 'Unnamed Error';
+        case 'TypeArrayNode':
+          return 'Array';
+        case 'TypeDefinedLinkNode':
+          return 'Defined Link';
+        case 'TypeEnumNode':
+          return node.name ? `Enum: ${node.name}` : 'Enum';
+        case 'TypeLeafNode':
+          return 'Leaf';
+        case 'TypeMapNode':
+          return 'Map';
+        case 'TypeOptionNode':
+          return 'Option';
+        case 'TypeSetNode':
+          return 'Set';
+        case 'TypeStructNode':
+          return node.name ? `Struct: ${node.name}` : 'Struct';
+        case 'TypeTupleNode':
+          return 'Tuple';
+        case 'TypeVecNode':
+          return 'Vec';
+        default:
+          // @ts-ignore
+          throw new Error(`Unknown node type: ${node.nodeClass}`);
+      }
+    });
+  }
+
+  protected pushNode(node: nodes.Node): void {
+    this.stack.push(node);
+    if (nodes.isProgramNode(node)) {
+      this.program = node;
+    }
+  }
+
+  protected popNode(): nodes.Node | undefined {
+    const node = this.stack.pop();
+    if (node && nodes.isProgramNode(node)) {
+      this.program = null;
+    }
+    return node;
   }
 }

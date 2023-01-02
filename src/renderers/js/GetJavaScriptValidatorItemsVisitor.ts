@@ -17,9 +17,7 @@ export class GetJavaScriptValidatorItemsVisitor extends GetDefaultValidatorItems
 
   visitAccount(account: nodes.AccountNode): ValidatorItem[] {
     const items = super.visitAccount(account);
-    this.stack.push(
-      account.name ? `Account: ${account.name}` : 'Unnamed Account'
-    );
+    this.pushNode(account);
     if (account.name === 'Metadata') {
       items.push(
         this.info(
@@ -30,7 +28,7 @@ export class GetJavaScriptValidatorItemsVisitor extends GetDefaultValidatorItems
         )
       );
     }
-    this.stack.pop();
+    this.popNode();
     return items;
   }
 
