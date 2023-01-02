@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
 import { Visitor } from '../../visitors';
-import { ImportMap } from './ImportMap';
+import { JavaScriptImportMap } from './JavaScriptImportMap';
 
 export type JavaScriptTypeManifest = {
   strictType: string;
@@ -8,7 +8,7 @@ export type JavaScriptTypeManifest = {
   hasLooseType: boolean;
   isEnum: boolean;
   serializer: string;
-  imports: ImportMap;
+  imports: JavaScriptImportMap;
 };
 
 export class GetJavaScriptTypeManifestVisitor
@@ -129,7 +129,7 @@ export class GetJavaScriptTypeManifestVisitor
       hasLooseType: linkedDefinedTypeHasLooseType,
       isEnum: false,
       serializer: `${serializerName}(context)`,
-      imports: new ImportMap().add('types', [
+      imports: new JavaScriptImportMap().add('types', [
         serializerName,
         typeDefinedLink.definedType,
         ...(linkedDefinedTypeHasLooseType
@@ -160,7 +160,7 @@ export class GetJavaScriptTypeManifestVisitor
         serializer:
           `${this.s('enum')}<${definedName.strict}>` +
           `(${definedName.strict}, '${definedName.strict}')`,
-        imports: new ImportMap(),
+        imports: new JavaScriptImportMap(),
       };
     }
 
@@ -206,7 +206,7 @@ export class GetJavaScriptTypeManifestVisitor
           hasLooseType: false,
           isEnum: false,
           serializer: `['${variant.name}', ${this.s('unit')}]`,
-          imports: new ImportMap(),
+          imports: new JavaScriptImportMap(),
         };
       }
     );
@@ -245,7 +245,7 @@ export class GetJavaScriptTypeManifestVisitor
       serializer: this.s(typeLeaf.type),
       hasLooseType: !!looseType,
       isEnum: false,
-      imports: new ImportMap(),
+      imports: new JavaScriptImportMap(),
     });
 
     switch (typeLeaf.type) {
@@ -256,7 +256,7 @@ export class GetJavaScriptTypeManifestVisitor
       case 'publicKey':
         return {
           ...base('PublicKey'),
-          imports: new ImportMap().add('core', 'PublicKey'),
+          imports: new JavaScriptImportMap().add('core', 'PublicKey'),
         };
       case 'bool':
         return { ...base('boolean') };
@@ -395,7 +395,9 @@ export class GetJavaScriptTypeManifestVisitor
     manifests: JavaScriptTypeManifest[]
   ): Pick<JavaScriptTypeManifest, 'imports' | 'hasLooseType' | 'isEnum'> {
     return {
-      imports: new ImportMap().mergeWith(...manifests.map((td) => td.imports)),
+      imports: new JavaScriptImportMap().mergeWith(
+        ...manifests.map((td) => td.imports)
+      ),
       hasLooseType: manifests.some((td) => td.hasLooseType),
       isEnum: false,
     };

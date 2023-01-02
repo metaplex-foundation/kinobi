@@ -5,13 +5,13 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   errors: '../errors',
 };
 
-export class ImportMap {
+export class JavaScriptImportMap {
   protected readonly _imports: Map<string, Set<string>> = new Map();
 
   add(
     module: string,
     dependencies: string | string[] | Set<string>
-  ): ImportMap {
+  ): JavaScriptImportMap {
     const currentDependencies = this._imports.get(module) ?? new Set();
     const newDependencies =
       typeof dependencies === 'string' ? [dependencies] : dependencies;
@@ -25,7 +25,7 @@ export class ImportMap {
   remove(
     module: string,
     dependencies: string | string[] | Set<string>
-  ): ImportMap {
+  ): JavaScriptImportMap {
     const currentDependencies = this._imports.get(module) ?? new Set();
     const dependenciesToRemove =
       typeof dependencies === 'string' ? [dependencies] : dependencies;
@@ -40,7 +40,7 @@ export class ImportMap {
     return this;
   }
 
-  mergeWith(...others: ImportMap[]): ImportMap {
+  mergeWith(...others: JavaScriptImportMap[]): JavaScriptImportMap {
     others.forEach((other) => {
       other._imports.forEach((dependencies, module) => {
         this.add(module, dependencies);

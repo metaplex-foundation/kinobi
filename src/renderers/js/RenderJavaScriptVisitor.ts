@@ -8,7 +8,7 @@ import {
   GetJavaScriptTypeManifestVisitor,
   JavaScriptTypeManifest,
 } from './GetJavaScriptTypeManifestVisitor';
-import { ImportMap } from './ImportMap';
+import { JavaScriptImportMap } from './JavaScriptImportMap';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -92,7 +92,10 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
     program.instructions.forEach((instruction) => instruction.accept(this));
     this.render('errorsPage.njk', `errors/${name}.ts`, {
-      imports: new ImportMap().add('core', ['ProgramError', 'Program']),
+      imports: new JavaScriptImportMap().add('core', [
+        'ProgramError',
+        'Program',
+      ]),
       program,
       pascalCaseName,
       errors: program.errors.map((error) => ({
@@ -102,7 +105,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       })),
     });
     this.render('programsPage.njk', `programs/${name}.ts`, {
-      imports: new ImportMap()
+      imports: new JavaScriptImportMap()
         .add('core', ['Context', 'Program'])
         .add('errors', [
           `get${pascalCaseName}ErrorFromCode`,
@@ -116,7 +119,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitAccount(account: nodes.AccountNode): void {
     const typeManifest = account.accept(this.typeManifestVisitor);
-    const imports = new ImportMap()
+    const imports = new JavaScriptImportMap()
       .mergeWith(typeManifest.imports)
       .add('core', [
         'Account',
@@ -139,7 +142,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitInstruction(instruction: nodes.InstructionNode): void {
     // Imports.
-    const imports = new ImportMap().add('core', [
+    const imports = new JavaScriptImportMap().add('core', [
       'AccountMeta',
       'Context',
       'getProgramAddressWithFallback',
@@ -199,7 +202,7 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
     const typeManifest = definedType.accept(this.typeManifestVisitor);
-    const imports = new ImportMap()
+    const imports = new JavaScriptImportMap()
       .mergeWith(typeManifest.imports)
       .add('core', ['Context', 'Serializer'])
       .remove('types', [definedType.name]);
@@ -222,8 +225,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
 
   protected getInstructionAccountImports(
     accounts: nodes.InstructionNodeAccount[]
-  ): ImportMap {
-    const imports = new ImportMap();
+  ): JavaScriptImportMap {
+    const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
       if (account.isOptionalSigner) {
         imports.add('core', ['PublicKey', 'Signer', 'isSigner']);
