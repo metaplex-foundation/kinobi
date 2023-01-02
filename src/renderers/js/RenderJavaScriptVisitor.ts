@@ -64,7 +64,8 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
       this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
     }
 
-    const context = { root };
+    const programsToRender = root.programs.filter((p) => p.metadata.render);
+    const context = { root, programsToRender };
     this.render('rootIndex.njk', 'index.ts');
     this.render('accountsIndex.njk', 'accounts/index.ts', context);
     this.render('instructionsIndex.njk', 'instructions/index.ts', context);
@@ -79,8 +80,17 @@ export class RenderJavaScriptVisitor extends BaseVoidVisitor {
     const { name } = program.metadata;
     const pascalCaseName = pascalCase(name);
     program.accounts.forEach((account) => account.accept(this));
-    program.instructions.forEach((instruction) => instruction.accept(this));
     program.definedTypes.forEach((type) => type.accept(this));
+
+    // Renderless programs are support programs that
+    // were added to fill missing types or accounts.
+    // They don't need to render anything else.
+    if (!program.metadata.render) {
+      this.program = null;
+      return;
+    }
+
+    program.instructions.forEach((instruction) => instruction.accept(this));
     this.render('errorsPage.njk', `errors/${name}.ts`, {
       imports: new ImportMap().add('core', ['ProgramError', 'Program']),
       program,

@@ -30,6 +30,7 @@ export class SetMissingDefinedTypesVisitor extends BaseRootVisitor {
     const foundTypes = new Set<string>();
     const foundPrograms = this.programs.flatMap(
       (program): nodes.ProgramNode[] => {
+        const metadata = { ...program.metadata, render: false };
         const types = program.definedTypes.filter((type) => {
           if (foundTypes.has(type.name)) return false;
           const found = missingTypes.includes(type.name);
@@ -37,7 +38,7 @@ export class SetMissingDefinedTypesVisitor extends BaseRootVisitor {
           return found;
         });
         return types.length > 0
-          ? [new nodes.ProgramNode(program.metadata, [], [], types, [])]
+          ? [new nodes.ProgramNode(metadata, [], [], types, [])]
           : [];
       }
     );
