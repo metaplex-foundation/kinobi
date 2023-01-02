@@ -12,7 +12,7 @@ export class ConsoleLogVisitor extends BaseVoidVisitor {
     console.log(root.accept(this.visitor));
   }
 
-  visitProgram(program: nodes.ProgramNode) {
+  visitProgram(program: nodes.ProgramNode): void {
     console.log(program.accept(this.visitor));
   }
 
