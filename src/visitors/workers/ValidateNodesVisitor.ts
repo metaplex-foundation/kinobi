@@ -1,40 +1,41 @@
 /* eslint-disable no-console */
 import chalk from 'chalk';
+import {
+  getLevelIndex,
+  logDebug,
+  logError,
+  logInfo,
+  LogLevel,
+  logTrace,
+  logWarn,
+} from '../../logs';
 import * as nodes from '../../nodes';
 import { GetValidatorItemsVisitor, ValidatorItem } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
-type Level = ValidatorItem['level'];
-
-const LEVEL_PRIORITY: Record<Level, number> = {
-  error: 0,
-  warning: 1,
-  info: 2,
-};
-
 export class ValidateNodesVisitor extends BaseThrowVisitor<nodes.RootNode> {
-  constructor(readonly throwLevel: Level = 'error') {
+  constructor(readonly throwLevel: LogLevel = 'error') {
     super();
   }
 
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     const validatorItems = root
       .accept(new GetValidatorItemsVisitor())
-      .sort((a, b) => LEVEL_PRIORITY[a.level] - LEVEL_PRIORITY[b.level]);
+      .sort((a, b) => getLevelIndex(b.level) - getLevelIndex(a.level));
 
     validatorItems.forEach((item) => this.logItem(item));
 
     const levelHistogram = validatorItems.reduce((acc, item) => {
       acc[item.level] = (acc[item.level] ?? 0) + 1;
       return acc;
-    }, {} as Record<Level, number>);
+    }, {} as Record<LogLevel, number>);
     const maxLevel = Object.keys(levelHistogram)
-      .map((level) => LEVEL_PRIORITY[level as Level])
+      .map((level) => getLevelIndex(level as LogLevel))
       .sort((a, b) => b - a)[0];
 
-    if (maxLevel >= LEVEL_PRIORITY[this.throwLevel]) {
+    if (maxLevel >= getLevelIndex(this.throwLevel)) {
       const histogramString = Object.keys(levelHistogram)
-        .map((level) => `${level}s: ${levelHistogram[level as Level]}`)
+        .map((level) => `${level}s: ${levelHistogram[level as LogLevel]}`)
         .join(', ');
       console.log(
         `${chalk.red(`Failed to validate the nodes.`)} ` +
@@ -47,36 +48,24 @@ export class ValidateNodesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   }
 
   protected logItem(item: ValidatorItem) {
-    const stack = chalk.dim(`\n|> Stack: ${item.stack.join(' > ')}.`);
+    const hint = `Stack: ${item.stack.join(' > ')}.`;
 
     switch (item.level) {
       case 'error':
-        console.log(
-          `${
-            chalk.bgRed.black(' Error ') +
-            chalk.red(` ${item.message}.`) +
-            stack
-          }\n`
-        );
+        logError(item.message, hint);
         break;
-      case 'warning':
-        console.log(
-          `${
-            chalk.bgYellow.black(' Warning ') +
-            chalk.yellow(` ${item.message}.`) +
-            stack
-          }\n`
-        );
+      case 'warn':
+        logWarn(item.message, hint);
         break;
       case 'info':
+        logInfo(item.message, hint);
+        break;
+      case 'trace':
+        logTrace(item.message, hint);
+        break;
+      case 'debug':
       default:
-        console.log(
-          `${
-            chalk.bgBlue.black(' Info ') +
-            chalk.blue(` ${item.message}.`) +
-            stack
-          }\n`
-        );
+        logDebug(item.message, undefined, hint);
         break;
     }
   }

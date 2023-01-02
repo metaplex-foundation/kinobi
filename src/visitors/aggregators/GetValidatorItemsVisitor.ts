@@ -1,10 +1,11 @@
+import { LogLevel } from '../../logs';
 import { pascalCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { Visitor } from '../Visitor';
 
 export type ValidatorItem = {
   message: string;
-  level: 'error' | 'warning' | 'info';
+  level: LogLevel;
   node: nodes.Node;
   stack: string[];
 };
@@ -45,7 +46,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
       items.push(this.error(program, 'Program has no address'));
     }
     if (!program.metadata.version) {
-      items.push(this.warning(program, 'Program has no version'));
+      items.push(this.warn(program, 'Program has no version'));
     }
     if (!program.metadata.origin) {
       items.push(this.info(program, 'Program has no origin'));
@@ -123,7 +124,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
       items.push(this.error(error, 'Error has no code'));
     }
     if (!error.message) {
-      items.push(this.warning(error, 'Error has no message'));
+      items.push(this.warn(error, 'Error has no message'));
     }
 
     const programPrefix = pascalCase(this.program?.metadata.prefix ?? '');
@@ -170,7 +171,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
       items.push(this.info(typeEnum, 'Enum has no name'));
     }
     if (typeEnum.variants.length === 0) {
-      items.push(this.warning(typeEnum, 'Enum has no variants'));
+      items.push(this.warn(typeEnum, 'Enum has no variants'));
     }
     typeEnum.variants.forEach((variant) => {
       if (!variant.name) {
@@ -239,7 +240,7 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
     this.stack.push('Tuple');
     const items: ValidatorItem[] = [];
     if (typeTuple.itemTypes.length === 0) {
-      items.push(this.warning(typeTuple, 'Tuple has no items'));
+      items.push(this.warn(typeTuple, 'Tuple has no items'));
     }
     items.push(...typeTuple.itemTypes.flatMap((node) => node.accept(this)));
     this.stack.pop();
@@ -273,8 +274,8 @@ export class GetValidatorItemsVisitor implements Visitor<ValidatorItem[]> {
     return this.item('error', node, message);
   }
 
-  protected warning(node: nodes.Node, message: string): ValidatorItem {
-    return this.item('warning', node, message);
+  protected warn(node: nodes.Node, message: string): ValidatorItem {
+    return this.item('warn', node, message);
   }
 
   protected info(node: nodes.Node, message: string): ValidatorItem {

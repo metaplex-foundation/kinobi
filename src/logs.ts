@@ -2,7 +2,7 @@
 import chalk from 'chalk';
 
 const DEFAULT_LOG_LEVEL = 'info';
-const LOG_LEVELS = ['debug', 'trace', 'info', 'warn', 'error'] as const;
+export const LOG_LEVELS = ['debug', 'trace', 'info', 'warn', 'error'] as const;
 export type LogLevel = typeof LOG_LEVELS[number];
 
 export const logError = (message: string, hint?: string): void => {
@@ -48,6 +48,20 @@ export const logDebug = (message: string, debug?: any, hint?: string): void => {
   console.log('\n');
 };
 
+export const getLevelIndex = (level: LogLevel): number =>
+  LOG_LEVELS.indexOf(level);
+
+export const shouldLogLevel = (level: LogLevel): boolean =>
+  getLevelIndex(level) >= getLevelIndex(getMinLogLevel());
+
+const getMinLogLevel = (): LogLevel => {
+  const level = process.env.LOG;
+  if (level && LOG_LEVELS.includes(level as LogLevel)) {
+    return level as LogLevel;
+  }
+  return DEFAULT_LOG_LEVEL;
+};
+
 const logMessageAndHint = (
   message: string,
   hint?: string,
@@ -60,15 +74,4 @@ const getDimmedHint = (hint?: string, prefix = '|> '): string => {
   if (!hint) return '';
   const hintArray = (hint ?? '').split('\n').filter((line) => !!line);
   return chalk.dim(hintArray.map((h) => `\n${prefix}${h}`).join(''));
-};
-
-const shouldLogLevel = (level: LogLevel): boolean =>
-  LOG_LEVELS.indexOf(level) >= LOG_LEVELS.indexOf(getMinLogLevel());
-
-const getMinLogLevel = (): LogLevel => {
-  const level = process.env.LOG;
-  if (level && LOG_LEVELS.includes(level as LogLevel)) {
-    return level as LogLevel;
-  }
-  return DEFAULT_LOG_LEVEL;
 };
