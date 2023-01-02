@@ -65,47 +65,5 @@ kinobi.update(
   })
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
-kinobi.update(
-  new SetMissingDefinedTypesVisitor([
-    {
-      version: '1.1.1',
-      name: 'mpl_token_foo',
-      types: [
-        {
-          name: 'MyMissingType',
-          type: {
-            kind: 'struct',
-            fields: [{ name: 'size', type: 'u8' }],
-          },
-        },
-      ],
-      metadata: {
-        origin: 'shank',
-        address: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-        binaryVersion: '0.0.11',
-        libVersion: '0.0.11',
-      },
-    },
-    {
-      version: '2.2.2',
-      name: 'mpl_token_bar',
-      types: [
-        {
-          name: 'MyMissingType',
-          type: {
-            kind: 'struct',
-            fields: [{ name: 'description', type: 'string' }],
-          },
-        },
-      ],
-      metadata: {
-        origin: 'shank',
-        address: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-        binaryVersion: '0.0.11',
-        libVersion: '0.0.11',
-      },
-    },
-  ])
-);
 kinobi.accept(new ValidateNodesVisitor());
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));
