@@ -3,10 +3,6 @@ import * as nodes from '../../nodes';
 import { GetDefaultValidatorItemsVisitor, ValidatorBag } from '../../visitors';
 
 export class GetJavaScriptValidatorItemsVisitor extends GetDefaultValidatorItemsVisitor {
-  // private exportedNames: Map<string, string[]> = new Map();
-
-  // private definedTypes = new Set<string>();
-
   visitRoot(root: nodes.RootNode): ValidatorBag {
     return super.visitRoot(root);
   }
@@ -84,20 +80,4 @@ export class GetJavaScriptValidatorItemsVisitor extends GetDefaultValidatorItems
   visitTypeVec(typeVec: nodes.TypeVecNode): ValidatorBag {
     return super.visitTypeVec(typeVec);
   }
-
-  // protected checkNameConflict(node: nodes.Node, name: string): ValidatorBag {
-  //   if (!name) return [];
-  //   const conflict = this.nameConflict(node, name);
-  //   if (conflict) return [conflict];
-  //   this.exportedNames.set(name, [...this.stack]);
-  //   return [];
-  // }
-
-  // protected nameConflict(node: nodes.Node, name: string): ValidatorItem | null {
-  //   if (!this.exportedNames.has(name)) return null;
-  //   const conflictingStack = this.exportedNames.get(name) as string[];
-  //   const conflictingStackString = conflictingStack.join(' > ');
-  //   const message = `Exported name "${name}" conflicts with the following node "${conflictingStackString}"`;
-  //   return this.item('error', node, message);
-  // }
 }
