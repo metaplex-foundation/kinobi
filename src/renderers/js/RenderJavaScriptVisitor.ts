@@ -7,7 +7,7 @@ import {
   GetJavaScriptRenderMapOptions,
   GetJavaScriptRenderMapVisitor,
 } from './GetJavaScriptRenderMapVisitor';
-import { GetJavaScriptValidatorItemsVisitor } from './GetJavaScriptValidatorItemsVisitor';
+import { GetJavaScriptValidatorBagVisitor } from './GetJavaScriptValidatorBagVisitor';
 
 export type RenderJavaScriptOptions = GetJavaScriptRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
@@ -26,7 +26,7 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
     // Validate nodes.
     root.accept(
       new ThrowValidatorItemsVisitor(
-        new GetJavaScriptValidatorItemsVisitor(),
+        new GetJavaScriptValidatorBagVisitor(),
         this.options.throwLevel
       )
     );

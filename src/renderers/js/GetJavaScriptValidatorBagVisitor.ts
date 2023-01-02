@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import * as nodes from '../../nodes';
-import { GetDefaultValidatorItemsVisitor, ValidatorBag } from '../../visitors';
+import { GetDefaultValidatorBagVisitor, ValidatorBag } from '../../visitors';
 
-export class GetJavaScriptValidatorItemsVisitor extends GetDefaultValidatorItemsVisitor {
+export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisitor {
   visitRoot(root: nodes.RootNode): ValidatorBag {
     return super.visitRoot(root);
   }

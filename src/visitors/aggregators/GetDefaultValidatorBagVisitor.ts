@@ -4,7 +4,7 @@ import { Visitor } from '../Visitor';
 import { NodeStack } from '../NodeStack';
 import { ValidatorBag } from '../ValidatorBag';
 
-export class GetDefaultValidatorItemsVisitor implements Visitor<ValidatorBag> {
+export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   protected stack: NodeStack = new NodeStack();
 
   protected program: nodes.ProgramNode | null = null;

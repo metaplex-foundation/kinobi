@@ -1,4 +1,4 @@
-export * from './GetDefaultValidatorItemsVisitor';
+export * from './GetDefaultValidatorBagVisitor';
 export * from './GetDefinedTypeHistogramVisitor';
 export * from './GetNodeInlineStringVisitor';
 export * from './GetNodeTreeStringVisitor';
