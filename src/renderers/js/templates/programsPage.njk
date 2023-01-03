@@ -4,6 +4,7 @@
 {% block main %}
 {{ macros.imports(imports) }}
 
+{{ macros.docblock(program.docs) }}
 export function get{{ pascalCaseName }}Program(context: Pick<Context, 'eddsa'>): Program {
   return {
     name: '{{ program.metadata.name }}',

@@ -1,5 +1,6 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
+import { logWarn } from '../../logs';
 import * as nodes from '../../nodes';
 import { camelCase, pascalCase, titleCase } from '../../utils';
 import { Visitor, BaseThrowVisitor } from '../../visitors';
@@ -188,7 +189,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const accountsAndArgsConflicts =
       this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
     if (accountsAndArgsConflicts.length > 0) {
-      // TODO(loris): Log warning if accountsAndArgsConflicts is not empty.
+      logWarn(
+        `Accounts and args of "${instruction.name}" instruction have conflicting ` +
+          'attributes. Thus, they could not be merged into a single input object. ' +
+          'You may want to rename the conflicting attributes.'
+      );
     }
 
     return new RenderMap().add(

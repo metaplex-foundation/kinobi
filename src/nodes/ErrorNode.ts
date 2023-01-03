@@ -23,8 +23,7 @@ export class ErrorNode implements Visitable {
     const name = pascalCase(idlName);
     const code = idl.code ?? -1;
     const message = idl.msg ?? '';
-    // TODO(loris): add all category tags within a visitor instead.
-    const defaultDocs = [`${name}: '${message}'`, '@category Errors'];
+    const defaultDocs = [`${name}: '${message}'`];
     const docs = idl.docs ?? defaultDocs;
     return new ErrorNode({ name, idlName, docs }, code, message);
   }

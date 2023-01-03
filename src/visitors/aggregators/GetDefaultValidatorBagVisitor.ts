@@ -24,16 +24,16 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(program);
     const bag = new ValidatorBag();
     if (!program.metadata.name) {
-      bag.error('Program has no name', program, this.stack);
+      bag.error('Program has no name.', program, this.stack);
     }
     if (!program.metadata.address) {
-      bag.error('Program has no address', program, this.stack);
+      bag.error('Program has no address.', program, this.stack);
     }
     if (!program.metadata.version) {
-      bag.warn('Program has no version', program, this.stack);
+      bag.warn('Program has no version.', program, this.stack);
     }
     if (!program.metadata.origin) {
-      bag.info('Program has no origin', program, this.stack);
+      bag.info('Program has no origin.', program, this.stack);
     }
     bag.mergeWith([
       ...program.accounts.map((node) => node.accept(this)),
@@ -49,7 +49,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(account);
     const bag = new ValidatorBag();
     if (!account.name) {
-      bag.error('Account has no name', account, this.stack);
+      bag.error('Account has no name.', account, this.stack);
     }
     this.popNode();
     return bag;
@@ -59,7 +59,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(instruction);
     const bag = new ValidatorBag();
     if (!instruction.name) {
-      bag.error('Instruction has no name', instruction, this.stack);
+      bag.error('Instruction has no name.', instruction, this.stack);
     }
     this.popNode();
     return bag;
@@ -69,7 +69,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(definedType);
     const bag = new ValidatorBag();
     if (!definedType.name) {
-      bag.error('Defined type has no name', definedType, this.stack);
+      bag.error('Defined type has no name.', definedType, this.stack);
     }
     this.popNode();
     return bag;
@@ -79,13 +79,13 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(error);
     const bag = new ValidatorBag();
     if (!error.name) {
-      bag.error('Error has no name', error, this.stack);
+      bag.error('Error has no name.', error, this.stack);
     }
     if (typeof error.code !== 'number') {
-      bag.error('Error has no code', error, this.stack);
+      bag.error('Error has no code.', error, this.stack);
     }
     if (!error.message) {
-      bag.warn('Error has no message', error, this.stack);
+      bag.warn('Error has no message.', error, this.stack);
     }
     this.popNode();
     return bag;
@@ -105,7 +105,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     const bag = new ValidatorBag();
     if (!typeDefinedLink.definedType) {
       bag.error(
-        'Pointing to a defined type with no name',
+        'Pointing to a defined type with no name.',
         typeDefinedLink,
         this.stack
       );
@@ -124,14 +124,14 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(typeEnum);
     const bag = new ValidatorBag();
     if (!typeEnum.name) {
-      bag.info('Enum has no name', typeEnum, this.stack);
+      bag.info('Enum has no name.', typeEnum, this.stack);
     }
     if (typeEnum.variants.length === 0) {
-      bag.warn('Enum has no variants', typeEnum, this.stack);
+      bag.warn('Enum has no variants.', typeEnum, this.stack);
     }
     typeEnum.variants.forEach((variant) => {
       if (!variant.name) {
-        bag.error('Enum variant has no name', typeEnum, this.stack);
+        bag.error('Enum variant has no name.', typeEnum, this.stack);
       }
     });
     bag.mergeWith(
@@ -178,11 +178,11 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(typeStruct);
     const bag = new ValidatorBag();
     if (!typeStruct.name) {
-      bag.info('Struct has no name', typeStruct, this.stack);
+      bag.info('Struct has no name.', typeStruct, this.stack);
     }
     typeStruct.fields.forEach((field) => {
       if (!field.name) {
-        bag.error('Struct field has no name', typeStruct, this.stack);
+        bag.error('Struct field has no name.', typeStruct, this.stack);
       }
     });
     bag.mergeWith(typeStruct.fields.map((field) => field.type.accept(this)));
@@ -194,7 +194,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     this.pushNode(typeTuple);
     const bag = new ValidatorBag();
     if (typeTuple.itemTypes.length === 0) {
-      bag.warn('Tuple has no items', typeTuple, this.stack);
+      bag.warn('Tuple has no items.', typeTuple, this.stack);
     }
     bag.mergeWith(typeTuple.itemTypes.map((node) => node.accept(this)));
     this.popNode();
