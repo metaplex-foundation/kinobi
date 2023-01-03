@@ -40,6 +40,18 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
       [`deserialize${account.name}`]: 'function',
       [`get${account.name}Serializer`]: 'function',
     });
+    const reservedAccountFields = new Set(['address', 'header']);
+    const invalidFields = account.type.fields
+      .map((field) => field.name)
+      .filter((name) => reservedAccountFields.has(name));
+    if (invalidFields.length > 0) {
+      const x = invalidFields.join(', ');
+      const message =
+        invalidFields.length === 1
+          ? `Account field [${x}] is reserved. Please rename it.`
+          : `Account fields [${x}] are reserved. Please rename them.`;
+      bag.error(message, account, this.stack);
+    }
     this.popNode();
     return bag;
   }
