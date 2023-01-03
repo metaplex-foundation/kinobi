@@ -19,7 +19,7 @@ const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
  * NumericalOverflow: 'Numerical Overflow'
  * @category Errors
  */
-class TaNumericalOverflowError extends ProgramError {
+export class TaNumericalOverflowError extends ProgramError {
   readonly name: string = 'NumericalOverflow';
   readonly code: number = 0x0; // 0
   constructor(program: Program, cause?: Error) {
@@ -33,7 +33,7 @@ nameToErrorMap.set('NumericalOverflow', TaNumericalOverflowError);
  * DataTypeMismatch: 'Data type mismatch'
  * @category Errors
  */
-class TaDataTypeMismatchError extends ProgramError {
+export class TaDataTypeMismatchError extends ProgramError {
   readonly name: string = 'DataTypeMismatch';
   readonly code: number = 0x1; // 1
   constructor(program: Program, cause?: Error) {
@@ -47,7 +47,7 @@ nameToErrorMap.set('DataTypeMismatch', TaDataTypeMismatchError);
  * IncorrectOwner: 'Incorrect account owner'
  * @category Errors
  */
-class TaIncorrectOwnerError extends ProgramError {
+export class TaIncorrectOwnerError extends ProgramError {
   readonly name: string = 'IncorrectOwner';
   readonly code: number = 0x2; // 2
   constructor(program: Program, cause?: Error) {
@@ -61,7 +61,7 @@ nameToErrorMap.set('IncorrectOwner', TaIncorrectOwnerError);
  * PayloadVecIndexError: 'Could not index into PayloadVec'
  * @category Errors
  */
-class TaPayloadVecIndexErrorError extends ProgramError {
+export class TaPayloadVecIndexErrorError extends ProgramError {
   readonly name: string = 'PayloadVecIndexError';
   readonly code: number = 0x3; // 3
   constructor(program: Program, cause?: Error) {
@@ -75,7 +75,7 @@ nameToErrorMap.set('PayloadVecIndexError', TaPayloadVecIndexErrorError);
  * DerivedKeyInvalid: 'Derived key invalid'
  * @category Errors
  */
-class TaDerivedKeyInvalidError extends ProgramError {
+export class TaDerivedKeyInvalidError extends ProgramError {
   readonly name: string = 'DerivedKeyInvalid';
   readonly code: number = 0x4; // 4
   constructor(program: Program, cause?: Error) {
@@ -89,7 +89,7 @@ nameToErrorMap.set('DerivedKeyInvalid', TaDerivedKeyInvalidError);
  * AdditionalSignerCheckFailed: 'Additional Signer check failed'
  * @category Errors
  */
-class TaAdditionalSignerCheckFailedError extends ProgramError {
+export class TaAdditionalSignerCheckFailedError extends ProgramError {
   readonly name: string = 'AdditionalSignerCheckFailed';
   readonly code: number = 0x5; // 5
   constructor(program: Program, cause?: Error) {
@@ -106,7 +106,7 @@ nameToErrorMap.set(
  * PubkeyMatchCheckFailed: 'Pubkey Match check failed'
  * @category Errors
  */
-class TaPubkeyMatchCheckFailedError extends ProgramError {
+export class TaPubkeyMatchCheckFailedError extends ProgramError {
   readonly name: string = 'PubkeyMatchCheckFailed';
   readonly code: number = 0x6; // 6
   constructor(program: Program, cause?: Error) {
@@ -120,7 +120,7 @@ nameToErrorMap.set('PubkeyMatchCheckFailed', TaPubkeyMatchCheckFailedError);
  * DerivedKeyMatchCheckFailed: 'Derived Key Match check failed'
  * @category Errors
  */
-class TaDerivedKeyMatchCheckFailedError extends ProgramError {
+export class TaDerivedKeyMatchCheckFailedError extends ProgramError {
   readonly name: string = 'DerivedKeyMatchCheckFailed';
   readonly code: number = 0x7; // 7
   constructor(program: Program, cause?: Error) {
@@ -137,7 +137,7 @@ nameToErrorMap.set(
  * ProgramOwnedCheckFailed: 'Program Owned check failed'
  * @category Errors
  */
-class TaProgramOwnedCheckFailedError extends ProgramError {
+export class TaProgramOwnedCheckFailedError extends ProgramError {
   readonly name: string = 'ProgramOwnedCheckFailed';
   readonly code: number = 0x8; // 8
   constructor(program: Program, cause?: Error) {
@@ -151,7 +151,7 @@ nameToErrorMap.set('ProgramOwnedCheckFailed', TaProgramOwnedCheckFailedError);
  * AmountCheckFailed: 'Amount checked failed'
  * @category Errors
  */
-class TaAmountCheckFailedError extends ProgramError {
+export class TaAmountCheckFailedError extends ProgramError {
   readonly name: string = 'AmountCheckFailed';
   readonly code: number = 0x9; // 9
   constructor(program: Program, cause?: Error) {
@@ -165,7 +165,7 @@ nameToErrorMap.set('AmountCheckFailed', TaAmountCheckFailedError);
  * FrequencyCheckFailed: 'Frequency check failed'
  * @category Errors
  */
-class TaFrequencyCheckFailedError extends ProgramError {
+export class TaFrequencyCheckFailedError extends ProgramError {
   readonly name: string = 'FrequencyCheckFailed';
   readonly code: number = 0xa; // 10
   constructor(program: Program, cause?: Error) {
@@ -179,7 +179,7 @@ nameToErrorMap.set('FrequencyCheckFailed', TaFrequencyCheckFailedError);
  * PubkeyTreeMatchCheckFailed: 'Pubkey Tree Match check failed'
  * @category Errors
  */
-class TaPubkeyTreeMatchCheckFailedError extends ProgramError {
+export class TaPubkeyTreeMatchCheckFailedError extends ProgramError {
   readonly name: string = 'PubkeyTreeMatchCheckFailed';
   readonly code: number = 0xb; // 11
   constructor(program: Program, cause?: Error) {
@@ -196,7 +196,7 @@ nameToErrorMap.set(
  * PayerIsNotSigner: 'Payer is not a signer'
  * @category Errors
  */
-class TaPayerIsNotSignerError extends ProgramError {
+export class TaPayerIsNotSignerError extends ProgramError {
   readonly name: string = 'PayerIsNotSigner';
   readonly code: number = 0xc; // 12
   constructor(program: Program, cause?: Error) {
@@ -210,7 +210,7 @@ nameToErrorMap.set('PayerIsNotSigner', TaPayerIsNotSignerError);
  * NotImplemented: 'Not implemented'
  * @category Errors
  */
-class TaNotImplementedError extends ProgramError {
+export class TaNotImplementedError extends ProgramError {
   readonly name: string = 'NotImplemented';
   readonly code: number = 0xd; // 13
   constructor(program: Program, cause?: Error) {
@@ -224,7 +224,7 @@ nameToErrorMap.set('NotImplemented', TaNotImplementedError);
  * BorshSerializationError: 'Borsh Serialization Error'
  * @category Errors
  */
-class TaBorshSerializationErrorError extends ProgramError {
+export class TaBorshSerializationErrorError extends ProgramError {
   readonly name: string = 'BorshSerializationError';
   readonly code: number = 0xe; // 14
   constructor(program: Program, cause?: Error) {
