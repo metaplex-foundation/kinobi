@@ -15,10 +15,7 @@ type ProgramErrorConstructor = new (
 const codeToErrorMap: Map<number, ProgramErrorConstructor> = new Map();
 const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
-/**
- * NumericalOverflow: 'Numerical Overflow'
- * @category Errors
- */
+/** NumericalOverflow: 'Numerical Overflow' */
 export class TaNumericalOverflowError extends ProgramError {
   readonly name: string = 'NumericalOverflow';
   readonly code: number = 0x0; // 0
@@ -29,10 +26,7 @@ export class TaNumericalOverflowError extends ProgramError {
 codeToErrorMap.set(0x0, TaNumericalOverflowError);
 nameToErrorMap.set('NumericalOverflow', TaNumericalOverflowError);
 
-/**
- * DataTypeMismatch: 'Data type mismatch'
- * @category Errors
- */
+/** DataTypeMismatch: 'Data type mismatch' */
 export class TaDataTypeMismatchError extends ProgramError {
   readonly name: string = 'DataTypeMismatch';
   readonly code: number = 0x1; // 1
@@ -43,10 +37,7 @@ export class TaDataTypeMismatchError extends ProgramError {
 codeToErrorMap.set(0x1, TaDataTypeMismatchError);
 nameToErrorMap.set('DataTypeMismatch', TaDataTypeMismatchError);
 
-/**
- * IncorrectOwner: 'Incorrect account owner'
- * @category Errors
- */
+/** IncorrectOwner: 'Incorrect account owner' */
 export class TaIncorrectOwnerError extends ProgramError {
   readonly name: string = 'IncorrectOwner';
   readonly code: number = 0x2; // 2
@@ -57,10 +48,7 @@ export class TaIncorrectOwnerError extends ProgramError {
 codeToErrorMap.set(0x2, TaIncorrectOwnerError);
 nameToErrorMap.set('IncorrectOwner', TaIncorrectOwnerError);
 
-/**
- * PayloadVecIndexError: 'Could not index into PayloadVec'
- * @category Errors
- */
+/** PayloadVecIndexError: 'Could not index into PayloadVec' */
 export class TaPayloadVecIndexErrorError extends ProgramError {
   readonly name: string = 'PayloadVecIndexError';
   readonly code: number = 0x3; // 3
@@ -71,10 +59,7 @@ export class TaPayloadVecIndexErrorError extends ProgramError {
 codeToErrorMap.set(0x3, TaPayloadVecIndexErrorError);
 nameToErrorMap.set('PayloadVecIndexError', TaPayloadVecIndexErrorError);
 
-/**
- * DerivedKeyInvalid: 'Derived key invalid'
- * @category Errors
- */
+/** DerivedKeyInvalid: 'Derived key invalid' */
 export class TaDerivedKeyInvalidError extends ProgramError {
   readonly name: string = 'DerivedKeyInvalid';
   readonly code: number = 0x4; // 4
@@ -85,10 +70,7 @@ export class TaDerivedKeyInvalidError extends ProgramError {
 codeToErrorMap.set(0x4, TaDerivedKeyInvalidError);
 nameToErrorMap.set('DerivedKeyInvalid', TaDerivedKeyInvalidError);
 
-/**
- * AdditionalSignerCheckFailed: 'Additional Signer check failed'
- * @category Errors
- */
+/** AdditionalSignerCheckFailed: 'Additional Signer check failed' */
 export class TaAdditionalSignerCheckFailedError extends ProgramError {
   readonly name: string = 'AdditionalSignerCheckFailed';
   readonly code: number = 0x5; // 5
@@ -102,10 +84,7 @@ nameToErrorMap.set(
   TaAdditionalSignerCheckFailedError
 );
 
-/**
- * PubkeyMatchCheckFailed: 'Pubkey Match check failed'
- * @category Errors
- */
+/** PubkeyMatchCheckFailed: 'Pubkey Match check failed' */
 export class TaPubkeyMatchCheckFailedError extends ProgramError {
   readonly name: string = 'PubkeyMatchCheckFailed';
   readonly code: number = 0x6; // 6
@@ -116,10 +95,7 @@ export class TaPubkeyMatchCheckFailedError extends ProgramError {
 codeToErrorMap.set(0x6, TaPubkeyMatchCheckFailedError);
 nameToErrorMap.set('PubkeyMatchCheckFailed', TaPubkeyMatchCheckFailedError);
 
-/**
- * DerivedKeyMatchCheckFailed: 'Derived Key Match check failed'
- * @category Errors
- */
+/** DerivedKeyMatchCheckFailed: 'Derived Key Match check failed' */
 export class TaDerivedKeyMatchCheckFailedError extends ProgramError {
   readonly name: string = 'DerivedKeyMatchCheckFailed';
   readonly code: number = 0x7; // 7
@@ -133,10 +109,7 @@ nameToErrorMap.set(
   TaDerivedKeyMatchCheckFailedError
 );
 
-/**
- * ProgramOwnedCheckFailed: 'Program Owned check failed'
- * @category Errors
- */
+/** ProgramOwnedCheckFailed: 'Program Owned check failed' */
 export class TaProgramOwnedCheckFailedError extends ProgramError {
   readonly name: string = 'ProgramOwnedCheckFailed';
   readonly code: number = 0x8; // 8
@@ -147,10 +120,7 @@ export class TaProgramOwnedCheckFailedError extends ProgramError {
 codeToErrorMap.set(0x8, TaProgramOwnedCheckFailedError);
 nameToErrorMap.set('ProgramOwnedCheckFailed', TaProgramOwnedCheckFailedError);
 
-/**
- * AmountCheckFailed: 'Amount checked failed'
- * @category Errors
- */
+/** AmountCheckFailed: 'Amount checked failed' */
 export class TaAmountCheckFailedError extends ProgramError {
   readonly name: string = 'AmountCheckFailed';
   readonly code: number = 0x9; // 9
@@ -161,10 +131,7 @@ export class TaAmountCheckFailedError extends ProgramError {
 codeToErrorMap.set(0x9, TaAmountCheckFailedError);
 nameToErrorMap.set('AmountCheckFailed', TaAmountCheckFailedError);
 
-/**
- * FrequencyCheckFailed: 'Frequency check failed'
- * @category Errors
- */
+/** FrequencyCheckFailed: 'Frequency check failed' */
 export class TaFrequencyCheckFailedError extends ProgramError {
   readonly name: string = 'FrequencyCheckFailed';
   readonly code: number = 0xa; // 10
@@ -175,10 +142,7 @@ export class TaFrequencyCheckFailedError extends ProgramError {
 codeToErrorMap.set(0xa, TaFrequencyCheckFailedError);
 nameToErrorMap.set('FrequencyCheckFailed', TaFrequencyCheckFailedError);
 
-/**
- * PubkeyTreeMatchCheckFailed: 'Pubkey Tree Match check failed'
- * @category Errors
- */
+/** PubkeyTreeMatchCheckFailed: 'Pubkey Tree Match check failed' */
 export class TaPubkeyTreeMatchCheckFailedError extends ProgramError {
   readonly name: string = 'PubkeyTreeMatchCheckFailed';
   readonly code: number = 0xb; // 11
@@ -192,10 +156,7 @@ nameToErrorMap.set(
   TaPubkeyTreeMatchCheckFailedError
 );
 
-/**
- * PayerIsNotSigner: 'Payer is not a signer'
- * @category Errors
- */
+/** PayerIsNotSigner: 'Payer is not a signer' */
 export class TaPayerIsNotSignerError extends ProgramError {
   readonly name: string = 'PayerIsNotSigner';
   readonly code: number = 0xc; // 12
@@ -206,10 +167,7 @@ export class TaPayerIsNotSignerError extends ProgramError {
 codeToErrorMap.set(0xc, TaPayerIsNotSignerError);
 nameToErrorMap.set('PayerIsNotSigner', TaPayerIsNotSignerError);
 
-/**
- * NotImplemented: 'Not implemented'
- * @category Errors
- */
+/** NotImplemented: 'Not implemented' */
 export class TaNotImplementedError extends ProgramError {
   readonly name: string = 'NotImplemented';
   readonly code: number = 0xd; // 13
@@ -220,10 +178,7 @@ export class TaNotImplementedError extends ProgramError {
 codeToErrorMap.set(0xd, TaNotImplementedError);
 nameToErrorMap.set('NotImplemented', TaNotImplementedError);
 
-/**
- * BorshSerializationError: 'Borsh Serialization Error'
- * @category Errors
- */
+/** BorshSerializationError: 'Borsh Serialization Error' */
 export class TaBorshSerializationErrorError extends ProgramError {
   readonly name: string = 'BorshSerializationError';
   readonly code: number = 0xe; // 14
