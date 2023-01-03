@@ -1,24 +1,20 @@
-import { pascalCase } from '../../utils';
 import * as nodes from '../../nodes';
-import { Visitor } from '../Visitor';
 import { NodeStack } from '../NodeStack';
 import { ValidatorBag } from '../ValidatorBag';
+import { Visitor } from '../Visitor';
 
 export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   protected stack: NodeStack = new NodeStack();
 
   protected program: nodes.ProgramNode | null = null;
 
-  protected exportedNames: Map<string, NodeStack> = new Map();
-
   protected definedTypes = new Set<string>();
 
   visitRoot(root: nodes.RootNode): ValidatorBag {
-    this.pushNode(root);
-
     // Register defined types to make sure links are valid.
     root.allDefinedTypes.forEach((type) => this.definedTypes.add(type.name));
 
+    this.pushNode(root);
     const bags = root.programs.map((program) => program.accept(this));
     this.popNode();
     return new ValidatorBag().mergeWith(bags);
@@ -39,14 +35,12 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!program.metadata.origin) {
       bag.info('Program has no origin', program, this.stack);
     }
-
     bag.mergeWith([
       ...program.accounts.map((node) => node.accept(this)),
       ...program.instructions.map((node) => node.accept(this)),
       ...program.definedTypes.map((node) => node.accept(this)),
       ...program.errors.map((node) => node.accept(this)),
     ]);
-
     this.popNode();
     return bag;
   }
@@ -57,10 +51,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!account.name) {
       bag.error('Account has no name', account, this.stack);
     }
-    bag.mergeWith([
-      this.nameConflict(account, account.name),
-      account.type.accept(this),
-    ]);
     this.popNode();
     return bag;
   }
@@ -71,10 +61,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!instruction.name) {
       bag.error('Instruction has no name', instruction, this.stack);
     }
-    bag.mergeWith([
-      this.nameConflict(instruction, instruction.name),
-      instruction.args.accept(this),
-    ]);
     this.popNode();
     return bag;
   }
@@ -85,10 +71,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!definedType.name) {
       bag.error('Defined type has no name', definedType, this.stack);
     }
-    bag.mergeWith([
-      this.nameConflict(definedType, definedType.name),
-      definedType.type.accept(this),
-    ]);
     this.popNode();
     return bag;
   }
@@ -105,11 +87,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!error.message) {
       bag.warn('Error has no message', error, this.stack);
     }
-
-    const programPrefix = pascalCase(this.program?.metadata.prefix ?? '');
-    const prefixedErrorName = `${programPrefix + pascalCase(error.name)}Error`;
-    bag.mergeWith([this.nameConflict(error, prefixedErrorName)]);
-
     this.popNode();
     return bag;
   }
@@ -145,7 +122,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): ValidatorBag {
     this.pushNode(typeEnum);
-
     const bag = new ValidatorBag();
     if (!typeEnum.name) {
       bag.info('Enum has no name', typeEnum, this.stack);
@@ -158,7 +134,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
         bag.error('Enum variant has no name', typeEnum, this.stack);
       }
     });
-
     bag.mergeWith(
       typeEnum.variants.map((variant) => {
         if (variant.kind === 'empty') return new ValidatorBag();
@@ -210,7 +185,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
         bag.error('Struct field has no name', typeStruct, this.stack);
       }
     });
-
     bag.mergeWith(typeStruct.fields.map((field) => field.type.accept(this)));
     this.popNode();
     return bag;
@@ -232,18 +206,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     const bag = typeVec.itemType.accept(this);
     this.popNode();
     return bag;
-  }
-
-  protected nameConflict(node: nodes.Node, name: string): ValidatorBag {
-    if (!name) return new ValidatorBag();
-    const hasConflict = this.exportedNames.has(name);
-    if (!hasConflict) {
-      this.exportedNames.set(name, this.stack.clone());
-      return new ValidatorBag();
-    }
-    const conflictingStack = this.exportedNames.get(name) as NodeStack;
-    const message = `Exported name "${name}" conflicts with the following node "${conflictingStack.toString()}"`;
-    return new ValidatorBag().error(message, node, this.stack);
   }
 
   protected pushNode(node: nodes.Node): void {
