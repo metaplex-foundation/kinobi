@@ -20,11 +20,13 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const bag = super.visitProgram(program);
     this.pushNode(program);
     const pascalCaseName = pascalCase(program.name);
-    this.checkExportConflicts(program, {
-      [`get${pascalCaseName}Program`]: 'function',
-      [`get${pascalCaseName}ErrorFromCode`]: 'function',
-      [`get${pascalCaseName}ErrorFromName`]: 'function',
-    });
+    bag.mergeWith([
+      this.checkExportConflicts(program, {
+        [`get${pascalCaseName}Program`]: 'function',
+        [`get${pascalCaseName}ErrorFromCode`]: 'function',
+        [`get${pascalCaseName}ErrorFromName`]: 'function',
+      }),
+    ]);
     this.popNode();
     return bag;
   }
@@ -32,14 +34,16 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   visitAccount(account: nodes.AccountNode): ValidatorBag {
     const bag = super.visitAccount(account);
     this.pushNode(account);
-    this.checkExportConflicts(account, {
-      [account.name]: 'type',
-      [`${account.name}Args`]: 'type',
-      [`fetch${account.name}`]: 'function',
-      [`safeFetch${account.name}`]: 'function',
-      [`deserialize${account.name}`]: 'function',
-      [`get${account.name}Serializer`]: 'function',
-    });
+    bag.mergeWith([
+      this.checkExportConflicts(account, {
+        [account.name]: 'type',
+        [`${account.name}Args`]: 'type',
+        [`fetch${account.name}`]: 'function',
+        [`safeFetch${account.name}`]: 'function',
+        [`deserialize${account.name}`]: 'function',
+        [`get${account.name}Serializer`]: 'function',
+      }),
+    ]);
     const reservedAccountFields = new Set(['address', 'header']);
     const invalidFields = account.type.fields
       .map((field) => field.name)
@@ -59,13 +63,15 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   visitInstruction(instruction: nodes.InstructionNode): ValidatorBag {
     const bag = super.visitInstruction(instruction);
     this.pushNode(instruction);
-    this.checkExportConflicts(instruction, {
-      [camelCase(instruction.name)]: 'function',
-      [`${instruction.name}InstructionAccounts`]: 'type',
-      [`${instruction.name}InstructionData`]: 'type',
-      [`${instruction.name}InstructionArgs`]: 'type',
-      [`get${instruction.name}InstructionDataSerializer`]: 'function',
-    });
+    bag.mergeWith([
+      this.checkExportConflicts(instruction, {
+        [camelCase(instruction.name)]: 'function',
+        [`${instruction.name}InstructionAccounts`]: 'type',
+        [`${instruction.name}InstructionData`]: 'type',
+        [`${instruction.name}InstructionArgs`]: 'type',
+        [`get${instruction.name}InstructionDataSerializer`]: 'function',
+      }),
+    ]);
     this.popNode();
     return bag;
   }
@@ -75,17 +81,19 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     this.pushNode(definedType);
     const isDataEnum =
       nodes.isTypeEnumNode(definedType.type) && definedType.type.isDataEnum();
-    this.checkExportConflicts(definedType, {
-      [definedType.name]: 'type',
-      [`${definedType.name}Args`]: 'type',
-      [`fetch${definedType.name}`]: 'function',
-      ...(isDataEnum
-        ? {
-            [camelCase(definedType.name)]: 'function',
-            [`is${definedType.name}`]: 'function',
-          }
-        : {}),
-    });
+    bag.mergeWith([
+      this.checkExportConflicts(definedType, {
+        [definedType.name]: 'type',
+        [`${definedType.name}Args`]: 'type',
+        [`fetch${definedType.name}`]: 'function',
+        ...(isDataEnum
+          ? {
+              [camelCase(definedType.name)]: 'function',
+              [`is${definedType.name}`]: 'function',
+            }
+          : {}),
+      }),
+    ]);
     this.popNode();
     return bag;
   }
@@ -96,9 +104,11 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const prefixedName =
       pascalCase(this.program?.metadata.prefix ?? '') +
       pascalCase(error.metadata.name);
-    this.checkExportConflicts(error, {
-      [`${prefixedName}Error`]: 'class',
-    });
+    bag.mergeWith([
+      this.checkExportConflicts(error, {
+        [`${prefixedName}Error`]: 'class',
+      }),
+    ]);
     this.popNode();
     return bag;
   }
@@ -106,7 +116,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   protected checkExportConflicts(
     node: nodes.Node,
     exports: Record<string, string>
-  ) {
+  ): ValidatorBag {
     const bag = new ValidatorBag();
     const stack = this.stack.clone();
     const conflictingNodes: nodes.Node[] = [];
@@ -121,6 +131,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
       // Avoids throwing many similar error for the same kind of conflict.
       const conflictingNode = exportConflict.node;
       if (conflictingNodes.includes(conflictingNode)) return;
+      conflictingNodes.push(conflictingNode);
 
       // Constructs the error message.
       let exportDetails = '';
@@ -137,6 +148,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         `${this.getNodeTitle(conflictingNode)}.`;
       bag.error(message, node, stack);
     });
+    return bag;
   }
 
   protected isEponymousExport(node: nodes.Node, exportName: string): boolean {
