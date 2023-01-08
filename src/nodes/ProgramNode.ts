@@ -14,7 +14,7 @@ export type ProgramNodeMetadata = {
   version: string;
   origin: 'shank' | 'anchor' | null;
   idl: Partial<Idl>;
-  render: boolean;
+  internal: boolean;
 };
 
 export class ProgramNode implements Visitable {
@@ -40,7 +40,7 @@ export class ProgramNode implements Visitable {
       version: idl.version ?? '',
       origin: idl.metadata?.origin ?? null,
       idl,
-      render: true,
+      internal: false,
     };
 
     return new ProgramNode(

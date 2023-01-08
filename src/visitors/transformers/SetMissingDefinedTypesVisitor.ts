@@ -30,7 +30,7 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
     const foundTypes = new Set<string>();
     const foundPrograms = this.programs.flatMap(
       (program): nodes.ProgramNode[] => {
-        const metadata = { ...program.metadata, render: false };
+        const metadata = { ...program.metadata, internal: true };
         const types = program.definedTypes.filter((type) => {
           if (foundTypes.has(type.name)) return false;
           const found = missingTypes.includes(type.name);

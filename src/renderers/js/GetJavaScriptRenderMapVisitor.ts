@@ -56,7 +56,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     const ctx = {
       root,
-      programsToExport: root.programs.filter((p) => p.metadata.render),
+      programsToExport: root.programs.filter((p) => !p.metadata.internal),
       accountsToExport: root.allAccounts.filter((a) => !a.metadata.internal),
       instructionsToExport: root.allInstructions.filter(
         (i) => !i.metadata.internal
@@ -84,10 +84,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .mergeWith(...program.accounts.map((account) => account.accept(this)))
       .mergeWith(...program.definedTypes.map((type) => type.accept(this)));
 
-    // Renderless programs are support programs that
+    // Internal programs are support programs that
     // were added to fill missing types or accounts.
     // They don't need to render anything else.
-    if (!program.metadata.render) {
+    if (program.metadata.internal) {
       this.program = null;
       return renderMap;
     }
