@@ -8,6 +8,16 @@ export class MarkNodesAsInternalVisitor extends TransformNodesVisitor {
       selectors.map((selector) => ({
         selector,
         transformer: (node: nodes.Node) => {
+          if (nodes.isProgramNode(node)) {
+            return new nodes.ProgramNode(
+              { ...node.metadata, internal: true },
+              node.accounts,
+              node.instructions,
+              node.definedTypes,
+              node.errors
+            );
+          }
+
           if (nodes.isAccountNode(node)) {
             return new nodes.AccountNode(
               { ...node.metadata, internal: true },
