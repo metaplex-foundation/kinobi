@@ -10,6 +10,7 @@ export type DefinedTypeNodeMetadata = {
   name: string;
   idlName: string;
   docs: string[];
+  internal: boolean;
 };
 
 export class DefinedTypeNode implements Visitable {
@@ -27,7 +28,7 @@ export class DefinedTypeNode implements Visitable {
     const idlType = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlType });
     assertTypeStructOrEnumNode(type);
-    return new DefinedTypeNode({ name, idlName, docs }, type);
+    return new DefinedTypeNode({ name, idlName, docs, internal: false }, type);
   }
 
   accept<T>(visitor: Visitor<T>): T {

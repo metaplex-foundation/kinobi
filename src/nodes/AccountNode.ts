@@ -9,6 +9,7 @@ export type AccountNodeMetadata = {
   name: string;
   idlName: string;
   docs: string[];
+  internal: boolean;
 };
 
 export class AccountNode implements Visitable {
@@ -26,7 +27,7 @@ export class AccountNode implements Visitable {
     const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlStruct });
     assertTypeStructNode(type);
-    return new AccountNode({ name, idlName, docs }, type);
+    return new AccountNode({ name, idlName, docs, internal: false }, type);
   }
 
   accept<T>(visitor: Visitor<T>): T {

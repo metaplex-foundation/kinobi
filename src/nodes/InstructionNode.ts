@@ -24,7 +24,7 @@ export type InstructionNodeMetadata = {
   name: string;
   idlName: string;
   docs: string[];
-  defaultOptionalAccounts: boolean;
+  internal: boolean;
 };
 
 export class InstructionNode implements Visitable {
@@ -42,7 +42,7 @@ export class InstructionNode implements Visitable {
       name: pascalCase(idlName),
       idlName,
       docs: idl.docs ?? [],
-      defaultOptionalAccounts: idl.defaultOptionalAccounts ?? false,
+      internal: false,
     };
 
     const accounts = (idl.accounts ?? []).map(

@@ -54,8 +54,18 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
     }
 
-    const programsToRender = root.programs.filter((p) => p.metadata.render);
-    const ctx = { root, programsToRender };
+    const ctx = {
+      root,
+      programsToExport: root.programs.filter((p) => p.metadata.render),
+      accountsToExport: root.allAccounts.filter((a) => !a.metadata.internal),
+      instructionsToExport: root.allInstructions.filter(
+        (i) => !i.metadata.internal
+      ),
+      definedTypesToExport: root.allDefinedTypes.filter(
+        (t) => !t.metadata.internal
+      ),
+    };
+
     return new RenderMap()
       .add('index.ts', this.render('rootIndex.njk'))
       .add('accounts/index.ts', this.render('accountsIndex.njk', ctx))

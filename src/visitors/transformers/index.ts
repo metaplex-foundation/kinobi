@@ -1,5 +1,6 @@
 export * from './DeduplicateIdenticalDefinedTypesVisitor';
 export * from './DeleteNodesVisitor';
+export * from './MarkNodesAsInternalVisitor';
 export * from './RenameNodesVisitor';
 export * from './SetAnchorDiscriminatorsVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
