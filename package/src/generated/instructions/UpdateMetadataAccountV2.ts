@@ -35,6 +35,7 @@ export type UpdateMetadataAccountV2InstructionData = {
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
 };
+
 export type UpdateMetadataAccountV2InstructionArgs = {
   data: Option<DataV2Args>;
   updateAuthority: Option<PublicKey>;

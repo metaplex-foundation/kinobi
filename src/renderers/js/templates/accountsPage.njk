@@ -5,12 +5,14 @@
 {{ macros.imports(imports) }}
 
 {{ macros.docblock(definedType.docs) }}
-{{ macros.exportType(name, name + 'Args', typeManifest) }}
+export type {{ name }} = Account<{{ name }}AccountData>;
+
+{{ macros.exportType(name + 'AccountData', name + 'AccountArgs', typeManifest) }}
 
 export async function fetch{{ name }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey,
-): Promise<Account<{{ name }}>> {
+): Promise<{{ name }}> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, '{{ name }}');
   return deserialize{{ name }}(context, maybeAccount);
@@ -19,7 +21,7 @@ export async function fetch{{ name }}(
 export async function safeFetch{{ name }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey,
-): Promise<Account<{{ name }}> | null> {
+): Promise<{{ name }} | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserialize{{ name }}(context, maybeAccount)
@@ -29,9 +31,9 @@ export async function safeFetch{{ name }}(
 export function deserialize{{ name }}(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount,
-): Account<{{ name }}> {
+): {{ name }} {
   return deserializeAccount(rawAccount, get{{ name }}Serializer(context));
 }
 
-{{ macros.exportSerializer(name, name + 'Args', typeManifest) }}
+{{ macros.exportSerializer(name + 'AccountData', name + 'AccountArgs', typeManifest) }}
 {% endblock %}

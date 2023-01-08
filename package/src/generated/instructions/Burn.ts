@@ -42,6 +42,7 @@ export type BurnInstructionAccounts = {
 
 // Arguments.
 export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
+
 export type BurnInstructionArgs = { burnArgs: BurnArgs };
 
 export function getBurnInstructionDataSerializer(

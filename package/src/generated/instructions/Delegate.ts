@@ -57,6 +57,7 @@ export type DelegateInstructionData = {
   discriminator: number;
   delegateArgs: DelegateArgs;
 };
+
 export type DelegateInstructionArgs = { delegateArgs: DelegateArgsArgs };
 
 export function getDelegateInstructionDataSerializer(

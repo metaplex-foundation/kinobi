@@ -57,6 +57,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
 // Arguments.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData =
   { discriminator: number };
+
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs =
   {};
 

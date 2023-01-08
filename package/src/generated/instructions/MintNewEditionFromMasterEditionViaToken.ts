@@ -59,6 +59,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionData = {
   discriminator: number;
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
 };
+
 export type MintNewEditionFromMasterEditionViaTokenInstructionArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };

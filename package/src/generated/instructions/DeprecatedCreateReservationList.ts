@@ -41,6 +41,7 @@ export type DeprecatedCreateReservationListInstructionAccounts = {
 export type DeprecatedCreateReservationListInstructionData = {
   discriminator: number;
 };
+
 export type DeprecatedCreateReservationListInstructionArgs = {};
 
 export function getDeprecatedCreateReservationListInstructionDataSerializer(

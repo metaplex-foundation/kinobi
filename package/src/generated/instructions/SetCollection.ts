@@ -37,6 +37,7 @@ export type SetCollectionInstructionAccounts = {
 
 // Arguments.
 export type SetCollectionInstructionData = { discriminator: Array<number> };
+
 export type SetCollectionInstructionArgs = {};
 
 export function getSetCollectionInstructionDataSerializer(

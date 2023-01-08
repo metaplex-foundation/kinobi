@@ -31,6 +31,7 @@ export type UpdatePrimarySaleHappenedViaTokenInstructionAccounts = {
 export type UpdatePrimarySaleHappenedViaTokenInstructionData = {
   discriminator: number;
 };
+
 export type UpdatePrimarySaleHappenedViaTokenInstructionArgs = {};
 
 export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(

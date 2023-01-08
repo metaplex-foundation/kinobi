@@ -48,6 +48,7 @@ export type UtilizeInstructionData = {
   discriminator: number;
   numberOfUses: bigint;
 };
+
 export type UtilizeInstructionArgs = { numberOfUses: number | bigint };
 
 export function getUtilizeInstructionDataSerializer(

@@ -10,6 +10,7 @@ import { Payload, PayloadArgs, getPayloadSerializer } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type AuthorizationData = { payload: Payload };
+
 export type AuthorizationDataArgs = { payload: PayloadArgs };
 
 export function getAuthorizationDataSerializer(

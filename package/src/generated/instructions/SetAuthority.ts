@@ -28,6 +28,7 @@ export type SetAuthorityInstructionData = {
   discriminator: Array<number>;
   newAuthority: PublicKey;
 };
+
 export type SetAuthorityInstructionArgs = { newAuthority: PublicKey };
 
 export function getSetAuthorityInstructionDataSerializer(

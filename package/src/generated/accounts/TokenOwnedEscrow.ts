@@ -23,13 +23,16 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type TokenOwnedEscrow = {
+export type TokenOwnedEscrow = Account<TokenOwnedEscrowAccountData>;
+
+export type TokenOwnedEscrowAccountData = {
   key: TmKey;
   baseToken: PublicKey;
   authority: EscrowAuthority;
   bump: number;
 };
-export type TokenOwnedEscrowArgs = {
+
+export type TokenOwnedEscrowAccountArgs = {
   baseToken: PublicKey;
   authority: EscrowAuthority;
   bump: number;
@@ -38,7 +41,7 @@ export type TokenOwnedEscrowArgs = {
 export async function fetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<TokenOwnedEscrow>> {
+): Promise<TokenOwnedEscrow> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
   return deserializeTokenOwnedEscrow(context, maybeAccount);
@@ -47,7 +50,7 @@ export async function fetchTokenOwnedEscrow(
 export async function safeFetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<TokenOwnedEscrow> | null> {
+): Promise<TokenOwnedEscrow | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeTokenOwnedEscrow(context, maybeAccount)
@@ -57,13 +60,13 @@ export async function safeFetchTokenOwnedEscrow(
 export function deserializeTokenOwnedEscrow(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<TokenOwnedEscrow> {
+): TokenOwnedEscrow {
   return deserializeAccount(rawAccount, getTokenOwnedEscrowSerializer(context));
 }
 
-export function getTokenOwnedEscrowSerializer(
+export function getTokenOwnedEscrowAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TokenOwnedEscrowArgs, TokenOwnedEscrow> {
+): Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData> {
   const s = context.serializer;
   return mapSerializer<
     TokenOwnedEscrowArgs,
@@ -80,5 +83,5 @@ export function getTokenOwnedEscrowSerializer(
       'TokenOwnedEscrow'
     ),
     (value) => ({ key: 10, ...value } as TokenOwnedEscrow)
-  ) as Serializer<TokenOwnedEscrowArgs, TokenOwnedEscrow>;
+  ) as Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData>;
 }

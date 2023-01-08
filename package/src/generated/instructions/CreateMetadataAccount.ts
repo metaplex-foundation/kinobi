@@ -42,6 +42,7 @@ export type CreateMetadataAccountInstructionData = {
   data: Data;
   isMutable: boolean;
 };
+
 export type CreateMetadataAccountInstructionArgs = {
   data: DataArgs;
   isMutable: boolean;

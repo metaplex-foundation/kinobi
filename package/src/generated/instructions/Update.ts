@@ -33,6 +33,7 @@ export type UpdateInstructionData = {
   discriminator: Array<number>;
   data: CandyMachineData;
 };
+
 export type UpdateInstructionArgs = { data: CandyMachineDataArgs };
 
 export function getUpdateInstructionDataSerializer(

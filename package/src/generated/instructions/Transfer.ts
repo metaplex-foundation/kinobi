@@ -61,6 +61,7 @@ export type TransferInstructionData = {
   discriminator: number;
   transferArgs: TransferArgs;
 };
+
 export type TransferInstructionArgs = { transferArgs: TransferArgsArgs };
 
 export function getTransferInstructionDataSerializer(

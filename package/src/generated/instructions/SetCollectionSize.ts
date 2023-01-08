@@ -39,6 +39,7 @@ export type SetCollectionSizeInstructionData = {
   discriminator: number;
   setCollectionSizeArgs: SetCollectionSizeArgs;
 };
+
 export type SetCollectionSizeInstructionArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };

@@ -9,6 +9,7 @@
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type MintNewEditionFromMasterEditionViaTokenArgs = { edition: bigint };
+
 export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
   edition: number | bigint;
 };

@@ -37,7 +37,8 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     bag.mergeWith([
       this.checkExportConflicts(account, {
         [account.name]: 'type',
-        [`${account.name}Args`]: 'type',
+        [`${account.name}AccountData`]: 'type',
+        [`${account.name}AccountArgs`]: 'type',
         [`fetch${account.name}`]: 'function',
         [`safeFetch${account.name}`]: 'function',
         [`deserialize${account.name}`]: 'function',

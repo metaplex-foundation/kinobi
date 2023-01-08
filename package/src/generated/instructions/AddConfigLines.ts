@@ -34,6 +34,7 @@ export type AddConfigLinesInstructionData = {
     uri: string;
   }>;
 };
+
 export type AddConfigLinesInstructionArgs = {
   index: number;
   configLines: Array<{

@@ -14,6 +14,7 @@ import {
 } from '@lorisleiva/js-core';
 
 export type Collection = { verified: boolean; key: PublicKey };
+
 export type CollectionArgs = { verified?: boolean; key: PublicKey };
 
 export function getCollectionSerializer(

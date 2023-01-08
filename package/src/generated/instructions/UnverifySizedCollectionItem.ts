@@ -39,6 +39,7 @@ export type UnverifySizedCollectionItemInstructionAccounts = {
 export type UnverifySizedCollectionItemInstructionData = {
   discriminator: number;
 };
+
 export type UnverifySizedCollectionItemInstructionArgs = {};
 
 export function getUnverifySizedCollectionItemInstructionDataSerializer(

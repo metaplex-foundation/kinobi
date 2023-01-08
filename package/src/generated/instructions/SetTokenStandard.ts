@@ -31,6 +31,7 @@ export type SetTokenStandardInstructionAccounts = {
 
 // Arguments.
 export type SetTokenStandardInstructionData = { discriminator: number };
+
 export type SetTokenStandardInstructionArgs = {};
 
 export function getSetTokenStandardInstructionDataSerializer(

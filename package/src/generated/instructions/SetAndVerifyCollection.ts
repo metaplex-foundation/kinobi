@@ -39,6 +39,7 @@ export type SetAndVerifyCollectionInstructionAccounts = {
 
 // Arguments.
 export type SetAndVerifyCollectionInstructionData = { discriminator: number };
+
 export type SetAndVerifyCollectionInstructionArgs = {};
 
 export function getSetAndVerifyCollectionInstructionDataSerializer(

@@ -42,6 +42,7 @@ export type MintFromCandyMachineInstructionAccounts = {
 export type MintFromCandyMachineInstructionData = {
   discriminator: Array<number>;
 };
+
 export type MintFromCandyMachineInstructionArgs = {};
 
 export function getMintFromCandyMachineInstructionDataSerializer(

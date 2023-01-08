@@ -24,6 +24,7 @@
 export enum {{ strictName }} {{ typeManifest.strictType }};
 {%- elif typeManifest.hasLooseType -%}
 export type {{ strictName }} = {{ typeManifest.strictType }};
+
 export type {{ looseName }} = {{ typeManifest.looseType }};
 {%- else -%}
 export type {{ strictName }} = {{ typeManifest.strictType }};

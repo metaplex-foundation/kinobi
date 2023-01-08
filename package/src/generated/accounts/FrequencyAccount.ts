@@ -18,7 +18,9 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type FrequencyAccount = {
+export type FrequencyAccount = Account<FrequencyAccountAccountData>;
+
+export type FrequencyAccountAccountData = {
   /** Test with only one line. */
   key: TaKey;
   /**
@@ -28,7 +30,8 @@ export type FrequencyAccount = {
   lastUpdate: bigint;
   period: bigint;
 };
-export type FrequencyAccountArgs = {
+
+export type FrequencyAccountAccountArgs = {
   /**
    * Test with multiple lines
    * and this is the second line.
@@ -40,7 +43,7 @@ export type FrequencyAccountArgs = {
 export async function fetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<FrequencyAccount>> {
+): Promise<FrequencyAccount> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'FrequencyAccount');
   return deserializeFrequencyAccount(context, maybeAccount);
@@ -49,7 +52,7 @@ export async function fetchFrequencyAccount(
 export async function safeFetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<FrequencyAccount> | null> {
+): Promise<FrequencyAccount | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeFrequencyAccount(context, maybeAccount)
@@ -59,13 +62,13 @@ export async function safeFetchFrequencyAccount(
 export function deserializeFrequencyAccount(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<FrequencyAccount> {
+): FrequencyAccount {
   return deserializeAccount(rawAccount, getFrequencyAccountSerializer(context));
 }
 
-export function getFrequencyAccountSerializer(
+export function getFrequencyAccountAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<FrequencyAccountArgs, FrequencyAccount> {
+): Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData> {
   const s = context.serializer;
   return mapSerializer<
     FrequencyAccountArgs,
@@ -81,5 +84,5 @@ export function getFrequencyAccountSerializer(
       'FrequencyAccount'
     ),
     (value) => ({ key: 1, ...value } as FrequencyAccount)
-  ) as Serializer<FrequencyAccountArgs, FrequencyAccount>;
+  ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
 }

@@ -9,6 +9,7 @@
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type SetCollectionSizeArgs = { size: bigint };
+
 export type SetCollectionSizeArgsArgs = { size: number | bigint };
 
 export function getSetCollectionSizeArgsSerializer(

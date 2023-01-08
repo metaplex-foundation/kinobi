@@ -26,6 +26,7 @@ export type PayloadType =
   | { __kind: 'Seeds'; fields: [SeedsVec] }
   | { __kind: 'MerkleProof'; fields: [LeafInfo] }
   | { __kind: 'Number'; fields: [bigint] };
+
 export type PayloadTypeArgs =
   | { __kind: 'Pubkey'; fields: [PublicKey] }
   | { __kind: 'Seeds'; fields: [SeedsVec] }

@@ -16,6 +16,7 @@ export type Data = {
   sellerFeeBasisPoints: number;
   creators: Option<Array<Creator>>;
 };
+
 export type DataArgs = {
   name: string;
   symbol: string;

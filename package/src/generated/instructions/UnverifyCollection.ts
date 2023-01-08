@@ -35,6 +35,7 @@ export type UnverifyCollectionInstructionAccounts = {
 
 // Arguments.
 export type UnverifyCollectionInstructionData = { discriminator: number };
+
 export type UnverifyCollectionInstructionArgs = {};
 
 export function getUnverifyCollectionInstructionDataSerializer(

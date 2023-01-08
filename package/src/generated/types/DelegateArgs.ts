@@ -17,6 +17,7 @@ export type DelegateArgs =
   | { __kind: 'CollectionV1' }
   | { __kind: 'SaleV1'; amount: bigint }
   | { __kind: 'TransferV1'; amount: bigint };
+
 export type DelegateArgsArgs =
   | { __kind: 'CollectionV1' }
   | { __kind: 'SaleV1'; amount: number | bigint }

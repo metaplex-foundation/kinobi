@@ -55,6 +55,7 @@ export type UpdateArgs = {
   delegate_state: Option<DelegateState>;
   authority_type: AuthorityType;
 };
+
 export type UpdateArgsArgs = {
   __kind: 'V1';
   authorization_data: Option<AuthorizationDataArgs>;

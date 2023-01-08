@@ -35,6 +35,7 @@ export type CandyMachineData = {
   /** Hidden setttings */
   hiddenSettings: Option<HiddenSettings>;
 };
+
 export type CandyMachineDataArgs = {
   /** Number of assets available */
   itemsAvailable: number | bigint;

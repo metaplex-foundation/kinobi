@@ -31,6 +31,7 @@ export type ConvertMasterEditionV1ToV2InstructionAccounts = {
 export type ConvertMasterEditionV1ToV2InstructionData = {
   discriminator: number;
 };
+
 export type ConvertMasterEditionV1ToV2InstructionArgs = {};
 
 export function getConvertMasterEditionV1ToV2InstructionDataSerializer(

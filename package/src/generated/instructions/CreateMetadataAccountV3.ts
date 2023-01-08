@@ -51,6 +51,7 @@ export type CreateMetadataAccountV3InstructionData = {
   isMutable: boolean;
   collectionDetails: Option<CollectionDetails>;
 };
+
 export type CreateMetadataAccountV3InstructionArgs = {
   data: DataV2Args;
   isMutable: boolean;

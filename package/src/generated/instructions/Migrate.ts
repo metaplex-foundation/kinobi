@@ -47,6 +47,7 @@ export type MigrateInstructionData = {
   discriminator: number;
   migrateArgs: MigrateArgs;
 };
+
 export type MigrateInstructionArgs = { migrateArgs: MigrateArgs };
 
 export function getMigrateInstructionDataSerializer(

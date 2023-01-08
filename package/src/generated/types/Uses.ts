@@ -10,6 +10,7 @@ import { UseMethod, getUseMethodSerializer } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type Uses = { useMethod: UseMethod; remaining: bigint; total: bigint };
+
 export type UsesArgs = {
   useMethod: UseMethod;
   remaining: number | bigint;

@@ -9,6 +9,7 @@
 import { Context, Option, Serializer } from '@lorisleiva/js-core';
 
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };
+
 export type CreateMasterEditionArgsArgs = {
   maxSupply: Option<number | bigint>;
 };

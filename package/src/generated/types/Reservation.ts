@@ -13,6 +13,7 @@ export type Reservation = {
   spotsRemaining: bigint;
   totalSpots: bigint;
 };
+
 export type ReservationArgs = {
   address: PublicKey;
   spotsRemaining: number | bigint;

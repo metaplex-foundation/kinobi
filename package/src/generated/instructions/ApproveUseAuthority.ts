@@ -48,6 +48,7 @@ export type ApproveUseAuthorityInstructionData = {
   discriminator: number;
   numberOfUses: bigint;
 };
+
 export type ApproveUseAuthorityInstructionArgs = {
   numberOfUses: number | bigint;
 };

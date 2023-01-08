@@ -41,6 +41,7 @@ export type DeprecatedSetReservationListInstructionData = {
   offset: bigint;
   totalSpotOffset: bigint;
 };
+
 export type DeprecatedSetReservationListInstructionArgs = {
   reservations: Array<ReservationArgs>;
   totalReservationSpots: Option<number | bigint>;

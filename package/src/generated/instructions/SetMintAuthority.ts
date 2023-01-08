@@ -26,6 +26,7 @@ export type SetMintAuthorityInstructionAccounts = {
 
 // Arguments.
 export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
+
 export type SetMintAuthorityInstructionArgs = {};
 
 export function getSetMintAuthorityInstructionDataSerializer(

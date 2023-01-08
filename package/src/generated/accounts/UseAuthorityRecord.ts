@@ -18,12 +18,15 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type UseAuthorityRecord = {
+export type UseAuthorityRecord = Account<UseAuthorityRecordAccountData>;
+
+export type UseAuthorityRecordAccountData = {
   key: TmKey;
   allowedUses: bigint;
   bump: number;
 };
-export type UseAuthorityRecordArgs = {
+
+export type UseAuthorityRecordAccountArgs = {
   allowedUses: number | bigint;
   bump: number;
 };
@@ -31,7 +34,7 @@ export type UseAuthorityRecordArgs = {
 export async function fetchUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<UseAuthorityRecord>> {
+): Promise<UseAuthorityRecord> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'UseAuthorityRecord');
   return deserializeUseAuthorityRecord(context, maybeAccount);
@@ -40,7 +43,7 @@ export async function fetchUseAuthorityRecord(
 export async function safeFetchUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<UseAuthorityRecord> | null> {
+): Promise<UseAuthorityRecord | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeUseAuthorityRecord(context, maybeAccount)
@@ -50,16 +53,16 @@ export async function safeFetchUseAuthorityRecord(
 export function deserializeUseAuthorityRecord(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<UseAuthorityRecord> {
+): UseAuthorityRecord {
   return deserializeAccount(
     rawAccount,
     getUseAuthorityRecordSerializer(context)
   );
 }
 
-export function getUseAuthorityRecordSerializer(
+export function getUseAuthorityRecordAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UseAuthorityRecordArgs, UseAuthorityRecord> {
+): Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData> {
   const s = context.serializer;
   return mapSerializer<
     UseAuthorityRecordArgs,
@@ -75,5 +78,5 @@ export function getUseAuthorityRecordSerializer(
       'UseAuthorityRecord'
     ),
     (value) => ({ key: 8, ...value } as UseAuthorityRecord)
-  ) as Serializer<UseAuthorityRecordArgs, UseAuthorityRecord>;
+  ) as Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData>;
 }

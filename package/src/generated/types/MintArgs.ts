@@ -24,6 +24,7 @@ export type MintArgs = {
   amount: bigint;
   authorization_data: Option<AuthorizationData>;
 };
+
 export type MintArgsArgs = {
   __kind: 'V1';
   amount: number | bigint;

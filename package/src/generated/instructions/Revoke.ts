@@ -53,6 +53,7 @@ export type RevokeInstructionData = {
   discriminator: number;
   revokeArgs: RevokeArgs;
 };
+
 export type RevokeInstructionArgs = { revokeArgs: RevokeArgs };
 
 export function getRevokeInstructionDataSerializer(

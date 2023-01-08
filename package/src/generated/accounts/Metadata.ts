@@ -40,7 +40,9 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type Metadata = {
+export type Metadata = Account<MetadataAccountData>;
+
+export type MetadataAccountData = {
   key: TmKey;
   updateAuthority: PublicKey;
   mint: PublicKey;
@@ -55,7 +57,8 @@ export type Metadata = {
   programmableConfig: Option<ProgrammableConfig>;
   delegateState: Option<DelegateState>;
 };
-export type MetadataArgs = {
+
+export type MetadataAccountArgs = {
   updateAuthority: PublicKey;
   mint: PublicKey;
   data: DataArgs;
@@ -73,7 +76,7 @@ export type MetadataArgs = {
 export async function fetchMetadata(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<Metadata>> {
+): Promise<Metadata> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'Metadata');
   return deserializeMetadata(context, maybeAccount);
@@ -82,7 +85,7 @@ export async function fetchMetadata(
 export async function safeFetchMetadata(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<Metadata> | null> {
+): Promise<Metadata | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeMetadata(context, maybeAccount)
@@ -92,13 +95,13 @@ export async function safeFetchMetadata(
 export function deserializeMetadata(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<Metadata> {
+): Metadata {
   return deserializeAccount(rawAccount, getMetadataSerializer(context));
 }
 
-export function getMetadataSerializer(
+export function getMetadataAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MetadataArgs, Metadata> {
+): Serializer<MetadataAccountArgs, MetadataAccountData> {
   const s = context.serializer;
   return mapSerializer<MetadataArgs, Metadata, Metadata>(
     s.struct<Metadata>(
@@ -126,5 +129,5 @@ export function getMetadataSerializer(
       'Metadata'
     ),
     (value) => ({ key: 4, ...value } as Metadata)
-  ) as Serializer<MetadataArgs, Metadata>;
+  ) as Serializer<MetadataAccountArgs, MetadataAccountData>;
 }

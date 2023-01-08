@@ -25,6 +25,7 @@ export type PuffMetadataInstructionAccounts = {
 
 // Arguments.
 export type PuffMetadataInstructionData = { discriminator: number };
+
 export type PuffMetadataInstructionArgs = {};
 
 export function getPuffMetadataInstructionDataSerializer(

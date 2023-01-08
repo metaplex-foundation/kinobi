@@ -61,6 +61,7 @@ export type ValidateInstructionData = {
   operation: Operation;
   payload: Payload;
 };
+
 export type ValidateInstructionArgs = {
   ruleSetName: string;
   operation: Operation;

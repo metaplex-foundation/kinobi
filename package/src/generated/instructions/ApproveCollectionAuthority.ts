@@ -41,6 +41,7 @@ export type ApproveCollectionAuthorityInstructionAccounts = {
 export type ApproveCollectionAuthorityInstructionData = {
   discriminator: number;
 };
+
 export type ApproveCollectionAuthorityInstructionArgs = {};
 
 export function getApproveCollectionAuthorityInstructionDataSerializer(

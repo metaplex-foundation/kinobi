@@ -18,13 +18,16 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type EditionMarker = { key: TmKey; ledger: Array<number> };
-export type EditionMarkerArgs = { ledger: Array<number> };
+export type EditionMarker = Account<EditionMarkerAccountData>;
+
+export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
+
+export type EditionMarkerAccountArgs = { ledger: Array<number> };
 
 export async function fetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<EditionMarker>> {
+): Promise<EditionMarker> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'EditionMarker');
   return deserializeEditionMarker(context, maybeAccount);
@@ -33,7 +36,7 @@ export async function fetchEditionMarker(
 export async function safeFetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<EditionMarker> | null> {
+): Promise<EditionMarker | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeEditionMarker(context, maybeAccount)
@@ -43,13 +46,13 @@ export async function safeFetchEditionMarker(
 export function deserializeEditionMarker(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<EditionMarker> {
+): EditionMarker {
   return deserializeAccount(rawAccount, getEditionMarkerSerializer(context));
 }
 
-export function getEditionMarkerSerializer(
+export function getEditionMarkerAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<EditionMarkerArgs, EditionMarker> {
+): Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData> {
   const s = context.serializer;
   return mapSerializer<EditionMarkerArgs, EditionMarker, EditionMarker>(
     s.struct<EditionMarker>(
@@ -60,5 +63,5 @@ export function getEditionMarkerSerializer(
       'EditionMarker'
     ),
     (value) => ({ key: 7, ...value } as EditionMarker)
-  ) as Serializer<EditionMarkerArgs, EditionMarker>;
+  ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }

@@ -9,6 +9,7 @@
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type MintPrintingTokensViaTokenArgs = { supply: bigint };
+
 export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
 export function getMintPrintingTokensViaTokenArgsSerializer(

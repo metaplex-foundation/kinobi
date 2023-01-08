@@ -34,6 +34,7 @@ export type UpdateMetadataAccountInstructionData = {
   updateAuthority: Option<PublicKey>;
   primarySaleHappened: Option<boolean>;
 };
+
 export type UpdateMetadataAccountInstructionArgs = {
   data: Option<DataArgs>;
   updateAuthority: Option<PublicKey>;

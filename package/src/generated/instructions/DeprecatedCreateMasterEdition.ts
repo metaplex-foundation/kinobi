@@ -57,6 +57,7 @@ export type DeprecatedCreateMasterEditionInstructionData = {
   discriminator: number;
   createMasterEditionArgs: CreateMasterEditionArgs;
 };
+
 export type DeprecatedCreateMasterEditionInstructionArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };

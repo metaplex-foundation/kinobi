@@ -18,13 +18,23 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type Edition = { key: TmKey; parent: PublicKey; edition: bigint };
-export type EditionArgs = { parent: PublicKey; edition: number | bigint };
+export type Edition = Account<EditionAccountData>;
+
+export type EditionAccountData = {
+  key: TmKey;
+  parent: PublicKey;
+  edition: bigint;
+};
+
+export type EditionAccountArgs = {
+  parent: PublicKey;
+  edition: number | bigint;
+};
 
 export async function fetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<Edition>> {
+): Promise<Edition> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'Edition');
   return deserializeEdition(context, maybeAccount);
@@ -33,7 +43,7 @@ export async function fetchEdition(
 export async function safeFetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<Edition> | null> {
+): Promise<Edition | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists ? deserializeEdition(context, maybeAccount) : null;
 }
@@ -41,13 +51,13 @@ export async function safeFetchEdition(
 export function deserializeEdition(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<Edition> {
+): Edition {
   return deserializeAccount(rawAccount, getEditionSerializer(context));
 }
 
-export function getEditionSerializer(
+export function getEditionAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<EditionArgs, Edition> {
+): Serializer<EditionAccountArgs, EditionAccountData> {
   const s = context.serializer;
   return mapSerializer<EditionArgs, Edition, Edition>(
     s.struct<Edition>(
@@ -59,5 +69,5 @@ export function getEditionSerializer(
       'Edition'
     ),
     (value) => ({ key: 1, ...value } as Edition)
-  ) as Serializer<EditionArgs, Edition>;
+  ) as Serializer<EditionAccountArgs, EditionAccountData>;
 }

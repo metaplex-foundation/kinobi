@@ -41,6 +41,7 @@ export type RevokeUseAuthorityInstructionAccounts = {
 
 // Arguments.
 export type RevokeUseAuthorityInstructionData = { discriminator: number };
+
 export type RevokeUseAuthorityInstructionArgs = {};
 
 export function getRevokeUseAuthorityInstructionDataSerializer(

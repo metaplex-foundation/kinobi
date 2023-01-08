@@ -35,6 +35,7 @@ export type CreateFrequencyRuleInstructionData = {
   lastUpdate: bigint;
   period: bigint;
 };
+
 export type CreateFrequencyRuleInstructionArgs = {
   ruleSetName: string;
   freqRuleName: string;

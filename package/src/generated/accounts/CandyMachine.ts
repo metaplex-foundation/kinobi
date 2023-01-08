@@ -22,7 +22,9 @@ import {
   getCandyMachineDataSerializer,
 } from '../types';
 
-export type CandyMachine = {
+export type CandyMachine = Account<CandyMachineAccountData>;
+
+export type CandyMachineAccountData = {
   discriminator: Array<number>;
   /** Features versioning flags. */
   features: bigint;
@@ -37,7 +39,8 @@ export type CandyMachine = {
   /** Candy machine configuration data. */
   data: CandyMachineData;
 };
-export type CandyMachineArgs = {
+
+export type CandyMachineAccountArgs = {
   /** Features versioning flags. */
   features: number | bigint;
   /** Authority address. */
@@ -55,7 +58,7 @@ export type CandyMachineArgs = {
 export async function fetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<CandyMachine>> {
+): Promise<CandyMachine> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'CandyMachine');
   return deserializeCandyMachine(context, maybeAccount);
@@ -64,7 +67,7 @@ export async function fetchCandyMachine(
 export async function safeFetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<CandyMachine> | null> {
+): Promise<CandyMachine | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeCandyMachine(context, maybeAccount)
@@ -74,13 +77,13 @@ export async function safeFetchCandyMachine(
 export function deserializeCandyMachine(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<CandyMachine> {
+): CandyMachine {
   return deserializeAccount(rawAccount, getCandyMachineSerializer(context));
 }
 
-export function getCandyMachineSerializer(
+export function getCandyMachineAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CandyMachineArgs, CandyMachine> {
+): Serializer<CandyMachineAccountArgs, CandyMachineAccountData> {
   const s = context.serializer;
   return mapSerializer<CandyMachineArgs, CandyMachine, CandyMachine>(
     s.struct<CandyMachine>(
@@ -100,5 +103,5 @@ export function getCandyMachineSerializer(
         discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
         ...value,
       } as CandyMachine)
-  ) as Serializer<CandyMachineArgs, CandyMachine>;
+  ) as Serializer<CandyMachineAccountArgs, CandyMachineAccountData>;
 }

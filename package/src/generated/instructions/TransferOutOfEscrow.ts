@@ -52,6 +52,7 @@ export type TransferOutOfEscrowInstructionData = {
   discriminator: number;
   amount: bigint;
 };
+
 export type TransferOutOfEscrowInstructionArgs = { amount: number | bigint };
 
 export function getTransferOutOfEscrowInstructionDataSerializer(

@@ -28,6 +28,7 @@ export type DataV2 = {
   collection: Option<Collection>;
   uses: Option<Uses>;
 };
+
 export type DataV2Args = {
   name: string;
   symbol: string;

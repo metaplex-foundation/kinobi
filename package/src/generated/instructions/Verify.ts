@@ -37,6 +37,7 @@ export type VerifyInstructionData = {
   discriminator: number;
   verifyArgs: VerifyArgs;
 };
+
 export type VerifyInstructionArgs = { verifyArgs: VerifyArgs };
 
 export function getVerifyInstructionDataSerializer(

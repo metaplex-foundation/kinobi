@@ -65,6 +65,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionData = {
   discriminator: number;
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
 };
+
 export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };

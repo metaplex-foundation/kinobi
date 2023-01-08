@@ -49,6 +49,7 @@ export type CreateDigitalAssetInstructionData = {
   discriminator: number;
   createArgs: TmCreateArgs;
 };
+
 export type CreateDigitalAssetInstructionArgs = {
   createArgs: TmCreateArgsArgs;
 };

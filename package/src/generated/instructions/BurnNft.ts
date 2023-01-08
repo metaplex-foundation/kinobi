@@ -37,6 +37,7 @@ export type BurnNftInstructionAccounts = {
 
 // Arguments.
 export type BurnNftInstructionData = { discriminator: number };
+
 export type BurnNftInstructionArgs = {};
 
 export function getBurnNftInstructionDataSerializer(

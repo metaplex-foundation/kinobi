@@ -19,14 +19,17 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type MasterEditionV1 = {
+export type MasterEditionV1 = Account<MasterEditionV1AccountData>;
+
+export type MasterEditionV1AccountData = {
   key: TmKey;
   supply: bigint;
   maxSupply: Option<bigint>;
   printingMint: PublicKey;
   oneTimePrintingAuthorizationMint: PublicKey;
 };
-export type MasterEditionV1Args = {
+
+export type MasterEditionV1AccountArgs = {
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
   printingMint: PublicKey;
@@ -36,7 +39,7 @@ export type MasterEditionV1Args = {
 export async function fetchMasterEditionV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<MasterEditionV1>> {
+): Promise<MasterEditionV1> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'MasterEditionV1');
   return deserializeMasterEditionV1(context, maybeAccount);
@@ -45,7 +48,7 @@ export async function fetchMasterEditionV1(
 export async function safeFetchMasterEditionV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<MasterEditionV1> | null> {
+): Promise<MasterEditionV1 | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeMasterEditionV1(context, maybeAccount)
@@ -55,13 +58,13 @@ export async function safeFetchMasterEditionV1(
 export function deserializeMasterEditionV1(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<MasterEditionV1> {
+): MasterEditionV1 {
   return deserializeAccount(rawAccount, getMasterEditionV1Serializer(context));
 }
 
-export function getMasterEditionV1Serializer(
+export function getMasterEditionV1AccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MasterEditionV1Args, MasterEditionV1> {
+): Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData> {
   const s = context.serializer;
   return mapSerializer<MasterEditionV1Args, MasterEditionV1, MasterEditionV1>(
     s.struct<MasterEditionV1>(
@@ -75,5 +78,5 @@ export function getMasterEditionV1Serializer(
       'MasterEditionV1'
     ),
     (value) => ({ key: 2, ...value } as MasterEditionV1)
-  ) as Serializer<MasterEditionV1Args, MasterEditionV1>;
+  ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
 }

@@ -29,6 +29,7 @@ export type RemoveCreatorVerificationInstructionAccounts = {
 export type RemoveCreatorVerificationInstructionData = {
   discriminator: number;
 };
+
 export type RemoveCreatorVerificationInstructionArgs = {};
 
 export function getRemoveCreatorVerificationInstructionDataSerializer(

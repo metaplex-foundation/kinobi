@@ -53,6 +53,7 @@ export type UseAssetInstructionData = {
   discriminator: number;
   useAssetArgs: UseAssetArgs;
 };
+
 export type UseAssetInstructionArgs = { useAssetArgs: UseAssetArgsArgs };
 
 export function getUseAssetInstructionDataSerializer(

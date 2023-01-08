@@ -21,6 +21,7 @@ export type TmCreateArgs = {
   decimals: Option<number>;
   max_supply: Option<bigint>;
 };
+
 export type TmCreateArgsArgs = {
   __kind: 'V1';
   asset_data: AssetDataArgs;

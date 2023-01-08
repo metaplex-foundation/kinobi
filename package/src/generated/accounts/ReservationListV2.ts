@@ -25,7 +25,9 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type ReservationListV2 = {
+export type ReservationListV2 = Account<ReservationListV2AccountData>;
+
+export type ReservationListV2AccountData = {
   key: TmKey;
   masterEdition: PublicKey;
   supplySnapshot: Option<bigint>;
@@ -33,7 +35,8 @@ export type ReservationListV2 = {
   totalReservationSpots: bigint;
   currentReservationSpots: bigint;
 };
-export type ReservationListV2Args = {
+
+export type ReservationListV2AccountArgs = {
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
   reservations: Array<ReservationArgs>;
@@ -44,7 +47,7 @@ export type ReservationListV2Args = {
 export async function fetchReservationListV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<ReservationListV2>> {
+): Promise<ReservationListV2> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'ReservationListV2');
   return deserializeReservationListV2(context, maybeAccount);
@@ -53,7 +56,7 @@ export async function fetchReservationListV2(
 export async function safeFetchReservationListV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<ReservationListV2> | null> {
+): Promise<ReservationListV2 | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeReservationListV2(context, maybeAccount)
@@ -63,16 +66,16 @@ export async function safeFetchReservationListV2(
 export function deserializeReservationListV2(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<ReservationListV2> {
+): ReservationListV2 {
   return deserializeAccount(
     rawAccount,
     getReservationListV2Serializer(context)
   );
 }
 
-export function getReservationListV2Serializer(
+export function getReservationListV2AccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV2Args, ReservationListV2> {
+): Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData> {
   const s = context.serializer;
   return mapSerializer<
     ReservationListV2Args,
@@ -91,5 +94,5 @@ export function getReservationListV2Serializer(
       'ReservationListV2'
     ),
     (value) => ({ key: 5, ...value } as ReservationListV2)
-  ) as Serializer<ReservationListV2Args, ReservationListV2>;
+  ) as Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData>;
 }

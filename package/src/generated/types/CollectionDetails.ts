@@ -14,6 +14,7 @@ import {
 } from '@lorisleiva/js-core';
 
 export type CollectionDetails = { __kind: 'V1'; size: bigint };
+
 export type CollectionDetailsArgs = { __kind: 'V1'; size: number | bigint };
 
 export function getCollectionDetailsSerializer(

@@ -42,6 +42,7 @@ export type InitializeInstructionData = {
   discriminator: Array<number>;
   data: CandyMachineData;
 };
+
 export type InitializeInstructionArgs = { data: CandyMachineDataArgs };
 
 export function getInitializeInstructionDataSerializer(

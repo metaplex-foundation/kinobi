@@ -49,6 +49,7 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionData = {
   discriminator: number;
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgs;
 };
+
 export type DeprecatedMintPrintingTokensViaTokenInstructionArgs = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
 };

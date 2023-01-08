@@ -33,6 +33,7 @@ export type ThawDelegatedAccountInstructionAccounts = {
 
 // Arguments.
 export type ThawDelegatedAccountInstructionData = { discriminator: number };
+
 export type ThawDelegatedAccountInstructionArgs = {};
 
 export function getThawDelegatedAccountInstructionDataSerializer(

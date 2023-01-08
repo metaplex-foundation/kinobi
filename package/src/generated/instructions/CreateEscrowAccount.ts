@@ -41,6 +41,7 @@ export type CreateEscrowAccountInstructionAccounts = {
 
 // Arguments.
 export type CreateEscrowAccountInstructionData = { discriminator: number };
+
 export type CreateEscrowAccountInstructionArgs = {};
 
 export function getCreateEscrowAccountInstructionDataSerializer(

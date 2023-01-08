@@ -33,6 +33,7 @@ export type CreateInstructionData = {
   discriminator: number;
   createArgs: TaCreateArgs;
 };
+
 export type CreateInstructionArgs = { createArgs: TaCreateArgs };
 
 export function getCreateInstructionDataSerializer(

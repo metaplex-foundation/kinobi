@@ -35,6 +35,7 @@ export type RevokeCollectionAuthorityInstructionAccounts = {
 export type RevokeCollectionAuthorityInstructionData = {
   discriminator: number;
 };
+
 export type RevokeCollectionAuthorityInstructionArgs = {};
 
 export function getRevokeCollectionAuthorityInstructionDataSerializer(

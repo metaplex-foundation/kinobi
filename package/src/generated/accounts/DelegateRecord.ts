@@ -23,13 +23,20 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type DelegateRecord = { key: TmKey; role: DelegateRole; bump: number };
-export type DelegateRecordArgs = { role: DelegateRole; bump: number };
+export type DelegateRecord = Account<DelegateRecordAccountData>;
+
+export type DelegateRecordAccountData = {
+  key: TmKey;
+  role: DelegateRole;
+  bump: number;
+};
+
+export type DelegateRecordAccountArgs = { role: DelegateRole; bump: number };
 
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<DelegateRecord>> {
+): Promise<DelegateRecord> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'DelegateRecord');
   return deserializeDelegateRecord(context, maybeAccount);
@@ -38,7 +45,7 @@ export async function fetchDelegateRecord(
 export async function safeFetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<DelegateRecord> | null> {
+): Promise<DelegateRecord | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeDelegateRecord(context, maybeAccount)
@@ -48,13 +55,13 @@ export async function safeFetchDelegateRecord(
 export function deserializeDelegateRecord(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<DelegateRecord> {
+): DelegateRecord {
   return deserializeAccount(rawAccount, getDelegateRecordSerializer(context));
 }
 
-export function getDelegateRecordSerializer(
+export function getDelegateRecordAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateRecordArgs, DelegateRecord> {
+): Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData> {
   const s = context.serializer;
   return mapSerializer<DelegateRecordArgs, DelegateRecord, DelegateRecord>(
     s.struct<DelegateRecord>(
@@ -66,5 +73,5 @@ export function getDelegateRecordSerializer(
       'DelegateRecord'
     ),
     (value) => ({ key: 11, ...value } as DelegateRecord)
-  ) as Serializer<DelegateRecordArgs, DelegateRecord>;
+  ) as Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData>;
 }

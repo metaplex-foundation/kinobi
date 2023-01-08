@@ -41,6 +41,7 @@ export type BubblegumSetCollectionSizeInstructionData = {
   discriminator: number;
   setCollectionSizeArgs: SetCollectionSizeArgs;
 };
+
 export type BubblegumSetCollectionSizeInstructionArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };

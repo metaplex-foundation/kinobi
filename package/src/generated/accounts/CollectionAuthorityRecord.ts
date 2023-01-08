@@ -19,12 +19,16 @@ import {
   mapSerializer,
 } from '@lorisleiva/js-core';
 
-export type CollectionAuthorityRecord = {
+export type CollectionAuthorityRecord =
+  Account<CollectionAuthorityRecordAccountData>;
+
+export type CollectionAuthorityRecordAccountData = {
   key: TmKey;
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
-export type CollectionAuthorityRecordArgs = {
+
+export type CollectionAuthorityRecordAccountArgs = {
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
@@ -32,7 +36,7 @@ export type CollectionAuthorityRecordArgs = {
 export async function fetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<CollectionAuthorityRecord>> {
+): Promise<CollectionAuthorityRecord> {
   const maybeAccount = await context.rpc.getAccount(address);
   assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
   return deserializeCollectionAuthorityRecord(context, maybeAccount);
@@ -41,7 +45,7 @@ export async function fetchCollectionAuthorityRecord(
 export async function safeFetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   address: PublicKey
-): Promise<Account<CollectionAuthorityRecord> | null> {
+): Promise<CollectionAuthorityRecord | null> {
   const maybeAccount = await context.rpc.getAccount(address);
   return maybeAccount.exists
     ? deserializeCollectionAuthorityRecord(context, maybeAccount)
@@ -51,16 +55,19 @@ export async function safeFetchCollectionAuthorityRecord(
 export function deserializeCollectionAuthorityRecord(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
-): Account<CollectionAuthorityRecord> {
+): CollectionAuthorityRecord {
   return deserializeAccount(
     rawAccount,
     getCollectionAuthorityRecordSerializer(context)
   );
 }
 
-export function getCollectionAuthorityRecordSerializer(
+export function getCollectionAuthorityRecordAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CollectionAuthorityRecordArgs, CollectionAuthorityRecord> {
+): Serializer<
+  CollectionAuthorityRecordAccountArgs,
+  CollectionAuthorityRecordAccountData
+> {
   const s = context.serializer;
   return mapSerializer<
     CollectionAuthorityRecordArgs,
@@ -76,5 +83,8 @@ export function getCollectionAuthorityRecordSerializer(
       'CollectionAuthorityRecord'
     ),
     (value) => ({ key: 9, ...value } as CollectionAuthorityRecord)
-  ) as Serializer<CollectionAuthorityRecordArgs, CollectionAuthorityRecord>;
+  ) as Serializer<
+    CollectionAuthorityRecordAccountArgs,
+    CollectionAuthorityRecordAccountData
+  >;
 }

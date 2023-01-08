@@ -16,6 +16,7 @@ import {
 import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type Payload = { map: Map<PayloadKey, PayloadType> };
+
 export type PayloadArgs = { map: Map<PayloadKey, PayloadTypeArgs> };
 
 export function getPayloadSerializer(

@@ -14,6 +14,7 @@ import {
 } from '@lorisleiva/js-core';
 
 export type Creator = { address: PublicKey; verified: boolean; share: number };
+
 export type CreatorArgs = {
   address: PublicKey;
   verified?: boolean;

@@ -48,6 +48,7 @@ export type MintInstructionAccounts = {
 
 // Arguments.
 export type MintInstructionData = { discriminator: number; mintArgs: MintArgs };
+
 export type MintInstructionArgs = { mintArgs: MintArgsArgs };
 
 export function getMintInstructionDataSerializer(

@@ -41,6 +41,7 @@ export type SetAndVerifySizedCollectionItemInstructionAccounts = {
 export type SetAndVerifySizedCollectionItemInstructionData = {
   discriminator: number;
 };
+
 export type SetAndVerifySizedCollectionItemInstructionArgs = {};
 
 export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(

@@ -45,6 +45,7 @@ export type AssetData = {
   programmableConfig: Option<ProgrammableConfig>;
   delegateState: Option<DelegateState>;
 };
+
 export type AssetDataArgs = {
   updateAuthority: PublicKey;
   name: string;

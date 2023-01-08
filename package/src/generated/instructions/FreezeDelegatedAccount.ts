@@ -33,6 +33,7 @@ export type FreezeDelegatedAccountInstructionAccounts = {
 
 // Arguments.
 export type FreezeDelegatedAccountInstructionData = { discriminator: number };
+
 export type FreezeDelegatedAccountInstructionArgs = {};
 
 export function getFreezeDelegatedAccountInstructionDataSerializer(

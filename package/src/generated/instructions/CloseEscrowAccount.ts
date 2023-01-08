@@ -39,6 +39,7 @@ export type CloseEscrowAccountInstructionAccounts = {
 
 // Arguments.
 export type CloseEscrowAccountInstructionData = { discriminator: number };
+
 export type CloseEscrowAccountInstructionArgs = {};
 
 export function getCloseEscrowAccountInstructionDataSerializer(

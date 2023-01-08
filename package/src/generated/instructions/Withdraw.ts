@@ -25,6 +25,7 @@ export type WithdrawInstructionAccounts = {
 
 // Arguments.
 export type WithdrawInstructionData = { discriminator: Array<number> };
+
 export type WithdrawInstructionArgs = {};
 
 export function getWithdrawInstructionDataSerializer(

@@ -27,6 +27,7 @@ export type SignMetadataInstructionAccounts = {
 
 // Arguments.
 export type SignMetadataInstructionData = { discriminator: number };
+
 export type SignMetadataInstructionArgs = {};
 
 export function getSignMetadataInstructionDataSerializer(

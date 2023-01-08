@@ -24,6 +24,7 @@ export type TransferArgs = {
   authorization_data: Option<AuthorizationData>;
   amount: bigint;
 };
+
 export type TransferArgsArgs = {
   __kind: 'V1';
   authorization_data: Option<AuthorizationDataArgs>;

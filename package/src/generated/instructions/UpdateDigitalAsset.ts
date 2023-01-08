@@ -47,6 +47,7 @@ export type UpdateDigitalAssetInstructionData = {
   discriminator: number;
   updateArgs: UpdateArgs;
 };
+
 export type UpdateDigitalAssetInstructionArgs = { updateArgs: UpdateArgsArgs };
 
 export function getUpdateDigitalAssetInstructionDataSerializer(

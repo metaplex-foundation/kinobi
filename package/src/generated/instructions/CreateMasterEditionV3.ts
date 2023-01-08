@@ -49,6 +49,7 @@ export type CreateMasterEditionV3InstructionData = {
   discriminator: number;
   createMasterEditionArgs: CreateMasterEditionArgs;
 };
+
 export type CreateMasterEditionV3InstructionArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
