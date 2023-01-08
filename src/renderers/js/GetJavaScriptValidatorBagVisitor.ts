@@ -140,11 +140,11 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         exportDetails = `exports a "${exportName}" ${exportType} that `;
       }
       if (!this.isEponymousExport(conflictingNode, exportName)) {
-        conflictExportDetails = `"${exportName}" ${exportConflict.exportType} exported by `;
+        conflictExportDetails = `"${exportName}" ${exportConflict.exportType} exported by the `;
       }
       const message =
         `The ${this.getNodeTitle(node)} ${exportDetails}` +
-        `conflicts with the ${conflictExportDetails} ` +
+        `conflicts with the ${conflictExportDetails}` +
         `${this.getNodeTitle(conflictingNode)}.`;
       bag.error(message, node, stack);
     });
