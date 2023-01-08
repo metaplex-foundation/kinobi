@@ -96,15 +96,22 @@ export function deserializeMetadata(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): Metadata {
-  return deserializeAccount(rawAccount, getMetadataSerializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getMetadataAccountDataSerializer(context)
+  );
 }
 
 export function getMetadataAccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MetadataAccountArgs, MetadataAccountData> {
   const s = context.serializer;
-  return mapSerializer<MetadataArgs, Metadata, Metadata>(
-    s.struct<Metadata>(
+  return mapSerializer<
+    MetadataAccountArgs,
+    MetadataAccountData,
+    MetadataAccountData
+  >(
+    s.struct<MetadataAccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['updateAuthority', s.publicKey],
@@ -128,6 +135,6 @@ export function getMetadataAccountDataSerializer(
       ],
       'Metadata'
     ),
-    (value) => ({ key: 4, ...value } as Metadata)
+    (value) => ({ key: 4, ...value } as MetadataAccountData)
   ) as Serializer<MetadataAccountArgs, MetadataAccountData>;
 }

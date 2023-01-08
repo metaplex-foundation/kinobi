@@ -58,7 +58,7 @@ export function deserializeCollectionAuthorityRecord(
 ): CollectionAuthorityRecord {
   return deserializeAccount(
     rawAccount,
-    getCollectionAuthorityRecordSerializer(context)
+    getCollectionAuthorityRecordAccountDataSerializer(context)
   );
 }
 
@@ -70,11 +70,11 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
 > {
   const s = context.serializer;
   return mapSerializer<
-    CollectionAuthorityRecordArgs,
-    CollectionAuthorityRecord,
-    CollectionAuthorityRecord
+    CollectionAuthorityRecordAccountArgs,
+    CollectionAuthorityRecordAccountData,
+    CollectionAuthorityRecordAccountData
   >(
-    s.struct<CollectionAuthorityRecord>(
+    s.struct<CollectionAuthorityRecordAccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['bump', s.u8],
@@ -82,7 +82,7 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
       ],
       'CollectionAuthorityRecord'
     ),
-    (value) => ({ key: 9, ...value } as CollectionAuthorityRecord)
+    (value) => ({ key: 9, ...value } as CollectionAuthorityRecordAccountData)
   ) as Serializer<
     CollectionAuthorityRecordAccountArgs,
     CollectionAuthorityRecordAccountData

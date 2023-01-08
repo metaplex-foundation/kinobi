@@ -56,7 +56,7 @@ export function deserializeUseAuthorityRecord(
 ): UseAuthorityRecord {
   return deserializeAccount(
     rawAccount,
-    getUseAuthorityRecordSerializer(context)
+    getUseAuthorityRecordAccountDataSerializer(context)
   );
 }
 
@@ -65,11 +65,11 @@ export function getUseAuthorityRecordAccountDataSerializer(
 ): Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    UseAuthorityRecordArgs,
-    UseAuthorityRecord,
-    UseAuthorityRecord
+    UseAuthorityRecordAccountArgs,
+    UseAuthorityRecordAccountData,
+    UseAuthorityRecordAccountData
   >(
-    s.struct<UseAuthorityRecord>(
+    s.struct<UseAuthorityRecordAccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['allowedUses', s.u64],
@@ -77,6 +77,6 @@ export function getUseAuthorityRecordAccountDataSerializer(
       ],
       'UseAuthorityRecord'
     ),
-    (value) => ({ key: 8, ...value } as UseAuthorityRecord)
+    (value) => ({ key: 8, ...value } as UseAuthorityRecordAccountData)
   ) as Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData>;
 }

@@ -63,7 +63,10 @@ export function deserializeFrequencyAccount(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): FrequencyAccount {
-  return deserializeAccount(rawAccount, getFrequencyAccountSerializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getFrequencyAccountAccountDataSerializer(context)
+  );
 }
 
 export function getFrequencyAccountAccountDataSerializer(
@@ -71,11 +74,11 @@ export function getFrequencyAccountAccountDataSerializer(
 ): Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    FrequencyAccountArgs,
-    FrequencyAccount,
-    FrequencyAccount
+    FrequencyAccountAccountArgs,
+    FrequencyAccountAccountData,
+    FrequencyAccountAccountData
   >(
-    s.struct<FrequencyAccount>(
+    s.struct<FrequencyAccountAccountData>(
       [
         ['key', getTaKeySerializer(context)],
         ['lastUpdate', s.i64],
@@ -83,6 +86,6 @@ export function getFrequencyAccountAccountDataSerializer(
       ],
       'FrequencyAccount'
     ),
-    (value) => ({ key: 1, ...value } as FrequencyAccount)
+    (value) => ({ key: 1, ...value } as FrequencyAccountAccountData)
   ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
 }

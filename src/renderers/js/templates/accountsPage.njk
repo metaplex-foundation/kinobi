@@ -32,7 +32,7 @@ export function deserialize{{ name }}(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount,
 ): {{ name }} {
-  return deserializeAccount(rawAccount, get{{ name }}Serializer(context));
+  return deserializeAccount(rawAccount, get{{ name }}AccountDataSerializer(context));
 }
 
 {{ macros.exportSerializer(name + 'AccountData', name + 'AccountArgs', typeManifest) }}

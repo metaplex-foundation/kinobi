@@ -47,21 +47,28 @@ export function deserializeEditionMarker(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): EditionMarker {
-  return deserializeAccount(rawAccount, getEditionMarkerSerializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getEditionMarkerAccountDataSerializer(context)
+  );
 }
 
 export function getEditionMarkerAccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData> {
   const s = context.serializer;
-  return mapSerializer<EditionMarkerArgs, EditionMarker, EditionMarker>(
-    s.struct<EditionMarker>(
+  return mapSerializer<
+    EditionMarkerAccountArgs,
+    EditionMarkerAccountData,
+    EditionMarkerAccountData
+  >(
+    s.struct<EditionMarkerAccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['ledger', s.array(s.u8, 31)],
       ],
       'EditionMarker'
     ),
-    (value) => ({ key: 7, ...value } as EditionMarker)
+    (value) => ({ key: 7, ...value } as EditionMarkerAccountData)
   ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }

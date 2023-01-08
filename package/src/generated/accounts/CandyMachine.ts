@@ -78,15 +78,22 @@ export function deserializeCandyMachine(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): CandyMachine {
-  return deserializeAccount(rawAccount, getCandyMachineSerializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getCandyMachineAccountDataSerializer(context)
+  );
 }
 
 export function getCandyMachineAccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<CandyMachineAccountArgs, CandyMachineAccountData> {
   const s = context.serializer;
-  return mapSerializer<CandyMachineArgs, CandyMachine, CandyMachine>(
-    s.struct<CandyMachine>(
+  return mapSerializer<
+    CandyMachineAccountArgs,
+    CandyMachineAccountData,
+    CandyMachineAccountData
+  >(
+    s.struct<CandyMachineAccountData>(
       [
         ['discriminator', s.array(s.u8, 8)],
         ['features', s.u64],
@@ -102,6 +109,6 @@ export function getCandyMachineAccountDataSerializer(
       ({
         discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
         ...value,
-      } as CandyMachine)
+      } as CandyMachineAccountData)
   ) as Serializer<CandyMachineAccountArgs, CandyMachineAccountData>;
 }

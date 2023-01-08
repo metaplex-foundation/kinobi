@@ -56,15 +56,22 @@ export function deserializeDelegateRecord(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): DelegateRecord {
-  return deserializeAccount(rawAccount, getDelegateRecordSerializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getDelegateRecordAccountDataSerializer(context)
+  );
 }
 
 export function getDelegateRecordAccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData> {
   const s = context.serializer;
-  return mapSerializer<DelegateRecordArgs, DelegateRecord, DelegateRecord>(
-    s.struct<DelegateRecord>(
+  return mapSerializer<
+    DelegateRecordAccountArgs,
+    DelegateRecordAccountData,
+    DelegateRecordAccountData
+  >(
+    s.struct<DelegateRecordAccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['role', getDelegateRoleSerializer(context)],
@@ -72,6 +79,6 @@ export function getDelegateRecordAccountDataSerializer(
       ],
       'DelegateRecord'
     ),
-    (value) => ({ key: 11, ...value } as DelegateRecord)
+    (value) => ({ key: 11, ...value } as DelegateRecordAccountData)
   ) as Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData>;
 }

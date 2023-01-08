@@ -52,15 +52,22 @@ export function deserializeEdition(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): Edition {
-  return deserializeAccount(rawAccount, getEditionSerializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getEditionAccountDataSerializer(context)
+  );
 }
 
 export function getEditionAccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<EditionAccountArgs, EditionAccountData> {
   const s = context.serializer;
-  return mapSerializer<EditionArgs, Edition, Edition>(
-    s.struct<Edition>(
+  return mapSerializer<
+    EditionAccountArgs,
+    EditionAccountData,
+    EditionAccountData
+  >(
+    s.struct<EditionAccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['parent', s.publicKey],
@@ -68,6 +75,6 @@ export function getEditionAccountDataSerializer(
       ],
       'Edition'
     ),
-    (value) => ({ key: 1, ...value } as Edition)
+    (value) => ({ key: 1, ...value } as EditionAccountData)
   ) as Serializer<EditionAccountArgs, EditionAccountData>;
 }

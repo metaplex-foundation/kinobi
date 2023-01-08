@@ -61,7 +61,10 @@ export function deserializeTokenOwnedEscrow(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): TokenOwnedEscrow {
-  return deserializeAccount(rawAccount, getTokenOwnedEscrowSerializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getTokenOwnedEscrowAccountDataSerializer(context)
+  );
 }
 
 export function getTokenOwnedEscrowAccountDataSerializer(
@@ -69,11 +72,11 @@ export function getTokenOwnedEscrowAccountDataSerializer(
 ): Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    TokenOwnedEscrowArgs,
-    TokenOwnedEscrow,
-    TokenOwnedEscrow
+    TokenOwnedEscrowAccountArgs,
+    TokenOwnedEscrowAccountData,
+    TokenOwnedEscrowAccountData
   >(
-    s.struct<TokenOwnedEscrow>(
+    s.struct<TokenOwnedEscrowAccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['baseToken', s.publicKey],
@@ -82,6 +85,6 @@ export function getTokenOwnedEscrowAccountDataSerializer(
       ],
       'TokenOwnedEscrow'
     ),
-    (value) => ({ key: 10, ...value } as TokenOwnedEscrow)
+    (value) => ({ key: 10, ...value } as TokenOwnedEscrowAccountData)
   ) as Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData>;
 }

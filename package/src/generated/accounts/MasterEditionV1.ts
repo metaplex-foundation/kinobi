@@ -59,15 +59,22 @@ export function deserializeMasterEditionV1(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount
 ): MasterEditionV1 {
-  return deserializeAccount(rawAccount, getMasterEditionV1Serializer(context));
+  return deserializeAccount(
+    rawAccount,
+    getMasterEditionV1AccountDataSerializer(context)
+  );
 }
 
 export function getMasterEditionV1AccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData> {
   const s = context.serializer;
-  return mapSerializer<MasterEditionV1Args, MasterEditionV1, MasterEditionV1>(
-    s.struct<MasterEditionV1>(
+  return mapSerializer<
+    MasterEditionV1AccountArgs,
+    MasterEditionV1AccountData,
+    MasterEditionV1AccountData
+  >(
+    s.struct<MasterEditionV1AccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['supply', s.u64],
@@ -77,6 +84,6 @@ export function getMasterEditionV1AccountDataSerializer(
       ],
       'MasterEditionV1'
     ),
-    (value) => ({ key: 2, ...value } as MasterEditionV1)
+    (value) => ({ key: 2, ...value } as MasterEditionV1AccountData)
   ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
 }

@@ -69,7 +69,7 @@ export function deserializeReservationListV2(
 ): ReservationListV2 {
   return deserializeAccount(
     rawAccount,
-    getReservationListV2Serializer(context)
+    getReservationListV2AccountDataSerializer(context)
   );
 }
 
@@ -78,11 +78,11 @@ export function getReservationListV2AccountDataSerializer(
 ): Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData> {
   const s = context.serializer;
   return mapSerializer<
-    ReservationListV2Args,
-    ReservationListV2,
-    ReservationListV2
+    ReservationListV2AccountArgs,
+    ReservationListV2AccountData,
+    ReservationListV2AccountData
   >(
-    s.struct<ReservationListV2>(
+    s.struct<ReservationListV2AccountData>(
       [
         ['key', getTmKeySerializer(context)],
         ['masterEdition', s.publicKey],
@@ -93,6 +93,6 @@ export function getReservationListV2AccountDataSerializer(
       ],
       'ReservationListV2'
     ),
-    (value) => ({ key: 5, ...value } as ReservationListV2)
+    (value) => ({ key: 5, ...value } as ReservationListV2AccountData)
   ) as Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData>;
 }
