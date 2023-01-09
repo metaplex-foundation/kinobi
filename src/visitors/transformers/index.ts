@@ -4,6 +4,7 @@ export * from './MarkNodesAsInternalVisitor';
 export * from './RenameNodesVisitor';
 export * from './SetAnchorDiscriminatorsVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
+export * from './SetLeafWrappersVisitor';
 export * from './SetMissingDefinedTypesVisitor';
 export * from './SetStructDefaultValuesVisitor';
 export * from './TransformNodesVisitor';
