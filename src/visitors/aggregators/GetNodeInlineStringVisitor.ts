@@ -59,12 +59,28 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {
-    const children = typeEnum.variants.map((variant) => {
-      if (variant.kind === 'empty') return variant.name;
-      const child = variant.type.accept(this);
-      return `${variant.name}:${child}`;
-    });
+    const children = typeEnum.variants.map((variant) => variant.accept(this));
     return `enum[${typeEnum.name}](${children.join(',')})`;
+  }
+
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): string {
+    return typeEnumEmptyVariant.name;
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): string {
+    const child = typeEnumStructVariant.struct.accept(this);
+    return `${typeEnumStructVariant.name}:${child}`;
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): string {
+    const child = typeEnumTupleVariant.tuple.accept(this);
+    return `${typeEnumTupleVariant.name}:${child}`;
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): string {
@@ -88,11 +104,13 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): string {
-    const children = typeStruct.fields.map((field) => {
-      const child = field.type.accept(this);
-      return `${field.name}:${child}`;
-    });
+    const children = typeStruct.fields.map((field) => field.accept(this));
     return `struct[${typeStruct.name}](${children.join(',')})`;
+  }
+
+  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): string {
+    const child = typeStructField.type.accept(this);
+    return `${typeStructField.name}:${child}`;
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {

@@ -106,30 +106,38 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {
-    const children = typeEnum.variants.map((variant) => {
-      const variantStr: string[] = [];
-      this.indent += 1;
-      const variantSuffix =
-        variant.kind === 'empty' ? '' : ` (${variant.kind}):`;
-      variantStr.push(this.indented(`${variant.name}${variantSuffix}`));
-      if (variant.kind === 'struct') {
-        this.indent += 1;
-        variantStr.push(variant.type.accept(this));
-        this.indent -= 1;
-      } else if (variant.kind === 'tuple') {
-        this.indent += 1;
-        variantStr.push(variant.type.accept(this));
-        this.indent -= 1;
-      }
-      this.indent -= 1;
-      return variantStr.join('\n');
-    });
-
+    this.indent += 1;
+    const children = typeEnum.variants.map((variant) => variant.accept(this));
+    this.indent -= 1;
     return [
       this.indented(
         `[TypeEnumNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`
       ),
       ...children,
+    ].join('\n');
+  }
+
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): string {
+    return this.indented(typeEnumEmptyVariant.name);
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): string {
+    return [
+      this.indented(`${typeEnumStructVariant.name} (struct)`),
+      typeEnumStructVariant.struct.accept(this),
+    ].join('\n');
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): string {
+    return [
+      this.indented(`${typeEnumTupleVariant.name} (tuple)`),
+      typeEnumTupleVariant.tuple.accept(this),
     ].join('\n');
   }
 
@@ -171,17 +179,19 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): string {
     this.indent += 1;
-    const children = typeStruct.fields.map((field) => {
-      this.indent += 1;
-      const fieldStr = field.type.accept(this);
-      this.indent -= 1;
-      return [this.indented(`${field.name}:`), fieldStr].join('\n');
-    });
+    const children = typeStruct.fields.map((field) => field.accept(this));
     this.indent -= 1;
     return [
       this.indented(`[TypeStructNode] ${typeStruct.name}`),
       ...children,
     ].join('\n');
+  }
+
+  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): string {
+    this.indent += 1;
+    const child = typeStructField.type.accept(this);
+    this.indent -= 1;
+    return [this.indented(`${typeStructField.name}:`), child].join('\n');
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {
