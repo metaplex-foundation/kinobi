@@ -166,48 +166,15 @@ export class GetJavaScriptTypeManifestVisitor
 
     const variants = typeEnum.variants.map(
       (variant): JavaScriptTypeManifest => {
-        const kindAttribute = `__kind: "${variant.name}"`;
         this.definedName = definedName
           ? {
               strict: `GetDataEnumKindContent<${definedName.strict}, '${variant.name}'>`,
               loose: `GetDataEnumKindContent<${definedName.loose}, '${variant.name}'>`,
             }
           : null;
-
-        if (variant.kind === 'struct') {
-          const type = variant.type.accept(this);
-          this.definedName = null;
-          return {
-            ...type,
-            strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-            looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-            serializer: `['${variant.name}', ${type.serializer}]`,
-          };
-        }
-
-        if (variant.kind === 'tuple') {
-          const struct = new nodes.TypeStructNode(variant.name, [
-            { name: 'fields', type: variant.type, docs: [], defaultsTo: null },
-          ]);
-          const type = struct.accept(this);
-          this.definedName = null;
-          return {
-            ...type,
-            strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-            looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-            serializer: `['${variant.name}', ${type.serializer}]`,
-          };
-        }
-
+        const variantManifest = variant.accept(this);
         this.definedName = null;
-        return {
-          strictType: `{ ${kindAttribute} }`,
-          looseType: `{ ${kindAttribute} }`,
-          hasLooseType: false,
-          isEnum: false,
-          serializer: `['${variant.name}', ${this.s('unit')}]`,
-          imports: new JavaScriptImportMap(),
-        };
+        return variantManifest;
       }
     );
 
@@ -232,6 +199,55 @@ export class GetJavaScriptTypeManifestVisitor
         'GetDataEnumKindContent',
         'GetDataEnumKind',
       ]),
+    };
+  }
+
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): JavaScriptTypeManifest {
+    const { name } = typeEnumEmptyVariant;
+    const kindAttribute = `__kind: "${name}"`;
+    return {
+      strictType: `{ ${kindAttribute} }`,
+      looseType: `{ ${kindAttribute} }`,
+      hasLooseType: false,
+      isEnum: false,
+      serializer: `['${name}', ${this.s('unit')}]`,
+      imports: new JavaScriptImportMap(),
+    };
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): JavaScriptTypeManifest {
+    const { name } = typeEnumStructVariant;
+    const kindAttribute = `__kind: "${name}"`;
+    const type = typeEnumStructVariant.struct.accept(this);
+    return {
+      ...type,
+      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
+      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
+      serializer: `['${name}', ${type.serializer}]`,
+    };
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): JavaScriptTypeManifest {
+    const { name } = typeEnumTupleVariant;
+    const kindAttribute = `__kind: "${name}"`;
+    const struct = new nodes.TypeStructNode(name, [
+      new nodes.TypeStructFieldNode(
+        { name: 'fields', docs: [], defaultsTo: null },
+        typeEnumTupleVariant.tuple
+      ),
+    ]);
+    const type = struct.accept(this);
+    return {
+      ...type,
+      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
+      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
+      serializer: `['${name}', ${type.serializer}]`,
     };
   }
 
@@ -306,28 +322,7 @@ export class GetJavaScriptTypeManifestVisitor
     const { definedName } = this;
     this.definedName = null;
 
-    const fields = typeStruct.fields.map((field) => {
-      const fieldType = field.type.accept(this);
-      const docblock = this.createDocblock(field.docs);
-      const baseField = {
-        ...fieldType,
-        strictType: `${docblock}${field.name}: ${fieldType.strictType}; `,
-        looseType: `${docblock}${field.name}: ${fieldType.looseType}; `,
-        serializer: `['${field.name}', ${fieldType.serializer}]`,
-      };
-      if (!field.defaultsTo) {
-        return baseField;
-      }
-      if (field.defaultsTo.strategy === 'optional') {
-        return {
-          ...baseField,
-          hasLooseType: true,
-          looseType: `${docblock}${field.name}?: ${fieldType.looseType}; `,
-        };
-      }
-      return { ...baseField, hasLooseType: true, looseType: '' };
-    });
-
+    const fields = typeStruct.fields.map((field) => field.accept(this));
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
     const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
@@ -341,13 +336,15 @@ export class GetJavaScriptTypeManifestVisitor
         `([${fieldSerializers}]${structDescription})`,
     };
 
-    const optionalFields = typeStruct.fields.filter((f) => !!f.defaultsTo);
+    const optionalFields = typeStruct.fields.filter(
+      (f) => !!f.metadata.defaultsTo
+    );
     if (optionalFields.length === 0) {
       return baseManifest;
     }
 
     const defaultValues = optionalFields
-      .map((f) => `${f.name}: ${JSON.stringify(f.defaultsTo?.value)}`)
+      .map((f) => `${f.name}: ${JSON.stringify(f.metadata.defaultsTo?.value)}`)
       .join(', ');
     const mapSerializerTypeParams = definedName
       ? `${definedName.loose}, ${definedName.strict}, ${definedName.strict}`
@@ -364,6 +361,31 @@ export class GetJavaScriptTypeManifestVisitor
       serializer: mappedSerializer,
       imports: baseManifest.imports.add('core', 'mapSerializer'),
     };
+  }
+
+  visitTypeStructField(
+    typeStructField: nodes.TypeStructFieldNode
+  ): JavaScriptTypeManifest {
+    const { name, metadata } = typeStructField;
+    const fieldType = typeStructField.type.accept(this);
+    const docblock = this.createDocblock(metadata.docs);
+    const baseField = {
+      ...fieldType,
+      strictType: `${docblock}${name}: ${fieldType.strictType}; `,
+      looseType: `${docblock}${name}: ${fieldType.looseType}; `,
+      serializer: `['${name}', ${fieldType.serializer}]`,
+    };
+    if (!metadata.defaultsTo) {
+      return baseField;
+    }
+    if (metadata.defaultsTo.strategy === 'optional') {
+      return {
+        ...baseField,
+        hasLooseType: true,
+        looseType: `${docblock}${name}?: ${fieldType.looseType}; `,
+      };
+    }
+    return { ...baseField, hasLooseType: true, looseType: '' };
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): JavaScriptTypeManifest {

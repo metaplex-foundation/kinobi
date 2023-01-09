@@ -17,7 +17,7 @@ export class TypeEnumTupleVariantNode implements Visitable {
   }
 
   accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeEnumVariant(this);
+    return visitor.visitTypeEnumTupleVariant(this);
   }
 }
 

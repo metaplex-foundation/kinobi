@@ -21,7 +21,7 @@ export class TypeEnumStructVariantNode implements Visitable {
   }
 
   accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeEnumVariant(this);
+    return visitor.visitTypeEnumStructVariant(this);
   }
 }
 
