@@ -15,7 +15,15 @@ export interface Visitor<T = void> {
   visitTypeArray: (typeArray: nodes.TypeArrayNode) => T;
   visitTypeDefinedLink: (typeDefinedLink: nodes.TypeDefinedLinkNode) => T;
   visitTypeEnum: (typeEnum: nodes.TypeEnumNode) => T;
-  visitTypeEnumVariant: (typeEnumVariant: nodes.TypeEnumVariantNode) => T;
+  visitTypeEnumEmptyVariant: (
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ) => T;
+  visitTypeEnumStructVariant: (
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ) => T;
+  visitTypeEnumTupleVariant: (
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ) => T;
   visitTypeLeaf: (typeLeaf: nodes.TypeLeafNode) => T;
   visitTypeMap: (typeMap: nodes.TypeMapNode) => T;
   visitTypeOption: (typeOption: nodes.TypeOptionNode) => T;

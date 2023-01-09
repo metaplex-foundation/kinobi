@@ -42,8 +42,22 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
     return this.map(typeEnum.accept(this.visitor));
   }
 
-  visitTypeEnumVariant(typeEnumVariant: nodes.TypeEnumVariantNode): U {
-    return this.map(typeEnumVariant.accept(this.visitor));
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): U {
+    return this.map(typeEnumEmptyVariant.accept(this.visitor));
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): U {
+    return this.map(typeEnumStructVariant.accept(this.visitor));
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): U {
+    return this.map(typeEnumTupleVariant.accept(this.visitor));
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): U {

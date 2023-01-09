@@ -75,26 +75,32 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitTypeEnumVariant(typeEnumVariant: nodes.TypeEnumVariantNode): nodes.Node {
-    if (typeEnumVariant.child.kind === 'struct') {
-      const newStruct = typeEnumVariant.child.struct.accept(this);
-      nodes.assertTypeStructNode(newStruct);
-      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
-        kind: 'struct',
-        struct: newStruct,
-      });
-    }
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): nodes.Node {
+    return typeEnumEmptyVariant;
+  }
 
-    if (typeEnumVariant.child.kind === 'tuple') {
-      const newTuple = typeEnumVariant.child.tuple.accept(this);
-      nodes.assertTypeTupleNode(newTuple);
-      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
-        kind: 'tuple',
-        tuple: newTuple,
-      });
-    }
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): nodes.Node {
+    const newStruct = typeEnumStructVariant.struct.accept(this);
+    nodes.assertTypeStructNode(newStruct);
+    return new nodes.TypeEnumStructVariantNode(
+      typeEnumStructVariant.name,
+      newStruct
+    );
+  }
 
-    return typeEnumVariant;
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): nodes.Node {
+    const newTuple = typeEnumTupleVariant.tuple.accept(this);
+    nodes.assertTypeTupleNode(newTuple);
+    return new nodes.TypeEnumTupleVariantNode(
+      typeEnumTupleVariant.name,
+      newTuple
+    );
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node {

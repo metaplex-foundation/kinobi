@@ -87,30 +87,34 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return new nodes.TypeEnumNode(typeEnum.name, variants);
   }
 
-  visitTypeEnumVariant(
-    typeEnumVariant: nodes.TypeEnumVariantNode
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
   ): nodes.Node | null {
-    if (typeEnumVariant.child.kind === 'struct') {
-      const newStruct = typeEnumVariant.child.struct.accept(this);
-      if (!newStruct) return null;
-      nodes.assertTypeStructNode(newStruct);
-      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
-        kind: 'struct',
-        struct: newStruct,
-      });
-    }
+    return typeEnumEmptyVariant;
+  }
 
-    if (typeEnumVariant.child.kind === 'tuple') {
-      const newTuple = typeEnumVariant.child.tuple.accept(this);
-      if (!newTuple) return null;
-      nodes.assertTypeTupleNode(newTuple);
-      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
-        kind: 'tuple',
-        tuple: newTuple,
-      });
-    }
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): nodes.Node | null {
+    const newStruct = typeEnumStructVariant.struct.accept(this);
+    if (!newStruct) return null;
+    nodes.assertTypeStructNode(newStruct);
+    return new nodes.TypeEnumStructVariantNode(
+      typeEnumStructVariant.name,
+      newStruct
+    );
+  }
 
-    return typeEnumVariant;
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): nodes.Node | null {
+    const newTuple = typeEnumTupleVariant.tuple.accept(this);
+    if (!newTuple) return null;
+    nodes.assertTypeTupleNode(newTuple);
+    return new nodes.TypeEnumTupleVariantNode(
+      typeEnumTupleVariant.name,
+      newTuple
+    );
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node | null {

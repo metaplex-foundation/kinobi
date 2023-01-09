@@ -39,8 +39,28 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     throw new Error('This visitor does not support TypeEnum nodes.');
   }
 
-  visitTypeEnumVariant(typeEnumVariant: nodes.TypeEnumVariantNode): T {
-    throw new Error('This visitor does not support TypeEnumVariant nodes.');
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): T {
+    throw new Error(
+      'This visitor does not support TypeEnumEmptyVariant nodes.'
+    );
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): T {
+    throw new Error(
+      'This visitor does not support TypeEnumStructVariant nodes.'
+    );
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): T {
+    throw new Error(
+      'This visitor does not support TypeEnumTupleVariant nodes.'
+    );
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): T {
