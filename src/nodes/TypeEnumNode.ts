@@ -1,7 +1,10 @@
 import type { IdlTypeEnum } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeEnumVariantNode } from './TypeEnumVariantNode';
+import { TypeEnumEmptyVariantNode } from './TypeEnumEmptyVariantNode';
+import { TypeEnumStructVariantNode } from './TypeEnumStructVariantNode';
+import { TypeEnumTupleVariantNode } from './TypeEnumTupleVariantNode';
+import type { TypeEnumVariantNode } from './TypeEnumVariantNode';
 
 export class TypeEnumNode implements Visitable {
   readonly nodeClass = 'TypeEnumNode' as const;
@@ -12,10 +15,19 @@ export class TypeEnumNode implements Visitable {
   ) {}
 
   static fromIdl(idl: IdlTypeEnum): TypeEnumNode {
-    return new TypeEnumNode(
-      idl.name ?? '',
-      idl.variants.map(TypeEnumVariantNode.fromIdl)
-    );
+    const variants = idl.variants.map((variant): TypeEnumVariantNode => {
+      if (!variant.fields || variant.fields.length <= 0) {
+        return TypeEnumEmptyVariantNode.fromIdl(variant);
+      }
+
+      if (isStructField(variant.fields[0])) {
+        return TypeEnumStructVariantNode.fromIdl(variant);
+      }
+
+      return TypeEnumTupleVariantNode.fromIdl(variant);
+    });
+
+    return new TypeEnumNode(idl.name ?? '', variants);
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -23,7 +35,9 @@ export class TypeEnumNode implements Visitable {
   }
 
   isScalarEnum(): boolean {
-    return this.variants.every((variant) => variant.child.kind === 'empty');
+    return this.variants.every(
+      (variant) => variant.nodeClass === 'TypeEnumEmptyVariantNode'
+    );
   }
 
   isDataEnum(): boolean {
@@ -41,4 +55,8 @@ export function assertTypeEnumNode(
   if (!isTypeEnumNode(node)) {
     throw new Error(`Expected TypeEnumNode, got ${node?.nodeClass ?? 'null'}.`);
   }
+}
+
+function isStructField(field: any): boolean {
+  return typeof field === 'object' && 'name' in field && 'type' in field;
 }

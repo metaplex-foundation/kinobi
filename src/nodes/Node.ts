@@ -4,7 +4,9 @@ import type { ErrorNode } from './ErrorNode';
 import type { InstructionNode } from './InstructionNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
+import type { TypeEnumVariantNode } from './TypeEnumVariantNode';
 import type { TypeNode } from './TypeNode';
+import type { TypeStructFieldNode } from './TypeStructFieldNode';
 
 export type Node =
   | RootNode
@@ -13,7 +15,11 @@ export type Node =
   | InstructionNode
   | ErrorNode
   | DefinedTypeNode
-  | TypeNode;
+  | TypeNode
+  // The following are not in `TypeNode`
+  // as they are not valid standalone types.
+  | TypeStructFieldNode
+  | TypeEnumVariantNode;
 
 export const assertNodeFilter =
   <T extends Node>(

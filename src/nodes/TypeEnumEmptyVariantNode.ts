@@ -1,0 +1,33 @@
+import type { IdlTypeEnumVariant } from '../idl';
+import type { Visitable, Visitor } from '../visitors';
+import type { Node } from './Node';
+
+export class TypeEnumEmptyVariantNode implements Visitable {
+  readonly nodeClass = 'TypeEnumEmptyVariantNode' as const;
+
+  constructor(readonly name: string) {}
+
+  static fromIdl(idl: IdlTypeEnumVariant): TypeEnumEmptyVariantNode {
+    return new TypeEnumEmptyVariantNode(idl.name ?? '');
+  }
+
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visitTypeEnumVariant(this);
+  }
+}
+
+export function isTypeEnumEmptyVariantNode(
+  node: Node | null
+): node is TypeEnumEmptyVariantNode {
+  return !!node && node.nodeClass === 'TypeEnumEmptyVariantNode';
+}
+
+export function assertTypeEnumEmptyVariantNode(
+  node: Node | null
+): asserts node is TypeEnumEmptyVariantNode {
+  if (!isTypeEnumEmptyVariantNode(node)) {
+    throw new Error(
+      `Expected TypeEnumEmptyVariantNode, got ${node?.nodeClass ?? 'null'}.`
+    );
+  }
+}
