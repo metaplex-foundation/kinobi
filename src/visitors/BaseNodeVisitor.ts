@@ -65,22 +65,36 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): nodes.Node {
-    const variants = typeEnum.variants.map(
-      (variant): nodes.TypeEnumNodeVariant => {
-        if (variant.kind === 'struct') {
-          const newType = variant.type.accept(this);
-          nodes.assertTypeStructNode(newType);
-          return { ...variant, type: newType };
-        }
-        if (variant.kind === 'tuple') {
-          const newType = variant.type.accept(this);
-          nodes.assertTypeTupleNode(newType);
-          return { ...variant, type: newType };
-        }
-        return variant;
-      }
+    return new nodes.TypeEnumNode(
+      typeEnum.name,
+      typeEnum.variants.map((variant) => {
+        const newVariant = variant.accept(this);
+        nodes.assertTypeEnumVariantNode(newVariant);
+        return newVariant;
+      })
     );
-    return new nodes.TypeEnumNode(typeEnum.name, variants);
+  }
+
+  visitTypeEnumVariant(typeEnumVariant: nodes.TypeEnumVariantNode): nodes.Node {
+    if (typeEnumVariant.child.kind === 'struct') {
+      const newStruct = typeEnumVariant.child.struct.accept(this);
+      nodes.assertTypeStructNode(newStruct);
+      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
+        kind: 'struct',
+        struct: newStruct,
+      });
+    }
+
+    if (typeEnumVariant.child.kind === 'tuple') {
+      const newTuple = typeEnumVariant.child.tuple.accept(this);
+      nodes.assertTypeTupleNode(newTuple);
+      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
+        kind: 'tuple',
+        tuple: newTuple,
+      });
+    }
+
+    return typeEnumVariant;
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node {
@@ -110,12 +124,18 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node {
     return new nodes.TypeStructNode(
       typeStruct.name,
-      typeStruct.fields.map((field): nodes.TypeStructNodeField => {
-        const fieldType = field.type.accept(this);
-        nodes.assertTypeNode(fieldType);
-        return { ...field, type: fieldType };
+      typeStruct.fields.map((field): nodes.TypeStructFieldNode => {
+        const newField = field.accept(this);
+        nodes.assertTypeStructFieldNode(newField);
+        return newField;
       })
     );
+  }
+
+  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): nodes.Node {
+    const newType = typeStructField.type.accept(this);
+    nodes.assertTypeNode(newType);
+    return new nodes.TypeStructFieldNode(typeStructField.metadata, newType);
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node {

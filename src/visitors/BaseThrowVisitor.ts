@@ -39,6 +39,10 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     throw new Error('This visitor does not support TypeEnum nodes.');
   }
 
+  visitTypeEnumVariant(typeEnumVariant: nodes.TypeEnumVariantNode): T {
+    throw new Error('This visitor does not support TypeEnumVariant nodes.');
+  }
+
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): T {
     throw new Error('This visitor does not support TypeLeaf nodes.');
   }
@@ -57,6 +61,10 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): T {
     throw new Error('This visitor does not support TypeStruct nodes.');
+  }
+
+  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): T {
+    throw new Error('This visitor does not support TypeStructField nodes.');
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): T {

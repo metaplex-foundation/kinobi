@@ -3,10 +3,12 @@ import type { Node } from './Node';
 import { TypeArrayNode } from './TypeArrayNode';
 import { TypeDefinedLinkNode } from './TypeDefinedLinkNode';
 import { TypeEnumNode } from './TypeEnumNode';
+import { TypeEnumVariantNode } from './TypeEnumVariantNode';
 import { TypeLeafNode } from './TypeLeafNode';
 import { TypeMapNode } from './TypeMapNode';
 import { TypeOptionNode } from './TypeOptionNode';
 import { TypeSetNode } from './TypeSetNode';
+import { TypeStructFieldNode } from './TypeStructFieldNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeTupleNode } from './TypeTupleNode';
 import { TypeVecNode } from './TypeVecNode';
@@ -15,11 +17,13 @@ export type TypeNode =
   | TypeArrayNode
   | TypeDefinedLinkNode
   | TypeEnumNode
+  | TypeEnumVariantNode
   | TypeLeafNode
   | TypeMapNode
   | TypeOptionNode
   | TypeSetNode
   | TypeStructNode
+  | TypeStructFieldNode
   | TypeTupleNode
   | TypeVecNode;
 

@@ -40,11 +40,15 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
-    typeEnum.variants.forEach((variant) => {
-      if (variant.kind !== 'empty') {
-        variant.type.accept(this);
-      }
-    });
+    typeEnum.variants.forEach((variant) => variant.accept(this));
+  }
+
+  visitTypeEnumVariant(typeEnumVariant: nodes.TypeEnumVariantNode): void {
+    if (typeEnumVariant.child.kind === 'struct') {
+      typeEnumVariant.child.struct.accept(this);
+    } else if (typeEnumVariant.child.kind === 'tuple') {
+      typeEnumVariant.child.tuple.accept(this);
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,7 +70,11 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): void {
-    typeStruct.fields.forEach((field) => field.type.accept(this));
+    typeStruct.fields.forEach((field) => field.accept(this));
+  }
+
+  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): void {
+    typeStructField.type.accept(this);
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): void {

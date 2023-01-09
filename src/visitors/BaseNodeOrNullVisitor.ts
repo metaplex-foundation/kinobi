@@ -76,24 +76,41 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): nodes.Node | null {
     const variants = typeEnum.variants
-      .map((variant): nodes.TypeEnumNodeVariant | null => {
-        if (variant.kind === 'struct') {
-          const newType = variant.type.accept(this);
-          if (newType === null) return null;
-          nodes.assertTypeStructNode(newType);
-          return { ...variant, type: newType };
-        }
-        if (variant.kind === 'tuple') {
-          const newType = variant.type.accept(this);
-          if (newType === null) return null;
-          nodes.assertTypeTupleNode(newType);
-          return { ...variant, type: newType };
-        }
-        return variant;
+      .map((variant): nodes.TypeEnumVariantNode | null => {
+        const newVariant = variant.accept(this);
+        if (newVariant === null) return null;
+        nodes.assertTypeEnumVariantNode(newVariant);
+        return newVariant;
       })
-      .filter((v): v is nodes.TypeEnumNodeVariant => v !== null);
+      .filter((v): v is nodes.TypeEnumVariantNode => v !== null);
 
     return new nodes.TypeEnumNode(typeEnum.name, variants);
+  }
+
+  visitTypeEnumVariant(
+    typeEnumVariant: nodes.TypeEnumVariantNode
+  ): nodes.Node | null {
+    if (typeEnumVariant.child.kind === 'struct') {
+      const newStruct = typeEnumVariant.child.struct.accept(this);
+      if (!newStruct) return null;
+      nodes.assertTypeStructNode(newStruct);
+      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
+        kind: 'struct',
+        struct: newStruct,
+      });
+    }
+
+    if (typeEnumVariant.child.kind === 'tuple') {
+      const newTuple = typeEnumVariant.child.tuple.accept(this);
+      if (!newTuple) return null;
+      nodes.assertTypeTupleNode(newTuple);
+      return new nodes.TypeEnumVariantNode(typeEnumVariant.name, {
+        kind: 'tuple',
+        tuple: newTuple,
+      });
+    }
+
+    return typeEnumVariant;
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node | null {
@@ -125,15 +142,24 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node | null {
     const fields = typeStruct.fields
-      .map((field): nodes.TypeStructNodeField | null => {
-        const fieldType = field.type.accept(this);
-        if (fieldType === null) return null;
-        nodes.assertTypeNode(fieldType);
-        return { ...field, type: fieldType };
+      .map((field): nodes.TypeStructFieldNode | null => {
+        const newField = field.accept(this);
+        if (newField === null) return null;
+        nodes.assertTypeStructFieldNode(newField);
+        return newField;
       })
-      .filter((field): field is nodes.TypeStructNodeField => field !== null);
+      .filter((field): field is nodes.TypeStructFieldNode => field !== null);
 
     return new nodes.TypeStructNode(typeStruct.name, fields);
+  }
+
+  visitTypeStructField(
+    typeStructField: nodes.TypeStructFieldNode
+  ): nodes.Node | null {
+    const newType = typeStructField.type.accept(this);
+    if (newType === null) return null;
+    nodes.assertTypeNode(newType);
+    return new nodes.TypeStructFieldNode(typeStructField.metadata, newType);
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node | null {
