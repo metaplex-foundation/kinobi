@@ -30,15 +30,14 @@ export class SetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     const idlName = snakeCase(account.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = {
-      name: 'discriminator',
-      type: new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8),
-      docs: [],
-      defaultsTo: {
-        value: Array.from(hash),
-        strategy: 'omitted' as const,
+    const discriminatorField = new nodes.TypeStructFieldNode(
+      {
+        name: 'discriminator',
+        docs: [],
+        defaultsTo: { value: Array.from(hash), strategy: 'omitted' },
       },
-    };
+      new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8)
+    );
 
     return new nodes.AccountNode(
       account.metadata,
@@ -56,15 +55,14 @@ export class SetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     const idlName = snakeCase(instruction.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = {
-      name: 'discriminator',
-      type: new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8),
-      docs: [],
-      defaultsTo: {
-        value: Array.from(hash),
-        strategy: 'omitted' as const,
+    const discriminatorField = new nodes.TypeStructFieldNode(
+      {
+        name: 'discriminator',
+        docs: [],
+        defaultsTo: { value: Array.from(hash), strategy: 'omitted' },
       },
-    };
+      new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8)
+    );
 
     return new nodes.InstructionNode(
       instruction.metadata,

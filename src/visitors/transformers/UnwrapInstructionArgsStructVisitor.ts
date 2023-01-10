@@ -4,7 +4,7 @@ import { BaseNodeVisitor } from '../BaseNodeVisitor';
 export class UnwrapInstructionArgsStructVisitor extends BaseNodeVisitor {
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const currentArgs = instruction.args;
-    const inlinedArgs = currentArgs.fields.reduce<nodes.TypeStructNodeField[]>(
+    const inlinedArgs = currentArgs.fields.reduce<nodes.TypeStructFieldNode[]>(
       (all, one) => {
         if (nodes.isTypeStructNode(one.type)) {
           all.push(...one.type.fields);

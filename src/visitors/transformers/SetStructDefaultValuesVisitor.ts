@@ -4,7 +4,7 @@ import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 type StructDefaultValue =
   | number
   | { value: any }
-  | nodes.TypeStructNodeFieldDefaults;
+  | nodes.TypeStructFieldNodeDefaults;
 type StructDefaultValueMap = Record<string, Record<string, StructDefaultValue>>;
 
 export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
@@ -21,16 +21,19 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
         },
         transformer: (node) => {
           nodes.assertTypeStructNode(node);
-          const fields = node.fields.map((field): nodes.TypeStructNodeField => {
+          const fields = node.fields.map((field): nodes.TypeStructFieldNode => {
             const defaultValue = defaultValues[field.name];
             if (defaultValue === undefined) return field;
-            return {
-              ...field,
-              defaultsTo:
-                typeof defaultValue === 'object' && 'value' in defaultValue
-                  ? { strategy: 'optional', ...defaultValue }
-                  : { strategy: 'optional', value: defaultValue },
-            };
+            return new nodes.TypeStructFieldNode(
+              {
+                ...field.metadata,
+                defaultsTo:
+                  typeof defaultValue === 'object' && 'value' in defaultValue
+                    ? { strategy: 'optional', ...defaultValue }
+                    : { strategy: 'optional', value: defaultValue },
+              },
+              field.type
+            );
           });
           return new nodes.TypeStructNode(node.name, fields);
         },

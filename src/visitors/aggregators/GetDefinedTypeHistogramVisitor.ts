@@ -86,10 +86,30 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeEnum.variants.map((variant) =>
-        variant.kind === 'empty' ? {} : variant.type.accept(this)
-      )
+      typeEnum.variants.map((variant) => variant.accept(this))
     );
+    this.stackLevel -= 1;
+    return histogram;
+  }
+
+  visitTypeEnumEmptyVariant(): DefinedTypeHistogram {
+    return {};
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): DefinedTypeHistogram {
+    this.stackLevel += 1;
+    const histogram = typeEnumStructVariant.struct.accept(this);
+    this.stackLevel -= 1;
+    return histogram;
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): DefinedTypeHistogram {
+    this.stackLevel += 1;
+    const histogram = typeEnumTupleVariant.tuple.accept(this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -125,8 +145,17 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeStruct(typeStruct: nodes.TypeStructNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeStruct.fields.map((field) => field.type.accept(this))
+      typeStruct.fields.map((field) => field.accept(this))
     );
+    this.stackLevel -= 1;
+    return histogram;
+  }
+
+  visitTypeStructField(
+    typeStructField: nodes.TypeStructFieldNode
+  ): DefinedTypeHistogram {
+    this.stackLevel += 1;
+    const histogram = typeStructField.type.accept(this);
     this.stackLevel -= 1;
     return histogram;
   }

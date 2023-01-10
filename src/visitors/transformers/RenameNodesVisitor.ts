@@ -215,10 +215,14 @@ function mapStructFields(
 ): nodes.TypeStructNode {
   return new nodes.TypeStructNode(
     newName ?? node.name,
-    node.fields.map((field) => ({
-      ...field,
-      name: map[field.name] ?? field.name,
-    }))
+    node.fields.map((field) =>
+      map[field.name]
+        ? new nodes.TypeStructFieldNode(
+            { ...field.metadata, name: map[field.name] },
+            field.type
+          )
+        : field
+    )
   );
 }
 
@@ -229,9 +233,23 @@ function mapEnumVariants(
 ): nodes.TypeEnumNode {
   return new nodes.TypeEnumNode(
     newName ?? node.name,
-    node.variants.map((variant) => ({
-      ...variant,
-      name: map[variant.name] ?? variant.name,
-    }))
+    node.variants.map((variant) =>
+      map[variant.name]
+        ? renameEnumVariant(variant, map[variant.name])
+        : variant
+    )
   );
+}
+
+function renameEnumVariant(
+  variant: nodes.TypeEnumVariantNode,
+  newName: string
+) {
+  if (nodes.isTypeEnumStructVariantNode(variant)) {
+    return new nodes.TypeEnumStructVariantNode(newName, variant.struct);
+  }
+  if (nodes.isTypeEnumTupleVariantNode(variant)) {
+    return new nodes.TypeEnumTupleVariantNode(newName, variant.tuple);
+  }
+  return new nodes.TypeEnumEmptyVariantNode(newName);
 }
