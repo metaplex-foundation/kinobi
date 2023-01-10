@@ -4,6 +4,7 @@ import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
+import { TypeStructFieldNode } from './TypeStructFieldNode';
 
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
@@ -64,15 +65,17 @@ export class InstructionNode implements Visitable {
     });
 
     if (idl.discriminant) {
-      const discriminatorField = {
-        name: 'discriminator',
-        type: createTypeNodeFromIdl(idl.discriminant.type),
-        docs: [],
-        defaultsTo: {
-          value: idl.discriminant.value,
-          strategy: 'omitted' as const,
+      const discriminatorField = new TypeStructFieldNode(
+        {
+          name: 'discriminator',
+          docs: [],
+          defaultsTo: {
+            value: idl.discriminant.value,
+            strategy: 'omitted',
+          },
         },
-      };
+        createTypeNodeFromIdl(idl.discriminant.type)
+      );
       args = new TypeStructNode(args.name, [
         discriminatorField,
         ...args.fields,
