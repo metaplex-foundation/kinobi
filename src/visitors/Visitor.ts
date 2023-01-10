@@ -25,6 +25,7 @@ export interface Visitor<T = void> {
     typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
   ) => T;
   visitTypeLeaf: (typeLeaf: nodes.TypeLeafNode) => T;
+  visitTypeLeafWrapper: (typeLeafWrapper: nodes.TypeLeafWrapperNode) => T;
   visitTypeMap: (typeMap: nodes.TypeMapNode) => T;
   visitTypeOption: (typeOption: nodes.TypeOptionNode) => T;
   visitTypeSet: (typeSet: nodes.TypeSetNode) => T;

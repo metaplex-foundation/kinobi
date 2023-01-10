@@ -13,6 +13,7 @@ export * from './TypeEnumStructVariantNode';
 export * from './TypeEnumTupleVariantNode';
 export * from './TypeEnumVariantNode';
 export * from './TypeLeafNode';
+export * from './TypeLeafWrapperNode';
 export * from './TypeMapNode';
 export * from './TypeNode';
 export * from './TypeOptionNode';

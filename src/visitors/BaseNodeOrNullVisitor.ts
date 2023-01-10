@@ -121,6 +121,15 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return typeLeaf;
   }
 
+  visitTypeLeafWrapper(
+    typeLeafWrapper: nodes.TypeLeafWrapperNode
+  ): nodes.Node | null {
+    const leaf = typeLeafWrapper.leaf.accept(this);
+    if (leaf === null) return null;
+    nodes.assertTypeLeafNode(leaf);
+    return new nodes.TypeLeafWrapperNode(typeLeafWrapper.wrapper, leaf);
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node | null {
     const keyType = typeMap.keyType.accept(this);
     const valueType = typeMap.valueType.accept(this);

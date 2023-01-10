@@ -64,6 +64,10 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
     return this.map(typeLeaf.accept(this.visitor));
   }
 
+  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): U {
+    return this.map(typeLeafWrapper.accept(this.visitor));
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): U {
     return this.map(typeMap.accept(this.visitor));
   }

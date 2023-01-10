@@ -67,6 +67,10 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     //
   }
 
+  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): void {
+    typeLeafWrapper.leaf.accept(this);
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): void {
     typeMap.keyType.accept(this);
     typeMap.valueType.accept(this);

@@ -22,17 +22,10 @@ export const LEAF_TYPES = [
 
 export type LeafType = typeof LEAF_TYPES[number];
 
-export type LeafWrapper =
-  | { __kind: 'DateTime' }
-  | { __kind: 'Amount'; identifier: string; decimals: number };
-
 export class TypeLeafNode implements Visitable {
   readonly nodeClass = 'TypeLeafNode' as const;
 
-  constructor(
-    readonly type: LeafType,
-    readonly wrapper: LeafWrapper | null = null
-  ) {}
+  constructor(readonly type: LeafType) {}
 
   static isValidType(type: string): type is LeafType {
     return LEAF_TYPES.includes(type as LeafType);

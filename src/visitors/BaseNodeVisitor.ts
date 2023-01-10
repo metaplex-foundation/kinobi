@@ -107,6 +107,12 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return typeLeaf;
   }
 
+  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): nodes.Node {
+    const leaf = typeLeafWrapper.leaf.accept(this);
+    nodes.assertTypeLeafNode(leaf);
+    return new nodes.TypeLeafWrapperNode(typeLeafWrapper.wrapper, leaf);
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node {
     const keyType = typeMap.keyType.accept(this);
     nodes.assertTypeNode(keyType);

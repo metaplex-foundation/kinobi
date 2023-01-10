@@ -4,6 +4,7 @@ import { TypeArrayNode } from './TypeArrayNode';
 import { TypeDefinedLinkNode } from './TypeDefinedLinkNode';
 import { TypeEnumNode } from './TypeEnumNode';
 import { TypeLeafNode } from './TypeLeafNode';
+import { TypeLeafWrapperNode } from './TypeLeafWrapperNode';
 import { TypeMapNode } from './TypeMapNode';
 import { TypeOptionNode } from './TypeOptionNode';
 import { TypeSetNode } from './TypeSetNode';
@@ -16,6 +17,7 @@ export type TypeNode =
   | TypeDefinedLinkNode
   | TypeEnumNode
   | TypeLeafNode
+  | TypeLeafWrapperNode
   | TypeMapNode
   | TypeOptionNode
   | TypeSetNode
@@ -28,6 +30,7 @@ const TYPE_NODE_CLASSES = [
   'TypeDefinedLinkNode',
   'TypeEnumNode',
   'TypeLeafNode',
+  'TypeLeafWrapperNode',
   'TypeMapNode',
   'TypeOptionNode',
   'TypeSetNode',

@@ -67,6 +67,10 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     throw new Error('This visitor does not support TypeLeaf nodes.');
   }
 
+  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): T {
+    throw new Error('This visitor does not support TypeLeafWrapper nodes.');
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): T {
     throw new Error('This visitor does not support TypeMap nodes.');
   }
