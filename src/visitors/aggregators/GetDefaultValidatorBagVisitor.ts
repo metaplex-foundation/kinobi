@@ -134,12 +134,45 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
         bag.error('Enum variant has no name.', typeEnum, this.stack);
       }
     });
-    bag.mergeWith(
-      typeEnum.variants.map((variant) => {
-        if (variant.kind === 'empty') return new ValidatorBag();
-        return variant.type.accept(this);
-      })
-    );
+    bag.mergeWith(typeEnum.variants.map((variant) => variant.accept(this)));
+    this.popNode();
+    return bag;
+  }
+
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): ValidatorBag {
+    this.pushNode(typeEnumEmptyVariant);
+    const bag = new ValidatorBag();
+    if (!typeEnumEmptyVariant.name) {
+      bag.error('Enum variant has no name.', typeEnumEmptyVariant, this.stack);
+    }
+    this.popNode();
+    return bag;
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): ValidatorBag {
+    this.pushNode(typeEnumStructVariant);
+    const bag = new ValidatorBag();
+    if (!typeEnumStructVariant.name) {
+      bag.error('Enum variant has no name.', typeEnumStructVariant, this.stack);
+    }
+    bag.mergeWith([typeEnumStructVariant.struct.accept(this)]);
+    this.popNode();
+    return bag;
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): ValidatorBag {
+    this.pushNode(typeEnumTupleVariant);
+    const bag = new ValidatorBag();
+    if (!typeEnumTupleVariant.name) {
+      bag.error('Enum variant has no name.', typeEnumTupleVariant, this.stack);
+    }
+    bag.mergeWith([typeEnumTupleVariant.tuple.accept(this)]);
     this.popNode();
     return bag;
   }
@@ -180,12 +213,20 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!typeStruct.name) {
       bag.info('Struct has no name.', typeStruct, this.stack);
     }
-    typeStruct.fields.forEach((field) => {
-      if (!field.name) {
-        bag.error('Struct field has no name.', typeStruct, this.stack);
-      }
-    });
-    bag.mergeWith(typeStruct.fields.map((field) => field.type.accept(this)));
+    bag.mergeWith(typeStruct.fields.map((field) => field.accept(this)));
+    this.popNode();
+    return bag;
+  }
+
+  visitTypeStructField(
+    typeStructField: nodes.TypeStructFieldNode
+  ): ValidatorBag {
+    this.pushNode(typeStructField);
+    const bag = new ValidatorBag();
+    if (!typeStructField.name) {
+      bag.error('Struct field has no name.', typeStructField, this.stack);
+    }
+    bag.mergeWith([typeStructField.type.accept(this)]);
     this.popNode();
     return bag;
   }
