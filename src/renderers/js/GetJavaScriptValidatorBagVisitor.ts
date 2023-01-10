@@ -114,7 +114,6 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     return bag;
   }
 
-  // TODO: Fix as this is never called due to super calls.
   visitTypeLeafWrapper(
     typeLeafWrapper: nodes.TypeLeafWrapperNode
   ): ValidatorBag {
@@ -126,7 +125,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         if (!leaf.isUnsignedInteger()) {
           bag.error(
             `DateTime wrapper can only be applied to ` +
-              `unsigned integer types, not ${leaf.type}`,
+              `unsigned integer types. Got type [${leaf.type}].`,
             typeLeafWrapper,
             this.stack
           );
@@ -136,7 +135,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         if (!leaf.isUnsignedInteger()) {
           bag.error(
             `Amount wrapper can only be applied to ` +
-              `unsigned integer types, not ${leaf.type}`,
+              `unsigned integer types. Got type [${leaf.type}].`,
             typeLeafWrapper,
             this.stack
           );
