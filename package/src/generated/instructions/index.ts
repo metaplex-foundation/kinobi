@@ -32,6 +32,7 @@ export * from './DeprecatedMintPrintingTokens';
 export * from './DeprecatedMintPrintingTokensViaToken';
 export * from './DeprecatedSetReservationList';
 export * from './DummyA';
+export * from './DummyABis';
 export * from './DummyB';
 export * from './DummyC';
 export * from './DummyD';

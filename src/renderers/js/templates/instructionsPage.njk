@@ -18,11 +18,11 @@ export function {{ camelCaseName }}(
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
     {% if instruction.hasAccounts and instruction.hasArgs %}
-      input: {{ name }}InstructionAccounts & {{ name }}InstructionArgs,
+      input: {{ name }}InstructionAccounts & {{ name + 'InstructionArgs' if typeManifest.hasLooseType else name + 'InstructionData' }},
     {% elif instruction.hasAccounts %}
       input: {{ name }}InstructionAccounts,
     {% elif instruction.hasArgs %}
-      input: {{ name }}InstructionArgs,
+      input: {{ name + 'InstructionArgs' if typeManifest.hasLooseType else name + 'InstructionData' }},
     {% endif %}
   {% else %}
     {% set accountsObj = 'accounts' %}
@@ -31,7 +31,7 @@ export function {{ camelCaseName }}(
       accounts: {{ name }}InstructionAccounts,
     {% endif %}
     {% if instruction.hasArgs %}
-      args: {{ name }}InstructionArgs,
+      args: {{ name + 'InstructionArgs' if typeManifest.hasLooseType else name + 'InstructionData' }},
     {% endif %}
   {% endif %}
 ): WrappedInstruction {

@@ -16,27 +16,33 @@ import {
   getProgramAddressWithFallback,
 } from '@lorisleiva/js-core';
 
-// Arguments.
-export type DummyAInstructionData = { foo: string };
+// Accounts.
+export type DummyABisInstructionAccounts = {
+  /** New Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: PublicKey;
+};
 
-export function getDummyAInstructionDataSerializer(
+// Arguments.
+export type DummyABisInstructionData = { foo: string };
+
+export function getDummyABisInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DummyAInstructionData> {
+): Serializer<DummyABisInstructionData> {
   const s = context.serializer;
-  return s.struct<DummyAInstructionData>(
+  return s.struct<DummyABisInstructionData>(
     [['foo', s.string]],
-    'DummyAInstructionArgs'
+    'DummyABisInstructionArgs'
   );
 }
 
 // Instruction.
-export function dummyA(
+export function dummyABis(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: DummyAInstructionData
+  input: DummyABisInstructionAccounts & DummyABisInstructionData
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -48,8 +54,11 @@ export function dummyA(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Metadata.
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+
   // Data.
-  const data = getDummyAInstructionDataSerializer(context).serialize(input);
+  const data = getDummyABisInstructionDataSerializer(context).serialize(input);
 
   return {
     instruction: { keys, programId, data },
