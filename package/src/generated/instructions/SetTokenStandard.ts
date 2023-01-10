@@ -65,7 +65,7 @@ export function setTokenStandard(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SetTokenStandardInstructionAccounts & SetTokenStandardInstructionArgs
+  input: SetTokenStandardInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -97,8 +97,9 @@ export function setTokenStandard(
   }
 
   // Data.
-  const data =
-    getSetTokenStandardInstructionDataSerializer(context).serialize(input);
+  const data = getSetTokenStandardInstructionDataSerializer(context).serialize(
+    {}
+  );
 
   return {
     instruction: { keys, programId, data },

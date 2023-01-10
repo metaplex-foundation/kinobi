@@ -68,8 +68,7 @@ export function convertMasterEditionV1ToV2(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: ConvertMasterEditionV1ToV2InstructionAccounts &
-    ConvertMasterEditionV1ToV2InstructionArgs
+  input: ConvertMasterEditionV1ToV2InstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -95,10 +94,9 @@ export function convertMasterEditionV1ToV2(
   keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: false });
 
   // Data.
-  const data =
-    getConvertMasterEditionV1ToV2InstructionDataSerializer(context).serialize(
-      input
-    );
+  const data = getConvertMasterEditionV1ToV2InstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

@@ -54,7 +54,7 @@ export function signMetadata(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SignMetadataInstructionAccounts & SignMetadataInstructionArgs
+  input: SignMetadataInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -78,8 +78,7 @@ export function signMetadata(
   });
 
   // Data.
-  const data =
-    getSignMetadataInstructionDataSerializer(context).serialize(input);
+  const data = getSignMetadataInstructionDataSerializer(context).serialize({});
 
   return {
     instruction: { keys, programId, data },

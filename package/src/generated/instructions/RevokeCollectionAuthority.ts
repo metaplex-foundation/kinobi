@@ -72,8 +72,7 @@ export function revokeCollectionAuthority(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: RevokeCollectionAuthorityInstructionAccounts &
-    RevokeCollectionAuthorityInstructionArgs
+  input: RevokeCollectionAuthorityInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -114,10 +113,9 @@ export function revokeCollectionAuthority(
   keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
 
   // Data.
-  const data =
-    getRevokeCollectionAuthorityInstructionDataSerializer(context).serialize(
-      input
-    );
+  const data = getRevokeCollectionAuthorityInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

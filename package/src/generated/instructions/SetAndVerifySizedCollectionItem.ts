@@ -78,8 +78,7 @@ export function setAndVerifySizedCollectionItem(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SetAndVerifySizedCollectionItemInstructionAccounts &
-    SetAndVerifySizedCollectionItemInstructionArgs
+  input: SetAndVerifySizedCollectionItemInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -144,10 +143,9 @@ export function setAndVerifySizedCollectionItem(
   }
 
   // Data.
-  const data =
-    getSetAndVerifySizedCollectionItemInstructionDataSerializer(
-      context
-    ).serialize(input);
+  const data = getSetAndVerifySizedCollectionItemInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

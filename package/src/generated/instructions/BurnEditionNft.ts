@@ -71,7 +71,7 @@ export function burnEditionNft(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: BurnEditionNftInstructionAccounts & BurnEditionNftInstructionArgs
+  input: BurnEditionNftInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -157,8 +157,9 @@ export function burnEditionNft(
   });
 
   // Data.
-  const data =
-    getBurnEditionNftInstructionDataSerializer(context).serialize(input);
+  const data = getBurnEditionNftInstructionDataSerializer(context).serialize(
+    {}
+  );
 
   return {
     instruction: { keys, programId, data },

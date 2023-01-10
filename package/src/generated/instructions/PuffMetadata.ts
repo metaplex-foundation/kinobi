@@ -52,7 +52,7 @@ export function puffMetadata(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: PuffMetadataInstructionAccounts & PuffMetadataInstructionArgs
+  input: PuffMetadataInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -68,8 +68,7 @@ export function puffMetadata(
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
 
   // Data.
-  const data =
-    getPuffMetadataInstructionDataSerializer(context).serialize(input);
+  const data = getPuffMetadataInstructionDataSerializer(context).serialize({});
 
   return {
     instruction: { keys, programId, data },

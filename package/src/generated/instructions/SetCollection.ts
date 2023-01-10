@@ -68,7 +68,7 @@ export function setCollection(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SetCollectionInstructionAccounts & SetCollectionInstructionArgs
+  input: SetCollectionInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -180,8 +180,7 @@ export function setCollection(
   });
 
   // Data.
-  const data =
-    getSetCollectionInstructionDataSerializer(context).serialize(input);
+  const data = getSetCollectionInstructionDataSerializer(context).serialize({});
 
   return {
     instruction: { keys, programId, data },

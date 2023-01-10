@@ -78,8 +78,7 @@ export function deprecatedCreateReservationList(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: DeprecatedCreateReservationListInstructionAccounts &
-    DeprecatedCreateReservationListInstructionArgs
+  input: DeprecatedCreateReservationListInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -152,10 +151,9 @@ export function deprecatedCreateReservationList(
   });
 
   // Data.
-  const data =
-    getDeprecatedCreateReservationListInstructionDataSerializer(
-      context
-    ).serialize(input);
+  const data = getDeprecatedCreateReservationListInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

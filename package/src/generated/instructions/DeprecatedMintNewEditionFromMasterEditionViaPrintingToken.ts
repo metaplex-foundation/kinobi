@@ -95,8 +95,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts &
-    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -229,7 +228,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   const data =
     getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(
       context
-    ).serialize(input);
+    ).serialize({});
 
   return {
     instruction: { keys, programId, data },

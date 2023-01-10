@@ -66,8 +66,7 @@ export function removeCreatorVerification(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: RemoveCreatorVerificationInstructionAccounts &
-    RemoveCreatorVerificationInstructionArgs
+  input: RemoveCreatorVerificationInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -91,10 +90,9 @@ export function removeCreatorVerification(
   });
 
   // Data.
-  const data =
-    getRemoveCreatorVerificationInstructionDataSerializer(context).serialize(
-      input
-    );
+  const data = getRemoveCreatorVerificationInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

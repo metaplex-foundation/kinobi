@@ -79,8 +79,7 @@ export function mintFromCandyMachine(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: MintFromCandyMachineInstructionAccounts &
-    MintFromCandyMachineInstructionArgs
+  input: MintFromCandyMachineInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -211,8 +210,9 @@ export function mintFromCandyMachine(
   });
 
   // Data.
-  const data =
-    getMintFromCandyMachineInstructionDataSerializer(context).serialize(input);
+  const data = getMintFromCandyMachineInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

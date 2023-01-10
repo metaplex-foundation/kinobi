@@ -46,6 +46,8 @@ export function {{ camelCaseName }}(
   // Data.
   {% if instruction.hasArgs %}
   const data = get{{ name }}InstructionDataSerializer(context).serialize({{ argsObj }});
+  {% elif instruction.hasData %}
+  const data = get{{ name }}InstructionDataSerializer(context).serialize({});
   {% else %}
   const data = new Uint8Array();
   {% endif %}

@@ -75,8 +75,7 @@ export function createEscrowAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: CreateEscrowAccountInstructionAccounts &
-    CreateEscrowAccountInstructionArgs
+  input: CreateEscrowAccountInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -146,8 +145,9 @@ export function createEscrowAccount(
   }
 
   // Data.
-  const data =
-    getCreateEscrowAccountInstructionDataSerializer(context).serialize(input);
+  const data = getCreateEscrowAccountInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

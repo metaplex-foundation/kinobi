@@ -63,7 +63,7 @@ export function setMintAuthority(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SetMintAuthorityInstructionAccounts & SetMintAuthorityInstructionArgs
+  input: SetMintAuthorityInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -95,8 +95,9 @@ export function setMintAuthority(
   });
 
   // Data.
-  const data =
-    getSetMintAuthorityInstructionDataSerializer(context).serialize(input);
+  const data = getSetMintAuthorityInstructionDataSerializer(context).serialize(
+    {}
+  );
 
   return {
     instruction: { keys, programId, data },

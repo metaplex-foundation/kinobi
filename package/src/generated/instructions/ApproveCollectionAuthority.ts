@@ -78,8 +78,7 @@ export function approveCollectionAuthority(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: ApproveCollectionAuthorityInstructionAccounts &
-    ApproveCollectionAuthorityInstructionArgs
+  input: ApproveCollectionAuthorityInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -146,10 +145,9 @@ export function approveCollectionAuthority(
   }
 
   // Data.
-  const data =
-    getApproveCollectionAuthorityInstructionDataSerializer(context).serialize(
-      input
-    );
+  const data = getApproveCollectionAuthorityInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

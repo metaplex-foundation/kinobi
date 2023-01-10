@@ -73,8 +73,7 @@ export function setAndVerifyCollection(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: SetAndVerifyCollectionInstructionAccounts &
-    SetAndVerifyCollectionInstructionArgs
+  input: SetAndVerifyCollectionInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -139,10 +138,9 @@ export function setAndVerifyCollection(
   }
 
   // Data.
-  const data =
-    getSetAndVerifyCollectionInstructionDataSerializer(context).serialize(
-      input
-    );
+  const data = getSetAndVerifyCollectionInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

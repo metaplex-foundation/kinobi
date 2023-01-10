@@ -56,7 +56,7 @@ export function withdraw(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: WithdrawInstructionAccounts & WithdrawInstructionArgs
+  input: WithdrawInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -80,7 +80,7 @@ export function withdraw(
   });
 
   // Data.
-  const data = getWithdrawInstructionDataSerializer(context).serialize(input);
+  const data = getWithdrawInstructionDataSerializer(context).serialize({});
 
   return {
     instruction: { keys, programId, data },

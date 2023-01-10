@@ -75,8 +75,7 @@ export function revokeUseAuthority(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: RevokeUseAuthorityInstructionAccounts &
-    RevokeUseAuthorityInstructionArgs
+  input: RevokeUseAuthorityInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -151,8 +150,9 @@ export function revokeUseAuthority(
   }
 
   // Data.
-  const data =
-    getRevokeUseAuthorityInstructionDataSerializer(context).serialize(input);
+  const data = getRevokeUseAuthorityInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

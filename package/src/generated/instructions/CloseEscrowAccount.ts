@@ -73,8 +73,7 @@ export function closeEscrowAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: CloseEscrowAccountInstructionAccounts &
-    CloseEscrowAccountInstructionArgs
+  input: CloseEscrowAccountInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -134,8 +133,9 @@ export function closeEscrowAccount(
   });
 
   // Data.
-  const data =
-    getCloseEscrowAccountInstructionDataSerializer(context).serialize(input);
+  const data = getCloseEscrowAccountInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

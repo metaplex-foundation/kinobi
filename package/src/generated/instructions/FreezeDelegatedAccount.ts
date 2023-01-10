@@ -67,8 +67,7 @@ export function freezeDelegatedAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: FreezeDelegatedAccountInstructionAccounts &
-    FreezeDelegatedAccountInstructionArgs
+  input: FreezeDelegatedAccountInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -111,10 +110,9 @@ export function freezeDelegatedAccount(
   });
 
   // Data.
-  const data =
-    getFreezeDelegatedAccountInstructionDataSerializer(context).serialize(
-      input
-    );
+  const data = getFreezeDelegatedAccountInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

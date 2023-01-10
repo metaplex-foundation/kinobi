@@ -40,14 +40,11 @@ export function getDummyDInstructionDataSerializer(
 }
 
 // Instruction.
-export function dummyD(
-  context: {
-    serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
-    programs?: Context['programs'];
-  },
-  input: DummyDInstructionArgs
-): WrappedInstruction {
+export function dummyD(context: {
+  serializer: Context['serializer'];
+  eddsa: Context['eddsa'];
+  programs?: Context['programs'];
+}): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -59,7 +56,7 @@ export function dummyD(
   );
 
   // Data.
-  const data = getDummyDInstructionDataSerializer(context).serialize(input);
+  const data = getDummyDInstructionDataSerializer(context).serialize({});
 
   return {
     instruction: { keys, programId, data },

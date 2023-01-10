@@ -163,7 +163,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       'PublicKey',
       'Signer',
       'WrappedInstruction',
-      ...(instruction.hasArgs ? ['Serializer'] : []),
+      ...(instruction.hasData ? ['Serializer'] : []),
     ]);
 
     // Accounts.

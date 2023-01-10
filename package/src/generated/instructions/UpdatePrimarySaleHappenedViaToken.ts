@@ -68,8 +68,7 @@ export function updatePrimarySaleHappenedViaToken(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: UpdatePrimarySaleHappenedViaTokenInstructionAccounts &
-    UpdatePrimarySaleHappenedViaTokenInstructionArgs
+  input: UpdatePrimarySaleHappenedViaTokenInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -96,10 +95,9 @@ export function updatePrimarySaleHappenedViaToken(
   keys.push({ pubkey: input.token, isSigner: false, isWritable: false });
 
   // Data.
-  const data =
-    getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
-      context
-    ).serialize(input);
+  const data = getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

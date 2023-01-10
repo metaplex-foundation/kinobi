@@ -67,8 +67,7 @@ export function thawDelegatedAccount(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: ThawDelegatedAccountInstructionAccounts &
-    ThawDelegatedAccountInstructionArgs
+  input: ThawDelegatedAccountInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -111,8 +110,9 @@ export function thawDelegatedAccount(
   });
 
   // Data.
-  const data =
-    getThawDelegatedAccountInstructionDataSerializer(context).serialize(input);
+  const data = getThawDelegatedAccountInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

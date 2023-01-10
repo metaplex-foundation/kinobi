@@ -69,8 +69,7 @@ export function unverifyCollection(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  input: UnverifyCollectionInstructionAccounts &
-    UnverifyCollectionInstructionArgs
+  input: UnverifyCollectionInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -120,8 +119,9 @@ export function unverifyCollection(
   }
 
   // Data.
-  const data =
-    getUnverifyCollectionInstructionDataSerializer(context).serialize(input);
+  const data = getUnverifyCollectionInstructionDataSerializer(
+    context
+  ).serialize({});
 
   return {
     instruction: { keys, programId, data },

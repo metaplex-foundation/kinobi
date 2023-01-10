@@ -101,8 +101,15 @@ export class InstructionNode implements Visitable {
     return this.accounts.length > 0;
   }
 
-  get hasArgs(): boolean {
+  get hasData(): boolean {
     return this.args.fields.length > 0;
+  }
+
+  get hasArgs(): boolean {
+    const requiredFields = this.args.fields.filter(
+      (field) => field.metadata.defaultsTo === null
+    );
+    return requiredFields.length > 0;
   }
 }
 
