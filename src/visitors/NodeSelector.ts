@@ -52,20 +52,23 @@ export const toNodeSelectorFunction = (
     }
   };
 
-  const checkName: NodeSelectorFunction = (node) =>
-    selector.name !== undefined &&
-    selector.name === (node as { name?: string }).name;
+  const checkName: NodeSelectorFunction = (node) => {
+    if (selector.name === undefined) return true;
+    return selector.name === (node as { name?: string }).name;
+  };
 
-  const checkStack: NodeSelectorFunction = (node, stack) =>
-    selector.stack !== undefined &&
-    stack.matchesWithNames(
-      Array.isArray(selector.stack) ? selector.stack : selector.stack.split('.')
-    );
+  const checkStack: NodeSelectorFunction = (node, stack) => {
+    if (selector.stack === undefined) return true;
+    const selectorStack = Array.isArray(selector.stack)
+      ? selector.stack
+      : selector.stack.split('.');
+    return stack.matchesWithNames(selectorStack);
+  };
 
-  const checkProgram: NodeSelectorFunction = (node, stack, program) =>
-    selector.program !== undefined &&
-    !!program &&
-    selector.program === program.name;
+  const checkProgram: NodeSelectorFunction = (node, stack, program) => {
+    if (selector.program === undefined) return true;
+    return !!program && selector.program === program.name;
+  };
 
   return (node, stack, program) =>
     checkType(node, stack, program) &&
