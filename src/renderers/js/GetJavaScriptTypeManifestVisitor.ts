@@ -317,7 +317,14 @@ export class GetJavaScriptTypeManifestVisitor
               `integer types, not ${typeLeafWrapper.leaf.type}`
           );
         }
-        return { ...leaf };
+        const idAndDecimals = `'${wrapper.identifier}', ${wrapper.decimals}`;
+        return {
+          ...leaf,
+          imports: leaf.imports.add('core', ['Amount', 'mapAmountSerializer']),
+          strictType: `Amount<${idAndDecimals}>`,
+          looseType: `Amount<${idAndDecimals}>`,
+          serializer: `mapAmountSerializer(${leaf.serializer}, ${idAndDecimals})`,
+        };
       default:
         return leaf;
     }
