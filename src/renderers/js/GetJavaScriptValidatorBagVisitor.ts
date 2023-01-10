@@ -114,6 +114,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     return bag;
   }
 
+  // TODO: Fix as this is never called due to super calls.
   visitTypeLeafWrapper(
     typeLeafWrapper: nodes.TypeLeafWrapperNode
   ): ValidatorBag {
