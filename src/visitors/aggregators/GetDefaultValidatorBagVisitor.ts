@@ -51,6 +51,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!account.name) {
       bag.error('Account has no name.', account, this.stack);
     }
+    bag.mergeWith([account.type.accept(this)]);
     this.popNode();
     return bag;
   }
@@ -61,6 +62,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!instruction.name) {
       bag.error('Instruction has no name.', instruction, this.stack);
     }
+    bag.mergeWith([instruction.args.accept(this)]);
     this.popNode();
     return bag;
   }
@@ -71,6 +73,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!definedType.name) {
       bag.error('Defined type has no name.', definedType, this.stack);
     }
+    bag.mergeWith([definedType.type.accept(this)]);
     this.popNode();
     return bag;
   }
