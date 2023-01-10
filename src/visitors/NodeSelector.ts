@@ -54,9 +54,6 @@ export const toNodeSelectorFunction = (
 
   const checkName: NodeSelectorFunction = (node) => {
     if (selector.name === undefined) return true;
-    if (nodes.isTypeDefinedLinkNode(node)) {
-      return selector.name === node.definedType;
-    }
     return selector.name === (node as { name?: string }).name;
   };
 

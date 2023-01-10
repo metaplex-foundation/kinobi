@@ -9,6 +9,10 @@ export class TypeDefinedLinkNode implements Visitable {
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypeDefinedLink(this);
   }
+
+  get name(): string {
+    return this.definedType;
+  }
 }
 
 export function isTypeDefinedLinkNode(

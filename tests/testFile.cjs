@@ -5,6 +5,7 @@ const {
   ConsoleLogVisitor,
   GetNodeTreeStringVisitor,
   SetStructDefaultValuesVisitor,
+  SetLeafWrappersVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -60,6 +61,16 @@ kinobi.update(
     'mplTokenMetadata.DelegateRecord': { key: omitted(11) },
     'mplTokenAuthRules.FrequencyAccount': { key: omitted(1) },
     'mplTokenMetadata.Collection': { verified: false },
+  })
+);
+kinobi.update(
+  new SetLeafWrappersVisitor({
+    'DelegateArgs.SaleV1.amount': { kind: 'DateTime' },
+    'CandyMachineData.sellerFeeBasisPoints': {
+      kind: 'Amount',
+      identifier: '%',
+      decimals: 2,
+    },
   })
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
