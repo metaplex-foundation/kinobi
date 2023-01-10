@@ -5,12 +5,13 @@ import {
   NodeSelectorFunction,
   toNodeSelectorFunction,
 } from '../NodeSelector';
+import { NodeStack } from '../NodeStack';
 
 export type NodeTransform<T extends NodeSelector = NodeSelector> = {
   selector: T;
   transformer: (
     node: nodes.Node,
-    stack: nodes.Node[],
+    stack: NodeStack,
     program: nodes.ProgramNode | null
   ) => nodes.Node | null;
 };
@@ -18,7 +19,7 @@ export type NodeTransform<T extends NodeSelector = NodeSelector> = {
 export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   readonly transforms: NodeTransform<NodeSelectorFunction>[];
 
-  readonly stack: nodes.Node[] = [];
+  readonly stack: NodeStack = new NodeStack();
 
   protected program: nodes.ProgramNode | null = null;
 
@@ -148,7 +149,7 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
 
   protected applyTransforms(node: nodes.Node | null): nodes.Node | null {
     if (node === null) return null;
-    const stack = [...this.stack];
+    const stack = this.stack.clone();
     const { program } = this;
     return this.transforms
       .filter(({ selector }) => selector(node, stack, program))

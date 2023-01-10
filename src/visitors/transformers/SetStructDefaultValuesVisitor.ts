@@ -17,7 +17,7 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
           if (selectorStack.length <= 1) return node.name === selector;
           const selectorTail = selectorStack.pop();
           if (node.name !== selectorTail) return false;
-          return matchStackWithNames(stack, selectorStack);
+          return stack.matchesWithNames(selectorStack);
         },
         transformer: (node) => {
           nodes.assertTypeStructNode(node);
@@ -42,15 +42,4 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
 
     super(transforms);
   }
-}
-
-function matchStackWithNames(stack: nodes.Node[], names: string[]): boolean {
-  stack.forEach((node) => {
-    const nodeName = (node as { name?: string }).name;
-    if (nodeName && names.length > 0 && names[0] === nodeName) {
-      names.shift();
-    }
-  });
-
-  return names.length === 0;
 }

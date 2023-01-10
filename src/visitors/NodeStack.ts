@@ -19,6 +19,10 @@ export class NodeStack {
     return this.isEmpty() ? undefined : this.stack[this.stack.length - 1];
   }
 
+  public all(): nodes.Node[] {
+    return [...this.stack];
+  }
+
   public isEmpty(): boolean {
     return this.stack.length === 0;
   }
@@ -75,5 +79,21 @@ export class NodeStack {
           throw new Error(`Unknown node type: ${node.nodeClass}`);
       }
     });
+  }
+
+  public matchesWithNames(names: string[]): boolean {
+    const remainingNames = [...names];
+    this.stack.forEach((node) => {
+      const nodeName = (node as { name?: string }).name;
+      if (
+        nodeName &&
+        remainingNames.length > 0 &&
+        remainingNames[0] === nodeName
+      ) {
+        remainingNames.shift();
+      }
+    });
+
+    return remainingNames.length === 0;
   }
 }

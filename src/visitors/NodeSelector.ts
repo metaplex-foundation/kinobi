@@ -1,4 +1,5 @@
 import * as nodes from '../nodes';
+import type { NodeStack } from './NodeStack';
 
 export type NodeSelector =
   | { program: string }
@@ -7,11 +8,12 @@ export type NodeSelector =
   | { type: string; program?: string }
   | { typeLink: string; program?: string }
   | { error: string; program?: string }
+  | { stack: string | string[] }
   | NodeSelectorFunction;
 
 export type NodeSelectorFunction = (
   node: nodes.Node,
-  stack: nodes.Node[],
+  stack: NodeStack,
   program: nodes.ProgramNode | null
 ) => boolean;
 
@@ -58,6 +60,13 @@ export const toNodeSelectorFunction = (
       nodes.isErrorNode(node) &&
       node.name === selector.error &&
       checkProgram(node, stack, program);
+  }
+
+  if ('stack' in selector) {
+    const selectorStack = Array.isArray(selector.stack)
+      ? selector.stack
+      : selector.stack.split('.');
+    return (node, stack) => stack.matchesWithNames(selectorStack);
   }
 
   return (node) =>
