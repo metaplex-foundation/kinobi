@@ -120,24 +120,34 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   visitTypeEnumEmptyVariant(
     typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
   ): string {
-    return this.indented(typeEnumEmptyVariant.name);
+    return this.indented(
+      `[TypeEnumEmptyVariantNode] ${typeEnumEmptyVariant.name}`
+    );
   }
 
   visitTypeEnumStructVariant(
     typeEnumStructVariant: nodes.TypeEnumStructVariantNode
   ): string {
+    this.indent += 1;
+    const child = typeEnumStructVariant.struct.accept(this);
+    this.indent -= 1;
     return [
-      this.indented(`${typeEnumStructVariant.name} (struct)`),
-      typeEnumStructVariant.struct.accept(this),
+      this.indented(
+        `[TypeEnumStructVariantNode] ${typeEnumStructVariant.name}`
+      ),
+      child,
     ].join('\n');
   }
 
   visitTypeEnumTupleVariant(
     typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
   ): string {
+    this.indent += 1;
+    const child = typeEnumTupleVariant.tuple.accept(this);
+    this.indent -= 1;
     return [
-      this.indented(`${typeEnumTupleVariant.name} (tuple)`),
-      typeEnumTupleVariant.tuple.accept(this),
+      this.indented(`[TypeEnumTupleVariantNode] ${typeEnumTupleVariant.name}`),
+      child,
     ].join('\n');
   }
 
@@ -201,7 +211,10 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent += 1;
     const child = typeStructField.type.accept(this);
     this.indent -= 1;
-    return [this.indented(`${typeStructField.name}:`), child].join('\n');
+    return [
+      this.indented(`[TypeStructFieldNode] ${typeStructField.name}`),
+      child,
+    ].join('\n');
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {
