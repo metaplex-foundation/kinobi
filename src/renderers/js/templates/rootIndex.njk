@@ -1,9 +1,23 @@
 {% extends "layout.njk" %}
 
 {% block main %}
-export * from './accounts';
-export * from './errors';
-export * from './instructions';
-export * from './programs';
-export * from './types';
+{% if hasAnythingToExport %}
+  {% if accountsToExport.length > 0 %}
+    export * from './accounts';
+  {% endif %}
+  {% if programsToExport.length > 0 %}
+    export * from './errors';
+  {% endif %}
+  {% if instructionsToExport.length > 0 %}
+    export * from './instructions';
+  {% endif %}
+  {% if programsToExport.length > 0 %}
+    export * from './programs';
+  {% endif %}
+  {% if definedTypesToExport.length > 0 %}
+    export * from './types';
+  {% endif %}
+{% else %}
+export default {};
+{% endif %}
 {% endblock %}

@@ -54,25 +54,52 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
     }
 
+    const programsToExport = root.programs.filter((p) => !p.metadata.internal);
+    const accountsToExport = root.allAccounts.filter(
+      (a) => !a.metadata.internal
+    );
+    const instructionsToExport = root.allInstructions.filter(
+      (i) => !i.metadata.internal
+    );
+    const definedTypesToExport = root.allDefinedTypes.filter(
+      (t) => !t.metadata.internal
+    );
+    const hasAnythingToExport =
+      programsToExport.length > 0 ||
+      accountsToExport.length > 0 ||
+      instructionsToExport.length > 0 ||
+      definedTypesToExport.length > 0;
+
     const ctx = {
       root,
-      programsToExport: root.programs.filter((p) => !p.metadata.internal),
-      accountsToExport: root.allAccounts.filter((a) => !a.metadata.internal),
-      instructionsToExport: root.allInstructions.filter(
-        (i) => !i.metadata.internal
-      ),
-      definedTypesToExport: root.allDefinedTypes.filter(
-        (t) => !t.metadata.internal
-      ),
+      programsToExport,
+      accountsToExport,
+      instructionsToExport,
+      definedTypesToExport,
+      hasAnythingToExport,
     };
 
-    return new RenderMap()
-      .add('index.ts', this.render('rootIndex.njk'))
-      .add('accounts/index.ts', this.render('accountsIndex.njk', ctx))
-      .add('instructions/index.ts', this.render('instructionsIndex.njk', ctx))
-      .add('types/index.ts', this.render('definedTypesIndex.njk', ctx))
-      .add('programs/index.ts', this.render('programsIndex.njk', ctx))
-      .add('errors/index.ts', this.render('errorsIndex.njk', ctx))
+    const map = new RenderMap();
+    if (programsToExport.length > 0) {
+      map
+        .add('programs/index.ts', this.render('programsIndex.njk', ctx))
+        .add('errors/index.ts', this.render('errorsIndex.njk', ctx));
+    }
+    if (accountsToExport.length > 0) {
+      map.add('accounts/index.ts', this.render('accountsIndex.njk', ctx));
+    }
+    if (instructionsToExport.length > 0) {
+      map.add(
+        'instructions/index.ts',
+        this.render('instructionsIndex.njk', ctx)
+      );
+    }
+    if (definedTypesToExport.length > 0) {
+      map.add('types/index.ts', this.render('definedTypesIndex.njk', ctx));
+    }
+
+    return map
+      .add('index.ts', this.render('rootIndex.njk', ctx))
       .mergeWith(...root.programs.map((program) => program.accept(this)));
   }
 
