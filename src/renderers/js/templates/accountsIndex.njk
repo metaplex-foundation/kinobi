@@ -3,5 +3,7 @@
 {% block main %}
 {% for account in accountsToExport | sort(false, false, 'metadata.name') %}
 export * from './{{ account.name }}';
+{% else %}
+export default {};
 {% endfor %}
 {% endblock %}

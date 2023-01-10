@@ -3,5 +3,7 @@
 {% block main %}
 {% for program in programsToExport | sort(false, false, 'metadata.name') %}
 export * from './{{ program.metadata.name }}';
+{% else %}
+export default {};
 {% endfor %}
 {% endblock %}
