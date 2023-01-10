@@ -67,7 +67,7 @@ function programNodeTransform(
 
   if (newProgramName || newProgramPrefix) {
     programTransform.push({
-      selector: { program },
+      selector: { type: 'program', name: program },
       transformer: (node: nodes.Node) => {
         nodes.assertProgramNode(node);
         return new nodes.ProgramNode(
@@ -94,7 +94,7 @@ function instructionNodeTransform(
   options: string | InstructionOptions
 ): NodeTransform {
   return {
-    selector: { instruction, program },
+    selector: { type: 'instruction', name: instruction, program },
     transformer: (node: nodes.Node) => {
       nodes.assertInstructionNode(node);
 
@@ -127,7 +127,7 @@ function accountNodeTransform(
   options: string | AccountOptions
 ): NodeTransform {
   return {
-    selector: { account, program },
+    selector: { type: 'account', name: account, program },
     transformer: (node: nodes.Node) => {
       nodes.assertAccountNode(node);
 
@@ -155,7 +155,7 @@ function typeNodeTransform(
   const newName = typeof options === 'string' ? options : options.name;
   const transforms: NodeTransform[] = [
     {
-      selector: { type, program },
+      selector: { type: 'definedType', name: type, program },
       transformer: (node: nodes.Node) => {
         nodes.assertDefinedTypeNode(node);
 
@@ -179,7 +179,7 @@ function typeNodeTransform(
 
   if (newName) {
     transforms.push({
-      selector: { typeLink: type, program },
+      selector: { type: 'typeDefinedLink', name: type, program },
       transformer: (node: nodes.Node) => {
         nodes.assertTypeDefinedLinkNode(node);
         return new nodes.TypeDefinedLinkNode(newName);
@@ -196,7 +196,7 @@ function errorNodeTransform(
   options: string
 ): NodeTransform {
   return {
-    selector: { error, program },
+    selector: { type: 'error', name: error, program },
     transformer: (node: nodes.Node) => {
       nodes.assertErrorNode(node);
       return new nodes.ErrorNode(

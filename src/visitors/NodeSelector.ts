@@ -1,14 +1,22 @@
 import * as nodes from '../nodes';
 import type { NodeStack } from './NodeStack';
 
+export type NodeSelectorType =
+  | 'program'
+  | 'instruction'
+  | 'account'
+  | 'definedType'
+  | 'error'
+  | 'typeDefinedLink'
+  | 'typeLeaf';
+
 export type NodeSelector =
-  | { program: string }
-  | { instruction: string; program?: string }
-  | { account: string; program?: string }
-  | { type: string; program?: string }
-  | { typeLink: string; program?: string }
-  | { error: string; program?: string }
-  | { stack: string | string[] }
+  | {
+      type: NodeSelectorType | '*';
+      name?: string;
+      stack?: string | string[];
+      program?: string;
+    }
   | NodeSelectorFunction;
 
 export type NodeSelectorFunction = (
@@ -22,53 +30,46 @@ export const toNodeSelectorFunction = (
 ): NodeSelectorFunction => {
   if (typeof selector === 'function') return selector;
 
+  const checkType: NodeSelectorFunction = (node) => {
+    switch (selector.type) {
+      case 'program':
+        return nodes.isProgramNode(node);
+      case 'instruction':
+        return nodes.isInstructionNode(node);
+      case 'account':
+        return nodes.isAccountNode(node);
+      case 'definedType':
+        return nodes.isDefinedTypeNode(node);
+      case 'error':
+        return nodes.isErrorNode(node);
+      case 'typeDefinedLink':
+        return nodes.isTypeDefinedLinkNode(node);
+      case 'typeLeaf':
+        return nodes.isTypeLeafNode(node);
+      case '*':
+      default:
+        return true;
+    }
+  };
+
+  const checkName: NodeSelectorFunction = (node) =>
+    selector.name !== undefined &&
+    selector.name === (node as { name?: string }).name;
+
+  const checkStack: NodeSelectorFunction = (node, stack) =>
+    selector.stack !== undefined &&
+    stack.matchesWithNames(
+      Array.isArray(selector.stack) ? selector.stack : selector.stack.split('.')
+    );
+
   const checkProgram: NodeSelectorFunction = (node, stack, program) =>
-    'program' in selector
-      ? !!(program && selector.program === program.metadata.name)
-      : true;
+    selector.program !== undefined &&
+    !!program &&
+    selector.program === program.name;
 
-  if ('instruction' in selector) {
-    return (node, stack, program) =>
-      nodes.isInstructionNode(node) &&
-      node.name === selector.instruction &&
-      checkProgram(node, stack, program);
-  }
-
-  if ('account' in selector) {
-    return (node, stack, program) =>
-      nodes.isAccountNode(node) &&
-      node.name === selector.account &&
-      checkProgram(node, stack, program);
-  }
-
-  if ('type' in selector) {
-    return (node, stack, program) =>
-      nodes.isDefinedTypeNode(node) &&
-      node.name === selector.type &&
-      checkProgram(node, stack, program);
-  }
-
-  if ('typeLink' in selector) {
-    return (node, stack, program) =>
-      nodes.isTypeDefinedLinkNode(node) &&
-      node.definedType === selector.typeLink &&
-      checkProgram(node, stack, program);
-  }
-
-  if ('error' in selector) {
-    return (node, stack, program) =>
-      nodes.isErrorNode(node) &&
-      node.name === selector.error &&
-      checkProgram(node, stack, program);
-  }
-
-  if ('stack' in selector) {
-    const selectorStack = Array.isArray(selector.stack)
-      ? selector.stack
-      : selector.stack.split('.');
-    return (node, stack) => stack.matchesWithNames(selectorStack);
-  }
-
-  return (node) =>
-    nodes.isProgramNode(node) && node.metadata.name === selector.program;
+  return (node, stack, program) =>
+    checkType(node, stack, program) &&
+    checkName(node, stack, program) &&
+    checkStack(node, stack, program) &&
+    checkProgram(node, stack, program);
 };
