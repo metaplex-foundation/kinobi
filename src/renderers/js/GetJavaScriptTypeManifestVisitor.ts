@@ -293,10 +293,10 @@ export class GetJavaScriptTypeManifestVisitor
     const { wrapper } = typeLeafWrapper;
     switch (wrapper.kind) {
       case 'DateTime':
-        if (!typeLeafWrapper.leaf.isUnsignedInteger()) {
+        if (!typeLeafWrapper.leaf.isInteger()) {
           throw new Error(
-            `DateTime wrappers can only be applied to unsigned ` +
-              `integer types, not ${typeLeafWrapper.leaf.type}`
+            `DateTime wrappers can only be applied to integer ` +
+              `types. Got type [${typeLeafWrapper.leaf.type}].`
           );
         }
         return {
@@ -314,7 +314,7 @@ export class GetJavaScriptTypeManifestVisitor
         if (!typeLeafWrapper.leaf.isUnsignedInteger()) {
           throw new Error(
             `Amount wrappers can only be applied to unsigned ` +
-              `integer types, not ${typeLeafWrapper.leaf.type}`
+              `integer types. Got type [${typeLeafWrapper.leaf.type}].`
           );
         }
         const idAndDecimals = `'${wrapper.identifier}', ${wrapper.decimals}`;

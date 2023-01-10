@@ -122,10 +122,10 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const { wrapper, leaf } = typeLeafWrapper;
     switch (wrapper.kind) {
       case 'DateTime':
-        if (!leaf.isUnsignedInteger()) {
+        if (!leaf.isInteger()) {
           bag.error(
             `DateTime wrapper can only be applied to ` +
-              `unsigned integer types. Got type [${leaf.type}].`,
+              `integer types. Got type [${leaf.type}].`,
             typeLeafWrapper,
             this.stack
           );
