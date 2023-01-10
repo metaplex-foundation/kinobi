@@ -182,6 +182,15 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return new ValidatorBag();
   }
 
+  visitTypeLeafWrapper(
+    typeLeafWrapper: nodes.TypeLeafWrapperNode
+  ): ValidatorBag {
+    this.pushNode(typeLeafWrapper);
+    const bag = typeLeafWrapper.leaf.accept(this);
+    this.popNode();
+    return bag;
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): ValidatorBag {
     this.pushNode(typeMap);
     const bag = new ValidatorBag();

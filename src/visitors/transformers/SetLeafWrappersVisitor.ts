@@ -10,7 +10,7 @@ export class SetLeafWrappersVisitor extends TransformNodesVisitor {
         selector: { type: 'typeLeaf', stack: selectorStack },
         transformer: (node) => {
           nodes.assertTypeLeafNode(node);
-          return new nodes.TypeLeafNode(node.type, wrapper);
+          return new nodes.TypeLeafWrapperNode(wrapper, node);
         },
       })
     );

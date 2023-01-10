@@ -286,6 +286,43 @@ export class GetJavaScriptTypeManifestVisitor
     }
   }
 
+  visitTypeLeafWrapper(
+    typeLeafWrapper: nodes.TypeLeafWrapperNode
+  ): JavaScriptTypeManifest {
+    const leaf = typeLeafWrapper.leaf.accept(this);
+    const { wrapper } = typeLeafWrapper;
+    switch (wrapper.kind) {
+      case 'DateTime':
+        if (!typeLeafWrapper.leaf.isUnsignedInteger()) {
+          throw new Error(
+            `DateTime wrappers can only be applied to unsigned ` +
+              `integer types, not ${typeLeafWrapper.leaf.type}`
+          );
+        }
+        return {
+          ...leaf,
+          imports: leaf.imports.add('core', [
+            'DateTime',
+            'DateTimeInput',
+            'mapDateTimeSerializer',
+          ]),
+          strictType: `DateTime`,
+          looseType: `DateTimeInput`,
+          serializer: `mapDateTimeSerializer(${leaf.serializer})`,
+        };
+      case 'Amount':
+        if (!typeLeafWrapper.leaf.isUnsignedInteger()) {
+          throw new Error(
+            `Amount wrappers can only be applied to unsigned ` +
+              `integer types, not ${typeLeafWrapper.leaf.type}`
+          );
+        }
+        return { ...leaf };
+      default:
+        return leaf;
+    }
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): JavaScriptTypeManifest {
     const key = typeMap.keyType.accept(this);
     const value = typeMap.valueType.accept(this);

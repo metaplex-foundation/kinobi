@@ -145,6 +145,16 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     return this.indented(`[TypeLeafNode] ${typeLeaf.type}`);
   }
 
+  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): string {
+    this.indent += 1;
+    const child = typeLeafWrapper.leaf.accept(this);
+    this.indent -= 1;
+    return [
+      this.indented(`[TypeLeafWrapperNode] ${typeLeafWrapper.wrapper.kind}`),
+      child,
+    ].join('\n');
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): string {
     const result: string[] = [];
     result.push(this.indented(`[TypeMapNode] ${typeMap.mapType}`));

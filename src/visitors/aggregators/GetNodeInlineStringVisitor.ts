@@ -87,6 +87,19 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return typeLeaf.type;
   }
 
+  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): string {
+    const child = typeLeafWrapper.leaf.accept(this);
+    const { wrapper } = typeLeafWrapper;
+    switch (wrapper.kind) {
+      case 'DateTime':
+        return `DateTime(${child})`;
+      case 'Amount':
+        return `Amount(${child},${wrapper.identifier},${wrapper.decimals})`;
+      default:
+        return child;
+    }
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): string {
     const key = typeMap.keyType.accept(this);
     const value = typeMap.valueType.accept(this);

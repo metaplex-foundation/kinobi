@@ -118,6 +118,15 @@ export class GetDefinedTypeHistogramVisitor
     return {};
   }
 
+  visitTypeLeafWrapper(
+    typeLeafWrapper: nodes.TypeLeafWrapperNode
+  ): DefinedTypeHistogram {
+    this.stackLevel += 1;
+    const histogram = typeLeafWrapper.leaf.accept(this);
+    this.stackLevel -= 1;
+    return histogram;
+  }
+
   visitTypeMap(typeMap: nodes.TypeMapNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms([

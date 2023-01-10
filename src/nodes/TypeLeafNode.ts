@@ -34,6 +34,26 @@ export class TypeLeafNode implements Visitable {
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypeLeaf(this);
   }
+
+  isSignedInteger(): boolean {
+    return ['i8', 'i16', 'i32', 'i64', 'i128'].includes(this.type);
+  }
+
+  isUnsignedInteger(): boolean {
+    return ['u8', 'u16', 'u32', 'u64', 'u128'].includes(this.type);
+  }
+
+  isInteger(): boolean {
+    return this.isSignedInteger() || this.isUnsignedInteger();
+  }
+
+  isDecimal(): boolean {
+    return ['f32', 'f64'].includes(this.type);
+  }
+
+  isNumber(): boolean {
+    return this.isInteger() || this.isDecimal();
+  }
 }
 
 export function isTypeLeafNode(node: Node | null): node is TypeLeafNode {
