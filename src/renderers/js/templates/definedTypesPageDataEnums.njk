@@ -1,9 +1,9 @@
 {% if definedType.type.nodeClass === 'TypeEnumNode' and definedType.type.isDataEnum() %}
 // Data Enum Helpers.
 {% for variant in definedType.type.variants %}
-{% if variant.kind === 'struct' %}
+{% if variant.nodeClass === 'TypeEnumStructVariantNode' %}
 export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: GetDataEnumKindContent<{{ name }}, '{{ variant.name }}'>): GetDataEnumKind<{{ name }}, '{{ variant.name }}'>;
-{% elif variant.kind === 'tuple' %}
+{% elif variant.nodeClass === 'TypeEnumTupleVariantNode' %}
 export function {{ camelCaseName }}(kind: '{{ variant.name }}', data: GetDataEnumKindContent<{{ name }}, '{{ variant.name }}'>['fields']): GetDataEnumKind<{{ name }}, '{{ variant.name }}'>;
 {% else %}
 export function {{ camelCaseName }}(kind: '{{ variant.name }}'): GetDataEnumKind<{{ name }}, '{{ variant.name }}'>;
