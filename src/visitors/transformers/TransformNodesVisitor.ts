@@ -98,11 +98,53 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedTypeEnum);
   }
 
+  visitTypeEnumEmptyVariant(
+    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  ): nodes.Node | null {
+    this.stack.push(typeEnumEmptyVariant);
+    const visitedTypeEnumEmptyVariant = super.visitTypeEnumEmptyVariant(
+      typeEnumEmptyVariant
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeEnumEmptyVariant);
+  }
+
+  visitTypeEnumStructVariant(
+    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  ): nodes.Node | null {
+    this.stack.push(typeEnumStructVariant);
+    const visitedTypeEnumStructVariant = super.visitTypeEnumStructVariant(
+      typeEnumStructVariant
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeEnumStructVariant);
+  }
+
+  visitTypeEnumTupleVariant(
+    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  ): nodes.Node | null {
+    this.stack.push(typeEnumTupleVariant);
+    const visitedTypeEnumTupleVariant = super.visitTypeEnumTupleVariant(
+      typeEnumTupleVariant
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeEnumTupleVariant);
+  }
+
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node | null {
     this.stack.push(typeLeaf);
     const visitedTypeLeaf = super.visitTypeLeaf(typeLeaf);
     this.stack.pop();
     return this.applyTransforms(visitedTypeLeaf);
+  }
+
+  visitTypeLeafWrapper(
+    typeLeafWrapper: nodes.TypeLeafWrapperNode
+  ): nodes.Node | null {
+    this.stack.push(typeLeafWrapper);
+    const visitedTypeLeafWrapper = super.visitTypeLeafWrapper(typeLeafWrapper);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeLeafWrapper);
   }
 
   visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node | null {
@@ -131,6 +173,15 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     const visitedTypeStruct = super.visitTypeStruct(typeStruct);
     this.stack.pop();
     return this.applyTransforms(visitedTypeStruct);
+  }
+
+  visitTypeStructField(
+    typeStructField: nodes.TypeStructFieldNode
+  ): nodes.Node | null {
+    this.stack.push(typeStructField);
+    const visitedTypeStructField = super.visitTypeStructField(typeStructField);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeStructField);
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node | null {

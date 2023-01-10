@@ -60,8 +60,14 @@ export class NodeStack {
           return 'Defined Link';
         case 'TypeEnumNode':
           return node.name ? `Enum: ${node.name}` : 'Enum';
+        case 'TypeEnumEmptyVariantNode':
+        case 'TypeEnumStructVariantNode':
+        case 'TypeEnumTupleVariantNode':
+          return node.name ? `Variant: ${node.name}` : 'Variant';
         case 'TypeLeafNode':
           return 'Leaf';
+        case 'TypeLeafWrapperNode':
+          return `LeafWrapper: ${node.wrapper.kind}`;
         case 'TypeMapNode':
           return 'Map';
         case 'TypeOptionNode':
@@ -70,13 +76,16 @@ export class NodeStack {
           return 'Set';
         case 'TypeStructNode':
           return node.name ? `Struct: ${node.name}` : 'Struct';
+        case 'TypeStructFieldNode':
+          return node.name ? `Field: ${node.name}` : 'Field';
         case 'TypeTupleNode':
           return 'Tuple';
         case 'TypeVecNode':
           return 'Vec';
         default:
-          // @ts-ignore
-          throw new Error(`Unknown node type: ${node.nodeClass}`);
+          // eslint-disable-next-line no-case-declarations
+          const neverNode: never = node;
+          throw new Error(`Unknown node type: ${(neverNode as any).nodeClass}`);
       }
     });
   }

@@ -8,19 +8,22 @@
 
 import {
   Context,
+  DateTime,
+  DateTimeInput,
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  mapDateTimeSerializer,
 } from '@lorisleiva/js-core';
 
 export type DelegateArgs =
   | { __kind: 'CollectionV1' }
-  | { __kind: 'SaleV1'; amount: bigint }
+  | { __kind: 'SaleV1'; amount: DateTime }
   | { __kind: 'TransferV1'; amount: bigint };
 
 export type DelegateArgsArgs =
   | { __kind: 'CollectionV1' }
-  | { __kind: 'SaleV1'; amount: number | bigint }
+  | { __kind: 'SaleV1'; amount: DateTimeInput }
   | { __kind: 'TransferV1'; amount: number | bigint };
 
 export function getDelegateArgsSerializer(
@@ -33,7 +36,7 @@ export function getDelegateArgsSerializer(
       [
         'SaleV1',
         s.struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>(
-          [['amount', s.u64]],
+          [['amount', mapDateTimeSerializer(s.u64)]],
           'SaleV1'
         ),
       ],
