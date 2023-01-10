@@ -14,6 +14,7 @@ export * from './CandyMachineData';
 export * from './CmCreator';
 export * from './Collection';
 export * from './CollectionDetails';
+export * from './ConfigLine';
 export * from './ConfigLineSettings';
 export * from './CreateMasterEditionArgs';
 export * from './Creator';

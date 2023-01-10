@@ -16,6 +16,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
+import { ConfigLine, getConfigLineSerializer } from '../types';
 
 // Accounts.
 export type AddConfigLinesInstructionAccounts = {
@@ -27,22 +28,12 @@ export type AddConfigLinesInstructionAccounts = {
 export type AddConfigLinesInstructionData = {
   discriminator: Array<number>;
   index: number;
-  configLines: Array<{
-    /** Name of the asset. */
-    name: string;
-    /** URI to JSON metadata. */
-    uri: string;
-  }>;
+  configLines: Array<ConfigLine>;
 };
 
 export type AddConfigLinesInstructionArgs = {
   index: number;
-  configLines: Array<{
-    /** Name of the asset. */
-    name: string;
-    /** URI to JSON metadata. */
-    uri: string;
-  }>;
+  configLines: Array<ConfigLine>;
 };
 
 export function getAddConfigLinesInstructionDataSerializer(
@@ -58,18 +49,7 @@ export function getAddConfigLinesInstructionDataSerializer(
       [
         ['discriminator', s.array(s.u8, 8)],
         ['index', s.u32],
-        [
-          'configLines',
-          s.vec(
-            s.struct<any>(
-              [
-                ['name', s.string],
-                ['uri', s.string],
-              ],
-              'ConfigLine'
-            )
-          ),
-        ],
+        ['configLines', s.vec(getConfigLineSerializer(context))],
       ],
       'addConfigLinesInstructionArgs'
     ),
