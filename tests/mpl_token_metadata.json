@@ -3,59 +3,6 @@
   "name": "mpl_token_metadata",
   "instructions": [
     {
-      "name": "DummyA",
-      "accounts": [],
-      "args": [
-        {
-          "name": "foo",
-          "type": "string"
-        }
-      ]
-    },
-    {
-      "name": "DummyABis",
-      "accounts": [
-        {
-          "name": "metadata",
-          "isMut": true,
-          "isSigner": false,
-          "desc": "New Metadata key (pda of ['metadata', program id, mint id])"
-        }
-      ],
-      "args": [
-        {
-          "name": "foo",
-          "type": "string"
-        }
-      ]
-    },
-    {
-      "name": "DummyB",
-      "accounts": [
-        {
-          "name": "metadata",
-          "isMut": true,
-          "isSigner": false,
-          "desc": "New Metadata key (pda of ['metadata', program id, mint id])"
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "DummyC",
-      "accounts": [],
-      "args": []
-    },
-    {
-      "name": "DummyD",
-      "accounts": [],
-      "args": [],
-      "discriminant": {
-        "type": "u8",
-        "value": 42
-      }
-    },
-    {
       "name": "CreateMetadataAccount",
       "accounts": [
         {
