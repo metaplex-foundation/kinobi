@@ -6,6 +6,7 @@ import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeStructFieldNode } from './TypeStructFieldNode';
 
+// TODO: { kind: 'pda', account: string, seeds?: Record<string, string> }
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
   | { kind: 'program'; program: { name: string; address: string } }

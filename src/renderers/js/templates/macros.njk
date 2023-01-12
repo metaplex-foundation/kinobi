@@ -45,3 +45,14 @@ export function get{{ strictName }}Serializer(context: Pick<Context, 'serializer
 }
 {% endif %}
 {% endmacro %}
+
+{# Render a default value. #}
+{% macro defaultValue(defaultsTo) %}
+{% if defaultsTo.kind === 'program' %}
+getProgramAddressWithFallback(context, '{{ defaultsTo.program.name }}', '{{ defaultsTo.program.address }}')
+{% elif defaultsTo.kind === 'address' %}
+context.eddsa.createPublicKey('{{ defaultsTo.address }}')
+{% else %}
+programId
+{% endif %}
+{% endmacro %}

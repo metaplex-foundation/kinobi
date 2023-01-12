@@ -2,27 +2,13 @@
   {% set isWritableString = 'true' if account.isWritable else 'false' %}
   // {{ account.titleCaseName }}{% if account.isOptional %} (optional){% endif %}.
   {% if account.hasDefaultValue %}
-      {% if account.defaultsTo.kind === 'program' %}
-        keys.push({
-          pubkey: {{ accountsObj }}.{{ account.name }} ?? getProgramAddressWithFallback(context, '{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.address }}'),
-          isSigner: false,
-          isWritable: {{ isWritableString }},
-        });
-      {% elif account.defaultsTo.kind === 'address' %}
-        keys.push({
-          pubkey: {{ accountsObj }}.{{ account.name }} ?? context.eddsa.createPublicKey('{{ account.defaultsTo.address }}'),
-          isSigner: false,
-          isWritable: {{ isWritableString }},
-        });
-      {% else %}
-        keys.push({
-          pubkey: {{ accountsObj }}.{{ account.name }} ?? programId,
-          isSigner: false,
-          isWritable: {{ isWritableString }},
-        });
-      {% endif %}
+    keys.push({
+      pubkey: {{ accountsObj }}.{{ account.name }} ?? {{- macros.defaultValue(account.defaultsTo) -}},
+      isSigner: false,
+      isWritable: {{ isWritableString }},
+    });
   {% else %}
-    {% if account.isOptional %}
+    {% if account.isOptional and not account.hasDefaultValue %}
     if ({{ accountsObj }}.{{ account.name }}) {
     {% endif %}
       {% if account.isOptionalSigner %}
@@ -46,7 +32,7 @@
       {% else %}
         keys.push({ pubkey: {{ accountsObj }}.{{ account.name }}, isSigner: false, isWritable: {{ isWritableString }} });
       {% endif %}
-    {% if account.isOptional %}
+    {% if account.isOptional and not account.hasDefaultValue  %}
     }
     {% endif %}
   {% endif %}
