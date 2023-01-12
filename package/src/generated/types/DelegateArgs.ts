@@ -35,7 +35,7 @@ export function getDelegateArgsSerializer(
       [
         'SaleV1',
         s.struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>(
-          [['amount', mapAmountSerializer(s.u64, SOL, 9)]],
+          [['amount', mapAmountSerializer(s.u64, 'SOL', 9)]],
           'SaleV1'
         ),
       ],

@@ -318,11 +318,11 @@ export class GetJavaScriptTypeManifestVisitor
               `integer types. Got type [${typeLeafWrapper.leaf.type}].`
           );
         }
-        const idAndDecimals =
-          wrapper.kind === 'SolAmount'
-            ? 'SOL, 9'
-            : `'${wrapper.identifier}', ${wrapper.decimals}`;
-        const isSolAmount = idAndDecimals === 'SOL, 9';
+        const identifier =
+          wrapper.kind === 'SolAmount' ? 'SOL' : wrapper.identifier;
+        const decimals = wrapper.kind === 'SolAmount' ? 9 : wrapper.decimals;
+        const idAndDecimals = `'${identifier}', ${decimals}`;
+        const isSolAmount = identifier === 'SOL' && decimals === 9;
         const amountType = isSolAmount
           ? 'SolAmount'
           : `Amount<${idAndDecimals}>`;
