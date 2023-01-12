@@ -24,7 +24,7 @@ export type UnverifySizedCollectionItemInstructionAccounts = {
   /** Collection Authority */
   collectionAuthority: Signer;
   /** payer */
-  payer: Signer;
+  payer?: Signer;
   /** Mint of the Collection */
   collectionMint: PublicKey;
   /** Metadata Account of the Collection */
@@ -74,6 +74,7 @@ export function unverifySizedCollectionItem(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: UnverifySizedCollectionItemInstructionAccounts
@@ -100,12 +101,21 @@ export function unverifySizedCollectionItem(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Collection Mint.
   keys.push({

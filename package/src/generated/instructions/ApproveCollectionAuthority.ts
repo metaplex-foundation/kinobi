@@ -26,7 +26,7 @@ export type ApproveCollectionAuthorityInstructionAccounts = {
   /** Update Authority of Collection NFT */
   updateAuthority: Signer;
   /** Payer */
-  payer: Signer;
+  payer?: Signer;
   /** Collection Metadata account */
   metadata: PublicKey;
   /** Mint of Collection Metadata */
@@ -76,6 +76,7 @@ export function approveCollectionAuthority(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: ApproveCollectionAuthorityInstructionAccounts
@@ -113,12 +114,21 @@ export function approveCollectionAuthority(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Metadata.
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });

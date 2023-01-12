@@ -39,7 +39,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
     /** Burn authority for this token */
     burnAuthority: Signer;
     /** payer */
-    payer: Signer;
+    payer?: Signer;
     /** update authority info for new metadata account */
     masterUpdateAuthority: PublicKey;
     /** Master record metadata account */
@@ -93,6 +93,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts
@@ -149,12 +150,21 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Master Update Authority.
   keys.push({

@@ -25,7 +25,7 @@ import {
 // Accounts.
 export type TransferInstructionAccounts = {
   /** Transfer authority (token or delegate owner) */
-  authority: Signer;
+  authority?: Signer;
   /** Delegate record PDA */
   delegateRecord?: PublicKey;
   /** Token account */
@@ -89,6 +89,7 @@ export function transfer(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
     programs?: Context['programs'];
   },
   input: TransferInstructionAccounts & TransferInstructionArgs
@@ -104,12 +105,21 @@ export function transfer(
   );
 
   // Authority.
-  signers.push(input.authority);
-  keys.push({
-    pubkey: input.authority.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.authority) {
+    signers.push(input.authority);
+    keys.push({
+      pubkey: input.authority.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.identity);
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Delegate Record (optional).
   if (input.delegateRecord) {

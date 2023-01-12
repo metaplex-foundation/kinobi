@@ -22,7 +22,7 @@ export type MintFromCandyMachineInstructionAccounts = {
   candyMachine: PublicKey;
   authorityPda: PublicKey;
   mintAuthority: Signer;
-  payer: Signer;
+  payer?: Signer;
   nftMint: PublicKey;
   nftMintAuthority?: Signer;
   nftMetadata: PublicKey;
@@ -78,6 +78,7 @@ export function mintFromCandyMachine(
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
     identity: Context['identity'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: MintFromCandyMachineInstructionAccounts
@@ -107,12 +108,21 @@ export function mintFromCandyMachine(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Nft Mint.
   keys.push({ pubkey: input.nftMint, isSigner: false, isWritable: true });

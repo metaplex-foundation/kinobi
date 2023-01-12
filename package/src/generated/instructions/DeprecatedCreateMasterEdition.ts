@@ -41,7 +41,7 @@ export type DeprecatedCreateMasterEditionInstructionAccounts = {
   /** Metadata account */
   metadata: PublicKey;
   /** payer */
-  payer: Signer;
+  payer?: Signer;
   /** Token program */
   tokenProgram?: PublicKey;
   /** System program */
@@ -100,6 +100,7 @@ export function deprecatedCreateMasterEdition(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: DeprecatedCreateMasterEditionInstructionAccounts &
@@ -159,12 +160,21 @@ export function deprecatedCreateMasterEdition(
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Token Program.
   if (input.tokenProgram) {

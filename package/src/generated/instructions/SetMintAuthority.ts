@@ -20,7 +20,7 @@ import {
 // Accounts.
 export type SetMintAuthorityInstructionAccounts = {
   candyMachine: PublicKey;
-  authority: Signer;
+  authority?: Signer;
   mintAuthority: Signer;
 };
 
@@ -61,6 +61,7 @@ export function setMintAuthority(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
     programs?: Context['programs'];
   },
   input: SetMintAuthorityInstructionAccounts
@@ -79,12 +80,21 @@ export function setMintAuthority(
   keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority.
-  signers.push(input.authority);
-  keys.push({
-    pubkey: input.authority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.authority) {
+    signers.push(input.authority);
+    keys.push({
+      pubkey: input.authority.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.identity);
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Mint Authority.
   signers.push(input.mintAuthority);

@@ -28,7 +28,7 @@ import {
 // Accounts.
 export type ValidateInstructionAccounts = {
   /** Payer and creator of the RuleSet */
-  payer: Signer;
+  payer?: Signer;
   /** The PDA account where the RuleSet is stored */
   ruleSet: PublicKey;
   /** System program */
@@ -95,6 +95,7 @@ export function validate(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: ValidateInstructionAccounts & ValidateInstructionArgs
@@ -110,12 +111,21 @@ export function validate(
   );
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Rule Set.
   keys.push({ pubkey: input.ruleSet, isSigner: false, isWritable: true });

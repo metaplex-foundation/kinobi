@@ -24,7 +24,7 @@ export type TransferOutOfEscrowInstructionAccounts = {
   /** Metadata account */
   metadata: PublicKey;
   /** Wallet paying for the transaction and new account */
-  payer: Signer;
+  payer?: Signer;
   /** Mint account for the new attribute */
   attributeMint: PublicKey;
   /** Token account source for the new attribute */
@@ -87,6 +87,8 @@ export function transferOutOfEscrow(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: TransferOutOfEscrowInstructionAccounts &
@@ -109,12 +111,21 @@ export function transferOutOfEscrow(
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Attribute Mint.
   keys.push({

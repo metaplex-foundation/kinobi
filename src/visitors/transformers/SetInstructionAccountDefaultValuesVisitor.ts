@@ -10,6 +10,18 @@ export type InstructionAccountDefaultRule =
 export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaultRule[] =
   [
     {
+      kind: 'payer',
+      account: /^payer|feePayer$/,
+    },
+    {
+      kind: 'identity',
+      account: /^authority$/,
+    },
+    {
+      kind: 'programId',
+      account: /^programId$/,
+    },
+    {
       kind: 'program',
       account: /^systemProgram|splSystemProgram$/,
       program: {
@@ -77,10 +89,6 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       kind: 'address',
       account: /^stakeHistorySysvar|sysvarStakeHistory$/,
       address: 'SysvarStakeHistory1111111111111111111111111',
-    },
-    {
-      kind: 'programId',
-      account: /^programId$/,
     },
   ];
 

@@ -22,7 +22,7 @@ export type DeprecatedCreateReservationListInstructionAccounts = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: PublicKey;
   /** Payer */
-  payer: Signer;
+  payer?: Signer;
   /** Update authority */
   updateAuthority: Signer;
   /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
@@ -76,6 +76,7 @@ export function deprecatedCreateReservationList(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: DeprecatedCreateReservationListInstructionAccounts
@@ -98,12 +99,21 @@ export function deprecatedCreateReservationList(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Update Authority.
   signers.push(input.updateAuthority);

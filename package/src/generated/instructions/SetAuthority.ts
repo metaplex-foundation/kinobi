@@ -20,7 +20,7 @@ import {
 // Accounts.
 export type SetAuthorityInstructionAccounts = {
   candyMachine: PublicKey;
-  authority: Signer;
+  authority?: Signer;
 };
 
 // Arguments.
@@ -60,6 +60,7 @@ export function setAuthority(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
     programs?: Context['programs'];
   },
   input: SetAuthorityInstructionAccounts & SetAuthorityInstructionArgs
@@ -78,12 +79,21 @@ export function setAuthority(
   keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority.
-  signers.push(input.authority);
-  keys.push({
-    pubkey: input.authority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.authority) {
+    signers.push(input.authority);
+    keys.push({
+      pubkey: input.authority.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.identity);
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Data.
   const data =

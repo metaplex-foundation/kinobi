@@ -26,8 +26,8 @@ import {
 export type InitializeInstructionAccounts = {
   candyMachine: PublicKey;
   authorityPda: PublicKey;
-  authority: PublicKey;
-  payer: Signer;
+  authority?: PublicKey;
+  payer?: Signer;
   collectionMetadata: PublicKey;
   collectionMint: PublicKey;
   collectionMasterEdition: PublicKey;
@@ -74,6 +74,8 @@ export function initialize(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: InitializeInstructionAccounts & InitializeInstructionArgs
@@ -95,15 +97,32 @@ export function initialize(
   keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: true });
 
   // Authority.
-  keys.push({ pubkey: input.authority, isSigner: false, isWritable: false });
+  if (input.authority) {
+    keys.push({ pubkey: input.authority, isSigner: false, isWritable: false });
+  } else {
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Collection Metadata.
   keys.push({

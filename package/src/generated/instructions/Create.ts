@@ -21,7 +21,7 @@ import { TaCreateArgs, getTaCreateArgsSerializer } from '../types';
 // Accounts.
 export type CreateInstructionAccounts = {
   /** Payer and creator of the RuleSet */
-  payer: Signer;
+  payer?: Signer;
   /** The PDA account where the RuleSet is stored */
   ruleSetPda: PublicKey;
   /** System program */
@@ -61,6 +61,7 @@ export function create(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: CreateInstructionAccounts & CreateInstructionArgs
@@ -76,12 +77,21 @@ export function create(
   );
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Rule Set Pda.
   keys.push({ pubkey: input.ruleSetPda, isSigner: false, isWritable: true });

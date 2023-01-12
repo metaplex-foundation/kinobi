@@ -29,9 +29,9 @@ export type MintInstructionAccounts = {
   /** Mint of token asset */
   mint: PublicKey;
   /** Payer */
-  payer: Signer;
+  payer?: Signer;
   /** (Mint or Update) authority */
-  authority: Signer;
+  authority?: Signer;
   /** System program */
   systemProgram?: PublicKey;
   /** Instructions sysvar account */
@@ -76,6 +76,8 @@ export function mint(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: MintInstructionAccounts & MintInstructionArgs
@@ -109,20 +111,38 @@ export function mint(
   keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Authority.
-  signers.push(input.authority);
-  keys.push({
-    pubkey: input.authority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.authority) {
+    signers.push(input.authority);
+    keys.push({
+      pubkey: input.authority.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.identity);
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // System Program.
   if (input.systemProgram) {

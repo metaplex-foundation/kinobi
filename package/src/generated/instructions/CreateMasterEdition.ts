@@ -33,7 +33,7 @@ export type CreateMasterEditionInstructionAccounts = {
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: Signer;
   /** payer */
-  payer: Signer;
+  payer?: Signer;
   /** Metadata account */
   metadata: PublicKey;
   /** Token program */
@@ -89,6 +89,7 @@ export function createMasterEdition(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: CreateMasterEditionInstructionAccounts &
@@ -127,12 +128,21 @@ export function createMasterEdition(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Metadata.
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });

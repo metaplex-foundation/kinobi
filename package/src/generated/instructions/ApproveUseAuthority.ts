@@ -24,7 +24,7 @@ export type ApproveUseAuthorityInstructionAccounts = {
   /** Owner */
   owner: Signer;
   /** Payer */
-  payer: Signer;
+  payer?: Signer;
   /** A Use Authority */
   user: PublicKey;
   /** Owned Token Account Of Mint */
@@ -85,6 +85,7 @@ export function approveUseAuthority(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: ApproveUseAuthorityInstructionAccounts &
@@ -116,12 +117,21 @@ export function approveUseAuthority(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // User.
   keys.push({ pubkey: input.user, isSigner: false, isWritable: false });

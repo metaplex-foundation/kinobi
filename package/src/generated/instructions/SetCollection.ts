@@ -20,9 +20,9 @@ import {
 // Accounts.
 export type SetCollectionInstructionAccounts = {
   candyMachine: PublicKey;
-  authority: Signer;
+  authority?: Signer;
   authorityPda: PublicKey;
-  payer: Signer;
+  payer?: Signer;
   collectionMint: PublicKey;
   collectionMetadata: PublicKey;
   collectionAuthorityRecord: PublicKey;
@@ -66,6 +66,8 @@ export function setCollection(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: SetCollectionInstructionAccounts
@@ -84,23 +86,41 @@ export function setCollection(
   keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority.
-  signers.push(input.authority);
-  keys.push({
-    pubkey: input.authority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.authority) {
+    signers.push(input.authority);
+    keys.push({
+      pubkey: input.authority.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.identity);
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Authority Pda.
   keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: true });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Collection Mint.
   keys.push({

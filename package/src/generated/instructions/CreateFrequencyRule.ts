@@ -20,7 +20,7 @@ import {
 // Accounts.
 export type CreateFrequencyRuleInstructionAccounts = {
   /** Payer and creator of the Frequency Rule */
-  payer: Signer;
+  payer?: Signer;
   /** The PDA account where the Frequency Rule is stored */
   frequencyPda: PublicKey;
   /** System program */
@@ -78,6 +78,7 @@ export function createFrequencyRule(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: CreateFrequencyRuleInstructionAccounts &
@@ -94,12 +95,21 @@ export function createFrequencyRule(
   );
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Frequency Pda.
   keys.push({ pubkey: input.frequencyPda, isSigner: false, isWritable: true });

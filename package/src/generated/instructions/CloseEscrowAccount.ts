@@ -30,7 +30,7 @@ export type CloseEscrowAccountInstructionAccounts = {
   /** Edition account */
   edition: PublicKey;
   /** Wallet paying for the transaction and new account */
-  payer: Signer;
+  payer?: Signer;
   /** System program */
   systemProgram?: PublicKey;
   /** Instructions sysvar account */
@@ -71,6 +71,7 @@ export function closeEscrowAccount(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: CloseEscrowAccountInstructionAccounts
@@ -101,12 +102,21 @@ export function closeEscrowAccount(
   keys.push({ pubkey: input.edition, isSigner: false, isWritable: false });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // System Program.
   if (input.systemProgram) {

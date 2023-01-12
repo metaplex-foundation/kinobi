@@ -25,7 +25,7 @@ export type VerifyInstructionAccounts = {
   /** Collection Update authority */
   collectionAuthority: Signer;
   /** payer */
-  payer: Signer;
+  payer?: Signer;
   /** Token Authorization Rules account */
   authorizationRules?: PublicKey;
   /** Token Authorization Rules Program */
@@ -65,6 +65,7 @@ export function verify(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: VerifyInstructionAccounts & VerifyInstructionArgs
@@ -91,12 +92,21 @@ export function verify(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Authorization Rules (optional).
   if (input.authorizationRules) {

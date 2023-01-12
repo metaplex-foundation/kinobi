@@ -37,7 +37,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionAccounts = {
   /** Mint authority of new mint */
   newMintAuthority: Signer;
   /** payer */
-  payer: Signer;
+  payer?: Signer;
   /** Vault authority */
   vaultAuthority: Signer;
   /** Safety deposit token store account */
@@ -108,6 +108,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: MintNewEditionFromMasterEditionViaVaultProxyInstructionAccounts &
@@ -151,12 +152,21 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Vault Authority.
   signers.push(input.vaultAuthority);

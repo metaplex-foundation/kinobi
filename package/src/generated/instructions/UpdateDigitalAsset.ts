@@ -21,7 +21,7 @@ import { UpdateArgs, UpdateArgsArgs, getUpdateArgsSerializer } from '../types';
 // Accounts.
 export type UpdateDigitalAssetInstructionAccounts = {
   /** Update authority or delegate */
-  authority: Signer;
+  authority?: Signer;
   /** Metadata account */
   metadata: PublicKey;
   /** Master Edition account */
@@ -82,6 +82,7 @@ export function updateDigitalAsset(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
     programs?: Context['programs'];
   },
   input: UpdateDigitalAssetInstructionAccounts &
@@ -98,12 +99,21 @@ export function updateDigitalAsset(
   );
 
   // Authority.
-  signers.push(input.authority);
-  keys.push({
-    pubkey: input.authority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.authority) {
+    signers.push(input.authority);
+    keys.push({
+      pubkey: input.authority.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    signers.push(context.identity);
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  }
 
   // Metadata.
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });

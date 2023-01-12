@@ -27,7 +27,7 @@ export type CreateMetadataAccountInstructionAccounts = {
   /** Mint authority */
   mintAuthority: Signer;
   /** payer */
-  payer: Signer;
+  payer?: Signer;
   /** update authority info */
   updateAuthority: PublicKey;
   /** System program */
@@ -81,6 +81,7 @@ export function createMetadataAccount(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: CreateMetadataAccountInstructionAccounts &
@@ -111,12 +112,21 @@ export function createMetadataAccount(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Update Authority.
   keys.push({

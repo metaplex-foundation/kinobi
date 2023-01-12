@@ -24,7 +24,7 @@ export type SetAndVerifyCollectionInstructionAccounts = {
   /** Collection Update authority */
   collectionAuthority: Signer;
   /** Payer */
-  payer: Signer;
+  payer?: Signer;
   /** Update Authority of Collection NFT and NFT */
   updateAuthority: PublicKey;
   /** Mint of the Collection */
@@ -71,6 +71,7 @@ export function setAndVerifyCollection(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    payer: Context['payer'];
     programs?: Context['programs'];
   },
   input: SetAndVerifyCollectionInstructionAccounts
@@ -97,12 +98,21 @@ export function setAndVerifyCollection(
   });
 
   // Payer.
-  signers.push(input.payer);
-  keys.push({
-    pubkey: input.payer.publicKey,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (input.payer) {
+    signers.push(input.payer);
+    keys.push({
+      pubkey: input.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  } else {
+    signers.push(context.payer);
+    keys.push({
+      pubkey: context.payer.publicKey,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   // Update Authority.
   keys.push({
