@@ -237,6 +237,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports,
         program: this.program,
         accounts,
+        needsIdentity: accounts.some((a) => a.defaultsTo.kind === 'identity'),
+        needsPayer: accounts.some((a) => a.defaultsTo.kind === 'payer'),
         typeManifest,
         name: instruction.name,
         camelCaseName: camelCase(instruction.name),

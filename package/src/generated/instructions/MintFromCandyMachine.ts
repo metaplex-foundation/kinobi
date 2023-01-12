@@ -77,6 +77,7 @@ export function mintFromCandyMachine(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    identity: Context['identity'];
     programs?: Context['programs'];
   },
   input: MintFromCandyMachineInstructionAccounts

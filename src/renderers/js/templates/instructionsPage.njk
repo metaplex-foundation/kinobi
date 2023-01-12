@@ -12,6 +12,8 @@ export function {{ camelCaseName }}(
   context: {
     serializer: Context['serializer'];
     eddsa: Context['eddsa'];
+    {{- 'identity: Context[\'identity\'];' if needsIdentity else '' }}
+    {{- 'payer: Context[\'payer\'];' if needsPayer else '' }}
     programs?: Context['programs'];
   },
   {% if canMergeAccountsAndArgs %}
