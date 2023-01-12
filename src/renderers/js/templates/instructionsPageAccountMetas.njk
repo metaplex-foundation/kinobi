@@ -21,7 +21,23 @@
   }
   {% elif account.hasDefaultValue %}
   } else {
-    keys.push({ pubkey: {{- macros.defaultValue(account.defaultsTo) -}}, isSigner: false, isWritable: {{ isWritableString if ['program', 'programId'].includes(account.defaultsTo.kind) else 'false' }} });
+    {% if account.defaultsTo.kind === 'program' %}
+      keys.push({ pubkey: getProgramAddressWithFallback(context, '{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.address }}'), isSigner: false, isWritable: false });
+    {% elif account.defaultsTo.kind === 'address' %}
+      keys.push({ pubkey: context.eddsa.createPublicKey('{{ account.defaultsTo.address }}'), isSigner: false, isWritable: {{ isWritableString }} });
+    {# {% elif account.defaultsTo.kind === 'identity' && (account.isSigner or account.isOptionalSigner) %}
+      signers.push(context.identity);
+      keys.push({ pubkey: context.identity.publicKey, isSigner: true, isWritable: {{ isWritableString }} }); #}
+    {% elif account.defaultsTo.kind === 'identity' %}
+      keys.push({ pubkey: context.identity.publicKey, isSigner: false, isWritable: {{ isWritableString }} });
+    {# {% elif account.defaultsTo.kind === 'payer' && (account.isSigner or account.isOptionalSigner) %}
+      signers.push(context.payer);
+      keys.push({ pubkey: context.payer.publicKey, isSigner: true, isWritable: {{ isWritableString }} }); #}
+    {% elif account.defaultsTo.kind === 'payer' %}
+      keys.push({ pubkey: context.identity, isSigner: false, isWritable: {{ isWritableString }} });
+    {% else %}
+      keys.push({ pubkey: programId, isSigner: false, isWritable: false });
+    {% endif %}
   }
   {% endif %}
 
