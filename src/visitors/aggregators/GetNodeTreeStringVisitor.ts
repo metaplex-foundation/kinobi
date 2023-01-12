@@ -56,7 +56,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
         if (account.isWritable) tags.push('writable');
         if (account.isSigner) tags.push('signer');
         if (account.isOptional) tags.push('optional');
-        if (account.defaultsTo)
+        if (account.defaultsTo.kind !== 'none')
           tags.push(`defaults to ${account.defaultsTo.kind}`);
         const tagsAsString = tags.length > 0 ? ` (${tags.join(', ')})` : '';
         return this.indented(account.name + tagsAsString);

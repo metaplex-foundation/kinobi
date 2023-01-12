@@ -31,7 +31,7 @@ export type MintFromCandyMachineInstructionAccounts = {
   collectionMint: PublicKey;
   collectionMetadata: PublicKey;
   collectionMasterEdition: PublicKey;
-  collectionUpdateAuthority: PublicKey;
+  collectionUpdateAuthority?: PublicKey;
   tokenMetadataProgram: PublicKey;
   tokenProgram?: PublicKey;
   systemProgram?: PublicKey;
@@ -164,7 +164,7 @@ export function mintFromCandyMachine(
 
   // Collection Update Authority.
   keys.push({
-    pubkey: input.collectionUpdateAuthority,
+    pubkey: input.collectionUpdateAuthority ?? programId,
     isSigner: false,
     isWritable: false,
   });

@@ -101,18 +101,8 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const accounts = instruction.accounts.map((account) => {
-      // Skip if the account is already recognised.
-      if (account.defaultsTo) {
-        return account;
-      }
-
-      // Skip if the account doesn't match any rules.
       const rule = this.matchRule(instruction, account);
-      if (!rule) {
-        return account;
-      }
-
-      return { ...account, defaultsTo: rule };
+      return rule ? { ...account, defaultsTo: rule } : account;
     });
 
     return new nodes.InstructionNode(
