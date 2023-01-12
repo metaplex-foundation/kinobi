@@ -6,6 +6,7 @@ const {
   GetNodeTreeStringVisitor,
   SetStructDefaultValuesVisitor,
   SetLeafWrappersVisitor,
+  SetInstructionAccountDefaultValuesVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -72,6 +73,18 @@ kinobi.update(
       decimals: 2,
     },
   })
+);
+kinobi.update(
+  new SetInstructionAccountDefaultValuesVisitor(
+    [
+      {
+        instruction: 'MintFromCandyMachine',
+        account: /^collectionUpdateAuthority$/,
+        kind: 'programId',
+      },
+    ],
+    false
+  )
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));

@@ -1,90 +1,102 @@
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
-type Rule =
-  | {
-      pattern: RegExp;
-      address: string;
-    }
-  | {
-      pattern: RegExp;
-      program: { name: string; address: string };
-    }
-  | {
-      pattern: RegExp;
-      programId: true;
-    };
+export type InstructionAccountDefaultRule =
+  nodes.InstructionNodeAccountDefaults & {
+    account: string | RegExp;
+    instruction?: string;
+  };
 
-const DEFAULT_RULES: Rule[] = [
-  {
-    pattern: /^systemProgram|splSystemProgram$/,
-    program: {
-      name: 'splSystem',
-      address: '11111111111111111111111111111111',
+export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaultRule[] =
+  [
+    {
+      kind: 'program',
+      account: /^systemProgram|splSystemProgram$/,
+      program: {
+        name: 'splSystem',
+        address: '11111111111111111111111111111111',
+      },
     },
-  },
-  {
-    pattern: /^tokenProgram|splTokenProgram$/,
-    program: {
-      name: 'splToken',
-      address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+    {
+      kind: 'program',
+      account: /^tokenProgram|splTokenProgram$/,
+      program: {
+        name: 'splToken',
+        address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+      },
     },
-  },
-  {
-    pattern: /^ataProgram|splAtaProgram$/,
-    program: {
-      name: 'splAssociatedToken',
-      address: 'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+    {
+      kind: 'program',
+      account: /^ataProgram|splAtaProgram$/,
+      program: {
+        name: 'splAssociatedToken',
+        address: 'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+      },
     },
-  },
-  {
-    pattern: /^clockSysvar|sysvarClockSysvar$/,
-    address: 'SysvarC1ock11111111111111111111111111111111',
-  },
-  {
-    pattern: /^epochScheduleSysvar|sysvarEpochSchedule$/,
-    address: 'SysvarEpochSchedu1e111111111111111111111111',
-  },
-  {
-    pattern: /^instructionsSysvar|sysvarInstructions$/,
-    address: 'Sysvar1nstructions1111111111111111111111111',
-  },
-  {
-    pattern: /^recentBlockhashesSysvar|sysvarRecentBlockhashes$/,
-    address: 'SysvarRecentB1ockHashes11111111111111111111',
-  },
-  {
-    pattern: /^rent|rentSysvar|sysvarRent$/,
-    address: 'SysvarRent111111111111111111111111111111111',
-  },
-  {
-    pattern: /^rewardsSysvar|sysvarRewards$/,
-    address: 'SysvarRewards111111111111111111111111111111',
-  },
-  {
-    pattern: /^slotHashesSysvar|sysvarSlotHashes$/,
-    address: 'SysvarS1otHashes111111111111111111111111111',
-  },
-  {
-    pattern: /^slotHistorySysvar|sysvarSlotHistory$/,
-    address: 'SysvarS1otHistory11111111111111111111111111',
-  },
-  {
-    pattern: /^stakeHistorySysvar|sysvarStakeHistory$/,
-    address: 'SysvarStakeHistory1111111111111111111111111',
-  },
-  {
-    pattern: /^programId$/,
-    programId: true,
-  },
-];
+    {
+      kind: 'address',
+      account: /^clockSysvar|sysvarClockSysvar$/,
+      address: 'SysvarC1ock11111111111111111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^epochScheduleSysvar|sysvarEpochSchedule$/,
+      address: 'SysvarEpochSchedu1e111111111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^instructionsSysvar|sysvarInstructions$/,
+      address: 'Sysvar1nstructions1111111111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^recentBlockhashesSysvar|sysvarRecentBlockhashes$/,
+      address: 'SysvarRecentB1ockHashes11111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^rent|rentSysvar|sysvarRent$/,
+      address: 'SysvarRent111111111111111111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^rewardsSysvar|sysvarRewards$/,
+      address: 'SysvarRewards111111111111111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^slotHashesSysvar|sysvarSlotHashes$/,
+      address: 'SysvarS1otHashes111111111111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^slotHistorySysvar|sysvarSlotHistory$/,
+      address: 'SysvarS1otHistory11111111111111111111111111',
+    },
+    {
+      kind: 'address',
+      account: /^stakeHistorySysvar|sysvarStakeHistory$/,
+      address: 'SysvarStakeHistory1111111111111111111111111',
+    },
+    {
+      kind: 'programId',
+      account: /^programId$/,
+    },
+  ];
 
 export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
-  protected readonly rules: Rule[];
+  protected readonly rules: InstructionAccountDefaultRule[];
 
-  constructor(rules: Rule[] = [], includeDefaultRules = true) {
+  constructor(rules: InstructionAccountDefaultRule[]) {
     super();
-    this.rules = includeDefaultRules ? [...DEFAULT_RULES, ...rules] : rules;
+
+    // Place the rules with instructions first.
+    this.rules = rules.sort((a, b) => {
+      const ia = 'instruction' in a;
+      const ib = 'instruction' in b;
+      if ((ia && ib) || (!a && !ib)) return 0;
+      return ia ? -1 : 1;
+    });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
@@ -95,26 +107,12 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
       }
 
       // Skip if the account doesn't match any rules.
-      const rule = this.matchRule(account);
+      const rule = this.matchRule(instruction, account);
       if (!rule) {
         return account;
       }
 
-      // Use the instruction's program if the matched rule is "programId".
-      if ('programId' in rule) {
-        const defaultsTo: nodes.InstructionNodeAccountDefaults = {
-          kind: 'programId',
-        };
-        return { ...account, defaultsTo };
-      }
-
-      // Set the account's new default value.
-      const defaultsTo: nodes.InstructionNodeAccountDefaults =
-        'address' in rule
-          ? { kind: 'address', address: rule.address }
-          : { kind: 'program', program: rule.program };
-
-      return { ...account, defaultsTo };
+      return { ...account, defaultsTo: rule };
     });
 
     return new nodes.InstructionNode(
@@ -134,7 +132,22 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
     return definedType;
   }
 
-  protected matchRule(account: nodes.InstructionNodeAccount): Rule | undefined {
-    return this.rules.find((rule) => rule.pattern.test(account.name));
+  visitError(error: nodes.ErrorNode): nodes.Node {
+    // No need to visit error trees.
+    return error;
+  }
+
+  protected matchRule(
+    instruction: nodes.InstructionNode,
+    account: nodes.InstructionNodeAccount
+  ): InstructionAccountDefaultRule | undefined {
+    return this.rules.find((rule) => {
+      if ('instruction' in rule && rule.instruction !== instruction.name) {
+        return false;
+      }
+      return typeof rule.account === 'string'
+        ? rule.account === account.name
+        : rule.account.test(account.name);
+    });
   }
 }

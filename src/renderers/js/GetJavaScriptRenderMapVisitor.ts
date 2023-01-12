@@ -196,10 +196,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Accounts.
     const accounts = instruction.accounts.map((account) => {
       const hasDefaultValue =
-        account.defaultsTo &&
-        !account.isOptional &&
-        !account.isSigner &&
-        !account.isOptionalSigner;
+        account.defaultsTo.kind !== 'none' && !account.isOptional;
       return {
         ...account,
         type: this.getInstructionAccountType(account),

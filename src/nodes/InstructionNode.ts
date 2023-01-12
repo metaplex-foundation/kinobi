@@ -10,7 +10,10 @@ import { TypeStructFieldNode } from './TypeStructFieldNode';
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
   | { kind: 'program'; program: { name: string; address: string } }
-  | { kind: 'programId' };
+  | { kind: 'programId' }
+  | { kind: 'identity' }
+  | { kind: 'payer' }
+  | { kind: 'none' };
 
 export type InstructionNodeAccount = {
   name: string;
@@ -19,7 +22,7 @@ export type InstructionNodeAccount = {
   isOptionalSigner: boolean;
   isOptional: boolean;
   description: string;
-  defaultsTo: InstructionNodeAccountDefaults | null;
+  defaultsTo: InstructionNodeAccountDefaults;
 };
 
 export type InstructionNodeMetadata = {
@@ -55,7 +58,7 @@ export class InstructionNode implements Visitable {
         isOptionalSigner: account.isOptionalSigner ?? false,
         isOptional: account.optional ?? false,
         description: account.desc ?? '',
-        defaultsTo: null,
+        defaultsTo: { kind: 'none' },
       })
     );
 

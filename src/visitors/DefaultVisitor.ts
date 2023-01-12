@@ -7,6 +7,7 @@ import {
   UnwrapInstructionArgsDefinedTypesVisitor,
   UnwrapInstructionArgsStructVisitor,
   TransformU8ArraysToBytesVisitor,
+  DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES,
 } from './transformers';
 
 export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
@@ -19,7 +20,11 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
     root = root.accept(new DeduplicateIdenticalDefinedTypesVisitor());
 
     // Instructions.
-    root = root.accept(new SetInstructionAccountDefaultValuesVisitor());
+    root = root.accept(
+      new SetInstructionAccountDefaultValuesVisitor(
+        DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES
+      )
+    );
     root = root.accept(new UnwrapInstructionArgsDefinedTypesVisitor());
     root = root.accept(new UnwrapInstructionArgsStructVisitor());
 
