@@ -24,13 +24,18 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
           const fields = node.fields.map((field): nodes.TypeStructFieldNode => {
             const defaultValue = defaultValues[field.name];
             if (defaultValue === undefined) return field;
+            const wrappedDefaultValue =
+              typeof defaultValue === 'object' && 'value' in defaultValue
+                ? defaultValue
+                : { value: defaultValue };
             return new nodes.TypeStructFieldNode(
               {
                 ...field.metadata,
-                defaultsTo:
-                  typeof defaultValue === 'object' && 'value' in defaultValue
-                    ? { strategy: 'optional', ...defaultValue }
-                    : { strategy: 'optional', value: defaultValue },
+                defaultsTo: {
+                  kind: 'json',
+                  strategy: 'optional',
+                  ...wrappedDefaultValue,
+                },
               },
               field.type
             );

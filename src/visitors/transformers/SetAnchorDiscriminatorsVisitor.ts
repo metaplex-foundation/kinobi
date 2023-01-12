@@ -34,7 +34,11 @@ export class SetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       {
         name: 'discriminator',
         docs: [],
-        defaultsTo: { value: Array.from(hash), strategy: 'omitted' },
+        defaultsTo: {
+          kind: 'json',
+          strategy: 'omitted',
+          value: Array.from(hash),
+        },
       },
       new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8)
     );
@@ -59,7 +63,11 @@ export class SetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       {
         name: 'discriminator',
         docs: [],
-        defaultsTo: { value: Array.from(hash), strategy: 'omitted' },
+        defaultsTo: {
+          kind: 'json',
+          strategy: 'omitted',
+          value: Array.from(hash),
+        },
       },
       new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8)
     );

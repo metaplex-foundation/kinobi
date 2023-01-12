@@ -238,7 +238,7 @@ export class GetJavaScriptTypeManifestVisitor
     const kindAttribute = `__kind: "${name}"`;
     const struct = new nodes.TypeStructNode(name, [
       new nodes.TypeStructFieldNode(
-        { name: 'fields', docs: [], defaultsTo: null },
+        { name: 'fields', docs: [], defaultsTo: { kind: 'none' } },
         typeEnumTupleVariant.tuple
       ),
     ]);
@@ -392,14 +392,14 @@ export class GetJavaScriptTypeManifestVisitor
     };
 
     const optionalFields = typeStruct.fields.filter(
-      (f) => !!f.metadata.defaultsTo
+      (f) => f.metadata.defaultsTo.kind !== 'none'
     );
     if (optionalFields.length === 0) {
       return baseManifest;
     }
 
     const defaultValues = optionalFields
-      .map((f) => `${f.name}: ${JSON.stringify(f.metadata.defaultsTo?.value)}`)
+      .map((f) => `${f.name}: ${this.renderStructFieldValue(f)}`)
       .join(', ');
     const mapSerializerTypeParams = definedName
       ? `${definedName.loose}, ${definedName.strict}, ${definedName.strict}`
@@ -430,7 +430,7 @@ export class GetJavaScriptTypeManifestVisitor
       looseType: `${docblock}${name}: ${fieldType.looseType}; `,
       serializer: `['${name}', ${fieldType.serializer}]`,
     };
-    if (!metadata.defaultsTo) {
+    if (metadata.defaultsTo.kind === 'none') {
       return baseField;
     }
     if (metadata.defaultsTo.strategy === 'optional') {
@@ -485,5 +485,17 @@ export class GetJavaScriptTypeManifestVisitor
     if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
     const lines = docs.map((doc) => ` * ${doc}`);
     return `\n/**\n${lines.join('\n')}\n */\n`;
+  }
+
+  protected renderStructFieldValue(
+    field: nodes.TypeStructFieldNode
+  ): string | null {
+    switch (field.metadata.defaultsTo.kind) {
+      case 'json':
+        return JSON.stringify(field.metadata.defaultsTo.value);
+      case 'none':
+      default:
+        return null;
+    }
   }
 }

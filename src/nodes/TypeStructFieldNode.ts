@@ -4,15 +4,18 @@ import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
 // TODO: Support "address", "program" and "programId" defaults.
-export type TypeStructFieldNodeDefaults = {
-  value: any;
-  strategy: 'optional' | 'omitted';
-};
+export type TypeStructFieldNodeDefaults =
+  | {
+      kind: 'json';
+      strategy: 'optional' | 'omitted';
+      value: any;
+    }
+  | { kind: 'none' };
 
 export type TypeStructFieldNodeMetadata = {
   name: string;
   docs: string[];
-  defaultsTo: TypeStructFieldNodeDefaults | null;
+  defaultsTo: TypeStructFieldNodeDefaults;
 };
 
 export class TypeStructFieldNode implements Visitable {
@@ -24,16 +27,17 @@ export class TypeStructFieldNode implements Visitable {
   ) {}
 
   static fromIdl(idl: IdlTypeStructField): TypeStructFieldNode {
-    const metadata = {
-      name: idl.name ?? '',
-      docs: idl.docs ?? [],
-      defaultsTo:
-        idl.defaultsValue !== undefined
-          ? { strategy: 'optional' as const, value: idl.defaultsValue }
-          : null,
-    };
-
-    return new TypeStructFieldNode(metadata, createTypeNodeFromIdl(idl.type));
+    return new TypeStructFieldNode(
+      {
+        name: idl.name ?? '',
+        docs: idl.docs ?? [],
+        defaultsTo:
+          idl.defaultsValue !== undefined
+            ? { kind: 'json', strategy: 'optional', value: idl.defaultsValue }
+            : { kind: 'none' },
+      },
+      createTypeNodeFromIdl(idl.type)
+    );
   }
 
   accept<T>(visitor: Visitor<T>): T {

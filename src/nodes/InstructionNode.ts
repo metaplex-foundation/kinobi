@@ -74,8 +74,9 @@ export class InstructionNode implements Visitable {
           name: 'discriminator',
           docs: [],
           defaultsTo: {
-            value: idl.discriminant.value,
+            kind: 'json',
             strategy: 'omitted',
+            value: idl.discriminant.value,
           },
         },
         createTypeNodeFromIdl(idl.discriminant.type)
@@ -111,7 +112,7 @@ export class InstructionNode implements Visitable {
 
   get hasArgs(): boolean {
     const requiredFields = this.args.fields.filter(
-      (field) => field.metadata.defaultsTo === null
+      (field) => field.metadata.defaultsTo.kind === 'none'
     );
     return requiredFields.length > 0;
   }
