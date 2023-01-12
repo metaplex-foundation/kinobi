@@ -127,28 +127,36 @@ export function deprecatedCreateReservationList(
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
 
   // System Program.
-  keys.push({
-    pubkey:
-      input.systemProgram ??
-      getProgramAddressWithFallback(
+  if (input.systemProgram) {
+    keys.push({
+      pubkey: input.systemProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splSystem',
         '11111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Rent.
-  keys.push({
-    pubkey:
-      input.rent ??
-      context.eddsa.createPublicKey(
+  if (input.rent) {
+    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
+  } else {
+    keys.push({
+      pubkey: context.eddsa.createPublicKey(
         'SysvarRent111111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Data.
   const data = getDeprecatedCreateReservationListInstructionDataSerializer(

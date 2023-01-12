@@ -125,54 +125,78 @@ export function mint(
   });
 
   // System Program.
-  keys.push({
-    pubkey:
-      input.systemProgram ??
-      getProgramAddressWithFallback(
+  if (input.systemProgram) {
+    keys.push({
+      pubkey: input.systemProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splSystem',
         '11111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Sysvar Instructions.
-  keys.push({
-    pubkey:
-      input.sysvarInstructions ??
-      context.eddsa.createPublicKey(
+  if (input.sysvarInstructions) {
+    keys.push({
+      pubkey: input.sysvarInstructions,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: context.eddsa.createPublicKey(
         'Sysvar1nstructions1111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Spl Token Program.
-  keys.push({
-    pubkey:
-      input.splTokenProgram ??
-      getProgramAddressWithFallback(
+  if (input.splTokenProgram) {
+    keys.push({
+      pubkey: input.splTokenProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splToken',
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Spl Ata Program.
-  keys.push({
-    pubkey:
-      input.splAtaProgram ??
-      getProgramAddressWithFallback(
+  if (input.splAtaProgram) {
+    keys.push({
+      pubkey: input.splAtaProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splAssociatedToken',
         'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Authorization Rules Program (optional).
   if (input.authorizationRulesProgram) {

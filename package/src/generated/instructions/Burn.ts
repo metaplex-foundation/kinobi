@@ -109,17 +109,23 @@ export function burn(
   });
 
   // Spl Token Program.
-  keys.push({
-    pubkey:
-      input.splTokenProgram ??
-      getProgramAddressWithFallback(
+  if (input.splTokenProgram) {
+    keys.push({
+      pubkey: input.splTokenProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splToken',
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Collection Metadata (optional).
   if (input.collectionMetadata) {

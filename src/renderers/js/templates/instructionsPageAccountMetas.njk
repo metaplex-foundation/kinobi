@@ -1,40 +1,28 @@
 {% for account in accounts %}
   {% set isWritableString = 'true' if account.isWritable else 'false' %}
   // {{ account.titleCaseName }}{% if account.isOptional %} (optional){% endif %}.
-  {% if account.hasDefaultValue %}
-    keys.push({
-      pubkey: {{ accountsObj }}.{{ account.name }} ?? {{- macros.defaultValue(account.defaultsTo) -}},
-      isSigner: false,
-      isWritable: {{ isWritableString }},
-    });
-  {% else %}
-    {% if account.isOptional and not account.hasDefaultValue %}
-    if ({{ accountsObj }}.{{ account.name }}) {
-    {% endif %}
-      {% if account.isOptionalSigner %}
-        if (isSigner({{ accountsObj }}.{{ account.name }})) {
-          signers.push({{ accountsObj }}.{{ account.name }});
-          keys.push({
-            pubkey: {{ accountsObj }}.{{ account.name }}.publicKey,
-            isSigner: true,
-            isWritable: {{ isWritableString }},
-          });
-        } else {
-          keys.push({
-            pubkey: {{ accountsObj }}.{{ account.name }},
-            isSigner: false,
-            isWritable: {{ isWritableString }},
-          });
-        }
-      {% elif account.isSigner  %}
+  {% if account.isOptional or account.hasDefaultValue %}
+  if ({{ accountsObj }}.{{ account.name }}) {
+  {% endif %}
+    {% if account.isOptionalSigner %}
+      if (isSigner({{ accountsObj }}.{{ account.name }})) {
         signers.push({{ accountsObj }}.{{ account.name }});
         keys.push({ pubkey: {{ accountsObj }}.{{ account.name }}.publicKey, isSigner: true, isWritable: {{ isWritableString }} });
-      {% else %}
+      } else {
         keys.push({ pubkey: {{ accountsObj }}.{{ account.name }}, isSigner: false, isWritable: {{ isWritableString }} });
-      {% endif %}
-    {% if account.isOptional and not account.hasDefaultValue  %}
-    }
+      }
+    {% elif account.isSigner  %}
+      signers.push({{ accountsObj }}.{{ account.name }});
+      keys.push({ pubkey: {{ accountsObj }}.{{ account.name }}.publicKey, isSigner: true, isWritable: {{ isWritableString }} });
+    {% else %}
+      keys.push({ pubkey: {{ accountsObj }}.{{ account.name }}, isSigner: false, isWritable: {{ isWritableString }} });
     {% endif %}
+  {% if account.isOptional %}
+  }
+  {% elif account.hasDefaultValue %}
+  } else {
+    keys.push({ pubkey: {{- macros.defaultValue(account.defaultsTo) -}}, isSigner: false, isWritable: {{ isWritableString if ['program', 'programId'].includes(account.defaultsTo.kind) else 'false' }} });
+  }
   {% endif %}
 
 {% endfor %}

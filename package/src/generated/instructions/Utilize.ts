@@ -111,54 +111,70 @@ export function utilize(
   keys.push({ pubkey: input.owner, isSigner: false, isWritable: false });
 
   // Token Program.
-  keys.push({
-    pubkey:
-      input.tokenProgram ??
-      getProgramAddressWithFallback(
+  if (input.tokenProgram) {
+    keys.push({
+      pubkey: input.tokenProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splToken',
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Ata Program.
-  keys.push({
-    pubkey:
-      input.ataProgram ??
-      getProgramAddressWithFallback(
+  if (input.ataProgram) {
+    keys.push({ pubkey: input.ataProgram, isSigner: false, isWritable: false });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splAssociatedToken',
         'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // System Program.
-  keys.push({
-    pubkey:
-      input.systemProgram ??
-      getProgramAddressWithFallback(
+  if (input.systemProgram) {
+    keys.push({
+      pubkey: input.systemProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splSystem',
         '11111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Rent.
-  keys.push({
-    pubkey:
-      input.rent ??
-      context.eddsa.createPublicKey(
+  if (input.rent) {
+    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
+  } else {
+    keys.push({
+      pubkey: context.eddsa.createPublicKey(
         'SysvarRent111111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Use Authority Record (optional).
   if (input.useAuthorityRecord) {

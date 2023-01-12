@@ -105,17 +105,23 @@ export function createFrequencyRule(
   keys.push({ pubkey: input.frequencyPda, isSigner: false, isWritable: true });
 
   // System Program.
-  keys.push({
-    pubkey:
-      input.systemProgram ??
-      getProgramAddressWithFallback(
+  if (input.systemProgram) {
+    keys.push({
+      pubkey: input.systemProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splSystem',
         '11111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Data.
   const data =

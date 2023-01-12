@@ -116,43 +116,57 @@ export function useAsset(
   keys.push({ pubkey: input.owner, isSigner: false, isWritable: false });
 
   // Spl Token Program.
-  keys.push({
-    pubkey:
-      input.splTokenProgram ??
-      getProgramAddressWithFallback(
+  if (input.splTokenProgram) {
+    keys.push({
+      pubkey: input.splTokenProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splToken',
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Ata Program.
-  keys.push({
-    pubkey:
-      input.ataProgram ??
-      getProgramAddressWithFallback(
+  if (input.ataProgram) {
+    keys.push({ pubkey: input.ataProgram, isSigner: false, isWritable: false });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splAssociatedToken',
         'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // System Program.
-  keys.push({
-    pubkey:
-      input.systemProgram ??
-      getProgramAddressWithFallback(
+  if (input.systemProgram) {
+    keys.push({
+      pubkey: input.systemProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splSystem',
         '11111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Use Authority Record (optional).
   if (input.useAuthorityRecord) {

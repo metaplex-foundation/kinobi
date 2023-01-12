@@ -24,14 +24,14 @@ export type MintFromCandyMachineInstructionAccounts = {
   mintAuthority: Signer;
   payer: Signer;
   nftMint: PublicKey;
-  nftMintAuthority: Signer;
+  nftMintAuthority?: Signer;
   nftMetadata: PublicKey;
   nftMasterEdition: PublicKey;
   collectionAuthorityRecord: PublicKey;
   collectionMint: PublicKey;
   collectionMetadata: PublicKey;
   collectionMasterEdition: PublicKey;
-  collectionUpdateAuthority?: PublicKey;
+  collectionUpdateAuthority: PublicKey;
   tokenMetadataProgram: PublicKey;
   tokenProgram?: PublicKey;
   systemProgram?: PublicKey;
@@ -117,12 +117,16 @@ export function mintFromCandyMachine(
   keys.push({ pubkey: input.nftMint, isSigner: false, isWritable: true });
 
   // Nft Mint Authority.
-  signers.push(input.nftMintAuthority);
-  keys.push({
-    pubkey: input.nftMintAuthority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
+  if (input.nftMintAuthority) {
+    signers.push(input.nftMintAuthority);
+    keys.push({
+      pubkey: input.nftMintAuthority.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
+  } else {
+    keys.push({ pubkey: programId, isSigner: false, isWritable: false });
+  }
 
   // Nft Metadata.
   keys.push({ pubkey: input.nftMetadata, isSigner: false, isWritable: true });
@@ -164,7 +168,7 @@ export function mintFromCandyMachine(
 
   // Collection Update Authority.
   keys.push({
-    pubkey: input.collectionUpdateAuthority ?? programId,
+    pubkey: input.collectionUpdateAuthority,
     isSigner: false,
     isWritable: false,
   });
@@ -177,30 +181,42 @@ export function mintFromCandyMachine(
   });
 
   // Token Program.
-  keys.push({
-    pubkey:
-      input.tokenProgram ??
-      getProgramAddressWithFallback(
+  if (input.tokenProgram) {
+    keys.push({
+      pubkey: input.tokenProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splToken',
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // System Program.
-  keys.push({
-    pubkey:
-      input.systemProgram ??
-      getProgramAddressWithFallback(
+  if (input.systemProgram) {
+    keys.push({
+      pubkey: input.systemProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splSystem',
         '11111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Recent Slothashes.
   keys.push({

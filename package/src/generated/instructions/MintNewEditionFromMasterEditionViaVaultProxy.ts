@@ -194,17 +194,23 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
   keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
 
   // Token Program.
-  keys.push({
-    pubkey:
-      input.tokenProgram ??
-      getProgramAddressWithFallback(
+  if (input.tokenProgram) {
+    keys.push({
+      pubkey: input.tokenProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splToken',
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Token Vault Program.
   keys.push({
@@ -214,17 +220,23 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
   });
 
   // System Program.
-  keys.push({
-    pubkey:
-      input.systemProgram ??
-      getProgramAddressWithFallback(
+  if (input.systemProgram) {
+    keys.push({
+      pubkey: input.systemProgram,
+      isSigner: false,
+      isWritable: false,
+    });
+  } else {
+    keys.push({
+      pubkey: getProgramAddressWithFallback(
         context,
         'splSystem',
         '11111111111111111111111111111111'
       ),
-    isSigner: false,
-    isWritable: false,
-  });
+      isSigner: false,
+      isWritable: false,
+    });
+  }
 
   // Rent (optional).
   if (input.rent) {
