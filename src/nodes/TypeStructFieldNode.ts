@@ -3,7 +3,6 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
-// TODO: Support "address", "program" and "programId" defaults.
 export type TypeStructFieldNodeDefaults =
   | {
       kind: 'json';
