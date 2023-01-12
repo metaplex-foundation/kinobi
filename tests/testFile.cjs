@@ -80,7 +80,7 @@ kinobi.update(
       {
         instruction: 'MintFromCandyMachine',
         account: 'nftMintAuthority',
-        kind: 'programId',
+        kind: 'identity',
       },
     ],
     false

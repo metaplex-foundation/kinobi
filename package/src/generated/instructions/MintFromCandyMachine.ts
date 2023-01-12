@@ -125,7 +125,12 @@ export function mintFromCandyMachine(
       isWritable: false,
     });
   } else {
-    keys.push({ pubkey: programId, isSigner: false, isWritable: false });
+    signers.push(context.identity);
+    keys.push({
+      pubkey: context.identity.publicKey,
+      isSigner: true,
+      isWritable: false,
+    });
   }
 
   // Nft Metadata.
