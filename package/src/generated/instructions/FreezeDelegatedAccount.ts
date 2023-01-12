@@ -84,11 +84,11 @@ export function freezeDelegatedAccount(
   keys.push({
     pubkey: input.delegate.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Token Account.
-  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: true });
 
   // Edition.
   keys.push({ pubkey: input.edition, isSigner: false, isWritable: false });

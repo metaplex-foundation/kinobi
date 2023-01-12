@@ -91,7 +91,7 @@ export function setAndVerifySizedCollectionItem(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Collection Authority.
   signers.push(input.collectionAuthority);
@@ -106,7 +106,7 @@ export function setAndVerifySizedCollectionItem(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Update Authority.
@@ -124,13 +124,13 @@ export function setAndVerifySizedCollectionItem(
   });
 
   // Collection.
-  keys.push({ pubkey: input.collection, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.collection, isSigner: false, isWritable: true });
 
   // Collection Master Edition Account.
   keys.push({
     pubkey: input.collectionMasterEditionAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Collection Authority Record (optional).

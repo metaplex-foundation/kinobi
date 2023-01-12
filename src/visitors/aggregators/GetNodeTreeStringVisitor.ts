@@ -53,7 +53,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     children.push(
       ...instruction.accounts.map((account) => {
         const tags = [];
-        if (account.isMutable) tags.push('mutable');
+        if (account.isWritable) tags.push('writable');
         if (account.isSigner) tags.push('signer');
         if (account.isOptional) tags.push('optional');
         if (account.defaultsTo)

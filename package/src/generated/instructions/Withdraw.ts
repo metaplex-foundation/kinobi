@@ -69,14 +69,14 @@ export function withdraw(
   );
 
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority.
   signers.push(input.authority);
   keys.push({
     pubkey: input.authority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Data.

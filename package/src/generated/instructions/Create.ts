@@ -80,11 +80,11 @@ export function create(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Rule Set Pda.
-  keys.push({ pubkey: input.ruleSetPda, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.ruleSetPda, isSigner: false, isWritable: true });
 
   // System Program.
   keys.push({

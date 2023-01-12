@@ -104,10 +104,10 @@ export function deprecatedMintPrintingTokens(
   );
 
   // Destination.
-  keys.push({ pubkey: input.destination, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.destination, isSigner: false, isWritable: true });
 
   // Printing Mint.
-  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: true });
 
   // Update Authority.
   signers.push(input.updateAuthority);

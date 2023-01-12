@@ -100,7 +100,7 @@ export function bubblegumSetCollectionSize(
   keys.push({
     pubkey: input.collectionMetadata,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Collection Authority.
@@ -108,7 +108,7 @@ export function bubblegumSetCollectionSize(
   keys.push({
     pubkey: input.collectionAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Collection Mint.

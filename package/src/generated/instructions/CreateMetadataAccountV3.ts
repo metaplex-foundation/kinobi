@@ -114,7 +114,7 @@ export function createMetadataAccountV3(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Mint.
   keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
@@ -132,7 +132,7 @@ export function createMetadataAccountV3(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Update Authority.

@@ -96,20 +96,20 @@ export function useAsset(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Token Account.
-  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: true });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
 
   // Use Authority.
   signers.push(input.useAuthority);
   keys.push({
     pubkey: input.useAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Owner.
@@ -159,7 +159,7 @@ export function useAsset(
     keys.push({
       pubkey: input.useAuthorityRecord,
       isSigner: false,
-      isWritable: false,
+      isWritable: true,
     });
   }
 

@@ -108,7 +108,7 @@ export function transfer(
   keys.push({
     pubkey: input.authority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Delegate Record (optional).
@@ -116,18 +116,18 @@ export function transfer(
     keys.push({
       pubkey: input.delegateRecord,
       isSigner: false,
-      isWritable: false,
+      isWritable: true,
     });
   }
 
   // Token.
-  keys.push({ pubkey: input.token, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.token, isSigner: false, isWritable: true });
 
   // Token Owner.
   keys.push({ pubkey: input.tokenOwner, isSigner: false, isWritable: false });
 
   // Destination.
-  keys.push({ pubkey: input.destination, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.destination, isSigner: false, isWritable: true });
 
   // Destination Owner.
   keys.push({
@@ -140,7 +140,7 @@ export function transfer(
   keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Master Edition (optional).
   if (input.masterEdition) {

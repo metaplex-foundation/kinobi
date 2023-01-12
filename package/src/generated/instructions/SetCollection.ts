@@ -81,7 +81,7 @@ export function setCollection(
   );
 
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority.
   signers.push(input.authority);
@@ -92,7 +92,7 @@ export function setCollection(
   });
 
   // Authority Pda.
-  keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: true });
 
   // Payer.
   signers.push(input.payer);
@@ -120,7 +120,7 @@ export function setCollection(
   keys.push({
     pubkey: input.collectionAuthorityRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // New Collection Update Authority.
@@ -128,7 +128,7 @@ export function setCollection(
   keys.push({
     pubkey: input.newCollectionUpdateAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // New Collection Metadata.
@@ -156,7 +156,7 @@ export function setCollection(
   keys.push({
     pubkey: input.newCollectionAuthorityRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Token Metadata Program.

@@ -76,7 +76,7 @@ export function setMintAuthority(
   );
 
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority.
   signers.push(input.authority);

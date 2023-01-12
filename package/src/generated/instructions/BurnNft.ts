@@ -77,27 +77,27 @@ export function burnNft(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Owner.
   signers.push(input.owner);
   keys.push({
     pubkey: input.owner.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
 
   // Token Account.
-  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: true });
 
   // Master Edition Account.
   keys.push({
     pubkey: input.masterEditionAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Spl Token Program.
@@ -118,7 +118,7 @@ export function burnNft(
     keys.push({
       pubkey: input.collectionMetadata,
       isSigner: false,
-      isWritable: false,
+      isWritable: true,
     });
   }
 

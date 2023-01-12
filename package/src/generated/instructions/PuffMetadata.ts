@@ -65,7 +65,7 @@ export function puffMetadata(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Data.
   const data = getPuffMetadataInstructionDataSerializer(context).serialize({});

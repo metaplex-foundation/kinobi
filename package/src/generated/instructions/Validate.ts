@@ -114,11 +114,11 @@ export function validate(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Rule Set.
-  keys.push({ pubkey: input.ruleSet, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.ruleSet, isSigner: false, isWritable: true });
 
   // System Program.
   keys.push({

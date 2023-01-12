@@ -105,10 +105,10 @@ export function createMasterEditionV3(
   );
 
   // Edition.
-  keys.push({ pubkey: input.edition, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.edition, isSigner: false, isWritable: true });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
 
   // Update Authority.
   signers.push(input.updateAuthority);
@@ -131,11 +131,11 @@ export function createMasterEditionV3(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Token Program.
   keys.push({

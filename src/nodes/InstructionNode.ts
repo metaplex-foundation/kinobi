@@ -13,7 +13,7 @@ export type InstructionNodeAccountDefaults =
 
 export type InstructionNodeAccount = {
   name: string;
-  isMutable: boolean;
+  isWritable: boolean;
   isSigner: boolean;
   isOptionalSigner: boolean;
   isOptional: boolean;
@@ -49,7 +49,7 @@ export class InstructionNode implements Visitable {
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => ({
         name: camelCase(account.name ?? ''),
-        isMutable: account.isMut ?? false,
+        isWritable: account.isMut ?? false,
         isSigner: account.isSigner ?? false,
         isOptionalSigner: account.isOptionalSigner ?? false,
         isOptional: account.optional ?? false,

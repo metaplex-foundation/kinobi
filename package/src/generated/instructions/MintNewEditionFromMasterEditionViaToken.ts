@@ -118,26 +118,22 @@ export function mintNewEditionFromMasterEditionViaToken(
   );
 
   // New Metadata.
-  keys.push({ pubkey: input.newMetadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.newMetadata, isSigner: false, isWritable: true });
 
   // New Edition.
-  keys.push({ pubkey: input.newEdition, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.newEdition, isSigner: false, isWritable: true });
 
   // Master Edition.
-  keys.push({
-    pubkey: input.masterEdition,
-    isSigner: false,
-    isWritable: false,
-  });
+  keys.push({ pubkey: input.masterEdition, isSigner: false, isWritable: true });
 
   // New Mint.
-  keys.push({ pubkey: input.newMint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.newMint, isSigner: false, isWritable: true });
 
   // Edition Mark Pda.
   keys.push({
     pubkey: input.editionMarkPda,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // New Mint Authority.
@@ -153,7 +149,7 @@ export function mintNewEditionFromMasterEditionViaToken(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Token Account Owner.

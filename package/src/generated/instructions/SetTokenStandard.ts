@@ -78,14 +78,14 @@ export function setTokenStandard(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Update Authority.
   signers.push(input.updateAuthority);
   keys.push({
     pubkey: input.updateAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Mint.

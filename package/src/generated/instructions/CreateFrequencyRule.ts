@@ -98,11 +98,11 @@ export function createFrequencyRule(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Frequency Pda.
-  keys.push({ pubkey: input.frequencyPda, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.frequencyPda, isSigner: false, isWritable: true });
 
   // System Program.
   keys.push({

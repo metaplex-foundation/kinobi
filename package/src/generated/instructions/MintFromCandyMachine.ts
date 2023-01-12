@@ -92,10 +92,10 @@ export function mintFromCandyMachine(
   );
 
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority Pda.
-  keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: true });
 
   // Mint Authority.
   signers.push(input.mintAuthority);
@@ -110,11 +110,11 @@ export function mintFromCandyMachine(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Nft Mint.
-  keys.push({ pubkey: input.nftMint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.nftMint, isSigner: false, isWritable: true });
 
   // Nft Mint Authority.
   signers.push(input.nftMintAuthority);
@@ -125,13 +125,13 @@ export function mintFromCandyMachine(
   });
 
   // Nft Metadata.
-  keys.push({ pubkey: input.nftMetadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.nftMetadata, isSigner: false, isWritable: true });
 
   // Nft Master Edition.
   keys.push({
     pubkey: input.nftMasterEdition,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Collection Authority Record.
@@ -152,7 +152,7 @@ export function mintFromCandyMachine(
   keys.push({
     pubkey: input.collectionMetadata,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Collection Master Edition.

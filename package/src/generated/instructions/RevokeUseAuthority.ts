@@ -91,7 +91,7 @@ export function revokeUseAuthority(
   keys.push({
     pubkey: input.useAuthorityRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Owner.
@@ -99,7 +99,7 @@ export function revokeUseAuthority(
   keys.push({
     pubkey: input.owner.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // User.
@@ -109,7 +109,7 @@ export function revokeUseAuthority(
   keys.push({
     pubkey: input.ownerTokenAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Mint.

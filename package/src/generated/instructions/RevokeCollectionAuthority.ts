@@ -88,14 +88,14 @@ export function revokeCollectionAuthority(
   keys.push({
     pubkey: input.collectionAuthorityRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Delegate Authority.
   keys.push({
     pubkey: input.delegateAuthority,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Revoke Authority.
@@ -103,7 +103,7 @@ export function revokeCollectionAuthority(
   keys.push({
     pubkey: input.revokeAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Metadata.

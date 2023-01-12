@@ -97,7 +97,7 @@ export function updateMetadataAccountV2(
   );
 
   // Metadata.
-  keys.push({ pubkey: accounts.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: accounts.metadata, isSigner: false, isWritable: true });
 
   // Update Authority.
   signers.push(accounts.updateAuthority);

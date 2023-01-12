@@ -108,20 +108,16 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Edition.
-  keys.push({ pubkey: input.edition, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.edition, isSigner: false, isWritable: true });
 
   // Master Edition.
-  keys.push({
-    pubkey: input.masterEdition,
-    isSigner: false,
-    isWritable: false,
-  });
+  keys.push({ pubkey: input.masterEdition, isSigner: false, isWritable: true });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
 
   // Mint Authority.
   signers.push(input.mintAuthority);
@@ -132,21 +128,17 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   });
 
   // Printing Mint.
-  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: true });
 
   // Master Token Account.
   keys.push({
     pubkey: input.masterTokenAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Edition Marker.
-  keys.push({
-    pubkey: input.editionMarker,
-    isSigner: false,
-    isWritable: false,
-  });
+  keys.push({ pubkey: input.editionMarker, isSigner: false, isWritable: true });
 
   // Burn Authority.
   signers.push(input.burnAuthority);
@@ -220,7 +212,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
     keys.push({
       pubkey: input.reservationList,
       isSigner: false,
-      isWritable: false,
+      isWritable: true,
     });
   }
 

@@ -81,17 +81,13 @@ export function convertMasterEditionV1ToV2(
   );
 
   // Master Edition.
-  keys.push({
-    pubkey: input.masterEdition,
-    isSigner: false,
-    isWritable: false,
-  });
+  keys.push({ pubkey: input.masterEdition, isSigner: false, isWritable: true });
 
   // One Time Auth.
-  keys.push({ pubkey: input.oneTimeAuth, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.oneTimeAuth, isSigner: false, isWritable: true });
 
   // Printing Mint.
-  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: true });
 
   // Data.
   const data = getConvertMasterEditionV1ToV2InstructionDataSerializer(

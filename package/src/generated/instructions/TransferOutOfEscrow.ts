@@ -106,14 +106,14 @@ export function transferOutOfEscrow(
   keys.push({ pubkey: input.escrow, isSigner: false, isWritable: false });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Payer.
   signers.push(input.payer);
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Attribute Mint.
@@ -124,10 +124,10 @@ export function transferOutOfEscrow(
   });
 
   // Attribute Src.
-  keys.push({ pubkey: input.attributeSrc, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.attributeSrc, isSigner: false, isWritable: true });
 
   // Attribute Dst.
-  keys.push({ pubkey: input.attributeDst, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.attributeDst, isSigner: false, isWritable: true });
 
   // Escrow Mint.
   keys.push({ pubkey: input.escrowMint, isSigner: false, isWritable: false });

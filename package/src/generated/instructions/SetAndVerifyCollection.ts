@@ -86,14 +86,14 @@ export function setAndVerifyCollection(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Collection Authority.
   signers.push(input.collectionAuthority);
   keys.push({
     pubkey: input.collectionAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Payer.
@@ -101,7 +101,7 @@ export function setAndVerifyCollection(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Update Authority.

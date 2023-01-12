@@ -90,7 +90,7 @@ export function migrate(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Master Edition.
   keys.push({
@@ -100,7 +100,7 @@ export function migrate(
   });
 
   // Token Account.
-  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: true });
 
   // Mint.
   keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });

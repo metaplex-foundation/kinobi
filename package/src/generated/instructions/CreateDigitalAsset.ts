@@ -102,19 +102,19 @@ export function createDigitalAsset(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Master Edition (optional).
   if (input.masterEdition) {
     keys.push({
       pubkey: input.masterEdition,
       isSigner: false,
-      isWritable: false,
+      isWritable: true,
     });
   }
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
 
   // Mint Authority.
   signers.push(input.mintAuthority);
@@ -129,7 +129,7 @@ export function createDigitalAsset(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Update Authority.

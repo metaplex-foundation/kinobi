@@ -94,7 +94,7 @@ export function deprecatedCreateReservationList(
   keys.push({
     pubkey: input.reservationList,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Payer.

@@ -89,7 +89,7 @@ export function unverifySizedCollectionItem(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Collection Authority.
   signers.push(input.collectionAuthority);
@@ -104,7 +104,7 @@ export function unverifySizedCollectionItem(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Collection Mint.
@@ -115,7 +115,7 @@ export function unverifySizedCollectionItem(
   });
 
   // Collection.
-  keys.push({ pubkey: input.collection, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.collection, isSigner: false, isWritable: true });
 
   // Collection Master Edition Account.
   keys.push({

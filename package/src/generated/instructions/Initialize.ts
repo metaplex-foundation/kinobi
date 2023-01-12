@@ -89,10 +89,10 @@ export function initialize(
   );
 
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
 
   // Authority Pda.
-  keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: true });
 
   // Authority.
   keys.push({ pubkey: input.authority, isSigner: false, isWritable: false });
@@ -131,14 +131,14 @@ export function initialize(
   keys.push({
     pubkey: input.collectionUpdateAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Collection Authority Record.
   keys.push({
     pubkey: input.collectionAuthorityRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Token Metadata Program.

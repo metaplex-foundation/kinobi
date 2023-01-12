@@ -108,20 +108,20 @@ export function deprecatedMintPrintingTokensViaToken(
   );
 
   // Destination.
-  keys.push({ pubkey: input.destination, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.destination, isSigner: false, isWritable: true });
 
   // Token.
-  keys.push({ pubkey: input.token, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.token, isSigner: false, isWritable: true });
 
   // One Time Printing Authorization Mint.
   keys.push({
     pubkey: input.oneTimePrintingAuthorizationMint,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Printing Mint.
-  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: true });
 
   // Burn Authority.
   signers.push(input.burnAuthority);

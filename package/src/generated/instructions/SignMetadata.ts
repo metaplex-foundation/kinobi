@@ -67,7 +67,7 @@ export function signMetadata(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Creator.
   signers.push(input.creator);

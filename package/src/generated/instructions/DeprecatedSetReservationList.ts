@@ -103,17 +103,13 @@ export function deprecatedSetReservationList(
   );
 
   // Master Edition.
-  keys.push({
-    pubkey: input.masterEdition,
-    isSigner: false,
-    isWritable: false,
-  });
+  keys.push({ pubkey: input.masterEdition, isSigner: false, isWritable: true });
 
   // Reservation List.
   keys.push({
     pubkey: input.reservationList,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Resource.

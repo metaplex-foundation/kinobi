@@ -116,19 +116,19 @@ export function deprecatedCreateMasterEdition(
   );
 
   // Edition.
-  keys.push({ pubkey: input.edition, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.edition, isSigner: false, isWritable: true });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
 
   // Printing Mint.
-  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: true });
 
   // One Time Printing Authorization Mint.
   keys.push({
     pubkey: input.oneTimePrintingAuthorizationMint,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Update Authority.

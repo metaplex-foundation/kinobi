@@ -104,7 +104,7 @@ export function approveUseAuthority(
   keys.push({
     pubkey: input.useAuthorityRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Owner.
@@ -112,7 +112,7 @@ export function approveUseAuthority(
   keys.push({
     pubkey: input.owner.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Payer.
@@ -120,7 +120,7 @@ export function approveUseAuthority(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // User.
@@ -130,7 +130,7 @@ export function approveUseAuthority(
   keys.push({
     pubkey: input.ownerTokenAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Metadata.

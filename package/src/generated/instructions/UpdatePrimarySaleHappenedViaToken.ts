@@ -81,7 +81,7 @@ export function updatePrimarySaleHappenedViaToken(
   );
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Owner.
   signers.push(input.owner);

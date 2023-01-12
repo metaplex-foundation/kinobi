@@ -99,14 +99,14 @@ export function revoke(
   keys.push({
     pubkey: input.delegateRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Delegate.
   keys.push({ pubkey: input.delegate, isSigner: false, isWritable: false });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
 
   // Master Edition (optional).
   if (input.masterEdition) {
@@ -122,7 +122,7 @@ export function revoke(
 
   // Token (optional).
   if (input.token) {
-    keys.push({ pubkey: input.token, isSigner: false, isWritable: false });
+    keys.push({ pubkey: input.token, isSigner: false, isWritable: true });
   }
 
   // Authority.
@@ -138,7 +138,7 @@ export function revoke(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // System Program.

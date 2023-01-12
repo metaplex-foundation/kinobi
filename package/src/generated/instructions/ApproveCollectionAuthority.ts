@@ -94,7 +94,7 @@ export function approveCollectionAuthority(
   keys.push({
     pubkey: input.collectionAuthorityRecord,
     isSigner: false,
-    isWritable: false,
+    isWritable: true,
   });
 
   // New Collection Authority.
@@ -109,7 +109,7 @@ export function approveCollectionAuthority(
   keys.push({
     pubkey: input.updateAuthority.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Payer.
@@ -117,7 +117,7 @@ export function approveCollectionAuthority(
   keys.push({
     pubkey: input.payer.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: true,
   });
 
   // Metadata.
