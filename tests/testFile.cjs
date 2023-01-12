@@ -75,16 +75,13 @@ kinobi.update(
   })
 );
 kinobi.update(
-  new SetInstructionAccountDefaultValuesVisitor(
-    [
-      {
-        instruction: 'MintFromCandyMachine',
-        account: 'nftMintAuthority',
-        kind: 'identity',
-      },
-    ],
-    false
-  )
+  new SetInstructionAccountDefaultValuesVisitor([
+    {
+      instruction: 'MintFromCandyMachine',
+      account: 'nftMintAuthority',
+      kind: 'identity',
+    },
+  ])
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));
