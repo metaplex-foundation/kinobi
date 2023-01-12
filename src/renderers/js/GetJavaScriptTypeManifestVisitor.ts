@@ -311,18 +311,29 @@ export class GetJavaScriptTypeManifestVisitor
           serializer: `mapDateTimeSerializer(${leaf.serializer})`,
         };
       case 'Amount':
+      case 'SolAmount':
         if (!typeLeafWrapper.leaf.isUnsignedInteger()) {
           throw new Error(
             `Amount wrappers can only be applied to unsigned ` +
               `integer types. Got type [${typeLeafWrapper.leaf.type}].`
           );
         }
-        const idAndDecimals = `'${wrapper.identifier}', ${wrapper.decimals}`;
+        const idAndDecimals =
+          wrapper.kind === 'SolAmount'
+            ? 'SOL, 9'
+            : `'${wrapper.identifier}', ${wrapper.decimals}`;
+        const isSolAmount = idAndDecimals === 'SOL, 9';
+        const amountType = isSolAmount
+          ? 'SolAmount'
+          : `Amount<${idAndDecimals}>`;
         return {
           ...leaf,
-          imports: leaf.imports.add('core', ['Amount', 'mapAmountSerializer']),
-          strictType: `Amount<${idAndDecimals}>`,
-          looseType: `Amount<${idAndDecimals}>`,
+          imports: leaf.imports.add('core', [
+            isSolAmount ? 'SolAmount' : 'Amount',
+            'mapAmountSerializer',
+          ]),
+          strictType: amountType,
+          looseType: amountType,
           serializer: `mapAmountSerializer(${leaf.serializer}, ${idAndDecimals})`,
         };
       default:

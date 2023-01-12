@@ -66,7 +66,7 @@ kinobi.update(
 );
 kinobi.update(
   new SetLeafWrappersVisitor({
-    'DelegateArgs.SaleV1.amount': { kind: 'DateTime' },
+    'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
     'CandyMachineData.sellerFeeBasisPoints': {
       kind: 'Amount',
       identifier: '%',

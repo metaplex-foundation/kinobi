@@ -4,6 +4,7 @@ import type { TypeLeafNode } from './TypeLeafNode';
 
 export type LeafWrapper =
   | { kind: 'DateTime' }
+  | { kind: 'SolAmount' }
   | { kind: 'Amount'; identifier: string; decimals: number };
 
 export class TypeLeafWrapperNode implements Visitable {
