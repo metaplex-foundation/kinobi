@@ -5,6 +5,7 @@ export * from './RenameNodesVisitor';
 export * from './SetAccountSeedsVisitor';
 export * from './SetAnchorDiscriminatorsVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
+export * from './SetInstructionDiscriminatorsVisitor';
 export * from './SetLeafWrappersVisitor';
 export * from './SetMissingDefinedTypesVisitor';
 export * from './SetStructDefaultValuesVisitor';
