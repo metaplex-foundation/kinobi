@@ -34,17 +34,19 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   visitAccount(account: nodes.AccountNode): ValidatorBag {
     const bag = super.visitAccount(account);
     this.pushNode(account);
-    bag.mergeWith([
-      this.checkExportConflicts(account, {
-        [account.name]: 'type',
-        [`${account.name}AccountData`]: 'type',
-        [`${account.name}AccountArgs`]: 'type',
-        [`fetch${account.name}`]: 'function',
-        [`safeFetch${account.name}`]: 'function',
-        [`deserialize${account.name}`]: 'function',
-        [`get${account.name}Serializer`]: 'function',
-      }),
-    ]);
+    const exports = {
+      [account.name]: 'type',
+      [`${account.name}AccountData`]: 'type',
+      [`${account.name}AccountArgs`]: 'type',
+      [`fetch${account.name}`]: 'function',
+      [`safeFetch${account.name}`]: 'function',
+      [`deserialize${account.name}`]: 'function',
+      [`get${account.name}Serializer`]: 'function',
+    };
+    if (account.seeds.length > 0) {
+      exports[`find${account.name}Pda`] = 'function';
+    }
+    bag.mergeWith([this.checkExportConflicts(account, exports)]);
     const reservedAccountFields = new Set(['address', 'header']);
     const invalidFields = account.type.fields
       .map((field) => field.name)
