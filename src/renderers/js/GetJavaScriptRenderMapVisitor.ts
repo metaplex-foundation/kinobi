@@ -170,13 +170,29 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       ])
       .remove('types', [account.name]);
 
+    const seeds = account.seeds.map((seed) => {
+      if (seed.kind === 'programId') return seed;
+      if (seed.kind === 'literal') {
+        imports.add('core', 'utf8');
+        return seed;
+      }
+      const seedManifest = seed.type.accept(this.typeManifestVisitor);
+      imports.mergeWith(seedManifest.imports);
+      return { ...seed, typeManifest: seedManifest };
+    });
+    if (seeds.length > 0) {
+      imports.add('core', ['Pda', 'getProgramAddressWithFallback']);
+    }
+
     return new RenderMap().add(
       `accounts/${account.name}.ts`,
       this.render('accountsPage.njk', {
         account,
         imports,
+        program: this.program,
         typeManifest,
         name: account.name,
+        seeds,
       })
     );
   }

@@ -60,6 +60,10 @@ export class AccountNode implements Visitable {
         seed.kind === 'variable'
     );
   }
+
+  get hasVariableSeeds(): boolean {
+    return this.variableSeeds.length > 0;
+  }
 }
 
 export function isAccountNode(node: Node | null): node is AccountNode {

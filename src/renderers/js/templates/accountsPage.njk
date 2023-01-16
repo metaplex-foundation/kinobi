@@ -36,4 +36,42 @@ export function deserialize{{ name }}(
 }
 
 {{ macros.exportSerializer(name + 'AccountData', name + 'AccountArgs', typeManifest) }}
+
+{% if seeds.length > 0 %}
+export function find{{ name }}Pda(
+  context: {
+    serializer: Context['serializer'];
+    eddsa: Context['eddsa'];
+    programs?: Context['programs'];
+  },
+  seeds: {
+    {% for seed in seeds %}
+      {% if seed.kind === 'variable' %}
+        /** {{ seed.description }} */
+        {{ seed.name }}: {{ seed.typeManifest.looseType }};
+      {% endif %}
+    {% endfor %}
+  }
+): Pda {
+  {% if account.hasVariableSeeds %}
+    const s = context.serializer;
+  {% endif %}
+  const programId: PublicKey = getProgramAddressWithFallback(
+    context,
+    '{{ program.metadata.name }}',
+    '{{ program.metadata.address }}'
+  );
+  return context.eddsa.findPda(programId, [
+    {% for seed in seeds %}
+      {% if seed.kind === 'programId' %}
+        programId.bytes,
+      {% elif seed.kind === 'literal' %}
+        utf8.serialize("{{ seed.value }}"),
+      {% else %}
+        {{ seed.typeManifest.serializer }}.serialize(seeds.{{ seed.name }}),
+      {% endif %}
+    {% endfor %}
+  ]);
+}
+{% endif %}
 {% endblock %}
