@@ -8,6 +8,7 @@ export type NodeSelectorType =
   | 'definedType'
   | 'error'
   | 'typeDefinedLink'
+  | 'typeStruct'
   | 'typeLeaf';
 
 export type NodeSelector =
@@ -44,6 +45,8 @@ export const toNodeSelectorFunction = (
         return nodes.isErrorNode(node);
       case 'typeDefinedLink':
         return nodes.isTypeDefinedLinkNode(node);
+      case 'typeStruct':
+        return nodes.isTypeStructNode(node);
       case 'typeLeaf':
         return nodes.isTypeLeafNode(node);
       case '*':
