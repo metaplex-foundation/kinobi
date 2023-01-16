@@ -11,12 +11,15 @@ import {
   Account,
   Context,
   Option,
+  Pda,
   PublicKey,
   RpcAccount,
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  getProgramAddressWithFallback,
   mapSerializer,
+  utf8,
 } from '@lorisleiva/js-core';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;
@@ -80,4 +83,29 @@ export function getMasterEditionV2AccountDataSerializer(
     ),
     (value) => ({ key: 6, ...value } as MasterEditionV2AccountData)
   ) as Serializer<MasterEditionV2AccountArgs, MasterEditionV2AccountData>;
+}
+
+export function findMasterEditionV2Pda(
+  context: {
+    serializer: Context['serializer'];
+    eddsa: Context['eddsa'];
+    programs?: Context['programs'];
+  },
+  seeds: {
+    /** The address of the mint account */
+    mint: PublicKey;
+  }
+): Pda {
+  const s = context.serializer;
+  const programId: PublicKey = getProgramAddressWithFallback(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return context.eddsa.findPda(programId, [
+    utf8.serialize('metadata'),
+    programId.bytes,
+    s.publicKey.serialize(seeds.mint),
+    utf8.serialize('edition'),
+  ]);
 }

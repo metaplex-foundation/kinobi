@@ -8,6 +8,7 @@ const {
   SetLeafWrappersVisitor,
   SetInstructionAccountDefaultValuesVisitor,
   SetAccountSeedsVisitor,
+  TypeLeafNode,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -93,7 +94,7 @@ kinobi.update(
         kind: 'variable',
         name: 'mint',
         description: 'The address of the mint account',
-        type: 'publicKey',
+        type: new TypeLeafNode('publicKey'),
       },
       { kind: 'literal', value: 'edition' },
     ],
