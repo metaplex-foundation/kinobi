@@ -3463,7 +3463,12 @@
             }
           }
         ]
-      }
+      },
+      "seeds": [
+        { "kind": "literal", "value": "metadata" },
+        { "kind": "programId" },
+        { "kind": "variable", "name": "mint", "description": "The address of the mint account", "type": "publicKey" }
+      ]
     },
     {
       "name": "ReservationListV2",
