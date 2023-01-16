@@ -36,7 +36,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const accountType = account.type.accept(this);
     if (accountType === null) return null;
     nodes.assertTypeStructNode(accountType);
-    return new nodes.AccountNode(account.metadata, accountType);
+    return new nodes.AccountNode(account.metadata, accountType, account.seeds);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {

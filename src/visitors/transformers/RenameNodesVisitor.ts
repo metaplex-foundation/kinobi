@@ -134,14 +134,16 @@ function accountNodeTransform(
       if (typeof options === 'string') {
         return new nodes.AccountNode(
           { ...node.metadata, name: options },
-          node.type
+          node.type,
+          node.seeds
         );
       }
 
       const newName = options.name ?? node.name;
       return new nodes.AccountNode(
         { ...node.metadata, name: newName },
-        mapStructFields(node.type, options.fields ?? {}, newName)
+        mapStructFields(node.type, options.fields ?? {}, newName),
+        node.seeds
       );
     },
   };

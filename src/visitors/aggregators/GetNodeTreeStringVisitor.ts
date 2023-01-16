@@ -39,14 +39,35 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   }
 
   visitAccount(account: nodes.AccountNode): string {
+    const children: string[] = [];
+    children.push(this.indented(`[AccountNode] ${account.name}`));
     this.indent += 1;
-    const child = account.type.accept(this);
+    if (account.seeds.length > 0) {
+      children.push(this.indented('seeds:'));
+      this.indent += 1;
+      children.push(
+        ...account.seeds.map((seed) => {
+          if (seed.kind === 'programId') return this.indented('programId');
+          if (seed.kind === 'literal') return this.indented(`"${seed.value}"`);
+          this.indent += 1;
+          const type = seed.type.accept(this);
+          this.indent -= 1;
+          return [
+            this.indented(`${seed.name} (${seed.description})`),
+            type,
+          ].join('\n');
+        })
+      );
+      this.indent -= 1;
+    }
+    children.push(account.type.accept(this));
     this.indent -= 1;
-    return [this.indented(`[AccountNode] ${account.name}`), child].join('\n');
+    return children.join('\n');
   }
 
   visitInstruction(instruction: nodes.InstructionNode): string {
     const children: string[] = [];
+    children.push(this.indented(`[InstructionNode] ${instruction.name}`));
     this.indent += 1;
     children.push(this.indented('accounts:'));
     this.indent += 1;
@@ -68,10 +89,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     children.push(instruction.args.accept(this));
     this.indent -= 1;
     this.indent -= 1;
-    return [
-      this.indented(`[InstructionNode] ${instruction.name}`),
-      ...children,
-    ].join('\n');
+    return children.join('\n');
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): string {

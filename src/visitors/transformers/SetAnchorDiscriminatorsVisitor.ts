@@ -48,7 +48,8 @@ export class SetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       new nodes.TypeStructNode(account.type.name, [
         discriminatorField,
         ...account.type.fields,
-      ])
+      ]),
+      account.seeds
     );
   }
 

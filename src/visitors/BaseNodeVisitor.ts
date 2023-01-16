@@ -31,7 +31,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const accountType = account.type.accept(this);
     nodes.assertTypeStructNode(accountType);
-    return new nodes.AccountNode(account.metadata, accountType);
+    return new nodes.AccountNode(account.metadata, accountType, account.seeds);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {

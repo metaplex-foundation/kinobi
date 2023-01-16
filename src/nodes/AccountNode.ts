@@ -2,7 +2,7 @@ import { pascalCase } from '../utils';
 import type { IdlAccount } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { createTypeNodeFromIdl } from './TypeNode';
+import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { assertTypeStructNode, TypeStructNode } from './TypeStructNode';
 
 export type AccountNodeMetadata = {
@@ -12,22 +12,34 @@ export type AccountNodeMetadata = {
   internal: boolean;
 };
 
+export type AccountNodeSeed =
+  | { kind: 'programId' }
+  | { kind: 'literal'; value: string }
+  | { kind: 'variable'; name: string; description: string; type: TypeNode };
+
 export class AccountNode implements Visitable {
   readonly nodeClass = 'AccountNode' as const;
 
   constructor(
     readonly metadata: AccountNodeMetadata,
-    readonly type: TypeStructNode
+    readonly type: TypeStructNode,
+    readonly seeds: AccountNodeSeed[]
   ) {}
 
   static fromIdl(idl: Partial<IdlAccount>): AccountNode {
     const idlName = idl.name ?? '';
     const name = pascalCase(idlName);
-    const docs = idl.docs ?? [];
     const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlStruct });
     assertTypeStructNode(type);
-    return new AccountNode({ name, idlName, docs, internal: false }, type);
+    const metadata = { name, idlName, docs: idl.docs ?? [], internal: false };
+    const seeds = (idl.seeds ?? []).map((seed) => {
+      if (seed.kind === 'variable') {
+        return { ...seed, type: createTypeNodeFromIdl(seed.type) };
+      }
+      return seed;
+    });
+    return new AccountNode(metadata, type, seeds);
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -40,6 +52,13 @@ export class AccountNode implements Visitable {
 
   get docs(): string[] {
     return this.metadata.docs;
+  }
+
+  get variableSeeds(): Extract<AccountNodeSeed, { kind: 'variable' }>[] {
+    return this.seeds.filter(
+      (seed): seed is Extract<AccountNodeSeed, { kind: 'variable' }> =>
+        seed.kind === 'variable'
+    );
   }
 }
 
