@@ -42,6 +42,9 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     const children: string[] = [];
     children.push(this.indented(`[AccountNode] ${account.name}`));
     this.indent += 1;
+    if (account.metadata.size !== null) {
+      children.push(this.indented(`size: ${account.metadata.size}`));
+    }
     if (account.seeds.length > 0) {
       children.push(this.indented('seeds:'));
       this.indent += 1;

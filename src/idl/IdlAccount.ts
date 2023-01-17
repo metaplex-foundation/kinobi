@@ -5,6 +5,7 @@ export type IdlAccount = {
   type: IdlTypeStruct;
   docs?: string[];
   seeds?: IdlAccountSeed[];
+  size?: number;
 };
 
 export type IdlAccountSeed =

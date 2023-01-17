@@ -10,6 +10,7 @@ export type AccountNodeMetadata = {
   idlName: string;
   docs: string[];
   internal: boolean;
+  size: number | null;
 };
 
 export type AccountNodeSeed =
@@ -32,7 +33,13 @@ export class AccountNode implements Visitable {
     const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlStruct });
     assertTypeStructNode(type);
-    const metadata = { name, idlName, docs: idl.docs ?? [], internal: false };
+    const metadata = {
+      name,
+      idlName,
+      docs: idl.docs ?? [],
+      internal: false,
+      size: idl.size ?? null,
+    };
     const seeds = (idl.seeds ?? []).map((seed) => {
       if (seed.kind === 'variable') {
         return { ...seed, type: createTypeNodeFromIdl(seed.type) };

@@ -3,6 +3,7 @@ export * from './DeleteNodesVisitor';
 export * from './MarkNodesAsInternalVisitor';
 export * from './RenameNodesVisitor';
 export * from './SetAccountSeedsVisitor';
+export * from './SetAccountSizeVisitor';
 export * from './SetAnchorDiscriminatorsVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
 export * from './SetInstructionDiscriminatorsVisitor';

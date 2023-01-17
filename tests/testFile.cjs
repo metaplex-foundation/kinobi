@@ -9,6 +9,7 @@ const {
   SetInstructionAccountDefaultValuesVisitor,
   SetAccountSeedsVisitor,
   TypeLeafNode,
+  SetAccountSizeVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -98,6 +99,11 @@ kinobi.update(
       },
       { kind: 'literal', value: 'edition' },
     ],
+  })
+);
+kinobi.update(
+  new SetAccountSizeVisitor({
+    'mplCandyMachineCore.CandyMachine': 42,
   })
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
