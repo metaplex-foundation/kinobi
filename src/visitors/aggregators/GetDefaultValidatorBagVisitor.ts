@@ -225,6 +225,23 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!typeStruct.name) {
       bag.info('Struct has no name.', typeStruct, this.stack);
     }
+
+    // Check for duplicate field names.
+    const fieldNameHistogram = new Map<string, number>();
+    typeStruct.fields.forEach((field) => {
+      if (!field.name) return; // Handled by TypeStructField
+      const count = (fieldNameHistogram.get(field.name) ?? 0) + 1;
+      fieldNameHistogram.set(field.name, count);
+      // Only throw an error once per duplicated names.
+      if (count === 2) {
+        bag.error(
+          `Struct field name "${field.name}" is not unique.`,
+          field,
+          this.stack
+        );
+      }
+    });
+
     bag.mergeWith(typeStruct.fields.map((field) => field.accept(this)));
     this.popNode();
     return bag;

@@ -104,6 +104,7 @@ kinobi.update(
 kinobi.update(
   new SetInstructionDiscriminatorsVisitor({
     AddConfigLines: { value: 1 },
+    'mplCandyMachineCore.AddConfigLines': { value: 1 },
   })
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
