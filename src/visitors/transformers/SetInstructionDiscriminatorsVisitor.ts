@@ -1,8 +1,20 @@
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
+type Discriminator = {
+  value: any;
+  /** @defaultValue `new TypeLeafNode('u32')` */
+  type?: nodes.TypeNode;
+  /** @defaultValue `"discriminator"` */
+  name?: string;
+  /** @defaultValue `"omitted"` */
+  strategy?: 'optional' | 'omitted';
+  /** @defaultValue `[]` */
+  docs?: string[];
+};
+
 export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
-  constructor(readonly map: Record<string, string>) {
+  constructor(readonly map: Record<string, Discriminator>) {
     const transforms = Object.entries(map).map(
       ([selectorStack, discriminator]): NodeTransform => {
         const stack = selectorStack.split('.');
@@ -12,30 +24,26 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
           transformer: (node) => {
             nodes.assertInstructionNode(node);
             console.log(discriminator);
-
-            // TODO
             const discriminatorField = new nodes.TypeStructFieldNode(
               {
-                name: 'discriminator',
-                docs: [],
+                name: discriminator.name ?? 'discriminator',
+                docs: discriminator.docs ?? [],
                 defaultsTo: {
                   kind: 'json',
-                  strategy: 'omitted',
-                  value: 1,
+                  strategy: discriminator.strategy ?? 'omitted',
+                  value: discriminator.value,
                 },
               },
-              new nodes.TypeLeafNode('u8')
+              discriminator.type ?? new nodes.TypeLeafNode('u8')
             );
-
-            const args = new nodes.TypeStructNode(node.args.name, [
-              discriminatorField,
-              ...node.args.fields,
-            ]);
 
             return new nodes.InstructionNode(
               node.metadata,
               node.accounts,
-              args
+              new nodes.TypeStructNode(node.args.name, [
+                discriminatorField,
+                ...node.args.fields,
+              ])
             );
           },
         };

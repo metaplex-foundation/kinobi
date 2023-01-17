@@ -9,6 +9,7 @@ const {
   SetInstructionAccountDefaultValuesVisitor,
   SetAccountSeedsVisitor,
   TypeLeafNode,
+  SetInstructionDiscriminatorsVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -98,6 +99,11 @@ kinobi.update(
       },
       { kind: 'literal', value: 'edition' },
     ],
+  })
+);
+kinobi.update(
+  new SetInstructionDiscriminatorsVisitor({
+    AddConfigLines: { value: 1 },
   })
 );
 kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
