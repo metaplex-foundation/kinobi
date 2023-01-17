@@ -112,3 +112,7 @@ export function getCandyMachineAccountDataSerializer(
       } as CandyMachineAccountData)
   ) as Serializer<CandyMachineAccountArgs, CandyMachineAccountData>;
 }
+
+export function getCandyMachineSize(): number {
+  return 42;
+}

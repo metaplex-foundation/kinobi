@@ -85,6 +85,12 @@ export function getMasterEditionV2AccountDataSerializer(
   ) as Serializer<MasterEditionV2AccountArgs, MasterEditionV2AccountData>;
 }
 
+export function getMasterEditionV2Size(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getMasterEditionV2AccountDataSerializer(context).fixedSize;
+}
+
 export function findMasterEditionV2Pda(
   context: {
     serializer: Context['serializer'];

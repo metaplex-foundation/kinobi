@@ -88,3 +88,9 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
     CollectionAuthorityRecordAccountData
   >;
 }
+
+export function getCollectionAuthorityRecordSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getCollectionAuthorityRecordAccountDataSerializer(context).fixedSize;
+}

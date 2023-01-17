@@ -88,3 +88,9 @@ export function getTokenOwnedEscrowAccountDataSerializer(
     (value) => ({ key: 10, ...value } as TokenOwnedEscrowAccountData)
   ) as Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData>;
 }
+
+export function getTokenOwnedEscrowSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getTokenOwnedEscrowAccountDataSerializer(context).fixedSize;
+}

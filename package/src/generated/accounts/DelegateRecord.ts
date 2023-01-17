@@ -82,3 +82,9 @@ export function getDelegateRecordAccountDataSerializer(
     (value) => ({ key: 11, ...value } as DelegateRecordAccountData)
   ) as Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData>;
 }
+
+export function getDelegateRecordSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getDelegateRecordAccountDataSerializer(context).fixedSize;
+}

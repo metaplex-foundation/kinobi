@@ -142,6 +142,12 @@ export function getMetadataAccountDataSerializer(
   ) as Serializer<MetadataAccountArgs, MetadataAccountData>;
 }
 
+export function getMetadataSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getMetadataAccountDataSerializer(context).fixedSize;
+}
+
 export function findMetadataPda(
   context: {
     serializer: Context['serializer'];

@@ -41,7 +41,8 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
       [`fetch${account.name}`]: 'function',
       [`safeFetch${account.name}`]: 'function',
       [`deserialize${account.name}`]: 'function',
-      [`get${account.name}Serializer`]: 'function',
+      [`get${account.name}AccountDataSerializer`]: 'function',
+      [`get${account.name}Size`]: 'function',
     };
     if (account.seeds.length > 0) {
       exports[`find${account.name}Pda`] = 'function';

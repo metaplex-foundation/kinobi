@@ -87,3 +87,9 @@ export function getMasterEditionV1AccountDataSerializer(
     (value) => ({ key: 2, ...value } as MasterEditionV1AccountData)
   ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
 }
+
+export function getMasterEditionV1Size(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getMasterEditionV1AccountDataSerializer(context).fixedSize;
+}

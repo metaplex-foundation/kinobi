@@ -89,3 +89,9 @@ export function getFrequencyAccountAccountDataSerializer(
     (value) => ({ key: 1, ...value } as FrequencyAccountAccountData)
   ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
 }
+
+export function getFrequencyAccountSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getFrequencyAccountAccountDataSerializer(context).fixedSize;
+}

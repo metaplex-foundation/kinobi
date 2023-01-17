@@ -80,3 +80,9 @@ export function getUseAuthorityRecordAccountDataSerializer(
     (value) => ({ key: 8, ...value } as UseAuthorityRecordAccountData)
   ) as Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData>;
 }
+
+export function getUseAuthorityRecordSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getUseAuthorityRecordAccountDataSerializer(context).fixedSize;
+}

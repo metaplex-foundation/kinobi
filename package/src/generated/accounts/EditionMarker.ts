@@ -72,3 +72,9 @@ export function getEditionMarkerAccountDataSerializer(
     (value) => ({ key: 7, ...value } as EditionMarkerAccountData)
   ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }
+
+export function getEditionMarkerSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getEditionMarkerAccountDataSerializer(context).fixedSize;
+}

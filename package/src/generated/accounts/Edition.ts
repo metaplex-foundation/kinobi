@@ -78,3 +78,9 @@ export function getEditionAccountDataSerializer(
     (value) => ({ key: 1, ...value } as EditionAccountData)
   ) as Serializer<EditionAccountArgs, EditionAccountData>;
 }
+
+export function getEditionSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getEditionAccountDataSerializer(context).fixedSize;
+}

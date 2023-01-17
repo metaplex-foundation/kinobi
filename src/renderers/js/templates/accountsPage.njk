@@ -37,6 +37,18 @@ export function deserialize{{ name }}(
 
 {{ macros.exportSerializer(name + 'AccountData', name + 'AccountArgs', typeManifest) }}
 
+{% if account.metadata.size !== null %}
+export function get{{ name }}Size(): number {
+  return {{ account.metadata.size }};
+}
+{% else %}
+export function get{{ name }}Size(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return get{{ name }}AccountDataSerializer(context).fixedSize;
+}
+{% endif %}
+
 {% if seeds.length > 0 %}
 export function find{{ name }}Pda(
   context: {

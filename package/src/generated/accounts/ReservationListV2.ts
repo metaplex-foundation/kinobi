@@ -96,3 +96,9 @@ export function getReservationListV2AccountDataSerializer(
     (value) => ({ key: 5, ...value } as ReservationListV2AccountData)
   ) as Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData>;
 }
+
+export function getReservationListV2Size(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getReservationListV2AccountDataSerializer(context).fixedSize;
+}
