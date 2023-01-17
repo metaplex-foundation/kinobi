@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export class SetAccountSizesVisitor extends TransformNodesVisitor {
-  constructor(readonly map: Record<string, number>) {
+  constructor(readonly map: Record<string, number | null>) {
     const transforms = Object.entries(map).map(
       ([selectorStack, size]): NodeTransform => {
         const stack = selectorStack.split('.');
