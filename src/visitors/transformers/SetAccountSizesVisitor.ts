@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
-export class SetAccountSizeVisitor extends TransformNodesVisitor {
+export class SetAccountSizesVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, number>) {
     const transforms = Object.entries(map).map(
       ([selectorStack, size]): NodeTransform => {

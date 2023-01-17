@@ -4,7 +4,7 @@ export * from './DeleteNodesVisitor';
 export * from './MarkNodesAsInternalVisitor';
 export * from './RenameNodesVisitor';
 export * from './SetAccountSeedsVisitor';
-export * from './SetAccountSizeVisitor';
+export * from './SetAccountSizesVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
 export * from './SetInstructionDiscriminatorsVisitor';
 export * from './SetLeafWrappersVisitor';
