@@ -73,8 +73,6 @@ export function getEditionMarkerAccountDataSerializer(
   ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }
 
-export function getEditionMarkerSize(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getEditionMarkerAccountDataSerializer(context).fixedSize;
+export function getEditionMarkerSize(): number {
+  return 32;
 }

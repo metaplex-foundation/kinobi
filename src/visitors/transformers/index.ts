@@ -1,4 +1,5 @@
 export * from './AutoSetAnchorDiscriminatorsVisitor';
+export * from './AutoSetFixedAccountSizesVisitor';
 export * from './DeduplicateIdenticalDefinedTypesVisitor';
 export * from './DeleteNodesVisitor';
 export * from './MarkNodesAsInternalVisitor';
