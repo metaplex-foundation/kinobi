@@ -68,6 +68,7 @@ export function getPayloadTypeSerializer(
         ),
       ],
     ],
+    undefined,
     'PayloadType'
   ) as Serializer<PayloadTypeArgs, PayloadType>;
 }

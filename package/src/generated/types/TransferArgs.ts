@@ -51,6 +51,7 @@ export function getTransferArgsSerializer(
         ),
       ],
     ],
+    undefined,
     'TransferArgs'
   ) as Serializer<TransferArgsArgs, TransferArgs>;
 }

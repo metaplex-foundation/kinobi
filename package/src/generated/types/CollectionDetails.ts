@@ -31,6 +31,7 @@ export function getCollectionDetailsSerializer(
         ),
       ],
     ],
+    undefined,
     'CollectionDetails'
   ) as Serializer<CollectionDetailsArgs, CollectionDetails>;
 }

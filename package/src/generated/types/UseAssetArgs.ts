@@ -31,6 +31,7 @@ export function getUseAssetArgsSerializer(
         ),
       ],
     ],
+    undefined,
     'UseAssetArgs'
   ) as Serializer<UseAssetArgsArgs, UseAssetArgs>;
 }

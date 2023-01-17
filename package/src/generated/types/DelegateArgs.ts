@@ -47,6 +47,7 @@ export function getDelegateArgsSerializer(
         ),
       ],
     ],
+    undefined,
     'DelegateArgs'
   ) as Serializer<DelegateArgsArgs, DelegateArgs>;
 }

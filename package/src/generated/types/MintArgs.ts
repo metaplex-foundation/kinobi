@@ -51,6 +51,7 @@ export function getMintArgsSerializer(
         ),
       ],
     ],
+    undefined,
     'MintArgs'
   ) as Serializer<MintArgsArgs, MintArgs>;
 }

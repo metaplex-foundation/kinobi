@@ -33,6 +33,7 @@ export function getEscrowAuthoritySerializer(
         ),
       ],
     ],
+    undefined,
     'EscrowAuthority'
   );
 }

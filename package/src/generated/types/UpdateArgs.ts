@@ -108,6 +108,7 @@ export function getUpdateArgsSerializer(
         ),
       ],
     ],
+    undefined,
     'UpdateArgs'
   ) as Serializer<UpdateArgsArgs, UpdateArgs>;
 }

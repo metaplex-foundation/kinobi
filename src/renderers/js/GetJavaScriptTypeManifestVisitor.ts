@@ -184,7 +184,7 @@ export class GetJavaScriptTypeManifestVisitor
       .join(', ');
     const description =
       typeEnum.name || definedName
-        ? `, '${typeEnum.name || definedName?.strict}'`
+        ? `, undefined, '${typeEnum.name || definedName?.strict}'`
         : '';
     const serializerTypeParams = definedName ? definedName.strict : 'any';
 
