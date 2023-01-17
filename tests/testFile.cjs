@@ -9,7 +9,6 @@ const {
   SetInstructionAccountDefaultValuesVisitor,
   SetAccountSeedsVisitor,
   TypeLeafNode,
-  SetInstructionDiscriminatorsVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
