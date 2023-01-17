@@ -113,6 +113,8 @@ export function getCandyMachineAccountDataSerializer(
   ) as Serializer<CandyMachineAccountArgs, CandyMachineAccountData>;
 }
 
-export function getCandyMachineSize(): number {
-  return 42;
+export function getCandyMachineSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getCandyMachineAccountDataSerializer(context).fixedSize;
 }
