@@ -44,12 +44,8 @@ export class InstructionNode implements Visitable {
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
     const idlName = idl.name ?? '';
-    const metadata = {
-      name: pascalCase(idlName),
-      idlName,
-      docs: idl.docs ?? [],
-      internal: false,
-    };
+    const name = pascalCase(idlName);
+    const metadata = { name, idlName, docs: idl.docs ?? [], internal: false };
 
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => ({
@@ -65,7 +61,7 @@ export class InstructionNode implements Visitable {
 
     let args = TypeStructNode.fromIdl({
       kind: 'struct',
-      name: idl.name ? `${idl.name}InstructionArgs` : '',
+      name: name ? `${name}InstructionArgs` : '',
       fields: idl.args ?? [],
     });
 
