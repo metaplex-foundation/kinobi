@@ -354,11 +354,13 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): JavaScriptTypeManifest {
     const child = typeOption.type.accept(this);
+    const prefixSerializer =
+      typeOption.optionType === 'coption' ? `, ${this.s('u32')}` : '';
     return {
       ...child,
       strictType: `Option<${child.strictType}>`,
       looseType: `Option<${child.looseType}>`,
-      serializer: `${this.s('option')}(${child.serializer})`,
+      serializer: `${this.s('option')}(${child.serializer}${prefixSerializer})`,
       imports: child.imports.add('core', 'Option'),
     };
   }
