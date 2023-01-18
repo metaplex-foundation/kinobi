@@ -100,5 +100,5 @@ kinobi.update(
     ],
   })
 );
-kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
+// kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));

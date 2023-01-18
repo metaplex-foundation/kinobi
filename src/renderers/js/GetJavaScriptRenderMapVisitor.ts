@@ -3,7 +3,12 @@ import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import { logWarn } from '../../logs';
 import * as nodes from '../../nodes';
 import { camelCase, pascalCase, titleCase } from '../../utils';
-import { Visitor, BaseThrowVisitor } from '../../visitors';
+import {
+  Visitor,
+  BaseThrowVisitor,
+  GetResolvedInstructionAccountsVisitor,
+  ResolvedInstructionAccount,
+} from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
 import {
@@ -36,6 +41,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   private program: nodes.ProgramNode | null = null;
 
+  private resolvedInstructionAccountVisitor: Visitor<
+    ResolvedInstructionAccount[]
+  >;
+
   constructor(options: GetJavaScriptRenderMapOptions = {}) {
     super();
     this.options = {
@@ -47,6 +56,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
     };
+    this.resolvedInstructionAccountVisitor =
+      new GetResolvedInstructionAccountsVisitor();
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
@@ -210,6 +221,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     ]);
 
     // Accounts.
+    if (instruction.name === 'AddConfigLines') {
+      const foo = instruction.accept(this.resolvedInstructionAccountVisitor);
+      console.log(foo);
+    }
     const accounts = instruction.accounts.map((account) => {
       const hasDefaultValue =
         account.defaultsTo.kind !== 'none' && !account.isOptional;

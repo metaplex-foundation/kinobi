@@ -50,7 +50,7 @@ export function getUpdateInstructionDataSerializer(
         ['discriminator', s.array(s.u8, 8)],
         ['data', getCandyMachineDataSerializer(context)],
       ],
-      'updateInstructionArgs'
+      'UpdateInstructionArgs'
     ),
     (value) =>
       ({

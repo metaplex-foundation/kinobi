@@ -51,7 +51,7 @@ export function getSetCollectionInstructionDataSerializer(
   >(
     s.struct<SetCollectionInstructionData>(
       [['discriminator', s.array(s.u8, 8)]],
-      'setCollectionInstructionArgs'
+      'SetCollectionInstructionArgs'
     ),
     (value) =>
       ({

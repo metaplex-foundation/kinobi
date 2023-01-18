@@ -51,7 +51,7 @@ export function getAddConfigLinesInstructionDataSerializer(
         ['index', s.u32],
         ['configLines', s.vec(getConfigLineSerializer(context))],
       ],
-      'addConfigLinesInstructionArgs'
+      'AddConfigLinesInstructionArgs'
     ),
     (value) =>
       ({
