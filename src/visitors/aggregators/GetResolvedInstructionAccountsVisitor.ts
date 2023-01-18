@@ -5,7 +5,6 @@ export type ResolvedInstructionAccount = nodes.InstructionNodeAccount & {
   position: number;
   dependencyPosition: number;
   dependsOn: string[];
-  isDefaultWritable: boolean | null;
 };
 
 export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
@@ -70,30 +69,30 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     });
 
     let { isSigner, isOptionalSigner, isOptional } = account;
-    let isDefaultWritable = null;
 
-    if (account.defaultsTo.kind === 'address') {
-      isSigner = false;
-      isOptionalSigner = isSigner;
-      isOptional = false;
-    } else if (account.defaultsTo.kind === 'account') {
-      // TODO
-    } else if (account.defaultsTo.kind === 'identity') {
-      isOptionalSigner = !isSigner;
-      isOptional = false;
-    } else if (account.defaultsTo.kind === 'payer') {
-      isOptionalSigner = !isSigner;
-      isOptional = false;
-    } else if (account.defaultsTo.kind === 'program') {
-      isSigner = false;
-      isOptionalSigner = isSigner;
-      isOptional = false;
-      isDefaultWritable = false;
-    } else if (account.defaultsTo.kind === 'programId') {
-      isSigner = false;
-      isOptionalSigner = isSigner;
-      isOptional = false;
-      isDefaultWritable = false;
+    switch (account.defaultsTo.kind) {
+      case 'account':
+        const defaultAccount = this.visited.get(account.defaultsTo.name)!;
+        const newIsSigner = isSigner && defaultAccount.isSigner;
+        const newIsPublicKey = !isSigner && !defaultAccount.isSigner;
+        isSigner = newIsSigner;
+        isOptionalSigner = !newIsSigner || !newIsPublicKey;
+        isOptional = defaultAccount.isOptional;
+        break;
+      case 'address':
+      case 'program':
+      case 'programId':
+        isOptionalSigner = isSigner;
+        isSigner = false;
+        isOptional = false;
+        break;
+      case 'identity':
+      case 'payer':
+        isOptionalSigner = isOptionalSigner || !isSigner;
+        isOptional = false;
+        break;
+      default:
+        break;
     }
 
     const resolved: ResolvedInstructionAccount = {
@@ -104,7 +103,6 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       isSigner,
       isOptionalSigner,
       isOptional,
-      isDefaultWritable,
     };
 
     this.visited.set(account.name, resolved);
