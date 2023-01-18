@@ -2,17 +2,34 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
+  publicKey,
   Signer,
   WrappedInstruction,
   getProgramAddressWithFallback,
-  mapSerializer,
+  isSigner,
 } from '@lorisleiva/js-core';
 import {
-  CreateMasterEditionInstructionAccounts,
   CreateMasterEditionInstructionArgs,
   getCreateMasterEditionInstructionDataSerializer,
 } from './generated';
+
+// Accounts.
+export type CreateMasterEditionInstructionAccounts = {
+  /** Edition - Default to mint */
+  edition?: Signer;
+  /** Metadata mint - Optional */
+  mint?: PublicKey;
+  /** Update authority */
+  updateAuthority: Signer;
+  /** Mint authority - Defaults to the update authority. */
+  mintAuthority?: Signer;
+  /** payer */
+  payer?: Signer;
+  /** Foo - Default to Bar */
+  foo?: PublicKey;
+  /** Bar - Default to Program ID */
+  bar?: Signer;
+};
 
 // Instruction.
 export function createMasterEdition(
@@ -35,98 +52,75 @@ export function createMasterEdition(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Edition.
-  keys.push({ pubkey: input.edition, isSigner: false, isWritable: true });
+  // Resolved accounts.
+  const mintAccount = input.mint;
+  const editionAccount = input.edition ?? mintAccount;
+  const updateAuthorityAccount = input.updateAuthority;
+  const mintAuthorityAccount = input.mintAuthority ?? updateAuthorityAccount;
+  const payerAccount = input.payer ?? context.payer;
+  const barAccount = input.bar ?? programId;
+  const fooAccount = input.foo ?? barAccount;
 
-  // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
-
-  // Update Authority.
-  signers.push(input.updateAuthority);
-  keys.push({
-    pubkey: input.updateAuthority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
-
-  // Mint Authority.
-  signers.push(input.mintAuthority);
-  keys.push({
-    pubkey: input.mintAuthority.publicKey,
-    isSigner: true,
-    isWritable: false,
-  });
-
-  // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
+  /** Edition - Default to mint thus can be optional. */
+  if (editionAccount) {
+    if (isSigner(editionAccount)) {
+      signers.push(editionAccount);
+    }
     keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
+      pubkey: publicKey(editionAccount),
+      isSigner: isSigner(editionAccount),
       isWritable: true,
     });
   }
 
-  // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
-
-  // Token Program.
-  if (input.tokenProgram) {
-    keys.push({
-      pubkey: input.tokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
+  /** Metadata mint - Optional */
+  if (mintAccount) {
+    keys.push({ pubkey: mintAccount, isSigner: false, isWritable: true });
   }
 
-  // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  /** Update authority */
+  signers.push(updateAuthorityAccount);
+  keys.push({
+    pubkey: publicKey(updateAuthorityAccount),
+    isSigner: true,
+    isWritable: false,
+  });
 
-  // Rent.
-  if (input.rent) {
-    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
-  } else {
-    keys.push({
-      pubkey: context.eddsa.createPublicKey(
-        'SysvarRent111111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
+  /** Mint authority - Defaults to the update authority. */
+  signers.push(mintAuthorityAccount);
+  keys.push({
+    pubkey: publicKey(mintAuthorityAccount),
+    isSigner: true,
+    isWritable: true,
+  });
+
+  /** payer */
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: publicKey(payerAccount),
+    isSigner: true,
+    isWritable: true,
+  });
+
+  /** Foo - Default to Bar */
+  if (isSigner(fooAccount)) {
+    signers.push(fooAccount);
   }
+  keys.push({
+    pubkey: publicKey(fooAccount),
+    isSigner: isSigner(fooAccount),
+    isWritable: true,
+  });
+
+  /** Bar - Default to Program ID */
+  if (isSigner(barAccount)) {
+    signers.push(barAccount);
+  }
+  keys.push({
+    pubkey: publicKey(barAccount),
+    isSigner: isSigner(barAccount),
+    isWritable: input.bar ? true : false,
+  });
 
   // Data.
   const data =
