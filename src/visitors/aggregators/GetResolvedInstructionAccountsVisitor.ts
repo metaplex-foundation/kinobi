@@ -81,7 +81,7 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
         const defaultAccount = this.visited.get(account.defaultsTo.name)!;
         const resolvedIsPublicKey = !isSigner && !defaultAccount.isSigner;
         resolvedIsSigner = isSigner && defaultAccount.isSigner;
-        resolvedIsOptionalSigner = !resolvedIsSigner || !resolvedIsPublicKey;
+        resolvedIsOptionalSigner = !resolvedIsSigner && !resolvedIsPublicKey;
         resolvedIsOptional = defaultAccount.isOptional;
         break;
       case 'address':

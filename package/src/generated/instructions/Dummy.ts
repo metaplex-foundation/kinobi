@@ -116,20 +116,12 @@ export function dummy(
   });
 
   // Mint Authority.
-  if (isSigner(mintAuthorityAccount)) {
-    signers.push(mintAuthorityAccount);
-    keys.push({
-      pubkey: mintAuthorityAccount.publicKey,
-      isSigner: true,
-      isWritable: isWritable(mintAuthorityAccount, true),
-    });
-  } else {
-    keys.push({
-      pubkey: mintAuthorityAccount,
-      isSigner: false,
-      isWritable: isWritable(mintAuthorityAccount, true),
-    });
-  }
+  signers.push(mintAuthorityAccount);
+  keys.push({
+    pubkey: mintAuthorityAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(mintAuthorityAccount, true),
+  });
 
   // Payer.
   signers.push(payerAccount);
