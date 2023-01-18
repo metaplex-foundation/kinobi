@@ -221,22 +221,20 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     ]);
 
     // Accounts.
-    if (instruction.name === 'AddConfigLines') {
-      const foo = instruction.accept(this.resolvedInstructionAccountVisitor);
-      console.log(foo);
-    }
-    const accounts = instruction.accounts.map((account) => {
-      const hasDefaultValue =
-        account.defaultsTo.kind !== 'none' && !account.isOptional;
-      return {
-        ...account,
-        type: this.getInstructionAccountType(account),
-        optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
-        titleCaseName: titleCase(account.name),
-        pascalCaseName: pascalCase(account.name),
-        hasDefaultValue,
-      };
-    });
+    const accounts = instruction
+      .accept(this.resolvedInstructionAccountVisitor)
+      .map((account) => {
+        const hasDefaultValue =
+          account.defaultsTo.kind !== 'none' && !account.isOptional;
+        return {
+          ...account,
+          type: this.getInstructionAccountType(account),
+          optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
+          titleCaseName: titleCase(account.name),
+          pascalCaseName: pascalCase(account.name),
+          hasDefaultValue,
+        };
+      });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
 
     // Arguments.
@@ -306,14 +304,14 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   protected getInstructionAccountType(
-    account: nodes.InstructionNodeAccount
+    account: ResolvedInstructionAccount
   ): string {
     if (account.isOptionalSigner) return 'PublicKey | Signer';
     return account.isSigner ? 'Signer' : 'PublicKey';
   }
 
   protected getInstructionAccountImports(
-    accounts: nodes.InstructionNodeAccount[]
+    accounts: ResolvedInstructionAccount[]
   ): JavaScriptImportMap {
     const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
