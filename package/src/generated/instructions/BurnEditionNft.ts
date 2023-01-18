@@ -83,84 +83,95 @@ export function burnEditionNft(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const ownerAccount = input.owner;
+  const printEditionMintAccount = input.printEditionMint;
+  const masterEditionMintAccount = input.masterEditionMint;
+  const printEditionTokenAccountAccount = input.printEditionTokenAccount;
+  const masterEditionTokenAccountAccount = input.masterEditionTokenAccount;
+  const masterEditionAccountAccount = input.masterEditionAccount;
+  const printEditionAccountAccount = input.printEditionAccount;
+  const editionMarkerAccountAccount = input.editionMarkerAccount;
+  const splTokenProgramAccount = input.splTokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Owner.
-  signers.push(input.owner);
+  signers.push(ownerAccount);
   keys.push({
-    pubkey: input.owner.publicKey,
+    pubkey: ownerAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(ownerAccount, true),
   });
 
   // Print Edition Mint.
   keys.push({
-    pubkey: input.printEditionMint,
+    pubkey: printEditionMintAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(printEditionMintAccount, true),
   });
 
   // Master Edition Mint.
   keys.push({
-    pubkey: input.masterEditionMint,
+    pubkey: masterEditionMintAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(masterEditionMintAccount, false),
   });
 
   // Print Edition Token Account.
   keys.push({
-    pubkey: input.printEditionTokenAccount,
+    pubkey: printEditionTokenAccountAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(printEditionTokenAccountAccount, true),
   });
 
   // Master Edition Token Account.
   keys.push({
-    pubkey: input.masterEditionTokenAccount,
+    pubkey: masterEditionTokenAccountAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(masterEditionTokenAccountAccount, false),
   });
 
   // Master Edition Account.
   keys.push({
-    pubkey: input.masterEditionAccount,
+    pubkey: masterEditionAccountAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(masterEditionAccountAccount, true),
   });
 
   // Print Edition Account.
   keys.push({
-    pubkey: input.printEditionAccount,
+    pubkey: printEditionAccountAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(printEditionAccountAccount, true),
   });
 
   // Edition Marker Account.
   keys.push({
-    pubkey: input.editionMarkerAccount,
+    pubkey: editionMarkerAccountAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(editionMarkerAccountAccount, true),
   });
 
   // Spl Token Program.
-  if (input.splTokenProgram) {
-    keys.push({
-      pubkey: input.splTokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: splTokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(splTokenProgramAccount, false),
+  });
 
   // Data.
   const data = getBurnEditionNftInstructionDataSerializer(context).serialize(

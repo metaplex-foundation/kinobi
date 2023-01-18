@@ -80,49 +80,51 @@ export function verify(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const collectionAuthorityAccount = input.collectionAuthority;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const authorizationRulesAccount = input.authorizationRules;
+  const authorizationRulesProgramAccount = input.authorizationRulesProgram;
+
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Collection Authority.
-  signers.push(input.collectionAuthority);
+  signers.push(collectionAuthorityAccount);
   keys.push({
-    pubkey: input.collectionAuthority.publicKey,
+    pubkey: collectionAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(collectionAuthorityAccount, true),
   });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Authorization Rules (optional).
-  if (input.authorizationRules) {
+  if (authorizationRulesAccount) {
     keys.push({
-      pubkey: input.authorizationRules,
+      pubkey: authorizationRulesAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(authorizationRulesAccount, false),
     });
   }
 
   // Authorization Rules Program (optional).
-  if (input.authorizationRulesProgram) {
+  if (authorizationRulesProgramAccount) {
     keys.push({
-      pubkey: input.authorizationRulesProgram,
+      pubkey: authorizationRulesProgramAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(authorizationRulesProgramAccount, false),
     });
   }
 

@@ -77,23 +77,41 @@ export function setTokenStandard(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const updateAuthorityAccount = input.updateAuthority;
+  const mintAccount = input.mint;
+  const editionAccount = input.edition;
+
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Update Authority.
-  signers.push(input.updateAuthority);
+  signers.push(updateAuthorityAccount);
   keys.push({
-    pubkey: input.updateAuthority.publicKey,
+    pubkey: updateAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(updateAuthorityAccount, true),
   });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, false),
+  });
 
   // Edition (optional).
-  if (input.edition) {
-    keys.push({ pubkey: input.edition, isSigner: false, isWritable: false });
+  if (editionAccount) {
+    keys.push({
+      pubkey: editionAccount,
+      isSigner: false,
+      isWritable: isWritable(editionAccount, false),
+    });
   }
 
   // Data.

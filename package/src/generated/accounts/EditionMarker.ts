@@ -6,7 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { TmKey, getTmKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -17,6 +16,7 @@ import {
   deserializeAccount,
   mapSerializer,
 } from '@lorisleiva/js-core';
+import { TmKey, getTmKeySerializer } from '../types';
 
 export type EditionMarker = Account<EditionMarkerAccountData>;
 

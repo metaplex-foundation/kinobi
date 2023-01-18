@@ -91,82 +91,81 @@ export function deprecatedCreateReservationList(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const reservationListAccount = input.reservationList;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const updateAuthorityAccount = input.updateAuthority;
+  const masterEditionAccount = input.masterEdition;
+  const resourceAccount = input.resource;
+  const metadataAccount = input.metadata;
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const rentAccount =
+    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
+
   // Reservation List.
   keys.push({
-    pubkey: input.reservationList,
+    pubkey: reservationListAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(reservationListAccount, true),
   });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, false),
+  });
 
   // Update Authority.
-  signers.push(input.updateAuthority);
+  signers.push(updateAuthorityAccount);
   keys.push({
-    pubkey: input.updateAuthority.publicKey,
+    pubkey: updateAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(updateAuthorityAccount, false),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: input.masterEdition,
+    pubkey: masterEditionAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(masterEditionAccount, false),
   });
 
   // Resource.
-  keys.push({ pubkey: input.resource, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: resourceAccount,
+    isSigner: false,
+    isWritable: isWritable(resourceAccount, false),
+  });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, false),
+  });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Rent.
-  if (input.rent) {
-    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
-  } else {
-    keys.push({
-      pubkey: context.eddsa.createPublicKey(
-        'SysvarRent111111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: rentAccount,
+    isSigner: false,
+    isWritable: isWritable(rentAccount, false),
+  });
 
   // Data.
   const data = getDeprecatedCreateReservationListInstructionDataSerializer(

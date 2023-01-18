@@ -7,17 +7,17 @@
  */
 
 import {
-  AuthorizationData,
-  AuthorizationDataArgs,
-  getAuthorizationDataSerializer,
-} from '.';
-import {
   Context,
   GetDataEnumKind,
   GetDataEnumKindContent,
   Option,
   Serializer,
 } from '@lorisleiva/js-core';
+import {
+  AuthorizationData,
+  AuthorizationDataArgs,
+  getAuthorizationDataSerializer,
+} from '.';
 
 export type MintArgs = {
   __kind: 'V1';

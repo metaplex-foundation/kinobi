@@ -103,129 +103,136 @@ export function transferOutOfEscrow(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const escrowAccount = input.escrow;
+  const metadataAccount = input.metadata;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const attributeMintAccount = input.attributeMint;
+  const attributeSrcAccount = input.attributeSrc;
+  const attributeDstAccount = input.attributeDst;
+  const escrowMintAccount = input.escrowMint;
+  const escrowAccountAccount = input.escrowAccount;
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const ataProgramAccount = input.ataProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splAssociatedToken',
+      'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+    ),
+    isWritable: false,
+  };
+  const tokenProgramAccount = input.tokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+  const sysvarInstructionsAccount =
+    input.sysvarInstructions ??
+    publicKey('Sysvar1nstructions1111111111111111111111111');
+  const authorityAccount = input.authority;
+
   // Escrow.
-  keys.push({ pubkey: input.escrow, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: escrowAccount,
+    isSigner: false,
+    isWritable: isWritable(escrowAccount, false),
+  });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Attribute Mint.
   keys.push({
-    pubkey: input.attributeMint,
+    pubkey: attributeMintAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(attributeMintAccount, false),
   });
 
   // Attribute Src.
-  keys.push({ pubkey: input.attributeSrc, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: attributeSrcAccount,
+    isSigner: false,
+    isWritable: isWritable(attributeSrcAccount, true),
+  });
 
   // Attribute Dst.
-  keys.push({ pubkey: input.attributeDst, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: attributeDstAccount,
+    isSigner: false,
+    isWritable: isWritable(attributeDstAccount, true),
+  });
 
   // Escrow Mint.
-  keys.push({ pubkey: input.escrowMint, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: escrowMintAccount,
+    isSigner: false,
+    isWritable: isWritable(escrowMintAccount, false),
+  });
 
   // Escrow Account.
   keys.push({
-    pubkey: input.escrowAccount,
+    pubkey: escrowAccountAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(escrowAccountAccount, false),
   });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Ata Program.
-  if (input.ataProgram) {
-    keys.push({ pubkey: input.ataProgram, isSigner: false, isWritable: false });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splAssociatedToken',
-        'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: ataProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(ataProgramAccount, false),
+  });
 
   // Token Program.
-  if (input.tokenProgram) {
-    keys.push({
-      pubkey: input.tokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: tokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenProgramAccount, false),
+  });
 
   // Sysvar Instructions.
-  if (input.sysvarInstructions) {
-    keys.push({
-      pubkey: input.sysvarInstructions,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: context.eddsa.createPublicKey(
-        'Sysvar1nstructions1111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: sysvarInstructionsAccount,
+    isSigner: false,
+    isWritable: isWritable(sysvarInstructionsAccount, false),
+  });
 
   // Authority (optional).
-  if (input.authority) {
-    signers.push(input.authority);
+  if (authorityAccount) {
+    signers.push(authorityAccount);
     keys.push({
-      pubkey: input.authority.publicKey,
+      pubkey: authorityAccount.publicKey,
       isSigner: true,
-      isWritable: false,
+      isWritable: isWritable(authorityAccount, false),
     });
   }
 

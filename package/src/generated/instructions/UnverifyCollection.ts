@@ -81,40 +81,57 @@ export function unverifyCollection(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const collectionAuthorityAccount = input.collectionAuthority;
+  const collectionMintAccount = input.collectionMint;
+  const collectionAccount = input.collection;
+  const collectionMasterEditionAccountAccount =
+    input.collectionMasterEditionAccount;
+  const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
+
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Collection Authority.
-  signers.push(input.collectionAuthority);
+  signers.push(collectionAuthorityAccount);
   keys.push({
-    pubkey: input.collectionAuthority.publicKey,
+    pubkey: collectionAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(collectionAuthorityAccount, true),
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: input.collectionMint,
+    pubkey: collectionMintAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionMintAccount, false),
   });
 
   // Collection.
-  keys.push({ pubkey: input.collection, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: collectionAccount,
+    isSigner: false,
+    isWritable: isWritable(collectionAccount, false),
+  });
 
   // Collection Master Edition Account.
   keys.push({
-    pubkey: input.collectionMasterEditionAccount,
+    pubkey: collectionMasterEditionAccountAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionMasterEditionAccountAccount, false),
   });
 
   // Collection Authority Record (optional).
-  if (input.collectionAuthorityRecord) {
+  if (collectionAuthorityRecordAccount) {
     keys.push({
-      pubkey: input.collectionAuthorityRecord,
+      pubkey: collectionAuthorityRecordAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(collectionAuthorityRecordAccount, false),
     });
   }
 

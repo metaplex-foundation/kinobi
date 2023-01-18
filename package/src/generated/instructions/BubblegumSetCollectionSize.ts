@@ -96,42 +96,49 @@ export function bubblegumSetCollectionSize(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const collectionMetadataAccount = input.collectionMetadata;
+  const collectionAuthorityAccount = input.collectionAuthority;
+  const collectionMintAccount = input.collectionMint;
+  const bubblegumSignerAccount = input.bubblegumSigner;
+  const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
+
   // Collection Metadata.
   keys.push({
-    pubkey: input.collectionMetadata,
+    pubkey: collectionMetadataAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(collectionMetadataAccount, true),
   });
 
   // Collection Authority.
-  signers.push(input.collectionAuthority);
+  signers.push(collectionAuthorityAccount);
   keys.push({
-    pubkey: input.collectionAuthority.publicKey,
+    pubkey: collectionAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(collectionAuthorityAccount, true),
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: input.collectionMint,
+    pubkey: collectionMintAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionMintAccount, false),
   });
 
   // Bubblegum Signer.
-  signers.push(input.bubblegumSigner);
+  signers.push(bubblegumSignerAccount);
   keys.push({
-    pubkey: input.bubblegumSigner.publicKey,
+    pubkey: bubblegumSignerAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(bubblegumSignerAccount, false),
   });
 
   // Collection Authority Record (optional).
-  if (input.collectionAuthorityRecord) {
+  if (collectionAuthorityRecordAccount) {
     keys.push({
-      pubkey: input.collectionAuthorityRecord,
+      pubkey: collectionAuthorityRecordAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(collectionAuthorityRecordAccount, false),
     });
   }
 

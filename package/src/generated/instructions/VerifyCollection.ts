@@ -82,49 +82,57 @@ export function verifyCollection(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const collectionAuthorityAccount = input.collectionAuthority;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const collectionMintAccount = input.collectionMint;
+  const collectionAccount = input.collection;
+  const collectionMasterEditionAccountAccount =
+    input.collectionMasterEditionAccount;
+
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Collection Authority.
-  signers.push(input.collectionAuthority);
+  signers.push(collectionAuthorityAccount);
   keys.push({
-    pubkey: input.collectionAuthority.publicKey,
+    pubkey: collectionAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(collectionAuthorityAccount, true),
   });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Collection Mint.
   keys.push({
-    pubkey: input.collectionMint,
+    pubkey: collectionMintAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionMintAccount, false),
   });
 
   // Collection.
-  keys.push({ pubkey: input.collection, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: collectionAccount,
+    isSigner: false,
+    isWritable: isWritable(collectionAccount, false),
+  });
 
   // Collection Master Edition Account.
   keys.push({
-    pubkey: input.collectionMasterEditionAccount,
+    pubkey: collectionMasterEditionAccountAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionMasterEditionAccountAccount, false),
   });
 
   // Data.

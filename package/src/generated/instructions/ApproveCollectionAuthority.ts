@@ -91,73 +91,81 @@ export function approveCollectionAuthority(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
+  const newCollectionAuthorityAccount = input.newCollectionAuthority;
+  const updateAuthorityAccount = input.updateAuthority;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const metadataAccount = input.metadata;
+  const mintAccount = input.mint;
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const rentAccount = input.rent;
+
   // Collection Authority Record.
   keys.push({
-    pubkey: input.collectionAuthorityRecord,
+    pubkey: collectionAuthorityRecordAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(collectionAuthorityRecordAccount, true),
   });
 
   // New Collection Authority.
   keys.push({
-    pubkey: input.newCollectionAuthority,
+    pubkey: newCollectionAuthorityAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(newCollectionAuthorityAccount, false),
   });
 
   // Update Authority.
-  signers.push(input.updateAuthority);
+  signers.push(updateAuthorityAccount);
   keys.push({
-    pubkey: input.updateAuthority.publicKey,
+    pubkey: updateAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(updateAuthorityAccount, true),
   });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, false),
+  });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, false),
+  });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Rent (optional).
-  if (input.rent) {
-    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
+  if (rentAccount) {
+    keys.push({
+      pubkey: rentAccount,
+      isSigner: false,
+      isWritable: isWritable(rentAccount, false),
+    });
   }
 
   // Data.

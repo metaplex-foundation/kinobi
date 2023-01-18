@@ -103,61 +103,72 @@ export function deprecatedMintPrintingTokens(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const destinationAccount = input.destination;
+  const printingMintAccount = input.printingMint;
+  const updateAuthorityAccount = input.updateAuthority;
+  const metadataAccount = input.metadata;
+  const masterEditionAccount = input.masterEdition;
+  const tokenProgramAccount = input.tokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+  const rentAccount =
+    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
+
   // Destination.
-  keys.push({ pubkey: input.destination, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: destinationAccount,
+    isSigner: false,
+    isWritable: isWritable(destinationAccount, true),
+  });
 
   // Printing Mint.
-  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: printingMintAccount,
+    isSigner: false,
+    isWritable: isWritable(printingMintAccount, true),
+  });
 
   // Update Authority.
-  signers.push(input.updateAuthority);
+  signers.push(updateAuthorityAccount);
   keys.push({
-    pubkey: input.updateAuthority.publicKey,
+    pubkey: updateAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(updateAuthorityAccount, false),
   });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, false),
+  });
 
   // Master Edition.
   keys.push({
-    pubkey: input.masterEdition,
+    pubkey: masterEditionAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(masterEditionAccount, false),
   });
 
   // Token Program.
-  if (input.tokenProgram) {
-    keys.push({
-      pubkey: input.tokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: tokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenProgramAccount, false),
+  });
 
   // Rent.
-  if (input.rent) {
-    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
-  } else {
-    keys.push({
-      pubkey: context.eddsa.createPublicKey(
-        'SysvarRent111111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: rentAccount,
+    isSigner: false,
+    isWritable: isWritable(rentAccount, false),
+  });
 
   // Data.
   const data =

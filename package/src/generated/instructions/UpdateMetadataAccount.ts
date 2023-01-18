@@ -90,15 +90,23 @@ export function updateMetadataAccount(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = accounts.metadata;
+  const updateAuthorityAccount = accounts.updateAuthority;
+
   // Metadata.
-  keys.push({ pubkey: accounts.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Update Authority.
-  signers.push(accounts.updateAuthority);
+  signers.push(updateAuthorityAccount);
   keys.push({
-    pubkey: accounts.updateAuthority.publicKey,
+    pubkey: updateAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(updateAuthorityAccount, false),
   });
 
   // Data.

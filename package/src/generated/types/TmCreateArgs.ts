@@ -6,7 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 import {
   Context,
   GetDataEnumKind,
@@ -14,6 +13,7 @@ import {
   Option,
   Serializer,
 } from '@lorisleiva/js-core';
+import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 
 export type TmCreateArgs = {
   __kind: 'V1';

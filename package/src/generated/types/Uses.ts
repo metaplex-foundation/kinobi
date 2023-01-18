@@ -6,8 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { UseMethod, getUseMethodSerializer } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
+import { UseMethod, getUseMethodSerializer } from '.';
 
 export type Uses = { useMethod: UseMethod; remaining: bigint; total: bigint };
 

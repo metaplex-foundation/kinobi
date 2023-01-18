@@ -6,7 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { TmKey, getTmKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -21,6 +20,7 @@ import {
   mapSerializer,
   utf8,
 } from '@lorisleiva/js-core';
+import { TmKey, getTmKeySerializer } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;
 

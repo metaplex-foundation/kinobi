@@ -7,6 +7,20 @@
  */
 
 import {
+  Account,
+  Context,
+  Option,
+  Pda,
+  PublicKey,
+  RpcAccount,
+  Serializer,
+  assertAccountExists,
+  deserializeAccount,
+  getProgramAddressWithFallback,
+  mapSerializer,
+  utf8,
+} from '@lorisleiva/js-core';
+import {
   Collection,
   CollectionArgs,
   CollectionDetails,
@@ -28,20 +42,6 @@ import {
   getTokenStandardSerializer,
   getUsesSerializer,
 } from '../types';
-import {
-  Account,
-  Context,
-  Option,
-  Pda,
-  PublicKey,
-  RpcAccount,
-  Serializer,
-  assertAccountExists,
-  deserializeAccount,
-  getProgramAddressWithFallback,
-  mapSerializer,
-  utf8,
-} from '@lorisleiva/js-core';
 
 export type Metadata = Account<MetadataAccountData>;
 

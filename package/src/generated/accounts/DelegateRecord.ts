@@ -7,12 +7,6 @@
  */
 
 import {
-  DelegateRole,
-  TmKey,
-  getDelegateRoleSerializer,
-  getTmKeySerializer,
-} from '../types';
-import {
   Account,
   Context,
   PublicKey,
@@ -22,6 +16,12 @@ import {
   deserializeAccount,
   mapSerializer,
 } from '@lorisleiva/js-core';
+import {
+  DelegateRole,
+  TmKey,
+  getDelegateRoleSerializer,
+  getTmKeySerializer,
+} from '../types';
 
 export type DelegateRecord = Account<DelegateRecordAccountData>;
 

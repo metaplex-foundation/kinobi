@@ -79,41 +79,55 @@ export function freezeDelegatedAccount(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const delegateAccount = input.delegate;
+  const tokenAccountAccount = input.tokenAccount;
+  const editionAccount = input.edition;
+  const mintAccount = input.mint;
+  const tokenProgramAccount = input.tokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+
   // Delegate.
-  signers.push(input.delegate);
+  signers.push(delegateAccount);
   keys.push({
-    pubkey: input.delegate.publicKey,
+    pubkey: delegateAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(delegateAccount, true),
   });
 
   // Token Account.
-  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: tokenAccountAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenAccountAccount, true),
+  });
 
   // Edition.
-  keys.push({ pubkey: input.edition, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: editionAccount,
+    isSigner: false,
+    isWritable: isWritable(editionAccount, false),
+  });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, false),
+  });
 
   // Token Program.
-  if (input.tokenProgram) {
-    keys.push({
-      pubkey: input.tokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: tokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenProgramAccount, false),
+  });
 
   // Data.
   const data = getFreezeDelegatedAccountInstructionDataSerializer(

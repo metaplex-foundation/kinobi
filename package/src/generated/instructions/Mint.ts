@@ -92,147 +92,132 @@ export function mint(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const tokenAccount = input.token;
+  const metadataAccount = input.metadata;
+  const masterEditionAccount = input.masterEdition;
+  const mintAccount = input.mint;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const sysvarInstructionsAccount =
+    input.sysvarInstructions ??
+    publicKey('Sysvar1nstructions1111111111111111111111111');
+  const splTokenProgramAccount = input.splTokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+  const splAtaProgramAccount = input.splAtaProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splAssociatedToken',
+      'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+    ),
+    isWritable: false,
+  };
+  const authorizationRulesProgramAccount = input.authorizationRulesProgram;
+  const authorizationRulesAccount = input.authorizationRules;
+
   // Token.
-  keys.push({ pubkey: input.token, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: tokenAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenAccount, true),
+  });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, false),
+  });
 
   // Master Edition (optional).
-  if (input.masterEdition) {
+  if (masterEditionAccount) {
     keys.push({
-      pubkey: input.masterEdition,
+      pubkey: masterEditionAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(masterEditionAccount, false),
     });
   }
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, true),
+  });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Authority.
-  if (input.authority) {
-    signers.push(input.authority);
-    keys.push({
-      pubkey: input.authority.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  } else {
-    signers.push(context.identity);
-    keys.push({
-      pubkey: context.identity.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  }
+  signers.push(authorityAccount);
+  keys.push({
+    pubkey: authorityAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(authorityAccount, false),
+  });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Sysvar Instructions.
-  if (input.sysvarInstructions) {
-    keys.push({
-      pubkey: input.sysvarInstructions,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: context.eddsa.createPublicKey(
-        'Sysvar1nstructions1111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: sysvarInstructionsAccount,
+    isSigner: false,
+    isWritable: isWritable(sysvarInstructionsAccount, false),
+  });
 
   // Spl Token Program.
-  if (input.splTokenProgram) {
-    keys.push({
-      pubkey: input.splTokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: splTokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(splTokenProgramAccount, false),
+  });
 
   // Spl Ata Program.
-  if (input.splAtaProgram) {
-    keys.push({
-      pubkey: input.splAtaProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splAssociatedToken',
-        'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: splAtaProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(splAtaProgramAccount, false),
+  });
 
   // Authorization Rules Program (optional).
-  if (input.authorizationRulesProgram) {
+  if (authorizationRulesProgramAccount) {
     keys.push({
-      pubkey: input.authorizationRulesProgram,
+      pubkey: authorizationRulesProgramAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(authorizationRulesProgramAccount, false),
     });
   }
 
   // Authorization Rules (optional).
-  if (input.authorizationRules) {
+  if (authorizationRulesAccount) {
     keys.push({
-      pubkey: input.authorizationRules,
+      pubkey: authorizationRulesAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(authorizationRulesAccount, false),
     });
   }
 

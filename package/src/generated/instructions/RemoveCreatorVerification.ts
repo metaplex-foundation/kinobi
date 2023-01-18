@@ -78,15 +78,23 @@ export function removeCreatorVerification(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const creatorAccount = input.creator;
+
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Creator.
-  signers.push(input.creator);
+  signers.push(creatorAccount);
   keys.push({
-    pubkey: input.creator.publicKey,
+    pubkey: creatorAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(creatorAccount, false),
   });
 
   // Data.

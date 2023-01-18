@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Context, Option, Serializer } from '@lorisleiva/js-core';
 import {
   Collection,
   CollectionArgs,
@@ -17,7 +18,6 @@ import {
   getCreatorSerializer,
   getUsesSerializer,
 } from '.';
-import { Context, Option, Serializer } from '@lorisleiva/js-core';
 
 export type DataV2 = {
   name: string;

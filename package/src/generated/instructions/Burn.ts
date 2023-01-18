@@ -84,73 +84,91 @@ export function burn(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const ownerAccount = input.owner;
+  const mintAccount = input.mint;
+  const tokenAccountAccount = input.tokenAccount;
+  const masterEditionAccountAccount = input.masterEditionAccount;
+  const splTokenProgramAccount = input.splTokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+  const collectionMetadataAccount = input.collectionMetadata;
+  const authorizationRulesAccount = input.authorizationRules;
+  const authorizationRulesProgramAccount = input.authorizationRulesProgram;
+
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
 
   // Owner.
-  signers.push(input.owner);
+  signers.push(ownerAccount);
   keys.push({
-    pubkey: input.owner.publicKey,
+    pubkey: ownerAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(ownerAccount, true),
   });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, true),
+  });
 
   // Token Account.
-  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: tokenAccountAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenAccountAccount, true),
+  });
 
   // Master Edition Account.
   keys.push({
-    pubkey: input.masterEditionAccount,
+    pubkey: masterEditionAccountAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(masterEditionAccountAccount, true),
   });
 
   // Spl Token Program.
-  if (input.splTokenProgram) {
-    keys.push({
-      pubkey: input.splTokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: splTokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(splTokenProgramAccount, false),
+  });
 
   // Collection Metadata (optional).
-  if (input.collectionMetadata) {
+  if (collectionMetadataAccount) {
     keys.push({
-      pubkey: input.collectionMetadata,
+      pubkey: collectionMetadataAccount,
       isSigner: false,
-      isWritable: true,
+      isWritable: isWritable(collectionMetadataAccount, true),
     });
   }
 
   // Authorization Rules (optional).
-  if (input.authorizationRules) {
+  if (authorizationRulesAccount) {
     keys.push({
-      pubkey: input.authorizationRules,
+      pubkey: authorizationRulesAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(authorizationRulesAccount, false),
     });
   }
 
   // Authorization Rules Program (optional).
-  if (input.authorizationRulesProgram) {
+  if (authorizationRulesProgramAccount) {
     keys.push({
-      pubkey: input.authorizationRulesProgram,
+      pubkey: authorizationRulesProgramAccount,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(authorizationRulesProgramAccount, false),
     });
   }
 

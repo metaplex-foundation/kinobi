@@ -6,8 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Payload, PayloadArgs, getPayloadSerializer } from '.';
 import { Context, Serializer } from '@lorisleiva/js-core';
+import { Payload, PayloadArgs, getPayloadSerializer } from '.';
 
 export type AuthorizationData = { payload: Payload };
 

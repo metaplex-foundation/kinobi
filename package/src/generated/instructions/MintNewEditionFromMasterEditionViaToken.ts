@@ -118,112 +118,137 @@ export function mintNewEditionFromMasterEditionViaToken(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const newMetadataAccount = input.newMetadata;
+  const newEditionAccount = input.newEdition;
+  const masterEditionAccount = input.masterEdition;
+  const newMintAccount = input.newMint;
+  const editionMarkPdaAccount = input.editionMarkPda;
+  const newMintAuthorityAccount = input.newMintAuthority;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const tokenAccountOwnerAccount = input.tokenAccountOwner;
+  const tokenAccountAccount = input.tokenAccount;
+  const newMetadataUpdateAuthorityAccount = input.newMetadataUpdateAuthority;
+  const metadataAccount = input.metadata;
+  const tokenProgramAccount = input.tokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const rentAccount = input.rent;
+
   // New Metadata.
-  keys.push({ pubkey: input.newMetadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: newMetadataAccount,
+    isSigner: false,
+    isWritable: isWritable(newMetadataAccount, true),
+  });
 
   // New Edition.
-  keys.push({ pubkey: input.newEdition, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: newEditionAccount,
+    isSigner: false,
+    isWritable: isWritable(newEditionAccount, true),
+  });
 
   // Master Edition.
-  keys.push({ pubkey: input.masterEdition, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: masterEditionAccount,
+    isSigner: false,
+    isWritable: isWritable(masterEditionAccount, true),
+  });
 
   // New Mint.
-  keys.push({ pubkey: input.newMint, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: newMintAccount,
+    isSigner: false,
+    isWritable: isWritable(newMintAccount, true),
+  });
 
   // Edition Mark Pda.
   keys.push({
-    pubkey: input.editionMarkPda,
+    pubkey: editionMarkPdaAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(editionMarkPdaAccount, true),
   });
 
   // New Mint Authority.
-  signers.push(input.newMintAuthority);
+  signers.push(newMintAuthorityAccount);
   keys.push({
-    pubkey: input.newMintAuthority.publicKey,
+    pubkey: newMintAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(newMintAuthorityAccount, false),
   });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Token Account Owner.
-  signers.push(input.tokenAccountOwner);
+  signers.push(tokenAccountOwnerAccount);
   keys.push({
-    pubkey: input.tokenAccountOwner.publicKey,
+    pubkey: tokenAccountOwnerAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(tokenAccountOwnerAccount, false),
   });
 
   // Token Account.
-  keys.push({ pubkey: input.tokenAccount, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: tokenAccountAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenAccountAccount, false),
+  });
 
   // New Metadata Update Authority.
   keys.push({
-    pubkey: input.newMetadataUpdateAuthority,
+    pubkey: newMetadataUpdateAuthorityAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(newMetadataUpdateAuthorityAccount, false),
   });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, false),
+  });
 
   // Token Program.
-  if (input.tokenProgram) {
-    keys.push({
-      pubkey: input.tokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: tokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenProgramAccount, false),
+  });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Rent (optional).
-  if (input.rent) {
-    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
+  if (rentAccount) {
+    keys.push({
+      pubkey: rentAccount,
+      isSigner: false,
+      isWritable: isWritable(rentAccount, false),
+    });
   }
 
   // Data.

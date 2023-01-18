@@ -102,22 +102,31 @@ export function deprecatedSetReservationList(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const masterEditionAccount = input.masterEdition;
+  const reservationListAccount = input.reservationList;
+  const resourceAccount = input.resource;
+
   // Master Edition.
-  keys.push({ pubkey: input.masterEdition, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: masterEditionAccount,
+    isSigner: false,
+    isWritable: isWritable(masterEditionAccount, true),
+  });
 
   // Reservation List.
   keys.push({
-    pubkey: input.reservationList,
+    pubkey: reservationListAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(reservationListAccount, true),
   });
 
   // Resource.
-  signers.push(input.resource);
+  signers.push(resourceAccount);
   keys.push({
-    pubkey: input.resource.publicKey,
+    pubkey: resourceAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(resourceAccount, false),
   });
 
   // Data.

@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Context, Serializer } from '@lorisleiva/js-core';
 import {
   PayloadKey,
   PayloadType,
@@ -13,7 +14,6 @@ import {
   getPayloadKeySerializer,
   getPayloadTypeSerializer,
 } from '.';
-import { Context, Serializer } from '@lorisleiva/js-core';
 
 export type Payload = { map: Map<PayloadKey, PayloadType> };
 

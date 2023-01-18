@@ -101,98 +101,112 @@ export function approveUseAuthority(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const useAuthorityRecordAccount = input.useAuthorityRecord;
+  const ownerAccount = input.owner;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const userAccount = input.user;
+  const ownerTokenAccountAccount = input.ownerTokenAccount;
+  const metadataAccount = input.metadata;
+  const mintAccount = input.mint;
+  const burnerAccount = input.burner;
+  const tokenProgramAccount = input.tokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const rentAccount = input.rent;
+
   // Use Authority Record.
   keys.push({
-    pubkey: input.useAuthorityRecord,
+    pubkey: useAuthorityRecordAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(useAuthorityRecordAccount, true),
   });
 
   // Owner.
-  signers.push(input.owner);
+  signers.push(ownerAccount);
   keys.push({
-    pubkey: input.owner.publicKey,
+    pubkey: ownerAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(ownerAccount, true),
   });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // User.
-  keys.push({ pubkey: input.user, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: userAccount,
+    isSigner: false,
+    isWritable: isWritable(userAccount, false),
+  });
 
   // Owner Token Account.
   keys.push({
-    pubkey: input.ownerTokenAccount,
+    pubkey: ownerTokenAccountAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(ownerTokenAccountAccount, true),
   });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, false),
+  });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, false),
+  });
 
   // Burner.
-  keys.push({ pubkey: input.burner, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: burnerAccount,
+    isSigner: false,
+    isWritable: isWritable(burnerAccount, false),
+  });
 
   // Token Program.
-  if (input.tokenProgram) {
-    keys.push({
-      pubkey: input.tokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: tokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenProgramAccount, false),
+  });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Rent (optional).
-  if (input.rent) {
-    keys.push({ pubkey: input.rent, isSigner: false, isWritable: false });
+  if (rentAccount) {
+    keys.push({
+      pubkey: rentAccount,
+      isSigner: false,
+      isWritable: isWritable(rentAccount, false),
+    });
   }
 
   // Data.

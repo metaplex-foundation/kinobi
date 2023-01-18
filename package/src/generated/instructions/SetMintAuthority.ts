@@ -76,32 +76,32 @@ export function setMintAuthority(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
+  // Resolved accounts.
+  const candyMachineAccount = input.candyMachine;
+  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const mintAuthorityAccount = input.mintAuthority;
+
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: candyMachineAccount,
+    isSigner: false,
+    isWritable: isWritable(candyMachineAccount, true),
+  });
 
   // Authority.
-  if (input.authority) {
-    signers.push(input.authority);
-    keys.push({
-      pubkey: input.authority.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  } else {
-    signers.push(context.identity);
-    keys.push({
-      pubkey: context.identity.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  }
+  signers.push(authorityAccount);
+  keys.push({
+    pubkey: authorityAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(authorityAccount, false),
+  });
 
   // Mint Authority.
-  signers.push(input.mintAuthority);
+  signers.push(mintAuthorityAccount);
   keys.push({
-    pubkey: input.mintAuthority.publicKey,
+    pubkey: mintAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(mintAuthorityAccount, false),
   });
 
   // Data.

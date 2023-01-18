@@ -6,7 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { TaKey, getTaKeySerializer } from '../types';
 import {
   Account,
   Context,
@@ -17,6 +16,7 @@ import {
   deserializeAccount,
   mapSerializer,
 } from '@lorisleiva/js-core';
+import { TaKey, getTaKeySerializer } from '../types';
 
 export type FrequencyAccount = Account<FrequencyAccountAccountData>;
 

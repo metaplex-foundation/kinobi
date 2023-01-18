@@ -84,33 +84,48 @@ export function revokeCollectionAuthority(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
+  const delegateAuthorityAccount = input.delegateAuthority;
+  const revokeAuthorityAccount = input.revokeAuthority;
+  const metadataAccount = input.metadata;
+  const mintAccount = input.mint;
+
   // Collection Authority Record.
   keys.push({
-    pubkey: input.collectionAuthorityRecord,
+    pubkey: collectionAuthorityRecordAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(collectionAuthorityRecordAccount, true),
   });
 
   // Delegate Authority.
   keys.push({
-    pubkey: input.delegateAuthority,
+    pubkey: delegateAuthorityAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(delegateAuthorityAccount, true),
   });
 
   // Revoke Authority.
-  signers.push(input.revokeAuthority);
+  signers.push(revokeAuthorityAccount);
   keys.push({
-    pubkey: input.revokeAuthority.publicKey,
+    pubkey: revokeAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(revokeAuthorityAccount, true),
   });
 
   // Metadata.
-  keys.push({ pubkey: input.metadata, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, false),
+  });
 
   // Mint.
-  keys.push({ pubkey: input.mint, isSigner: false, isWritable: false });
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, false),
+  });
 
   // Data.
   const data = getRevokeCollectionAuthorityInstructionDataSerializer(

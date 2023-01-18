@@ -7,6 +7,14 @@
  */
 
 import {
+  Context,
+  GetDataEnumKind,
+  GetDataEnumKindContent,
+  Option,
+  PublicKey,
+  Serializer,
+} from '@lorisleiva/js-core';
+import {
   AuthorityType,
   AuthorizationData,
   AuthorizationDataArgs,
@@ -31,14 +39,6 @@ import {
   getTokenStandardSerializer,
   getUsesSerializer,
 } from '.';
-import {
-  Context,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
-  Option,
-  PublicKey,
-  Serializer,
-} from '@lorisleiva/js-core';
 
 export type UpdateArgs = {
   __kind: 'V1';

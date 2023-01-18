@@ -7,12 +7,6 @@
  */
 
 import {
-  EscrowAuthority,
-  TmKey,
-  getEscrowAuthoritySerializer,
-  getTmKeySerializer,
-} from '../types';
-import {
   Account,
   Context,
   PublicKey,
@@ -22,6 +16,12 @@ import {
   deserializeAccount,
   mapSerializer,
 } from '@lorisleiva/js-core';
+import {
+  EscrowAuthority,
+  TmKey,
+  getEscrowAuthoritySerializer,
+  getTmKeySerializer,
+} from '../types';
 
 export type TokenOwnedEscrow = Account<TokenOwnedEscrowAccountData>;
 

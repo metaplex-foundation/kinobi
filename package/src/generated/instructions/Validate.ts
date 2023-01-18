@@ -110,145 +110,150 @@ export function validate(
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
 
+  // Resolved accounts.
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const ruleSetAccount = input.ruleSet;
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const optRuleSigner1Account = input.optRuleSigner1;
+  const optRuleSigner2Account = input.optRuleSigner2;
+  const optRuleSigner3Account = input.optRuleSigner3;
+  const optRuleSigner4Account = input.optRuleSigner4;
+  const optRuleSigner5Account = input.optRuleSigner5;
+  const optRuleNonsigner1Account = input.optRuleNonsigner1;
+  const optRuleNonsigner2Account = input.optRuleNonsigner2;
+  const optRuleNonsigner3Account = input.optRuleNonsigner3;
+  const optRuleNonsigner4Account = input.optRuleNonsigner4;
+  const optRuleNonsigner5Account = input.optRuleNonsigner5;
+
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Rule Set.
-  keys.push({ pubkey: input.ruleSet, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: ruleSetAccount,
+    isSigner: false,
+    isWritable: isWritable(ruleSetAccount, true),
+  });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Opt Rule Signer1 (optional).
-  if (input.optRuleSigner1) {
-    if (isSigner(input.optRuleSigner1)) {
-      signers.push(input.optRuleSigner1);
+  if (optRuleSigner1Account) {
+    if (isSigner(optRuleSigner1Account)) {
+      signers.push(optRuleSigner1Account);
       keys.push({
-        pubkey: input.optRuleSigner1.publicKey,
+        pubkey: optRuleSigner1Account.publicKey,
         isSigner: true,
-        isWritable: false,
+        isWritable: isWritable(optRuleSigner1Account, false),
       });
     } else {
       keys.push({
-        pubkey: input.optRuleSigner1,
+        pubkey: optRuleSigner1Account,
         isSigner: false,
-        isWritable: false,
+        isWritable: isWritable(optRuleSigner1Account, false),
       });
     }
   }
 
   // Opt Rule Signer2 (optional).
-  if (input.optRuleSigner2) {
-    signers.push(input.optRuleSigner2);
+  if (optRuleSigner2Account) {
+    signers.push(optRuleSigner2Account);
     keys.push({
-      pubkey: input.optRuleSigner2.publicKey,
+      pubkey: optRuleSigner2Account.publicKey,
       isSigner: true,
-      isWritable: false,
+      isWritable: isWritable(optRuleSigner2Account, false),
     });
   }
 
   // Opt Rule Signer3 (optional).
-  if (input.optRuleSigner3) {
-    signers.push(input.optRuleSigner3);
+  if (optRuleSigner3Account) {
+    signers.push(optRuleSigner3Account);
     keys.push({
-      pubkey: input.optRuleSigner3.publicKey,
+      pubkey: optRuleSigner3Account.publicKey,
       isSigner: true,
-      isWritable: false,
+      isWritable: isWritable(optRuleSigner3Account, false),
     });
   }
 
   // Opt Rule Signer4 (optional).
-  if (input.optRuleSigner4) {
-    signers.push(input.optRuleSigner4);
+  if (optRuleSigner4Account) {
+    signers.push(optRuleSigner4Account);
     keys.push({
-      pubkey: input.optRuleSigner4.publicKey,
+      pubkey: optRuleSigner4Account.publicKey,
       isSigner: true,
-      isWritable: false,
+      isWritable: isWritable(optRuleSigner4Account, false),
     });
   }
 
   // Opt Rule Signer5 (optional).
-  if (input.optRuleSigner5) {
-    signers.push(input.optRuleSigner5);
+  if (optRuleSigner5Account) {
+    signers.push(optRuleSigner5Account);
     keys.push({
-      pubkey: input.optRuleSigner5.publicKey,
+      pubkey: optRuleSigner5Account.publicKey,
       isSigner: true,
-      isWritable: false,
+      isWritable: isWritable(optRuleSigner5Account, false),
     });
   }
 
   // Opt Rule Nonsigner1 (optional).
-  if (input.optRuleNonsigner1) {
+  if (optRuleNonsigner1Account) {
     keys.push({
-      pubkey: input.optRuleNonsigner1,
+      pubkey: optRuleNonsigner1Account,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(optRuleNonsigner1Account, false),
     });
   }
 
   // Opt Rule Nonsigner2 (optional).
-  if (input.optRuleNonsigner2) {
+  if (optRuleNonsigner2Account) {
     keys.push({
-      pubkey: input.optRuleNonsigner2,
+      pubkey: optRuleNonsigner2Account,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(optRuleNonsigner2Account, false),
     });
   }
 
   // Opt Rule Nonsigner3 (optional).
-  if (input.optRuleNonsigner3) {
+  if (optRuleNonsigner3Account) {
     keys.push({
-      pubkey: input.optRuleNonsigner3,
+      pubkey: optRuleNonsigner3Account,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(optRuleNonsigner3Account, false),
     });
   }
 
   // Opt Rule Nonsigner4 (optional).
-  if (input.optRuleNonsigner4) {
+  if (optRuleNonsigner4Account) {
     keys.push({
-      pubkey: input.optRuleNonsigner4,
+      pubkey: optRuleNonsigner4Account,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(optRuleNonsigner4Account, false),
     });
   }
 
   // Opt Rule Nonsigner5 (optional).
-  if (input.optRuleNonsigner5) {
+  if (optRuleNonsigner5Account) {
     keys.push({
-      pubkey: input.optRuleNonsigner5,
+      pubkey: optRuleNonsigner5Account,
       isSigner: false,
-      isWritable: false,
+      isWritable: isWritable(optRuleNonsigner5Account, false),
     });
   }
 

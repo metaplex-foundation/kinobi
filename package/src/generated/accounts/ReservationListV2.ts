@@ -7,13 +7,6 @@
  */
 
 import {
-  Reservation,
-  ReservationArgs,
-  TmKey,
-  getReservationSerializer,
-  getTmKeySerializer,
-} from '../types';
-import {
   Account,
   Context,
   Option,
@@ -24,6 +17,13 @@ import {
   deserializeAccount,
   mapSerializer,
 } from '@lorisleiva/js-core';
+import {
+  Reservation,
+  ReservationArgs,
+  TmKey,
+  getReservationSerializer,
+  getTmKeySerializer,
+} from '../types';
 
 export type ReservationListV2 = Account<ReservationListV2AccountData>;
 

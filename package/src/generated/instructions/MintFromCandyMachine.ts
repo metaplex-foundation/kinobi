@@ -93,152 +93,160 @@ export function mintFromCandyMachine(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
+  // Resolved accounts.
+  const candyMachineAccount = input.candyMachine;
+  const authorityPdaAccount = input.authorityPda;
+  const mintAuthorityAccount = input.mintAuthority;
+  const payerAccount = input.payer ?? context.payer.publicKey;
+  const nftMintAccount = input.nftMint;
+  const nftMintAuthorityAccount =
+    input.nftMintAuthority ?? context.identity.publicKey;
+  const nftMetadataAccount = input.nftMetadata;
+  const nftMasterEditionAccount = input.nftMasterEdition;
+  const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
+  const collectionMintAccount = input.collectionMint;
+  const collectionMetadataAccount = input.collectionMetadata;
+  const collectionMasterEditionAccount = input.collectionMasterEdition;
+  const collectionUpdateAuthorityAccount = input.collectionUpdateAuthority;
+  const tokenMetadataProgramAccount = input.tokenMetadataProgram;
+  const tokenProgramAccount = input.tokenProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    ),
+    isWritable: false,
+  };
+  const systemProgramAccount = input.systemProgram ?? {
+    ...getProgramAddressWithFallback(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    ),
+    isWritable: false,
+  };
+  const recentSlothashesAccount = input.recentSlothashes;
+
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: candyMachineAccount,
+    isSigner: false,
+    isWritable: isWritable(candyMachineAccount, true),
+  });
 
   // Authority Pda.
-  keys.push({ pubkey: input.authorityPda, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: authorityPdaAccount,
+    isSigner: false,
+    isWritable: isWritable(authorityPdaAccount, true),
+  });
 
   // Mint Authority.
-  signers.push(input.mintAuthority);
+  signers.push(mintAuthorityAccount);
   keys.push({
-    pubkey: input.mintAuthority.publicKey,
+    pubkey: mintAuthorityAccount.publicKey,
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(mintAuthorityAccount, false),
   });
 
   // Payer.
-  if (input.payer) {
-    signers.push(input.payer);
-    keys.push({
-      pubkey: input.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  } else {
-    signers.push(context.payer);
-    keys.push({
-      pubkey: context.payer.publicKey,
-      isSigner: true,
-      isWritable: true,
-    });
-  }
+  signers.push(payerAccount);
+  keys.push({
+    pubkey: payerAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(payerAccount, true),
+  });
 
   // Nft Mint.
-  keys.push({ pubkey: input.nftMint, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: nftMintAccount,
+    isSigner: false,
+    isWritable: isWritable(nftMintAccount, true),
+  });
 
   // Nft Mint Authority.
-  if (input.nftMintAuthority) {
-    signers.push(input.nftMintAuthority);
-    keys.push({
-      pubkey: input.nftMintAuthority.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  } else {
-    signers.push(context.identity);
-    keys.push({
-      pubkey: context.identity.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  }
+  signers.push(nftMintAuthorityAccount);
+  keys.push({
+    pubkey: nftMintAuthorityAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(nftMintAuthorityAccount, false),
+  });
 
   // Nft Metadata.
-  keys.push({ pubkey: input.nftMetadata, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: nftMetadataAccount,
+    isSigner: false,
+    isWritable: isWritable(nftMetadataAccount, true),
+  });
 
   // Nft Master Edition.
   keys.push({
-    pubkey: input.nftMasterEdition,
+    pubkey: nftMasterEditionAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(nftMasterEditionAccount, true),
   });
 
   // Collection Authority Record.
   keys.push({
-    pubkey: input.collectionAuthorityRecord,
+    pubkey: collectionAuthorityRecordAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionAuthorityRecordAccount, false),
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: input.collectionMint,
+    pubkey: collectionMintAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionMintAccount, false),
   });
 
   // Collection Metadata.
   keys.push({
-    pubkey: input.collectionMetadata,
+    pubkey: collectionMetadataAccount,
     isSigner: false,
-    isWritable: true,
+    isWritable: isWritable(collectionMetadataAccount, true),
   });
 
   // Collection Master Edition.
   keys.push({
-    pubkey: input.collectionMasterEdition,
+    pubkey: collectionMasterEditionAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionMasterEditionAccount, false),
   });
 
   // Collection Update Authority.
   keys.push({
-    pubkey: input.collectionUpdateAuthority,
+    pubkey: collectionUpdateAuthorityAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(collectionUpdateAuthorityAccount, false),
   });
 
   // Token Metadata Program.
   keys.push({
-    pubkey: input.tokenMetadataProgram,
+    pubkey: tokenMetadataProgramAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(tokenMetadataProgramAccount, false),
   });
 
   // Token Program.
-  if (input.tokenProgram) {
-    keys.push({
-      pubkey: input.tokenProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: tokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenProgramAccount, false),
+  });
 
   // System Program.
-  if (input.systemProgram) {
-    keys.push({
-      pubkey: input.systemProgram,
-      isSigner: false,
-      isWritable: false,
-    });
-  } else {
-    keys.push({
-      pubkey: getProgramAddressWithFallback(
-        context,
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isSigner: false,
-      isWritable: false,
-    });
-  }
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
 
   // Recent Slothashes.
   keys.push({
-    pubkey: input.recentSlothashes,
+    pubkey: recentSlothashesAccount,
     isSigner: false,
-    isWritable: false,
+    isWritable: isWritable(recentSlothashesAccount, false),
   });
 
   // Data.

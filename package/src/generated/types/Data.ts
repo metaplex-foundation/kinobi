@@ -6,8 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Creator, CreatorArgs, getCreatorSerializer } from '.';
 import { Context, Option, Serializer } from '@lorisleiva/js-core';
+import { Creator, CreatorArgs, getCreatorSerializer } from '.';
 
 export type Data = {
   name: string;

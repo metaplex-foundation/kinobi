@@ -6,8 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { DelegateRole, getDelegateRoleSerializer } from '.';
 import { Context, PublicKey, Serializer } from '@lorisleiva/js-core';
+import { DelegateRole, getDelegateRoleSerializer } from '.';
 
 export type DelegateState = {
   role: DelegateRole;

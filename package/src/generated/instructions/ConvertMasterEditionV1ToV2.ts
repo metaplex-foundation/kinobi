@@ -80,14 +80,31 @@ export function convertMasterEditionV1ToV2(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
+  // Resolved accounts.
+  const masterEditionAccount = input.masterEdition;
+  const oneTimeAuthAccount = input.oneTimeAuth;
+  const printingMintAccount = input.printingMint;
+
   // Master Edition.
-  keys.push({ pubkey: input.masterEdition, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: masterEditionAccount,
+    isSigner: false,
+    isWritable: isWritable(masterEditionAccount, true),
+  });
 
   // One Time Auth.
-  keys.push({ pubkey: input.oneTimeAuth, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: oneTimeAuthAccount,
+    isSigner: false,
+    isWritable: isWritable(oneTimeAuthAccount, true),
+  });
 
   // Printing Mint.
-  keys.push({ pubkey: input.printingMint, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: printingMintAccount,
+    isSigner: false,
+    isWritable: isWritable(printingMintAccount, true),
+  });
 
   // Data.
   const data = getConvertMasterEditionV1ToV2InstructionDataSerializer(

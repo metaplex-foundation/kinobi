@@ -80,25 +80,24 @@ export function update(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
+  // Resolved accounts.
+  const candyMachineAccount = input.candyMachine;
+  const authorityAccount = input.authority ?? context.identity.publicKey;
+
   // Candy Machine.
-  keys.push({ pubkey: input.candyMachine, isSigner: false, isWritable: true });
+  keys.push({
+    pubkey: candyMachineAccount,
+    isSigner: false,
+    isWritable: isWritable(candyMachineAccount, true),
+  });
 
   // Authority.
-  if (input.authority) {
-    signers.push(input.authority);
-    keys.push({
-      pubkey: input.authority.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  } else {
-    signers.push(context.identity);
-    keys.push({
-      pubkey: context.identity.publicKey,
-      isSigner: true,
-      isWritable: false,
-    });
-  }
+  signers.push(authorityAccount);
+  keys.push({
+    pubkey: authorityAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(authorityAccount, false),
+  });
 
   // Data.
   const data = getUpdateInstructionDataSerializer(context).serialize(input);

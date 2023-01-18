@@ -8,44 +8,47 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
 export class JavaScriptImportMap {
   protected readonly _imports: Map<string, Set<string>> = new Map();
 
+  protected readonly _aliases: Map<string, Record<string, string>> = new Map();
+
   add(
     module: string,
-    dependencies: string | string[] | Set<string>
+    imports: string | string[] | Set<string>
   ): JavaScriptImportMap {
-    const currentDependencies = this._imports.get(module) ?? new Set();
-    const newDependencies =
-      typeof dependencies === 'string' ? [dependencies] : dependencies;
-    newDependencies.forEach((dependency) =>
-      currentDependencies.add(dependency)
-    );
-    this._imports.set(module, currentDependencies);
+    const currentImports = this._imports.get(module) ?? new Set();
+    const newImports = typeof imports === 'string' ? [imports] : imports;
+    newImports.forEach((i) => currentImports.add(i));
+    this._imports.set(module, currentImports);
     return this;
   }
 
   remove(
     module: string,
-    dependencies: string | string[] | Set<string>
+    imports: string | string[] | Set<string>
   ): JavaScriptImportMap {
-    const currentDependencies = this._imports.get(module) ?? new Set();
-    const dependenciesToRemove =
-      typeof dependencies === 'string' ? [dependencies] : dependencies;
-    dependenciesToRemove.forEach((dependency) =>
-      currentDependencies.delete(dependency)
-    );
-    if (currentDependencies.size === 0) {
+    const currentImports = this._imports.get(module) ?? new Set();
+    const importsToRemove = typeof imports === 'string' ? [imports] : imports;
+    importsToRemove.forEach((i) => currentImports.delete(i));
+    if (currentImports.size === 0) {
       this._imports.delete(module);
     } else {
-      this._imports.set(module, currentDependencies);
+      this._imports.set(module, currentImports);
     }
     return this;
   }
 
   mergeWith(...others: JavaScriptImportMap[]): JavaScriptImportMap {
     others.forEach((other) => {
-      other._imports.forEach((dependencies, module) => {
-        this.add(module, dependencies);
+      other._imports.forEach((imports, module) => {
+        this.add(module, imports);
       });
     });
+    return this;
+  }
+
+  addAlias(module: string, name: string, alias: string): JavaScriptImportMap {
+    const currentAliases = this._aliases.get(module) ?? {};
+    currentAliases[alias] = name;
+    this._aliases.set(module, currentAliases);
     return this;
   }
 
@@ -55,14 +58,26 @@ export class JavaScriptImportMap {
 
   toString(modules: Record<string, string> = {}): string {
     const moduleMap = { ...DEFAULT_MODULE_MAP, ...modules };
-    const importStatements = Array.from(
-      this._imports.entries(),
-      ([module, dependencies]) => {
-        const joinedDeps = Array.from(dependencies).sort().join(', ');
+    const importStatements = [...this._imports.entries()]
+      .map(([module, imports]) => {
         const mappedModule: string = moduleMap[module] ?? module;
-        return `import { ${joinedDeps} } from '${mappedModule}';`;
-      }
-    );
+        return [mappedModule, module, imports] as const;
+      })
+      .sort(([a], [b]) => {
+        const aIsRelative = a.startsWith('.');
+        const bIsRelative = b.startsWith('.');
+        if (aIsRelative && !bIsRelative) return 1;
+        if (!aIsRelative && bIsRelative) return -1;
+        return a.localeCompare(b);
+      })
+      .map(([mappedModule, module, imports]) => {
+        const aliasMap = this._aliases.get(module) ?? {};
+        const joinedImports = [...imports]
+          .sort()
+          .map((i) => (aliasMap[i] ? `${i} as ${aliasMap[i]}` : i))
+          .join(', ');
+        return `import { ${joinedImports} } from '${mappedModule}';`;
+      });
     return importStatements.join('\n');
   }
 }
