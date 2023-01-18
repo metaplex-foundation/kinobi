@@ -1,11 +1,13 @@
 // Resolved accounts.
 {% for account in accounts | sort(false, false, 'dependencyPosition') %}
-  {% if account.defaultsTo.kind === 'program' %}
+  {% if account.defaultsTo.kind === 'account' %}
+    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? {{ account.defaultsTo.name }}Account;
+  {% elif account.defaultsTo.kind === 'address' %}
+    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.address }}');
+  {% elif account.defaultsTo.kind === 'program' %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...getProgramAddressWithFallback(context, '{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.address }}'), isWritable: false };
   {% elif account.defaultsTo.kind === 'programId' %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...programId, isWritable: false };
-  {% elif account.defaultsTo.kind === 'address' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.address }}');
   {% elif account.defaultsTo.kind === 'identity' and (account.isSigner or account.isOptionalSigner) %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity;
   {% elif account.defaultsTo.kind === 'identity' %}

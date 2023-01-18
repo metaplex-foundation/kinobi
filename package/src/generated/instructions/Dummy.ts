@@ -77,12 +77,12 @@ export function dummy(
 
   // Resolved accounts.
   const mintAccount = input.mint;
-  const editionAccount = input.edition;
+  const editionAccount = input.edition ?? mintAccount;
   const updateAuthorityAccount = input.updateAuthority;
-  const mintAuthorityAccount = input.mintAuthority;
+  const mintAuthorityAccount = input.mintAuthority ?? updateAuthorityAccount;
   const payerAccount = input.payer ?? context.payer;
   const barAccount = input.bar ?? { ...programId, isWritable: false };
-  const fooAccount = input.foo;
+  const fooAccount = input.foo ?? barAccount;
 
   // Edition.
   if (isSigner(editionAccount)) {
