@@ -3,8 +3,12 @@ import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
 export type InstructionAccountDefaultRule =
   nodes.InstructionNodeAccountDefaults & {
+    /** The name of the instruction account or a pattern to match on it. */
     account: string | RegExp;
+    /** @defaultValue Defaults to searching accounts on all instructions. */
     instruction?: string;
+    /** @defaultValue `false`. */
+    ignoreIfOptional?: boolean;
   };
 
 export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaultRule[] =
@@ -12,14 +16,17 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
     {
       kind: 'payer',
       account: /^payer|feePayer$/,
+      ignoreIfOptional: true,
     },
     {
       kind: 'identity',
       account: /^authority$/,
+      ignoreIfOptional: true,
     },
     {
       kind: 'programId',
       account: /^programId$/,
+      ignoreIfOptional: true,
     },
     {
       kind: 'program',
@@ -28,6 +35,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
         name: 'splSystem',
         address: '11111111111111111111111111111111',
       },
+      ignoreIfOptional: true,
     },
     {
       kind: 'program',
@@ -36,6 +44,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
         name: 'splToken',
         address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
       },
+      ignoreIfOptional: true,
     },
     {
       kind: 'program',
@@ -44,51 +53,61 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
         name: 'splAssociatedToken',
         address: 'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
       },
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^clockSysvar|sysvarClockSysvar$/,
       address: 'SysvarC1ock11111111111111111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^epochScheduleSysvar|sysvarEpochSchedule$/,
       address: 'SysvarEpochSchedu1e111111111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^instructionsSysvar|sysvarInstructions$/,
       address: 'Sysvar1nstructions1111111111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^recentBlockhashesSysvar|sysvarRecentBlockhashes$/,
       address: 'SysvarRecentB1ockHashes11111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^rent|rentSysvar|sysvarRent$/,
       address: 'SysvarRent111111111111111111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^rewardsSysvar|sysvarRewards$/,
       address: 'SysvarRewards111111111111111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^slotHashesSysvar|sysvarSlotHashes$/,
       address: 'SysvarS1otHashes111111111111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^slotHistorySysvar|sysvarSlotHistory$/,
       address: 'SysvarS1otHistory11111111111111111111111111',
+      ignoreIfOptional: true,
     },
     {
       kind: 'address',
       account: /^stakeHistorySysvar|sysvarStakeHistory$/,
       address: 'SysvarStakeHistory1111111111111111111111111',
+      ignoreIfOptional: true,
     },
   ];
 
@@ -110,7 +129,13 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const accounts = instruction.accounts.map((account) => {
       const rule = this.matchRule(instruction, account);
-      return rule ? { ...account, defaultsTo: rule } : account;
+      if (!rule) {
+        return account;
+      }
+      if ((rule.ignoreIfOptional ?? false) && account.isOptional) {
+        return account;
+      }
+      return { ...account, defaultsTo: rule };
     });
 
     return new nodes.InstructionNode(

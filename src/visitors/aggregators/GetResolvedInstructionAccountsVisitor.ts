@@ -88,7 +88,6 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
         break;
       case 'identity':
       case 'payer':
-        isOptionalSigner = isOptionalSigner || !isSigner;
         isOptional = false;
         break;
       default:
