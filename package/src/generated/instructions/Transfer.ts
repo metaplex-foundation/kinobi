@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 import {
   TransferArgs,
@@ -105,7 +106,7 @@ export function transfer(
   );
 
   // Resolved accounts.
-  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const authorityAccount = input.authority ?? context.identity;
   const delegateRecordAccount = input.delegateRecord;
   const tokenAccount = input.token;
   const tokenOwnerAccount = input.tokenOwner;

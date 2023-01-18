@@ -83,7 +83,7 @@ export function verify(
   // Resolved accounts.
   const metadataAccount = input.metadata;
   const collectionAuthorityAccount = input.collectionAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const authorizationRulesAccount = input.authorizationRules;
   const authorizationRulesProgramAccount = input.authorizationRulesProgram;
 

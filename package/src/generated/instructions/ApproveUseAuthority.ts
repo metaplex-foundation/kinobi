@@ -104,7 +104,7 @@ export function approveUseAuthority(
   // Resolved accounts.
   const useAuthorityRecordAccount = input.useAuthorityRecord;
   const ownerAccount = input.owner;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const userAccount = input.user;
   const ownerTokenAccountAccount = input.ownerTokenAccount;
   const metadataAccount = input.metadata;

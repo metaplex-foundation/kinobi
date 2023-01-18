@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 
 // Accounts.
@@ -93,7 +94,7 @@ export function deprecatedCreateReservationList(
 
   // Resolved accounts.
   const reservationListAccount = input.reservationList;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const updateAuthorityAccount = input.updateAuthority;
   const masterEditionAccount = input.masterEdition;
   const resourceAccount = input.resource;

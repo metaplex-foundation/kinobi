@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 import { UpdateArgs, UpdateArgsArgs, getUpdateArgsSerializer } from '../types';
 
@@ -99,7 +100,7 @@ export function updateDigitalAsset(
   );
 
   // Resolved accounts.
-  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const authorityAccount = input.authority ?? context.identity;
   const metadataAccount = input.metadata;
   const masterEditionAccount = input.masterEdition;
   const mintAccount = input.mint;

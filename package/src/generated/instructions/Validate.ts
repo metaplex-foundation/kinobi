@@ -111,7 +111,7 @@ export function validate(
   );
 
   // Resolved accounts.
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const ruleSetAccount = input.ruleSet;
   const systemProgramAccount = input.systemProgram ?? {
     ...getProgramAddressWithFallback(

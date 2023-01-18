@@ -94,7 +94,7 @@ export function initialize(
   const candyMachineAccount = input.candyMachine;
   const authorityPdaAccount = input.authorityPda;
   const authorityAccount = input.authority ?? context.identity.publicKey;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const collectionMetadataAccount = input.collectionMetadata;
   const collectionMintAccount = input.collectionMint;
   const collectionMasterEditionAccount = input.collectionMasterEdition;

@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 
 // Accounts.
@@ -118,7 +119,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   const masterTokenAccountAccount = input.masterTokenAccount;
   const editionMarkerAccount = input.editionMarker;
   const burnAuthorityAccount = input.burnAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const masterUpdateAuthorityAccount = input.masterUpdateAuthority;
   const masterMetadataAccount = input.masterMetadata;
   const tokenProgramAccount = input.tokenProgram ?? {

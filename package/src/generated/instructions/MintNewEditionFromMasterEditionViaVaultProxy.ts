@@ -131,7 +131,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
   const newMintAccount = input.newMint;
   const editionMarkPdaAccount = input.editionMarkPda;
   const newMintAuthorityAccount = input.newMintAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const vaultAuthorityAccount = input.vaultAuthority;
   const safetyDepositStoreAccount = input.safetyDepositStore;
   const safetyDepositBoxAccount = input.safetyDepositBox;

@@ -7,13 +7,13 @@
   {% elif account.defaultsTo.kind === 'address' %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.address }}');
   {% elif account.defaultsTo.kind === 'identity' and (account.isSigner or account.isOptionalSigner) %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity.publicKey;
+    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity;
   {% elif account.defaultsTo.kind === 'identity' %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity.publicKey;
   {% elif account.defaultsTo.kind === 'payer' and (account.isSigner or account.isOptionalSigner) %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.payer.publicKey;
+    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.payer;
   {% elif account.defaultsTo.kind === 'payer' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity;
+    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.payer.publicKey;
   {% else %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }};
   {% endif %}

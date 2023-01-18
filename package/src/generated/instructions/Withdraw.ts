@@ -71,7 +71,7 @@ export function withdraw(
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const authorityAccount = input.authority ?? context.identity;
 
   // Candy Machine.
   keys.push({

@@ -118,7 +118,7 @@ export function createMetadataAccountV3(
   const metadataAccount = input.metadata;
   const mintAccount = input.mint;
   const mintAuthorityAccount = input.mintAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const updateAuthorityAccount = input.updateAuthority;
   const systemProgramAccount = input.systemProgram ?? {
     ...getProgramAddressWithFallback(

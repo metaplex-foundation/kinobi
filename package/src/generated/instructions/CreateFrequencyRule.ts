@@ -95,7 +95,7 @@ export function createFrequencyRule(
   );
 
   // Resolved accounts.
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const frequencyPdaAccount = input.frequencyPda;
   const systemProgramAccount = input.systemProgram ?? {
     ...getProgramAddressWithFallback(

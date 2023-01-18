@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 import { MintArgs, MintArgsArgs, getMintArgsSerializer } from '../types';
 
@@ -97,8 +98,8 @@ export function mint(
   const metadataAccount = input.metadata;
   const masterEditionAccount = input.masterEdition;
   const mintAccount = input.mint;
-  const payerAccount = input.payer ?? context.payer.publicKey;
-  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const payerAccount = input.payer ?? context.payer;
+  const authorityAccount = input.authority ?? context.identity;
   const systemProgramAccount = input.systemProgram ?? {
     ...getProgramAddressWithFallback(
       context,

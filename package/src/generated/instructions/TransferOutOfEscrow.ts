@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 
 // Accounts.
@@ -106,7 +107,7 @@ export function transferOutOfEscrow(
   // Resolved accounts.
   const escrowAccount = input.escrow;
   const metadataAccount = input.metadata;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const attributeMintAccount = input.attributeMint;
   const attributeSrcAccount = input.attributeSrc;
   const attributeDstAccount = input.attributeDst;

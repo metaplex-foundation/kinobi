@@ -95,7 +95,7 @@ export function approveCollectionAuthority(
   const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
   const newCollectionAuthorityAccount = input.newCollectionAuthority;
   const updateAuthorityAccount = input.updateAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const metadataAccount = input.metadata;
   const mintAccount = input.mint;
   const systemProgramAccount = input.systemProgram ?? {

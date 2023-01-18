@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 import {
   CreateMasterEditionArgs,
@@ -126,7 +127,7 @@ export function deprecatedCreateMasterEdition(
   const printingMintAuthorityAccount = input.printingMintAuthority;
   const mintAuthorityAccount = input.mintAuthority;
   const metadataAccount = input.metadata;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const tokenProgramAccount = input.tokenProgram ?? {
     ...getProgramAddressWithFallback(
       context,

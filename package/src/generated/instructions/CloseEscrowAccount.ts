@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 
 // Accounts.
@@ -92,7 +93,7 @@ export function closeEscrowAccount(
   const mintAccount = input.mint;
   const tokenAccountAccount = input.tokenAccount;
   const editionAccount = input.edition;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const systemProgramAccount = input.systemProgram ?? {
     ...getProgramAddressWithFallback(
       context,

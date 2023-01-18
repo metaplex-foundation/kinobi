@@ -97,10 +97,9 @@ export function mintFromCandyMachine(
   const candyMachineAccount = input.candyMachine;
   const authorityPdaAccount = input.authorityPda;
   const mintAuthorityAccount = input.mintAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const nftMintAccount = input.nftMint;
-  const nftMintAuthorityAccount =
-    input.nftMintAuthority ?? context.identity.publicKey;
+  const nftMintAuthorityAccount = input.nftMintAuthority ?? context.identity;
   const nftMetadataAccount = input.nftMetadata;
   const nftMasterEditionAccount = input.nftMasterEdition;
   const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;

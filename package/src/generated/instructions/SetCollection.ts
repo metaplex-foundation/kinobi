@@ -84,9 +84,9 @@ export function setCollection(
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const authorityAccount = input.authority ?? context.identity;
   const authorityPdaAccount = input.authorityPda;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const collectionMintAccount = input.collectionMint;
   const collectionMetadataAccount = input.collectionMetadata;
   const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;

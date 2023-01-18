@@ -16,6 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 import {
   DelegateArgs,
@@ -108,8 +109,8 @@ export function delegate(
   const masterEditionAccount = input.masterEdition;
   const mintAccount = input.mint;
   const tokenAccount = input.token;
-  const authorityAccount = input.authority ?? context.identity.publicKey;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const authorityAccount = input.authority ?? context.identity;
+  const payerAccount = input.payer ?? context.payer;
   const systemProgramAccount = input.systemProgram ?? {
     ...getProgramAddressWithFallback(
       context,

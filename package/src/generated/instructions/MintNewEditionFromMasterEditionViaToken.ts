@@ -125,7 +125,7 @@ export function mintNewEditionFromMasterEditionViaToken(
   const newMintAccount = input.newMint;
   const editionMarkPdaAccount = input.editionMarkPda;
   const newMintAuthorityAccount = input.newMintAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const tokenAccountOwnerAccount = input.tokenAccountOwner;
   const tokenAccountAccount = input.tokenAccount;
   const newMetadataUpdateAuthorityAccount = input.newMetadataUpdateAuthority;

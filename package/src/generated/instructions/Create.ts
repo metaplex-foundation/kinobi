@@ -77,7 +77,7 @@ export function create(
   );
 
   // Resolved accounts.
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const ruleSetPdaAccount = input.ruleSetPda;
   const systemProgramAccount = input.systemProgram ?? {
     ...getProgramAddressWithFallback(

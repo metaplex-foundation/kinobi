@@ -78,7 +78,7 @@ export function setMintAuthority(
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity.publicKey;
+  const authorityAccount = input.authority ?? context.identity;
   const mintAuthorityAccount = input.mintAuthority;
 
   // Candy Machine.

@@ -110,7 +110,7 @@ export function createMasterEditionV3(
   const mintAccount = input.mint;
   const updateAuthorityAccount = input.updateAuthority;
   const mintAuthorityAccount = input.mintAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const metadataAccount = input.metadata;
   const tokenProgramAccount = input.tokenProgram ?? {
     ...getProgramAddressWithFallback(

@@ -85,7 +85,7 @@ export function verifyCollection(
   // Resolved accounts.
   const metadataAccount = input.metadata;
   const collectionAuthorityAccount = input.collectionAuthority;
-  const payerAccount = input.payer ?? context.payer.publicKey;
+  const payerAccount = input.payer ?? context.payer;
   const collectionMintAccount = input.collectionMint;
   const collectionAccount = input.collection;
   const collectionMasterEditionAccountAccount =
