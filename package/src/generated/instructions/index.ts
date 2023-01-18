@@ -31,6 +31,7 @@ export * from './DeprecatedMintNewEditionFromMasterEditionViaPrintingToken';
 export * from './DeprecatedMintPrintingTokens';
 export * from './DeprecatedMintPrintingTokensViaToken';
 export * from './DeprecatedSetReservationList';
+export * from './Dummy';
 export * from './FreezeDelegatedAccount';
 export * from './Initialize';
 export * from './Migrate';

@@ -3,6 +3,47 @@
   "name": "candy_machine_core",
   "instructions": [
     {
+      "name": "Dummy",
+      "accounts": [
+        {
+          "name": "edition",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
+        },
+        {
+          "name": "updateAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "mintAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "foo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bar",
+          "isMut": false,
+          "isSigner": true
+        }
+      ]
+    },
+    {
       "name": "addConfigLines",
       "docs": [
         "Add the configuration (name + uri) of each NFT to the account data."

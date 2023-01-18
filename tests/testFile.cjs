@@ -83,6 +83,15 @@ kinobi.update(
       account: 'nftMintAuthority',
       kind: 'identity',
     },
+    { instruction: 'Dummy', account: 'edition', kind: 'account', name: 'mint' },
+    {
+      instruction: 'Dummy',
+      account: 'mintAuthority',
+      kind: 'account',
+      name: 'updateAuthority',
+    },
+    { instruction: 'Dummy', account: 'foo', kind: 'account', name: 'bar' },
+    { instruction: 'Dummy', account: 'bar', kind: 'programId' },
   ])
 );
 kinobi.update(
