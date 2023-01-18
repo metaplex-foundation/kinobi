@@ -81,7 +81,6 @@ export function getUseAssetInstructionDataSerializer(
 export function useAsset(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: UseAssetInstructionAccounts & UseAssetInstructionArgs

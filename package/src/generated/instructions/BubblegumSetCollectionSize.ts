@@ -81,7 +81,6 @@ export function getBubblegumSetCollectionSizeInstructionDataSerializer(
 export function bubblegumSetCollectionSize(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: BubblegumSetCollectionSizeInstructionAccounts &

@@ -87,7 +87,6 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
 export function deprecatedSetReservationList(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: DeprecatedSetReservationListInstructionAccounts &

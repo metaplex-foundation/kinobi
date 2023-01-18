@@ -66,7 +66,6 @@ export function getAddConfigLinesInstructionDataSerializer(
 export function addConfigLines(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     programs?: Context['programs'];
   },

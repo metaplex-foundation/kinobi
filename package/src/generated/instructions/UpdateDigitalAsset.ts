@@ -82,7 +82,6 @@ export function getUpdateDigitalAssetInstructionDataSerializer(
 export function updateDigitalAsset(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     programs?: Context['programs'];
   },

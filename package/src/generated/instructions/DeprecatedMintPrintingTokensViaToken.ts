@@ -92,7 +92,6 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
 export function deprecatedMintPrintingTokensViaToken(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: DeprecatedMintPrintingTokensViaTokenInstructionAccounts &

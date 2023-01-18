@@ -65,7 +65,6 @@ export function getFreezeDelegatedAccountInstructionDataSerializer(
 export function freezeDelegatedAccount(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: FreezeDelegatedAccountInstructionAccounts

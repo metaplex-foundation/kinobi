@@ -61,7 +61,6 @@ export function getSetMintAuthorityInstructionDataSerializer(
 export function setMintAuthority(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     programs?: Context['programs'];
   },

@@ -67,7 +67,6 @@ export function getUnverifyCollectionInstructionDataSerializer(
 export function unverifyCollection(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: UnverifyCollectionInstructionAccounts

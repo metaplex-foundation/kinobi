@@ -75,7 +75,6 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
 export function updateMetadataAccount(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   accounts: UpdateMetadataAccountInstructionAccounts,

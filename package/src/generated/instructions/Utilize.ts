@@ -76,7 +76,6 @@ export function getUtilizeInstructionDataSerializer(
 export function utilize(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: UtilizeInstructionAccounts & UtilizeInstructionArgs

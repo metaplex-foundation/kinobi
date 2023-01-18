@@ -81,7 +81,6 @@ export function getRevokeInstructionDataSerializer(
 export function revoke(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     payer: Context['payer'];
     programs?: Context['programs'];

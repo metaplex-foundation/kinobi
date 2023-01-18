@@ -85,7 +85,6 @@ export function getApproveUseAuthorityInstructionDataSerializer(
 export function approveUseAuthority(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

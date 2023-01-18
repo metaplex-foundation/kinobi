@@ -98,7 +98,6 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(
 export function createMetadataAccountV3(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

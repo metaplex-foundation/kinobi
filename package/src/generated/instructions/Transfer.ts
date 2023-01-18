@@ -89,7 +89,6 @@ export function getTransferInstructionDataSerializer(
 export function transfer(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     programs?: Context['programs'];
   },

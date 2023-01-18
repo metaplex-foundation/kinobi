@@ -76,7 +76,6 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(
 export function approveCollectionAuthority(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

@@ -76,7 +76,6 @@ export function getSetCollectionSizeInstructionDataSerializer(
 export function setCollectionSize(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: SetCollectionSizeInstructionAccounts & SetCollectionSizeInstructionArgs

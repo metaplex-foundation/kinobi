@@ -73,7 +73,6 @@ export function getCreateEscrowAccountInstructionDataSerializer(
 export function createEscrowAccount(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

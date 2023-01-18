@@ -76,7 +76,6 @@ export function getDeprecatedCreateReservationListInstructionDataSerializer(
 export function deprecatedCreateReservationList(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

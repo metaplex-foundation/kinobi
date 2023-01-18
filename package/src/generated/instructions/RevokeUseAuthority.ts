@@ -73,7 +73,6 @@ export function getRevokeUseAuthorityInstructionDataSerializer(
 export function revokeUseAuthority(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: RevokeUseAuthorityInstructionAccounts

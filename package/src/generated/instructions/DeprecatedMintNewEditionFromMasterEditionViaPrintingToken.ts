@@ -93,7 +93,6 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
 export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

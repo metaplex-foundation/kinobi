@@ -86,7 +86,6 @@ export function getCreateDigitalAssetInstructionDataSerializer(
 export function createDigitalAsset(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

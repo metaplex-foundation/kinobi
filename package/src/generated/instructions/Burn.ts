@@ -70,7 +70,6 @@ export function getBurnInstructionDataSerializer(
 export function burn(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: BurnInstructionAccounts & BurnInstructionArgs

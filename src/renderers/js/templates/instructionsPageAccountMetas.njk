@@ -21,24 +21,24 @@
 
 {% for account in accounts | sort(false, false, 'position') %}
   {% set isWritableString = 'true' if account.isWritable else 'false' %}
-  // {{ account.titleCaseName }}{% if account.isOptional %} (optional){% endif %}.
-  {% if account.isOptional %}
+  // {{ account.titleCaseName }}{% if account.resolvedIsOptional %} (optional){% endif %}.
+  {% if account.resolvedIsOptional %}
   if ({{ account.name }}Account) {
   {% endif %}
-    {% if account.isOptionalSigner %}
+    {% if account.resolvedIsOptionalSigner %}
       if (isSigner({{ account.name }}Account)) {
         signers.push({{ account.name }}Account);
         keys.push({ pubkey: {{ account.name }}Account.publicKey, isSigner: true, isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });
       } else {
         keys.push({ pubkey: {{ account.name }}Account, isSigner: false, isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });
       }
-    {% elif account.isSigner  %}
+    {% elif account.resolvedIsSigner  %}
       signers.push({{ account.name }}Account);
       keys.push({ pubkey: {{ account.name }}Account.publicKey, isSigner: true, isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });
     {% else %}
       keys.push({ pubkey: {{ account.name }}Account, isSigner: false, isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });
     {% endif %}
-  {% if account.isOptional %}
+  {% if account.resolvedIsOptional %}
   }
   {% endif %}
 

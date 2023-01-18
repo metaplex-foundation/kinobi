@@ -66,7 +66,6 @@ export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
 export function convertMasterEditionV1ToV2(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: ConvertMasterEditionV1ToV2InstructionAccounts

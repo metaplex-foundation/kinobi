@@ -52,7 +52,6 @@ export function getSignMetadataInstructionDataSerializer(
 export function signMetadata(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: SignMetadataInstructionAccounts

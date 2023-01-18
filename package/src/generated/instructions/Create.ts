@@ -61,7 +61,6 @@ export function getCreateInstructionDataSerializer(
 export function create(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

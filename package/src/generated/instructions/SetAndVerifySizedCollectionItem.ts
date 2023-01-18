@@ -76,7 +76,6 @@ export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(
 export function setAndVerifySizedCollectionItem(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

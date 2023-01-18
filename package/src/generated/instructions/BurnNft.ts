@@ -62,7 +62,6 @@ export function getBurnNftInstructionDataSerializer(
 export function burnNft(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: BurnNftInstructionAccounts

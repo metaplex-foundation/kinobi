@@ -65,7 +65,6 @@ export function getThawDelegatedAccountInstructionDataSerializer(
 export function thawDelegatedAccount(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: ThawDelegatedAccountInstructionAccounts

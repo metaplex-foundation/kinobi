@@ -71,7 +71,6 @@ export function getCloseEscrowAccountInstructionDataSerializer(
 export function closeEscrowAccount(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

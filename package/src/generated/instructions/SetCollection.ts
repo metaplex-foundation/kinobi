@@ -66,7 +66,6 @@ export function getSetCollectionInstructionDataSerializer(
 export function setCollection(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     payer: Context['payer'];
     programs?: Context['programs'];

@@ -317,9 +317,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   ): JavaScriptImportMap {
     const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
-      if (account.isOptionalSigner) {
+      if (account.resolvedIsOptionalSigner) {
         imports.add('core', ['PublicKey', 'Signer', 'isSigner']);
-      } else if (account.isSigner) {
+      } else if (account.resolvedIsSigner) {
         imports.add('core', 'Signer');
       } else {
         imports.add('core', 'PublicKey');

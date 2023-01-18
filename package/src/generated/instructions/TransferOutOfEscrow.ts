@@ -87,7 +87,6 @@ export function getTransferOutOfEscrowInstructionDataSerializer(
 export function transferOutOfEscrow(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

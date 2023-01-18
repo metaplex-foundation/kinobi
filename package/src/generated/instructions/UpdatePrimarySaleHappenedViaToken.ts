@@ -66,7 +66,6 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
 export function updatePrimarySaleHappenedViaToken(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: UpdatePrimarySaleHappenedViaTokenInstructionAccounts

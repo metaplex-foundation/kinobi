@@ -75,7 +75,6 @@ export function getMigrateInstructionDataSerializer(
 export function migrate(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: MigrateInstructionAccounts & MigrateInstructionArgs

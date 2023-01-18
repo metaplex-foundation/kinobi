@@ -64,7 +64,6 @@ export function getRemoveCreatorVerificationInstructionDataSerializer(
 export function removeCreatorVerification(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: RemoveCreatorVerificationInstructionAccounts

@@ -50,7 +50,6 @@ export function getPuffMetadataInstructionDataSerializer(
 export function puffMetadata(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
   input: PuffMetadataInstructionAccounts

@@ -78,7 +78,6 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
 export function createFrequencyRule(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

@@ -5,6 +5,9 @@ export type ResolvedInstructionAccount = nodes.InstructionNodeAccount & {
   position: number;
   dependencyPosition: number;
   dependsOn: string[];
+  resolvedIsSigner: boolean;
+  resolvedIsOptionalSigner: boolean;
+  resolvedIsOptional: boolean;
 };
 
 export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
@@ -68,27 +71,29 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       this.visitInstructionAccount(instruction, dependency, dependencyIndex);
     });
 
-    let { isSigner, isOptionalSigner, isOptional } = account;
+    const { isSigner, isOptionalSigner, isOptional } = account;
+    let resolvedIsSigner = isSigner;
+    let resolvedIsOptionalSigner = isOptionalSigner;
+    let resolvedIsOptional = isOptional;
 
     switch (account.defaultsTo.kind) {
       case 'account':
         const defaultAccount = this.visited.get(account.defaultsTo.name)!;
-        const newIsSigner = isSigner && defaultAccount.isSigner;
-        const newIsPublicKey = !isSigner && !defaultAccount.isSigner;
-        isSigner = newIsSigner;
-        isOptionalSigner = !newIsSigner || !newIsPublicKey;
-        isOptional = defaultAccount.isOptional;
+        const resolvedIsPublicKey = !isSigner && !defaultAccount.isSigner;
+        resolvedIsSigner = isSigner && defaultAccount.isSigner;
+        resolvedIsOptionalSigner = !resolvedIsSigner || !resolvedIsPublicKey;
+        resolvedIsOptional = defaultAccount.isOptional;
         break;
       case 'address':
       case 'program':
       case 'programId':
-        isOptionalSigner = isSigner;
-        isSigner = false;
-        isOptional = false;
+        resolvedIsOptionalSigner = isSigner;
+        resolvedIsSigner = false;
+        resolvedIsOptional = false;
         break;
       case 'identity':
       case 'payer':
-        isOptional = false;
+        resolvedIsOptional = false;
         break;
       default:
         break;
@@ -99,9 +104,9 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       position: index,
       dependencyPosition: this.visited.size,
       dependsOn,
-      isSigner,
-      isOptionalSigner,
-      isOptional,
+      resolvedIsSigner,
+      resolvedIsOptionalSigner,
+      resolvedIsOptional,
     };
 
     this.visited.set(account.name, resolved);

@@ -108,7 +108,6 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
 export function mintNewEditionFromMasterEditionViaVaultProxy(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

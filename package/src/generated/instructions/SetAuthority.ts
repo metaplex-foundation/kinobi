@@ -60,7 +60,6 @@ export function getSetAuthorityInstructionDataSerializer(
 export function setAuthority(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     programs?: Context['programs'];
   },

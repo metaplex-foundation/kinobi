@@ -102,7 +102,6 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSeriali
 export function mintNewEditionFromMasterEditionViaToken(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

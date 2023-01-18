@@ -89,7 +89,6 @@ export function getCreateMasterEditionV3InstructionDataSerializer(
 export function createMasterEditionV3(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },

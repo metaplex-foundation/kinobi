@@ -54,7 +54,6 @@ export function getWithdrawInstructionDataSerializer(
 export function withdraw(
   context: {
     serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
     identity: Context['identity'];
     programs?: Context['programs'];
   },
