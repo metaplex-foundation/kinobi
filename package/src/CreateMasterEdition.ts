@@ -1,5 +1,6 @@
 import {
   AccountMeta,
+  checkForIsWritableOverride as isWritable,
   Context,
   PublicKey,
   publicKey,
@@ -58,10 +59,8 @@ export function createMasterEdition(
   const updateAuthorityAccount = input.updateAuthority;
   const mintAuthorityAccount = input.mintAuthority ?? updateAuthorityAccount;
   const payerAccount = input.payer ?? context.payer;
-  const barAccount = input.bar ?? programId;
-  const barAccountIsWritable = input.bar ? false : false;
+  const barAccount = input.bar ?? { ...programId, isWritable: false };
   const fooAccount = input.foo ?? barAccount;
-  const fooAccountIsWritable = input.foo || input.bar ? true : false;
 
   /** Edition - Default to mint thus can be optional. */
   if (editionAccount) {
@@ -71,13 +70,17 @@ export function createMasterEdition(
     keys.push({
       pubkey: publicKey(editionAccount),
       isSigner: isSigner(editionAccount),
-      isWritable: true,
+      isWritable: isWritable(editionAccount, true),
     });
   }
 
   /** Metadata mint - Optional */
   if (mintAccount) {
-    keys.push({ pubkey: mintAccount, isSigner: false, isWritable: true });
+    keys.push({
+      pubkey: mintAccount,
+      isSigner: false,
+      isWritable: isWritable(mintAccount, true),
+    });
   }
 
   /** Update authority */
@@ -85,7 +88,7 @@ export function createMasterEdition(
   keys.push({
     pubkey: publicKey(updateAuthorityAccount),
     isSigner: true,
-    isWritable: false,
+    isWritable: isWritable(updateAuthorityAccount, false),
   });
 
   /** Mint authority - Defaults to the update authority. */
@@ -93,7 +96,7 @@ export function createMasterEdition(
   keys.push({
     pubkey: publicKey(mintAuthorityAccount),
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(mintAuthorityAccount, true),
   });
 
   /** payer */
@@ -101,7 +104,7 @@ export function createMasterEdition(
   keys.push({
     pubkey: publicKey(payerAccount),
     isSigner: true,
-    isWritable: true,
+    isWritable: isWritable(payerAccount, true),
   });
 
   /** Foo - Default to Bar */
@@ -111,7 +114,7 @@ export function createMasterEdition(
   keys.push({
     pubkey: publicKey(fooAccount),
     isSigner: isSigner(fooAccount),
-    isWritable: fooAccountIsWritable,
+    isWritable: isWritable(fooAccount, true),
   });
 
   /** Bar - Default to Program ID */
@@ -121,7 +124,7 @@ export function createMasterEdition(
   keys.push({
     pubkey: publicKey(barAccount),
     isSigner: isSigner(barAccount),
-    isWritable: barAccountIsWritable,
+    isWritable: isWritable(barAccount, false),
   });
 
   // Data.
