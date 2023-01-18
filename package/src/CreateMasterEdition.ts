@@ -59,7 +59,9 @@ export function createMasterEdition(
   const mintAuthorityAccount = input.mintAuthority ?? updateAuthorityAccount;
   const payerAccount = input.payer ?? context.payer;
   const barAccount = input.bar ?? programId;
+  const barAccountIsWritable = input.bar ? false : false;
   const fooAccount = input.foo ?? barAccount;
+  const fooAccountIsWritable = input.foo || input.bar ? true : false;
 
   /** Edition - Default to mint thus can be optional. */
   if (editionAccount) {
@@ -109,7 +111,7 @@ export function createMasterEdition(
   keys.push({
     pubkey: publicKey(fooAccount),
     isSigner: isSigner(fooAccount),
-    isWritable: true,
+    isWritable: fooAccountIsWritable,
   });
 
   /** Bar - Default to Program ID */
@@ -119,7 +121,7 @@ export function createMasterEdition(
   keys.push({
     pubkey: publicKey(barAccount),
     isSigner: isSigner(barAccount),
-    isWritable: input.bar ? true : false,
+    isWritable: barAccountIsWritable,
   });
 
   // Data.
