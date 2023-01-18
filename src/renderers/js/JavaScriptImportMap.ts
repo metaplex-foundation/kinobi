@@ -47,7 +47,7 @@ export class JavaScriptImportMap {
 
   addAlias(module: string, name: string, alias: string): JavaScriptImportMap {
     const currentAliases = this._aliases.get(module) ?? {};
-    currentAliases[alias] = name;
+    currentAliases[name] = alias;
     this._aliases.set(module, currentAliases);
     return this;
   }

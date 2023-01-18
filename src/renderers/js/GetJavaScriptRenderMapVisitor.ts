@@ -210,15 +210,18 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
-    const imports = new JavaScriptImportMap().add('core', [
-      'AccountMeta',
-      'Context',
-      'getProgramAddressWithFallback',
-      'PublicKey',
-      'Signer',
-      'WrappedInstruction',
-      ...(instruction.hasData ? ['Serializer'] : []),
-    ]);
+    const imports = new JavaScriptImportMap()
+      .add('core', [
+        'AccountMeta',
+        'Context',
+        'checkForIsWritableOverride',
+        'getProgramAddressWithFallback',
+        'PublicKey',
+        'Signer',
+        'WrappedInstruction',
+        ...(instruction.hasData ? ['Serializer'] : []),
+      ])
+      .addAlias('core', 'checkForIsWritableOverride', 'isWritable');
 
     // Accounts.
     const accounts = instruction
