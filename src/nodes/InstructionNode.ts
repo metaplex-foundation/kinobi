@@ -6,14 +6,20 @@ import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeStructFieldNode } from './TypeStructFieldNode';
 
-// TODO: { kind: 'pda'; account: string; dependency: Dependency; seeds?: Record<string, string> }
-// TODO: { kind: 'arg'; name: string }
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
-  | { kind: 'program'; program: { name: string; address: string } }
-  | { kind: 'programId' }
+  | { kind: 'account'; name: string }
   | { kind: 'identity' }
   | { kind: 'payer' }
+  // TODO
+  // | {
+  //     kind: 'pda';
+  //     account: string;
+  //     dependency: Dependency;
+  //     seeds?: Record<string, string>;
+  //   }
+  | { kind: 'program'; program: { name: string; address: string } }
+  | { kind: 'programId' }
   | { kind: 'none' };
 
 export type InstructionNodeAccount = {
