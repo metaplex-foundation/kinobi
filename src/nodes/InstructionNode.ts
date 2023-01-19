@@ -6,6 +6,24 @@ import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeStructFieldNode } from './TypeStructFieldNode';
 
+export type InstructionNodeMetadata = {
+  name: string;
+  idlName: string;
+  docs: string[];
+  internal: boolean;
+  bytesCreatedOnChain: InstructionNodeBytesCreatedOnChain;
+};
+
+export type InstructionNodeAccount = {
+  name: string;
+  isWritable: boolean;
+  isSigner: boolean;
+  isOptionalSigner: boolean;
+  isOptional: boolean;
+  description: string;
+  defaultsTo: InstructionNodeAccountDefaults;
+};
+
 export type InstructionNodeAccountDefaults =
   | { kind: 'address'; address: string }
   | { kind: 'account'; name: string }
@@ -21,22 +39,11 @@ export type InstructionNodeAccountDefaults =
   | { kind: 'programId' }
   | { kind: 'none' };
 
-export type InstructionNodeAccount = {
-  name: string;
-  isWritable: boolean;
-  isSigner: boolean;
-  isOptionalSigner: boolean;
-  isOptional: boolean;
-  description: string;
-  defaultsTo: InstructionNodeAccountDefaults;
-};
-
-export type InstructionNodeMetadata = {
-  name: string;
-  idlName: string;
-  docs: string[];
-  internal: boolean;
-};
+export type InstructionNodeBytesCreatedOnChain =
+  | { kind: 'number'; value: number; includeHeader: boolean }
+  | { kind: 'arg'; name: string; includeHeader: boolean }
+  | { kind: 'account'; name: string; includeHeader: boolean }
+  | { kind: 'none' };
 
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
@@ -50,7 +57,13 @@ export class InstructionNode implements Visitable {
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
     const idlName = idl.name ?? '';
     const name = pascalCase(idlName);
-    const metadata = { name, idlName, docs: idl.docs ?? [], internal: false };
+    const metadata: InstructionNodeMetadata = {
+      name,
+      idlName,
+      docs: idl.docs ?? [],
+      internal: false,
+      bytesCreatedOnChain: { kind: 'none' },
+    };
 
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => ({
