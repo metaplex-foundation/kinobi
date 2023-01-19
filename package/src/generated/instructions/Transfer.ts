@@ -263,7 +263,6 @@ export function transfer(
   const data = getTransferInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

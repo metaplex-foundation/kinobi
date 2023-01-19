@@ -113,7 +113,6 @@ export function updatePrimarySaleHappenedViaToken(
   ).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

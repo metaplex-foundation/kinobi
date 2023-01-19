@@ -178,7 +178,6 @@ export function deprecatedMintPrintingTokens(
     );
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

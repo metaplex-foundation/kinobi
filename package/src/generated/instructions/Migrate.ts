@@ -195,7 +195,6 @@ export function migrate(
   const data = getMigrateInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

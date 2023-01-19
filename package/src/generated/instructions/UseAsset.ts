@@ -217,7 +217,6 @@ export function useAsset(
   const data = getUseAssetInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

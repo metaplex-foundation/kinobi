@@ -182,7 +182,6 @@ export function createEscrowAccount(
   ).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

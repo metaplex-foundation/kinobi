@@ -214,7 +214,6 @@ export function approveUseAuthority(
     getApproveUseAuthorityInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

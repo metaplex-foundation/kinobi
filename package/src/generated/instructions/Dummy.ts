@@ -150,7 +150,6 @@ export function dummy(
   const data = getDummyInstructionDataSerializer(context).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

@@ -55,16 +55,16 @@ export function {{ camelCaseName }}(
   {% endif %}
 
   // Bytes Created On Chain.
-  {# {% set bytes = instruction.metadata.bytesCreatedOnChain %}
+  {% set bytes = instruction.metadata.bytesCreatedOnChain %}
   {% if bytes.kind === 'number' %}
     const bytesCreatedOnChain = {{ bytes.value }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif bytes.kind === 'arg' %}
     const bytesCreatedOnChain = {{ argsObj }}.{{ bytes.name }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif bytes.kind === 'account' %}
     const bytesCreatedOnChain = get{{ bytes.name | capitalize }}Size(context){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
-  {% else %} #}
+  {% else %}
     const bytesCreatedOnChain = 0;
-  {# {% endif %} #}
+  {% endif %}
 
   return { instruction: { keys, programId, data }, signers, bytesCreatedOnChain };
 }

@@ -168,7 +168,6 @@ export function setAndVerifySizedCollectionItem(
   ).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

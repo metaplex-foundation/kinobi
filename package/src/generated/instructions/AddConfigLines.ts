@@ -105,7 +105,6 @@ export function addConfigLines(
     getAddConfigLinesInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

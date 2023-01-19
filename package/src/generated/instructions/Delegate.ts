@@ -233,7 +233,6 @@ export function delegate(
   const data = getDelegateInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

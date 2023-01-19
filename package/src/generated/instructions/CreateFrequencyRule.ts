@@ -133,7 +133,6 @@ export function createFrequencyRule(
     getCreateFrequencyRuleInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

@@ -203,7 +203,6 @@ export function createMasterEditionV3(
     getCreateMasterEditionV3InstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

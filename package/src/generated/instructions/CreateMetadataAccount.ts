@@ -174,7 +174,6 @@ export function createMetadataAccount(
     getCreateMetadataAccountInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

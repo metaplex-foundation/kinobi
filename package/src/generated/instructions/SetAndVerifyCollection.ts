@@ -163,7 +163,6 @@ export function setAndVerifyCollection(
   ).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

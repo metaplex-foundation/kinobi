@@ -202,7 +202,6 @@ export function createDigitalAsset(
     getCreateDigitalAssetInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

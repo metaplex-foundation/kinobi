@@ -256,7 +256,6 @@ export function validate(
   const data = getValidateInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

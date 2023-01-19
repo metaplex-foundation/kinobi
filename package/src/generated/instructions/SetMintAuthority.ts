@@ -110,7 +110,6 @@ export function setMintAuthority(
   );
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

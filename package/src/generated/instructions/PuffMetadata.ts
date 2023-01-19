@@ -78,7 +78,6 @@ export function puffMetadata(
   const data = getPuffMetadataInstructionDataSerializer(context).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

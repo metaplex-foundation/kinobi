@@ -190,7 +190,6 @@ export function createMetadataAccountV3(
     );
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

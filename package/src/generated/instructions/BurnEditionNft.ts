@@ -179,7 +179,6 @@ export function burnEditionNft(
   );
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

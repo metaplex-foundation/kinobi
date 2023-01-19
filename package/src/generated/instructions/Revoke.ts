@@ -229,7 +229,6 @@ export function revoke(
   const data = getRevokeInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

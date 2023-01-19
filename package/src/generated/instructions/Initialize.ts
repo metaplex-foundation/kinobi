@@ -193,7 +193,6 @@ export function initialize(
   const data = getInitializeInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

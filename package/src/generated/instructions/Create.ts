@@ -114,7 +114,6 @@ export function create(
   const data = getCreateInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

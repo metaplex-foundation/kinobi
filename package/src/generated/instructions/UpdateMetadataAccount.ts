@@ -114,7 +114,6 @@ export function updateMetadataAccount(
     getUpdateMetadataAccountInstructionDataSerializer(context).serialize(args);
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

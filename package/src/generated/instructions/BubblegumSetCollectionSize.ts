@@ -149,7 +149,6 @@ export function bubblegumSetCollectionSize(
     );
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

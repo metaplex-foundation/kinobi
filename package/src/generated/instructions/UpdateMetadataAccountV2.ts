@@ -122,7 +122,6 @@ export function updateMetadataAccountV2(
     );
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

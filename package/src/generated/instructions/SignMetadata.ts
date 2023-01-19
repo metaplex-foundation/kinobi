@@ -89,7 +89,6 @@ export function signMetadata(
   const data = getSignMetadataInstructionDataSerializer(context).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {

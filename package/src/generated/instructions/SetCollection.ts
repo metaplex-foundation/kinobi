@@ -212,7 +212,6 @@ export function setCollection(
   const data = getSetCollectionInstructionDataSerializer(context).serialize({});
 
   // Bytes Created On Chain.
-
   const bytesCreatedOnChain = 0;
 
   return {
