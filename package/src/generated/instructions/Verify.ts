@@ -131,9 +131,13 @@ export function verify(
   // Data.
   const data = getVerifyInstructionDataSerializer(context).serialize(input);
 
+  // Bytes Created On Chain.
+
+  const bytesCreatedOnChain = 0;
+
   return {
     instruction: { keys, programId, data },
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

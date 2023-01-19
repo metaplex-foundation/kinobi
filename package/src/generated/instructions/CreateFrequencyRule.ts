@@ -132,9 +132,13 @@ export function createFrequencyRule(
   const data =
     getCreateFrequencyRuleInstructionDataSerializer(context).serialize(input);
 
+  // Bytes Created On Chain.
+
+  const bytesCreatedOnChain = 0;
+
   return {
     instruction: { keys, programId, data },
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

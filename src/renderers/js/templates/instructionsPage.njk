@@ -47,17 +47,25 @@ export function {{ camelCaseName }}(
 
   // Data.
   {% if instruction.hasArgs %}
-  const data = get{{ name }}InstructionDataSerializer(context).serialize({{ argsObj }});
+    const data = get{{ name }}InstructionDataSerializer(context).serialize({{ argsObj }});
   {% elif instruction.hasData %}
-  const data = get{{ name }}InstructionDataSerializer(context).serialize({});
+    const data = get{{ name }}InstructionDataSerializer(context).serialize({});
   {% else %}
-  const data = new Uint8Array();
+    const data = new Uint8Array();
   {% endif %}
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain: 0,
-  }
+  // Bytes Created On Chain.
+  {# {% set bytes = instruction.metadata.bytesCreatedOnChain %}
+  {% if bytes.kind === 'number' %}
+    const bytesCreatedOnChain = {{ bytes.value }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% elif bytes.kind === 'arg' %}
+    const bytesCreatedOnChain = {{ argsObj }}.{{ bytes.name }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% elif bytes.kind === 'account' %}
+    const bytesCreatedOnChain = get{{ bytes.name | capitalize }}Size(context){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% else %} #}
+    const bytesCreatedOnChain = 0;
+  {# {% endif %} #}
+
+  return { instruction: { keys, programId, data }, signers, bytesCreatedOnChain };
 }
 {% endblock %}

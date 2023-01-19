@@ -1,9 +1,14 @@
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
+type InstructionNodeBytesCreatedOnChainInput = Omit<
+  nodes.InstructionNodeBytesCreatedOnChain,
+  'includeHeader'
+> & { includeHeader?: boolean };
+
 export class SetInstructionBytesCreatedOnChainVisitor extends TransformNodesVisitor {
   constructor(
-    readonly map: Record<string, nodes.InstructionNodeBytesCreatedOnChain>
+    readonly map: Record<string, InstructionNodeBytesCreatedOnChainInput>
   ) {
     const transforms = Object.entries(map).map(
       ([selectorStack, bytesCreatedOnChain]): NodeTransform => {
@@ -14,7 +19,13 @@ export class SetInstructionBytesCreatedOnChainVisitor extends TransformNodesVisi
           transformer: (node) => {
             nodes.assertInstructionNode(node);
             return new nodes.InstructionNode(
-              { ...node.metadata, bytesCreatedOnChain },
+              {
+                ...node.metadata,
+                bytesCreatedOnChain: {
+                  includeHeader: true,
+                  ...bytesCreatedOnChain,
+                } as nodes.InstructionNodeBytesCreatedOnChain,
+              },
               node.accounts,
               node.args
             );

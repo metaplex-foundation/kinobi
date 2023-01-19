@@ -167,9 +167,13 @@ export function setAndVerifySizedCollectionItem(
     context
   ).serialize({});
 
+  // Bytes Created On Chain.
+
+  const bytesCreatedOnChain = 0;
+
   return {
     instruction: { keys, programId, data },
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

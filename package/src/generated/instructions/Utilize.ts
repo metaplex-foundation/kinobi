@@ -211,9 +211,13 @@ export function utilize(
   // Data.
   const data = getUtilizeInstructionDataSerializer(context).serialize(input);
 
+  // Bytes Created On Chain.
+
+  const bytesCreatedOnChain = 0;
+
   return {
     instruction: { keys, programId, data },
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

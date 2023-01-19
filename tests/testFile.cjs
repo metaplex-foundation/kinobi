@@ -9,6 +9,7 @@ const {
   SetInstructionAccountDefaultValuesVisitor,
   SetAccountSeedsVisitor,
   TypeLeafNode,
+  SetInstructionBytesCreatedOnChainVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -112,6 +113,11 @@ kinobi.update(
       },
       { kind: 'literal', value: 'edition' },
     ],
+  })
+);
+kinobi.update(
+  new SetInstructionBytesCreatedOnChainVisitor({
+    MasterEditionV2: { kind: 'number', value: 42 },
   })
 );
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
