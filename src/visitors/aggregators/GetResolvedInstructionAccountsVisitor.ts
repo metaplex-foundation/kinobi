@@ -57,8 +57,6 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       );
     }
 
-    this.stack.push(account.name);
-
     // Get account dependencies.
     const dependsOn: string[] = [];
     if (account.defaultsTo.kind === 'account') {
@@ -66,10 +64,12 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     }
 
     // Visit account dependencies first.
+    this.stack.push(account.name);
     dependsOn.forEach((name) => {
       const [dependency, dependencyIndex] = this.raw.get(name)!;
       this.visitInstructionAccount(instruction, dependency, dependencyIndex);
     });
+    this.stack.pop();
 
     const { isSigner, isOptionalSigner, isOptional } = account;
     let resolvedIsSigner = isSigner;
