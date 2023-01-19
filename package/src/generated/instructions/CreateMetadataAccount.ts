@@ -174,7 +174,7 @@ export function createMetadataAccount(
     getCreateMetadataAccountInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-  const bytesCreatedOnChain = 0;
+  const bytesCreatedOnChain = 42 + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: { keys, programId, data },
