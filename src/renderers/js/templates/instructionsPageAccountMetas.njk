@@ -3,7 +3,7 @@
   {% if account.defaultsTo.kind === 'account' %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? {{ account.defaultsTo.name }}Account;
   {% elif account.defaultsTo.kind === 'pda' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.account | capitalize }}Pda(context,
+    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.pdaAccount | capitalize }}Pda(context,
     {%- if account.defaultsTo.seeds | length > 0 -%}
       {
         {%- for seed, dependency in account.defaultsTo.seeds -%}

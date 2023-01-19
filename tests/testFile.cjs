@@ -96,7 +96,6 @@ kinobi.update(
       instruction: 'CreateMetadataAccount',
       account: 'metadata',
       kind: 'pda',
-      seeds: { mint: 'mint' },
     },
   ])
 );

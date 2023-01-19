@@ -1,8 +1,19 @@
+import { pascalCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
+import { Dependency } from '../Dependency';
+
+type InstructionNodeAccountDefaultsInput =
+  | nodes.InstructionNodeAccountDefaults
+  | {
+      kind: 'pda';
+      pdaAccount?: string;
+      dependency?: Dependency;
+      seeds?: Record<string, string>;
+    };
 
 export type InstructionAccountDefaultRule =
-  nodes.InstructionNodeAccountDefaults & {
+  InstructionNodeAccountDefaultsInput & {
     /** The name of the instruction account or a pattern to match on it. */
     account: string | RegExp;
     /** @defaultValue Defaults to searching accounts on all instructions. */
@@ -114,6 +125,8 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
 export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
   protected readonly rules: InstructionAccountDefaultRule[];
 
+  protected allAccounts = new Map<string, nodes.AccountNode>();
+
   constructor(rules: InstructionAccountDefaultRule[]) {
     super();
 
@@ -126,41 +139,58 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
     });
   }
 
-  // TODO: Visit account and store data to prefill seeds.
-  // TODO: Make pda kinds more relax here. Maybe an input type?
-
-  visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
-    const accounts = instruction.accounts.map((account) => {
-      const rule = this.matchRule(instruction, account);
-      if (!rule) {
-        return account;
-      }
-      if ((rule.ignoreIfOptional ?? false) && account.isOptional) {
-        return account;
-      }
-      return { ...account, defaultsTo: rule };
+  visitRoot(root: nodes.RootNode): nodes.Node {
+    root.allAccounts.forEach((account) => {
+      this.allAccounts.set(account.name, account);
     });
+    return super.visitRoot(root);
+  }
 
-    return new nodes.InstructionNode(
-      instruction.metadata,
-      accounts,
-      instruction.args
+  visitProgram(program: nodes.ProgramNode): nodes.Node {
+    return new nodes.ProgramNode(
+      program.metadata,
+      program.accounts,
+      program.instructions
+        .map((instruction) => instruction.accept(this))
+        .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
+      program.definedTypes,
+      program.errors
     );
   }
 
-  visitAccount(account: nodes.AccountNode): nodes.Node {
-    // No need to visit account trees.
-    return account;
-  }
+  visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
+    const instructionAccounts = instruction.accounts.map(
+      (account): nodes.InstructionNodeAccount => {
+        const rule = this.matchRule(instruction, account);
+        if (!rule) {
+          return account;
+        }
+        if ((rule.ignoreIfOptional ?? false) && account.isOptional) {
+          return account;
+        }
+        if (rule.kind === 'pda') {
+          const pdaAccount =
+            rule.pdaAccount ??
+            (typeof rule.account === 'string' ? rule.account : '');
+          return {
+            ...account,
+            defaultsTo: {
+              pdaAccount,
+              dependency: 'generated',
+              seeds: this.getAccountVariableSeeds(pdaAccount),
+              ...rule,
+            },
+          };
+        }
+        return { ...account, defaultsTo: rule };
+      }
+    );
 
-  visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node {
-    // No need to visit defined type trees.
-    return definedType;
-  }
-
-  visitError(error: nodes.ErrorNode): nodes.Node {
-    // No need to visit error trees.
-    return error;
+    return new nodes.InstructionNode(
+      instruction.metadata,
+      instructionAccounts,
+      instruction.args
+    );
   }
 
   protected matchRule(
@@ -175,5 +205,17 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
         ? rule.account === account.name
         : rule.account.test(account.name);
     });
+  }
+
+  protected getAccountVariableSeeds(
+    accountName: string
+  ): Record<string, string> {
+    const seeds = this.allAccounts.get(pascalCase(accountName))?.seeds ?? [];
+    return seeds.reduce((acc, seed) => {
+      if (seed.kind === 'variable') {
+        acc[seed.name] = seed.name;
+      }
+      return acc;
+    }, {} as Record<string, string>);
   }
 }

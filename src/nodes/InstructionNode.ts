@@ -13,7 +13,7 @@ export type InstructionNodeAccountDefaults =
   | { kind: 'payer' }
   | {
       kind: 'pda';
-      account: string;
+      pdaAccount: string;
       dependency: Dependency;
       seeds: Record<string, string>;
     }
