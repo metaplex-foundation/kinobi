@@ -101,7 +101,8 @@ export function createMetadataAccount(
 
   // Resolved accounts.
   const mintAccount = input.mint;
-  const metadataAccount = input.metadata ?? findMetadataPda(context, { mint });
+  const metadataAccount =
+    input.metadata ?? findMetadataPda(context, { mint: mintAccount });
   const mintAuthorityAccount = input.mintAuthority;
   const payerAccount = input.payer ?? context.payer;
   const updateAuthorityAccount = input.updateAuthority;

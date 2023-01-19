@@ -7,10 +7,10 @@
     {%- if account.defaultsTo.seeds | length > 0 -%}
       {
         {%- for seed, dependency in account.defaultsTo.seeds -%}
-          {%- if seed === dependency -%}
+          {%- if seed === (dependency + 'Account') -%}
             {{ seed }},
           {%- else -%}
-            {{ seed }}: {{ dependency }},
+            {{ seed }}: {{ dependency }}Account,
           {%- endif -%}
         {%- endfor -%}
       }
