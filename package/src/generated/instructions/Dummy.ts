@@ -17,6 +17,7 @@ import {
   getProgramAddressWithFallback,
   isSigner,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 
 // Accounts.
@@ -87,18 +88,12 @@ export function dummy(
   // Edition.
   if (isSigner(editionAccount)) {
     signers.push(editionAccount);
-    keys.push({
-      pubkey: editionAccount.publicKey,
-      isSigner: true,
-      isWritable: isWritable(editionAccount, true),
-    });
-  } else {
-    keys.push({
-      pubkey: editionAccount,
-      isSigner: false,
-      isWritable: isWritable(editionAccount, true),
-    });
   }
+  keys.push({
+    pubkey: publicKey(editionAccount),
+    isSigner: isSigner(editionAccount),
+    isWritable: isWritable(editionAccount, true),
+  });
 
   // Mint.
   keys.push({
@@ -134,34 +129,22 @@ export function dummy(
   // Foo.
   if (isSigner(fooAccount)) {
     signers.push(fooAccount);
-    keys.push({
-      pubkey: fooAccount.publicKey,
-      isSigner: true,
-      isWritable: isWritable(fooAccount, true),
-    });
-  } else {
-    keys.push({
-      pubkey: fooAccount,
-      isSigner: false,
-      isWritable: isWritable(fooAccount, true),
-    });
   }
+  keys.push({
+    pubkey: publicKey(fooAccount),
+    isSigner: isSigner(fooAccount),
+    isWritable: isWritable(fooAccount, true),
+  });
 
   // Bar.
   if (isSigner(barAccount)) {
     signers.push(barAccount);
-    keys.push({
-      pubkey: barAccount.publicKey,
-      isSigner: true,
-      isWritable: isWritable(barAccount, false),
-    });
-  } else {
-    keys.push({
-      pubkey: barAccount,
-      isSigner: false,
-      isWritable: isWritable(barAccount, false),
-    });
   }
+  keys.push({
+    pubkey: publicKey(barAccount),
+    isSigner: isSigner(barAccount),
+    isWritable: isWritable(barAccount, false),
+  });
 
   // Data.
   const data = getDummyInstructionDataSerializer(context).serialize({});

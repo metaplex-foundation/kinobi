@@ -30,10 +30,8 @@
     {% if account.resolvedIsOptionalSigner %}
       if (isSigner({{ account.name }}Account)) {
         signers.push({{ account.name }}Account);
-        keys.push({ pubkey: {{ account.name }}Account.publicKey, isSigner: true, isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });
-      } else {
-        keys.push({ pubkey: {{ account.name }}Account, isSigner: false, isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });
       }
+      keys.push({ pubkey: publicKey({{ account.name }}Account), isSigner: isSigner({{ account.name }}Account), isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });
     {% elif account.resolvedIsSigner  %}
       signers.push({{ account.name }}Account);
       keys.push({ pubkey: {{ account.name }}Account.publicKey, isSigner: true, isWritable: isWritable({{ account.name }}Account, {{ isWritableString }}) });

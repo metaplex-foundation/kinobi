@@ -17,6 +17,7 @@ import {
   getProgramAddressWithFallback,
   isSigner,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
 import {
   Operation,
@@ -158,18 +159,12 @@ export function validate(
   if (optRuleSigner1Account) {
     if (isSigner(optRuleSigner1Account)) {
       signers.push(optRuleSigner1Account);
-      keys.push({
-        pubkey: optRuleSigner1Account.publicKey,
-        isSigner: true,
-        isWritable: isWritable(optRuleSigner1Account, false),
-      });
-    } else {
-      keys.push({
-        pubkey: optRuleSigner1Account,
-        isSigner: false,
-        isWritable: isWritable(optRuleSigner1Account, false),
-      });
     }
+    keys.push({
+      pubkey: publicKey(optRuleSigner1Account),
+      isSigner: isSigner(optRuleSigner1Account),
+      isWritable: isWritable(optRuleSigner1Account, false),
+    });
   }
 
   // Opt Rule Signer2 (optional).

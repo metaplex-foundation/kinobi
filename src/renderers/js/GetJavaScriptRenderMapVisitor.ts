@@ -321,7 +321,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports.add('core', 'publicKey');
       }
       if (account.resolvedIsOptionalSigner) {
-        imports.add('core', ['PublicKey', 'Signer', 'isSigner']);
+        imports.add('core', ['PublicKey', 'publicKey', 'Signer', 'isSigner']);
       } else if (account.resolvedIsSigner) {
         imports.add('core', 'Signer');
       } else {
