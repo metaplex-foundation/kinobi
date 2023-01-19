@@ -85,7 +85,7 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       const rawDependency = this.raw.get(name);
       if (!rawDependency) {
         this.error =
-          `Account "${name}" is not a valid dependency of account` +
+          `Account "${name}" is not a valid dependency of account ` +
           `"${account.name}" in the "${instruction.name}" instruction.`;
         throw new Error(this.error);
       }

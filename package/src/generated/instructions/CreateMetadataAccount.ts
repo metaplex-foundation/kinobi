@@ -23,7 +23,7 @@ import { Data, DataArgs, getDataSerializer } from '../types';
 // Accounts.
 export type CreateMetadataAccountInstructionAccounts = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata?: PublicKey;
   /** Mint of token asset */
   mint: PublicKey;
   /** Mint authority */
@@ -99,8 +99,8 @@ export function createMetadataAccount(
   );
 
   // Resolved accounts.
-  const metadataAccount = input.metadata;
   const mintAccount = input.mint;
+  const metadataAccount = input.metadata ?? findMetadataPda(context);
   const mintAuthorityAccount = input.mintAuthority;
   const payerAccount = input.payer ?? context.payer;
   const updateAuthorityAccount = input.updateAuthority;

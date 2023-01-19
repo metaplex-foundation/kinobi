@@ -92,6 +92,12 @@ kinobi.update(
     },
     { instruction: 'Dummy', account: 'foo', kind: 'account', name: 'bar' },
     { instruction: 'Dummy', account: 'bar', kind: 'programId' },
+    {
+      instruction: 'CreateMetadataAccount',
+      account: 'metadata',
+      kind: 'pda',
+      seeds: { mint: 'mint' },
+    },
   ])
 );
 kinobi.update(

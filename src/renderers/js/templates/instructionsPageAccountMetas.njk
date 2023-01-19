@@ -3,7 +3,7 @@
   {% if account.defaultsTo.kind === 'account' %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? {{ account.defaultsTo.name }}Account;
   {% elif account.defaultsTo.kind === 'pda' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.account }}Pda(context);
+    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.account | capitalize }}Pda(context);
   {% elif account.defaultsTo.kind === 'address' %}
     const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.address }}');
   {% elif account.defaultsTo.kind === 'program' %}
