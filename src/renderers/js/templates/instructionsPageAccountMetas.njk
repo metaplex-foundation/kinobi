@@ -37,7 +37,7 @@
 
 {% for account in accounts | sort(false, false, 'position') %}
   {% set isWritableString = 'true' if account.isWritable else 'false' %}
-  // {{ account.titleCaseName }}{% if account.resolvedIsOptional %} (optional){% endif %}.
+  // {{ account.name | titleCase }}{% if account.resolvedIsOptional %} (optional){% endif %}.
   {% if account.resolvedIsOptional %}
   if ({{ account.name }}Account) {
   {% endif %}

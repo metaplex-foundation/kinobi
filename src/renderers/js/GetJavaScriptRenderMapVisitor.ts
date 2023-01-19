@@ -2,7 +2,7 @@ import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import { logWarn } from '../../logs';
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase, titleCase } from '../../utils';
+import { camelCase, pascalCase } from '../../utils';
 import {
   Visitor,
   BaseThrowVisitor,
@@ -244,8 +244,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           ...account,
           type: this.getInstructionAccountType(account),
           optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
-          titleCaseName: titleCase(account.name),
-          pascalCaseName: pascalCase(account.name),
           hasDefaultValue,
         };
       });
