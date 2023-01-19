@@ -56,14 +56,15 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         ...options.prettierOptions,
       },
       dependencyMap: {
-        generated: '..',
         root: '../..',
-        types: '../types', // TODO: Remove
-        errors: '../errors', // TODO: Remove
+        generated: '..',
         core: '@lorisleiva/js-core',
         mplEssentials: '@lorisleiva/mpl-essentials',
         mplDigitalAssets: '@lorisleiva/mpl-digital-assets',
         ...options.dependencyMap,
+        // Custom relative dependencies to link generated files together.
+        generatedErrors: '../errors',
+        generatedTypes: '../types',
       },
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
@@ -191,7 +192,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         'RpcAccount',
         'Serializer',
       ])
-      .remove('types', [account.name]);
+      .remove('generatedTypes', [account.name]);
 
     const seeds = account.seeds.map((seed) => {
       if (seed.kind === 'programId') return seed;
@@ -211,7 +212,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       `accounts/${account.name}.ts`,
       this.render('accountsPage.njk', {
         account,
-        imports,
+        imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         typeManifest,
         name: account.name,
@@ -256,7 +257,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     imports.mergeWith(typeManifest.imports);
 
     // Remove imports from the same module.
-    imports.remove('types', [
+    imports.remove('generatedTypes', [
       `${instruction.name}InstructionAccounts`,
       `${instruction.name}InstructionArgs`,
       `${instruction.name}InstructionData`,
@@ -299,7 +300,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const imports = new JavaScriptImportMap()
       .mergeWith(typeManifest.imports)
       .add('core', ['Context', 'Serializer'])
-      .remove('types', [definedType.name]);
+      .remove('generatedTypes', [definedType.name]);
 
     return new RenderMap().add(
       `types/${definedType.name}.ts`,
@@ -307,7 +308,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         definedType,
         imports: imports.toString({
           ...this.options.dependencyMap,
-          types: '.',
+          generatedTypes: '.',
         }),
         typeManifest,
         name: definedType.name,

@@ -129,7 +129,7 @@ export class GetJavaScriptTypeManifestVisitor
       hasLooseType: linkedDefinedTypeHasLooseType,
       isEnum: false,
       serializer: `${serializerName}(context)`,
-      imports: new JavaScriptImportMap().add('types', [
+      imports: new JavaScriptImportMap().add('generatedTypes', [
         serializerName,
         typeDefinedLink.definedType,
         ...(linkedDefinedTypeHasLooseType
