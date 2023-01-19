@@ -18,6 +18,7 @@ import {
   mapSerializer,
   publicKey,
 } from '@lorisleiva/js-core';
+import { findMetadataPda } from '../accounts';
 import { Data, DataArgs, getDataSerializer } from '../types';
 
 // Accounts.

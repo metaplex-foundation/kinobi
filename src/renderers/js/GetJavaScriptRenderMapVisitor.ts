@@ -63,6 +63,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         mplDigitalAssets: '@lorisleiva/mpl-digital-assets',
         ...options.dependencyMap,
         // Custom relative dependencies to link generated files together.
+        generatedAccounts: '../accounts',
         generatedErrors: '../errors',
         generatedTypes: '../types',
       },
@@ -332,6 +333,14 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     accounts.forEach((account) => {
       if (account.defaultsTo.kind === 'address') {
         imports.add('core', 'publicKey');
+      }
+      if (account.defaultsTo.kind === 'pda') {
+        const pdaAccount = pascalCase(account.defaultsTo.pdaAccount);
+        const dependency =
+          account.defaultsTo.dependency === 'generated'
+            ? 'generatedAccounts'
+            : account.defaultsTo.dependency;
+        imports.add(dependency, `find${pdaAccount}Pda`);
       }
       if (account.resolvedIsOptionalSigner) {
         imports.add('core', ['PublicKey', 'publicKey', 'Signer', 'isSigner']);
