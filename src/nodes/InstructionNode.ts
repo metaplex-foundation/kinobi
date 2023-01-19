@@ -14,8 +14,8 @@ export type InstructionNodeAccountDefaults =
   | {
       kind: 'pda';
       account: string;
-      dependency?: Dependency;
-      seeds?: Record<string, string>;
+      dependency: Dependency;
+      seeds: Record<string, string>;
     }
   | { kind: 'program'; program: { name: string; address: string } }
   | { kind: 'programId' }

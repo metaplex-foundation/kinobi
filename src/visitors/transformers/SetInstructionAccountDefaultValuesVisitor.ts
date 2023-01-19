@@ -126,6 +126,9 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
     });
   }
 
+  // TODO: Visit account and store data to prefill seeds.
+  // TODO: Make pda kinds more relax here. Maybe an input type?
+
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const accounts = instruction.accounts.map((account) => {
       const rule = this.matchRule(instruction, account);

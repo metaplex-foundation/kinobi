@@ -56,14 +56,16 @@ export function find{{ name }}Pda(
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
-  seeds: {
-    {% for seed in seeds %}
-      {% if seed.kind === 'variable' %}
-        /** {{ seed.description }} */
-        {{ seed.name }}: {{ seed.typeManifest.looseType }};
-      {% endif %}
-    {% endfor %}
-  }
+  {% if account.hasVariableSeeds %}
+    seeds: {
+      {% for seed in seeds %}
+        {% if seed.kind === 'variable' %}
+          /** {{ seed.description }} */
+          {{ seed.name }}: {{ seed.typeManifest.looseType }};
+        {% endif %}
+      {% endfor %}
+    }
+  {% endif %}
 ): Pda {
   {% if account.hasVariableSeeds %}
     const s = context.serializer;

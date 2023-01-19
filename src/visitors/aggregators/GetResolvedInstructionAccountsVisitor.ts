@@ -70,13 +70,7 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     if (account.defaultsTo.kind === 'account') {
       dependsOn.push(account.defaultsTo.name);
     } else if (account.defaultsTo.kind === 'pda') {
-      // TODO: Auto fill from account seeds variables.
-      const defaultSeedMap = {};
-      const seedMap: Record<string, string> = {
-        ...defaultSeedMap,
-        ...account.defaultsTo.seeds,
-      };
-      dependsOn.push(...new Set(Object.values(seedMap)));
+      dependsOn.push(...new Set(Object.values(account.defaultsTo.seeds)));
     }
 
     // Visit account dependencies first.
