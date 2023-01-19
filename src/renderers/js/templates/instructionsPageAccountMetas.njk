@@ -1,39 +1,41 @@
-// Resolved accounts.
-{% for account in accounts | sort(false, false, 'dependencyPosition') %}
-  {% if account.defaultsTo.kind === 'account' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? {{ account.defaultsTo.name }}Account;
-  {% elif account.defaultsTo.kind === 'pda' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.pdaAccount | pascalCase }}Pda(context,
-    {%- if account.defaultsTo.seeds | length > 0 -%}
-      {
-        {%- for seed, dependency in account.defaultsTo.seeds -%}
-          {%- if seed === (dependency + 'Account') -%}
-            {{ seed }},
-          {%- else -%}
-            {{ seed }}: {{ dependency }}Account,
-          {%- endif -%}
-        {%- endfor -%}
-      }
-    {%- endif -%}
-    );
-  {% elif account.defaultsTo.kind === 'address' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.address }}');
-  {% elif account.defaultsTo.kind === 'program' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...getProgramAddressWithFallback(context, '{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.address }}'), isWritable: false };
-  {% elif account.defaultsTo.kind === 'programId' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...programId, isWritable: false };
-  {% elif account.defaultsTo.kind === 'identity' and (account.isSigner or account.isOptionalSigner) %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity;
-  {% elif account.defaultsTo.kind === 'identity' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity.publicKey;
-  {% elif account.defaultsTo.kind === 'payer' and (account.isSigner or account.isOptionalSigner) %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.payer;
-  {% elif account.defaultsTo.kind === 'payer' %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.payer.publicKey;
-  {% else %}
-    const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }};
-  {% endif %}
-{% endfor %}
+{% if accounts.length > 0 %}
+  // Resolved accounts.
+  {% for account in accounts | sort(false, false, 'dependencyPosition') %}
+    {% if account.defaultsTo.kind === 'account' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? {{ account.defaultsTo.name }}Account;
+    {% elif account.defaultsTo.kind === 'pda' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.pdaAccount | pascalCase }}Pda(context,
+      {%- if account.defaultsTo.seeds | length > 0 -%}
+        {
+          {%- for seed, dependency in account.defaultsTo.seeds -%}
+            {%- if seed === (dependency + 'Account') -%}
+              {{ seed }},
+            {%- else -%}
+              {{ seed }}: {{ dependency }}Account,
+            {%- endif -%}
+          {%- endfor -%}
+        }
+      {%- endif -%}
+      );
+    {% elif account.defaultsTo.kind === 'address' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.address }}');
+    {% elif account.defaultsTo.kind === 'program' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...getProgramAddressWithFallback(context, '{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.address }}'), isWritable: false };
+    {% elif account.defaultsTo.kind === 'programId' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...programId, isWritable: false };
+    {% elif account.defaultsTo.kind === 'identity' and (account.isSigner or account.isOptionalSigner) %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity;
+    {% elif account.defaultsTo.kind === 'identity' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.identity.publicKey;
+    {% elif account.defaultsTo.kind === 'payer' and (account.isSigner or account.isOptionalSigner) %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.payer;
+    {% elif account.defaultsTo.kind === 'payer' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? context.payer.publicKey;
+    {% else %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }};
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 {% for account in accounts | sort(false, false, 'position') %}
   {% set isWritableString = 'true' if account.isWritable else 'false' %}

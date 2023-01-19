@@ -222,18 +222,15 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
-    const imports = new JavaScriptImportMap()
-      .add('core', [
-        'AccountMeta',
-        'Context',
-        'checkForIsWritableOverride',
-        'getProgramAddressWithFallback',
-        'PublicKey',
-        'Signer',
-        'WrappedInstruction',
-        ...(instruction.hasData ? ['Serializer'] : []),
-      ])
-      .addAlias('core', 'checkForIsWritableOverride', 'isWritable');
+    const imports = new JavaScriptImportMap().add('core', [
+      'AccountMeta',
+      'Context',
+      'getProgramAddressWithFallback',
+      'PublicKey',
+      'Signer',
+      'WrappedInstruction',
+      ...(instruction.hasData ? ['Serializer'] : []),
+    ]);
 
     // Accounts.
     const accounts = instruction
@@ -248,6 +245,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         };
       });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
+    if (accounts.length > 0) {
+      imports
+        .add('core', 'checkForIsWritableOverride')
+        .addAlias('core', 'checkForIsWritableOverride', 'isWritable');
+    }
 
     // Arguments.
     const typeManifest = instruction.accept(this.typeManifestVisitor);
