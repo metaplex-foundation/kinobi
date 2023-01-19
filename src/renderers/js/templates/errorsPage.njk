@@ -2,7 +2,7 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{{ macros.imports(imports) }}
+{{ imports }}
 
 type ProgramErrorConstructor = new (program: Program, cause?: Error) => ProgramError;
 const codeToErrorMap: Map<number, ProgramErrorConstructor> = new Map();

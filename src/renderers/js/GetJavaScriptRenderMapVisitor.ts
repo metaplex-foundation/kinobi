@@ -8,6 +8,7 @@ import {
   BaseThrowVisitor,
   GetResolvedInstructionAccountsVisitor,
   ResolvedInstructionAccount,
+  Dependency,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
@@ -31,6 +32,7 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
 export type GetJavaScriptRenderMapOptions = {
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
+  dependencyMap?: Record<Dependency, string>;
   typeManifestVisitor?: Visitor<JavaScriptTypeManifest> & {
     registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
   };
@@ -52,6 +54,16 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       prettierOptions: {
         ...DEFAULT_PRETTIER_OPTIONS,
         ...options.prettierOptions,
+      },
+      dependencyMap: {
+        generated: '..',
+        root: '../..',
+        types: '../types', // TODO: Remove
+        errors: '../errors', // TODO: Remove
+        core: '@lorisleiva/js-core',
+        mplEssentials: '@lorisleiva/mpl-essentials',
+        mplDigitalAssets: '@lorisleiva/mpl-digital-assets',
+        ...options.dependencyMap,
       },
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
@@ -135,10 +147,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .add(
         `errors/${name}.ts`,
         this.render('errorsPage.njk', {
-          imports: new JavaScriptImportMap().add('core', [
-            'ProgramError',
-            'Program',
-          ]),
+          imports: new JavaScriptImportMap()
+            .add('core', ['ProgramError', 'Program'])
+            .toString(this.options.dependencyMap),
           program,
           pascalCaseName,
           errors: program.errors.map((error) => ({
@@ -157,7 +168,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
             .add('errors', [
               `get${pascalCaseName}ErrorFromCode`,
               `get${pascalCaseName}ErrorFromName`,
-            ]),
+            ])
+            .toString(this.options.dependencyMap),
           program,
           pascalCaseName,
         })
@@ -265,7 +277,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       `instructions/${instruction.name}.ts`,
       this.render('instructionsPage.njk', {
         instruction,
-        imports,
+        imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         accounts,
         needsIdentity: accounts.some(
@@ -293,7 +305,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       `types/${definedType.name}.ts`,
       this.render('definedTypesPage.njk', {
         definedType,
-        imports,
+        imports: imports.toString({
+          ...this.options.dependencyMap,
+          types: '.',
+        }),
         typeManifest,
         name: definedType.name,
         camelCaseName: camelCase(definedType.name),

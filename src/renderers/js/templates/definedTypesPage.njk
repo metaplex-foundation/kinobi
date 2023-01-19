@@ -2,7 +2,7 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{{ macros.imports(imports, { types: '.' }) }}
+{{ imports }}
 
 {{ macros.docblock(definedType.docs) }}
 {{ macros.exportType(name, name + 'Args', typeManifest) }}

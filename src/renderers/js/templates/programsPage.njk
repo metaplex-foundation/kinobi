@@ -2,7 +2,7 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{{ macros.imports(imports) }}
+{{ imports }}
 
 {{ macros.docblock(program.docs) }}
 export function get{{ pascalCaseName }}Program(context: Pick<Context, 'eddsa'>): Program {

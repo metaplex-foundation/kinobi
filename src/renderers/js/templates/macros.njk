@@ -11,13 +11,6 @@
 {% endif %}
 {% endmacro %}
 
-{# Import dependencies from provided modules. #}
-{% macro imports(importMap, moduleMap = {}) %}
-{%- if not importMap.isEmpty() -%}
-{{ importMap.toString(moduleMap) }}
-{% endif %}
-{% endmacro %}
-
 {# Export a type or an enum. #}
 {% macro exportType(strictName, looseName, typeManifest) %}
 {%- if typeManifest.isEnum -%}

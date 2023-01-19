@@ -1,3 +1,5 @@
+import { Dependency } from '../../visitors';
+
 const DEFAULT_MODULE_MAP: Record<string, string> = {
   // core: '@metaplex-foundation/js-core',
   core: '@lorisleiva/js-core',
@@ -6,12 +8,13 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
 };
 
 export class JavaScriptImportMap {
-  protected readonly _imports: Map<string, Set<string>> = new Map();
+  protected readonly _imports: Map<Dependency, Set<string>> = new Map();
 
-  protected readonly _aliases: Map<string, Record<string, string>> = new Map();
+  protected readonly _aliases: Map<Dependency, Record<string, string>> =
+    new Map();
 
   add(
-    module: string,
+    module: Dependency,
     imports: string | string[] | Set<string>
   ): JavaScriptImportMap {
     const currentImports = this._imports.get(module) ?? new Set();
@@ -22,7 +25,7 @@ export class JavaScriptImportMap {
   }
 
   remove(
-    module: string,
+    module: Dependency,
     imports: string | string[] | Set<string>
   ): JavaScriptImportMap {
     const currentImports = this._imports.get(module) ?? new Set();
@@ -45,7 +48,11 @@ export class JavaScriptImportMap {
     return this;
   }
 
-  addAlias(module: string, name: string, alias: string): JavaScriptImportMap {
+  addAlias(
+    module: Dependency,
+    name: string,
+    alias: string
+  ): JavaScriptImportMap {
     const currentAliases = this._aliases.get(module) ?? {};
     currentAliases[name] = alias;
     this._aliases.set(module, currentAliases);
@@ -56,11 +63,11 @@ export class JavaScriptImportMap {
     return this._imports.size === 0;
   }
 
-  toString(modules: Record<string, string> = {}): string {
-    const moduleMap = { ...DEFAULT_MODULE_MAP, ...modules };
+  toString(dependencies: Record<Dependency, string>): string {
+    const dependencyMap = { ...DEFAULT_MODULE_MAP, ...dependencies };
     const importStatements = [...this._imports.entries()]
       .map(([module, imports]) => {
-        const mappedModule: string = moduleMap[module] ?? module;
+        const mappedModule: string = dependencyMap[module] ?? module;
         return [mappedModule, module, imports] as const;
       })
       .sort(([a], [b]) => {

@@ -2,7 +2,7 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{{ macros.imports(imports) }}
+{{ imports }}
 
 {{ macros.docblock(definedType.docs) }}
 export type {{ name }} = Account<{{ name }}AccountData>;
