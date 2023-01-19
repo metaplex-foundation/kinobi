@@ -1,6 +1,6 @@
 import { camelCase, pascalCase } from '../utils';
 import type { IdlInstruction } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import type { Dependency, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
@@ -11,13 +11,12 @@ export type InstructionNodeAccountDefaults =
   | { kind: 'account'; name: string }
   | { kind: 'identity' }
   | { kind: 'payer' }
-  // TODO
-  // | {
-  //     kind: 'pda';
-  //     account: string;
-  //     dependency: Dependency;
-  //     seeds?: Record<string, string>;
-  //   }
+  | {
+      kind: 'pda';
+      account: string;
+      dependency?: Dependency;
+      seeds?: Record<string, string>;
+    }
   | { kind: 'program'; program: { name: string; address: string } }
   | { kind: 'programId' }
   | { kind: 'none' };

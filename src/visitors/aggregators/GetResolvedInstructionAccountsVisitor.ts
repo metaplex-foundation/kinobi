@@ -69,12 +69,27 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     const dependsOn: string[] = [];
     if (account.defaultsTo.kind === 'account') {
       dependsOn.push(account.defaultsTo.name);
+    } else if (account.defaultsTo.kind === 'pda') {
+      // TODO: Auto fill from account seeds variables.
+      const defaultSeedMap = {};
+      const seedMap: Record<string, string> = {
+        ...defaultSeedMap,
+        ...account.defaultsTo.seeds,
+      };
+      dependsOn.push(...new Set(Object.values(seedMap)));
     }
 
     // Visit account dependencies first.
     this.stack.push(account.name);
     dependsOn.forEach((name) => {
-      const [dependency, dependencyIndex] = this.raw.get(name)!;
+      const rawDependency = this.raw.get(name);
+      if (!rawDependency) {
+        this.error =
+          `Account "${name}" is not a valid dependency of account` +
+          `"${account.name}" in the "${instruction.name}" instruction.`;
+        throw new Error(this.error);
+      }
+      const [dependency, dependencyIndex] = rawDependency;
       this.visitInstructionAccount(instruction, dependency, dependencyIndex);
     });
     this.stack.pop();
@@ -95,6 +110,7 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       case 'address':
       case 'program':
       case 'programId':
+      case 'pda':
         resolvedIsOptionalSigner = isSigner;
         resolvedIsSigner = false;
         resolvedIsOptional = false;
