@@ -5,15 +5,15 @@
 {{ imports }}
 
 {{ macros.docblock(program.docs) }}
-export function get{{ pascalCaseName }}Program(context: Pick<Context, 'eddsa'>): Program {
+export function get{{ program.name | pascalCase }}Program(context: Pick<Context, 'eddsa'>): Program {
   return {
     name: '{{ program.metadata.name }}',
     address: publicKey('{{ program.metadata.address }}'),
     getErrorFromCode(code: number, cause?: Error) {
-      return get{{ pascalCaseName }}ErrorFromCode(code, this, cause);
+      return get{{ program.name | pascalCase }}ErrorFromCode(code, this, cause);
     },
     getErrorFromName(name: string, cause?: Error) {
-      return get{{ pascalCaseName }}ErrorFromName(name, this, cause);
+      return get{{ program.name | pascalCase }}ErrorFromName(name, this, cause);
     },
     isOnCluster() {
       return true;

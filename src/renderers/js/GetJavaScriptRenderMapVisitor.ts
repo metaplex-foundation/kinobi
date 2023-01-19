@@ -153,7 +153,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
             .add('core', ['ProgramError', 'Program'])
             .toString(this.options.dependencyMap),
           program,
-          pascalCaseName,
           errors: program.errors.map((error) => ({
             ...error,
             prefixedName:
@@ -173,7 +172,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
             ])
             .toString(this.options.dependencyMap),
           program,
-          pascalCaseName,
         })
       );
     this.program = null;

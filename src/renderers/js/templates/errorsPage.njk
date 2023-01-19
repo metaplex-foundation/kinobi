@@ -27,7 +27,7 @@ nameToErrorMap.set('{{ error.metadata.name }}', {{ error.prefixedName }}Error);
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors
  */
-export function get{{ pascalCaseName }}ErrorFromCode(code: number, program: Program, cause?: Error): ProgramError | null {
+export function get{{ program.name | pascalCase }}ErrorFromCode(code: number, program: Program, cause?: Error): ProgramError | null {
   const constructor = codeToErrorMap.get(code);
   return constructor ? new constructor(program, cause) : null;
 }
@@ -36,7 +36,7 @@ export function get{{ pascalCaseName }}ErrorFromCode(code: number, program: Prog
  * Attempts to resolve a custom program error from the provided error name, i.e. 'Unauthorized'.
  * @category Errors
  */
-export function get{{ pascalCaseName }}ErrorFromName(name: string, program: Program, cause?: Error): ProgramError | null {
+export function get{{ program.name | pascalCase }}ErrorFromName(name: string, program: Program, cause?: Error): ProgramError | null {
   const constructor = nameToErrorMap.get(name);
   return constructor ? new constructor(program, cause) : null;
 }
