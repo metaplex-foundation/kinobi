@@ -73,7 +73,7 @@ export function getCreateDigitalAssetInstructionDataSerializer(
         ['discriminator', s.u8],
         ['createArgs', getTmCreateArgsSerializer(context)],
       ],
-      'CreateInstructionArgs'
+      'CreateDigitalAssetInstructionArgs'
     ),
     (value) =>
       ({ discriminator: 41, ...value } as CreateDigitalAssetInstructionData)

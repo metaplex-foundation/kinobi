@@ -69,7 +69,7 @@ export function getUpdateDigitalAssetInstructionDataSerializer(
         ['discriminator', s.u8],
         ['updateArgs', getUpdateArgsSerializer(context)],
       ],
-      'UpdateInstructionArgs'
+      'UpdateDigitalAssetInstructionArgs'
     ),
     (value) =>
       ({ discriminator: 43, ...value } as UpdateDigitalAssetInstructionData)

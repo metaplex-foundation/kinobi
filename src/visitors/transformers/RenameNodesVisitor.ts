@@ -102,7 +102,7 @@ function instructionNodeTransform(
         return new nodes.InstructionNode(
           { ...node.metadata, name: options },
           node.accounts,
-          node.args
+          mapStructFields(node.args, {}, `${options}InstructionArgs`)
         );
       }
 
@@ -134,7 +134,7 @@ function accountNodeTransform(
       if (typeof options === 'string') {
         return new nodes.AccountNode(
           { ...node.metadata, name: options },
-          node.type,
+          mapStructFields(node.type, {}, options),
           node.seeds
         );
       }

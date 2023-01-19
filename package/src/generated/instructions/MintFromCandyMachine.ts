@@ -60,7 +60,7 @@ export function getMintFromCandyMachineInstructionDataSerializer(
   >(
     s.struct<MintFromCandyMachineInstructionData>(
       [['discriminator', s.array(s.u8, 8)]],
-      'MintInstructionArgs'
+      'MintFromCandyMachineInstructionArgs'
     ),
     (value) =>
       ({
