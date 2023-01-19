@@ -79,6 +79,6 @@ export function getEditionAccountDataSerializer(
   ) as Serializer<EditionAccountArgs, EditionAccountData>;
 }
 
-export function getEditionSize(): number {
+export function getEditionSize(_context = {}): number {
   return 41;
 }

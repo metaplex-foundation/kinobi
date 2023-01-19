@@ -38,7 +38,7 @@ export function deserialize{{ name }}(
 {{ macros.exportSerializer(name + 'AccountData', name + 'AccountArgs', typeManifest) }}
 
 {% if account.metadata.size !== null %}
-export function get{{ name }}Size(): number {
+export function get{{ name }}Size(_context = {}): number {
   return {{ account.metadata.size }};
 }
 {% else %}

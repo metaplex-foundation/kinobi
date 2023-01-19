@@ -89,6 +89,6 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
   >;
 }
 
-export function getCollectionAuthorityRecordSize(): number {
+export function getCollectionAuthorityRecordSize(_context = {}): number {
   return 35;
 }

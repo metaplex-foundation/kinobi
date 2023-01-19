@@ -81,6 +81,6 @@ export function getUseAuthorityRecordAccountDataSerializer(
   ) as Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData>;
 }
 
-export function getUseAuthorityRecordSize(): number {
+export function getUseAuthorityRecordSize(_context = {}): number {
   return 10;
 }

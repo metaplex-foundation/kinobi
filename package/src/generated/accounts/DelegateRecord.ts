@@ -83,6 +83,6 @@ export function getDelegateRecordAccountDataSerializer(
   ) as Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData>;
 }
 
-export function getDelegateRecordSize(): number {
+export function getDelegateRecordSize(_context = {}): number {
   return 3;
 }

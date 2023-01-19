@@ -73,6 +73,6 @@ export function getEditionMarkerAccountDataSerializer(
   ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }
 
-export function getEditionMarkerSize(): number {
+export function getEditionMarkerSize(_context = {}): number {
   return 32;
 }

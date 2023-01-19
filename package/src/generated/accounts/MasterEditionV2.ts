@@ -85,7 +85,7 @@ export function getMasterEditionV2AccountDataSerializer(
   ) as Serializer<MasterEditionV2AccountArgs, MasterEditionV2AccountData>;
 }
 
-export function getMasterEditionV2Size(): number {
+export function getMasterEditionV2Size(_context = {}): number {
   return 18;
 }
 

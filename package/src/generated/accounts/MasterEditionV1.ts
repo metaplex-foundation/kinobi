@@ -88,6 +88,6 @@ export function getMasterEditionV1AccountDataSerializer(
   ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
 }
 
-export function getMasterEditionV1Size(): number {
+export function getMasterEditionV1Size(_context = {}): number {
   return 82;
 }

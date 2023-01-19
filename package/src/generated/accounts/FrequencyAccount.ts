@@ -90,6 +90,6 @@ export function getFrequencyAccountAccountDataSerializer(
   ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
 }
 
-export function getFrequencyAccountSize(): number {
+export function getFrequencyAccountSize(_context = {}): number {
   return 17;
 }
