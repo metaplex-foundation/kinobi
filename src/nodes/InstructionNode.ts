@@ -42,7 +42,12 @@ export type InstructionNodeAccountDefaults =
 export type InstructionNodeBytesCreatedOnChain =
   | { kind: 'number'; value: number; includeHeader: boolean }
   | { kind: 'arg'; name: string; includeHeader: boolean }
-  | { kind: 'account'; name: string; includeHeader: boolean }
+  | {
+      kind: 'account';
+      name: string;
+      dependency: string;
+      includeHeader: boolean;
+    }
   | { kind: 'none' };
 
 export class InstructionNode implements Visitable {

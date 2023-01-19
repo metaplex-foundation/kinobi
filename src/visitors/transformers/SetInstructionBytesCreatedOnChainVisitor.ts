@@ -1,10 +1,16 @@
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
-type InstructionNodeBytesCreatedOnChainInput = Omit<
-  nodes.InstructionNodeBytesCreatedOnChain,
-  'includeHeader'
-> & { includeHeader?: boolean };
+type InstructionNodeBytesCreatedOnChainInput =
+  | { kind: 'number'; value: number; includeHeader?: boolean }
+  | { kind: 'arg'; name: string; includeHeader?: boolean }
+  | {
+      kind: 'account';
+      name: string;
+      dependency?: string;
+      includeHeader?: boolean;
+    }
+  | { kind: 'none' };
 
 export class SetInstructionBytesCreatedOnChainVisitor extends TransformNodesVisitor {
   constructor(
@@ -18,14 +24,15 @@ export class SetInstructionBytesCreatedOnChainVisitor extends TransformNodesVisi
           selector: { type: 'instruction', stack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
+            const bytes = {
+              includeHeader: true,
+              ...bytesCreatedOnChain,
+            } as nodes.InstructionNodeBytesCreatedOnChain;
+            if (bytes.kind === 'account') {
+              bytes.dependency = bytes.dependency ?? 'generated';
+            }
             return new nodes.InstructionNode(
-              {
-                ...node.metadata,
-                bytesCreatedOnChain: {
-                  includeHeader: true,
-                  ...bytesCreatedOnChain,
-                } as nodes.InstructionNodeBytesCreatedOnChain,
-              },
+              { ...node.metadata, bytesCreatedOnChain: bytes },
               node.accounts,
               node.args
             );

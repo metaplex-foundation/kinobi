@@ -258,11 +258,17 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     imports.mergeWith(typeManifest.imports);
 
     // Bytes created on chain.
-    if (
-      instruction.metadata.bytesCreatedOnChain.kind !== 'none' &&
-      instruction.metadata.bytesCreatedOnChain.includeHeader
-    ) {
+    const bytes = instruction.metadata.bytesCreatedOnChain;
+    if (bytes.kind !== 'none' && bytes.includeHeader) {
       imports.add('core', 'ACCOUNT_HEADER_SIZE');
+    }
+    if (bytes.kind === 'account') {
+      const accountName = pascalCase(bytes.name);
+      const dependency =
+        bytes.dependency === 'generated'
+          ? 'generatedAccounts'
+          : bytes.dependency;
+      imports.add(dependency, `get${accountName}Size`);
     }
 
     // Remove imports from the same module.

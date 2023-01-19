@@ -117,7 +117,7 @@ kinobi.update(
 );
 kinobi.update(
   new SetInstructionBytesCreatedOnChainVisitor({
-    CreateMetadataAccount: { kind: 'number', value: 42 },
+    CreateMetadataAccount: { kind: 'account', name: 'metadata' },
   })
 );
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));

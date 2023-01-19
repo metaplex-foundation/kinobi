@@ -19,7 +19,7 @@ import {
   mapSerializer,
   publicKey,
 } from '@lorisleiva/js-core';
-import { findMetadataPda } from '../accounts';
+import { findMetadataPda, getMetadataSize } from '../accounts';
 import { Data, DataArgs, getDataSerializer } from '../types';
 
 // Accounts.
@@ -175,7 +175,7 @@ export function createMetadataAccount(
     getCreateMetadataAccountInstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-  const bytesCreatedOnChain = 42 + ACCOUNT_HEADER_SIZE;
+  const bytesCreatedOnChain = getMetadataSize(context) + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: { keys, programId, data },
