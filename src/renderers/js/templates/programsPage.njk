@@ -5,7 +5,7 @@
 {{ imports }}
 
 {{ macros.docblock(program.docs) }}
-export function get{{ program.name | pascalCase }}Program(context: Pick<Context, 'eddsa'>): Program {
+export function get{{ program.name | pascalCase }}Program(): Program {
   return {
     name: '{{ program.metadata.name }}',
     address: publicKey('{{ program.metadata.address }}'),

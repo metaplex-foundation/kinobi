@@ -12,9 +12,7 @@ import {
   getMplTokenMetadataErrorFromName,
 } from '../errors';
 
-export function getMplTokenMetadataProgram(
-  context: Pick<Context, 'eddsa'>
-): Program {
+export function getMplTokenMetadataProgram(): Program {
   return {
     name: 'mplTokenMetadata',
     address: publicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'),

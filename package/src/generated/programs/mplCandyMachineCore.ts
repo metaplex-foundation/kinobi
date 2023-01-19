@@ -12,9 +12,7 @@ import {
   getMplCandyMachineCoreErrorFromName,
 } from '../errors';
 
-export function getMplCandyMachineCoreProgram(
-  context: Pick<Context, 'eddsa'>
-): Program {
+export function getMplCandyMachineCoreProgram(): Program {
   return {
     name: 'mplCandyMachineCore',
     address: publicKey('CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'),

@@ -12,9 +12,7 @@ import {
   getMplTokenAuthRulesErrorFromName,
 } from '../errors';
 
-export function getMplTokenAuthRulesProgram(
-  context: Pick<Context, 'eddsa'>
-): Program {
+export function getMplTokenAuthRulesProgram(): Program {
   return {
     name: 'mplTokenAuthRules',
     address: publicKey('auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'),
