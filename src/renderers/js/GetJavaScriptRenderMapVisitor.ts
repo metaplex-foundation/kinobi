@@ -257,6 +257,14 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const typeManifest = instruction.accept(this.typeManifestVisitor);
     imports.mergeWith(typeManifest.imports);
 
+    // Bytes created on chain.
+    if (
+      instruction.metadata.bytesCreatedOnChain.kind !== 'none' &&
+      instruction.metadata.bytesCreatedOnChain.includeHeader
+    ) {
+      imports.add('core', 'ACCOUNT_HEADER_SIZE');
+    }
+
     // Remove imports from the same module.
     imports.remove('generatedTypes', [
       `${instruction.name}InstructionAccounts`,
