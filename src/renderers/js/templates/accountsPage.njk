@@ -52,7 +52,7 @@ export function get{{ name }}Size(
 {% if seeds.length > 0 %}
 export function find{{ name }}Pda(
   context: {
-    serializer: Context['serializer'];
+    {% if account.hasVariableSeeds %}serializer: Context['serializer'];{% endif %}
     eddsa: Context['eddsa'];
     programs?: Context['programs'];
   },
