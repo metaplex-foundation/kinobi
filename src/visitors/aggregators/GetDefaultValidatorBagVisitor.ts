@@ -76,7 +76,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       // Only throw an error once per duplicated names.
       if (count === 2) {
         bag.error(
-          `Instruction account name "${account.name}" is not unique.`,
+          `Account name "${account.name}" is not unique in instruction "${instruction.name}".`,
           instruction,
           this.stack
         );

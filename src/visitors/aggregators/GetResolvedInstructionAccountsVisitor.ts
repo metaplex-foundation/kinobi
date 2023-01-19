@@ -59,7 +59,8 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     if (this.stack.includes(account.name)) {
       const cycle = [...this.stack, account.name].join(' -> ');
       this.error =
-        `Circular dependency detected in instruction ${instruction.name}. ` +
+        `Circular dependency detected in the accounts of ` +
+        `the "${instruction.name}" instruction. ` +
         `Got the following account dependency cycle: ${cycle}.`;
       throw new Error(this.error);
     }
