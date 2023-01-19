@@ -2,6 +2,7 @@ import * as nodes from '../../nodes';
 import { NodeStack } from '../NodeStack';
 import { ValidatorBag } from '../ValidatorBag';
 import { Visitor } from '../Visitor';
+import { GetResolvedInstructionAccountsVisitor } from './GetResolvedInstructionAccountsVisitor';
 
 export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   protected stack: NodeStack = new NodeStack();
@@ -62,6 +63,38 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!instruction.name) {
       bag.error('Instruction has no name.', instruction, this.stack);
     }
+
+    // Check for duplicate account names.
+    const accountNameHistogram = new Map<string, number>();
+    instruction.accounts.forEach((account) => {
+      if (!account.name) {
+        bag.error('Instruction account has no name.', instruction, this.stack);
+        return;
+      }
+      const count = (accountNameHistogram.get(account.name) ?? 0) + 1;
+      accountNameHistogram.set(account.name, count);
+      // Only throw an error once per duplicated names.
+      if (count === 2) {
+        bag.error(
+          `Instruction account name "${account.name}" is not unique.`,
+          instruction,
+          this.stack
+        );
+      }
+    });
+
+    // Check for cyclic dependencies in account defaults.
+    const cyclicCheckVisitor = new GetResolvedInstructionAccountsVisitor();
+    try {
+      instruction.accept(cyclicCheckVisitor);
+    } catch (error) {
+      bag.error(
+        cyclicCheckVisitor.getError() as string,
+        instruction,
+        this.stack
+      );
+    }
+
     bag.mergeWith([instruction.args.accept(this)]);
     this.popNode();
     return bag;

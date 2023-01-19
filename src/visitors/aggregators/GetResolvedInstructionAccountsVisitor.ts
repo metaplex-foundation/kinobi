@@ -19,10 +19,17 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
 
   protected raw = new Map<string, [nodes.InstructionNodeAccount, number]>();
 
+  protected error: string | null = null;
+
+  getError(): string | null {
+    return this.error;
+  }
+
   visitInstruction(
     instruction: nodes.InstructionNode
   ): ResolvedInstructionAccount[] {
     // Ensure we always start with a clean slate.
+    this.error = null;
     this.stack = [];
     this.visited = new Map();
     this.raw = instruction.accounts.reduce(
@@ -51,10 +58,10 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     // Ensure we don't have a circular dependency.
     if (this.stack.includes(account.name)) {
       const cycle = [...this.stack, account.name].join(' -> ');
-      throw new Error(
+      this.error =
         `Circular dependency detected in instruction ${instruction.name}. ` +
-          `Got the following account dependency cycle: ${cycle}.`
-      );
+        `Got the following account dependency cycle: ${cycle}.`;
+      throw new Error(this.error);
     }
 
     // Get account dependencies.
