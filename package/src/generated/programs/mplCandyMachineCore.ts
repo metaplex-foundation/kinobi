@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Program } from '@lorisleiva/js-core';
+import { Context, Program, publicKey } from '@lorisleiva/js-core';
 import {
   getMplCandyMachineCoreErrorFromCode,
   getMplCandyMachineCoreErrorFromName,
@@ -17,9 +17,7 @@ export function getMplCandyMachineCoreProgram(
 ): Program {
   return {
     name: 'mplCandyMachineCore',
-    address: context.eddsa.createPublicKey(
-      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-    ),
+    address: publicKey('CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'),
     getErrorFromCode(code: number, cause?: Error) {
       return getMplCandyMachineCoreErrorFromCode(code, this, cause);
     },

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Program } from '@lorisleiva/js-core';
+import { Context, Program, publicKey } from '@lorisleiva/js-core';
 import {
   getMplTokenMetadataErrorFromCode,
   getMplTokenMetadataErrorFromName,
@@ -17,9 +17,7 @@ export function getMplTokenMetadataProgram(
 ): Program {
   return {
     name: 'mplTokenMetadata',
-    address: context.eddsa.createPublicKey(
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
+    address: publicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'),
     getErrorFromCode(code: number, cause?: Error) {
       return getMplTokenMetadataErrorFromCode(code, this, cause);
     },

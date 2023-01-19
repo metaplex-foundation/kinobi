@@ -153,7 +153,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         `programs/${name}.ts`,
         this.render('programsPage.njk', {
           imports: new JavaScriptImportMap()
-            .add('core', ['Context', 'Program'])
+            .add('core', ['Context', 'Program', 'publicKey'])
             .add('errors', [
               `get${pascalCaseName}ErrorFromCode`,
               `get${pascalCaseName}ErrorFromName`,

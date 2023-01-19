@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Program } from '@lorisleiva/js-core';
+import { Context, Program, publicKey } from '@lorisleiva/js-core';
 import {
   getMplTokenAuthRulesErrorFromCode,
   getMplTokenAuthRulesErrorFromName,
@@ -17,9 +17,7 @@ export function getMplTokenAuthRulesProgram(
 ): Program {
   return {
     name: 'mplTokenAuthRules',
-    address: context.eddsa.createPublicKey(
-      'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-    ),
+    address: publicKey('auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'),
     getErrorFromCode(code: number, cause?: Error) {
       return getMplTokenAuthRulesErrorFromCode(code, this, cause);
     },
