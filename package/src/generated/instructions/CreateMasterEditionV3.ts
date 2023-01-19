@@ -206,7 +206,7 @@ export function createMasterEditionV3(
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain =
-    (getMastereditionv2Size(context) ?? 0) + ACCOUNT_HEADER_SIZE;
+    (getMasterEditionV2Size(context) ?? 0) + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: { keys, programId, data },

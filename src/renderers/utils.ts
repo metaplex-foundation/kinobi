@@ -1,5 +1,12 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import nunjucks, { ConfigureOptions } from 'nunjucks';
+import {
+  camelCase,
+  kebabCase,
+  pascalCase,
+  snakeCase,
+  titleCase,
+} from '../utils';
 
 export const createDirectory = (path: string): void => {
   mkdirSync(path, { recursive: true });
@@ -24,6 +31,11 @@ export const resolveTemplate = (
     autoescape: false,
     ...options,
   });
+  env.addFilter('pascalCase', pascalCase);
+  env.addFilter('camelCase', camelCase);
+  env.addFilter('snakeCase', snakeCase);
+  env.addFilter('kebabCase', kebabCase);
+  env.addFilter('titleCase', titleCase);
   return env.render(file, context);
 };
 

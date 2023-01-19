@@ -61,7 +61,7 @@ export function {{ camelCaseName }}(
   {% elif bytes.kind === 'arg' %}
     const bytesCreatedOnChain = Number({{ argsObj }}.{{ bytes.name }}){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif bytes.kind === 'account' %}
-    const bytesCreatedOnChain = (get{{ bytes.name | capitalize }}Size(context) ?? 0){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+    const bytesCreatedOnChain = (get{{ bytes.name | pascalCase }}Size(context) ?? 0){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% else %}
     const bytesCreatedOnChain = 0;
   {% endif %}
