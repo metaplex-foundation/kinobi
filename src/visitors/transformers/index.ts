@@ -7,6 +7,7 @@ export * from './RenameNodesVisitor';
 export * from './SetAccountSeedsVisitor';
 export * from './SetAccountSizesVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
+export * from './SetInstructionBytesCreatedOnChainVisitor';
 export * from './SetInstructionDiscriminatorsVisitor';
 export * from './SetLeafWrappersVisitor';
 export * from './SetMissingDefinedTypesVisitor';
