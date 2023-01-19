@@ -7,6 +7,7 @@
  */
 
 import {
+  ACCOUNT_HEADER_SIZE,
   AccountMeta,
   Context,
   PublicKey,
@@ -17,6 +18,7 @@ import {
   getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
+import { getMasterEditionV2Size } from '../accounts';
 import {
   CreateMasterEditionArgs,
   CreateMasterEditionArgsArgs,
@@ -203,7 +205,8 @@ export function createMasterEditionV3(
     getCreateMasterEditionV3InstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-  const bytesCreatedOnChain = 0;
+  const bytesCreatedOnChain =
+    (getMastereditionv2Size(context) ?? 0) + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: { keys, programId, data },
