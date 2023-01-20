@@ -17,7 +17,9 @@ import {
   checkForIsWritableOverride as isWritable,
   getProgramAddressWithFallback,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
+import { findMetadataPda } from '../accounts';
 import {
   CollectionDetails,
   CollectionDetailsArgs,
@@ -30,7 +32,7 @@ import {
 // Accounts.
 export type CreateMetadataAccountV3InstructionAccounts = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata?: PublicKey;
   /** Mint of token asset */
   mint: PublicKey;
   /** Mint authority */
@@ -98,6 +100,7 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(
 export function createMetadataAccountV3(
   context: {
     serializer: Context['serializer'];
+    eddsa: Context['eddsa'];
     payer: Context['payer'];
     programs?: Context['programs'];
   },
@@ -115,8 +118,10 @@ export function createMetadataAccountV3(
   );
 
   // Resolved accounts.
-  const metadataAccount = input.metadata;
   const mintAccount = input.mint;
+  const metadataAccount =
+    input.metadata ??
+    findMetadataPda(context, { mint: publicKey(mintAccount) });
   const mintAuthorityAccount = input.mintAuthority;
   const payerAccount = input.payer ?? context.payer;
   const updateAuthorityAccount = input.updateAuthority;

@@ -98,6 +98,11 @@ kinobi.update(
       account: 'metadata',
       kind: 'pda',
     },
+    {
+      instruction: 'CreateMetadataAccountV3',
+      account: 'metadata',
+      kind: 'pda',
+    },
   ])
 );
 kinobi.update(
