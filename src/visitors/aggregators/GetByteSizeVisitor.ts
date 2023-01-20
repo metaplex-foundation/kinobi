@@ -132,8 +132,8 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): number | null {
     const child = typeOption.type.accept(this);
-    const prefix = typeOption.optionType === 'option' ? 1 : 4;
-    return child !== null ? child + prefix : null;
+    if (typeOption.optionType === 'option') return null;
+    return child !== null ? child + 4 : null;
   }
 
   visitTypeSet(): number | null {
