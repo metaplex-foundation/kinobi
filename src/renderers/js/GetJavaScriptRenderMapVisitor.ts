@@ -353,6 +353,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
             ? 'generatedAccounts'
             : account.defaultsTo.dependency;
         imports.add(dependency, `find${pdaAccount}Pda`);
+        Object.values(account.defaultsTo.seeds).forEach((seed) => {
+          if (seed.kind === 'account') {
+            imports.add('core', 'publicKey');
+          }
+        });
       }
       if (account.resolvedIsOptionalSigner) {
         imports.add('core', ['PublicKey', 'publicKey', 'Signer', 'isSigner']);
