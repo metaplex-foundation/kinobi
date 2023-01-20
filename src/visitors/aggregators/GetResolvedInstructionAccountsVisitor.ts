@@ -96,48 +96,45 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     });
     this.stack.pop();
 
-    const { isSigner, isOptionalSigner, isOptional } = account;
-    let resolvedIsSigner = isSigner;
-    let resolvedIsOptionalSigner = isOptionalSigner;
-    let resolvedIsOptional = isOptional;
-
-    switch (account.defaultsTo.kind) {
-      case 'account':
-        const defaultAccount = this.visited.get(account.defaultsTo.name)!;
-        const resolvedIsPublicKey = !isSigner && !defaultAccount.isSigner;
-        resolvedIsSigner = isSigner && defaultAccount.isSigner;
-        resolvedIsOptionalSigner = !resolvedIsSigner && !resolvedIsPublicKey;
-        resolvedIsOptional = defaultAccount.isOptional;
-        break;
-      case 'address':
-      case 'program':
-      case 'programId':
-        resolvedIsOptionalSigner = isSigner;
-        resolvedIsSigner = false;
-        resolvedIsOptional = false;
-        break;
-      case 'pda':
-        resolvedIsOptionalSigner = isSigner;
-        resolvedIsSigner = false;
-        resolvedIsOptional = false;
-        break;
-      case 'identity':
-      case 'payer':
-        resolvedIsOptional = false;
-        break;
-      default:
-        break;
-    }
-
     const resolved: ResolvedInstructionAccount = {
       ...account,
       position: index,
       dependencyPosition: this.visited.size,
       dependsOn,
-      resolvedIsSigner,
-      resolvedIsOptionalSigner,
-      resolvedIsOptional,
+      resolvedIsSigner: account.isSigner,
+      resolvedIsOptionalSigner: account.isOptionalSigner,
+      resolvedIsOptional: account.isOptional,
     };
+
+    switch (account.defaultsTo.kind) {
+      case 'account':
+        const defaultAccount = this.visited.get(account.defaultsTo.name)!;
+        const resolvedIsPublicKey =
+          !account.isSigner && !defaultAccount.isSigner;
+        resolved.resolvedIsSigner = account.isSigner && defaultAccount.isSigner;
+        resolved.resolvedIsOptionalSigner =
+          !resolved.resolvedIsSigner && !resolvedIsPublicKey;
+        resolved.resolvedIsOptional = defaultAccount.isOptional;
+        break;
+      case 'address':
+      case 'program':
+      case 'programId':
+        resolved.resolvedIsOptionalSigner = account.isSigner;
+        resolved.resolvedIsSigner = false;
+        resolved.resolvedIsOptional = false;
+        break;
+      case 'pda':
+        resolved.resolvedIsOptionalSigner = account.isSigner;
+        resolved.resolvedIsSigner = false;
+        resolved.resolvedIsOptional = false;
+        break;
+      case 'identity':
+      case 'payer':
+        resolved.resolvedIsOptional = false;
+        break;
+      default:
+        break;
+    }
 
     this.visited.set(account.name, resolved);
   }
