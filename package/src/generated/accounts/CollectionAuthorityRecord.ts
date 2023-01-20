@@ -89,6 +89,8 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
   >;
 }
 
-export function getCollectionAuthorityRecordSize(_context = {}): number {
-  return 35;
+export function getCollectionAuthorityRecordSize(
+  context: Pick<Context, 'serializer'>
+): number | null {
+  return getCollectionAuthorityRecordAccountDataSerializer(context).fixedSize;
 }
