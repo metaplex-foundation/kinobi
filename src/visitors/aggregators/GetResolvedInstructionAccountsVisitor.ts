@@ -1,4 +1,5 @@
 import type * as nodes from '../../nodes';
+import { InstructionNodeAccountDefaultsSeed } from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
 export type ResolvedInstructionAccount = nodes.InstructionNodeAccount & {
@@ -70,7 +71,14 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
     if (account.defaultsTo.kind === 'account') {
       dependsOn.push(account.defaultsTo.name);
     } else if (account.defaultsTo.kind === 'pda') {
-      dependsOn.push(...new Set(Object.values(account.defaultsTo.seeds)));
+      type AccountSeed = Extract<
+        InstructionNodeAccountDefaultsSeed,
+        { kind: 'account' }
+      >;
+      const accounts = Object.values(account.defaultsTo.seeds)
+        .filter((seed): seed is AccountSeed => seed.kind === 'account')
+        .map((seed) => seed.name);
+      dependsOn.push(...new Set(accounts));
     }
 
     // Visit account dependencies first.
@@ -104,6 +112,10 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       case 'address':
       case 'program':
       case 'programId':
+        resolvedIsOptionalSigner = isSigner;
+        resolvedIsSigner = false;
+        resolvedIsOptional = false;
+        break;
       case 'pda':
         resolvedIsOptionalSigner = isSigner;
         resolvedIsSigner = false;

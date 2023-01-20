@@ -33,11 +33,15 @@ export type InstructionNodeAccountDefaults =
       kind: 'pda';
       pdaAccount: string;
       dependency: Dependency;
-      seeds: Record<string, string>;
+      seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
     }
   | { kind: 'program'; program: { name: string; address: string } }
   | { kind: 'programId' }
   | { kind: 'none' };
+
+export type InstructionNodeAccountDefaultsSeed =
+  | { kind: 'account'; name: string }
+  | { kind: 'arg'; name: string };
 
 export type InstructionNodeBytesCreatedOnChain =
   | { kind: 'number'; value: number; includeHeader: boolean }

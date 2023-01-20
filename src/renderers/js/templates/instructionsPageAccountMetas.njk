@@ -7,11 +7,11 @@
       const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.pdaAccount | pascalCase }}Pda(context,
       {%- if account.defaultsTo.seeds | length > 0 -%}
         {
-          {%- for seed, dependency in account.defaultsTo.seeds -%}
-            {%- if seed === (dependency + 'Account') -%}
-              {{ seed }},
+          {%- for seedKey, seedValue in account.defaultsTo.seeds -%}
+            {%- if seedValue.kind === 'account' -%}
+              {{ seedKey }}: publicKey({{ seedValue.name | camelCase }}Account),
             {%- else -%}
-              {{ seed }}: {{ dependency }}Account,
+              {{ seedKey }}: {{ argsObj }}.{{ seedValue.name | camelCase }},
             {%- endif -%}
           {%- endfor -%}
         }

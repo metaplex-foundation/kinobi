@@ -9,7 +9,7 @@ type InstructionNodeAccountDefaultsInput =
       kind: 'pda';
       pdaAccount?: string;
       dependency?: Dependency;
-      seeds?: Record<string, string>;
+      seeds?: Record<string, nodes.InstructionNodeAccountDefaultsSeed>;
     };
 
 export type InstructionAccountDefaultRule =
@@ -209,13 +209,16 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
 
   protected getAccountVariableSeeds(
     accountName: string
-  ): Record<string, string> {
+  ): Record<string, nodes.InstructionNodeAccountDefaultsSeed> {
     const seeds = this.allAccounts.get(pascalCase(accountName))?.seeds ?? [];
     return seeds.reduce((acc, seed) => {
-      if (seed.kind === 'variable') {
-        acc[seed.name] = seed.name;
+      if (seed.kind !== 'variable') return acc;
+      if (nodes.isTypeLeafNode(seed.type) && seed.type.type === 'publicKey') {
+        acc[seed.name] = { kind: 'account', name: seed.name };
+      } else {
+        acc[seed.name] = { kind: 'arg', name: seed.name };
       }
       return acc;
-    }, {} as Record<string, string>);
+    }, {} as Record<string, nodes.InstructionNodeAccountDefaultsSeed>);
   }
 }
