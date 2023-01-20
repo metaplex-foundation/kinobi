@@ -106,9 +106,9 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       resolvedIsOptional: account.isOptional,
     };
 
-    switch (account.defaultsTo.kind) {
+    switch (resolved.defaultsTo.kind) {
       case 'account':
-        const defaultAccount = this.visited.get(account.defaultsTo.name)!;
+        const defaultAccount = this.visited.get(resolved.defaultsTo.name)!;
         const resolvedIsPublicKey =
           !account.isSigner && !defaultAccount.isSigner;
         resolved.resolvedIsSigner = account.isSigner && defaultAccount.isSigner;
@@ -127,6 +127,18 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
         resolved.resolvedIsOptionalSigner = account.isSigner;
         resolved.resolvedIsSigner = false;
         resolved.resolvedIsOptional = false;
+        const { seeds } = resolved.defaultsTo;
+        Object.keys(seeds).forEach((seedKey) => {
+          const seed = seeds[seedKey];
+          if (seed.kind !== 'account') return;
+          const dependency = this.visited.get(seed.name)!;
+          if (dependency.resolvedIsOptional) {
+            this.error =
+              `Cannot use optional account "${seed.name}" as the "${seedKey}" PDA seed ` +
+              `for the "${account.name}" account of the "${instruction.name}" instruction.`;
+            throw new Error(this.error);
+          }
+        });
         break;
       case 'identity':
       case 'payer':
