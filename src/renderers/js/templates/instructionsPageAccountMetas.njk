@@ -5,7 +5,7 @@
       const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? {{ account.defaultsTo.name }}Account;
     {% elif account.defaultsTo.kind === 'pda' %}
       const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? find{{ account.defaultsTo.pdaAccount | pascalCase }}Pda(context,
-      {%- if account.defaultsTo.seeds | length > 0 -%}
+      {%- if (account.defaultsTo.seeds | length) > 0 -%}
         {
           {%- for seedKey, seedValue in account.defaultsTo.seeds -%}
             {%- if seedValue.kind === 'account' -%}

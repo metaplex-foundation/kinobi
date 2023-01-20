@@ -62,7 +62,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       account: /^ataProgram|splAtaProgram$/,
       program: {
         name: 'splAssociatedToken',
-        address: 'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
       },
       ignoreIfOptional: true,
     },

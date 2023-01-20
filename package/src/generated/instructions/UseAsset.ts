@@ -113,7 +113,7 @@ export function useAsset(
     ...getProgramAddressWithFallback(
       context,
       'splAssociatedToken',
-      'TokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
     ),
     isWritable: false,
   };
