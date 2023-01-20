@@ -31,9 +31,9 @@ export function getDataSerializer(
   const s = context.serializer;
   return s.struct<Data>(
     [
-      ['name', s.string],
-      ['symbol', s.string],
-      ['uri', s.string],
+      ['name', s.string()],
+      ['symbol', s.string()],
+      ['uri', s.string()],
       ['sellerFeeBasisPoints', s.u16],
       ['creators', s.option(s.vec(getCreatorSerializer(context)))],
     ],

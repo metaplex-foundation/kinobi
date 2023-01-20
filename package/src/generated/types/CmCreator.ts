@@ -23,7 +23,7 @@ export function getCmCreatorSerializer(
   return s.struct<CmCreator>(
     [
       ['address', s.publicKey],
-      ['verified', s.bool],
+      ['verified', s.bool()],
       ['percentageShare', s.u8],
     ],
     'Creator'

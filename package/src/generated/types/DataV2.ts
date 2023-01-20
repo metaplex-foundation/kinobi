@@ -45,9 +45,9 @@ export function getDataV2Serializer(
   const s = context.serializer;
   return s.struct<DataV2>(
     [
-      ['name', s.string],
-      ['symbol', s.string],
-      ['uri', s.string],
+      ['name', s.string()],
+      ['symbol', s.string()],
+      ['uri', s.string()],
       ['sellerFeeBasisPoints', s.u16],
       ['creators', s.option(s.vec(getCreatorSerializer(context)))],
       ['collection', s.option(getCollectionSerializer(context))],

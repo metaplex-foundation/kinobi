@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Program, publicKey } from '@lorisleiva/js-core';
+import { Program, publicKey } from '@lorisleiva/js-core';
 import {
   getMplTokenAuthRulesErrorFromCode,
   getMplTokenAuthRulesErrorFromName,

@@ -61,8 +61,8 @@ export function getUpdateMetadataAccountV2InstructionDataSerializer(
         ['discriminator', s.u8],
         ['data', s.option(getDataV2Serializer(context))],
         ['updateAuthority', s.option(s.publicKey)],
-        ['primarySaleHappened', s.option(s.bool)],
-        ['isMutable', s.option(s.bool)],
+        ['primarySaleHappened', s.option(s.bool())],
+        ['isMutable', s.option(s.bool())],
       ],
       'UpdateMetadataAccountV2InstructionArgs'
     ),

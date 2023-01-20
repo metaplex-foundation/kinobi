@@ -68,10 +68,10 @@ export function getCandyMachineDataSerializer(
   return s.struct<CandyMachineData>(
     [
       ['itemsAvailable', s.u64],
-      ['symbol', s.string],
+      ['symbol', s.string()],
       ['sellerFeeBasisPoints', mapAmountSerializer(s.u16, '%', 2)],
       ['maxSupply', s.u64],
-      ['isMutable', s.bool],
+      ['isMutable', s.bool()],
       ['creators', s.vec(getCmCreatorSerializer(context))],
       [
         'configLineSettings',

@@ -59,7 +59,7 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
         ['discriminator', s.u8],
         ['data', s.option(getDataSerializer(context))],
         ['updateAuthority', s.option(s.publicKey)],
-        ['primarySaleHappened', s.option(s.bool)],
+        ['primarySaleHappened', s.option(s.bool())],
       ],
       'UpdateMetadataAccountInstructionArgs'
     ),

@@ -23,7 +23,7 @@ export function getDelegateStateSerializer(
     [
       ['role', getDelegateRoleSerializer(context)],
       ['delegate', s.publicKey],
-      ['hasData', s.bool],
+      ['hasData', s.bool()],
     ],
     'DelegateState'
   );

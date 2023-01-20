@@ -22,8 +22,8 @@ export function getConfigLineSerializer(
   const s = context.serializer;
   return s.struct<ConfigLine>(
     [
-      ['name', s.string],
-      ['uri', s.string],
+      ['name', s.string()],
+      ['uri', s.string()],
     ],
     'ConfigLine'
   );

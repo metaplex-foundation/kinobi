@@ -29,7 +29,7 @@ export function getCreatorSerializer(
     s.struct<Creator>(
       [
         ['address', s.publicKey],
-        ['verified', s.bool],
+        ['verified', s.bool()],
         ['share', s.u8],
       ],
       'Creator'

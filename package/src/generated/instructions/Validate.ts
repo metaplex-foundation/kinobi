@@ -82,7 +82,7 @@ export function getValidateInstructionDataSerializer(
     s.struct<ValidateInstructionData>(
       [
         ['discriminator', s.u8],
-        ['ruleSetName', s.string],
+        ['ruleSetName', s.string()],
         ['operation', getOperationSerializer(context)],
         ['payload', getPayloadSerializer(context)],
       ],

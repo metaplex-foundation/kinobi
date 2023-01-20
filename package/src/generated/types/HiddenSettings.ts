@@ -24,8 +24,8 @@ export function getHiddenSettingsSerializer(
   const s = context.serializer;
   return s.struct<HiddenSettings>(
     [
-      ['name', s.string],
-      ['uri', s.string],
+      ['name', s.string()],
+      ['uri', s.string()],
       ['hash', s.bytes],
     ],
     'HiddenSettings'

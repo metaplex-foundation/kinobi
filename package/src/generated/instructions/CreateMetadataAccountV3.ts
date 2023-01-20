@@ -75,7 +75,7 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(
       [
         ['discriminator', s.u8],
         ['data', getDataV2Serializer(context)],
-        ['isMutable', s.bool],
+        ['isMutable', s.bool()],
         [
           'collectionDetails',
           s.option(getCollectionDetailsSerializer(context)),

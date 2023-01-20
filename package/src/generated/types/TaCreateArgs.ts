@@ -19,7 +19,7 @@ export function getTaCreateArgsSerializer(
   const s = context.serializer;
   return s.struct<TaCreateArgs>(
     [
-      ['ruleSetName', s.string],
+      ['ruleSetName', s.string()],
       ['serializedRuleSet', s.bytes],
     ],
     'CreateArgs'

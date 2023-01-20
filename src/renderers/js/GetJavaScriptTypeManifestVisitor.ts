@@ -266,7 +266,7 @@ export class GetJavaScriptTypeManifestVisitor
 
     switch (typeLeaf.type) {
       case 'string':
-        return { ...base('string') };
+        return { ...base('string'), serializer: this.s('string()') };
       case 'bytes':
         return { ...base('Uint8Array') };
       case 'publicKey':
@@ -275,7 +275,7 @@ export class GetJavaScriptTypeManifestVisitor
           imports: new JavaScriptImportMap().add('core', 'PublicKey'),
         };
       case 'bool':
-        return { ...base('boolean') };
+        return { ...base('boolean'), serializer: this.s('bool()') };
       case 'u64':
       case 'u128':
       case 'i64':
@@ -354,13 +354,16 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): JavaScriptTypeManifest {
     const child = typeOption.type.accept(this);
+    const optionSerializer = this.s(
+      typeOption.optionType === 'coption' ? 'fixedOption' : 'option'
+    );
     const prefixSerializer =
       typeOption.optionType === 'coption' ? `, ${this.s('u32')}` : '';
     return {
       ...child,
       strictType: `Option<${child.strictType}>`,
       looseType: `Option<${child.looseType}>`,
-      serializer: `${this.s('option')}(${child.serializer}${prefixSerializer})`,
+      serializer: `${optionSerializer}(${child.serializer}${prefixSerializer})`,
       imports: child.imports.add('core', 'Option'),
     };
   }

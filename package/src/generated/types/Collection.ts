@@ -24,7 +24,7 @@ export function getCollectionSerializer(
   return mapSerializer<CollectionArgs, Collection, Collection>(
     s.struct<Collection>(
       [
-        ['verified', s.bool],
+        ['verified', s.bool()],
         ['key', s.publicKey],
       ],
       'Collection'

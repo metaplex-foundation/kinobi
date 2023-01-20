@@ -71,13 +71,13 @@ export function getAssetDataSerializer(
   return s.struct<AssetData>(
     [
       ['updateAuthority', s.publicKey],
-      ['name', s.string],
-      ['symbol', s.string],
-      ['uri', s.string],
+      ['name', s.string()],
+      ['symbol', s.string()],
+      ['uri', s.string()],
       ['sellerFeeBasisPoints', s.u16],
       ['creators', s.option(s.vec(getCreatorSerializer(context)))],
-      ['primarySaleHappened', s.bool],
-      ['isMutable', s.bool],
+      ['primarySaleHappened', s.bool()],
+      ['isMutable', s.bool()],
       ['editionNonce', s.option(s.u8)],
       ['tokenStandard', getTokenStandardSerializer(context)],
       ['collection', s.option(getCollectionSerializer(context))],

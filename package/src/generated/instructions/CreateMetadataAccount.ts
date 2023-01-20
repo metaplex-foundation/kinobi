@@ -68,7 +68,7 @@ export function getCreateMetadataAccountInstructionDataSerializer(
       [
         ['discriminator', s.u8],
         ['data', getDataSerializer(context)],
-        ['isMutable', s.bool],
+        ['isMutable', s.bool()],
       ],
       'CreateMetadataAccountInstructionArgs'
     ),

@@ -28,11 +28,11 @@ export function getConfigLineSettingsSerializer(
   const s = context.serializer;
   return s.struct<ConfigLineSettings>(
     [
-      ['prefixName', s.string],
+      ['prefixName', s.string()],
       ['nameLength', s.u32],
-      ['prefixUri', s.string],
+      ['prefixUri', s.string()],
       ['uriLength', s.u32],
-      ['isSequential', s.bool],
+      ['isSequential', s.bool()],
     ],
     'ConfigLineSettings'
   );
