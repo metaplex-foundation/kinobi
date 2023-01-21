@@ -14,7 +14,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   mapSerializer,
   publicKey,
 } from '@lorisleiva/js-core';
@@ -91,10 +90,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
 
 // Instruction.
 export function deprecatedMintPrintingTokensViaToken(
-  context: {
-    serializer: Context['serializer'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs'>,
   input: DeprecatedMintPrintingTokensViaTokenInstructionAccounts &
     DeprecatedMintPrintingTokensViaTokenInstructionArgs
 ): WrappedInstruction {
@@ -102,11 +98,7 @@ export function deprecatedMintPrintingTokensViaToken(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
 
   // Resolved accounts.
   const destinationAccount = input.destination;
@@ -118,11 +110,7 @@ export function deprecatedMintPrintingTokensViaToken(
   const metadataAccount = input.metadata;
   const masterEditionAccount = input.masterEdition;
   const tokenProgramAccount = input.tokenProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    ),
+    ...context.programs.get('splToken').address,
     isWritable: false,
   };
   const rentAccount =

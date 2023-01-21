@@ -15,7 +15,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import {
@@ -85,10 +84,7 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
 
 // Instruction.
 export function deprecatedSetReservationList(
-  context: {
-    serializer: Context['serializer'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs'>,
   input: DeprecatedSetReservationListInstructionAccounts &
     DeprecatedSetReservationListInstructionArgs
 ): WrappedInstruction {
@@ -96,11 +92,7 @@ export function deprecatedSetReservationList(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
 
   // Resolved accounts.
   const masterEditionAccount = input.masterEdition;

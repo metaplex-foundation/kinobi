@@ -14,7 +14,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
 
@@ -72,22 +71,14 @@ export function getUnverifySizedCollectionItemInstructionDataSerializer(
 
 // Instruction.
 export function unverifySizedCollectionItem(
-  context: {
-    serializer: Context['serializer'];
-    payer: Context['payer'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: UnverifySizedCollectionItemInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
 
   // Resolved accounts.
   const metadataAccount = input.metadata;

@@ -14,7 +14,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
 
@@ -60,21 +59,14 @@ export function getBurnNftInstructionDataSerializer(
 
 // Instruction.
 export function burnNft(
-  context: {
-    serializer: Context['serializer'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs'>,
   input: BurnNftInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
 
   // Resolved accounts.
   const metadataAccount = input.metadata;
@@ -83,11 +75,7 @@ export function burnNft(
   const tokenAccountAccount = input.tokenAccount;
   const masterEditionAccountAccount = input.masterEditionAccount;
   const splTokenProgramAccount = input.splTokenProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    ),
+    ...context.programs.get('splToken').address,
     isWritable: false,
   };
   const collectionMetadataAccount = input.collectionMetadata;

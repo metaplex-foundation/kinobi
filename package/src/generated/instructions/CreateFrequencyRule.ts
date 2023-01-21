@@ -14,7 +14,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
 
@@ -76,11 +75,7 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
 
 // Instruction.
 export function createFrequencyRule(
-  context: {
-    serializer: Context['serializer'];
-    payer: Context['payer'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: CreateFrequencyRuleInstructionAccounts &
     CreateFrequencyRuleInstructionArgs
 ): WrappedInstruction {
@@ -88,21 +83,14 @@ export function createFrequencyRule(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenAuthRules',
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-  );
+  const programId: PublicKey =
+    context.programs.get('mplTokenAuthRules').address;
 
   // Resolved accounts.
   const payerAccount = input.payer ?? context.payer;
   const frequencyPdaAccount = input.frequencyPda;
   const systemProgramAccount = input.systemProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
+    ...context.programs.get('splSystem').address,
     isWritable: false,
   };
 

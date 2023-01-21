@@ -14,7 +14,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   mapSerializer,
   publicKey,
 } from '@lorisleiva/js-core';
@@ -88,22 +87,14 @@ export function getTransferInstructionDataSerializer(
 
 // Instruction.
 export function transfer(
-  context: {
-    serializer: Context['serializer'];
-    identity: Context['identity'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
   input: TransferInstructionAccounts & TransferInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
 
   // Resolved accounts.
   const authorityAccount = input.authority ?? context.identity;
@@ -116,27 +107,15 @@ export function transfer(
   const metadataAccount = input.metadata;
   const masterEditionAccount = input.masterEdition;
   const splTokenProgramAccount = input.splTokenProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    ),
+    ...context.programs.get('splToken').address,
     isWritable: false,
   };
   const splAtaProgramAccount = input.splAtaProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    ),
+    ...context.programs.get('splAssociatedToken').address,
     isWritable: false,
   };
   const systemProgramAccount = input.systemProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
+    ...context.programs.get('splSystem').address,
     isWritable: false,
   };
   const sysvarInstructionsAccount =

@@ -51,11 +51,7 @@ export function get{{ name }}Size(
 
 {% if seeds.length > 0 %}
 export function find{{ name }}Pda(
-  context: {
-    {% if account.hasVariableSeeds %}serializer: Context['serializer'];{% endif %}
-    eddsa: Context['eddsa'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'eddsa' | 'programs'{% if account.hasVariableSeeds %} | 'serializer'{% endif %}>,
   {% if account.hasVariableSeeds %}
     seeds: {
       {% for seed in seeds %}
@@ -70,11 +66,7 @@ export function find{{ name }}Pda(
   {% if account.hasVariableSeeds %}
     const s = context.serializer;
   {% endif %}
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    '{{ program.metadata.name }}',
-    '{{ program.metadata.address }}'
-  );
+  const programId: PublicKey = context.programs.get('{{ program.metadata.name }}').address;
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}

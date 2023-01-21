@@ -14,7 +14,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   isSigner,
   mapSerializer,
   publicKey,
@@ -94,32 +93,21 @@ export function getValidateInstructionDataSerializer(
 
 // Instruction.
 export function validate(
-  context: {
-    serializer: Context['serializer'];
-    payer: Context['payer'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: ValidateInstructionAccounts & ValidateInstructionArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenAuthRules',
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-  );
+  const programId: PublicKey =
+    context.programs.get('mplTokenAuthRules').address;
 
   // Resolved accounts.
   const payerAccount = input.payer ?? context.payer;
   const ruleSetAccount = input.ruleSet;
   const systemProgramAccount = input.systemProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
+    ...context.programs.get('splSystem').address,
     isWritable: false,
   };
   const optRuleSigner1Account = input.optRuleSigner1;

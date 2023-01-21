@@ -9,13 +9,13 @@
 
 // Instruction.
 export function {{ camelCaseName }}(
-  context: {
-    serializer: Context['serializer'];
-    {{- 'eddsa: Context[\'eddsa\'];' if needsEddsa else '' }}
-    {{- 'identity: Context[\'identity\'];' if needsIdentity else '' }}
-    {{- 'payer: Context[\'payer\'];' if needsPayer else '' }}
-    programs?: Context['programs'];
-  },
+  context: Pick<Context,
+    | 'serializer'
+    | 'programs'
+    {{- '| \'eddsa\'' if needsEddsa else '' }}
+    {{- '| \'identity\'' if needsIdentity else '' }}
+    {{- '| \'payer\'' if needsPayer else '' }}
+  >,
   {% if canMergeAccountsAndArgs %}
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
@@ -41,7 +41,7 @@ export function {{ camelCaseName }}(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(context, '{{ program.metadata.name }}', '{{ program.metadata.address }}');
+  const programId: PublicKey = context.programs.get('{{ program.name }}').address;
 
   {% include "instructionsPageAccountMetas.njk" -%}
 

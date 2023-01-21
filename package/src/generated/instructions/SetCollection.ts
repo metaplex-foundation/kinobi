@@ -14,7 +14,6 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  getProgramAddressWithFallback,
   mapSerializer,
 } from '@lorisleiva/js-core';
 
@@ -64,23 +63,16 @@ export function getSetCollectionInstructionDataSerializer(
 
 // Instruction.
 export function setCollection(
-  context: {
-    serializer: Context['serializer'];
-    identity: Context['identity'];
-    payer: Context['payer'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
   input: SetCollectionInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-  );
+  const programId: PublicKey = context.programs.get(
+    'mplCandyMachineCore'
+  ).address;
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;
@@ -99,11 +91,7 @@ export function setCollection(
     input.newCollectionAuthorityRecord;
   const tokenMetadataProgramAccount = input.tokenMetadataProgram;
   const systemProgramAccount = input.systemProgram ?? {
-    ...getProgramAddressWithFallback(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
+    ...context.programs.get('splSystem').address,
     isWritable: false,
   };
 

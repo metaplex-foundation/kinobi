@@ -16,7 +16,6 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
-  getProgramAddressWithFallback,
   mapSerializer,
   utf8,
 } from '@lorisleiva/js-core';
@@ -149,22 +148,14 @@ export function getMetadataSize(
 }
 
 export function findMetadataPda(
-  context: {
-    serializer: Context['serializer'];
-    eddsa: Context['eddsa'];
-    programs?: Context['programs'];
-  },
+  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
   seeds: {
     /** The address of the mint account */
     mint: PublicKey;
   }
 ): Pda {
   const s = context.serializer;
-  const programId: PublicKey = getProgramAddressWithFallback(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
   return context.eddsa.findPda(programId, [
     utf8.serialize('metadata'),
     programId.bytes,

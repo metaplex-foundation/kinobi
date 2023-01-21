@@ -204,7 +204,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       return { ...seed, typeManifest: seedManifest };
     });
     if (seeds.length > 0) {
-      imports.add('core', ['Pda', 'getProgramAddressWithFallback']);
+      imports.add('core', ['Pda']);
     }
 
     return new RenderMap().add(
@@ -225,7 +225,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const imports = new JavaScriptImportMap().add('core', [
       'AccountMeta',
       'Context',
-      'getProgramAddressWithFallback',
       'PublicKey',
       'Signer',
       'WrappedInstruction',
