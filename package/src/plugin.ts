@@ -8,9 +8,9 @@ import {
 export function plugin(): MetaplexPlugin {
   return {
     install(metaplex: Metaplex) {
-      metaplex.programs.add(getMplCandyMachineCoreProgram());
-      metaplex.programs.add(getMplTokenAuthRulesProgram());
-      metaplex.programs.add(getMplTokenMetadataProgram());
+      metaplex.programs.add(getMplCandyMachineCoreProgram(), false);
+      metaplex.programs.add(getMplTokenAuthRulesProgram(), false);
+      metaplex.programs.add(getMplTokenMetadataProgram(), false);
     },
   };
 }
