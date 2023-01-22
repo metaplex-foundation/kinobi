@@ -78,7 +78,8 @@ export function createEscrowAccount(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const escrowAccount = input.escrow;
@@ -88,7 +89,7 @@ export function createEscrowAccount(
   const editionAccount = input.edition;
   const payerAccount = input.payer ?? context.payer;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const sysvarInstructionsAccount =

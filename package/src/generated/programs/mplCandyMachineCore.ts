@@ -15,7 +15,7 @@ import {
 export function getMplCandyMachineCoreProgram(): Program {
   return {
     name: 'mplCandyMachineCore',
-    address: publicKey('CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'),
+    publicKey: publicKey('CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'),
     getErrorFromCode(code: number, cause?: Error) {
       return getMplCandyMachineCoreErrorFromCode(code, this, cause);
     },

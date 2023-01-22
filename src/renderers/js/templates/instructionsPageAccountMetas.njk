@@ -17,10 +17,10 @@
         }
       {%- endif -%}
       );
-    {% elif account.defaultsTo.kind === 'address' %}
-      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.address }}');
+    {% elif account.defaultsTo.kind === 'publicKey' %}
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? publicKey('{{ account.defaultsTo.publicKey }}');
     {% elif account.defaultsTo.kind === 'program' %}
-      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...context.programs.get('{{ account.defaultsTo.program.name }}').address, isWritable: false };
+      const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...context.programs.get('{{ account.defaultsTo.program.name }}').publicKey, isWritable: false };
     {% elif account.defaultsTo.kind === 'programId' %}
       const {{ account.name }}Account = {{ accountsObj }}.{{ account.name }} ?? { ...programId, isWritable: false };
     {% elif account.defaultsTo.kind === 'identity' and (account.isSigner or account.isOptionalSigner) %}

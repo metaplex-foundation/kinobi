@@ -25,7 +25,7 @@ export type InstructionNodeAccount = {
 };
 
 export type InstructionNodeAccountDefaults =
-  | { kind: 'address'; address: string }
+  | { kind: 'publicKey'; publicKey: string }
   | { kind: 'account'; name: string }
   | { kind: 'identity' }
   | { kind: 'payer' }
@@ -35,7 +35,7 @@ export type InstructionNodeAccountDefaults =
       dependency: Dependency;
       seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
     }
-  | { kind: 'program'; program: { name: string; address: string } }
+  | { kind: 'program'; program: { name: string; publicKey: string } }
   | { kind: 'programId' }
   | { kind: 'none' };
 

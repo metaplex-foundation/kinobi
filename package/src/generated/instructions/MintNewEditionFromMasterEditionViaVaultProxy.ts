@@ -113,7 +113,8 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const newMetadataAccount = input.newMetadata;
@@ -130,12 +131,12 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
   const newMetadataUpdateAuthorityAccount = input.newMetadataUpdateAuthority;
   const metadataAccount = input.metadata;
   const tokenProgramAccount = input.tokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
   const tokenVaultProgramAccount = input.tokenVaultProgram;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const rentAccount = input.rent;

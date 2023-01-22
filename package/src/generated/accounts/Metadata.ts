@@ -77,18 +77,18 @@ export type MetadataAccountArgs = {
 
 export async function fetchMetadata(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<Metadata> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'Metadata');
   return deserializeMetadata(context, maybeAccount);
 }
 
 export async function safeFetchMetadata(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<Metadata | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeMetadata(context, maybeAccount)
     : null;
@@ -155,7 +155,8 @@ export function findMetadataPda(
   }
 ): Pda {
   const s = context.serializer;
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
   return context.eddsa.findPda(programId, [
     utf8.serialize('metadata'),
     programId.bytes,

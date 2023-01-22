@@ -94,7 +94,8 @@ export function transfer(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const authorityAccount = input.authority ?? context.identity;
@@ -107,15 +108,15 @@ export function transfer(
   const metadataAccount = input.metadata;
   const masterEditionAccount = input.masterEdition;
   const splTokenProgramAccount = input.splTokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
   const splAtaProgramAccount = input.splAtaProgram ?? {
-    ...context.programs.get('splAssociatedToken').address,
+    ...context.programs.get('splAssociatedToken').publicKey,
     isWritable: false,
   };
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const sysvarInstructionsAccount =

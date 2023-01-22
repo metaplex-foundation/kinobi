@@ -80,7 +80,7 @@ export function initialize(
   // Program ID.
   const programId: PublicKey = context.programs.get(
     'mplCandyMachineCore'
-  ).address;
+  ).publicKey;
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;
@@ -94,7 +94,7 @@ export function initialize(
   const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
   const tokenMetadataProgramAccount = input.tokenMetadataProgram;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
 

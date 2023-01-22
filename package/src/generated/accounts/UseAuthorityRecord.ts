@@ -33,18 +33,18 @@ export type UseAuthorityRecordAccountArgs = {
 
 export async function fetchUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<UseAuthorityRecord> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'UseAuthorityRecord');
   return deserializeUseAuthorityRecord(context, maybeAccount);
 }
 
 export async function safeFetchUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<UseAuthorityRecord | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeUseAuthorityRecord(context, maybeAccount)
     : null;

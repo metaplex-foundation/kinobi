@@ -66,13 +66,13 @@ export function create(
 
   // Program ID.
   const programId: PublicKey =
-    context.programs.get('mplTokenAuthRules').address;
+    context.programs.get('mplTokenAuthRules').publicKey;
 
   // Resolved accounts.
   const payerAccount = input.payer ?? context.payer;
   const ruleSetPdaAccount = input.ruleSetPda;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
 

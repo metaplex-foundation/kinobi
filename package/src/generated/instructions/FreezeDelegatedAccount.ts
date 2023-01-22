@@ -69,7 +69,8 @@ export function freezeDelegatedAccount(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const delegateAccount = input.delegate;
@@ -77,7 +78,7 @@ export function freezeDelegatedAccount(
   const editionAccount = input.edition;
   const mintAccount = input.mint;
   const tokenProgramAccount = input.tokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
 

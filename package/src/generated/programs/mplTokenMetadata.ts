@@ -15,7 +15,7 @@ import {
 export function getMplTokenMetadataProgram(): Program {
   return {
     name: 'mplTokenMetadata',
-    address: publicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'),
+    publicKey: publicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'),
     getErrorFromCode(code: number, cause?: Error) {
       return getMplTokenMetadataErrorFromCode(code, this, cause);
     },

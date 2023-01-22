@@ -81,7 +81,8 @@ export function mint(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const tokenAccount = input.token;
@@ -91,18 +92,18 @@ export function mint(
   const payerAccount = input.payer ?? context.payer;
   const authorityAccount = input.authority ?? context.identity;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const sysvarInstructionsAccount =
     input.sysvarInstructions ??
     publicKey('Sysvar1nstructions1111111111111111111111111');
   const splTokenProgramAccount = input.splTokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
   const splAtaProgramAccount = input.splAtaProgram ?? {
-    ...context.programs.get('splAssociatedToken').address,
+    ...context.programs.get('splAssociatedToken').publicKey,
     isWritable: false,
   };
   const authorizationRulesProgramAccount = input.authorizationRulesProgram;

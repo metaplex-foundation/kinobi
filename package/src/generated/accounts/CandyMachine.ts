@@ -57,18 +57,18 @@ export type CandyMachineAccountArgs = {
 
 export async function fetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<CandyMachine> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'CandyMachine');
   return deserializeCandyMachine(context, maybeAccount);
 }
 
 export async function safeFetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<CandyMachine | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeCandyMachine(context, maybeAccount)
     : null;

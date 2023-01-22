@@ -70,7 +70,8 @@ export function convertMasterEditionV1ToV2(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const masterEditionAccount = input.masterEdition;

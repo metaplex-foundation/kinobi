@@ -36,18 +36,18 @@ export type MasterEditionV2AccountArgs = {
 
 export async function fetchMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<MasterEditionV2> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'MasterEditionV2');
   return deserializeMasterEditionV2(context, maybeAccount);
 }
 
 export async function safeFetchMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<MasterEditionV2 | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeMasterEditionV2(context, maybeAccount)
     : null;
@@ -98,7 +98,8 @@ export function findMasterEditionV2Pda(
   }
 ): Pda {
   const s = context.serializer;
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
   return context.eddsa.findPda(programId, [
     utf8.serialize('metadata'),
     programId.bytes,

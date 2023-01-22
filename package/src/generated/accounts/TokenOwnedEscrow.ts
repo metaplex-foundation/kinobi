@@ -40,18 +40,18 @@ export type TokenOwnedEscrowAccountArgs = {
 
 export async function fetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<TokenOwnedEscrow> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
   return deserializeTokenOwnedEscrow(context, maybeAccount);
 }
 
 export async function safeFetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<TokenOwnedEscrow | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeTokenOwnedEscrow(context, maybeAccount)
     : null;

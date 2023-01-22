@@ -41,7 +41,7 @@ export function {{ camelCaseName }}(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('{{ program.name }}').address;
+  const programId: PublicKey = context.programs.get('{{ program.name }}').publicKey;
 
   {% include "instructionsPageAccountMetas.njk" -%}
 

@@ -35,18 +35,18 @@ export type DelegateRecordAccountArgs = { role: DelegateRole; bump: number };
 
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<DelegateRecord> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'DelegateRecord');
   return deserializeDelegateRecord(context, maybeAccount);
 }
 
 export async function safeFetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<DelegateRecord | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeDelegateRecord(context, maybeAccount)
     : null;

@@ -11,18 +11,18 @@ export type {{ name }} = Account<{{ name }}AccountData>;
 
 export async function fetch{{ name }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey,
+  publicKey: PublicKey,
 ): Promise<{{ name }}> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, '{{ name }}');
   return deserialize{{ name }}(context, maybeAccount);
 }
 
 export async function safeFetch{{ name }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey,
+  publicKey: PublicKey,
 ): Promise<{{ name }} | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserialize{{ name }}(context, maybeAccount)
     : null;
@@ -66,7 +66,7 @@ export function find{{ name }}Pda(
   {% if account.hasVariableSeeds %}
     const s = context.serializer;
   {% endif %}
-  const programId: PublicKey = context.programs.get('{{ program.metadata.name }}').address;
+  const programId: PublicKey = context.programs.get('{{ program.metadata.name }}').publicKey;
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}

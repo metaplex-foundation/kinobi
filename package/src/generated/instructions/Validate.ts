@@ -101,13 +101,13 @@ export function validate(
 
   // Program ID.
   const programId: PublicKey =
-    context.programs.get('mplTokenAuthRules').address;
+    context.programs.get('mplTokenAuthRules').publicKey;
 
   // Resolved accounts.
   const payerAccount = input.payer ?? context.payer;
   const ruleSetAccount = input.ruleSet;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const optRuleSigner1Account = input.optRuleSigner1;

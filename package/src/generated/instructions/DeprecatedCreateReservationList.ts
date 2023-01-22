@@ -81,7 +81,8 @@ export function deprecatedCreateReservationList(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const reservationListAccount = input.reservationList;
@@ -91,7 +92,7 @@ export function deprecatedCreateReservationList(
   const resourceAccount = input.resource;
   const metadataAccount = input.metadata;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const rentAccount =

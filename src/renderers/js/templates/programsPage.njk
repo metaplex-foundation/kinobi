@@ -8,7 +8,7 @@
 export function get{{ program.name | pascalCase }}Program(): Program {
   return {
     name: '{{ program.metadata.name }}',
-    address: publicKey('{{ program.metadata.address }}'),
+    publicKey: publicKey('{{ program.metadata.publicKey }}'),
     getErrorFromCode(code: number, cause?: Error) {
       return get{{ program.name | pascalCase }}ErrorFromCode(code, this, cause);
     },

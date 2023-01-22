@@ -73,7 +73,8 @@ export function burnEditionNft(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const metadataAccount = input.metadata;
@@ -86,7 +87,7 @@ export function burnEditionNft(
   const printEditionAccountAccount = input.printEditionAccount;
   const editionMarkerAccountAccount = input.editionMarkerAccount;
   const splTokenProgramAccount = input.splTokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
 

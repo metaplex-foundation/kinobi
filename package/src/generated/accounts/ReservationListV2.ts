@@ -46,18 +46,18 @@ export type ReservationListV2AccountArgs = {
 
 export async function fetchReservationListV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<ReservationListV2> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'ReservationListV2');
   return deserializeReservationListV2(context, maybeAccount);
 }
 
 export async function safeFetchReservationListV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<ReservationListV2 | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeReservationListV2(context, maybeAccount)
     : null;

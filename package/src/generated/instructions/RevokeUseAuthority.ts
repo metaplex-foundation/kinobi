@@ -77,7 +77,8 @@ export function revokeUseAuthority(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const useAuthorityRecordAccount = input.useAuthorityRecord;
@@ -87,11 +88,11 @@ export function revokeUseAuthority(
   const mintAccount = input.mint;
   const metadataAccount = input.metadata;
   const tokenProgramAccount = input.tokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const rentAccount = input.rent;

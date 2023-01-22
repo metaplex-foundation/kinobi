@@ -67,7 +67,7 @@ export function dummy(
   // Program ID.
   const programId: PublicKey = context.programs.get(
     'mplCandyMachineCore'
-  ).address;
+  ).publicKey;
 
   // Resolved accounts.
   const mintAccount = input.mint;

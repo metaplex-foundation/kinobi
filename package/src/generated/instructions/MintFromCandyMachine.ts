@@ -83,7 +83,7 @@ export function mintFromCandyMachine(
   // Program ID.
   const programId: PublicKey = context.programs.get(
     'mplCandyMachineCore'
-  ).address;
+  ).publicKey;
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;
@@ -101,11 +101,11 @@ export function mintFromCandyMachine(
   const collectionUpdateAuthorityAccount = input.collectionUpdateAuthority;
   const tokenMetadataProgramAccount = input.tokenMetadataProgram;
   const tokenProgramAccount = input.tokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const recentSlothashesAccount = input.recentSlothashes;

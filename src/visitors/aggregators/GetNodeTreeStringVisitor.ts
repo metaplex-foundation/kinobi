@@ -28,7 +28,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent -= 1;
     const data = program.metadata;
     const tags = [];
-    if (data.address) tags.push(`address: ${data.address}`);
+    if (data.publicKey) tags.push(`publicKey: ${data.publicKey}`);
     if (data.version) tags.push(`version: ${data.version}`);
     if (data.origin) tags.push(`origin: ${data.origin}`);
     const tagsStr = tags.length > 0 ? ` (${tags.join(', ')})` : '';

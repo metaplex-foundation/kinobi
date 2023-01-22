@@ -90,7 +90,8 @@ export function approveUseAuthority(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const useAuthorityRecordAccount = input.useAuthorityRecord;
@@ -102,11 +103,11 @@ export function approveUseAuthority(
   const mintAccount = input.mint;
   const burnerAccount = input.burner;
   const tokenProgramAccount = input.tokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const rentAccount = input.rent;

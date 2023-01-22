@@ -38,18 +38,18 @@ export type MasterEditionV1AccountArgs = {
 
 export async function fetchMasterEditionV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<MasterEditionV1> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'MasterEditionV1');
   return deserializeMasterEditionV1(context, maybeAccount);
 }
 
 export async function safeFetchMasterEditionV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<MasterEditionV1 | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeMasterEditionV1(context, maybeAccount)
     : null;

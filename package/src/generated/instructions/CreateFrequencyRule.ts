@@ -84,13 +84,13 @@ export function createFrequencyRule(
 
   // Program ID.
   const programId: PublicKey =
-    context.programs.get('mplTokenAuthRules').address;
+    context.programs.get('mplTokenAuthRules').publicKey;
 
   // Resolved accounts.
   const payerAccount = input.payer ?? context.payer;
   const frequencyPdaAccount = input.frequencyPda;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
 

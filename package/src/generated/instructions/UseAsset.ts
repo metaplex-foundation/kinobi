@@ -85,7 +85,8 @@ export function useAsset(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const metadataAccount = input.metadata;
@@ -94,15 +95,15 @@ export function useAsset(
   const useAuthorityAccount = input.useAuthority;
   const ownerAccount = input.owner;
   const splTokenProgramAccount = input.splTokenProgram ?? {
-    ...context.programs.get('splToken').address,
+    ...context.programs.get('splToken').publicKey,
     isWritable: false,
   };
   const ataProgramAccount = input.ataProgram ?? {
-    ...context.programs.get('splAssociatedToken').address,
+    ...context.programs.get('splAssociatedToken').publicKey,
     isWritable: false,
   };
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const useAuthorityRecordAccount = input.useAuthorityRecord;

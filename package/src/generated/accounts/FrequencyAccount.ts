@@ -42,18 +42,18 @@ export type FrequencyAccountAccountArgs = {
 
 export async function fetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<FrequencyAccount> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'FrequencyAccount');
   return deserializeFrequencyAccount(context, maybeAccount);
 }
 
 export async function safeFetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<FrequencyAccount | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeFrequencyAccount(context, maybeAccount)
     : null;

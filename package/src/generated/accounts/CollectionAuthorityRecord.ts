@@ -35,18 +35,18 @@ export type CollectionAuthorityRecordAccountArgs = {
 
 export async function fetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<CollectionAuthorityRecord> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
   return deserializeCollectionAuthorityRecord(context, maybeAccount);
 }
 
 export async function safeFetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<CollectionAuthorityRecord | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
     ? deserializeCollectionAuthorityRecord(context, maybeAccount)
     : null;

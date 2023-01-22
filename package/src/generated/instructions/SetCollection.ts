@@ -72,7 +72,7 @@ export function setCollection(
   // Program ID.
   const programId: PublicKey = context.programs.get(
     'mplCandyMachineCore'
-  ).address;
+  ).publicKey;
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;
@@ -91,7 +91,7 @@ export function setCollection(
     input.newCollectionAuthorityRecord;
   const tokenMetadataProgramAccount = input.tokenMetadataProgram;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
 

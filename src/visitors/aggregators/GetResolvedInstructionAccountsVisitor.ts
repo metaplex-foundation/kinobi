@@ -116,7 +116,7 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
           !resolved.resolvedIsSigner && !resolvedIsPublicKey;
         resolved.resolvedIsOptional = defaultAccount.isOptional;
         break;
-      case 'address':
+      case 'publicKey':
       case 'program':
       case 'programId':
         resolved.resolvedIsOptionalSigner = account.isSigner;

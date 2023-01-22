@@ -342,7 +342,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   ): JavaScriptImportMap {
     const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
-      if (account.defaultsTo.kind === 'address') {
+      if (account.defaultsTo.kind === 'publicKey') {
         imports.add('core', 'publicKey');
       }
       if (account.defaultsTo.kind === 'pda') {

@@ -48,7 +48,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
       exports[`find${account.name}Pda`] = 'function';
     }
     bag.mergeWith([this.checkExportConflicts(account, exports)]);
-    const reservedAccountFields = new Set(['address', 'header']);
+    const reservedAccountFields = new Set(['publicKey', 'header']);
     const invalidFields = account.type.fields
       .map((field) => field.name)
       .filter((name) => reservedAccountFields.has(name));

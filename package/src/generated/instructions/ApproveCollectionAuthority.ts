@@ -80,7 +80,8 @@ export function approveCollectionAuthority(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('mplTokenMetadata').address;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
   const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
@@ -90,7 +91,7 @@ export function approveCollectionAuthority(
   const metadataAccount = input.metadata;
   const mintAccount = input.mint;
   const systemProgramAccount = input.systemProgram ?? {
-    ...context.programs.get('splSystem').address,
+    ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const rentAccount = input.rent;

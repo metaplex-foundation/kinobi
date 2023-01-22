@@ -66,7 +66,7 @@ export function setAuthority(
   // Program ID.
   const programId: PublicKey = context.programs.get(
     'mplCandyMachineCore'
-  ).address;
+  ).publicKey;
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;

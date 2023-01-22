@@ -27,8 +27,8 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!program.metadata.name) {
       bag.error('Program has no name.', program, this.stack);
     }
-    if (!program.metadata.address) {
-      bag.error('Program has no address.', program, this.stack);
+    if (!program.metadata.publicKey) {
+      bag.error('Program has no public key.', program, this.stack);
     }
     if (!program.metadata.version) {
       bag.warn('Program has no version.', program, this.stack);

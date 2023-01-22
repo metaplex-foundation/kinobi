@@ -33,18 +33,18 @@ export type EditionAccountArgs = {
 
 export async function fetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<Edition> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   assertAccountExists(maybeAccount, 'Edition');
   return deserializeEdition(context, maybeAccount);
 }
 
 export async function safeFetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  address: PublicKey
+  publicKey: PublicKey
 ): Promise<Edition | null> {
-  const maybeAccount = await context.rpc.getAccount(address);
+  const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists ? deserializeEdition(context, maybeAccount) : null;
 }
 
