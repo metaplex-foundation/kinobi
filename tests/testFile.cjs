@@ -69,6 +69,7 @@ kinobi.update(
     'mplTokenMetadata.Collection': { verified: false },
   })
 );
+
 kinobi.update(
   new SetLeafWrappersVisitor({
     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
@@ -78,29 +79,6 @@ kinobi.update(
       decimals: 2,
     },
   })
-);
-kinobi.update(
-  new SetInstructionAccountDefaultValuesVisitor([
-    { instruction: 'Dummy', account: 'edition', kind: 'account', name: 'mint' },
-    {
-      instruction: 'Dummy',
-      account: 'mintAuthority',
-      kind: 'account',
-      name: 'updateAuthority',
-    },
-    { instruction: 'Dummy', account: 'foo', kind: 'account', name: 'bar' },
-    { instruction: 'Dummy', account: 'bar', kind: 'programId' },
-    {
-      instruction: 'CreateMetadataAccount',
-      account: 'metadata',
-      kind: 'pda',
-    },
-    {
-      instruction: 'CreateMetadataAccountV3',
-      account: 'metadata',
-      kind: 'pda',
-    },
-  ])
 );
 
 kinobi.update(
@@ -125,6 +103,14 @@ kinobi.update(
   new UpdateInstructionsVisitor({
     CreateMetadataAccount: {
       bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
+      accounts: {
+        metadata: { defaultsTo: { kind: 'pda' } },
+      },
+    },
+    CreateMetadataAccountV3: {
+      accounts: {
+        metadata: { defaultsTo: { kind: 'pda' } },
+      },
     },
     CreateMasterEditionV3: {
       bytesCreatedOnChain: { kind: 'account', name: 'MasterEditionV2' },
@@ -132,6 +118,16 @@ kinobi.update(
     MintFromCandyMachine: {
       accounts: {
         nftMintAuthority: { defaultsTo: { kind: 'identity' } },
+      },
+    },
+    Dummy: {
+      accounts: {
+        mintAuthority: {
+          defaultsTo: { kind: 'account', name: 'updateAuthority' },
+        },
+        edition: { defaultsTo: { kind: 'account', name: 'mint' } },
+        foo: { defaultsTo: { kind: 'account', name: 'bar' } },
+        bar: { defaultsTo: { kind: 'programId' } },
       },
     },
   })
