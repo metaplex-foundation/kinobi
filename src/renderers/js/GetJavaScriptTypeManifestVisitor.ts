@@ -387,7 +387,9 @@ export class GetJavaScriptTypeManifestVisitor
     const fields = typeStruct.fields.map((field) => field.accept(this));
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
-    const structDescription = typeStruct.name ? `, '${typeStruct.name}'` : '';
+    const structDescription = typeStruct.name
+      ? `, '${pascalCase(typeStruct.name)}'`
+      : '';
     const serializerTypeParams = definedName ? definedName.strict : 'any';
     const baseManifest = {
       ...mergedManifest,

@@ -214,7 +214,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         typeManifest,
-        name: account.name,
         seeds,
       })
     );

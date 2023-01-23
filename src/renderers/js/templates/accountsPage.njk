@@ -5,52 +5,52 @@
 {{ imports }}
 
 {{ macros.docblock(definedType.docs) }}
-export type {{ name }} = Account<{{ name }}AccountData>;
+export type {{ account.name | pascalCase }} = Account<{{ account.name | pascalCase }}AccountData>;
 
-{{ macros.exportType(name + 'AccountData', name + 'AccountArgs', typeManifest) }}
+{{ macros.exportType(account.name | pascalCase + 'AccountData', account.name | pascalCase + 'AccountArgs', typeManifest) }}
 
-export async function fetch{{ name }}(
+export async function fetch{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
-): Promise<{{ name }}> {
+): Promise<{{ account.name | pascalCase }}> {
   const maybeAccount = await context.rpc.getAccount(publicKey);
-  assertAccountExists(maybeAccount, '{{ name }}');
-  return deserialize{{ name }}(context, maybeAccount);
+  assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
+  return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
 }
 
-export async function safeFetch{{ name }}(
+export async function safeFetch{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
-): Promise<{{ name }} | null> {
+): Promise<{{ account.name | pascalCase }} | null> {
   const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists
-    ? deserialize{{ name }}(context, maybeAccount)
+    ? deserialize{{ account.name | pascalCase }}(context, maybeAccount)
     : null;
 }
 
-export function deserialize{{ name }}(
+export function deserialize{{ account.name | pascalCase }}(
   context: Pick<Context, 'serializer'>,
   rawAccount: RpcAccount,
-): {{ name }} {
-  return deserializeAccount(rawAccount, get{{ name }}AccountDataSerializer(context));
+): {{ account.name | pascalCase }} {
+  return deserializeAccount(rawAccount, get{{ account.name | pascalCase }}AccountDataSerializer(context));
 }
 
-{{ macros.exportSerializer(name + 'AccountData', name + 'AccountArgs', typeManifest) }}
+{{ macros.exportSerializer(account.name | pascalCase + 'AccountData', account.name | pascalCase + 'AccountArgs', typeManifest) }}
 
 {% if account.metadata.size !== null %}
-export function get{{ name }}Size(_context = {}): number {
+export function get{{ account.name | pascalCase }}Size(_context = {}): number {
   return {{ account.metadata.size }};
 }
 {% else %}
-export function get{{ name }}Size(
+export function get{{ account.name | pascalCase }}Size(
   context: Pick<Context, 'serializer'>
 ): number | null {
-  return get{{ name }}AccountDataSerializer(context).fixedSize;
+  return get{{ account.name | pascalCase }}AccountDataSerializer(context).fixedSize;
 }
 {% endif %}
 
 {% if seeds.length > 0 %}
-export function find{{ name }}Pda(
+export function find{{ account.name | pascalCase }}Pda(
   context: Pick<Context, 'eddsa' | 'programs'{% if account.hasVariableSeeds %} | 'serializer'{% endif %}>,
   {% if account.hasVariableSeeds %}
     seeds: {
