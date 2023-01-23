@@ -2,7 +2,7 @@
   // Resolved accounts.
   {% for account in accounts | sort(false, false, 'dependencyPosition') %}
     {% if account.defaultsTo.kind === 'account' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? {{ account.defaultsTo.name }}Account;
+      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? {{ account.defaultsTo.name | camelCase }}Account;
     {% elif account.defaultsTo.kind === 'pda' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? find{{ account.defaultsTo.pdaAccount | pascalCase }}Pda(context,
       {%- if (account.defaultsTo.seeds | length) > 0 -%}
