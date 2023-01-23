@@ -71,7 +71,7 @@ export const toNodeSelectorFunction = (
 
   const checkProgram: NodeSelectorFunction = (node, stack, program) => {
     if (selector.program === undefined) return true;
-    return !!program && selector.program === program.name;
+    return !!program && mainCase(selector.program) === program.name;
   };
 
   return (node, stack, program) =>
