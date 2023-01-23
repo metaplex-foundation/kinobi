@@ -16,32 +16,56 @@ export type DefinedTypeUpdates =
 
 export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, DefinedTypeUpdates>) {
-    const transforms = Object.entries(map).map(
-      ([selector, updates]): NodeTransform => {
+    super(
+      Object.entries(map).flatMap(([selector, updates]): NodeTransform[] => {
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
-        return {
-          selector: { type: 'definedType', stack: selectorStack, name },
-          transformer: (node, stack, program) => {
-            nodes.assertDefinedTypeNode(node);
-            if (typeof updates === 'function') {
-              return updates(node, stack, program);
-            }
-            if ('delete' in updates) {
-              return null;
-            }
-            const newName = mainCase(updates.name ?? node.name);
-            return new nodes.DefinedTypeNode(
-              { ...node.metadata, ...updates },
-              nodes.isTypeStructNode(node.type)
-                ? renameStructNode(node.type, updates.data ?? {}, newName)
-                : renameEnumNode(node.type, updates.data ?? {}, newName)
-            );
-          },
-        };
-      }
-    );
+        const newName =
+          typeof updates === 'object' && 'name' in updates && updates.name
+            ? mainCase(updates.name)
+            : undefined;
 
-    super(transforms);
+        const transforms: NodeTransform[] = [
+          {
+            selector: { type: 'definedType', stack: selectorStack, name },
+            transformer: (node, stack, program) => {
+              nodes.assertDefinedTypeNode(node);
+              if (typeof updates === 'function') {
+                return updates(node, stack, program);
+              }
+              if ('delete' in updates) {
+                return null;
+              }
+              return new nodes.DefinedTypeNode(
+                { ...node.metadata, ...updates },
+                nodes.isTypeStructNode(node.type)
+                  ? renameStructNode(
+                      node.type,
+                      updates.data ?? {},
+                      newName ?? node.name
+                    )
+                  : renameEnumNode(
+                      node.type,
+                      updates.data ?? {},
+                      newName ?? node.name
+                    )
+              );
+            },
+          },
+        ];
+
+        if (newName) {
+          transforms.push({
+            selector: { type: 'typeDefinedLink', stack: selectorStack, name },
+            transformer: (node: nodes.Node) => {
+              nodes.assertTypeDefinedLinkNode(node);
+              return new nodes.TypeDefinedLinkNode(newName);
+            },
+          });
+        }
+
+        return transforms;
+      })
+    );
   }
 }

@@ -6,7 +6,6 @@ const {
   GetNodeTreeStringVisitor,
   SetStructDefaultValuesVisitor,
   SetLeafWrappersVisitor,
-  SetInstructionAccountDefaultValuesVisitor,
   TypeLeafNode,
   UnwrapDefinedTypesVisitor,
   UnwrapStructVisitor,
@@ -23,11 +22,6 @@ const kinobi = new Kinobi([
 ]);
 kinobi.update(
   new RenameNodesVisitor({
-    // candyMachineCore: {
-    //   types: {
-    //     Creator: 'CmCreator',
-    //   },
-    // },
     mplTokenAuthRules: {
       prefix: 'Ta',
       types: {
