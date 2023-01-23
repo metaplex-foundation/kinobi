@@ -1,4 +1,5 @@
 import * as nodes from '../nodes';
+import { mainCase } from '../utils';
 import type { NodeStack } from './NodeStack';
 
 export type NodeSelectorType =
@@ -57,7 +58,7 @@ export const toNodeSelectorFunction = (
 
   const checkName: NodeSelectorFunction = (node) => {
     if (selector.name === undefined) return true;
-    return selector.name === (node as { name?: string }).name;
+    return mainCase(selector.name) === (node as { name?: string }).name;
   };
 
   const checkStack: NodeSelectorFunction = (node, stack) => {
