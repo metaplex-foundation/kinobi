@@ -187,10 +187,10 @@ export class GetJavaScriptTypeManifestVisitor
     const variantSerializers = variants
       .map((variant) => variant.serializer)
       .join(', ');
-    const description =
-      typeEnum.name || definedName
-        ? `, undefined, '${typeEnum.name || definedName?.strict}'`
-        : '';
+    const description = typeEnum.name || definedName?.strict;
+    const descriptionArgs = description
+      ? `, undefined, '${pascalCase(description)}'`
+      : '';
     const serializerTypeParams = definedName ? definedName.strict : 'any';
 
     return {
@@ -199,7 +199,7 @@ export class GetJavaScriptTypeManifestVisitor
       looseType: variants.map((v) => v.looseType).join(' | '),
       serializer:
         `${this.s('dataEnum')}<${serializerTypeParams}>` +
-        `([${variantSerializers}]${description})`,
+        `([${variantSerializers}]${descriptionArgs})`,
       imports: mergedManifest.imports.add('core', [
         'GetDataEnumKindContent',
         'GetDataEnumKind',

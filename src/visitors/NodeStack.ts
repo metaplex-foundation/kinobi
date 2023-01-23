@@ -1,4 +1,5 @@
 import * as nodes from '../nodes';
+import { mainCase } from '../utils';
 
 export class NodeStack {
   private readonly stack: nodes.Node[];
@@ -91,13 +92,13 @@ export class NodeStack {
   }
 
   public matchesWithNames(names: string[]): boolean {
-    const remainingNames = [...names];
+    const remainingNames = [...names].map(mainCase);
     this.stack.forEach((node) => {
       const nodeName = (node as { name?: string }).name;
       if (
         nodeName &&
         remainingNames.length > 0 &&
-        remainingNames[0] === nodeName
+        remainingNames[0] === mainCase(nodeName)
       ) {
         remainingNames.shift();
       }
