@@ -280,8 +280,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
     if (accountsAndArgsConflicts.length > 0) {
       logWarn(
-        `Accounts and args of "${instruction.name}" instruction have conflicting ` +
-          'attributes. Thus, they could not be merged into a single input object. ' +
+        `Accounts and args of instruction [${instruction.name}] have the following ` +
+          `conflicting attributes [${accountsAndArgsConflicts.join(', ')}]. ` +
+          `Thus, they could not be merged into a single input object. ` +
           'You may want to rename the conflicting attributes.'
       );
     }
