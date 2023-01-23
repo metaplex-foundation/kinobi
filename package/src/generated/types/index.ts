@@ -18,7 +18,6 @@ export * from './ConfigLine';
 export * from './ConfigLineSettings';
 export * from './CreateMasterEditionArgs';
 export * from './Creator';
-export * from './Data';
 export * from './DataV2';
 export * from './DelegateArgs';
 export * from './DelegateRole';

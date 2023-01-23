@@ -10,6 +10,7 @@ const {
   SetAccountSeedsVisitor,
   TypeLeafNode,
   SetInstructionBytesCreatedOnChainVisitor,
+  UnwrapDefinedTypesVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -126,5 +127,7 @@ kinobi.update(
     CreateMasterEditionV3: { kind: 'account', name: 'MasterEditionV2' },
   })
 );
+
+kinobi.update(new UnwrapDefinedTypesVisitor(['Data']));
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));

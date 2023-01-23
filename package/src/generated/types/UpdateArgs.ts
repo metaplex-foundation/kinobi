@@ -22,8 +22,8 @@ import {
   CollectionArgs,
   CollectionDetails,
   CollectionDetailsArgs,
-  Data,
-  DataArgs,
+  Creator,
+  CreatorArgs,
   DelegateState,
   ProgrammableConfig,
   TokenStandard,
@@ -33,7 +33,7 @@ import {
   getAuthorizationDataSerializer,
   getCollectionDetailsSerializer,
   getCollectionSerializer,
-  getDataSerializer,
+  getCreatorSerializer,
   getDelegateStateSerializer,
   getProgrammableConfigSerializer,
   getTokenStandardSerializer,
@@ -44,7 +44,13 @@ export type UpdateArgs = {
   __kind: 'V1';
   authorizationData: Option<AuthorizationData>;
   newUpdateAuthority: Option<PublicKey>;
-  data: Option<Data>;
+  data: Option<{
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: Option<Array<Creator>>;
+  }>;
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
   tokenStandard: Option<TokenStandard>;
@@ -60,7 +66,13 @@ export type UpdateArgsArgs = {
   __kind: 'V1';
   authorizationData: Option<AuthorizationDataArgs>;
   newUpdateAuthority: Option<PublicKey>;
-  data: Option<DataArgs>;
+  data: Option<{
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: Option<Array<CreatorArgs>>;
+  }>;
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
   tokenStandard: Option<TokenStandard>;
@@ -87,7 +99,24 @@ export function getUpdateArgsSerializer(
               s.option(getAuthorizationDataSerializer(context)),
             ],
             ['newUpdateAuthority', s.option(s.publicKey)],
-            ['data', s.option(getDataSerializer(context))],
+            [
+              'data',
+              s.option(
+                s.struct<any>(
+                  [
+                    ['name', s.string()],
+                    ['symbol', s.string()],
+                    ['uri', s.string()],
+                    ['sellerFeeBasisPoints', s.u16],
+                    [
+                      'creators',
+                      s.option(s.vec(getCreatorSerializer(context))),
+                    ],
+                  ],
+                  'Data'
+                )
+              ),
+            ],
             ['primarySaleHappened', s.option(s.bool())],
             ['isMutable', s.option(s.bool())],
             ['tokenStandard', s.option(getTokenStandardSerializer(context))],

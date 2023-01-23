@@ -10,6 +10,7 @@ import {
   ACCOUNT_HEADER_SIZE,
   AccountMeta,
   Context,
+  Option,
   PublicKey,
   Serializer,
   Signer,
@@ -19,7 +20,7 @@ import {
   publicKey,
 } from '@lorisleiva/js-core';
 import { findMetadataPda, getMetadataSize } from '../accounts';
-import { Data, DataArgs, getDataSerializer } from '../types';
+import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 
 // Accounts.
 export type CreateMetadataAccountInstructionAccounts = {
@@ -42,12 +43,24 @@ export type CreateMetadataAccountInstructionAccounts = {
 // Arguments.
 export type CreateMetadataAccountInstructionData = {
   discriminator: number;
-  data: Data;
+  data: {
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: Option<Array<Creator>>;
+  };
   isMutable: boolean;
 };
 
 export type CreateMetadataAccountInstructionArgs = {
-  data: DataArgs;
+  data: {
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: Option<Array<CreatorArgs>>;
+  };
   isMutable: boolean;
 };
 
@@ -66,7 +79,19 @@ export function getCreateMetadataAccountInstructionDataSerializer(
     s.struct<CreateMetadataAccountInstructionData>(
       [
         ['discriminator', s.u8],
-        ['data', getDataSerializer(context)],
+        [
+          'data',
+          s.struct<any>(
+            [
+              ['name', s.string()],
+              ['symbol', s.string()],
+              ['uri', s.string()],
+              ['sellerFeeBasisPoints', s.u16],
+              ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+            ],
+            'Data'
+          ),
+        ],
         ['isMutable', s.bool()],
       ],
       'CreateMetadataAccountInstructionArgs'
