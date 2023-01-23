@@ -193,7 +193,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       ])
       .remove('generatedTypes', [account.name]);
 
-    const seeds = account.seeds.map((seed) => {
+    const seeds = account.metadata.seeds.map((seed) => {
       if (seed.kind === 'programId') return seed;
       if (seed.kind === 'literal') {
         imports.add('core', 'utf8');

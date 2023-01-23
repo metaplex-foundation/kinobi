@@ -210,7 +210,8 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
   protected getAccountVariableSeeds(
     accountName: string
   ): Record<string, nodes.InstructionNodeAccountDefaultsSeed> {
-    const seeds = this.allAccounts.get(pascalCase(accountName))?.seeds ?? [];
+    const seeds =
+      this.allAccounts.get(pascalCase(accountName))?.metadata?.seeds ?? [];
     return seeds.reduce((acc, seed) => {
       if (seed.kind !== 'variable') return acc;
       if (nodes.isTypeLeafNode(seed.type) && seed.type.type === 'publicKey') {

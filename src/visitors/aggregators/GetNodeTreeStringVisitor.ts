@@ -45,11 +45,11 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     if (account.metadata.size !== null) {
       children.push(this.indented(`size: ${account.metadata.size}`));
     }
-    if (account.seeds.length > 0) {
+    if (account.metadata.seeds.length > 0) {
       children.push(this.indented('seeds:'));
       this.indent += 1;
       children.push(
-        ...account.seeds.map((seed) => {
+        ...account.metadata.seeds.map((seed) => {
           if (seed.kind === 'programId') return this.indented('programId');
           if (seed.kind === 'literal') return this.indented(`"${seed.value}"`);
           this.indent += 1;

@@ -6,11 +6,12 @@ import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { assertTypeStructNode, TypeStructNode } from './TypeStructNode';
 
 export type AccountNodeMetadata = {
-  name: string;
-  idlName: string;
-  docs: string[];
-  internal: boolean;
-  size: number | null;
+  readonly name: string;
+  readonly idlName: string;
+  readonly docs: string[];
+  readonly internal: boolean;
+  readonly size: number | null;
+  readonly seeds: AccountNodeSeed[];
 };
 
 export type AccountNodeSeed =
@@ -23,8 +24,7 @@ export class AccountNode implements Visitable {
 
   constructor(
     readonly metadata: AccountNodeMetadata,
-    readonly type: TypeStructNode,
-    readonly seeds: AccountNodeSeed[]
+    readonly type: TypeStructNode
   ) {}
 
   static fromIdl(idl: Partial<IdlAccount>): AccountNode {
@@ -33,20 +33,21 @@ export class AccountNode implements Visitable {
     const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlStruct });
     assertTypeStructNode(type);
-    const metadata = {
-      name,
-      idlName,
-      docs: idl.docs ?? [],
-      internal: false,
-      size: idl.size ?? null,
-    };
     const seeds = (idl.seeds ?? []).map((seed) => {
       if (seed.kind === 'variable') {
         return { ...seed, type: createTypeNodeFromIdl(seed.type) };
       }
       return seed;
     });
-    return new AccountNode(metadata, type, seeds);
+    const metadata = {
+      name,
+      idlName,
+      docs: idl.docs ?? [],
+      internal: false,
+      size: idl.size ?? null,
+      seeds,
+    };
+    return new AccountNode(metadata, type);
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -62,7 +63,7 @@ export class AccountNode implements Visitable {
   }
 
   get variableSeeds(): Extract<AccountNodeSeed, { kind: 'variable' }>[] {
-    return this.seeds.filter(
+    return this.metadata.seeds.filter(
       (seed): seed is Extract<AccountNodeSeed, { kind: 'variable' }> =>
         seed.kind === 'variable'
     );

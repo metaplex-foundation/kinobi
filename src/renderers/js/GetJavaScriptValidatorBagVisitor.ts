@@ -44,7 +44,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
       [`get${account.name}AccountDataSerializer`]: 'function',
       [`get${account.name}Size`]: 'function',
     };
-    if (account.seeds.length > 0) {
+    if (account.metadata.seeds.length > 0) {
       exports[`find${account.name}Pda`] = 'function';
     }
     bag.mergeWith([this.checkExportConflicts(account, exports)]);

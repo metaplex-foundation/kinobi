@@ -11,11 +11,7 @@ export class SetAccountSizesVisitor extends TransformNodesVisitor {
           selector: { type: 'account', stack, name },
           transformer: (node) => {
             nodes.assertAccountNode(node);
-            return new nodes.AccountNode(
-              { ...node.metadata, size },
-              node.type,
-              node.seeds
-            );
+            return new nodes.AccountNode({ ...node.metadata, size }, node.type);
           },
         };
       }

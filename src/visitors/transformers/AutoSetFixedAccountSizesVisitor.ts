@@ -18,11 +18,7 @@ export class AutoSetFixedAccountSizesVisitor extends BaseThrowVisitor<nodes.Root
           nodes.assertAccountNode(node);
           const size = node.type.accept(byteSizeVisitor);
           if (size === null) return node;
-          return new nodes.AccountNode(
-            { ...node.metadata, size },
-            node.type,
-            node.seeds
-          );
+          return new nodes.AccountNode({ ...node.metadata, size }, node.type);
         },
       },
     ]);

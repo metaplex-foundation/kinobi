@@ -21,8 +21,7 @@ export class MarkNodesAsInternalVisitor extends TransformNodesVisitor {
           if (nodes.isAccountNode(node)) {
             return new nodes.AccountNode(
               { ...node.metadata, internal: true },
-              node.type,
-              node.seeds
+              node.type
             );
           }
 
