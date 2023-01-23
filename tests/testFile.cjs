@@ -81,11 +81,6 @@ kinobi.update(
 );
 kinobi.update(
   new SetInstructionAccountDefaultValuesVisitor([
-    {
-      instruction: 'MintFromCandyMachine',
-      account: 'nftMintAuthority',
-      kind: 'identity',
-    },
     { instruction: 'Dummy', account: 'edition', kind: 'account', name: 'mint' },
     {
       instruction: 'Dummy',
@@ -133,6 +128,11 @@ kinobi.update(
     },
     CreateMasterEditionV3: {
       bytesCreatedOnChain: { kind: 'account', name: 'MasterEditionV2' },
+    },
+    MintFromCandyMachine: {
+      accounts: {
+        nftMintAuthority: { defaultsTo: { kind: 'identity' } },
+      },
     },
   })
 );
