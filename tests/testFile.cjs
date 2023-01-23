@@ -7,11 +7,11 @@ const {
   SetStructDefaultValuesVisitor,
   SetLeafWrappersVisitor,
   SetInstructionAccountDefaultValuesVisitor,
-  SetAccountSeedsVisitor,
   TypeLeafNode,
-  SetInstructionBytesCreatedOnChainVisitor,
   UnwrapDefinedTypesVisitor,
   UnwrapStructVisitor,
+  UpdateAccountsVisitor,
+  UpdateInstructionsVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -107,25 +107,33 @@ kinobi.update(
     },
   ])
 );
+
 kinobi.update(
-  new SetAccountSeedsVisitor({
-    MasterEditionV2: [
-      { kind: 'literal', value: 'metadata' },
-      { kind: 'programId' },
-      {
-        kind: 'variable',
-        name: 'mint',
-        description: 'The address of the mint account',
-        type: new TypeLeafNode('publicKey'),
-      },
-      { kind: 'literal', value: 'edition' },
-    ],
+  new UpdateAccountsVisitor({
+    MasterEditionV2: {
+      seeds: [
+        { kind: 'literal', value: 'metadata' },
+        { kind: 'programId' },
+        {
+          kind: 'variable',
+          name: 'mint',
+          description: 'The address of the mint account',
+          type: new TypeLeafNode('publicKey'),
+        },
+        { kind: 'literal', value: 'edition' },
+      ],
+    },
   })
 );
+
 kinobi.update(
-  new SetInstructionBytesCreatedOnChainVisitor({
-    CreateMetadataAccount: { kind: 'account', name: 'Metadata' },
-    CreateMasterEditionV3: { kind: 'account', name: 'MasterEditionV2' },
+  new UpdateInstructionsVisitor({
+    CreateMetadataAccount: {
+      bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
+    },
+    CreateMasterEditionV3: {
+      bytesCreatedOnChain: { kind: 'account', name: 'MasterEditionV2' },
+    },
   })
 );
 
