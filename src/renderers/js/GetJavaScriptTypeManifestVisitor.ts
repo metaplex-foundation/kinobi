@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { camelCase } from '../../utils';
+import { camelCase, pascalCase } from '../../utils';
 import { Visitor } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
@@ -48,8 +48,8 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitAccount(account: nodes.AccountNode): JavaScriptTypeManifest {
     this.definedName = {
-      strict: `${account.name}AccountData`,
-      loose: `${account.name}AccountArgs`,
+      strict: `${pascalCase(account.name)}AccountData`,
+      loose: `${pascalCase(account.name)}AccountArgs`,
     };
     const child = account.type.accept(this);
     this.definedName = null;
@@ -58,8 +58,8 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitInstruction(instruction: nodes.InstructionNode): JavaScriptTypeManifest {
     this.definedName = {
-      strict: `${instruction.name}InstructionData`,
-      loose: `${instruction.name}InstructionArgs`,
+      strict: `${pascalCase(instruction.name)}InstructionData`,
+      loose: `${pascalCase(instruction.name)}InstructionArgs`,
     };
     const child = instruction.args.accept(this);
     this.definedName = null;
@@ -73,8 +73,8 @@ export class GetJavaScriptTypeManifestVisitor
 
     this.definedTypeStack.push(definedType.name);
     this.definedName = {
-      strict: definedType.name,
-      loose: `${definedType.name}Args`,
+      strict: pascalCase(definedType.name),
+      loose: `${pascalCase(definedType.name)}Args`,
     };
     const child = definedType.type.accept(this);
     this.definedName = null;
@@ -121,20 +121,21 @@ export class GetJavaScriptTypeManifestVisitor
       linkedDefinedTypeHasLooseType = linkedManifest.hasLooseType;
     }
 
-    const serializerName = `get${typeDefinedLink.definedType}Serializer`;
+    const pascalCaseDefinedType = pascalCase(typeDefinedLink.definedType);
+    const serializerName = `get${pascalCaseDefinedType}Serializer`;
     return {
-      strictType: typeDefinedLink.definedType,
+      strictType: pascalCaseDefinedType,
       looseType: linkedDefinedTypeHasLooseType
-        ? `${typeDefinedLink.definedType}Args`
-        : typeDefinedLink.definedType,
+        ? `${pascalCaseDefinedType}Args`
+        : pascalCaseDefinedType,
       hasLooseType: linkedDefinedTypeHasLooseType,
       isEnum: false,
       serializer: `${serializerName}(context)`,
       imports: new JavaScriptImportMap().add('generatedTypes', [
         serializerName,
-        typeDefinedLink.definedType,
+        pascalCaseDefinedType,
         ...(linkedDefinedTypeHasLooseType
-          ? [`${typeDefinedLink.definedType}Args`]
+          ? [`${pascalCaseDefinedType}Args`]
           : []),
       ]),
     };
@@ -206,7 +207,7 @@ export class GetJavaScriptTypeManifestVisitor
   visitTypeEnumEmptyVariant(
     typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
   ): JavaScriptTypeManifest {
-    const { name } = typeEnumEmptyVariant;
+    const name = pascalCase(typeEnumEmptyVariant.name);
     const kindAttribute = `__kind: "${name}"`;
     return {
       strictType: `{ ${kindAttribute} }`,
@@ -221,7 +222,7 @@ export class GetJavaScriptTypeManifestVisitor
   visitTypeEnumStructVariant(
     typeEnumStructVariant: nodes.TypeEnumStructVariantNode
   ): JavaScriptTypeManifest {
-    const { name } = typeEnumStructVariant;
+    const name = pascalCase(typeEnumStructVariant.name);
     const kindAttribute = `__kind: "${name}"`;
     const type = typeEnumStructVariant.struct.accept(this);
     return {
@@ -235,7 +236,7 @@ export class GetJavaScriptTypeManifestVisitor
   visitTypeEnumTupleVariant(
     typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
   ): JavaScriptTypeManifest {
-    const { name } = typeEnumTupleVariant;
+    const name = pascalCase(typeEnumTupleVariant.name);
     const kindAttribute = `__kind: "${name}"`;
     const struct = new nodes.TypeStructNode(name, [
       new nodes.TypeStructFieldNode(
