@@ -1,4 +1,4 @@
-import { pascalCase } from '../../utils';
+import { mainCase, pascalCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 import { Dependency } from '../Dependency';
@@ -203,9 +203,10 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
       if ('instruction' in rule && rule.instruction !== instruction.name) {
         return false;
       }
+      const accountName = mainCase(account.name);
       return typeof rule.account === 'string'
-        ? rule.account === account.name
-        : rule.account.test(account.name);
+        ? mainCase(rule.account) === accountName
+        : rule.account.test(accountName);
     });
   }
 }
