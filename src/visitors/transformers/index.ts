@@ -5,7 +5,6 @@ export * from './DeleteNodesVisitor';
 export * from './MarkNodesAsInternalVisitor';
 export * from './RenameNodesVisitor';
 export * from './SetAccountSeedsVisitor';
-export * from './SetAccountSizesVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
 export * from './SetInstructionBytesCreatedOnChainVisitor';
 export * from './SetInstructionDiscriminatorsVisitor';
