@@ -12,6 +12,8 @@ const {
   UnwrapStructVisitor,
   UpdateAccountsVisitor,
   UpdateInstructionsVisitor,
+  UpdateProgramsVisitor,
+  UpdateDefinedTypesVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -22,11 +24,6 @@ const kinobi = new Kinobi([
 kinobi.update(
   new RenameNodesVisitor({
     candyMachineCore: {
-      name: 'mplCandyMachineCore',
-      prefix: 'Cm',
-      instructions: {
-        Mint: 'MintFromCandyMachine',
-      },
       types: {
         Creator: 'CmCreator',
       },
@@ -51,6 +48,72 @@ kinobi.update(
     },
   })
 );
+
+kinobi.update(
+  new UpdateProgramsVisitor({
+    candyMachineCore: { name: 'mplCandyMachineCore', prefix: 'Cm' },
+  })
+);
+
+kinobi.update(
+  new UpdateAccountsVisitor({
+    MasterEditionV2: {
+      seeds: [
+        { kind: 'literal', value: 'metadata' },
+        { kind: 'programId' },
+        {
+          kind: 'variable',
+          name: 'mint',
+          description: 'The address of the mint account',
+          type: new TypeLeafNode('publicKey'),
+        },
+        { kind: 'literal', value: 'edition' },
+      ],
+    },
+  })
+);
+
+kinobi.update(
+  new UpdateDefinedTypesVisitor({
+    'mplCandyMachineCore.Creator': { name: 'CmCreator' },
+  })
+);
+
+kinobi.update(
+  new UpdateInstructionsVisitor({
+    CreateMetadataAccount: {
+      bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
+      accounts: {
+        metadata: { defaultsTo: { kind: 'pda' } },
+      },
+    },
+    CreateMetadataAccountV3: {
+      accounts: {
+        metadata: { defaultsTo: { kind: 'pda' } },
+      },
+    },
+    CreateMasterEditionV3: {
+      bytesCreatedOnChain: { kind: 'account', name: 'MasterEditionV2' },
+    },
+    'mplCandyMachineCore.Mint': {
+      name: 'MintFromCandyMachine',
+      accounts: {
+        nftMintAuthority: { defaultsTo: { kind: 'identity' } },
+      },
+    },
+    Dummy: {
+      accounts: {
+        mintAuthority: {
+          defaultsTo: { kind: 'account', name: 'updateAuthority' },
+        },
+        edition: { defaultsTo: { kind: 'account', name: 'mint' } },
+        foo: { defaultsTo: { kind: 'account', name: 'bar' } },
+        bar: { defaultsTo: { kind: 'programId' } },
+      },
+    },
+  })
+);
+
 const omitted = (v) => ({ value: v, strategy: 'omitted' });
 kinobi.update(
   new SetStructDefaultValuesVisitor({
@@ -81,63 +144,12 @@ kinobi.update(
   })
 );
 
-kinobi.update(
-  new UpdateAccountsVisitor({
-    MasterEditionV2: {
-      seeds: [
-        { kind: 'literal', value: 'metadata' },
-        { kind: 'programId' },
-        {
-          kind: 'variable',
-          name: 'mint',
-          description: 'The address of the mint account',
-          type: new TypeLeafNode('publicKey'),
-        },
-        { kind: 'literal', value: 'edition' },
-      ],
-    },
-  })
-);
-
-kinobi.update(
-  new UpdateInstructionsVisitor({
-    CreateMetadataAccount: {
-      bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
-      accounts: {
-        metadata: { defaultsTo: { kind: 'pda' } },
-      },
-    },
-    CreateMetadataAccountV3: {
-      accounts: {
-        metadata: { defaultsTo: { kind: 'pda' } },
-      },
-    },
-    CreateMasterEditionV3: {
-      bytesCreatedOnChain: { kind: 'account', name: 'MasterEditionV2' },
-    },
-    MintFromCandyMachine: {
-      accounts: {
-        nftMintAuthority: { defaultsTo: { kind: 'identity' } },
-      },
-    },
-    Dummy: {
-      accounts: {
-        mintAuthority: {
-          defaultsTo: { kind: 'account', name: 'updateAuthority' },
-        },
-        edition: { defaultsTo: { kind: 'account', name: 'mint' } },
-        foo: { defaultsTo: { kind: 'account', name: 'bar' } },
-        bar: { defaultsTo: { kind: 'programId' } },
-      },
-    },
-  })
-);
-
 kinobi.update(new UnwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
   new UnwrapStructVisitor({
     'mplTokenMetadata.Metadata': ['Data'],
   })
 );
+
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));
