@@ -3,7 +3,7 @@ import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 import { Dependency } from '../Dependency';
 
-type InstructionNodeAccountDefaultsInput =
+export type InstructionNodeAccountDefaultsInput =
   | nodes.InstructionNodeAccountDefaults
   | {
       kind: 'pda';

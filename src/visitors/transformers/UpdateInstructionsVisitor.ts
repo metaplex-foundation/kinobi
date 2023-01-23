@@ -1,4 +1,6 @@
 import * as nodes from '../../nodes';
+import { mainCase } from '../../utils';
+import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
   NodeTransform,
   NodeTransformer,
@@ -14,7 +16,11 @@ export type InstructionUpdates =
 
 export type InstructionAccountUpdates = Record<
   string,
-  Partial<nodes.InstructionNodeAccount>
+  Partial<
+    Omit<nodes.InstructionNodeAccount, 'defaultsTo'> & {
+      defaultsTo: InstructionNodeAccountDefaultsInput;
+    }
+  >
 >;
 
 export class UpdateInstructionsVisitor extends TransformNodesVisitor {
@@ -63,6 +69,26 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     accountUpdates: InstructionAccountUpdates
   ): nodes.InstructionNodeAccount {
     const accountUpdate = accountUpdates?.[account.name];
-    return accountUpdate ? { ...account, ...accountUpdate } : account;
+
+    if (accountUpdate?.defaultsTo?.kind === 'pda') {
+      const pdaAccount = mainCase(
+        accountUpdate?.defaultsTo?.pdaAccount ?? account.name
+      );
+      return {
+        ...account,
+        defaultsTo: {
+          pdaAccount,
+          dependency: 'generated',
+          seeds:
+            this.allAccounts.get(pdaAccount)?.instructionAccountDefaultSeeds ??
+            {},
+          ...accountUpdate?.defaultsTo,
+        },
+      };
+    }
+
+    return accountUpdate
+      ? ({ ...account, ...accountUpdate } as nodes.InstructionNodeAccount)
+      : account;
   }
 }
