@@ -20,32 +20,12 @@ const kinobi = new Kinobi([
   __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
 ]);
-kinobi.update(
-  new RenameNodesVisitor({
-    mplTokenAuthRules: {
-      prefix: 'Ta',
-      types: {
-        Key: 'TaKey',
-        CreateArgs: 'TaCreateArgs',
-      },
-    },
-    mplTokenMetadata: {
-      prefix: 'Tm',
-      instructions: {
-        Create: 'CreateDigitalAsset',
-        Update: 'UpdateDigitalAsset',
-      },
-      types: {
-        Key: 'TmKey',
-        CreateArgs: 'TmCreateArgs',
-      },
-    },
-  })
-);
 
 kinobi.update(
   new UpdateProgramsVisitor({
     candyMachineCore: { name: 'mplCandyMachineCore', prefix: 'Cm' },
+    mplTokenAuthRules: { prefix: 'Ta' },
+    mplTokenMetadata: { prefix: 'Tm' },
   })
 );
 
@@ -70,11 +50,17 @@ kinobi.update(
 kinobi.update(
   new UpdateDefinedTypesVisitor({
     'mplCandyMachineCore.Creator': { name: 'CmCreator' },
+    'mplTokenAuthRules.Key': { name: 'TaKey' },
+    'mplTokenMetadata.Key': { name: 'TmKey' },
+    'mplTokenMetadata.CreateArgs': { mame: 'TmCreateArgs' },
+    'mplTokenAuthRules.CreateArgs': { name: 'TaCreateArgs' },
   })
 );
 
 kinobi.update(
   new UpdateInstructionsVisitor({
+    'mplTokenMetadata.Create': { name: 'CreateDigitalAsset' },
+    'mplTokenMetadata.Update': { name: 'UpdateDigitalAsset' },
     CreateMetadataAccount: {
       bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
       accounts: {
