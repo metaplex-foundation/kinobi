@@ -18,3 +18,5 @@ export * from './UnwrapDefinedTypesVisitor';
 export * from './UnwrapInstructionArgsDefinedTypesVisitor';
 export * from './UnwrapInstructionArgsStructVisitor';
 export * from './UnwrapStructVisitor';
+export * from './UpdateInstructionsVisitor';
+export * from './UpdateProgramsVisitor';
