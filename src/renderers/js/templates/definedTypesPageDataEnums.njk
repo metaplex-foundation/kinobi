@@ -2,11 +2,11 @@
 // Data Enum Helpers.
 {% for variant in definedType.type.variants %}
 {% if variant.nodeClass === 'TypeEnumStructVariantNode' %}
-export function {{ definedType.name | camelCase }}(kind: '{{ variant.name }}', data: GetDataEnumKindContent<{{ definedType.name | pascalCase }}, '{{ variant.name }}'>): GetDataEnumKind<{{ definedType.name | pascalCase }}, '{{ variant.name }}'>;
+export function {{ definedType.name | camelCase }}(kind: '{{ variant.name | pascalCase }}', data: GetDataEnumKindContent<{{ definedType.name | pascalCase }}, '{{ variant.name | pascalCase }}'>): GetDataEnumKind<{{ definedType.name | pascalCase }}, '{{ variant.name | pascalCase }}'>;
 {% elif variant.nodeClass === 'TypeEnumTupleVariantNode' %}
-export function {{ definedType.name | camelCase }}(kind: '{{ variant.name }}', data: GetDataEnumKindContent<{{ definedType.name | pascalCase }}, '{{ variant.name }}'>['fields']): GetDataEnumKind<{{ definedType.name | pascalCase }}, '{{ variant.name }}'>;
+export function {{ definedType.name | camelCase }}(kind: '{{ variant.name | pascalCase }}', data: GetDataEnumKindContent<{{ definedType.name | pascalCase }}, '{{ variant.name | pascalCase }}'>['fields']): GetDataEnumKind<{{ definedType.name | pascalCase }}, '{{ variant.name | pascalCase }}'>;
 {% else %}
-export function {{ definedType.name | camelCase }}(kind: '{{ variant.name }}'): GetDataEnumKind<{{ definedType.name | pascalCase }}, '{{ variant.name }}'>;
+export function {{ definedType.name | camelCase }}(kind: '{{ variant.name | pascalCase }}'): GetDataEnumKind<{{ definedType.name | pascalCase }}, '{{ variant.name | pascalCase }}'>;
 {% endif %}
 {% endfor %}
 export function {{ definedType.name | camelCase }}<K extends {{ definedType.name | pascalCase }}['__kind']>(

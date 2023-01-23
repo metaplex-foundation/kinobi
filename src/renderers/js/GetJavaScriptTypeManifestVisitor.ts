@@ -142,7 +142,9 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptTypeManifest {
-    const variantNames = typeEnum.variants.map((variant) => variant.name);
+    const variantNames = typeEnum.variants.map((variant) =>
+      pascalCase(variant.name)
+    );
     const { definedName } = this;
     this.definedName = null;
 
@@ -168,10 +170,11 @@ export class GetJavaScriptTypeManifestVisitor
 
     const variants = typeEnum.variants.map(
       (variant): JavaScriptTypeManifest => {
+        const variantName = pascalCase(variant.name);
         this.definedName = definedName
           ? {
-              strict: `GetDataEnumKindContent<${definedName.strict}, '${variant.name}'>`,
-              loose: `GetDataEnumKindContent<${definedName.loose}, '${variant.name}'>`,
+              strict: `GetDataEnumKindContent<${definedName.strict}, '${variantName}'>`,
+              loose: `GetDataEnumKindContent<${definedName.loose}, '${variantName}'>`,
             }
           : null;
         const variantManifest = variant.accept(this);
