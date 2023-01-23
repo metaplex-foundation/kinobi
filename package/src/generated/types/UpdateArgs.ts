@@ -42,34 +42,34 @@ import {
 
 export type UpdateArgs = {
   __kind: 'V1';
-  authorization_data: Option<AuthorizationData>;
-  new_update_authority: Option<PublicKey>;
+  authorizationData: Option<AuthorizationData>;
+  newUpdateAuthority: Option<PublicKey>;
   data: Option<Data>;
-  primary_sale_happened: Option<boolean>;
-  is_mutable: Option<boolean>;
-  token_standard: Option<TokenStandard>;
+  primarySaleHappened: Option<boolean>;
+  isMutable: Option<boolean>;
+  tokenStandard: Option<TokenStandard>;
   collection: Option<Collection>;
   uses: Option<Uses>;
-  collection_details: Option<CollectionDetails>;
-  programmable_config: Option<ProgrammableConfig>;
-  delegate_state: Option<DelegateState>;
-  authority_type: AuthorityType;
+  collectionDetails: Option<CollectionDetails>;
+  programmableConfig: Option<ProgrammableConfig>;
+  delegateState: Option<DelegateState>;
+  authorityType: AuthorityType;
 };
 
 export type UpdateArgsArgs = {
   __kind: 'V1';
-  authorization_data: Option<AuthorizationDataArgs>;
-  new_update_authority: Option<PublicKey>;
+  authorizationData: Option<AuthorizationDataArgs>;
+  newUpdateAuthority: Option<PublicKey>;
   data: Option<DataArgs>;
-  primary_sale_happened: Option<boolean>;
-  is_mutable: Option<boolean>;
-  token_standard: Option<TokenStandard>;
+  primarySaleHappened: Option<boolean>;
+  isMutable: Option<boolean>;
+  tokenStandard: Option<TokenStandard>;
   collection: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
-  collection_details: Option<CollectionDetailsArgs>;
-  programmable_config: Option<ProgrammableConfig>;
-  delegate_state: Option<DelegateState>;
-  authority_type: AuthorityType;
+  collectionDetails: Option<CollectionDetailsArgs>;
+  programmableConfig: Option<ProgrammableConfig>;
+  delegateState: Option<DelegateState>;
+  authorityType: AuthorityType;
 };
 
 export function getUpdateArgsSerializer(
@@ -83,26 +83,26 @@ export function getUpdateArgsSerializer(
         s.struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>(
           [
             [
-              'authorization_data',
+              'authorizationData',
               s.option(getAuthorizationDataSerializer(context)),
             ],
-            ['new_update_authority', s.option(s.publicKey)],
+            ['newUpdateAuthority', s.option(s.publicKey)],
             ['data', s.option(getDataSerializer(context))],
-            ['primary_sale_happened', s.option(s.bool())],
-            ['is_mutable', s.option(s.bool())],
-            ['token_standard', s.option(getTokenStandardSerializer(context))],
+            ['primarySaleHappened', s.option(s.bool())],
+            ['isMutable', s.option(s.bool())],
+            ['tokenStandard', s.option(getTokenStandardSerializer(context))],
             ['collection', s.option(getCollectionSerializer(context))],
             ['uses', s.option(getUsesSerializer(context))],
             [
-              'collection_details',
+              'collectionDetails',
               s.option(getCollectionDetailsSerializer(context)),
             ],
             [
-              'programmable_config',
+              'programmableConfig',
               s.option(getProgrammableConfigSerializer(context)),
             ],
-            ['delegate_state', s.option(getDelegateStateSerializer(context))],
-            ['authority_type', getAuthorityTypeSerializer(context)],
+            ['delegateState', s.option(getDelegateStateSerializer(context))],
+            ['authorityType', getAuthorityTypeSerializer(context)],
           ],
           'V1'
         ),

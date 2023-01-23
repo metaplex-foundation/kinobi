@@ -1,4 +1,5 @@
 import * as nodes from '../../nodes';
+import { camelCase } from '../../utils';
 import { Visitor } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
@@ -404,7 +405,7 @@ export class GetJavaScriptTypeManifestVisitor
     }
 
     const defaultValues = optionalFields
-      .map((f) => `${f.name}: ${this.renderStructFieldValue(f)}`)
+      .map((f) => `${camelCase(f.name)}: ${this.renderStructFieldValue(f)}`)
       .join(', ');
     const mapSerializerTypeParams = definedName
       ? `${definedName.loose}, ${definedName.strict}, ${definedName.strict}`
@@ -426,7 +427,8 @@ export class GetJavaScriptTypeManifestVisitor
   visitTypeStructField(
     typeStructField: nodes.TypeStructFieldNode
   ): JavaScriptTypeManifest {
-    const { name, metadata } = typeStructField;
+    const { metadata } = typeStructField;
+    const name = camelCase(typeStructField.name);
     const fieldType = typeStructField.type.accept(this);
     const docblock = this.createDocblock(metadata.docs);
     const baseField = {

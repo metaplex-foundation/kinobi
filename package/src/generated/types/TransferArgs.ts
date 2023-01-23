@@ -21,13 +21,13 @@ import {
 
 export type TransferArgs = {
   __kind: 'V1';
-  authorization_data: Option<AuthorizationData>;
+  authorizationData: Option<AuthorizationData>;
   amount: bigint;
 };
 
 export type TransferArgsArgs = {
   __kind: 'V1';
-  authorization_data: Option<AuthorizationDataArgs>;
+  authorizationData: Option<AuthorizationDataArgs>;
   amount: number | bigint;
 };
 
@@ -42,7 +42,7 @@ export function getTransferArgsSerializer(
         s.struct<GetDataEnumKindContent<TransferArgs, 'V1'>>(
           [
             [
-              'authorization_data',
+              'authorizationData',
               s.option(getAuthorizationDataSerializer(context)),
             ],
             ['amount', s.u64],

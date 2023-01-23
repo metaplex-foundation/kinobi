@@ -13,9 +13,9 @@ import {
   Serializer,
 } from '@lorisleiva/js-core';
 
-export type UseAssetArgs = { __kind: 'V1'; use_count: bigint };
+export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 
-export type UseAssetArgsArgs = { __kind: 'V1'; use_count: number | bigint };
+export type UseAssetArgsArgs = { __kind: 'V1'; useCount: number | bigint };
 
 export function getUseAssetArgsSerializer(
   context: Pick<Context, 'serializer'>
@@ -26,7 +26,7 @@ export function getUseAssetArgsSerializer(
       [
         'V1',
         s.struct<GetDataEnumKindContent<UseAssetArgs, 'V1'>>(
-          [['use_count', s.u64]],
+          [['useCount', s.u64]],
           'V1'
         ),
       ],

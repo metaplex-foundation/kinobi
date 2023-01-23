@@ -17,16 +17,16 @@ import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 
 export type TmCreateArgs = {
   __kind: 'V1';
-  asset_data: AssetData;
+  assetData: AssetData;
   decimals: Option<number>;
-  max_supply: Option<bigint>;
+  maxSupply: Option<bigint>;
 };
 
 export type TmCreateArgsArgs = {
   __kind: 'V1';
-  asset_data: AssetDataArgs;
+  assetData: AssetDataArgs;
   decimals: Option<number>;
-  max_supply: Option<number | bigint>;
+  maxSupply: Option<number | bigint>;
 };
 
 export function getTmCreateArgsSerializer(
@@ -39,9 +39,9 @@ export function getTmCreateArgsSerializer(
         'V1',
         s.struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>(
           [
-            ['asset_data', getAssetDataSerializer(context)],
+            ['assetData', getAssetDataSerializer(context)],
             ['decimals', s.option(s.u8)],
-            ['max_supply', s.option(s.u64)],
+            ['maxSupply', s.option(s.u64)],
           ],
           'V1'
         ),
