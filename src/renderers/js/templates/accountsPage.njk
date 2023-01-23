@@ -57,7 +57,7 @@ export function find{{ account.name | pascalCase }}Pda(
       {% for seed in seeds %}
         {% if seed.kind === 'variable' %}
           /** {{ seed.description }} */
-          {{ seed.name }}: {{ seed.typeManifest.looseType }};
+          {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType }};
         {% endif %}
       {% endfor %}
     }
@@ -66,7 +66,7 @@ export function find{{ account.name | pascalCase }}Pda(
   {% if account.hasVariableSeeds %}
     const s = context.serializer;
   {% endif %}
-  const programId: PublicKey = context.programs.get('{{ program.metadata.name }}').publicKey;
+  const programId: PublicKey = context.programs.get('{{ program.metadata.name | camelCase }}').publicKey;
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}
@@ -74,7 +74,7 @@ export function find{{ account.name | pascalCase }}Pda(
       {% elif seed.kind === 'literal' %}
         utf8.serialize("{{ seed.value }}"),
       {% else %}
-        {{ seed.typeManifest.serializer }}.serialize(seeds.{{ seed.name }}),
+        {{ seed.typeManifest.serializer }}.serialize(seeds.{{ seed.name | camelCase }}),
       {% endif %}
     {% endfor %}
   ]);

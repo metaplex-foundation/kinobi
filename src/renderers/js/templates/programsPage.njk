@@ -7,7 +7,7 @@
 {{ macros.docblock(program.docs) }}
 export function get{{ program.name | pascalCase }}Program(): Program {
   return {
-    name: '{{ program.metadata.name }}',
+    name: '{{ program.name | camelCase }}',
     publicKey: publicKey('{{ program.metadata.publicKey }}'),
     getErrorFromCode(code: number, cause?: Error) {
       return get{{ program.name | pascalCase }}ErrorFromCode(code, this, cause);
