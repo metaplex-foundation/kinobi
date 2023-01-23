@@ -2,7 +2,7 @@
 
 {% block main %}
 {% for definedType in definedTypesToExport | sort(false, false, 'metadata.name') %}
-export * from './{{ definedType.name }}';
+export * from './{{ definedType.name | camelCase }}';
 {% else %}
 export default {};
 {% endfor %}

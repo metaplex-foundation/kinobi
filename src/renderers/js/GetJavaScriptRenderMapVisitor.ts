@@ -147,7 +147,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     renderMap
       .mergeWith(...program.instructions.map((ix) => ix.accept(this)))
       .add(
-        `errors/${name}.ts`,
+        `errors/${camelCase(name)}.ts`,
         this.render('errorsPage.njk', {
           imports: new JavaScriptImportMap()
             .add('core', ['ProgramError', 'Program'])
@@ -162,7 +162,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         })
       )
       .add(
-        `programs/${name}.ts`,
+        `programs/${camelCase(name)}.ts`,
         this.render('programsPage.njk', {
           imports: new JavaScriptImportMap()
             .add('core', ['Program', 'publicKey'])
@@ -208,7 +208,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     return new RenderMap().add(
-      `accounts/${account.name}.ts`,
+      `accounts/${camelCase(account.name)}.ts`,
       this.render('accountsPage.njk', {
         account,
         imports: imports.toString(this.options.dependencyMap),
@@ -287,7 +287,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     return new RenderMap().add(
-      `instructions/${instruction.name}.ts`,
+      `instructions/${camelCase(instruction.name)}.ts`,
       this.render('instructionsPage.njk', {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
@@ -312,7 +312,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .remove('generatedTypes', [definedType.name]);
 
     return new RenderMap().add(
-      `types/${definedType.name}.ts`,
+      `types/${camelCase(definedType.name)}.ts`,
       this.render('definedTypesPage.njk', {
         definedType,
         imports: imports.toString({

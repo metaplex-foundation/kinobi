@@ -2,7 +2,7 @@
 
 {% block main %}
 {% for instruction in instructionsToExport | sort(false, false, 'metadata.name') %}
-export * from './{{ instruction.name }}';
+export * from './{{ instruction.name | camelCase }}';
 {% else %}
 export default {};
 {% endfor %}

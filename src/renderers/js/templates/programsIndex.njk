@@ -2,7 +2,7 @@
 
 {% block main %}
 {% for program in programsToExport | sort(false, false, 'metadata.name') %}
-export * from './{{ program.metadata.name }}';
+export * from './{{ program.metadata.name | camelCase }}';
 {% else %}
 export default {};
 {% endfor %}
