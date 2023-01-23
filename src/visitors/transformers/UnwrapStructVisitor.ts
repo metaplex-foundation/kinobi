@@ -1,4 +1,5 @@
 import * as nodes from '../../nodes';
+import { camelCase } from '../../utils';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export type UnwrapStructOptions = string[] | '*';
@@ -25,8 +26,9 @@ export const unwrapStruct = (
   options: UnwrapStructOptions = '*'
 ): nodes.TypeStructNode => {
   nodes.assertTypeStructNode(node);
+  const camelCaseOptions = options === '*' ? options : options.map(camelCase);
   const shouldInline = (field: nodes.TypeStructFieldNode): boolean =>
-    options === '*' || options.includes(field.name);
+    options === '*' || camelCaseOptions.includes(camelCase(field.name));
   const inlinedFields = node.fields.reduce<nodes.TypeStructFieldNode[]>(
     (all, one) => {
       if (nodes.isTypeStructNode(one.type) && shouldInline(one)) {

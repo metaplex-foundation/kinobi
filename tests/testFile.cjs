@@ -11,6 +11,7 @@ const {
   TypeLeafNode,
   SetInstructionBytesCreatedOnChainVisitor,
   UnwrapDefinedTypesVisitor,
+  UnwrapStructVisitor,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -129,5 +130,10 @@ kinobi.update(
 );
 
 kinobi.update(new UnwrapDefinedTypesVisitor(['Data']));
+kinobi.update(
+  new UnwrapStructVisitor({
+    'mplTokenMetadata.Metadata': ['Data'],
+  })
+);
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));

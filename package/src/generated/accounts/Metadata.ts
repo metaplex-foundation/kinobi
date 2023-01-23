@@ -48,13 +48,11 @@ export type MetadataAccountData = {
   key: TmKey;
   updateAuthority: PublicKey;
   mint: PublicKey;
-  data: {
-    name: string;
-    symbol: string;
-    uri: string;
-    sellerFeeBasisPoints: number;
-    creators: Option<Array<Creator>>;
-  };
+  name: string;
+  symbol: string;
+  uri: string;
+  sellerFeeBasisPoints: number;
+  creators: Option<Array<Creator>>;
   primarySaleHappened: boolean;
   isMutable: boolean;
   editionNonce: Option<number>;
@@ -69,13 +67,11 @@ export type MetadataAccountData = {
 export type MetadataAccountArgs = {
   updateAuthority: PublicKey;
   mint: PublicKey;
-  data: {
-    name: string;
-    symbol: string;
-    uri: string;
-    sellerFeeBasisPoints: number;
-    creators: Option<Array<CreatorArgs>>;
-  };
+  name: string;
+  symbol: string;
+  uri: string;
+  sellerFeeBasisPoints: number;
+  creators: Option<Array<CreatorArgs>>;
   primarySaleHappened: boolean;
   isMutable: boolean;
   editionNonce: Option<number>;
@@ -130,19 +126,11 @@ export function getMetadataAccountDataSerializer(
         ['key', getTmKeySerializer(context)],
         ['updateAuthority', s.publicKey],
         ['mint', s.publicKey],
-        [
-          'data',
-          s.struct<any>(
-            [
-              ['name', s.string()],
-              ['symbol', s.string()],
-              ['uri', s.string()],
-              ['sellerFeeBasisPoints', s.u16],
-              ['creators', s.option(s.vec(getCreatorSerializer(context)))],
-            ],
-            'Data'
-          ),
-        ],
+        ['name', s.string()],
+        ['symbol', s.string()],
+        ['uri', s.string()],
+        ['sellerFeeBasisPoints', s.u16],
+        ['creators', s.option(s.vec(getCreatorSerializer(context)))],
         ['primarySaleHappened', s.bool()],
         ['isMutable', s.bool()],
         ['editionNonce', s.option(s.u8)],
