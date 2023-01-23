@@ -6,11 +6,21 @@ import type { Node } from './Node';
 export class TypeMapNode implements Visitable {
   readonly nodeClass = 'TypeMapNode' as const;
 
+  readonly mapType: 'hashMap' | 'bTreeMap';
+
+  readonly keyType: TypeNode;
+
+  readonly valueType: TypeNode;
+
   constructor(
-    readonly mapType: 'hashMap' | 'bTreeMap',
-    readonly keyType: TypeNode,
-    readonly valueType: TypeNode
-  ) {}
+    mapType: 'hashMap' | 'bTreeMap',
+    keyType: TypeNode,
+    valueType: TypeNode
+  ) {
+    this.mapType = mapType;
+    this.keyType = keyType;
+    this.valueType = valueType;
+  }
 
   static fromIdl(idl: IdlTypeMap): TypeMapNode {
     const mapType = 'hashMap' in idl ? 'hashMap' : 'bTreeMap';

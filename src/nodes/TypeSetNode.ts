@@ -6,10 +6,14 @@ import type { Node } from './Node';
 export class TypeSetNode implements Visitable {
   readonly nodeClass = 'TypeSetNode' as const;
 
-  constructor(
-    readonly setType: 'hashSet' | 'bTreeSet',
-    readonly type: TypeNode
-  ) {}
+  readonly setType: 'hashSet' | 'bTreeSet';
+
+  readonly type: TypeNode;
+
+  constructor(setType: 'hashSet' | 'bTreeSet', type: TypeNode) {
+    this.setType = setType;
+    this.type = type;
+  }
 
   static fromIdl(idl: IdlTypeSet): TypeSetNode {
     const setType = 'hashSet' in idl ? 'hashSet' : 'bTreeSet';

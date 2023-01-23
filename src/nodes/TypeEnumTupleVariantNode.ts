@@ -1,3 +1,4 @@
+import { mainCase } from '../utils';
 import type { IdlType, IdlTypeEnumVariant } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -6,7 +7,14 @@ import { TypeTupleNode } from './TypeTupleNode';
 export class TypeEnumTupleVariantNode implements Visitable {
   readonly nodeClass = 'TypeEnumTupleVariantNode' as const;
 
-  constructor(readonly name: string, readonly tuple: TypeTupleNode) {}
+  readonly name: string;
+
+  readonly tuple: TypeTupleNode;
+
+  constructor(name: string, tuple: TypeTupleNode) {
+    this.name = mainCase(name);
+    this.tuple = tuple;
+  }
 
   static fromIdl(idl: IdlTypeEnumVariant): TypeEnumTupleVariantNode {
     const name = idl.name ?? '';

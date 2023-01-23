@@ -1,5 +1,5 @@
-import { pascalCase } from '../utils';
 import type { IdlError } from '../idl';
+import { mainCase } from '../utils';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
@@ -12,20 +12,25 @@ export type ErrorNodeMetadata = {
 export class ErrorNode implements Visitable {
   readonly nodeClass = 'ErrorNode' as const;
 
-  constructor(
-    readonly metadata: ErrorNodeMetadata,
-    readonly code: number,
-    readonly message: string
-  ) {}
+  readonly metadata: ErrorNodeMetadata;
+
+  readonly code: number;
+
+  readonly message: string;
+
+  constructor(metadata: ErrorNodeMetadata, code: number, message: string) {
+    this.metadata = { ...metadata, name: mainCase(metadata.name) };
+    this.code = code;
+    this.message = message;
+  }
 
   static fromIdl(idl: Partial<IdlError>): ErrorNode {
-    const idlName = idl.name ?? '';
-    const name = pascalCase(idlName);
+    const name = idl.name ?? '';
     const code = idl.code ?? -1;
     const message = idl.msg ?? '';
     const defaultDocs = [`${name}: '${message}'`];
     const docs = idl.docs ?? defaultDocs;
-    return new ErrorNode({ name, idlName, docs }, code, message);
+    return new ErrorNode({ name, idlName: name, docs }, code, message);
   }
 
   accept<T>(visitor: Visitor<T>): T {

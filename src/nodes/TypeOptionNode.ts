@@ -6,10 +6,14 @@ import type { Node } from './Node';
 export class TypeOptionNode implements Visitable {
   readonly nodeClass = 'TypeOptionNode' as const;
 
-  constructor(
-    readonly optionType: 'option' | 'coption',
-    readonly type: TypeNode
-  ) {}
+  readonly optionType: 'option' | 'coption';
+
+  readonly type: TypeNode;
+
+  constructor(optionType: 'option' | 'coption', type: TypeNode) {
+    this.optionType = optionType;
+    this.type = type;
+  }
 
   static fromIdl(idl: IdlTypeOption): TypeOptionNode {
     const optionType = 'option' in idl ? 'option' : 'coption';

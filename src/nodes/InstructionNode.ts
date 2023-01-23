@@ -1,4 +1,4 @@
-import { camelCase, pascalCase } from '../utils';
+import { camelCase, mainCase, pascalCase } from '../utils';
 import type { IdlInstruction } from '../idl';
 import type { Dependency, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -57,11 +57,43 @@ export type InstructionNodeBytesCreatedOnChain =
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
 
+  readonly metadata: InstructionNodeMetadata;
+
+  readonly accounts: InstructionNodeAccount[];
+
+  readonly args: TypeStructNode;
+
   constructor(
-    readonly metadata: InstructionNodeMetadata,
-    readonly accounts: InstructionNodeAccount[],
-    readonly args: TypeStructNode
-  ) {}
+    metadata: InstructionNodeMetadata,
+    accounts: InstructionNodeAccount[],
+    args: TypeStructNode
+  ) {
+    const bytes = metadata.bytesCreatedOnChain;
+    this.metadata = {
+      ...metadata,
+      name: mainCase(metadata.name),
+      bytesCreatedOnChain:
+        'name' in bytes ? { ...bytes, name: mainCase(bytes.name) } : bytes,
+    };
+    this.accounts = accounts.map((account) => {
+      const { defaultsTo } = account;
+      if (defaultsTo.kind === 'account') {
+        defaultsTo.name = mainCase(defaultsTo.name);
+      } else if (defaultsTo.kind === 'program') {
+        defaultsTo.program.name = mainCase(defaultsTo.program.name);
+      } else if (defaultsTo.kind === 'pda') {
+        defaultsTo.pdaAccount = mainCase(defaultsTo.pdaAccount);
+        defaultsTo.seeds = Object.fromEntries(
+          Object.entries(defaultsTo.seeds).map(([key, seed]) => [
+            mainCase(key),
+            { ...seed, name: mainCase(seed.name) },
+          ])
+        );
+      }
+      return { ...account, name: mainCase(account.name), defaultsTo };
+    });
+    this.args = args;
+  }
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
     const idlName = idl.name ?? '';

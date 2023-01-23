@@ -10,7 +10,14 @@ export type LeafWrapper =
 export class TypeLeafWrapperNode implements Visitable {
   readonly nodeClass = 'TypeLeafWrapperNode' as const;
 
-  constructor(readonly wrapper: LeafWrapper, readonly leaf: TypeLeafNode) {}
+  readonly wrapper: LeafWrapper;
+
+  readonly leaf: TypeLeafNode;
+
+  constructor(wrapper: LeafWrapper, leaf: TypeLeafNode) {
+    this.wrapper = wrapper;
+    this.leaf = leaf;
+  }
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypeLeafWrapper(this);

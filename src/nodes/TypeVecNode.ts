@@ -6,7 +6,11 @@ import type { Node } from './Node';
 export class TypeVecNode implements Visitable {
   readonly nodeClass = 'TypeVecNode' as const;
 
-  constructor(readonly itemType: TypeNode) {}
+  readonly itemType: TypeNode;
+
+  constructor(itemType: TypeNode) {
+    this.itemType = itemType;
+  }
 
   static fromIdl(idl: IdlTypeVec): TypeVecNode {
     return new TypeVecNode(createTypeNodeFromIdl(idl.vec));

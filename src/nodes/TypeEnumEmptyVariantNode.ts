@@ -1,3 +1,4 @@
+import { mainCase } from '../utils';
 import type { IdlTypeEnumVariant } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -5,7 +6,11 @@ import type { Node } from './Node';
 export class TypeEnumEmptyVariantNode implements Visitable {
   readonly nodeClass = 'TypeEnumEmptyVariantNode' as const;
 
-  constructor(readonly name: string) {}
+  readonly name: string;
+
+  constructor(name: string) {
+    this.name = mainCase(name);
+  }
 
   static fromIdl(idl: IdlTypeEnumVariant): TypeEnumEmptyVariantNode {
     return new TypeEnumEmptyVariantNode(idl.name ?? '');

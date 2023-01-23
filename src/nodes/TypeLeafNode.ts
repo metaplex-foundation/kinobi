@@ -25,7 +25,11 @@ export type LeafType = typeof LEAF_TYPES[number];
 export class TypeLeafNode implements Visitable {
   readonly nodeClass = 'TypeLeafNode' as const;
 
-  constructor(readonly type: LeafType) {}
+  readonly type: LeafType;
+
+  constructor(type: LeafType) {
+    this.type = type;
+  }
 
   static isValidType(type: string): type is LeafType {
     return LEAF_TYPES.includes(type as LeafType);

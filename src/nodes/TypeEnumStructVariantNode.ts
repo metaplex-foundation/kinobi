@@ -1,3 +1,4 @@
+import { mainCase } from '../utils';
 import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -6,7 +7,14 @@ import { TypeStructNode } from './TypeStructNode';
 export class TypeEnumStructVariantNode implements Visitable {
   readonly nodeClass = 'TypeEnumStructVariantNode' as const;
 
-  constructor(readonly name: string, readonly struct: TypeStructNode) {}
+  readonly name: string;
+
+  readonly struct: TypeStructNode;
+
+  constructor(name: string, struct: TypeStructNode) {
+    this.name = mainCase(name);
+    this.struct = struct;
+  }
 
   static fromIdl(idl: IdlTypeEnumVariant): TypeEnumStructVariantNode {
     const name = idl.name ?? '';

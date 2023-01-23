@@ -1,4 +1,4 @@
-import { pascalCase } from '../utils';
+import { mainCase } from '../utils';
 import type { IdlAccount } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -24,14 +24,23 @@ export type AccountNodeSeed =
 export class AccountNode implements Visitable {
   readonly nodeClass = 'AccountNode' as const;
 
-  constructor(
-    readonly metadata: AccountNodeMetadata,
-    readonly type: TypeStructNode
-  ) {}
+  readonly metadata: AccountNodeMetadata;
+
+  readonly type: TypeStructNode;
+
+  constructor(metadata: AccountNodeMetadata, type: TypeStructNode) {
+    this.metadata = {
+      ...metadata,
+      name: mainCase(metadata.name),
+      seeds: metadata.seeds.map((seed) =>
+        'name' in seed ? { ...seed, name: mainCase(seed.name) } : seed
+      ),
+    };
+    this.type = type;
+  }
 
   static fromIdl(idl: Partial<IdlAccount>): AccountNode {
-    const idlName = idl.name ?? '';
-    const name = pascalCase(idlName);
+    const name = idl.name ?? '';
     const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlStruct });
     assertTypeStructNode(type);
@@ -43,7 +52,7 @@ export class AccountNode implements Visitable {
     });
     const metadata = {
       name,
-      idlName,
+      idlName: name,
       docs: idl.docs ?? [],
       internal: false,
       size: idl.size ?? null,

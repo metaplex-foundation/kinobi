@@ -13,7 +13,11 @@ export type ProgramInputs = ProgramInput | ProgramInput[];
 export class RootNode implements Visitable {
   readonly nodeClass = 'RootNode' as const;
 
-  constructor(readonly programs: ProgramNode[]) {}
+  readonly programs: ProgramNode[];
+
+  constructor(programs: ProgramNode[]) {
+    this.programs = programs;
+  }
 
   static fromIdls(idls: Partial<Idl>[]): RootNode {
     const programs = idls.map((idl) => ProgramNode.fromIdl(idl));

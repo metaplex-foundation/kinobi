@@ -35,3 +35,7 @@ export function kebabCase(str: string): string {
 export function snakeCase(str: string): string {
   return titleCase(str).split(' ').join('_').toLowerCase();
 }
+
+export function mainCase(str: string): string {
+  return camelCase(str);
+}

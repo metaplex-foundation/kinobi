@@ -6,7 +6,14 @@ import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 export class TypeArrayNode implements Visitable {
   readonly nodeClass = 'TypeArrayNode' as const;
 
-  constructor(readonly itemType: TypeNode, readonly size: number) {}
+  readonly itemType: TypeNode;
+
+  readonly size: number;
+
+  constructor(itemType: TypeNode, size: number) {
+    this.itemType = itemType;
+    this.size = size;
+  }
 
   static fromIdl(idl: IdlTypeArray): TypeArrayNode {
     const itemType = createTypeNodeFromIdl(idl.array[0]);

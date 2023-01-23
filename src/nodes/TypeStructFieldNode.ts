@@ -1,3 +1,4 @@
+import { mainCase } from '../utils';
 import type { IdlTypeStructField } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
@@ -20,10 +21,14 @@ export type TypeStructFieldNodeMetadata = {
 export class TypeStructFieldNode implements Visitable {
   readonly nodeClass = 'TypeStructFieldNode' as const;
 
-  constructor(
-    readonly metadata: TypeStructFieldNodeMetadata,
-    readonly type: TypeNode
-  ) {}
+  readonly metadata: TypeStructFieldNodeMetadata;
+
+  readonly type: TypeNode;
+
+  constructor(metadata: TypeStructFieldNodeMetadata, type: TypeNode) {
+    this.metadata = { ...metadata, name: mainCase(metadata.name) };
+    this.type = type;
+  }
 
   static fromIdl(idl: IdlTypeStructField): TypeStructFieldNode {
     return new TypeStructFieldNode(

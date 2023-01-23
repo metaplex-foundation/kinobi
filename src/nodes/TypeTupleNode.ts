@@ -6,7 +6,11 @@ import type { Node } from './Node';
 export class TypeTupleNode implements Visitable {
   readonly nodeClass = 'TypeTupleNode' as const;
 
-  constructor(readonly itemTypes: TypeNode[]) {}
+  readonly itemTypes: TypeNode[];
+
+  constructor(itemTypes: TypeNode[]) {
+    this.itemTypes = itemTypes;
+  }
 
   static fromIdl(idl: IdlTypeTuple): TypeTupleNode {
     return new TypeTupleNode(idl.tuple.map(createTypeNodeFromIdl));

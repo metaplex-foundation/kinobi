@@ -1,10 +1,15 @@
+import { mainCase } from '../utils';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
 export class TypeDefinedLinkNode implements Visitable {
   readonly nodeClass = 'TypeDefinedLinkNode' as const;
 
-  constructor(readonly definedType: string) {}
+  readonly definedType: string;
+
+  constructor(definedType: string) {
+    this.definedType = mainCase(definedType);
+  }
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypeDefinedLink(this);

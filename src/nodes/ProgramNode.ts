@@ -1,4 +1,4 @@
-import { camelCase } from '../utils';
+import { mainCase } from '../utils';
 import type { Idl } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { AccountNode } from './AccountNode';
@@ -20,13 +20,33 @@ export type ProgramNodeMetadata = {
 export class ProgramNode implements Visitable {
   readonly nodeClass = 'ProgramNode' as const;
 
+  readonly metadata: ProgramNodeMetadata;
+
+  readonly accounts: AccountNode[];
+
+  readonly instructions: InstructionNode[];
+
+  readonly definedTypes: DefinedTypeNode[];
+
+  readonly errors: ErrorNode[];
+
   constructor(
-    readonly metadata: ProgramNodeMetadata,
-    readonly accounts: AccountNode[],
-    readonly instructions: InstructionNode[],
-    readonly definedTypes: DefinedTypeNode[],
-    readonly errors: ErrorNode[]
-  ) {}
+    metadata: ProgramNodeMetadata,
+    accounts: AccountNode[],
+    instructions: InstructionNode[],
+    definedTypes: DefinedTypeNode[],
+    errors: ErrorNode[]
+  ) {
+    this.metadata = {
+      ...metadata,
+      name: mainCase(metadata.name),
+      prefix: mainCase(metadata.prefix),
+    };
+    this.accounts = accounts;
+    this.instructions = instructions;
+    this.definedTypes = definedTypes;
+    this.errors = errors;
+  }
 
   static fromIdl(idl: Partial<Idl>): ProgramNode {
     const accounts = (idl.accounts ?? []).map(AccountNode.fromIdl);
@@ -34,7 +54,7 @@ export class ProgramNode implements Visitable {
     const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
     const errors = (idl.errors ?? []).map(ErrorNode.fromIdl);
     const metadata = {
-      name: camelCase(idl.name ?? ''),
+      name: idl.name ?? '',
       prefix: '',
       publicKey: idl.metadata?.address ?? '',
       version: idl.version ?? '',

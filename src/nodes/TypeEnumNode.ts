@@ -1,3 +1,4 @@
+import { mainCase } from '../utils';
 import type { IdlTypeEnum } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -9,10 +10,14 @@ import type { TypeEnumVariantNode } from './TypeEnumVariantNode';
 export class TypeEnumNode implements Visitable {
   readonly nodeClass = 'TypeEnumNode' as const;
 
-  constructor(
-    readonly name: string,
-    readonly variants: TypeEnumVariantNode[]
-  ) {}
+  readonly name: string;
+
+  readonly variants: TypeEnumVariantNode[];
+
+  constructor(name: string, variants: TypeEnumVariantNode[]) {
+    this.name = mainCase(name);
+    this.variants = variants;
+  }
 
   static fromIdl(idl: IdlTypeEnum): TypeEnumNode {
     const variants = idl.variants.map((variant): TypeEnumVariantNode => {

@@ -1,4 +1,4 @@
-import { pascalCase } from '../utils';
+import { mainCase } from '../utils';
 import type { IdlDefinedType } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -16,19 +16,28 @@ export type DefinedTypeNodeMetadata = {
 export class DefinedTypeNode implements Visitable {
   readonly nodeClass = 'DefinedTypeNode' as const;
 
+  readonly metadata: DefinedTypeNodeMetadata;
+
+  readonly type: TypeStructNode | TypeEnumNode;
+
   constructor(
-    readonly metadata: DefinedTypeNodeMetadata,
-    readonly type: TypeStructNode | TypeEnumNode
-  ) {}
+    metadata: DefinedTypeNodeMetadata,
+    type: TypeStructNode | TypeEnumNode
+  ) {
+    this.metadata = { ...metadata, name: mainCase(metadata.name) };
+    this.type = type;
+  }
 
   static fromIdl(idl: Partial<IdlDefinedType>): DefinedTypeNode {
-    const idlName = idl.name ?? '';
-    const name = pascalCase(idlName);
+    const name = idl.name ?? '';
     const docs = idl.docs ?? [];
     const idlType = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlType });
     assertTypeStructOrEnumNode(type);
-    return new DefinedTypeNode({ name, idlName, docs, internal: false }, type);
+    return new DefinedTypeNode(
+      { name, idlName: name, docs, internal: false },
+      type
+    );
   }
 
   accept<T>(visitor: Visitor<T>): T {
