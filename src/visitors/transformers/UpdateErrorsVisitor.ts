@@ -18,10 +18,10 @@ export class UpdateErrorsVisitor extends TransformNodesVisitor {
     const transforms = Object.entries(map).map(
       ([name, updates]): NodeTransform => ({
         selector: { type: 'error', name },
-        transformer: (node, stack, Error) => {
+        transformer: (node, stack, program) => {
           nodes.assertErrorNode(node);
           if (typeof updates === 'function') {
-            return updates(node, stack, Error);
+            return updates(node, stack, program);
           }
           if ('delete' in updates) {
             return null;

@@ -6,11 +6,15 @@ import {
   NodeTransformer,
   TransformNodesVisitor,
 } from './TransformNodesVisitor';
+import { StructUpdates, updateStructNode } from './_updateHelpers';
 
 export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
-  | (InstructionMetadataUpdates & { accounts?: InstructionAccountUpdates });
+  | (InstructionMetadataUpdates & {
+      accounts?: InstructionAccountUpdates;
+      args?: StructUpdates;
+    });
 
 export type InstructionMetadataUpdates = Partial<
   Omit<nodes.InstructionNodeMetadata, 'bytesCreatedOnChain'> & {
@@ -49,10 +53,10 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         const name = selectorStack.pop();
         return {
           selector: { type: 'instruction', stack: selectorStack, name },
-          transformer: (node, stack, Instruction) => {
+          transformer: (node, stack, program) => {
             nodes.assertInstructionNode(node);
             if (typeof updates === 'function') {
-              return updates(node, stack, Instruction);
+              return updates(node, stack, program);
             }
             if ('delete' in updates) {
               return null;
@@ -63,7 +67,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               node.accounts.map((account) =>
                 this.handleInstructionAccount(account, accountUpdates ?? {})
               ),
-              node.args // TODO: update fields?
+              updateStructNode(updates.args ?? {}, node.args, stack, program)
             );
           },
         };
