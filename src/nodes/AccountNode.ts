@@ -4,6 +4,8 @@ import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { assertTypeStructNode, TypeStructNode } from './TypeStructNode';
+import type { InstructionNodeAccountDefaultsSeed } from './InstructionNode';
+import { isTypeLeafNode } from './TypeLeafNode';
 
 export type AccountNodeMetadata = {
   readonly name: string;
@@ -71,6 +73,21 @@ export class AccountNode implements Visitable {
 
   get hasVariableSeeds(): boolean {
     return this.variableSeeds.length > 0;
+  }
+
+  get instructionAccountDefaultSeeds(): Record<
+    string,
+    InstructionNodeAccountDefaultsSeed
+  > {
+    return this.metadata.seeds.reduce((acc, seed) => {
+      if (seed.kind !== 'variable') return acc;
+      if (isTypeLeafNode(seed.type) && seed.type.type === 'publicKey') {
+        acc[seed.name] = { kind: 'account', name: seed.name };
+      } else {
+        acc[seed.name] = { kind: 'arg', name: seed.name };
+      }
+      return acc;
+    }, {} as Record<string, InstructionNodeAccountDefaultsSeed>);
   }
 }
 

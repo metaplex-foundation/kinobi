@@ -177,7 +177,9 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
             defaultsTo: {
               pdaAccount,
               dependency: 'generated',
-              seeds: this.getAccountVariableSeeds(pdaAccount),
+              seeds:
+                this.allAccounts.get(pascalCase(pdaAccount))
+                  ?.instructionAccountDefaultSeeds ?? {},
               ...rule,
             },
           };
@@ -205,21 +207,5 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
         ? rule.account === account.name
         : rule.account.test(account.name);
     });
-  }
-
-  protected getAccountVariableSeeds(
-    accountName: string
-  ): Record<string, nodes.InstructionNodeAccountDefaultsSeed> {
-    const seeds =
-      this.allAccounts.get(pascalCase(accountName))?.metadata?.seeds ?? [];
-    return seeds.reduce((acc, seed) => {
-      if (seed.kind !== 'variable') return acc;
-      if (nodes.isTypeLeafNode(seed.type) && seed.type.type === 'publicKey') {
-        acc[seed.name] = { kind: 'account', name: seed.name };
-      } else {
-        acc[seed.name] = { kind: 'arg', name: seed.name };
-      }
-      return acc;
-    }, {} as Record<string, nodes.InstructionNodeAccountDefaultsSeed>);
   }
 }
