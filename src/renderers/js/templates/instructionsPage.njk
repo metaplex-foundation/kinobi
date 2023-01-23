@@ -8,7 +8,7 @@
 {% include "instructionsPageArgs.njk" %}
 
 // Instruction.
-export function {{ camelCaseName }}(
+export function {{ instruction.name | camelCase }}(
   context: Pick<Context,
     | 'serializer'
     | 'programs'
@@ -20,20 +20,20 @@ export function {{ camelCaseName }}(
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
     {% if instruction.hasAccounts and instruction.hasArgs %}
-      input: {{ name }}InstructionAccounts & {{ name + 'InstructionArgs' if typeManifest.hasLooseType else name + 'InstructionData' }},
+      input: {{ instruction.name | pascalCase }}InstructionAccounts & {{ instruction.name | pascalCase + 'InstructionArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
     {% elif instruction.hasAccounts %}
-      input: {{ name }}InstructionAccounts,
+      input: {{ instruction.name | pascalCase }}InstructionAccounts,
     {% elif instruction.hasArgs %}
-      input: {{ name + 'InstructionArgs' if typeManifest.hasLooseType else name + 'InstructionData' }},
+      input: {{ instruction.name | pascalCase + 'InstructionArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
     {% endif %}
   {% else %}
     {% set accountsObj = 'accounts' %}
     {% set argsObj = 'args' %}
     {% if instruction.hasAccounts %}
-      accounts: {{ name }}InstructionAccounts,
+      accounts: {{ instruction.name | pascalCase }}InstructionAccounts,
     {% endif %}
     {% if instruction.hasArgs %}
-      args: {{ name + 'InstructionArgs' if typeManifest.hasLooseType else name + 'InstructionData' }},
+      args: {{ instruction.name | pascalCase + 'InstructionArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
     {% endif %}
   {% endif %}
 ): WrappedInstruction {
@@ -47,9 +47,9 @@ export function {{ camelCaseName }}(
 
   // Data.
   {% if instruction.hasArgs %}
-    const data = get{{ name }}InstructionDataSerializer(context).serialize({{ argsObj }});
+    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({{ argsObj }});
   {% elif instruction.hasData %}
-    const data = get{{ name }}InstructionDataSerializer(context).serialize({});
+    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({});
   {% else %}
     const data = new Uint8Array();
   {% endif %}

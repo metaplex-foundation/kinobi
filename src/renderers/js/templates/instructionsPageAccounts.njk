@@ -1,11 +1,11 @@
 {% if instruction.hasAccounts %}
 // Accounts.
-export type {{ name }}InstructionAccounts = {
+export type {{ instruction.name | pascalCase }}InstructionAccounts = {
 {% for account in accounts %}
   {% if account.description.length > 0 %}
     {{ macros.docblock([account.description]) }}
   {% endif %}
-  {{ account.name }}{{ account.optionalSign }}: {{ account.type }};
+  {{ account.name | camelCase }}{{ account.optionalSign }}: {{ account.type }};
 {% endfor %}
 };
 

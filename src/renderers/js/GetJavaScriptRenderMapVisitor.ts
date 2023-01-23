@@ -297,8 +297,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         needsIdentity: accounts.some((a) => a.defaultsTo.kind === 'identity'),
         needsPayer: accounts.some((a) => a.defaultsTo.kind === 'payer'),
         typeManifest,
-        name: instruction.name,
-        camelCaseName: camelCase(instruction.name),
         canMergeAccountsAndArgs: accountsAndArgsConflicts.length === 0,
       })
     );
@@ -320,8 +318,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           generatedTypes: '.',
         }),
         typeManifest,
-        name: definedType.name,
-        camelCaseName: camelCase(definedType.name),
       })
     );
   }
