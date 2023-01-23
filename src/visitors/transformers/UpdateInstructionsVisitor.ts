@@ -10,9 +10,14 @@ import {
 export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
-  | (Partial<nodes.InstructionNodeMetadata> & {
-      accounts?: InstructionAccountUpdates;
-    });
+  | (InstructionMetadataUpdates & { accounts?: InstructionAccountUpdates });
+
+export type InstructionMetadataUpdates = Partial<
+  Omit<nodes.InstructionNodeMetadata, 'bytesCreatedOnChain'> & {
+    bytesCreatedOnChain: InstructionNodeBytesCreatedOnChainInput;
+    accounts: InstructionAccountUpdates;
+  }
+>;
 
 export type InstructionAccountUpdates = Record<
   string,
@@ -22,6 +27,17 @@ export type InstructionAccountUpdates = Record<
     }
   >
 >;
+
+type InstructionNodeBytesCreatedOnChainInput =
+  | { kind: 'number'; value: number; includeHeader?: boolean }
+  | { kind: 'arg'; name: string; includeHeader?: boolean }
+  | {
+      kind: 'account';
+      name: string;
+      dependency?: string;
+      includeHeader?: boolean;
+    }
+  | { kind: 'none' };
 
 export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   protected allAccounts = new Map<string, nodes.AccountNode>();
@@ -43,7 +59,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
             }
             const { accounts: accountUpdates, ...metadataUpdates } = updates;
             return new nodes.InstructionNode(
-              { ...node.metadata, ...metadataUpdates },
+              { ...node.metadata, ...this.handleMetadata(metadataUpdates) },
               node.accounts.map((account) =>
                 this.handleInstructionAccount(account, accountUpdates ?? {})
               ),
@@ -62,6 +78,23 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
       this.allAccounts.set(account.name, account);
     });
     return super.visitRoot(root);
+  }
+
+  handleMetadata(
+    metadataUpdates: InstructionMetadataUpdates
+  ): Partial<nodes.InstructionNodeMetadata> {
+    const metadata = metadataUpdates as Partial<nodes.InstructionNodeMetadata>;
+    if (metadata.bytesCreatedOnChain) {
+      metadata.bytesCreatedOnChain = {
+        includeHeader: true,
+        dependency:
+          metadata.bytesCreatedOnChain.kind === 'account'
+            ? 'generated'
+            : undefined,
+        ...metadata.bytesCreatedOnChain,
+      } as nodes.InstructionNodeBytesCreatedOnChain;
+    }
+    return metadata;
   }
 
   handleInstructionAccount(
