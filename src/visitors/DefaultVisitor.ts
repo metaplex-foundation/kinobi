@@ -10,30 +10,36 @@ import {
   UnwrapInstructionArgsDefinedTypesVisitor,
   UnwrapInstructionArgsStructVisitor,
 } from './transformers';
+import { Visitor } from './Visitor';
 
 export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {
     let root: nodes.Node = currentRoot;
+    const updateRoot = (visitor: Visitor<nodes.Node | null>) => {
+      const newRoot = root.accept(visitor);
+      nodes.assertRootNode(newRoot);
+      root = newRoot;
+    };
 
     // Defined types.
-    root = root.accept(new DeduplicateIdenticalDefinedTypesVisitor());
+    updateRoot(new DeduplicateIdenticalDefinedTypesVisitor());
 
     // Accounts.
-    root = root.accept(new AutoSetFixedAccountSizesVisitor());
+    updateRoot(new AutoSetFixedAccountSizesVisitor());
 
     // Instructions.
-    root = root.accept(new AutoSetAnchorDiscriminatorsVisitor());
-    root = root.accept(
+    updateRoot(new AutoSetAnchorDiscriminatorsVisitor());
+    updateRoot(
       new SetInstructionAccountDefaultValuesVisitor(
         DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES
       )
     );
-    root = root.accept(new UnwrapInstructionArgsDefinedTypesVisitor());
-    root = root.accept(new UnwrapInstructionArgsStructVisitor());
+    updateRoot(new UnwrapInstructionArgsDefinedTypesVisitor());
+    updateRoot(new UnwrapInstructionArgsStructVisitor());
 
     // Extras.
-    root = root.accept(new TransformU8ArraysToBytesVisitor());
-    nodes.assertRootNode(root);
+    updateRoot(new TransformU8ArraysToBytesVisitor());
+
     return root;
   }
 }
