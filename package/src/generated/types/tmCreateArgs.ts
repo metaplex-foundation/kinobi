@@ -48,7 +48,7 @@ export function getTmCreateArgsSerializer(
       ],
     ],
     undefined,
-    'CreateArgs'
+    'TmCreateArgs'
   ) as Serializer<TmCreateArgsArgs, TmCreateArgs>;
 }
 

@@ -22,6 +22,6 @@ export function getTaCreateArgsSerializer(
       ['ruleSetName', s.string()],
       ['serializedRuleSet', s.bytes],
     ],
-    'CreateArgs'
+    'TaCreateArgs'
   );
 }

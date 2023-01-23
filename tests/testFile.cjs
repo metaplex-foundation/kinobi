@@ -1,7 +1,6 @@
 const {
   RenderJavaScriptVisitor,
   Kinobi,
-  RenameNodesVisitor,
   ConsoleLogVisitor,
   GetNodeTreeStringVisitor,
   SetStructDefaultValuesVisitor,
@@ -52,7 +51,7 @@ kinobi.update(
     'mplCandyMachineCore.Creator': { name: 'CmCreator' },
     'mplTokenAuthRules.Key': { name: 'TaKey' },
     'mplTokenMetadata.Key': { name: 'TmKey' },
-    'mplTokenMetadata.CreateArgs': { mame: 'TmCreateArgs' },
+    'mplTokenMetadata.CreateArgs': { name: 'TmCreateArgs' },
     'mplTokenAuthRules.CreateArgs': { name: 'TaCreateArgs' },
   })
 );
