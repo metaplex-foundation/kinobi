@@ -13,10 +13,16 @@ export class Kinobi implements Visitable {
     return this.rootNode.accept(visitor);
   }
 
-  update(visitor: Visitor<Node | null>): Kinobi {
+  update(visitor: Visitor<Node | null>): void {
     const newRoot = this.rootNode.accept(visitor);
     assertRootNode(newRoot);
     this.rootNode = newRoot;
-    return this;
+  }
+
+  clone(): Kinobi {
+    const newRoot = new RootNode(this.rootNode.programs);
+    const kinobi = new Kinobi([]);
+    kinobi.rootNode = newRoot;
+    return kinobi;
   }
 }
