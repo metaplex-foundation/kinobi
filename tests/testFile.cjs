@@ -23,11 +23,11 @@ const kinobi = new Kinobi([
 ]);
 kinobi.update(
   new RenameNodesVisitor({
-    candyMachineCore: {
-      types: {
-        Creator: 'CmCreator',
-      },
-    },
+    // candyMachineCore: {
+    //   types: {
+    //     Creator: 'CmCreator',
+    //   },
+    // },
     mplTokenAuthRules: {
       prefix: 'Ta',
       types: {
