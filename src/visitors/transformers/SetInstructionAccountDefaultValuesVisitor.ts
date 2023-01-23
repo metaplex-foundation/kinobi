@@ -200,13 +200,16 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
     account: nodes.InstructionNodeAccount
   ): InstructionAccountDefaultRule | undefined {
     return this.rules.find((rule) => {
-      if ('instruction' in rule && rule.instruction !== instruction.name) {
+      if (
+        'instruction' in rule &&
+        rule.instruction &&
+        mainCase(rule.instruction) !== instruction.name
+      ) {
         return false;
       }
-      const accountName = mainCase(account.name);
       return typeof rule.account === 'string'
-        ? mainCase(rule.account) === accountName
-        : rule.account.test(accountName);
+        ? mainCase(rule.account) === account.name
+        : rule.account.test(account.name);
     });
   }
 }
