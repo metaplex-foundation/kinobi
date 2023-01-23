@@ -1,21 +1,17 @@
 import * as nodes from '../../nodes';
+import { mainCase } from '../../utils';
 import {
   NodeTransform,
   NodeTransformer,
   TransformNodesVisitor,
 } from './TransformNodesVisitor';
-import {
-  EnumUpdates,
-  StructUpdates,
-  updateEnumNode,
-  updateStructNode,
-} from './_updateHelpers';
+import { renameEnumNode, renameStructNode } from './_renameHelpers';
 
 export type DefinedTypeUpdates =
   | NodeTransformer<nodes.DefinedTypeNode>
   | { delete: true }
   | (Partial<nodes.DefinedTypeNodeMetadata> & {
-      data?: StructUpdates | EnumUpdates;
+      data?: Record<string, string>;
     });
 
 export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
@@ -31,21 +27,12 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
           if ('delete' in updates) {
             return null;
           }
+          const newName = mainCase(updates.name ?? node.name);
           return new nodes.DefinedTypeNode(
             { ...node.metadata, ...updates },
             nodes.isTypeStructNode(node.type)
-              ? updateStructNode(
-                  (updates.data ?? {}) as StructUpdates,
-                  node.type,
-                  stack,
-                  program
-                )
-              : updateEnumNode(
-                  (updates.data ?? {}) as EnumUpdates,
-                  node.type,
-                  stack,
-                  program
-                )
+              ? renameStructNode(node.type, updates.data ?? {}, newName)
+              : renameEnumNode(node.type, updates.data ?? {}, newName)
           );
         },
       })

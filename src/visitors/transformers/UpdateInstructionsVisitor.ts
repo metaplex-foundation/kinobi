@@ -6,14 +6,14 @@ import {
   NodeTransformer,
   TransformNodesVisitor,
 } from './TransformNodesVisitor';
-import { StructUpdates, updateStructNode } from './_updateHelpers';
+import { renameStructNode } from './_renameHelpers';
 
 export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
-      args?: StructUpdates;
+      args?: Record<string, string>;
     });
 
 export type InstructionMetadataUpdates = Partial<
@@ -62,12 +62,15 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               return null;
             }
             const { accounts: accountUpdates, ...metadataUpdates } = updates;
+            const newName = `${mainCase(
+              updates.name ?? node.name
+            )}InstructionArgs`;
             return new nodes.InstructionNode(
               { ...node.metadata, ...this.handleMetadata(metadataUpdates) },
               node.accounts.map((account) =>
                 this.handleInstructionAccount(account, accountUpdates ?? {})
               ),
-              updateStructNode(updates.args ?? {}, node.args, stack, program)
+              renameStructNode(node.args, updates.args ?? {}, newName)
             );
           },
         };
