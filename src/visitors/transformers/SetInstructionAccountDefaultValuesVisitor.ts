@@ -1,4 +1,4 @@
-import { mainCase, pascalCase } from '../../utils';
+import { mainCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 import { Dependency } from '../Dependency';
@@ -178,7 +178,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
               pdaAccount,
               dependency: 'generated',
               seeds:
-                this.allAccounts.get(pascalCase(pdaAccount))
+                this.allAccounts.get(mainCase(pdaAccount))
                   ?.instructionAccountDefaultSeeds ?? {},
               ...rule,
             },
