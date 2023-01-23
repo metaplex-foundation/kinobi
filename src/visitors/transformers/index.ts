@@ -2,7 +2,6 @@ export * from './AutoSetAnchorDiscriminatorsVisitor';
 export * from './AutoSetFixedAccountSizesVisitor';
 export * from './DeduplicateIdenticalDefinedTypesVisitor';
 export * from './DeleteNodesVisitor';
-export * from './MarkNodesAsInternalVisitor';
 export * from './RenameNodesVisitor';
 export * from './SetAccountSeedsVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
