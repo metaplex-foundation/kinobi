@@ -1,4 +1,5 @@
 import * as nodes from '../../nodes';
+import { mainCase } from '../../utils';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 
 export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
@@ -8,7 +9,8 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
 
   constructor(typesToInline: string[] | '*' = '*') {
     super();
-    this.typesToInline = typesToInline;
+    this.typesToInline =
+      typesToInline === '*' ? '*' : typesToInline.map(mainCase);
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node {
