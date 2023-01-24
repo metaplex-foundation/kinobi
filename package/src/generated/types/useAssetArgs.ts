@@ -39,12 +39,12 @@ export function getUseAssetArgsSerializer(
 // Data Enum Helpers.
 export function useAssetArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<UseAssetArgs, 'V1'>
-): GetDataEnumKind<UseAssetArgs, 'V1'>;
-export function useAssetArgs<K extends UseAssetArgs['__kind']>(
+  data: GetDataEnumKindContent<UseAssetArgsArgs, 'V1'>
+): GetDataEnumKind<UseAssetArgsArgs, 'V1'>;
+export function useAssetArgs<K extends UseAssetArgsArgs['__kind']>(
   kind: K,
   data?: any
-): UseAssetArgs & { __kind: K } {
+): Extract<UseAssetArgsArgs, { __kind: K }> {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

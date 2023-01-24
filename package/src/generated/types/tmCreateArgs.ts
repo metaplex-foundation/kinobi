@@ -55,12 +55,12 @@ export function getTmCreateArgsSerializer(
 // Data Enum Helpers.
 export function tmCreateArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<TmCreateArgs, 'V1'>
-): GetDataEnumKind<TmCreateArgs, 'V1'>;
-export function tmCreateArgs<K extends TmCreateArgs['__kind']>(
+  data: GetDataEnumKindContent<TmCreateArgsArgs, 'V1'>
+): GetDataEnumKind<TmCreateArgsArgs, 'V1'>;
+export function tmCreateArgs<K extends TmCreateArgsArgs['__kind']>(
   kind: K,
   data?: any
-): TmCreateArgs & { __kind: K } {
+): Extract<TmCreateArgsArgs, { __kind: K }> {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
