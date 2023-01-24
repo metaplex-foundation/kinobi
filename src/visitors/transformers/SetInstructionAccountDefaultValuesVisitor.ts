@@ -172,17 +172,37 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           const pdaAccount =
             rule.pdaAccount ??
             (typeof rule.account === 'string' ? rule.account : '');
-          return {
-            ...account,
-            defaultsTo: {
-              pdaAccount,
-              dependency: 'generated',
-              seeds:
-                this.allAccounts.get(mainCase(pdaAccount))
-                  ?.instructionAccountDefaultSeeds ?? {},
-              ...rule,
-            },
+          const defaultsTo = {
+            pdaAccount,
+            dependency: 'generated',
+            seeds:
+              this.allAccounts.get(mainCase(pdaAccount))
+                ?.instructionAccountDefaultSeeds ?? {},
+            ...rule,
           };
+
+          if (rule.instruction) {
+            return { ...account, defaultsTo };
+          }
+
+          const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
+            ([, seed]) => {
+              if (seed.kind === 'account') {
+                return instruction.accounts.some(
+                  (a) => a.name === mainCase(seed.name)
+                );
+              }
+              return instruction.args.fields.some(
+                (f) => f.name === mainCase(seed.name)
+              );
+            }
+          );
+
+          if (allSeedsAreValid) {
+            return { ...account, defaultsTo };
+          }
+
+          return account;
         }
         return { ...account, defaultsTo: rule };
       }
