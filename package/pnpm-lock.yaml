@@ -1,19 +1,19 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@lorisleiva/js-core': ^0.0.43
+  '@lorisleiva/js-core': ^0.0.44
   typescript: ^4.9.4
 
 dependencies:
-  '@lorisleiva/js-core': 0.0.43
+  '@lorisleiva/js-core': 0.0.44
 
 devDependencies:
   typescript: 4.9.4
 
 packages:
 
-  /@lorisleiva/js-core/0.0.43:
-    resolution: {integrity: sha512-39f3ebsAPy7EUOtaTnBceogwQ/xAgbl8Wm4aRsoNOaVUIAA3CPe4+PSoMtdXAJWqoa8j6R1oKC+Fc19VAyeo8w==}
+  /@lorisleiva/js-core/0.0.44:
+    resolution: {integrity: sha512-6cCBQRsiwb4eh5l/rBE3OhOcnqxT6arQ/ElPOIK98Aeph8Hiss5M8ZVwerR073HIwcQj3wA3EGwO1TVWtbbZnw==}
     dev: false
 
   /typescript/4.9.4:
