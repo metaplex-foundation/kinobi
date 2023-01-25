@@ -421,7 +421,7 @@ export class GetJavaScriptTypeManifestVisitor
           f.metadata.defaultsTo as nodes.TypeStructFieldNodeDefaultValue
         );
         baseManifest.imports.mergeWith(imports);
-        return `${camelCase(f.name)}: ${value}}`;
+        return `${camelCase(f.name)}: ${value}`;
       })
       .join(', ');
     const mapSerializerTypeParams = definedName
