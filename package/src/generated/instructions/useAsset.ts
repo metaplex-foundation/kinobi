@@ -106,9 +106,18 @@ export function useAsset(
     ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
-  const useAuthorityRecordAccount = input.useAuthorityRecord;
-  const authorizationRulesAccount = input.authorizationRules;
-  const authorizationRulesProgramAccount = input.authorizationRulesProgram;
+  const useAuthorityRecordAccount = input.useAuthorityRecord ?? {
+    ...programId,
+    isWritable: false,
+  };
+  const authorizationRulesAccount = input.authorizationRules ?? {
+    ...programId,
+    isWritable: false,
+  };
+  const authorizationRulesProgramAccount = input.authorizationRulesProgram ?? {
+    ...programId,
+    isWritable: false,
+  };
 
   // Metadata.
   keys.push({
@@ -167,32 +176,26 @@ export function useAsset(
     isWritable: isWritable(systemProgramAccount, false),
   });
 
-  // Use Authority Record (optional).
-  if (useAuthorityRecordAccount) {
-    keys.push({
-      pubkey: useAuthorityRecordAccount,
-      isSigner: false,
-      isWritable: isWritable(useAuthorityRecordAccount, true),
-    });
-  }
+  // Use Authority Record.
+  keys.push({
+    pubkey: useAuthorityRecordAccount,
+    isSigner: false,
+    isWritable: isWritable(useAuthorityRecordAccount, true),
+  });
 
-  // Authorization Rules (optional).
-  if (authorizationRulesAccount) {
-    keys.push({
-      pubkey: authorizationRulesAccount,
-      isSigner: false,
-      isWritable: isWritable(authorizationRulesAccount, false),
-    });
-  }
+  // Authorization Rules.
+  keys.push({
+    pubkey: authorizationRulesAccount,
+    isSigner: false,
+    isWritable: isWritable(authorizationRulesAccount, false),
+  });
 
-  // Authorization Rules Program (optional).
-  if (authorizationRulesProgramAccount) {
-    keys.push({
-      pubkey: authorizationRulesProgramAccount,
-      isSigner: false,
-      isWritable: isWritable(authorizationRulesProgramAccount, false),
-    });
-  }
+  // Authorization Rules Program.
+  keys.push({
+    pubkey: authorizationRulesProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(authorizationRulesProgramAccount, false),
+  });
 
   // Data.
   const data = getUseAssetInstructionDataSerializer(context).serialize(input);

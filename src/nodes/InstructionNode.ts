@@ -1,4 +1,4 @@
-import { camelCase, mainCase, pascalCase } from '../utils';
+import { camelCase, mainCase } from '../utils';
 import type { IdlInstruction } from '../idl';
 import type { Dependency, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
@@ -97,7 +97,9 @@ export class InstructionNode implements Visitable {
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
     const idlName = idl.name ?? '';
-    const name = pascalCase(idlName);
+    const name = camelCase(idlName);
+    const useProgramIdForOptionalAccounts =
+      idl.defaultOptionalAccounts ?? false;
     const metadata: InstructionNodeMetadata = {
       name,
       idlName,
@@ -107,15 +109,21 @@ export class InstructionNode implements Visitable {
     };
 
     const accounts = (idl.accounts ?? []).map(
-      (account): InstructionNodeAccount => ({
-        name: camelCase(account.name ?? ''),
-        isWritable: account.isMut ?? false,
-        isSigner: account.isSigner ?? false,
-        isOptionalSigner: account.isOptionalSigner ?? false,
-        isOptional: account.optional ?? false,
-        description: account.desc ?? '',
-        defaultsTo: { kind: 'none' },
-      })
+      (account): InstructionNodeAccount => {
+        const isOptional = account.optional ?? false;
+        return {
+          name: camelCase(account.name ?? ''),
+          isWritable: account.isMut ?? false,
+          isSigner: account.isSigner ?? false,
+          isOptionalSigner: account.isOptionalSigner ?? false,
+          isOptional,
+          description: account.desc ?? '',
+          defaultsTo:
+            isOptional && useProgramIdForOptionalAccounts
+              ? { kind: 'programId' }
+              : { kind: 'none' },
+        };
+      }
     );
 
     let args = TypeStructNode.fromIdl({

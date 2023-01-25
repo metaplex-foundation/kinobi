@@ -97,7 +97,10 @@ export function createDigitalAsset(
 
   // Resolved accounts.
   const metadataAccount = input.metadata;
-  const masterEditionAccount = input.masterEdition;
+  const masterEditionAccount = input.masterEdition ?? {
+    ...programId,
+    isWritable: false,
+  };
   const mintAccount = input.mint;
   const mintAuthorityAccount = input.mintAuthority;
   const payerAccount = input.payer ?? context.payer;
@@ -121,14 +124,12 @@ export function createDigitalAsset(
     isWritable: isWritable(metadataAccount, true),
   });
 
-  // Master Edition (optional).
-  if (masterEditionAccount) {
-    keys.push({
-      pubkey: masterEditionAccount,
-      isSigner: false,
-      isWritable: isWritable(masterEditionAccount, true),
-    });
-  }
+  // Master Edition.
+  keys.push({
+    pubkey: masterEditionAccount,
+    isSigner: false,
+    isWritable: isWritable(masterEditionAccount, true),
+  });
 
   // Mint.
   keys.push({
