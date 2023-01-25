@@ -93,7 +93,7 @@ kinobi.update(
   })
 );
 
-const omitted = (v) => ({ value: v, strategy: 'omitted' });
+const omitted = (v) => ({ kind: 'json', value: v, strategy: 'omitted' });
 kinobi.update(
   new SetStructDefaultValuesVisitor({
     'mplTokenMetadata.Edition': { key: omitted(1) },
@@ -108,7 +108,7 @@ kinobi.update(
     'mplTokenMetadata.TokenOwnedEscrow': { key: omitted(10) },
     'mplTokenMetadata.DelegateRecord': { key: omitted(11) },
     'mplTokenAuthRules.FrequencyAccount': { key: omitted(1) },
-    'mplTokenMetadata.Collection': { verified: false },
+    'mplTokenMetadata.Collection': { verified: { kind: 'json', value: false } },
   })
 );
 
