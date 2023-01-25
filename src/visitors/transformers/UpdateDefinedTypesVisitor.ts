@@ -59,7 +59,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
             selector: { type: 'typeDefinedLink', stack: selectorStack, name },
             transformer: (node: nodes.Node) => {
               nodes.assertTypeDefinedLinkNode(node);
-              return new nodes.TypeDefinedLinkNode(newName);
+              return new nodes.TypeDefinedLinkNode(newName, node.dependency);
             },
           });
         }
