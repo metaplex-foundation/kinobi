@@ -4,19 +4,20 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
-export type TypeStructFieldNodeDefaults =
-  | {
-      kind: 'json';
-      strategy: 'optional' | 'omitted';
-      value: any;
-    }
-  | { kind: 'none' };
-
 export type TypeStructFieldNodeMetadata = {
   name: string;
   docs: string[];
   defaultsTo: TypeStructFieldNodeDefaults;
 };
+
+export type TypeStructFieldNodeDefaults =
+  | (TypeStructFieldNodeDefaultValue & { strategy: 'optional' | 'omitted' })
+  | { kind: 'none' };
+
+export type TypeStructFieldNodeDefaultValue =
+  | { kind: 'json'; value: any }
+  | { kind: 'someOption'; value: TypeStructFieldNodeDefaultValue }
+  | { kind: 'noneOption' };
 
 export class TypeStructFieldNode implements Visitable {
   readonly nodeClass = 'TypeStructFieldNode' as const;

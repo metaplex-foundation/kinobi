@@ -416,7 +416,13 @@ export class GetJavaScriptTypeManifestVisitor
     }
 
     const defaultValues = optionalFields
-      .map((f) => `${camelCase(f.name)}: ${this.renderStructFieldValue(f)}`)
+      .map((f) => {
+        const { value, imports } = this.renderStructFieldValue(
+          f.metadata.defaultsTo as nodes.TypeStructFieldNodeDefaultValue
+        );
+        baseManifest.imports.mergeWith(imports);
+        return `${camelCase(f.name)}: ${value}}`;
+      })
       .join(', ');
     const mapSerializerTypeParams = definedName
       ? `${definedName.loose}, ${definedName.strict}, ${definedName.strict}`
@@ -506,14 +512,29 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   protected renderStructFieldValue(
-    field: nodes.TypeStructFieldNode
-  ): string | null {
-    switch (field.metadata.defaultsTo.kind) {
+    defaultsTo: nodes.TypeStructFieldNodeDefaultValue
+  ): {
+    imports: JavaScriptImportMap;
+    value: string;
+  } {
+    switch (defaultsTo.kind) {
+      case 'someOption':
+        const child = this.renderStructFieldValue(defaultsTo.value);
+        return {
+          imports: child.imports.add('core', 'some'),
+          value: `some(${child.value})`,
+        };
+      case 'noneOption':
+        return {
+          imports: new JavaScriptImportMap().add('core', 'none'),
+          value: 'none()',
+        };
       case 'json':
-        return JSON.stringify(field.metadata.defaultsTo.value);
-      case 'none':
       default:
-        return null;
+        return {
+          imports: new JavaScriptImportMap(),
+          value: JSON.stringify(defaultsTo.value),
+        };
     }
   }
 }
