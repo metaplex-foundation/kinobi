@@ -417,11 +417,17 @@ export class GetJavaScriptTypeManifestVisitor
 
     const defaultValues = optionalFields
       .map((f) => {
-        const { value, imports } = this.renderStructFieldValue(
-          f.metadata.defaultsTo as nodes.TypeStructFieldNodeDefaultValue
-        );
+        const key = camelCase(f.name);
+        const defaultsTo = f.metadata.defaultsTo as Exclude<
+          nodes.TypeStructFieldNodeDefaults,
+          { kind: 'none' }
+        >;
+        const { value, imports } = this.renderStructFieldValue(defaultsTo);
         baseManifest.imports.mergeWith(imports);
-        return `${camelCase(f.name)}: ${value}`;
+        if (defaultsTo.strategy === 'omitted') {
+          return `${key}: ${value}`;
+        }
+        return `${key}: value.${key} ?? ${value}`;
       })
       .join(', ');
     const mapSerializerTypeParams = definedName
@@ -431,7 +437,7 @@ export class GetJavaScriptTypeManifestVisitor
     const mappedSerializer =
       `mapSerializer<${mapSerializerTypeParams}>(` +
       `${baseManifest.serializer}, ` +
-      `(value) => ({ ${defaultValues}, ...value }${asReturnType}) ` +
+      `(value) => ({ ...value, ${defaultValues} }${asReturnType}) ` +
       `)`;
 
     return {

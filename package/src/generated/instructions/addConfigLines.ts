@@ -55,8 +55,8 @@ export function getAddConfigLinesInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
         ...value,
+        discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
       } as AddConfigLinesInstructionData)
   ) as Serializer<AddConfigLinesInstructionArgs, AddConfigLinesInstructionData>;
 }

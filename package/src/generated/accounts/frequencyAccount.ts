@@ -86,7 +86,7 @@ export function getFrequencyAccountAccountDataSerializer(
       ],
       'FrequencyAccount'
     ),
-    (value) => ({ key: 1, ...value } as FrequencyAccountAccountData)
+    (value) => ({ ...value, key: 1 } as FrequencyAccountAccountData)
   ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
 }
 

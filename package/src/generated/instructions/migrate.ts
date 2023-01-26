@@ -67,7 +67,7 @@ export function getMigrateInstructionDataSerializer(
       ],
       'MigrateInstructionArgs'
     ),
-    (value) => ({ discriminator: 50, ...value } as MigrateInstructionData)
+    (value) => ({ ...value, discriminator: 50 } as MigrateInstructionData)
   ) as Serializer<MigrateInstructionArgs, MigrateInstructionData>;
 }
 

@@ -43,8 +43,8 @@ export function getWithdrawInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
         ...value,
+        discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
       } as WithdrawInstructionData)
   ) as Serializer<WithdrawInstructionArgs, WithdrawInstructionData>;
 }

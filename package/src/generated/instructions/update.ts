@@ -54,8 +54,8 @@ export function getUpdateInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
         ...value,
+        discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
       } as UpdateInstructionData)
   ) as Serializer<UpdateInstructionArgs, UpdateInstructionData>;
 }

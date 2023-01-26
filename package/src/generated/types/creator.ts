@@ -34,6 +34,11 @@ export function getCreatorSerializer(
       ],
       'Creator'
     ),
-    (value) => ({ verified: false, share: 42, ...value } as Creator)
+    (value) =>
+      ({
+        ...value,
+        verified: value.verified ?? false,
+        share: value.share ?? 42,
+      } as Creator)
   ) as Serializer<CreatorArgs, Creator>;
 }

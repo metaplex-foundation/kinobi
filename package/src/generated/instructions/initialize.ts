@@ -63,8 +63,8 @@ export function getInitializeInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
         ...value,
+        discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
       } as InitializeInstructionData)
   ) as Serializer<InitializeInstructionArgs, InitializeInstructionData>;
 }

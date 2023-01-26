@@ -71,7 +71,7 @@ export function getUpdateDigitalAssetInstructionDataSerializer(
       'UpdateDigitalAssetInstructionArgs'
     ),
     (value) =>
-      ({ discriminator: 43, ...value } as UpdateDigitalAssetInstructionData)
+      ({ ...value, discriminator: 43 } as UpdateDigitalAssetInstructionData)
   ) as Serializer<
     UpdateDigitalAssetInstructionArgs,
     UpdateDigitalAssetInstructionData

@@ -107,8 +107,8 @@ export function getCandyMachineAccountDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
         ...value,
+        discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
       } as CandyMachineAccountData)
   ) as Serializer<CandyMachineAccountArgs, CandyMachineAccountData>;
 }

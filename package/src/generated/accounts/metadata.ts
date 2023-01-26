@@ -149,7 +149,7 @@ export function getMetadataAccountDataSerializer(
       ],
       'Metadata'
     ),
-    (value) => ({ key: 4, ...value } as MetadataAccountData)
+    (value) => ({ ...value, key: 4 } as MetadataAccountData)
   ) as Serializer<MetadataAccountArgs, MetadataAccountData>;
 }
 

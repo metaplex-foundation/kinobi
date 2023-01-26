@@ -82,7 +82,7 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
       ],
       'CollectionAuthorityRecord'
     ),
-    (value) => ({ key: 9, ...value } as CollectionAuthorityRecordAccountData)
+    (value) => ({ ...value, key: 9 } as CollectionAuthorityRecordAccountData)
   ) as Serializer<
     CollectionAuthorityRecordAccountArgs,
     CollectionAuthorityRecordAccountData

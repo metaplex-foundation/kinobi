@@ -47,8 +47,8 @@ export function getSetMintAuthorityInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
         ...value,
+        discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
       } as SetMintAuthorityInstructionData)
   ) as Serializer<
     SetMintAuthorityInstructionArgs,

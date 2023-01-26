@@ -85,7 +85,7 @@ export function getTokenOwnedEscrowAccountDataSerializer(
       ],
       'TokenOwnedEscrow'
     ),
-    (value) => ({ key: 10, ...value } as TokenOwnedEscrowAccountData)
+    (value) => ({ ...value, key: 10 } as TokenOwnedEscrowAccountData)
   ) as Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData>;
 }
 

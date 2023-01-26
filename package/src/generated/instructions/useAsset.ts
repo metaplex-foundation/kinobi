@@ -72,7 +72,7 @@ export function getUseAssetInstructionDataSerializer(
       ],
       'UseAssetInstructionArgs'
     ),
-    (value) => ({ discriminator: 45, ...value } as UseAssetInstructionData)
+    (value) => ({ ...value, discriminator: 45 } as UseAssetInstructionData)
   ) as Serializer<UseAssetInstructionArgs, UseAssetInstructionData>;
 }
 

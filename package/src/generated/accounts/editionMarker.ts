@@ -69,7 +69,7 @@ export function getEditionMarkerAccountDataSerializer(
       ],
       'EditionMarker'
     ),
-    (value) => ({ key: 7, ...value } as EditionMarkerAccountData)
+    (value) => ({ ...value, key: 7 } as EditionMarkerAccountData)
   ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }
 

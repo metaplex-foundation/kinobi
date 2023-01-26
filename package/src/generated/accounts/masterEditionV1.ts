@@ -84,7 +84,7 @@ export function getMasterEditionV1AccountDataSerializer(
       ],
       'MasterEditionV1'
     ),
-    (value) => ({ key: 2, ...value } as MasterEditionV1AccountData)
+    (value) => ({ ...value, key: 2 } as MasterEditionV1AccountData)
   ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
 }
 

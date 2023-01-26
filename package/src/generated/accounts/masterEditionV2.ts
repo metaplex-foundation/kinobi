@@ -80,7 +80,7 @@ export function getMasterEditionV2AccountDataSerializer(
       ],
       'MasterEditionV2'
     ),
-    (value) => ({ key: 6, ...value } as MasterEditionV2AccountData)
+    (value) => ({ ...value, key: 6 } as MasterEditionV2AccountData)
   ) as Serializer<MasterEditionV2AccountArgs, MasterEditionV2AccountData>;
 }
 

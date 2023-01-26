@@ -55,8 +55,8 @@ export function getSetCollectionInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
         ...value,
+        discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
       } as SetCollectionInstructionData)
   ) as Serializer<SetCollectionInstructionArgs, SetCollectionInstructionData>;
 }

@@ -79,7 +79,7 @@ export function getDelegateRecordAccountDataSerializer(
       ],
       'DelegateRecord'
     ),
-    (value) => ({ key: 11, ...value } as DelegateRecordAccountData)
+    (value) => ({ ...value, key: 11 } as DelegateRecordAccountData)
   ) as Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData>;
 }
 

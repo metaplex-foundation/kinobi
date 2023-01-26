@@ -97,7 +97,7 @@ export function getCreateMetadataAccountInstructionDataSerializer(
       'CreateMetadataAccountInstructionArgs'
     ),
     (value) =>
-      ({ discriminator: 0, ...value } as CreateMetadataAccountInstructionData)
+      ({ ...value, discriminator: 0 } as CreateMetadataAccountInstructionData)
   ) as Serializer<
     CreateMetadataAccountInstructionArgs,
     CreateMetadataAccountInstructionData

@@ -56,7 +56,7 @@ export function getVerifyInstructionDataSerializer(
       ],
       'VerifyInstructionArgs'
     ),
-    (value) => ({ discriminator: 47, ...value } as VerifyInstructionData)
+    (value) => ({ ...value, discriminator: 47 } as VerifyInstructionData)
   ) as Serializer<VerifyInstructionArgs, VerifyInstructionData>;
 }
 

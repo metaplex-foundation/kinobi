@@ -66,7 +66,7 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
       'CreateFrequencyRuleInstructionArgs'
     ),
     (value) =>
-      ({ discriminator: 2, ...value } as CreateFrequencyRuleInstructionData)
+      ({ ...value, discriminator: 2 } as CreateFrequencyRuleInstructionData)
   ) as Serializer<
     CreateFrequencyRuleInstructionArgs,
     CreateFrequencyRuleInstructionData

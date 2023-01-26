@@ -73,7 +73,7 @@ export function getRevokeInstructionDataSerializer(
       ],
       'RevokeInstructionArgs'
     ),
-    (value) => ({ discriminator: 49, ...value } as RevokeInstructionData)
+    (value) => ({ ...value, discriminator: 49 } as RevokeInstructionData)
   ) as Serializer<RevokeInstructionArgs, RevokeInstructionData>;
 }
 

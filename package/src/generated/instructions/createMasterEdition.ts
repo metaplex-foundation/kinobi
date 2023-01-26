@@ -78,7 +78,7 @@ export function getCreateMasterEditionInstructionDataSerializer(
       'CreateMasterEditionInstructionArgs'
     ),
     (value) =>
-      ({ discriminator: 10, ...value } as CreateMasterEditionInstructionData)
+      ({ ...value, discriminator: 10 } as CreateMasterEditionInstructionData)
   ) as Serializer<
     CreateMasterEditionInstructionArgs,
     CreateMasterEditionInstructionData

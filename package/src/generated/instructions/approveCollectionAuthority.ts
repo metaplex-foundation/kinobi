@@ -62,8 +62,8 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: 23,
         ...value,
+        discriminator: 23,
       } as ApproveCollectionAuthorityInstructionData)
   ) as Serializer<
     ApproveCollectionAuthorityInstructionArgs,

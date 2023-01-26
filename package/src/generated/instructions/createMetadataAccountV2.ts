@@ -70,8 +70,8 @@ export function getCreateMetadataAccountV2InstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: 16,
         ...value,
+        discriminator: 16,
       } as CreateMetadataAccountV2InstructionData)
   ) as Serializer<
     CreateMetadataAccountV2InstructionArgs,

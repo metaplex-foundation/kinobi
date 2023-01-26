@@ -63,8 +63,8 @@ export function getMintFromCandyMachineInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
         ...value,
+        discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
       } as MintFromCandyMachineInstructionData)
   ) as Serializer<
     MintFromCandyMachineInstructionArgs,

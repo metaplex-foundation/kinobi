@@ -77,7 +77,7 @@ export function getUseAuthorityRecordAccountDataSerializer(
       ],
       'UseAuthorityRecord'
     ),
-    (value) => ({ key: 8, ...value } as UseAuthorityRecordAccountData)
+    (value) => ({ ...value, key: 8 } as UseAuthorityRecordAccountData)
   ) as Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData>;
 }
 

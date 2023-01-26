@@ -75,7 +75,7 @@ export function getEditionAccountDataSerializer(
       ],
       'Edition'
     ),
-    (value) => ({ key: 1, ...value } as EditionAccountData)
+    (value) => ({ ...value, key: 1 } as EditionAccountData)
   ) as Serializer<EditionAccountArgs, EditionAccountData>;
 }
 

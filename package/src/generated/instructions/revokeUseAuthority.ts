@@ -61,7 +61,7 @@ export function getRevokeUseAuthorityInstructionDataSerializer(
       'RevokeUseAuthorityInstructionArgs'
     ),
     (value) =>
-      ({ discriminator: 21, ...value } as RevokeUseAuthorityInstructionData)
+      ({ ...value, discriminator: 21 } as RevokeUseAuthorityInstructionData)
   ) as Serializer<
     RevokeUseAuthorityInstructionArgs,
     RevokeUseAuthorityInstructionData

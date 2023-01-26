@@ -29,6 +29,6 @@ export function getCollectionSerializer(
       ],
       'Collection'
     ),
-    (value) => ({ verified: false, ...value } as Collection)
+    (value) => ({ ...value, verified: value.verified ?? false } as Collection)
   ) as Serializer<CollectionArgs, Collection>;
 }

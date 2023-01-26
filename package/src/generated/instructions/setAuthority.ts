@@ -49,8 +49,8 @@ export function getSetAuthorityInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
         ...value,
+        discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
       } as SetAuthorityInstructionData)
   ) as Serializer<SetAuthorityInstructionArgs, SetAuthorityInstructionData>;
 }

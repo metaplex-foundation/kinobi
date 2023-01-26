@@ -87,7 +87,7 @@ export function getValidateInstructionDataSerializer(
       ],
       'ValidateInstructionArgs'
     ),
-    (value) => ({ discriminator: 1, ...value } as ValidateInstructionData)
+    (value) => ({ ...value, discriminator: 1 } as ValidateInstructionData)
   ) as Serializer<ValidateInstructionArgs, ValidateInstructionData>;
 }
 

@@ -75,7 +75,7 @@ export function getCreateDigitalAssetInstructionDataSerializer(
       'CreateDigitalAssetInstructionArgs'
     ),
     (value) =>
-      ({ discriminator: 41, ...value } as CreateDigitalAssetInstructionData)
+      ({ ...value, discriminator: 41 } as CreateDigitalAssetInstructionData)
   ) as Serializer<
     CreateDigitalAssetInstructionArgs,
     CreateDigitalAssetInstructionData

@@ -68,7 +68,7 @@ export function getMintInstructionDataSerializer(
       ],
       'MintInstructionArgs'
     ),
-    (value) => ({ discriminator: 42, ...value } as MintInstructionData)
+    (value) => ({ ...value, discriminator: 42 } as MintInstructionData)
   ) as Serializer<MintInstructionArgs, MintInstructionData>;
 }
 

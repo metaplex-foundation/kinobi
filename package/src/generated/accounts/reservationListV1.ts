@@ -86,7 +86,7 @@ export function getReservationListV1AccountDataSerializer(
       ],
       'ReservationListV1'
     ),
-    (value) => ({ key: 3, ...value } as ReservationListV1AccountData)
+    (value) => ({ ...value, key: 3 } as ReservationListV1AccountData)
   ) as Serializer<ReservationListV1AccountArgs, ReservationListV1AccountData>;
 }
 

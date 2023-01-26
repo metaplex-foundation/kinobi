@@ -50,8 +50,8 @@ export function getDummyInstructionDataSerializer(
     ),
     (value) =>
       ({
-        discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
         ...value,
+        discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
       } as DummyInstructionData)
   ) as Serializer<DummyInstructionArgs, DummyInstructionData>;
 }
