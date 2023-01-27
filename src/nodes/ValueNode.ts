@@ -1,5 +1,6 @@
 export type ValueNode =
   | ScalarValueNode
+  | PublicKeyValueNode
   | ListValueNode
   | TupleValueNode
   | SetValueNode
@@ -17,6 +18,12 @@ export const vScalar = (scalar: number | boolean | string): ScalarValueNode => {
   if (typeof scalar === 'boolean') return { __kind: 'boolean', value: scalar };
   return { __kind: 'string', value: scalar };
 };
+
+export type PublicKeyValueNode = { __kind: 'publicKey'; value: string };
+export const vPublicKey = (value: string): PublicKeyValueNode => ({
+  __kind: 'publicKey',
+  value,
+});
 
 export type ListValueNode = { __kind: 'list'; values: ValueNode[] };
 export const vList = (values: ValueNode[]): ListValueNode => ({

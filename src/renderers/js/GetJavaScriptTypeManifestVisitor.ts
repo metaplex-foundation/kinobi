@@ -615,6 +615,11 @@ export class GetJavaScriptTypeManifestVisitor
           imports: new JavaScriptImportMap().add('core', 'none'),
           value: 'none()',
         };
+      case 'publicKey':
+        return {
+          imports: new JavaScriptImportMap().add('core', 'publicKey'),
+          value: `publicKey("${defaultsTo.value}")`,
+        };
       case 'string':
       case 'number':
       case 'boolean':
