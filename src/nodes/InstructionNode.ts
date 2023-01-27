@@ -5,6 +5,7 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeStructFieldNode } from './TypeStructFieldNode';
+import { vScalar } from './ValueNode';
 
 export type InstructionNodeMetadata = {
   name: string;
@@ -138,9 +139,8 @@ export class InstructionNode implements Visitable {
           name: 'discriminator',
           docs: [],
           defaultsTo: {
-            kind: 'json',
             strategy: 'omitted',
-            value: idl.discriminant.value,
+            value: vScalar(idl.discriminant.value),
           },
         },
         createTypeNodeFromIdl(idl.discriminant.type)
@@ -176,7 +176,7 @@ export class InstructionNode implements Visitable {
 
   get hasArgs(): boolean {
     const requiredFields = this.args.fields.filter(
-      (field) => field.metadata.defaultsTo.kind === 'none'
+      (field) => field.metadata.defaultsTo === null
     );
     return requiredFields.length > 0;
   }

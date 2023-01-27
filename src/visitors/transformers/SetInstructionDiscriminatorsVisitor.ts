@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 type Discriminator = {
-  value: any;
+  value: nodes.ValueNode;
   /** @defaultValue `new TypeLeafNode('u32')` */
   type?: nodes.TypeNode;
   /** @defaultValue `"discriminator"` */
@@ -28,7 +28,6 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
                 name: discriminator.name ?? 'discriminator',
                 docs: discriminator.docs ?? [],
                 defaultsTo: {
-                  kind: 'json',
                   strategy: discriminator.strategy ?? 'omitted',
                   value: discriminator.value,
                 },

@@ -248,7 +248,7 @@ export class GetJavaScriptTypeManifestVisitor
     const kindAttribute = `__kind: "${name}"`;
     const struct = new nodes.TypeStructNode(name, [
       new nodes.TypeStructFieldNode(
-        { name: 'fields', docs: [], defaultsTo: { kind: 'none' } },
+        { name: 'fields', docs: [], defaultsTo: null },
         typeEnumTupleVariant.tuple
       ),
     ]);
@@ -409,7 +409,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
 
     const optionalFields = typeStruct.fields.filter(
-      (f) => f.metadata.defaultsTo.kind !== 'none'
+      (f) => f.metadata.defaultsTo !== null
     );
     if (optionalFields.length === 0) {
       return baseManifest;
@@ -418,11 +418,12 @@ export class GetJavaScriptTypeManifestVisitor
     const defaultValues = optionalFields
       .map((f) => {
         const key = camelCase(f.name);
-        const defaultsTo = f.metadata.defaultsTo as Exclude<
-          nodes.TypeStructFieldNodeDefaults,
-          { kind: 'none' }
+        const defaultsTo = f.metadata.defaultsTo as NonNullable<
+          typeof f.metadata.defaultsTo
         >;
-        const { value, imports } = this.renderStructFieldValue(defaultsTo);
+        const { value, imports } = this.renderStructFieldValue(
+          defaultsTo.value
+        );
         baseManifest.imports.mergeWith(imports);
         if (defaultsTo.strategy === 'omitted') {
           return `${key}: ${value}`;
@@ -460,7 +461,7 @@ export class GetJavaScriptTypeManifestVisitor
       looseType: `${docblock}${name}: ${fieldType.looseType}; `,
       serializer: `['${name}', ${fieldType.serializer}]`,
     };
-    if (metadata.defaultsTo.kind === 'none') {
+    if (metadata.defaultsTo === null) {
       return baseField;
     }
     if (metadata.defaultsTo.strategy === 'optional') {
@@ -517,30 +518,112 @@ export class GetJavaScriptTypeManifestVisitor
     return `\n/**\n${lines.join('\n')}\n */\n`;
   }
 
-  protected renderStructFieldValue(
-    defaultsTo: nodes.TypeStructFieldNodeDefaultValue
-  ): {
+  protected renderStructFieldValue(defaultsTo: nodes.ValueNode): {
     imports: JavaScriptImportMap;
     value: string;
   } {
-    switch (defaultsTo.kind) {
-      case 'someOption':
+    const imports = new JavaScriptImportMap();
+    switch (defaultsTo.__kind) {
+      case 'list':
+      case 'tuple':
+        const list = defaultsTo.values.map((v) =>
+          this.renderStructFieldValue(v)
+        );
+        return {
+          imports: imports.mergeWith(...list.map((c) => c.imports)),
+          value: `[${list.map((c) => c.value).join(', ')}]`,
+        };
+      case 'set':
+        const set = defaultsTo.values.map((v) =>
+          this.renderStructFieldValue(v)
+        );
+        return {
+          imports: imports.mergeWith(...set.map((c) => c.imports)),
+          value: `new Set([${set.map((c) => c.value).join(', ')}])`,
+        };
+      case 'map':
+        const map = defaultsTo.values.map(([k, v]) => {
+          const mapKey = this.renderStructFieldValue(k);
+          const mapValue = this.renderStructFieldValue(v);
+          return {
+            imports: mapKey.imports.mergeWith(mapValue.imports),
+            value: `[${mapKey.value}, ${mapValue.value}]`,
+          };
+        });
+        return {
+          imports: imports.mergeWith(...map.map((c) => c.imports)),
+          value: `new Map([${map.map((c) => c.value).join(', ')}])`,
+        };
+      case 'struct':
+        const struct = Object.entries(defaultsTo.values).map(([k, v]) => {
+          const structValue = this.renderStructFieldValue(v);
+          return {
+            imports: structValue.imports,
+            value: `${k}: ${structValue.value}`,
+          };
+        });
+        return {
+          imports: imports.mergeWith(...struct.map((c) => c.imports)),
+          value: `{ ${struct.map((c) => c.value).join(', ')} }`,
+        };
+      case 'enum':
+        const definedType = this.availableDefinedTypes.get(defaultsTo.enumType);
+        if (!definedType || !nodes.isTypeEnumNode(definedType.type)) {
+          throw new Error(`Cannot find enum ${defaultsTo.enumType}.`);
+        }
+
+        const enumName = pascalCase(definedType.type.name);
+        const variantName = pascalCase(defaultsTo.variant);
+        const dependency =
+          definedType.metadata.importFrom === 'generated'
+            ? 'generatedTypes'
+            : definedType.metadata.importFrom;
+
+        if (definedType.type.isScalarEnum()) {
+          return {
+            imports: imports.add(dependency, enumName),
+            value: `${enumName}.${variantName}`,
+          };
+        }
+
+        imports.add(dependency, camelCase(enumName));
+
+        if (!defaultsTo.value) {
+          return { imports, value: `{ __kind: '${variantName}' }` };
+        }
+
+        const enumValue = this.renderStructFieldValue(defaultsTo.value);
+        imports.mergeWith(enumValue.imports);
+
+        if (defaultsTo.value.__kind === 'struct') {
+          const fields = enumValue.value.slice(1, -1);
+          return { imports, value: `{ __kind: '${variantName}', ${fields} }` };
+        }
+
+        return {
+          imports,
+          value: `{ __kind: '${variantName}', fields: ${enumValue.value} }`,
+        };
+      case 'optionSome':
         const child = this.renderStructFieldValue(defaultsTo.value);
         return {
           imports: child.imports.add('core', 'some'),
           value: `some(${child.value})`,
         };
-      case 'noneOption':
+      case 'optionNone':
         return {
           imports: new JavaScriptImportMap().add('core', 'none'),
           value: 'none()',
         };
-      case 'json':
+      case 'string':
+      case 'number':
+      case 'boolean':
+        return { imports, value: JSON.stringify(defaultsTo.value) };
       default:
-        return {
-          imports: new JavaScriptImportMap(),
-          value: JSON.stringify(defaultsTo.value),
-        };
+        const neverDefault: never = defaultsTo;
+        throw new Error(
+          `Unexpected defaultsTo value ${(neverDefault as any).__kind}`
+        );
     }
   }
 }

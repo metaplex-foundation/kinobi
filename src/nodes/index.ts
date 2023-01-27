@@ -22,3 +22,4 @@ export * from './TypeStructNode';
 export * from './TypeStructFieldNode';
 export * from './TypeTupleNode';
 export * from './TypeVecNode';
+export * from './ValueNode';

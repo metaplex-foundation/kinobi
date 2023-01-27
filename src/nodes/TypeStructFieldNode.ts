@@ -1,23 +1,15 @@
-import { mainCase } from '../utils';
 import type { IdlTypeStructField } from '../idl';
+import { mainCase } from '../utils';
 import type { Visitable, Visitor } from '../visitors';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
+import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { ValueNode, vScalar } from './ValueNode';
 
 export type TypeStructFieldNodeMetadata = {
   name: string;
   docs: string[];
-  defaultsTo: TypeStructFieldNodeDefaults;
+  defaultsTo: { strategy: 'optional' | 'omitted'; value: ValueNode } | null;
 };
-
-export type TypeStructFieldNodeDefaults =
-  | (TypeStructFieldNodeDefaultValue & { strategy: 'optional' | 'omitted' })
-  | { kind: 'none' };
-
-export type TypeStructFieldNodeDefaultValue =
-  | { kind: 'json'; value: any }
-  | { kind: 'someOption'; value: TypeStructFieldNodeDefaultValue }
-  | { kind: 'noneOption' };
 
 export class TypeStructFieldNode implements Visitable {
   readonly nodeClass = 'TypeStructFieldNode' as const;
@@ -38,8 +30,8 @@ export class TypeStructFieldNode implements Visitable {
         docs: idl.docs ?? [],
         defaultsTo:
           idl.defaultsValue !== undefined
-            ? { kind: 'json', strategy: 'optional', value: idl.defaultsValue }
-            : { kind: 'none' },
+            ? { strategy: 'optional', value: vScalar(idl.defaultsValue) }
+            : null,
       },
       createTypeNodeFromIdl(idl.type)
     );

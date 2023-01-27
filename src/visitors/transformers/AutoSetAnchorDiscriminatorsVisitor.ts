@@ -35,9 +35,8 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
         name: 'discriminator',
         docs: [],
         defaultsTo: {
-          kind: 'json',
           strategy: 'omitted',
-          value: Array.from(hash),
+          value: getValueNodeFromBytes(hash),
         },
       },
       new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8)
@@ -64,9 +63,8 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
         name: 'discriminator',
         docs: [],
         defaultsTo: {
-          kind: 'json',
           strategy: 'omitted',
-          value: Array.from(hash),
+          value: getValueNodeFromBytes(hash),
         },
       },
       new nodes.TypeArrayNode(new nodes.TypeLeafNode('u8'), 8)
@@ -81,4 +79,8 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       ])
     );
   }
+}
+
+function getValueNodeFromBytes(bytes: Uint8Array): nodes.ListValueNode {
+  return nodes.vList([...bytes].map((byte) => nodes.vScalar(byte)));
 }
