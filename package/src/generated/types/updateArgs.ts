@@ -14,6 +14,7 @@ import {
   PublicKey,
   Serializer,
   mapSerializer,
+  some,
 } from '@lorisleiva/js-core';
 import {
   AuthorityType,
@@ -144,7 +145,8 @@ export function getUpdateArgsSerializer(
           (value) =>
             ({
               ...value,
-              tokenStandard: value.tokenStandard ?? false,
+              tokenStandard:
+                value.tokenStandard ?? some(TokenStandard.NonFungible),
             } as GetDataEnumKindContent<UpdateArgs, 'V1'>)
         ),
       ],

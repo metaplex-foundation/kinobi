@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../utils';
+import { camelCase, mainCase, pascalCase } from '../../utils';
 import { Visitor } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
@@ -567,7 +567,9 @@ export class GetJavaScriptTypeManifestVisitor
           value: `{ ${struct.map((c) => c.value).join(', ')} }`,
         };
       case 'enum':
-        const definedType = this.availableDefinedTypes.get(defaultsTo.enumType);
+        const definedType = this.availableDefinedTypes.get(
+          mainCase(defaultsTo.enumType)
+        );
         if (!definedType || !nodes.isTypeEnumNode(definedType.type)) {
           throw new Error(`Cannot find enum ${defaultsTo.enumType}.`);
         }

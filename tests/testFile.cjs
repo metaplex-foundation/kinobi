@@ -13,6 +13,8 @@ const {
   UpdateProgramsVisitor,
   UpdateDefinedTypesVisitor,
   vScalar,
+  vSome,
+  vEnum,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -110,7 +112,9 @@ kinobi.update(
     'mplTokenMetadata.DelegateRecord': { key: omitted(11) },
     'mplTokenAuthRules.FrequencyAccount': { key: omitted(1) },
     'mplTokenMetadata.Collection': { verified: vScalar(false) },
-    'mplTokenMetadata.UpdateArgs.V1': { tokenStandard: vScalar(false) },
+    'mplTokenMetadata.UpdateArgs.V1': {
+      tokenStandard: vSome(vEnum('TokenStandard', 'NonFungible')),
+    },
   })
 );
 
