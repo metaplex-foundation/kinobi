@@ -1,3 +1,5 @@
+import { Dependency } from '../visitors';
+
 export type ValueNode =
   | ScalarValueNode
   | PublicKeyValueNode
@@ -74,14 +76,17 @@ export type EnumValueNode = {
   enumType: string;
   variant: string;
   value: StructValueNode | TupleValueNode | null;
+  dependency: Dependency | null;
 };
 export const vEnum = (
   enumType: string,
   variant: string,
-  value?: StructValueNode | TupleValueNode | null
+  value?: StructValueNode | TupleValueNode | null,
+  dependency?: Dependency | null
 ): EnumValueNode => ({
   __kind: 'enum',
   enumType,
   variant,
   value: value ?? null,
+  dependency: dependency ?? null,
 });

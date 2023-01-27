@@ -576,10 +576,10 @@ export class GetJavaScriptTypeManifestVisitor
 
         const enumName = pascalCase(definedType.type.name);
         const variantName = pascalCase(defaultsTo.variant);
+        const rawDependency =
+          defaultsTo.dependency ?? definedType.metadata.importFrom;
         const dependency =
-          definedType.metadata.importFrom === 'generated'
-            ? 'generatedTypes'
-            : definedType.metadata.importFrom;
+          rawDependency === 'generated' ? 'generatedTypes' : rawDependency;
 
         if (definedType.type.isScalarEnum()) {
           return {
