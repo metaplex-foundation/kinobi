@@ -588,23 +588,20 @@ export class GetJavaScriptTypeManifestVisitor
           };
         }
 
-        imports.add(dependency, camelCase(enumName));
+        const enumFn = camelCase(definedType.type.name);
+        imports.add(dependency, enumFn);
 
         if (!defaultsTo.value) {
-          return { imports, value: `{ __kind: '${variantName}' }` };
+          return { imports, value: `${enumFn}('${variantName}')` };
         }
 
         const enumValue = this.renderStructFieldValue(defaultsTo.value);
+        const fields = enumValue.value;
         imports.mergeWith(enumValue.imports);
-
-        if (defaultsTo.value.__kind === 'struct') {
-          const fields = enumValue.value.slice(1, -1);
-          return { imports, value: `{ __kind: '${variantName}', ${fields} }` };
-        }
 
         return {
           imports,
-          value: `{ __kind: '${variantName}', fields: ${enumValue.value} }`,
+          value: `${enumFn}('${variantName}', ${fields})`,
         };
       case 'optionSome':
         const child = this.renderStructFieldValue(defaultsTo.value);

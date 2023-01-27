@@ -15,6 +15,8 @@ const {
   vScalar,
   vSome,
   vEnum,
+  vTuple,
+  vPublicKey,
 } = require('../dist/index.js');
 
 const kinobi = new Kinobi([
@@ -114,6 +116,9 @@ kinobi.update(
     'mplTokenMetadata.Collection': { verified: vScalar(false) },
     'mplTokenMetadata.UpdateArgs.V1': {
       tokenStandard: vSome(vEnum('TokenStandard', 'NonFungible')),
+      collection: vSome(
+        vEnum('PayloadType', 'Pubkey', vTuple([vPublicKey('1'.repeat(32))]))
+      ),
     },
   })
 );

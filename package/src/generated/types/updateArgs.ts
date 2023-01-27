@@ -14,6 +14,7 @@ import {
   PublicKey,
   Serializer,
   mapSerializer,
+  publicKey,
   some,
 } from '@lorisleiva/js-core';
 import {
@@ -40,6 +41,7 @@ import {
   getProgrammableConfigSerializer,
   getTokenStandardSerializer,
   getUsesSerializer,
+  payloadType,
 } from '.';
 
 export type UpdateArgs = {
@@ -78,7 +80,7 @@ export type UpdateArgsArgs = {
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
   tokenStandard?: Option<TokenStandard>;
-  collection: Option<CollectionArgs>;
+  collection?: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
   programmableConfig: Option<ProgrammableConfig>;
@@ -147,6 +149,13 @@ export function getUpdateArgsSerializer(
               ...value,
               tokenStandard:
                 value.tokenStandard ?? some(TokenStandard.NonFungible),
+              collection:
+                value.collection ??
+                some(
+                  payloadType('Pubkey', [
+                    publicKey('11111111111111111111111111111111'),
+                  ])
+                ),
             } as GetDataEnumKindContent<UpdateArgs, 'V1'>)
         ),
       ],
