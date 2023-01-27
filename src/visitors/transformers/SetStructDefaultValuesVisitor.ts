@@ -2,10 +2,9 @@ import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 type StructDefaultValueMap = Record<string, Record<string, StructDefaultValue>>;
-type StructDefaultValue = {
-  strategy?: 'optional' | 'omitted';
-  value: nodes.ValueNode;
-} | null;
+type StructDefaultValue =
+  | (nodes.ValueNode & { strategy?: 'optional' | 'omitted' })
+  | null;
 
 export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
   constructor(readonly map: StructDefaultValueMap) {
@@ -26,7 +25,10 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
                     ...field.metadata,
                     defaultsTo: !defaultValue
                       ? null
-                      : { strategy: 'optional' as const, ...defaultValue },
+                      : {
+                          strategy: defaultValue.strategy ?? 'optional',
+                          value: defaultValue,
+                        },
                   },
                   field.type
                 );
