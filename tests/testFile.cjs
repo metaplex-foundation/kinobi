@@ -110,6 +110,7 @@ kinobi.update(
     'mplTokenMetadata.DelegateRecord': { key: omitted(11) },
     'mplTokenAuthRules.FrequencyAccount': { key: omitted(1) },
     'mplTokenMetadata.Collection': { verified: vScalar(false) },
+    'mplTokenMetadata.UpdateArgs.V1': { tokenStandard: vScalar(false) },
   })
 );
 

@@ -13,6 +13,7 @@ import {
   Option,
   PublicKey,
   Serializer,
+  mapSerializer,
 } from '@lorisleiva/js-core';
 import {
   AuthorityType,
@@ -75,7 +76,7 @@ export type UpdateArgsArgs = {
   }>;
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
-  tokenStandard: Option<TokenStandard>;
+  tokenStandard?: Option<TokenStandard>;
   collection: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
@@ -92,48 +93,59 @@ export function getUpdateArgsSerializer(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>(
-          [
+        mapSerializer<
+          GetDataEnumKindContent<UpdateArgsArgs, 'V1'>,
+          GetDataEnumKindContent<UpdateArgs, 'V1'>,
+          GetDataEnumKindContent<UpdateArgs, 'V1'>
+        >(
+          s.struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>(
             [
-              'authorizationData',
-              s.option(getAuthorizationDataSerializer(context)),
-            ],
-            ['newUpdateAuthority', s.option(s.publicKey)],
-            [
-              'data',
-              s.option(
-                s.struct<any>(
-                  [
-                    ['name', s.string()],
-                    ['symbol', s.string()],
-                    ['uri', s.string()],
-                    ['sellerFeeBasisPoints', s.u16],
+              [
+                'authorizationData',
+                s.option(getAuthorizationDataSerializer(context)),
+              ],
+              ['newUpdateAuthority', s.option(s.publicKey)],
+              [
+                'data',
+                s.option(
+                  s.struct<any>(
                     [
-                      'creators',
-                      s.option(s.vec(getCreatorSerializer(context))),
+                      ['name', s.string()],
+                      ['symbol', s.string()],
+                      ['uri', s.string()],
+                      ['sellerFeeBasisPoints', s.u16],
+                      [
+                        'creators',
+                        s.option(s.vec(getCreatorSerializer(context))),
+                      ],
                     ],
-                  ],
-                  'Data'
-                )
-              ),
+                    'Data'
+                  )
+                ),
+              ],
+              ['primarySaleHappened', s.option(s.bool())],
+              ['isMutable', s.option(s.bool())],
+              ['tokenStandard', s.option(getTokenStandardSerializer(context))],
+              ['collection', s.option(getCollectionSerializer(context))],
+              ['uses', s.option(getUsesSerializer(context))],
+              [
+                'collectionDetails',
+                s.option(getCollectionDetailsSerializer(context)),
+              ],
+              [
+                'programmableConfig',
+                s.option(getProgrammableConfigSerializer(context)),
+              ],
+              ['delegateState', s.option(getDelegateStateSerializer(context))],
+              ['authorityType', getAuthorityTypeSerializer(context)],
             ],
-            ['primarySaleHappened', s.option(s.bool())],
-            ['isMutable', s.option(s.bool())],
-            ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-            ['collection', s.option(getCollectionSerializer(context))],
-            ['uses', s.option(getUsesSerializer(context))],
-            [
-              'collectionDetails',
-              s.option(getCollectionDetailsSerializer(context)),
-            ],
-            [
-              'programmableConfig',
-              s.option(getProgrammableConfigSerializer(context)),
-            ],
-            ['delegateState', s.option(getDelegateStateSerializer(context))],
-            ['authorityType', getAuthorityTypeSerializer(context)],
-          ],
-          'V1'
+            'V1'
+          ),
+          (value) =>
+            ({
+              ...value,
+              tokenStandard: value.tokenStandard ?? false,
+            } as GetDataEnumKindContent<UpdateArgs, 'V1'>)
         ),
       ],
     ],
