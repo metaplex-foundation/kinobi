@@ -1,8 +1,9 @@
 const {
-  RenderJavaScriptVisitor,
   Kinobi,
   ConsoleLogVisitor,
+  CreateSubInstructionsFromEnumArgsVisitor,
   GetNodeTreeStringVisitor,
+  RenderJavaScriptVisitor,
   SetStructDefaultValuesVisitor,
   SetLeafWrappersVisitor,
   TypeLeafNode,
@@ -138,6 +139,12 @@ kinobi.update(new UnwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
   new UnwrapStructVisitor({
     'mplTokenMetadata.Metadata': ['Data'],
+  })
+);
+
+kinobi.update(
+  new CreateSubInstructionsFromEnumArgsVisitor({
+    'mplTokenMetadata.Create': 'createArgs',
   })
 );
 
