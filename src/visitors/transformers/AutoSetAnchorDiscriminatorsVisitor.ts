@@ -76,7 +76,8 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       new nodes.TypeStructNode(instruction.args.name, [
         discriminatorField,
         ...instruction.args.fields,
-      ])
+      ]),
+      instruction.subInstructions
     );
   }
 }

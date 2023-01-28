@@ -41,7 +41,8 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
               new nodes.TypeStructNode(node.args.name, [
                 discriminatorField,
                 ...node.args.fields,
-              ])
+              ]),
+              node.subInstructions
             );
           },
         };

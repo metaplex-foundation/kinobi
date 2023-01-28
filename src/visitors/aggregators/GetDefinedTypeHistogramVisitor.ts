@@ -45,7 +45,10 @@ export class GetDefinedTypeHistogramVisitor
     this.stackLevel = 0;
     const histogram = instruction.args.accept(this);
     this.mode = null;
-    return histogram;
+    const subHistograms = instruction.subInstructions.map((ix) =>
+      ix.accept(this)
+    );
+    return this.mergeHistograms([histogram, ...subHistograms]);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): DefinedTypeHistogram {

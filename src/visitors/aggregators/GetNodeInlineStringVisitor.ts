@@ -17,7 +17,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitProgram(program: nodes.ProgramNode): string {
     const children = [
       ...program.accounts.map((account) => account.accept(this)),
-      ...program.instructions.map((instruction) => instruction.accept(this)),
+      ...program.instructionsWithSubs.map((ix) => ix.accept(this)),
       ...program.definedTypes.map((type) => type.accept(this)),
       ...program.errors.map((type) => type.accept(this)),
     ];

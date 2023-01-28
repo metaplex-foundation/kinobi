@@ -211,7 +211,8 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
     return new nodes.InstructionNode(
       instruction.metadata,
       instructionAccounts,
-      instruction.args
+      instruction.args,
+      instruction.subInstructions
     );
   }
 

@@ -20,6 +20,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
 
   visitInstruction(instruction: nodes.InstructionNode): void {
     instruction.args.accept(this);
+    instruction.subInstructions.forEach((ix) => ix.accept(this));
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {

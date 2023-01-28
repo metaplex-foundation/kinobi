@@ -96,6 +96,10 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     }
 
     bag.mergeWith([instruction.args.accept(this)]);
+
+    // Check sub-instructions.
+    bag.mergeWith(instruction.subInstructions.map((ix) => ix.accept(this)));
+
     this.popNode();
     return bag;
   }

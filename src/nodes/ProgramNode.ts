@@ -79,6 +79,13 @@ export class ProgramNode implements Visitable {
   get name(): string {
     return this.metadata.name;
   }
+
+  get instructionsWithSubs(): InstructionNode[] {
+    return this.instructions.flatMap((instruction) => [
+      instruction,
+      ...instruction.getAllSubInstructions(),
+    ]);
+  }
 }
 
 export function isProgramNode(node: Node | null): node is ProgramNode {

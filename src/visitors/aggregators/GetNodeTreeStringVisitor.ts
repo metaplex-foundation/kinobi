@@ -21,7 +21,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent += 1;
     const children = [
       ...program.accounts.map((account) => account.accept(this)),
-      ...program.instructions.map((instruction) => instruction.accept(this)),
+      ...program.instructionsWithSubs.map((ix) => ix.accept(this)),
       ...program.definedTypes.map((type) => type.accept(this)),
       ...program.errors.map((type) => type.accept(this)),
     ];

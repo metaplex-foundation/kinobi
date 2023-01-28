@@ -64,10 +64,13 @@ export class InstructionNode implements Visitable {
 
   readonly args: TypeStructNode;
 
+  readonly subInstructions: InstructionNode[];
+
   constructor(
     metadata: InstructionNodeMetadata,
     accounts: InstructionNodeAccount[],
-    args: TypeStructNode
+    args: TypeStructNode,
+    subInstructions: InstructionNode[]
   ) {
     const bytes = metadata.bytesCreatedOnChain;
     this.metadata = {
@@ -94,6 +97,7 @@ export class InstructionNode implements Visitable {
       return { ...account, name: mainCase(account.name), defaultsTo };
     });
     this.args = args;
+    this.subInstructions = subInstructions;
   }
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
@@ -151,11 +155,18 @@ export class InstructionNode implements Visitable {
       ]);
     }
 
-    return new InstructionNode(metadata, accounts, args);
+    return new InstructionNode(metadata, accounts, args, []);
   }
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitInstruction(this);
+  }
+
+  getAllSubInstructions(): InstructionNode[] {
+    return this.subInstructions.flatMap((subInstruction) => [
+      subInstruction,
+      ...subInstruction.getAllSubInstructions(),
+    ]);
   }
 
   get name(): string {

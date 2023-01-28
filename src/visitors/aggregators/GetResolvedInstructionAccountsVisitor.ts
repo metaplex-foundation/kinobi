@@ -40,13 +40,13 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
 
     // Visit all instruction accounts.
     this.raw.forEach(([account, index]) => {
-      this.visitInstructionAccount(instruction, account, index);
+      this.handleInstructionAccount(instruction, account, index);
     });
 
     return [...this.visited.values()].sort((a, b) => a.position - b.position);
   }
 
-  visitInstructionAccount(
+  handleInstructionAccount(
     instruction: nodes.InstructionNode,
     account: nodes.InstructionNodeAccount,
     index: number
@@ -92,7 +92,7 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
         throw new Error(this.error);
       }
       const [dependency, dependencyIndex] = rawDependency;
-      this.visitInstructionAccount(instruction, dependency, dependencyIndex);
+      this.handleInstructionAccount(instruction, dependency, dependencyIndex);
     });
     this.stack.pop();
 

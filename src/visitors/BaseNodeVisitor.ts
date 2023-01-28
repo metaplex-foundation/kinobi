@@ -40,7 +40,12 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
-      args
+      args,
+      instruction.subInstructions
+        .map((ix) => ix.accept(this))
+        .filter(
+          nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
+        )
     );
   }
 

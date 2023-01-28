@@ -12,7 +12,8 @@ export class UnwrapInstructionArgsStructVisitor extends TransformNodesVisitor {
           return new nodes.InstructionNode(
             instruction.metadata,
             instruction.accounts,
-            unwrapStruct(instruction.args)
+            unwrapStruct(instruction.args),
+            instruction.subInstructions
           );
         },
       },

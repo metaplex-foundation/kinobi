@@ -46,7 +46,12 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
-      args
+      args,
+      instruction.subInstructions
+        .map((ix) => ix.accept(this))
+        .filter(
+          nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
+        )
     );
   }
 
