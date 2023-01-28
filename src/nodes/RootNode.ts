@@ -44,6 +44,10 @@ export class RootNode implements Visitable {
     return this.programs.flatMap((program) => program.instructions);
   }
 
+  get allInstructionsWithSubs(): InstructionNode[] {
+    return this.programs.flatMap((program) => program.instructionsWithSubs);
+  }
+
   get allDefinedTypes(): DefinedTypeNode[] {
     return this.programs.flatMap((program) => program.definedTypes);
   }

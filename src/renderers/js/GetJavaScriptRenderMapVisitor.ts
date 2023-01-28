@@ -84,7 +84,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const accountsToExport = root.allAccounts.filter(
       (a) => !a.metadata.internal
     );
-    const instructionsToExport = root.allInstructions.filter(
+    const instructionsToExport = root.allInstructionsWithSubs.filter(
       (i) => !i.metadata.internal
     );
     const definedTypesToExport = root.allDefinedTypes.filter(
@@ -146,7 +146,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     renderMap
-      .mergeWith(...program.instructions.map((ix) => ix.accept(this)))
+      .mergeWith(...program.instructionsWithSubs.map((ix) => ix.accept(this)))
       .add(
         `errors/${camelCase(name)}.ts`,
         this.render('errorsPage.njk', {
