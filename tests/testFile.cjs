@@ -145,6 +145,7 @@ kinobi.update(
 kinobi.update(
   new CreateSubInstructionsFromEnumArgsVisitor({
     'mplTokenMetadata.Create': 'createArgs',
+    'mplTokenMetadata.Update': 'updateArgs',
   })
 );
 

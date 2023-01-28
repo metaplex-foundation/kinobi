@@ -9,13 +9,14 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
 
   constructor(readonly map: Record<string, string>) {
     const transforms = Object.entries(map).map(
-      ([selector, argName]): NodeTransform => {
+      ([selector, argNameInput]): NodeTransform => {
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
           selector: { type: 'instruction', stack: selectorStack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
+            const argName = mainCase(argNameInput);
             const argFieldIndex = node.args.fields.findIndex(
               (field) => field.name === argName
             );

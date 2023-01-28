@@ -63,6 +63,7 @@ export * from './updateCandyMachine';
 export * from './updateMetadataAccount';
 export * from './updateMetadataAccountV2';
 export * from './updatePrimarySaleHappenedViaToken';
+export * from './updateV1';
 export * from './useAsset';
 export * from './utilize';
 export * from './validate';
