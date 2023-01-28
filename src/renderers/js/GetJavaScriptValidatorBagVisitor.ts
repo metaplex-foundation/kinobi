@@ -183,8 +183,8 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
       const message =
         `The ${this.getNodeTitle(node)} ${exportDetails}` +
         `conflicts with the ${conflictExportDetails}` +
-        `${this.getNodeTitle(conflictingNode)}. ` +
-        `(Conflicting stack: ${exportConflict.stack})).`;
+        `${this.getNodeTitle(conflictingNode)}.\n` +
+        `|> Conflicting stack: ${exportConflict.stack}.`;
       bag.error(message, node, stack);
     });
     return bag;
