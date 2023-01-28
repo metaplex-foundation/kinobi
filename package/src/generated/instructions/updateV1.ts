@@ -73,6 +73,7 @@ export type UpdateV1InstructionAccounts = {
 // Arguments.
 export type UpdateV1InstructionData = {
   discriminator: number;
+  updateV1Discriminator: number;
   authorizationData: Option<AuthorizationData>;
   newUpdateAuthority: Option<PublicKey>;
   data: Option<{
@@ -126,6 +127,7 @@ export function getUpdateV1InstructionDataSerializer(
     s.struct<UpdateV1InstructionData>(
       [
         ['discriminator', s.u8],
+        ['updateV1Discriminator', s.u8],
         [
           'authorizationData',
           s.option(getAuthorizationDataSerializer(context)),
@@ -168,6 +170,7 @@ export function getUpdateV1InstructionDataSerializer(
       ({
         ...value,
         discriminator: 43,
+        updateV1Discriminator: 0,
         tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
         collection:
           value.collection ??

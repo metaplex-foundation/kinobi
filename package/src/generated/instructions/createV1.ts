@@ -45,6 +45,7 @@ export type CreateV1InstructionAccounts = {
 // Arguments.
 export type CreateV1InstructionData = {
   discriminator: number;
+  createV1Discriminator: number;
   assetData: AssetData;
   decimals: Option<number>;
   maxSupply: Option<bigint>;
@@ -68,13 +69,19 @@ export function getCreateV1InstructionDataSerializer(
     s.struct<CreateV1InstructionData>(
       [
         ['discriminator', s.u8],
+        ['createV1Discriminator', s.u8],
         ['assetData', getAssetDataSerializer(context)],
         ['decimals', s.option(s.u8)],
         ['maxSupply', s.option(s.u64)],
       ],
       'CreateV1InstructionArgs'
     ),
-    (value) => ({ ...value, discriminator: 41 } as CreateV1InstructionData)
+    (value) =>
+      ({
+        ...value,
+        discriminator: 41,
+        createV1Discriminator: 0,
+      } as CreateV1InstructionData)
   ) as Serializer<CreateV1InstructionArgs, CreateV1InstructionData>;
 }
 

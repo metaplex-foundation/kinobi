@@ -47,9 +47,22 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
             }
 
             const subInstructions = argType.variants.map(
-              (variant): nodes.InstructionNode => {
+              (variant, index): nodes.InstructionNode => {
                 const subName = mainCase(`${node.name} ${variant.name}`);
                 const subFields = node.args.fields.slice(0, argFieldIndex);
+                subFields.push(
+                  new nodes.TypeStructFieldNode(
+                    {
+                      name: `${subName}Discriminator`,
+                      docs: [],
+                      defaultsTo: {
+                        strategy: 'omitted',
+                        value: nodes.vScalar(index),
+                      },
+                    },
+                    new nodes.TypeLeafNode('u8')
+                  )
+                );
                 if (nodes.isTypeEnumStructVariantNode(variant)) {
                   subFields.push(
                     new nodes.TypeStructFieldNode(
