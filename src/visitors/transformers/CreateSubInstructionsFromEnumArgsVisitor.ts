@@ -1,3 +1,4 @@
+import { logWarn } from '../../logs';
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
@@ -13,7 +14,34 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
           selector: { type: 'instruction', stack: selectorStack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
-            console.log(argName);
+            const argField = node.args.fields.find(
+              (field) => field.name === argName
+            );
+            if (!argField) {
+              logWarn(`Could not find instruction argument [${argName}].`);
+              return node;
+            }
+
+            let argType: nodes.TypeEnumNode;
+            if (nodes.isTypeEnumNode(argField.type)) {
+              argType = argField.type;
+            } else if (
+              nodes.isTypeDefinedLinkNode(argField.type) &&
+              this.allDefinedTypes.has(argField.type.name)
+            ) {
+              const linkedType =
+                this.allDefinedTypes.get(argField.type.name)?.type ?? null;
+              nodes.assertTypeEnumNode(linkedType);
+              argType = linkedType;
+            } else {
+              logWarn(
+                `Could not find an enum type for ` +
+                  `instruction argument [${argName}].`
+              );
+              return node;
+            }
+
+            console.log(argType);
             return new nodes.InstructionNode(
               node.metadata,
               node.accounts,
