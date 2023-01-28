@@ -15,26 +15,41 @@ import {
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
-import {
-  CandyMachineData,
-  CandyMachineDataArgs,
-  getCandyMachineDataSerializer,
-} from '../types';
+import { UpdateArgs, UpdateArgsArgs, getUpdateArgsSerializer } from '../types';
 
 // Accounts.
 export type UpdateInstructionAccounts = {
-  candyMachine: PublicKey;
+  /** Update authority or delegate */
   authority?: Signer;
+  /** Metadata account */
+  metadata: PublicKey;
+  /** Master Edition account */
+  masterEdition?: PublicKey;
+  /** Mint account */
+  mint: PublicKey;
+  /** System program */
+  systemProgram?: PublicKey;
+  /** System program */
+  sysvarInstructions?: PublicKey;
+  /** Token account */
+  token?: PublicKey;
+  /** Delegate record PDA */
+  delegateRecord?: PublicKey;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: PublicKey;
+  /** Token Authorization Rules account */
+  authorizationRules?: PublicKey;
 };
 
 // Arguments.
 export type UpdateInstructionData = {
-  discriminator: Array<number>;
-  data: CandyMachineData;
+  discriminator: number;
+  updateArgs: UpdateArgs;
 };
 
-export type UpdateInstructionArgs = { data: CandyMachineDataArgs };
+export type UpdateInstructionArgs = { updateArgs: UpdateArgsArgs };
 
 export function getUpdateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
@@ -47,16 +62,12 @@ export function getUpdateInstructionDataSerializer(
   >(
     s.struct<UpdateInstructionData>(
       [
-        ['discriminator', s.array(s.u8, 8)],
-        ['data', getCandyMachineDataSerializer(context)],
+        ['discriminator', s.u8],
+        ['updateArgs', getUpdateArgsSerializer(context)],
       ],
       'UpdateInstructionArgs'
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
-      } as UpdateInstructionData)
+    (value) => ({ ...value, discriminator: 43 } as UpdateInstructionData)
   ) as Serializer<UpdateInstructionArgs, UpdateInstructionData>;
 }
 
@@ -69,20 +80,37 @@ export function update(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get(
-    'mplCandyMachineCore'
-  ).publicKey;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
-  const candyMachineAccount = input.candyMachine;
   const authorityAccount = input.authority ?? context.identity;
-
-  // Candy Machine.
-  keys.push({
-    pubkey: candyMachineAccount,
-    isSigner: false,
-    isWritable: isWritable(candyMachineAccount, true),
-  });
+  const metadataAccount = input.metadata;
+  const masterEditionAccount = input.masterEdition ?? {
+    ...programId,
+    isWritable: false,
+  };
+  const mintAccount = input.mint;
+  const systemProgramAccount = input.systemProgram ?? {
+    ...context.programs.get('splSystem').publicKey,
+    isWritable: false,
+  };
+  const sysvarInstructionsAccount =
+    input.sysvarInstructions ??
+    publicKey('Sysvar1nstructions1111111111111111111111111');
+  const tokenAccount = input.token ?? { ...programId, isWritable: false };
+  const delegateRecordAccount = input.delegateRecord ?? {
+    ...programId,
+    isWritable: false,
+  };
+  const authorizationRulesProgramAccount = input.authorizationRulesProgram ?? {
+    ...programId,
+    isWritable: false,
+  };
+  const authorizationRulesAccount = input.authorizationRules ?? {
+    ...programId,
+    isWritable: false,
+  };
 
   // Authority.
   signers.push(authorityAccount);
@@ -90,6 +118,69 @@ export function update(
     pubkey: authorityAccount.publicKey,
     isSigner: true,
     isWritable: isWritable(authorityAccount, false),
+  });
+
+  // Metadata.
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
+
+  // Master Edition.
+  keys.push({
+    pubkey: masterEditionAccount,
+    isSigner: false,
+    isWritable: isWritable(masterEditionAccount, true),
+  });
+
+  // Mint.
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, false),
+  });
+
+  // System Program.
+  keys.push({
+    pubkey: systemProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(systemProgramAccount, false),
+  });
+
+  // Sysvar Instructions.
+  keys.push({
+    pubkey: sysvarInstructionsAccount,
+    isSigner: false,
+    isWritable: isWritable(sysvarInstructionsAccount, false),
+  });
+
+  // Token.
+  keys.push({
+    pubkey: tokenAccount,
+    isSigner: false,
+    isWritable: isWritable(tokenAccount, false),
+  });
+
+  // Delegate Record.
+  keys.push({
+    pubkey: delegateRecordAccount,
+    isSigner: false,
+    isWritable: isWritable(delegateRecordAccount, false),
+  });
+
+  // Authorization Rules Program.
+  keys.push({
+    pubkey: authorizationRulesProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(authorizationRulesProgramAccount, false),
+  });
+
+  // Authorization Rules.
+  keys.push({
+    pubkey: authorizationRulesAccount,
+    isSigner: false,
+    isWritable: isWritable(authorizationRulesAccount, false),
   });
 
   // Data.

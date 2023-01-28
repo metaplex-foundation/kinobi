@@ -15,26 +15,43 @@ import {
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
+  publicKey,
 } from '@lorisleiva/js-core';
-import { TaCreateArgs, getTaCreateArgsSerializer } from '../types';
+import {
+  TmCreateArgs,
+  TmCreateArgsArgs,
+  getTmCreateArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type CreateInstructionAccounts = {
-  /** Payer and creator of the RuleSet */
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
+  metadata: PublicKey;
+  /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
+  masterEdition?: PublicKey;
+  /** Mint of token asset */
+  mint: PublicKey;
+  /** Mint authority */
+  mintAuthority: Signer;
+  /** Payer */
   payer?: Signer;
-  /** The PDA account where the RuleSet is stored */
-  ruleSetPda: PublicKey;
+  /** update authority info */
+  updateAuthority: PublicKey;
   /** System program */
   systemProgram?: PublicKey;
+  /** Instructions sysvar account */
+  sysvarInstructions?: PublicKey;
+  /** SPL Token program */
+  splTokenProgram?: PublicKey;
 };
 
 // Arguments.
 export type CreateInstructionData = {
   discriminator: number;
-  createArgs: TaCreateArgs;
+  createArgs: TmCreateArgs;
 };
 
-export type CreateInstructionArgs = { createArgs: TaCreateArgs };
+export type CreateInstructionArgs = { createArgs: TmCreateArgsArgs };
 
 export function getCreateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
@@ -48,11 +65,11 @@ export function getCreateInstructionDataSerializer(
     s.struct<CreateInstructionData>(
       [
         ['discriminator', s.u8],
-        ['createArgs', getTaCreateArgsSerializer(context)],
+        ['createArgs', getTmCreateArgsSerializer(context)],
       ],
       'CreateInstructionArgs'
     ),
-    (value) => ({ ...value, discriminator: 0 } as CreateInstructionData)
+    (value) => ({ ...value, discriminator: 41 } as CreateInstructionData)
   ) as Serializer<CreateInstructionArgs, CreateInstructionData>;
 }
 
@@ -66,15 +83,58 @@ export function create(
 
   // Program ID.
   const programId: PublicKey =
-    context.programs.get('mplTokenAuthRules').publicKey;
+    context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
+  const metadataAccount = input.metadata;
+  const masterEditionAccount = input.masterEdition ?? {
+    ...programId,
+    isWritable: false,
+  };
+  const mintAccount = input.mint;
+  const mintAuthorityAccount = input.mintAuthority;
   const payerAccount = input.payer ?? context.payer;
-  const ruleSetPdaAccount = input.ruleSetPda;
+  const updateAuthorityAccount = input.updateAuthority;
   const systemProgramAccount = input.systemProgram ?? {
     ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
+  const sysvarInstructionsAccount =
+    input.sysvarInstructions ??
+    publicKey('Sysvar1nstructions1111111111111111111111111');
+  const splTokenProgramAccount = input.splTokenProgram ?? {
+    ...context.programs.get('splToken').publicKey,
+    isWritable: false,
+  };
+
+  // Metadata.
+  keys.push({
+    pubkey: metadataAccount,
+    isSigner: false,
+    isWritable: isWritable(metadataAccount, true),
+  });
+
+  // Master Edition.
+  keys.push({
+    pubkey: masterEditionAccount,
+    isSigner: false,
+    isWritable: isWritable(masterEditionAccount, true),
+  });
+
+  // Mint.
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, true),
+  });
+
+  // Mint Authority.
+  signers.push(mintAuthorityAccount);
+  keys.push({
+    pubkey: mintAuthorityAccount.publicKey,
+    isSigner: true,
+    isWritable: isWritable(mintAuthorityAccount, false),
+  });
 
   // Payer.
   signers.push(payerAccount);
@@ -84,11 +144,11 @@ export function create(
     isWritable: isWritable(payerAccount, true),
   });
 
-  // Rule Set Pda.
+  // Update Authority.
   keys.push({
-    pubkey: ruleSetPdaAccount,
+    pubkey: updateAuthorityAccount,
     isSigner: false,
-    isWritable: isWritable(ruleSetPdaAccount, true),
+    isWritable: isWritable(updateAuthorityAccount, false),
   });
 
   // System Program.
@@ -96,6 +156,20 @@ export function create(
     pubkey: systemProgramAccount,
     isSigner: false,
     isWritable: isWritable(systemProgramAccount, false),
+  });
+
+  // Sysvar Instructions.
+  keys.push({
+    pubkey: sysvarInstructionsAccount,
+    isSigner: false,
+    isWritable: isWritable(sysvarInstructionsAccount, false),
+  });
+
+  // Spl Token Program.
+  keys.push({
+    pubkey: splTokenProgramAccount,
+    isSigner: false,
+    isWritable: isWritable(splTokenProgramAccount, false),
   });
 
   // Data.

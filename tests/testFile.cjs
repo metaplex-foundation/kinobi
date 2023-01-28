@@ -64,8 +64,8 @@ kinobi.update(
 
 kinobi.update(
   new UpdateInstructionsVisitor({
-    'mplTokenMetadata.Create': { name: 'CreateDigitalAsset' },
-    'mplTokenMetadata.Update': { name: 'UpdateDigitalAsset' },
+    'mplTokenAuthRules.Create': { name: 'CreateRuleSet' },
+    'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
     CreateMetadataAccount: {
       bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
       accounts: {
