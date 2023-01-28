@@ -186,6 +186,13 @@ export class InstructionNode implements Visitable {
   }
 
   get hasArgs(): boolean {
+    const nonOmittedFields = this.args.fields.filter(
+      (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
+    );
+    return nonOmittedFields.length > 0;
+  }
+
+  get hasRequiredArgs(): boolean {
     const requiredFields = this.args.fields.filter(
       (field) => field.metadata.defaultsTo === null
     );
