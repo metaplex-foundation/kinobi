@@ -1,3 +1,4 @@
+import { logWarn } from '../../logs';
 import * as nodes from '../../nodes';
 import { camelCase } from '../../utils';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
@@ -42,8 +43,18 @@ export const unwrapStruct = (
   );
 
   const inlinedFieldsNames = inlinedFields.map((arg) => arg.name);
-  const hasConflictingNames =
-    new Set(inlinedFieldsNames).size !== inlinedFieldsNames.length;
+  const duplicates = inlinedFieldsNames.filter((e, i, a) => a.indexOf(e) !== i);
+  const uniqueDuplicates = [...new Set(duplicates)];
+  const hasConflictingNames = uniqueDuplicates.length > 0;
+
+  if (hasConflictingNames) {
+    logWarn(
+      `Cound not unwrap the attributes of struct [${node.name}] ` +
+        `since this would cause the following attributes ` +
+        `to conflict [${uniqueDuplicates.join(', ')}].` +
+        'You may want to rename the conflicting attributes.'
+    );
+  }
 
   return hasConflictingNames
     ? node

@@ -24,6 +24,7 @@ export * from './createMetadataAccount';
 export * from './createMetadataAccountV2';
 export * from './createMetadataAccountV3';
 export * from './createRuleSet';
+export * from './createV1';
 export * from './delegate';
 export * from './deprecatedCreateMasterEdition';
 export * from './deprecatedCreateReservationList';
