@@ -13,8 +13,13 @@ export type AccountNodeMetadata = {
   readonly docs: string[];
   readonly internal: boolean;
   readonly size: number | null;
+  readonly discriminator: AccountNodeDiscriminator | null;
   readonly seeds: AccountNodeSeed[];
 };
+
+export type AccountNodeDiscriminator =
+  | { kind: 'field'; name: string }
+  | { kind: 'size' };
 
 export type AccountNodeSeed =
   | { kind: 'programId' }
@@ -56,6 +61,7 @@ export class AccountNode implements Visitable {
       docs: idl.docs ?? [],
       internal: false,
       size: idl.size ?? null,
+      discriminator: null,
       seeds,
     };
     return new AccountNode(metadata, type);
