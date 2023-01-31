@@ -136,43 +136,52 @@ export function getMetadataGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    updateAuthority: PublicKey;
-    mint: PublicKey;
-    name: string;
-    symbol: string;
-    uri: string;
-    sellerFeeBasisPoints: number;
-    creators: Option<Array<CreatorArgs>>;
-    primarySaleHappened: boolean;
-    isMutable: boolean;
-    editionNonce: Option<number>;
-    tokenStandard: Option<TokenStandard>;
-    collection: Option<CollectionArgs>;
-    uses: Option<UsesArgs>;
-    collectionDetails: Option<CollectionDetailsArgs>;
-    programmableConfig: Option<ProgrammableConfig>;
-    delegateState: Option<DelegateState>;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['updateAuthority', s.publicKey],
-    ['mint', s.publicKey],
-    ['name', s.string()],
-    ['symbol', s.string()],
-    ['uri', s.string()],
-    ['sellerFeeBasisPoints', s.u16],
-    ['creators', s.option(s.vec(getCreatorSerializer(context)))],
-    ['primarySaleHappened', s.bool()],
-    ['isMutable', s.bool()],
-    ['editionNonce', s.option(s.u8)],
-    ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-    ['collection', s.option(getCollectionSerializer(context))],
-    ['uses', s.option(getUsesSerializer(context))],
-    ['collectionDetails', s.option(getCollectionDetailsSerializer(context))],
-    ['programmableConfig', s.option(getProgrammableConfigSerializer(context))],
-    ['delegateState', s.option(getDelegateStateSerializer(context))],
-  ]).whereField('key', TmKey.MetadataV1);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      updateAuthority: PublicKey;
+      mint: PublicKey;
+      name: string;
+      symbol: string;
+      uri: string;
+      sellerFeeBasisPoints: number;
+      creators: Option<Array<CreatorArgs>>;
+      primarySaleHappened: boolean;
+      isMutable: boolean;
+      editionNonce: Option<number>;
+      tokenStandard: Option<TokenStandard>;
+      collection: Option<CollectionArgs>;
+      uses: Option<UsesArgs>;
+      collectionDetails: Option<CollectionDetailsArgs>;
+      programmableConfig: Option<ProgrammableConfig>;
+      delegateState: Option<DelegateState>;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['updateAuthority', s.publicKey],
+      ['mint', s.publicKey],
+      ['name', s.string()],
+      ['symbol', s.string()],
+      ['uri', s.string()],
+      ['sellerFeeBasisPoints', s.u16],
+      ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+      ['primarySaleHappened', s.bool()],
+      ['isMutable', s.bool()],
+      ['editionNonce', s.option(s.u8)],
+      ['tokenStandard', s.option(getTokenStandardSerializer(context))],
+      ['collection', s.option(getCollectionSerializer(context))],
+      ['uses', s.option(getUsesSerializer(context))],
+      ['collectionDetails', s.option(getCollectionDetailsSerializer(context))],
+      [
+        'programmableConfig',
+        s.option(getProgrammableConfigSerializer(context)),
+      ],
+      ['delegateState', s.option(getDelegateStateSerializer(context))],
+    ])
+    .deserializeUsing<Metadata>((account) =>
+      deserializeMetadata(context, account)
+    )
+    .whereField('key', TmKey.MetadataV1);
 }
 
 export function deserializeMetadata(

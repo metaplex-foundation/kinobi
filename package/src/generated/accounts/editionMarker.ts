@@ -77,14 +77,16 @@ export function getEditionMarkerGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{ key: TmKey; ledger: Array<number> }>(
-    context,
-    context.programs.get('mplTokenMetadata').publicKey,
-    [
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{ key: TmKey; ledger: Array<number> }>([
       ['key', getTmKeySerializer(context)],
       ['ledger', s.array(s.u8, 31)],
-    ]
-  ).whereField('key', TmKey.EditionMarker);
+    ])
+    .deserializeUsing<EditionMarker>((account) =>
+      deserializeEditionMarker(context, account)
+    )
+    .whereField('key', TmKey.EditionMarker);
 }
 
 export function deserializeEditionMarker(

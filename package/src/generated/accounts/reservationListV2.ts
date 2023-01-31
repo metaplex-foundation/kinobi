@@ -97,21 +97,27 @@ export function getReservationListV2GpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    masterEdition: PublicKey;
-    supplySnapshot: Option<number | bigint>;
-    reservations: Array<ReservationArgs>;
-    totalReservationSpots: number | bigint;
-    currentReservationSpots: number | bigint;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['masterEdition', s.publicKey],
-    ['supplySnapshot', s.option(s.u64)],
-    ['reservations', s.vec(getReservationSerializer(context))],
-    ['totalReservationSpots', s.u64],
-    ['currentReservationSpots', s.u64],
-  ]).whereField('key', TmKey.ReservationListV2);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      masterEdition: PublicKey;
+      supplySnapshot: Option<number | bigint>;
+      reservations: Array<ReservationArgs>;
+      totalReservationSpots: number | bigint;
+      currentReservationSpots: number | bigint;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['masterEdition', s.publicKey],
+      ['supplySnapshot', s.option(s.u64)],
+      ['reservations', s.vec(getReservationSerializer(context))],
+      ['totalReservationSpots', s.u64],
+      ['currentReservationSpots', s.u64],
+    ])
+    .deserializeUsing<ReservationListV2>((account) =>
+      deserializeReservationListV2(context, account)
+    )
+    .whereField('key', TmKey.ReservationListV2);
 }
 
 export function deserializeReservationListV2(

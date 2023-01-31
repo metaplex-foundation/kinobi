@@ -86,15 +86,21 @@ export function getCollectionAuthorityRecordGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    bump: number;
-    updateAuthority: Option<PublicKey>;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['bump', s.u8],
-    ['updateAuthority', s.option(s.publicKey)],
-  ]).whereField('key', TmKey.CollectionAuthorityRecord);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      bump: number;
+      updateAuthority: Option<PublicKey>;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['bump', s.u8],
+      ['updateAuthority', s.option(s.publicKey)],
+    ])
+    .deserializeUsing<CollectionAuthorityRecord>((account) =>
+      deserializeCollectionAuthorityRecord(context, account)
+    )
+    .whereField('key', TmKey.CollectionAuthorityRecord);
 }
 
 export function deserializeCollectionAuthorityRecord(

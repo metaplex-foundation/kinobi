@@ -91,17 +91,23 @@ export function getTokenOwnedEscrowGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    baseToken: PublicKey;
-    authority: EscrowAuthority;
-    bump: number;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['baseToken', s.publicKey],
-    ['authority', getEscrowAuthoritySerializer(context)],
-    ['bump', s.u8],
-  ]).whereField('key', TmKey.TokenOwnedEscrow);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      baseToken: PublicKey;
+      authority: EscrowAuthority;
+      bump: number;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['baseToken', s.publicKey],
+      ['authority', getEscrowAuthoritySerializer(context)],
+      ['bump', s.u8],
+    ])
+    .deserializeUsing<TokenOwnedEscrow>((account) =>
+      deserializeTokenOwnedEscrow(context, account)
+    )
+    .whereField('key', TmKey.TokenOwnedEscrow);
 }
 
 export function deserializeTokenOwnedEscrow(

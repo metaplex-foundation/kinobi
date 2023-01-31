@@ -93,15 +93,21 @@ export function getFrequencyAccountGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TaKey;
-    lastUpdate: number | bigint;
-    period: number | bigint;
-  }>(context, context.programs.get('mplTokenAuthRules').publicKey, [
-    ['key', getTaKeySerializer(context)],
-    ['lastUpdate', s.i64],
-    ['period', s.i64],
-  ]).whereField('key', TaKey.Frequency);
+  const programId = context.programs.get('mplTokenAuthRules').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TaKey;
+      lastUpdate: number | bigint;
+      period: number | bigint;
+    }>([
+      ['key', getTaKeySerializer(context)],
+      ['lastUpdate', s.i64],
+      ['period', s.i64],
+    ])
+    .deserializeUsing<FrequencyAccount>((account) =>
+      deserializeFrequencyAccount(context, account)
+    )
+    .whereField('key', TaKey.Frequency);
 }
 
 export function deserializeFrequencyAccount(

@@ -84,15 +84,19 @@ export function getUseAuthorityRecordGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{ key: TmKey; allowedUses: number | bigint; bump: number }>(
-    context,
-    context.programs.get('mplTokenMetadata').publicKey,
-    [
-      ['key', getTmKeySerializer(context)],
-      ['allowedUses', s.u64],
-      ['bump', s.u8],
-    ]
-  ).whereField('key', TmKey.UseAuthorityRecord);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{ key: TmKey; allowedUses: number | bigint; bump: number }>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['allowedUses', s.u64],
+        ['bump', s.u8],
+      ]
+    )
+    .deserializeUsing<UseAuthorityRecord>((account) =>
+      deserializeUseAuthorityRecord(context, account)
+    )
+    .whereField('key', TmKey.UseAuthorityRecord);
 }
 
 export function deserializeUseAuthorityRecord(

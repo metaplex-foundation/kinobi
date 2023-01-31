@@ -92,17 +92,23 @@ export function getReservationListV1GpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    masterEdition: PublicKey;
-    supplySnapshot: Option<number | bigint>;
-    reservations: Array<ReservationV1>;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['masterEdition', s.publicKey],
-    ['supplySnapshot', s.option(s.u64)],
-    ['reservations', s.vec(getReservationV1Serializer(context))],
-  ]).whereField('key', TmKey.ReservationListV1);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      masterEdition: PublicKey;
+      supplySnapshot: Option<number | bigint>;
+      reservations: Array<ReservationV1>;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['masterEdition', s.publicKey],
+      ['supplySnapshot', s.option(s.u64)],
+      ['reservations', s.vec(getReservationV1Serializer(context))],
+    ])
+    .deserializeUsing<ReservationListV1>((account) =>
+      deserializeReservationListV1(context, account)
+    )
+    .whereField('key', TmKey.ReservationListV1);
 }
 
 export function deserializeReservationListV1(

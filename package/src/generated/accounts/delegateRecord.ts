@@ -86,15 +86,17 @@ export function getDelegateRecordGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{ key: TmKey; role: DelegateRole; bump: number }>(
-    context,
-    context.programs.get('mplTokenMetadata').publicKey,
-    [
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{ key: TmKey; role: DelegateRole; bump: number }>([
       ['key', getTmKeySerializer(context)],
       ['role', getDelegateRoleSerializer(context)],
       ['bump', s.u8],
-    ]
-  ).whereField('key', TmKey.Delegate);
+    ])
+    .deserializeUsing<DelegateRecord>((account) =>
+      deserializeDelegateRecord(context, account)
+    )
+    .whereField('key', TmKey.Delegate);
 }
 
 export function deserializeDelegateRecord(

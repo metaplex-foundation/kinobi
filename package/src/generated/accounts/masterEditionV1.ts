@@ -89,19 +89,25 @@ export function getMasterEditionV1GpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    supply: number | bigint;
-    maxSupply: Option<number | bigint>;
-    printingMint: PublicKey;
-    oneTimePrintingAuthorizationMint: PublicKey;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['supply', s.u64],
-    ['maxSupply', s.option(s.u64)],
-    ['printingMint', s.publicKey],
-    ['oneTimePrintingAuthorizationMint', s.publicKey],
-  ]).whereField('key', TmKey.MasterEditionV1);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      supply: number | bigint;
+      maxSupply: Option<number | bigint>;
+      printingMint: PublicKey;
+      oneTimePrintingAuthorizationMint: PublicKey;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['supply', s.u64],
+      ['maxSupply', s.option(s.u64)],
+      ['printingMint', s.publicKey],
+      ['oneTimePrintingAuthorizationMint', s.publicKey],
+    ])
+    .deserializeUsing<MasterEditionV1>((account) =>
+      deserializeMasterEditionV1(context, account)
+    )
+    .whereField('key', TmKey.MasterEditionV1);
 }
 
 export function deserializeMasterEditionV1(

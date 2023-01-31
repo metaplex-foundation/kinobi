@@ -13,6 +13,6 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "@lorisleiva/js-core": "^0.0.49"
+    "@lorisleiva/js-core": "^0.0.50"
   }
 }

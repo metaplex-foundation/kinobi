@@ -87,15 +87,21 @@ export function getMasterEditionV2GpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    supply: number | bigint;
-    maxSupply: Option<number | bigint>;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['supply', s.u64],
-    ['maxSupply', s.option(s.u64)],
-  ]).whereField('key', TmKey.MasterEditionV2);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      supply: number | bigint;
+      maxSupply: Option<number | bigint>;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['supply', s.u64],
+      ['maxSupply', s.option(s.u64)],
+    ])
+    .deserializeUsing<MasterEditionV2>((account) =>
+      deserializeMasterEditionV2(context, account)
+    )
+    .whereField('key', TmKey.MasterEditionV2);
 }
 
 export function deserializeMasterEditionV2(

@@ -82,15 +82,21 @@ export function getEditionGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  return gpaBuilder<{
-    key: TmKey;
-    parent: PublicKey;
-    edition: number | bigint;
-  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
-    ['key', getTmKeySerializer(context)],
-    ['parent', s.publicKey],
-    ['edition', s.u64],
-  ]).whereField('key', TmKey.EditionV1);
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKey;
+      parent: PublicKey;
+      edition: number | bigint;
+    }>([
+      ['key', getTmKeySerializer(context)],
+      ['parent', s.publicKey],
+      ['edition', s.u64],
+    ])
+    .deserializeUsing<Edition>((account) =>
+      deserializeEdition(context, account)
+    )
+    .whereField('key', TmKey.EditionV1);
 }
 
 export function deserializeEdition(
