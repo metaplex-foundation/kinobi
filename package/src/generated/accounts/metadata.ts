@@ -103,6 +103,29 @@ export async function safeFetchMetadata(
     : null;
 }
 
+export async function fetchAllMetadata(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<Metadata[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'Metadata');
+    return deserializeMetadata(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllMetadata(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<Metadata[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeMetadata(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getMetadataGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

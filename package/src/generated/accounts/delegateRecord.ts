@@ -53,6 +53,29 @@ export async function safeFetchDelegateRecord(
     : null;
 }
 
+export async function fetchAllDelegateRecord(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<DelegateRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'DelegateRecord');
+    return deserializeDelegateRecord(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllDelegateRecord(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<DelegateRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeDelegateRecord(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getDelegateRecordGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

@@ -51,6 +51,29 @@ export async function safeFetchUseAuthorityRecord(
     : null;
 }
 
+export async function fetchAllUseAuthorityRecord(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<UseAuthorityRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'UseAuthorityRecord');
+    return deserializeUseAuthorityRecord(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllUseAuthorityRecord(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<UseAuthorityRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeUseAuthorityRecord(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getUseAuthorityRecordGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

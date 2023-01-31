@@ -44,6 +44,29 @@ export async function safeFetchEditionMarker(
     : null;
 }
 
+export async function fetchAllEditionMarker(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<EditionMarker[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'EditionMarker');
+    return deserializeEditionMarker(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllEditionMarker(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<EditionMarker[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeEditionMarker(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getEditionMarkerGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

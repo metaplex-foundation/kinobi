@@ -49,6 +49,29 @@ export async function safeFetchEdition(
   return maybeAccount.exists ? deserializeEdition(context, maybeAccount) : null;
 }
 
+export async function fetchAllEdition(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<Edition[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'Edition');
+    return deserializeEdition(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllEdition(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<Edition[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeEdition(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getEditionGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

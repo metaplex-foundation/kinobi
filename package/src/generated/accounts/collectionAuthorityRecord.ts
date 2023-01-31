@@ -53,6 +53,29 @@ export async function safeFetchCollectionAuthorityRecord(
     : null;
 }
 
+export async function fetchAllCollectionAuthorityRecord(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<CollectionAuthorityRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
+    return deserializeCollectionAuthorityRecord(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllCollectionAuthorityRecord(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<CollectionAuthorityRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeCollectionAuthorityRecord(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getCollectionAuthorityRecordGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

@@ -28,6 +28,27 @@ export async function safeFetch{{ account.name | pascalCase }}(
     : null;
 }
 
+export async function fetchAll{{ account.name | pascalCase }}(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[],
+): Promise<{{ account.name | pascalCase }}[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
+    return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAll{{ account.name | pascalCase }}(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[],
+): Promise<{{ account.name | pascalCase }}[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserialize{{ account.name | pascalCase }}(context, maybeAccount as RpcAccount));
+}
+
 export async function get{{ account.name | pascalCase }}GpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey,

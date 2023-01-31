@@ -64,6 +64,29 @@ export async function safeFetchReservationListV2(
     : null;
 }
 
+export async function fetchAllReservationListV2(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<ReservationListV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'ReservationListV2');
+    return deserializeReservationListV2(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllReservationListV2(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<ReservationListV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeReservationListV2(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getReservationListV2GpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

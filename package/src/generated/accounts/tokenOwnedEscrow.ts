@@ -58,6 +58,29 @@ export async function safeFetchTokenOwnedEscrow(
     : null;
 }
 
+export async function fetchAllTokenOwnedEscrow(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<TokenOwnedEscrow[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
+    return deserializeTokenOwnedEscrow(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllTokenOwnedEscrow(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<TokenOwnedEscrow[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeTokenOwnedEscrow(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getTokenOwnedEscrowGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

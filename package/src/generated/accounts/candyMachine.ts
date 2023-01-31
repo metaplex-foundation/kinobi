@@ -75,6 +75,29 @@ export async function safeFetchCandyMachine(
     : null;
 }
 
+export async function fetchAllCandyMachine(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<CandyMachine[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'CandyMachine');
+    return deserializeCandyMachine(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllCandyMachine(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<CandyMachine[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeCandyMachine(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getCandyMachineGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

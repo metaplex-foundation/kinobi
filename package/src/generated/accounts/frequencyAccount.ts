@@ -60,6 +60,29 @@ export async function safeFetchFrequencyAccount(
     : null;
 }
 
+export async function fetchAllFrequencyAccount(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<FrequencyAccount[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'FrequencyAccount');
+    return deserializeFrequencyAccount(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllFrequencyAccount(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<FrequencyAccount[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeFrequencyAccount(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getFrequencyAccountGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey

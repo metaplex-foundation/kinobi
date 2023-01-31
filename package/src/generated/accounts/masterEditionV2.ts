@@ -54,6 +54,29 @@ export async function safeFetchMasterEditionV2(
     : null;
 }
 
+export async function fetchAllMasterEditionV2(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<MasterEditionV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'MasterEditionV2');
+    return deserializeMasterEditionV2(context, maybeAccount);
+  });
+}
+
+export async function safeFetchAllMasterEditionV2(
+  context: Pick<Context, 'rpc' | 'serializer'>,
+  publicKeys: PublicKey[]
+): Promise<MasterEditionV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeMasterEditionV2(context, maybeAccount as RpcAccount)
+    );
+}
+
 export async function getMasterEditionV2GpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
   publicKey: PublicKey
