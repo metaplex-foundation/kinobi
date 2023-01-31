@@ -132,9 +132,8 @@ export async function safeFetchAllMetadata(
     );
 }
 
-export async function getMetadataGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getMetadataGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{

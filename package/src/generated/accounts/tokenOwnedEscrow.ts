@@ -87,9 +87,8 @@ export async function safeFetchAllTokenOwnedEscrow(
     );
 }
 
-export async function getTokenOwnedEscrowGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getTokenOwnedEscrowGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{

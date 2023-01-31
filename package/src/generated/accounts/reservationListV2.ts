@@ -93,9 +93,8 @@ export async function safeFetchAllReservationListV2(
     );
 }
 
-export async function getReservationListV2GpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getReservationListV2GpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{

@@ -89,9 +89,8 @@ export async function safeFetchAllFrequencyAccount(
     );
 }
 
-export async function getFrequencyAccountGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getFrequencyAccountGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{

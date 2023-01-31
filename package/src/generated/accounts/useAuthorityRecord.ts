@@ -80,9 +80,8 @@ export async function safeFetchAllUseAuthorityRecord(
     );
 }
 
-export async function getUseAuthorityRecordGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getUseAuthorityRecordGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{ key: TmKey; allowedUses: number | bigint; bump: number }>(

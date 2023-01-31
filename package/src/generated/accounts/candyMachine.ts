@@ -104,9 +104,8 @@ export async function safeFetchAllCandyMachine(
     );
 }
 
-export async function getCandyMachineGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getCandyMachineGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{

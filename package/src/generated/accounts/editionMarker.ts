@@ -73,9 +73,8 @@ export async function safeFetchAllEditionMarker(
     );
 }
 
-export async function getEditionMarkerGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getEditionMarkerGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{ key: TmKey; ledger: Array<number> }>(

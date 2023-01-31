@@ -82,9 +82,8 @@ export async function safeFetchAllCollectionAuthorityRecord(
     );
 }
 
-export async function getCollectionAuthorityRecordGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getCollectionAuthorityRecordGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{

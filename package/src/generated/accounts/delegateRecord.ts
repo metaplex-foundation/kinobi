@@ -82,9 +82,8 @@ export async function safeFetchAllDelegateRecord(
     );
 }
 
-export async function getDelegateRecordGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getDelegateRecordGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{ key: TmKey; role: DelegateRole; bump: number }>(

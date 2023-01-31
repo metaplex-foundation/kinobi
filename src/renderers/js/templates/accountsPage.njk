@@ -53,10 +53,7 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
     .map((maybeAccount) => deserialize{{ account.name | pascalCase }}(context, maybeAccount as RpcAccount));
 }
 
-export async function get{{ account.name | pascalCase }}GpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey,
-) {
+export function get{{ account.name | pascalCase }}GpaBuilder(context: Pick<Context, 'rpc' | 'serializer' | 'programs'>) {
   const s = context.serializer;
   return gpaBuilder<{{ gpaFields.type }}>(context, context.programs.get('{{ program.name | camelCase }}').publicKey, {{ gpaFields.serializers }})
     {%- if account.metadata.discriminator.kind === 'field' and discriminatorValue %}

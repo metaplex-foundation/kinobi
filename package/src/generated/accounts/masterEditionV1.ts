@@ -85,9 +85,8 @@ export async function safeFetchAllMasterEditionV1(
     );
 }
 
-export async function getMasterEditionV1GpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
-  publicKey: PublicKey
+export function getMasterEditionV1GpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
   return gpaBuilder<{
