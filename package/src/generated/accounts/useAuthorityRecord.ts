@@ -64,7 +64,7 @@ export async function getUseAuthorityRecordGpaBuilder(
       ['allowedUses', s.u64],
       ['bump', s.u8],
     ]
-  );
+  ).whereField('key', 8);
 }
 
 export function deserializeUseAuthorityRecord(

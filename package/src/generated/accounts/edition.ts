@@ -62,7 +62,7 @@ export async function getEditionGpaBuilder(
     ['key', getTmKeySerializer(context)],
     ['parent', s.publicKey],
     ['edition', s.u64],
-  ]);
+  ]).whereField('key', TmKey.EditionV1);
 }
 
 export function deserializeEdition(
@@ -92,7 +92,7 @@ export function getEditionAccountDataSerializer(
       ],
       'Edition'
     ),
-    (value) => ({ ...value, key: 1 } as EditionAccountData)
+    (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
   ) as Serializer<EditionAccountArgs, EditionAccountData>;
 }
 

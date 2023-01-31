@@ -3,6 +3,7 @@ export * from './AutoSetFixedAccountSizesVisitor';
 export * from './CreateSubInstructionsFromEnumArgsVisitor';
 export * from './DeduplicateIdenticalDefinedTypesVisitor';
 export * from './DeleteNodesVisitor';
+export * from './SetAccountDiscriminatorFromFieldVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
 export * from './SetInstructionDiscriminatorsVisitor';
 export * from './SetLeafWrappersVisitor';

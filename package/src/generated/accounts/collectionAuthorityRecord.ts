@@ -66,7 +66,7 @@ export async function getCollectionAuthorityRecordGpaBuilder(
     ['key', getTmKeySerializer(context)],
     ['bump', s.u8],
     ['updateAuthority', s.option(s.publicKey)],
-  ]);
+  ]).whereField('key', 9);
 }
 
 export function deserializeCollectionAuthorityRecord(

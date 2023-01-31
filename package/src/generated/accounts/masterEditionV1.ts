@@ -73,7 +73,7 @@ export async function getMasterEditionV1GpaBuilder(
     ['maxSupply', s.option(s.u64)],
     ['printingMint', s.publicKey],
     ['oneTimePrintingAuthorizationMint', s.publicKey],
-  ]);
+  ]).whereField('key', 2);
 }
 
 export function deserializeMasterEditionV1(

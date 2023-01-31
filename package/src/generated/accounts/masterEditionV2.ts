@@ -67,7 +67,7 @@ export async function getMasterEditionV2GpaBuilder(
     ['key', getTmKeySerializer(context)],
     ['supply', s.u64],
     ['maxSupply', s.option(s.u64)],
-  ]);
+  ]).whereField('key', 6);
 }
 
 export function deserializeMasterEditionV2(

@@ -4,6 +4,7 @@ const {
   CreateSubInstructionsFromEnumArgsVisitor,
   GetNodeTreeStringVisitor,
   RenderJavaScriptVisitor,
+  SetAccountDiscriminatorFromFieldVisitor,
   SetStructDefaultValuesVisitor,
   SetLeafWrappersVisitor,
   TypeLeafNode,
@@ -99,21 +100,31 @@ kinobi.update(
   })
 );
 
-const omitted = (v) => ({ ...vScalar(v), strategy: 'omitted' });
+kinobi.update(
+  new SetAccountDiscriminatorFromFieldVisitor({
+    'mplTokenMetadata.Edition': {
+      field: 'key',
+      value: vEnum('TmKey', 'EditionV1'),
+    },
+    'mplTokenMetadata.MasterEditionV1': { field: 'key', value: vScalar(2) },
+    'mplTokenMetadata.ReservationListV1': { field: 'key', value: vScalar(3) },
+    'mplTokenMetadata.Metadata': { field: 'key', value: vScalar(4) },
+    'mplTokenMetadata.ReservationListV2': { field: 'key', value: vScalar(5) },
+    'mplTokenMetadata.MasterEditionV2': { field: 'key', value: vScalar(6) },
+    'mplTokenMetadata.EditionMarker': { field: 'key', value: vScalar(7) },
+    'mplTokenMetadata.UseAuthorityRecord': { field: 'key', value: vScalar(8) },
+    'mplTokenMetadata.CollectionAuthorityRecord': {
+      field: 'key',
+      value: vScalar(9),
+    },
+    'mplTokenMetadata.TokenOwnedEscrow': { field: 'key', value: vScalar(10) },
+    'mplTokenMetadata.DelegateRecord': { field: 'key', value: vScalar(11) },
+    'mplTokenAuthRules.FrequencyAccount': { field: 'key', value: vScalar(1) },
+  })
+);
+
 kinobi.update(
   new SetStructDefaultValuesVisitor({
-    'mplTokenMetadata.Edition': { key: omitted(1) },
-    'mplTokenMetadata.MasterEditionV1': { key: omitted(2) },
-    'mplTokenMetadata.ReservationListV1': { key: omitted(3) },
-    'mplTokenMetadata.Metadata': { key: omitted(4) },
-    'mplTokenMetadata.ReservationListV2': { key: omitted(5) },
-    'mplTokenMetadata.MasterEditionV2': { key: omitted(6) },
-    'mplTokenMetadata.EditionMarker': { key: omitted(7) },
-    'mplTokenMetadata.UseAuthorityRecord': { key: omitted(8) },
-    'mplTokenMetadata.CollectionAuthorityRecord': { key: omitted(9) },
-    'mplTokenMetadata.TokenOwnedEscrow': { key: omitted(10) },
-    'mplTokenMetadata.DelegateRecord': { key: omitted(11) },
-    'mplTokenAuthRules.FrequencyAccount': { key: omitted(1) },
     'mplTokenMetadata.Collection': { verified: vScalar(false) },
     'mplTokenMetadata.UpdateArgs.V1': {
       tokenStandard: vSome(vEnum('TokenStandard', 'NonFungible')),

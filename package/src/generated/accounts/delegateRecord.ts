@@ -66,7 +66,7 @@ export async function getDelegateRecordGpaBuilder(
       ['role', getDelegateRoleSerializer(context)],
       ['bump', s.u8],
     ]
-  );
+  ).whereField('key', 11);
 }
 
 export function deserializeDelegateRecord(

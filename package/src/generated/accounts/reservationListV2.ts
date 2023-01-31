@@ -83,7 +83,7 @@ export async function getReservationListV2GpaBuilder(
     ['reservations', s.vec(getReservationSerializer(context))],
     ['totalReservationSpots', s.u64],
     ['currentReservationSpots', s.u64],
-  ]);
+  ]).whereField('key', 5);
 }
 
 export function deserializeReservationListV2(

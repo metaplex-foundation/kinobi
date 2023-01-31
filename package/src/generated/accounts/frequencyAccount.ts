@@ -73,7 +73,7 @@ export async function getFrequencyAccountGpaBuilder(
     ['key', getTaKeySerializer(context)],
     ['lastUpdate', s.i64],
     ['period', s.i64],
-  ]);
+  ]).whereField('key', 1);
 }
 
 export function deserializeFrequencyAccount(

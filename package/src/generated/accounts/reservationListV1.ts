@@ -74,7 +74,7 @@ export async function getReservationListV1GpaBuilder(
     ['masterEdition', s.publicKey],
     ['supplySnapshot', s.option(s.u64)],
     ['reservations', s.vec(getReservationV1Serializer(context))],
-  ]);
+  ]).whereField('key', 3);
 }
 
 export function deserializeReservationListV1(

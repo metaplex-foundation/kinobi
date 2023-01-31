@@ -73,7 +73,7 @@ export async function getTokenOwnedEscrowGpaBuilder(
     ['baseToken', s.publicKey],
     ['authority', getEscrowAuthoritySerializer(context)],
     ['bump', s.u8],
-  ]);
+  ]).whereField('key', 10);
 }
 
 export function deserializeTokenOwnedEscrow(

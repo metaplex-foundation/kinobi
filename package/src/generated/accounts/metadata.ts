@@ -144,7 +144,7 @@ export async function getMetadataGpaBuilder(
     ['collectionDetails', s.option(getCollectionDetailsSerializer(context))],
     ['programmableConfig', s.option(getProgrammableConfigSerializer(context))],
     ['delegateState', s.option(getDelegateStateSerializer(context))],
-  ]);
+  ]).whereField('key', 4);
 }
 
 export function deserializeMetadata(

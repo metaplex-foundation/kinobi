@@ -56,7 +56,7 @@ export async function getEditionMarkerGpaBuilder(
       ['key', getTmKeySerializer(context)],
       ['ledger', s.array(s.u8, 31)],
     ]
-  );
+  ).whereField('key', 7);
 }
 
 export function deserializeEditionMarker(
