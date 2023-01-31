@@ -14,6 +14,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import { TmKey, getTmKeySerializer } from '../types';
@@ -41,6 +42,21 @@ export async function safeFetchEditionMarker(
   return maybeAccount.exists
     ? deserializeEditionMarker(context, maybeAccount)
     : null;
+}
+
+export async function getEditionMarkerGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{ key: TmKey; ledger: Array<number> }>(
+    context,
+    context.programs.get('mplTokenMetadata').address,
+    [
+      ['key', getTmKeySerializer(context)],
+      ['ledger', s.array(s.u8, 31)],
+    ]
+  );
 }
 
 export function deserializeEditionMarker(

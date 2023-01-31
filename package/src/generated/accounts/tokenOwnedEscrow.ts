@@ -14,6 +14,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import {
@@ -55,6 +56,24 @@ export async function safeFetchTokenOwnedEscrow(
   return maybeAccount.exists
     ? deserializeTokenOwnedEscrow(context, maybeAccount)
     : null;
+}
+
+export async function getTokenOwnedEscrowGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{
+    key: TmKey;
+    baseToken: PublicKey;
+    authority: EscrowAuthority;
+    bump: number;
+  }>(context, context.programs.get('mplTokenMetadata').address, [
+    ['key', getTmKeySerializer(context)],
+    ['baseToken', s.publicKey],
+    ['authority', getEscrowAuthoritySerializer(context)],
+    ['bump', s.u8],
+  ]);
 }
 
 export function deserializeTokenOwnedEscrow(

@@ -14,6 +14,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import { TaKey, getTaKeySerializer } from '../types';
@@ -57,6 +58,22 @@ export async function safeFetchFrequencyAccount(
   return maybeAccount.exists
     ? deserializeFrequencyAccount(context, maybeAccount)
     : null;
+}
+
+export async function getFrequencyAccountGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{
+    key: TaKey;
+    lastUpdate: number | bigint;
+    period: number | bigint;
+  }>(context, context.programs.get('mplTokenAuthRules').address, [
+    ['key', getTaKeySerializer(context)],
+    ['lastUpdate', s.i64],
+    ['period', s.i64],
+  ]);
 }
 
 export function deserializeFrequencyAccount(

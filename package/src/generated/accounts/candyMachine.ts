@@ -14,6 +14,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import {
@@ -72,6 +73,30 @@ export async function safeFetchCandyMachine(
   return maybeAccount.exists
     ? deserializeCandyMachine(context, maybeAccount)
     : null;
+}
+
+export async function getCandyMachineGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{
+    discriminator: Array<number>;
+    features: number | bigint;
+    authority: PublicKey;
+    mintAuthority: PublicKey;
+    collectionMint: PublicKey;
+    itemsRedeemed: number | bigint;
+    data: CandyMachineDataArgs;
+  }>(context, context.programs.get('mplCandyMachineCore').address, [
+    ['discriminator', s.array(s.u8, 8)],
+    ['features', s.u64],
+    ['authority', s.publicKey],
+    ['mintAuthority', s.publicKey],
+    ['collectionMint', s.publicKey],
+    ['itemsRedeemed', s.u64],
+    ['data', getCandyMachineDataSerializer(context)],
+  ]);
 }
 
 export function deserializeCandyMachine(

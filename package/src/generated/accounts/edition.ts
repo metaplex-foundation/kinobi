@@ -14,6 +14,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import { TmKey, getTmKeySerializer } from '../types';
@@ -46,6 +47,22 @@ export async function safeFetchEdition(
 ): Promise<Edition | null> {
   const maybeAccount = await context.rpc.getAccount(publicKey);
   return maybeAccount.exists ? deserializeEdition(context, maybeAccount) : null;
+}
+
+export async function getEditionGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{
+    key: TmKey;
+    parent: PublicKey;
+    edition: number | bigint;
+  }>(context, context.programs.get('mplTokenMetadata').address, [
+    ['key', getTmKeySerializer(context)],
+    ['parent', s.publicKey],
+    ['edition', s.u64],
+  ]);
 }
 
 export function deserializeEdition(

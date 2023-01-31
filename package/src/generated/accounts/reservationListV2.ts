@@ -15,6 +15,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import {
@@ -61,6 +62,28 @@ export async function safeFetchReservationListV2(
   return maybeAccount.exists
     ? deserializeReservationListV2(context, maybeAccount)
     : null;
+}
+
+export async function getReservationListV2GpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{
+    key: TmKey;
+    masterEdition: PublicKey;
+    supplySnapshot: Option<number | bigint>;
+    reservations: Array<ReservationArgs>;
+    totalReservationSpots: number | bigint;
+    currentReservationSpots: number | bigint;
+  }>(context, context.programs.get('mplTokenMetadata').address, [
+    ['key', getTmKeySerializer(context)],
+    ['masterEdition', s.publicKey],
+    ['supplySnapshot', s.option(s.u64)],
+    ['reservations', s.vec(getReservationSerializer(context))],
+    ['totalReservationSpots', s.u64],
+    ['currentReservationSpots', s.u64],
+  ]);
 }
 
 export function deserializeReservationListV2(

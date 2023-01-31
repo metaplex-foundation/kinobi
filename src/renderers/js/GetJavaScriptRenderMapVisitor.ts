@@ -188,12 +188,31 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         'assertAccountExists',
         'Context',
         'deserializeAccount',
+        'gpaBuilder',
         'PublicKey',
         'RpcAccount',
         'Serializer',
       ])
       .remove('generatedTypes', [account.name]);
 
+    // GPA Fields.
+    const gpaFieldManifests = account.type.fields.map((field) => {
+      const fieldWithNoDefaults = new nodes.TypeStructFieldNode(
+        { ...field.metadata, defaultsTo: null, docs: [] },
+        field.type
+      );
+      const fieldManifest = fieldWithNoDefaults.accept(
+        this.typeManifestVisitor
+      );
+      imports.mergeWith(fieldManifest.imports);
+      return fieldManifest;
+    });
+    const gpaFields = {
+      type: `{ ${gpaFieldManifests.map((m) => m.looseType).join('')} }`,
+      serializers: `[${gpaFieldManifests.map((m) => m.serializer).join(', ')}]`,
+    };
+
+    // Seeds.
     const seeds = account.metadata.seeds.map((seed) => {
       if (seed.kind === 'programId') return seed;
       if (seed.kind === 'literal') {
@@ -215,6 +234,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         typeManifest,
+        gpaFields,
         seeds,
       })
     );

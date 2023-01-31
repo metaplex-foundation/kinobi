@@ -14,6 +14,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import {
@@ -50,6 +51,22 @@ export async function safeFetchDelegateRecord(
   return maybeAccount.exists
     ? deserializeDelegateRecord(context, maybeAccount)
     : null;
+}
+
+export async function getDelegateRecordGpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{ key: TmKey; role: DelegateRole; bump: number }>(
+    context,
+    context.programs.get('mplTokenMetadata').address,
+    [
+      ['key', getTmKeySerializer(context)],
+      ['role', getDelegateRoleSerializer(context)],
+      ['bump', s.u8],
+    ]
+  );
 }
 
 export function deserializeDelegateRecord(

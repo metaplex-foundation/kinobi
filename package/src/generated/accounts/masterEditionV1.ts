@@ -15,6 +15,7 @@ import {
   Serializer,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
   mapSerializer,
 } from '@lorisleiva/js-core';
 import { TmKey, getTmKeySerializer } from '../types';
@@ -53,6 +54,26 @@ export async function safeFetchMasterEditionV1(
   return maybeAccount.exists
     ? deserializeMasterEditionV1(context, maybeAccount)
     : null;
+}
+
+export async function getMasterEditionV1GpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>,
+  publicKey: PublicKey
+) {
+  const s = context.serializer;
+  return gpaBuilder<{
+    key: TmKey;
+    supply: number | bigint;
+    maxSupply: Option<number | bigint>;
+    printingMint: PublicKey;
+    oneTimePrintingAuthorizationMint: PublicKey;
+  }>(context, context.programs.get('mplTokenMetadata').address, [
+    ['key', getTmKeySerializer(context)],
+    ['supply', s.u64],
+    ['maxSupply', s.option(s.u64)],
+    ['printingMint', s.publicKey],
+    ['oneTimePrintingAuthorizationMint', s.publicKey],
+  ]);
 }
 
 export function deserializeMasterEditionV1(
