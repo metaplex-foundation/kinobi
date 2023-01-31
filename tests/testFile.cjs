@@ -100,26 +100,24 @@ kinobi.update(
   })
 );
 
+const tmKey = (name) => ({ field: 'key', value: vEnum('TmKey', name) });
+const taKey = (name) => ({ field: 'key', value: vEnum('TaKey', name) });
 kinobi.update(
   new SetAccountDiscriminatorFromFieldVisitor({
-    'mplTokenMetadata.Edition': {
-      field: 'key',
-      value: vEnum('TmKey', 'EditionV1'),
-    },
-    'mplTokenMetadata.MasterEditionV1': { field: 'key', value: vScalar(2) },
-    'mplTokenMetadata.ReservationListV1': { field: 'key', value: vScalar(3) },
-    'mplTokenMetadata.Metadata': { field: 'key', value: vScalar(4) },
-    'mplTokenMetadata.ReservationListV2': { field: 'key', value: vScalar(5) },
-    'mplTokenMetadata.MasterEditionV2': { field: 'key', value: vScalar(6) },
-    'mplTokenMetadata.EditionMarker': { field: 'key', value: vScalar(7) },
-    'mplTokenMetadata.UseAuthorityRecord': { field: 'key', value: vScalar(8) },
-    'mplTokenMetadata.CollectionAuthorityRecord': {
-      field: 'key',
-      value: vScalar(9),
-    },
-    'mplTokenMetadata.TokenOwnedEscrow': { field: 'key', value: vScalar(10) },
-    'mplTokenMetadata.DelegateRecord': { field: 'key', value: vScalar(11) },
-    'mplTokenAuthRules.FrequencyAccount': { field: 'key', value: vScalar(1) },
+    'mplTokenMetadata.Edition': tmKey('EditionV1'),
+    'mplTokenMetadata.MasterEditionV1': tmKey('MasterEditionV1'),
+    'mplTokenMetadata.ReservationListV1': tmKey('ReservationListV1'),
+    'mplTokenMetadata.Metadata': tmKey('MetadataV1'),
+    'mplTokenMetadata.ReservationListV2': tmKey('ReservationListV2'),
+    'mplTokenMetadata.MasterEditionV2': tmKey('MasterEditionV2'),
+    'mplTokenMetadata.EditionMarker': tmKey('EditionMarker'),
+    'mplTokenMetadata.UseAuthorityRecord': tmKey('UseAuthorityRecord'),
+    'mplTokenMetadata.CollectionAuthorityRecord': tmKey(
+      'CollectionAuthorityRecord'
+    ),
+    'mplTokenMetadata.TokenOwnedEscrow': tmKey('TokenOwnedEscrow'),
+    'mplTokenMetadata.DelegateRecord': tmKey('Delegate'),
+    'mplTokenAuthRules.FrequencyAccount': taKey('Frequency'),
   })
 );
 

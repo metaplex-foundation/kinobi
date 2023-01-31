@@ -73,7 +73,7 @@ export async function getMasterEditionV1GpaBuilder(
     ['maxSupply', s.option(s.u64)],
     ['printingMint', s.publicKey],
     ['oneTimePrintingAuthorizationMint', s.publicKey],
-  ]).whereField('key', 2);
+  ]).whereField('key', TmKey.MasterEditionV1);
 }
 
 export function deserializeMasterEditionV1(
@@ -105,7 +105,8 @@ export function getMasterEditionV1AccountDataSerializer(
       ],
       'MasterEditionV1'
     ),
-    (value) => ({ ...value, key: 2 } as MasterEditionV1AccountData)
+    (value) =>
+      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
   ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
 }
 

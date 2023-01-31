@@ -83,7 +83,7 @@ export async function getReservationListV2GpaBuilder(
     ['reservations', s.vec(getReservationSerializer(context))],
     ['totalReservationSpots', s.u64],
     ['currentReservationSpots', s.u64],
-  ]).whereField('key', 5);
+  ]).whereField('key', TmKey.ReservationListV2);
 }
 
 export function deserializeReservationListV2(
@@ -116,7 +116,11 @@ export function getReservationListV2AccountDataSerializer(
       ],
       'ReservationListV2'
     ),
-    (value) => ({ ...value, key: 5 } as ReservationListV2AccountData)
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.ReservationListV2,
+      } as ReservationListV2AccountData)
   ) as Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData>;
 }
 

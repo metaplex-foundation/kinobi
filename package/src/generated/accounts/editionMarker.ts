@@ -56,7 +56,7 @@ export async function getEditionMarkerGpaBuilder(
       ['key', getTmKeySerializer(context)],
       ['ledger', s.array(s.u8, 31)],
     ]
-  ).whereField('key', 7);
+  ).whereField('key', TmKey.EditionMarker);
 }
 
 export function deserializeEditionMarker(
@@ -85,7 +85,8 @@ export function getEditionMarkerAccountDataSerializer(
       ],
       'EditionMarker'
     ),
-    (value) => ({ ...value, key: 7 } as EditionMarkerAccountData)
+    (value) =>
+      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
   ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }
 

@@ -73,7 +73,7 @@ export async function getFrequencyAccountGpaBuilder(
     ['key', getTaKeySerializer(context)],
     ['lastUpdate', s.i64],
     ['period', s.i64],
-  ]).whereField('key', 1);
+  ]).whereField('key', TaKey.Frequency);
 }
 
 export function deserializeFrequencyAccount(
@@ -103,7 +103,8 @@ export function getFrequencyAccountAccountDataSerializer(
       ],
       'FrequencyAccount'
     ),
-    (value) => ({ ...value, key: 1 } as FrequencyAccountAccountData)
+    (value) =>
+      ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
   ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
 }
 

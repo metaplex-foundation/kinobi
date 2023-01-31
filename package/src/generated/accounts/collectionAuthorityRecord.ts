@@ -66,7 +66,7 @@ export async function getCollectionAuthorityRecordGpaBuilder(
     ['key', getTmKeySerializer(context)],
     ['bump', s.u8],
     ['updateAuthority', s.option(s.publicKey)],
-  ]).whereField('key', 9);
+  ]).whereField('key', TmKey.CollectionAuthorityRecord);
 }
 
 export function deserializeCollectionAuthorityRecord(
@@ -99,7 +99,11 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
       ],
       'CollectionAuthorityRecord'
     ),
-    (value) => ({ ...value, key: 9 } as CollectionAuthorityRecordAccountData)
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.CollectionAuthorityRecord,
+      } as CollectionAuthorityRecordAccountData)
   ) as Serializer<
     CollectionAuthorityRecordAccountArgs,
     CollectionAuthorityRecordAccountData

@@ -67,7 +67,7 @@ export async function getMasterEditionV2GpaBuilder(
     ['key', getTmKeySerializer(context)],
     ['supply', s.u64],
     ['maxSupply', s.option(s.u64)],
-  ]).whereField('key', 6);
+  ]).whereField('key', TmKey.MasterEditionV2);
 }
 
 export function deserializeMasterEditionV2(
@@ -97,7 +97,8 @@ export function getMasterEditionV2AccountDataSerializer(
       ],
       'MasterEditionV2'
     ),
-    (value) => ({ ...value, key: 6 } as MasterEditionV2AccountData)
+    (value) =>
+      ({ ...value, key: TmKey.MasterEditionV2 } as MasterEditionV2AccountData)
   ) as Serializer<MasterEditionV2AccountArgs, MasterEditionV2AccountData>;
 }
 

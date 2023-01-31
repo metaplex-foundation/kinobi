@@ -73,7 +73,7 @@ export async function getTokenOwnedEscrowGpaBuilder(
     ['baseToken', s.publicKey],
     ['authority', getEscrowAuthoritySerializer(context)],
     ['bump', s.u8],
-  ]).whereField('key', 10);
+  ]).whereField('key', TmKey.TokenOwnedEscrow);
 }
 
 export function deserializeTokenOwnedEscrow(
@@ -104,7 +104,8 @@ export function getTokenOwnedEscrowAccountDataSerializer(
       ],
       'TokenOwnedEscrow'
     ),
-    (value) => ({ ...value, key: 10 } as TokenOwnedEscrowAccountData)
+    (value) =>
+      ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)
   ) as Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData>;
 }
 

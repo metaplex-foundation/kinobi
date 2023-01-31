@@ -144,7 +144,7 @@ export async function getMetadataGpaBuilder(
     ['collectionDetails', s.option(getCollectionDetailsSerializer(context))],
     ['programmableConfig', s.option(getProgrammableConfigSerializer(context))],
     ['delegateState', s.option(getDelegateStateSerializer(context))],
-  ]).whereField('key', 4);
+  ]).whereField('key', TmKey.MetadataV1);
 }
 
 export function deserializeMetadata(
@@ -194,7 +194,7 @@ export function getMetadataAccountDataSerializer(
       ],
       'Metadata'
     ),
-    (value) => ({ ...value, key: 4 } as MetadataAccountData)
+    (value) => ({ ...value, key: TmKey.MetadataV1 } as MetadataAccountData)
   ) as Serializer<MetadataAccountArgs, MetadataAccountData>;
 }
 

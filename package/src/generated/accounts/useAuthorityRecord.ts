@@ -64,7 +64,7 @@ export async function getUseAuthorityRecordGpaBuilder(
       ['allowedUses', s.u64],
       ['bump', s.u8],
     ]
-  ).whereField('key', 8);
+  ).whereField('key', TmKey.UseAuthorityRecord);
 }
 
 export function deserializeUseAuthorityRecord(
@@ -94,7 +94,11 @@ export function getUseAuthorityRecordAccountDataSerializer(
       ],
       'UseAuthorityRecord'
     ),
-    (value) => ({ ...value, key: 8 } as UseAuthorityRecordAccountData)
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.UseAuthorityRecord,
+      } as UseAuthorityRecordAccountData)
   ) as Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData>;
 }
 

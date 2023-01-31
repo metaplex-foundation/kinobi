@@ -66,7 +66,7 @@ export async function getDelegateRecordGpaBuilder(
       ['role', getDelegateRoleSerializer(context)],
       ['bump', s.u8],
     ]
-  ).whereField('key', 11);
+  ).whereField('key', TmKey.Delegate);
 }
 
 export function deserializeDelegateRecord(
@@ -96,7 +96,7 @@ export function getDelegateRecordAccountDataSerializer(
       ],
       'DelegateRecord'
     ),
-    (value) => ({ ...value, key: 11 } as DelegateRecordAccountData)
+    (value) => ({ ...value, key: TmKey.Delegate } as DelegateRecordAccountData)
   ) as Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData>;
 }
 
