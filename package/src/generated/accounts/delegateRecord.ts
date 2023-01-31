@@ -11,6 +11,8 @@ import {
   Context,
   PublicKey,
   RpcAccount,
+  RpcGetAccountOptions,
+  RpcGetAccountsOptions,
   Serializer,
   assertAccountExists,
   deserializeAccount,
@@ -36,18 +38,20 @@ export type DelegateRecordAccountArgs = { role: DelegateRole; bump: number };
 
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<DelegateRecord> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   assertAccountExists(maybeAccount, 'DelegateRecord');
   return deserializeDelegateRecord(context, maybeAccount);
 }
 
 export async function safeFetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<DelegateRecord | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   return maybeAccount.exists
     ? deserializeDelegateRecord(context, maybeAccount)
     : null;
@@ -55,9 +59,10 @@ export async function safeFetchDelegateRecord(
 
 export async function fetchAllDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<DelegateRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'DelegateRecord');
     return deserializeDelegateRecord(context, maybeAccount);
@@ -66,9 +71,10 @@ export async function fetchAllDelegateRecord(
 
 export async function safeFetchAllDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<DelegateRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

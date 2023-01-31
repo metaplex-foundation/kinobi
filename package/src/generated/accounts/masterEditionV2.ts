@@ -13,6 +13,8 @@ import {
   Pda,
   PublicKey,
   RpcAccount,
+  RpcGetAccountOptions,
+  RpcGetAccountsOptions,
   Serializer,
   assertAccountExists,
   deserializeAccount,
@@ -37,18 +39,20 @@ export type MasterEditionV2AccountArgs = {
 
 export async function fetchMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<MasterEditionV2> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   assertAccountExists(maybeAccount, 'MasterEditionV2');
   return deserializeMasterEditionV2(context, maybeAccount);
 }
 
 export async function safeFetchMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<MasterEditionV2 | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   return maybeAccount.exists
     ? deserializeMasterEditionV2(context, maybeAccount)
     : null;
@@ -56,9 +60,10 @@ export async function safeFetchMasterEditionV2(
 
 export async function fetchAllMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV2[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'MasterEditionV2');
     return deserializeMasterEditionV2(context, maybeAccount);
@@ -67,9 +72,10 @@ export async function fetchAllMasterEditionV2(
 
 export async function safeFetchAllMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV2[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

@@ -11,6 +11,8 @@ import {
   Context,
   PublicKey,
   RpcAccount,
+  RpcGetAccountOptions,
+  RpcGetAccountsOptions,
   Serializer,
   assertAccountExists,
   deserializeAccount,
@@ -41,18 +43,20 @@ export type TokenOwnedEscrowAccountArgs = {
 
 export async function fetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
   return deserializeTokenOwnedEscrow(context, maybeAccount);
 }
 
 export async function safeFetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   return maybeAccount.exists
     ? deserializeTokenOwnedEscrow(context, maybeAccount)
     : null;
@@ -60,9 +64,10 @@ export async function safeFetchTokenOwnedEscrow(
 
 export async function fetchAllTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
     return deserializeTokenOwnedEscrow(context, maybeAccount);
@@ -71,9 +76,10 @@ export async function fetchAllTokenOwnedEscrow(
 
 export async function safeFetchAllTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

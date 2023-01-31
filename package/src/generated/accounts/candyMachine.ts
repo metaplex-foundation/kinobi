@@ -11,6 +11,8 @@ import {
   Context,
   PublicKey,
   RpcAccount,
+  RpcGetAccountOptions,
+  RpcGetAccountsOptions,
   Serializer,
   assertAccountExists,
   deserializeAccount,
@@ -58,18 +60,20 @@ export type CandyMachineAccountArgs = {
 
 export async function fetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<CandyMachine> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   assertAccountExists(maybeAccount, 'CandyMachine');
   return deserializeCandyMachine(context, maybeAccount);
 }
 
 export async function safeFetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<CandyMachine | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   return maybeAccount.exists
     ? deserializeCandyMachine(context, maybeAccount)
     : null;
@@ -77,9 +81,10 @@ export async function safeFetchCandyMachine(
 
 export async function fetchAllCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<CandyMachine[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'CandyMachine');
     return deserializeCandyMachine(context, maybeAccount);
@@ -88,9 +93,10 @@ export async function fetchAllCandyMachine(
 
 export async function safeFetchAllCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<CandyMachine[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

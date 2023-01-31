@@ -11,6 +11,8 @@ import {
   Context,
   PublicKey,
   RpcAccount,
+  RpcGetAccountOptions,
+  RpcGetAccountsOptions,
   Serializer,
   assertAccountExists,
   deserializeAccount,
@@ -43,18 +45,20 @@ export type FrequencyAccountAccountArgs = {
 
 export async function fetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   assertAccountExists(maybeAccount, 'FrequencyAccount');
   return deserializeFrequencyAccount(context, maybeAccount);
 }
 
 export async function safeFetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   return maybeAccount.exists
     ? deserializeFrequencyAccount(context, maybeAccount)
     : null;
@@ -62,9 +66,10 @@ export async function safeFetchFrequencyAccount(
 
 export async function fetchAllFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<FrequencyAccount[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'FrequencyAccount');
     return deserializeFrequencyAccount(context, maybeAccount);
@@ -73,9 +78,10 @@ export async function fetchAllFrequencyAccount(
 
 export async function safeFetchAllFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<FrequencyAccount[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

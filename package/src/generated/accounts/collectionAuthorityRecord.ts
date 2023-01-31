@@ -12,6 +12,8 @@ import {
   Option,
   PublicKey,
   RpcAccount,
+  RpcGetAccountOptions,
+  RpcGetAccountsOptions,
   Serializer,
   assertAccountExists,
   deserializeAccount,
@@ -36,18 +38,20 @@ export type CollectionAuthorityRecordAccountArgs = {
 
 export async function fetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<CollectionAuthorityRecord> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
   return deserializeCollectionAuthorityRecord(context, maybeAccount);
 }
 
 export async function safeFetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey
+  publicKey: PublicKey,
+  options?: RpcGetAccountOptions
 ): Promise<CollectionAuthorityRecord | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey);
+  const maybeAccount = await context.rpc.getAccount(publicKey, options);
   return maybeAccount.exists
     ? deserializeCollectionAuthorityRecord(context, maybeAccount)
     : null;
@@ -55,9 +59,10 @@ export async function safeFetchCollectionAuthorityRecord(
 
 export async function fetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<CollectionAuthorityRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
     return deserializeCollectionAuthorityRecord(context, maybeAccount);
@@ -66,9 +71,10 @@ export async function fetchAllCollectionAuthorityRecord(
 
 export async function safeFetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[]
+  publicKeys: PublicKey[],
+  options?: RpcGetAccountsOptions
 ): Promise<CollectionAuthorityRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

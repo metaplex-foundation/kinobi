@@ -198,6 +198,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         'gpaBuilder',
         'PublicKey',
         'RpcAccount',
+        'RpcGetAccountOptions',
+        'RpcGetAccountsOptions',
         'Serializer',
       ])
       .remove('generatedTypes', [account.name]);
