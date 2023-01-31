@@ -17,6 +17,7 @@ import {
   JavaScriptTypeManifest,
 } from './GetJavaScriptTypeManifestVisitor';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
+import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -42,6 +43,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   readonly options: Required<GetJavaScriptRenderMapOptions>;
 
   private program: nodes.ProgramNode | null = null;
+
+  private availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
 
   private resolvedInstructionAccountVisitor: Visitor<
     ResolvedInstructionAccount[]
@@ -76,6 +79,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
+    // Make defined types available to all descendants.
+    root.allDefinedTypes.forEach((definedType) => {
+      this.availableDefinedTypes.set(definedType.name, definedType);
+    });
     if (this.typeManifestVisitor.registerDefinedTypes) {
       this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
     }
@@ -212,6 +219,18 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       serializers: `[${gpaFieldManifests.map((m) => m.serializer).join(', ')}]`,
     };
 
+    // Discriminator.
+    const { discriminatorField } = account;
+    const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value
+      ? renderJavaScriptValueNode(
+          discriminatorField.metadata.defaultsTo.value,
+          this.availableDefinedTypes
+        )
+      : undefined;
+    if (discriminatorValue) {
+      imports.mergeWith(discriminatorValue.imports);
+    }
+
     // Seeds.
     const seeds = account.metadata.seeds.map((seed) => {
       if (seed.kind === 'programId') return seed;
@@ -235,6 +254,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         program: this.program,
         typeManifest,
         gpaFields,
+        discriminatorValue: discriminatorValue?.render,
         seeds,
       })
     );

@@ -33,7 +33,13 @@ export async function get{{ account.name | pascalCase }}GpaBuilder(
   publicKey: PublicKey,
 ) {
   const s = context.serializer;
-  return gpaBuilder<{{ gpaFields.type }}>(context, context.programs.get('{{ program.name | camelCase }}').publicKey, {{ gpaFields.serializers }});
+  return gpaBuilder<{{ gpaFields.type }}>(context, context.programs.get('{{ program.name | camelCase }}').publicKey, {{ gpaFields.serializers }})
+    {%- if account.metadata.discriminator?.kind === 'field' and discriminatorValue %}
+      .whereField('{{ account.metadata.discriminator.name }}', {{ discriminatorValue }})
+    {% elif account.metadata.discriminator?.kind === 'size' and account.metadata.size %}
+      .whereSize({{ account.metadata.size }})
+    {% endif -%}
+  ;
 }
 
 export function deserialize{{ account.name | pascalCase }}(

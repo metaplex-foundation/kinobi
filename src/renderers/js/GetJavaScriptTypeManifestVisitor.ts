@@ -1,7 +1,8 @@
 import * as nodes from '../../nodes';
-import { camelCase, mainCase, pascalCase } from '../../utils';
+import { camelCase, pascalCase } from '../../utils';
 import { Visitor } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
+import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
 export type JavaScriptTypeManifest = {
   strictType: string;
@@ -421,14 +422,15 @@ export class GetJavaScriptTypeManifestVisitor
         const defaultsTo = f.metadata.defaultsTo as NonNullable<
           typeof f.metadata.defaultsTo
         >;
-        const { value, imports } = this.renderStructFieldValue(
-          defaultsTo.value
+        const { render: renderedValue, imports } = renderJavaScriptValueNode(
+          defaultsTo.value,
+          this.availableDefinedTypes
         );
         baseManifest.imports.mergeWith(imports);
         if (defaultsTo.strategy === 'omitted') {
-          return `${key}: ${value}`;
+          return `${key}: ${renderedValue}`;
         }
-        return `${key}: value.${key} ?? ${value}`;
+        return `${key}: value.${key} ?? ${renderedValue}`;
       })
       .join(', ');
     const mapSerializerTypeParams = definedName
@@ -516,118 +518,5 @@ export class GetJavaScriptTypeManifestVisitor
     if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
     const lines = docs.map((doc) => ` * ${doc}`);
     return `\n/**\n${lines.join('\n')}\n */\n`;
-  }
-
-  protected renderStructFieldValue(defaultsTo: nodes.ValueNode): {
-    imports: JavaScriptImportMap;
-    value: string;
-  } {
-    const imports = new JavaScriptImportMap();
-    switch (defaultsTo.__kind) {
-      case 'list':
-      case 'tuple':
-        const list = defaultsTo.values.map((v) =>
-          this.renderStructFieldValue(v)
-        );
-        return {
-          imports: imports.mergeWith(...list.map((c) => c.imports)),
-          value: `[${list.map((c) => c.value).join(', ')}]`,
-        };
-      case 'set':
-        const set = defaultsTo.values.map((v) =>
-          this.renderStructFieldValue(v)
-        );
-        return {
-          imports: imports.mergeWith(...set.map((c) => c.imports)),
-          value: `new Set([${set.map((c) => c.value).join(', ')}])`,
-        };
-      case 'map':
-        const map = defaultsTo.values.map(([k, v]) => {
-          const mapKey = this.renderStructFieldValue(k);
-          const mapValue = this.renderStructFieldValue(v);
-          return {
-            imports: mapKey.imports.mergeWith(mapValue.imports),
-            value: `[${mapKey.value}, ${mapValue.value}]`,
-          };
-        });
-        return {
-          imports: imports.mergeWith(...map.map((c) => c.imports)),
-          value: `new Map([${map.map((c) => c.value).join(', ')}])`,
-        };
-      case 'struct':
-        const struct = Object.entries(defaultsTo.values).map(([k, v]) => {
-          const structValue = this.renderStructFieldValue(v);
-          return {
-            imports: structValue.imports,
-            value: `${k}: ${structValue.value}`,
-          };
-        });
-        return {
-          imports: imports.mergeWith(...struct.map((c) => c.imports)),
-          value: `{ ${struct.map((c) => c.value).join(', ')} }`,
-        };
-      case 'enum':
-        const definedType = this.availableDefinedTypes.get(
-          mainCase(defaultsTo.enumType)
-        );
-        if (!definedType || !nodes.isTypeEnumNode(definedType.type)) {
-          throw new Error(`Cannot find enum ${defaultsTo.enumType}.`);
-        }
-
-        const enumName = pascalCase(definedType.type.name);
-        const variantName = pascalCase(defaultsTo.variant);
-        const rawDependency =
-          defaultsTo.dependency ?? definedType.metadata.importFrom;
-        const dependency =
-          rawDependency === 'generated' ? 'generatedTypes' : rawDependency;
-
-        if (definedType.type.isScalarEnum()) {
-          return {
-            imports: imports.add(dependency, enumName),
-            value: `${enumName}.${variantName}`,
-          };
-        }
-
-        const enumFn = camelCase(definedType.type.name);
-        imports.add(dependency, enumFn);
-
-        if (!defaultsTo.value) {
-          return { imports, value: `${enumFn}('${variantName}')` };
-        }
-
-        const enumValue = this.renderStructFieldValue(defaultsTo.value);
-        const fields = enumValue.value;
-        imports.mergeWith(enumValue.imports);
-
-        return {
-          imports,
-          value: `${enumFn}('${variantName}', ${fields})`,
-        };
-      case 'optionSome':
-        const child = this.renderStructFieldValue(defaultsTo.value);
-        return {
-          imports: child.imports.add('core', 'some'),
-          value: `some(${child.value})`,
-        };
-      case 'optionNone':
-        return {
-          imports: new JavaScriptImportMap().add('core', 'none'),
-          value: 'none()',
-        };
-      case 'publicKey':
-        return {
-          imports: new JavaScriptImportMap().add('core', 'publicKey'),
-          value: `publicKey("${defaultsTo.value}")`,
-        };
-      case 'string':
-      case 'number':
-      case 'boolean':
-        return { imports, value: JSON.stringify(defaultsTo.value) };
-      default:
-        const neverDefault: never = defaultsTo;
-        throw new Error(
-          `Unexpected defaultsTo value ${(neverDefault as any).__kind}`
-        );
-    }
   }
 }

@@ -6,6 +6,7 @@ import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { assertTypeStructNode, TypeStructNode } from './TypeStructNode';
 import type { InstructionNodeAccountDefaultsSeed } from './InstructionNode';
 import { isTypeLeafNode } from './TypeLeafNode';
+import { TypeStructFieldNode } from './TypeStructFieldNode';
 
 export type AccountNodeMetadata = {
   readonly name: string;
@@ -77,6 +78,12 @@ export class AccountNode implements Visitable {
 
   get docs(): string[] {
     return this.metadata.docs;
+  }
+
+  get discriminatorField(): TypeStructFieldNode | null {
+    if (this.metadata.discriminator?.kind !== 'field') return null;
+    const { name } = this.metadata.discriminator;
+    return name ? this.type.fields.find((f) => f.name === name) ?? null : null;
   }
 
   get variableSeeds(): Extract<AccountNodeSeed, { kind: 'variable' }>[] {
