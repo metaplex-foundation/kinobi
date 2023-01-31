@@ -96,7 +96,7 @@ export async function getCandyMachineGpaBuilder(
     ['collectionMint', s.publicKey],
     ['itemsRedeemed', s.u64],
     ['data', getCandyMachineDataSerializer(context)],
-  ]);
+  ]).whereField('discriminator', [115, 157, 18, 166, 35, 44, 221, 13]);
 }
 
 export function deserializeCandyMachine(
