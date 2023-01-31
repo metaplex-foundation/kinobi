@@ -33,7 +33,7 @@ export async function get{{ account.name | pascalCase }}GpaBuilder(
   publicKey: PublicKey,
 ) {
   const s = context.serializer;
-  return gpaBuilder<{{ gpaFields.type }}>(context, context.programs.get('{{ program.name | camelCase }}').address, {{ gpaFields.serializers }});
+  return gpaBuilder<{{ gpaFields.type }}>(context, context.programs.get('{{ program.name | camelCase }}').publicKey, {{ gpaFields.serializers }});
 }
 
 export function deserialize{{ account.name | pascalCase }}(

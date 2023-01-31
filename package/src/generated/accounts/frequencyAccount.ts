@@ -69,7 +69,7 @@ export async function getFrequencyAccountGpaBuilder(
     key: TaKey;
     lastUpdate: number | bigint;
     period: number | bigint;
-  }>(context, context.programs.get('mplTokenAuthRules').address, [
+  }>(context, context.programs.get('mplTokenAuthRules').publicKey, [
     ['key', getTaKeySerializer(context)],
     ['lastUpdate', s.i64],
     ['period', s.i64],

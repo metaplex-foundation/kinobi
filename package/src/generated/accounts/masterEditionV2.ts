@@ -63,7 +63,7 @@ export async function getMasterEditionV2GpaBuilder(
     key: TmKey;
     supply: number | bigint;
     maxSupply: Option<number | bigint>;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['supply', s.u64],
     ['maxSupply', s.option(s.u64)],

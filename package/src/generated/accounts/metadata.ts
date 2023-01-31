@@ -126,7 +126,7 @@ export async function getMetadataGpaBuilder(
     collectionDetails: Option<CollectionDetailsArgs>;
     programmableConfig: Option<ProgrammableConfig>;
     delegateState: Option<DelegateState>;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['updateAuthority', s.publicKey],
     ['mint', s.publicKey],

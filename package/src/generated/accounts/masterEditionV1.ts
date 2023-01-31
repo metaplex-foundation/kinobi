@@ -67,7 +67,7 @@ export async function getMasterEditionV1GpaBuilder(
     maxSupply: Option<number | bigint>;
     printingMint: PublicKey;
     oneTimePrintingAuthorizationMint: PublicKey;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['supply', s.u64],
     ['maxSupply', s.option(s.u64)],

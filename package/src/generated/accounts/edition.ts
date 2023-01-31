@@ -58,7 +58,7 @@ export async function getEditionGpaBuilder(
     key: TmKey;
     parent: PublicKey;
     edition: number | bigint;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['parent', s.publicKey],
     ['edition', s.u64],

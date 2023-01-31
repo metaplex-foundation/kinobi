@@ -76,7 +76,7 @@ export async function getReservationListV2GpaBuilder(
     reservations: Array<ReservationArgs>;
     totalReservationSpots: number | bigint;
     currentReservationSpots: number | bigint;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['masterEdition', s.publicKey],
     ['supplySnapshot', s.option(s.u64)],

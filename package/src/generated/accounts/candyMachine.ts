@@ -88,7 +88,7 @@ export async function getCandyMachineGpaBuilder(
     collectionMint: PublicKey;
     itemsRedeemed: number | bigint;
     data: CandyMachineDataArgs;
-  }>(context, context.programs.get('mplCandyMachineCore').address, [
+  }>(context, context.programs.get('mplCandyMachineCore').publicKey, [
     ['discriminator', s.array(s.u8, 8)],
     ['features', s.u64],
     ['authority', s.publicKey],

@@ -62,7 +62,7 @@ export async function getCollectionAuthorityRecordGpaBuilder(
     key: TmKey;
     bump: number;
     updateAuthority: Option<PublicKey>;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['bump', s.u8],
     ['updateAuthority', s.option(s.publicKey)],

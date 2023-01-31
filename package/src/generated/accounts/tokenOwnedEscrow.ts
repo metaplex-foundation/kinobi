@@ -68,7 +68,7 @@ export async function getTokenOwnedEscrowGpaBuilder(
     baseToken: PublicKey;
     authority: EscrowAuthority;
     bump: number;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['baseToken', s.publicKey],
     ['authority', getEscrowAuthoritySerializer(context)],

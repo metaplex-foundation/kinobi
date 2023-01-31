@@ -69,7 +69,7 @@ export async function getReservationListV1GpaBuilder(
     masterEdition: PublicKey;
     supplySnapshot: Option<number | bigint>;
     reservations: Array<ReservationV1>;
-  }>(context, context.programs.get('mplTokenMetadata').address, [
+  }>(context, context.programs.get('mplTokenMetadata').publicKey, [
     ['key', getTmKeySerializer(context)],
     ['masterEdition', s.publicKey],
     ['supplySnapshot', s.option(s.u64)],

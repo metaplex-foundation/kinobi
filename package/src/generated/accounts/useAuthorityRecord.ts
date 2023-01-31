@@ -58,7 +58,7 @@ export async function getUseAuthorityRecordGpaBuilder(
   const s = context.serializer;
   return gpaBuilder<{ key: TmKey; allowedUses: number | bigint; bump: number }>(
     context,
-    context.programs.get('mplTokenMetadata').address,
+    context.programs.get('mplTokenMetadata').publicKey,
     [
       ['key', getTmKeySerializer(context)],
       ['allowedUses', s.u64],

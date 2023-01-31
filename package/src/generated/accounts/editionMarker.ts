@@ -51,7 +51,7 @@ export async function getEditionMarkerGpaBuilder(
   const s = context.serializer;
   return gpaBuilder<{ key: TmKey; ledger: Array<number> }>(
     context,
-    context.programs.get('mplTokenMetadata').address,
+    context.programs.get('mplTokenMetadata').publicKey,
     [
       ['key', getTmKeySerializer(context)],
       ['ledger', s.array(s.u8, 31)],

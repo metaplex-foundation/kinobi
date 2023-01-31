@@ -60,7 +60,7 @@ export async function getDelegateRecordGpaBuilder(
   const s = context.serializer;
   return gpaBuilder<{ key: TmKey; role: DelegateRole; bump: number }>(
     context,
-    context.programs.get('mplTokenMetadata').address,
+    context.programs.get('mplTokenMetadata').publicKey,
     [
       ['key', getTmKeySerializer(context)],
       ['role', getDelegateRoleSerializer(context)],
