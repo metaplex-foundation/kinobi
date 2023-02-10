@@ -1,0 +1,117 @@
+name: Main
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint_fix:
+    name: Fix styling
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Fix linting
+      run: pnpm run lint:fix
+
+    - name: Commit potential changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Fix styling
+
+  lint:
+    name: Check styling
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Check linting
+      run: pnpm run lint
+
+  tests:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["16.x", "18.x"]
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+
+    - name: Setup Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Build and run tests
+      run: pnpm build && pnpm test
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    needs: [lint, tests]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          commit: "Release packages"
+          title: "Release packages"
+          publish: pnpm packages:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
