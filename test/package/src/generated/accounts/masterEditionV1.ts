@@ -19,7 +19,7 @@ import {
   deserializeAccount,
   gpaBuilder,
   mapSerializer,
-} from '@lorisleiva/js-core';
+} from '@metaplex-foundation/umi-core';
 import { TmKey, getTmKeySerializer } from '../types';
 
 export type MasterEditionV1 = Account<MasterEditionV1AccountData>;

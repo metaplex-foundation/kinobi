@@ -18,7 +18,7 @@ import {
   checkForIsWritableOverride as isWritable,
   mapSerializer,
   publicKey,
-} from '@lorisleiva/js-core';
+} from '@metaplex-foundation/umi-core';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 

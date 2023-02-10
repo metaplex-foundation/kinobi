@@ -62,7 +62,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         root: '../..',
         rootHooked: '../../hooked',
         generated: '..',
-        core: '@lorisleiva/js-core',
+        core: '@metaplex-foundation/umi-core',
         mplEssentials: '@lorisleiva/mpl-essentials',
         mplDigitalAsset: '@lorisleiva/mpl-digital-assets',
         ...options.dependencyMap,

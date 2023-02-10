@@ -16,7 +16,7 @@ import {
   mapSerializer,
   publicKey,
   some,
-} from '@lorisleiva/js-core';
+} from '@metaplex-foundation/umi-core';
 import {
   AuthorityType,
   AuthorizationData,

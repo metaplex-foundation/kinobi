@@ -11,7 +11,7 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
-} from '@lorisleiva/js-core';
+} from '@metaplex-foundation/umi-core';
 
 export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 

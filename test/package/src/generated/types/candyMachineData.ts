@@ -12,7 +12,7 @@ import {
   Option,
   Serializer,
   mapAmountSerializer,
-} from '@lorisleiva/js-core';
+} from '@metaplex-foundation/umi-core';
 import {
   CmCreator,
   ConfigLineSettings,

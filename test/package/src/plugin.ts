@@ -1,4 +1,4 @@
-import type { Metaplex, MetaplexPlugin } from '@lorisleiva/js-core';
+import type { Metaplex, MetaplexPlugin } from '@metaplex-foundation/umi-core';
 import {
   getMplCandyMachineCoreProgram,
   getMplTokenAuthRulesProgram,

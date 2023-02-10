@@ -11,7 +11,7 @@ import {
   PublicKey,
   Serializer,
   mapSerializer,
-} from '@lorisleiva/js-core';
+} from '@metaplex-foundation/umi-core';
 
 export type Creator = { address: PublicKey; verified: boolean; share: number };
 

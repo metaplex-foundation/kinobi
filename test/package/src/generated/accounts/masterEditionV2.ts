@@ -21,7 +21,7 @@ import {
   gpaBuilder,
   mapSerializer,
   utf8,
-} from '@lorisleiva/js-core';
+} from '@metaplex-foundation/umi-core';
 import { TmKey, getTmKeySerializer } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;

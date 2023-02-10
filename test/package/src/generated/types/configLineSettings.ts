@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@lorisleiva/js-core';
+import { Context, Serializer } from '@metaplex-foundation/umi-core';
 
 /** Config line settings to allocate space for individual name + URI. */
 export type ConfigLineSettings = {

@@ -6,7 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Option, PublicKey, Serializer } from '@lorisleiva/js-core';
+import {
+  Context,
+  Option,
+  PublicKey,
+  Serializer,
+} from '@metaplex-foundation/umi-core';
 import {
   Collection,
   CollectionArgs,
