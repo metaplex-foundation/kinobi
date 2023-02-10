@@ -81,6 +81,10 @@ jobs:
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
 
+    - name: Install dependencies for generated test package
+      cwd: test/package
+      run: pnpm install --frozen-lockfile
+
     - name: Build and run tests
       run: pnpm build && pnpm test
 
