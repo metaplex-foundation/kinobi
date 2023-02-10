@@ -19,7 +19,7 @@ const {
   vEnum,
   vTuple,
   vPublicKey,
-} = require('../dist/index.js');
+} = require('../dist/cjs/index.js');
 
 const kinobi = new Kinobi([
   __dirname + '/mpl_candy_machine_core.json',
@@ -159,4 +159,4 @@ kinobi.update(
 );
 
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
-kinobi.accept(new RenderJavaScriptVisitor('./package/src/generated'));
+kinobi.accept(new RenderJavaScriptVisitor('.tests/package/src/generated'));

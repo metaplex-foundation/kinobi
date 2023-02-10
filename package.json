@@ -1,16 +1,17 @@
 {
   "name": "@lorisleiva/kinobi",
   "version": "0.0.51",
-  "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Generate powerful clients for your Solana programs",
+  "main": "dist/cjs/index.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.json && pnpm build:njk",
-    "build:njk": "copyfiles -u 1 src/**/*.njk dist/",
+    "build": "rimraf dist && tsc && tsc -p test/tsconfig.json && pnpm build:njk",
+    "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/",
+    "test": "node ./test/testFile.cjs",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
-    "test:cjs": "pnpm build && node ./tests/testFile.cjs",
-    "test:mjs": "pnpm build && node ./tests/testFile.mjs"
+    "test:cjs": "pnpm build && node ./test/testFile.cjs",
+    "test:mjs": "pnpm build && node ./test/testFile.mjs"
   },
   "publishConfig": {
     "access": "public"
