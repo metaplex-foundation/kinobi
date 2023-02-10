@@ -159,4 +159,4 @@ kinobi.update(
 );
 
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
-kinobi.accept(new RenderJavaScriptVisitor('.tests/package/src/generated'));
+kinobi.accept(new RenderJavaScriptVisitor('./test/package/src/generated'));
