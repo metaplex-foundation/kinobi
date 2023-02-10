@@ -10,8 +10,9 @@
     "test": "node ./test/testFile.cjs",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
-    "test:cjs": "pnpm build && node ./test/testFile.cjs",
-    "test:mjs": "pnpm build && node ./test/testFile.mjs"
+    "package:change": "changeset",
+    "package:version": "changeset version",
+    "package:publish": "pnpm lint && pnpm build && changeset publish"
   },
   "publishConfig": {
     "access": "public"
