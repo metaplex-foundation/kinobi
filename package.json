@@ -4,10 +4,15 @@
   "description": "Generate powerful clients for your Solana programs",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
+  "files": [
+    "/dist/cjs",
+    "/dist/types",
+    "/src"
+  ],
   "scripts": {
     "build": "rimraf dist && tsc && tsc -p test/tsconfig.json && pnpm build:njk",
-    "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/",
-    "test": "node ./test/testFile.cjs",
+    "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/ && copyfiles -u 1 src/**/*.njk dist/test/src/",
+    "test": "ava && node ./test/testFile.cjs",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
     "package:change": "changeset",
@@ -17,10 +22,16 @@
   "publishConfig": {
     "access": "public"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "solana",
+    "client",
+    "framework",
+    "generator"
+  ],
+  "author": "Metaplex Maintainers <contact@metaplex.com>",
   "license": "MIT",
   "devDependencies": {
+    "@ava/typescript": "^3.0.1",
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
     "@types/node": "^18.11.17",
@@ -28,6 +39,7 @@
     "@types/prettier": "^2.7.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.46.1",
+    "ava": "^5.1.0",
     "copyfiles": "^2.4.1",
     "eslint": "^8.0.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
@@ -42,6 +54,16 @@
     "chalk": "^4.0.0",
     "nunjucks": "^3.2.3",
     "prettier": "^2.8.1"
+  },
+  "ava": {
+    "files": ["!test/package", "test/**/*.test.ts"],
+    "typescript": {
+      "compile": false,
+      "rewritePaths": {
+        "src/": "dist/test/src/",
+        "test/": "dist/test/test/"
+      }
+    }
   },
   "packageManager": "pnpm@7.18.1"
 }
