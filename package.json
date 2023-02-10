@@ -30,6 +30,9 @@
   ],
   "author": "Metaplex Maintainers <contact@metaplex.com>",
   "license": "MIT",
+  "repository": {
+    "url": "https://github.com/metaplex-foundation/kinobi.git"
+  },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
     "@changesets/changelog-github": "^0.4.8",
