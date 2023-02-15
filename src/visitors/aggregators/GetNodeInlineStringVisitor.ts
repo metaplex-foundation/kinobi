@@ -84,7 +84,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): string {
-    return typeLeaf.type;
+    return typeLeaf.toString();
   }
 
   visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): string {

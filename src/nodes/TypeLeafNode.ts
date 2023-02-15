@@ -1,38 +1,52 @@
+import type { IdlTypeLeaf } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
-export const LEAF_TYPES = [
-  'string',
-  'publicKey',
-  'bytes',
-  'bool',
-  'u8',
-  'u16',
-  'u32',
-  'u64',
-  'u128',
-  'i8',
-  'i16',
-  'i32',
-  'i64',
-  'i128',
-  'f32',
-  'f64',
-] as const;
+export type NumberLeafType =
+  | 'u8'
+  | 'u16'
+  | 'u32'
+  | 'u64'
+  | 'u128'
+  | 'i8'
+  | 'i16'
+  | 'i32'
+  | 'i64'
+  | 'i128'
+  | 'f32'
+  | 'f64';
 
-export type LeafType = typeof LEAF_TYPES[number];
+export type LeafType =
+  | { kind: 'number'; number: NumberLeafType }
+  | { kind: 'bool'; prefix: NumberLeafType }
+  | { kind: 'string'; prefix: NumberLeafType }
+  | { kind: 'fixedString'; bytes: number }
+  | { kind: 'variableString' }
+  | { kind: 'bytes' }
+  | { kind: 'publicKey' };
 
 export class TypeLeafNode implements Visitable {
   readonly nodeClass = 'TypeLeafNode' as const;
 
-  readonly type: LeafType;
+  readonly leaf: LeafType;
 
-  constructor(type: LeafType) {
-    this.type = type;
+  constructor(leaf: LeafType) {
+    this.leaf = leaf;
   }
 
-  static isValidType(type: string): type is LeafType {
-    return LEAF_TYPES.includes(type as LeafType);
+  static fromIdl(type: IdlTypeLeaf): TypeLeafNode {
+    switch (type) {
+      case 'bool':
+        return new TypeLeafNode({ kind: 'bool', prefix: 'u8' });
+      case 'string':
+        return new TypeLeafNode({ kind: 'string', prefix: 'u32' });
+      case 'publicKey':
+        return new TypeLeafNode({ kind: 'publicKey' });
+      case 'bytes':
+        return new TypeLeafNode({ kind: 'bytes' });
+      default:
+        return new TypeLeafNode({ kind: 'number', number: type });
+    }
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -40,23 +54,40 @@ export class TypeLeafNode implements Visitable {
   }
 
   isSignedInteger(): boolean {
-    return ['i8', 'i16', 'i32', 'i64', 'i128'].includes(this.type);
+    return this.isNumber() && this.leaf.number.startsWith('i');
   }
 
   isUnsignedInteger(): boolean {
-    return ['u8', 'u16', 'u32', 'u64', 'u128'].includes(this.type);
+    return this.isNumber() && this.leaf.number.startsWith('u');
   }
 
   isInteger(): boolean {
-    return this.isSignedInteger() || this.isUnsignedInteger();
+    return this.isNumber() && !this.leaf.number.startsWith('f');
   }
 
   isDecimal(): boolean {
-    return ['f32', 'f64'].includes(this.type);
+    return this.isNumber() && this.leaf.number.startsWith('f');
   }
 
-  isNumber(): boolean {
-    return this.isInteger() || this.isDecimal();
+  isNumber(): this is TypeLeafNode & {
+    leaf: Extract<LeafType, { kind: 'number' }>;
+  } {
+    return this.leaf.kind === 'number';
+  }
+
+  toString(): string {
+    switch (this.leaf.kind) {
+      case 'number':
+        return `number(${this.leaf.number})`;
+      case 'fixedString':
+        return `fixedString(${this.leaf.bytes})`;
+      case 'string':
+        return `string(${this.leaf.prefix})`;
+      case 'bool':
+        return `bool(${this.leaf.prefix})`;
+      default:
+        return this.leaf.kind;
+    }
   }
 }
 

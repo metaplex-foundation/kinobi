@@ -173,7 +173,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   }
 
   visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): string {
-    return this.indented(`[TypeLeafNode] ${typeLeaf.type}`);
+    return this.indented(`[TypeLeafNode] ${typeLeaf.toString()}`);
   }
 
   visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): string {

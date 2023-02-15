@@ -55,18 +55,22 @@ export type IdlTypeEnumFields = IdlTypeEnumField[] | IdlType[];
 export type IdlTypeEnumField = { name: string; type: IdlType; docs?: string[] };
 
 // Leaves.
-export type IdlTypeLeaf = IdlTypeNumber | 'string' | 'publicKey' | 'bytes';
-export type IdlTypeNumber =
-  | 'bool'
-  | 'u8'
-  | 'u16'
-  | 'u32'
-  | 'u64'
-  | 'u128'
-  | 'i8'
-  | 'i16'
-  | 'i32'
-  | 'i64'
-  | 'i128'
-  | 'f32'
-  | 'f64';
+export const IDL_TYPE_LEAVES = [
+  'string',
+  'publicKey',
+  'bytes',
+  'bool',
+  'u8',
+  'u16',
+  'u32',
+  'u64',
+  'u128',
+  'i8',
+  'i16',
+  'i32',
+  'i64',
+  'i128',
+  'f32',
+  'f64',
+] as const;
+export type IdlTypeLeaf = typeof IDL_TYPE_LEAVES[number];
