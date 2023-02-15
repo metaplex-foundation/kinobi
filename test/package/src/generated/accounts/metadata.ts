@@ -20,7 +20,6 @@ import {
   deserializeAccount,
   gpaBuilder,
   mapSerializer,
-  utf8,
 } from '@metaplex-foundation/umi-core';
 import {
   Collection,
@@ -252,7 +251,7 @@ export function findMetadataPda(
   const programId: PublicKey =
     context.programs.get('mplTokenMetadata').publicKey;
   return context.eddsa.findPda(programId, [
-    utf8.serialize('metadata'),
+    s.variableString().serialize('metadata'),
     programId.bytes,
     s.publicKey.serialize(seeds.mint),
   ]);

@@ -234,12 +234,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Seeds.
+    const pdaHelperNeedsSerializer =
+      account.metadata.seeds.filter((seed) => seed.kind !== 'programId')
+        .length > 0;
     const seeds = account.metadata.seeds.map((seed) => {
-      if (seed.kind === 'programId') return seed;
-      if (seed.kind === 'literal') {
-        imports.add('core', 'utf8');
-        return seed;
-      }
+      if (seed.kind !== 'variable') return seed;
       const seedManifest = seed.type.accept(this.typeManifestVisitor);
       imports.mergeWith(seedManifest.imports);
       return { ...seed, typeManifest: seedManifest };
@@ -258,6 +257,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         gpaFields,
         discriminatorValue: discriminatorValue?.render,
         seeds,
+        pdaHelperNeedsSerializer,
       })
     );
   }

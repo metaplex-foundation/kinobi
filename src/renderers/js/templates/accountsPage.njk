@@ -90,7 +90,7 @@ export function get{{ account.name | pascalCase }}Size(
 
 {% if seeds.length > 0 %}
 export function find{{ account.name | pascalCase }}Pda(
-  context: Pick<Context, 'eddsa' | 'programs'{% if account.hasVariableSeeds %} | 'serializer'{% endif %}>,
+  context: Pick<Context, 'eddsa' | 'programs'{% if pdaHelperNeedsSerializer %} | 'serializer'{% endif %}>,
   {% if account.hasVariableSeeds %}
     seeds: {
       {% for seed in seeds %}
@@ -102,7 +102,7 @@ export function find{{ account.name | pascalCase }}Pda(
     }
   {% endif %}
 ): Pda {
-  {% if account.hasVariableSeeds %}
+  {% if pdaHelperNeedsSerializer %}
     const s = context.serializer;
   {% endif %}
   const programId: PublicKey = context.programs.get('{{ program.metadata.name | camelCase }}').publicKey;
@@ -111,7 +111,7 @@ export function find{{ account.name | pascalCase }}Pda(
       {% if seed.kind === 'programId' %}
         programId.bytes,
       {% elif seed.kind === 'literal' %}
-        utf8.serialize("{{ seed.value }}"),
+        s.variableString().serialize("{{ seed.value }}"),
       {% else %}
         {{ seed.typeManifest.serializer }}.serialize(seeds.{{ seed.name | camelCase }}),
       {% endif %}

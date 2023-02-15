@@ -20,7 +20,6 @@ import {
   deserializeAccount,
   gpaBuilder,
   mapSerializer,
-  utf8,
 } from '@metaplex-foundation/umi-core';
 import { TmKey, getTmKeySerializer } from '../types';
 
@@ -153,9 +152,9 @@ export function findMasterEditionV2Pda(
   const programId: PublicKey =
     context.programs.get('mplTokenMetadata').publicKey;
   return context.eddsa.findPda(programId, [
-    utf8.serialize('metadata'),
+    s.variableString().serialize('metadata'),
     programId.bytes,
     s.publicKey.serialize(seeds.mint),
-    utf8.serialize('edition'),
+    s.variableString().serialize('edition'),
   ]);
 }
