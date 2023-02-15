@@ -54,11 +54,11 @@ export class TypeLeafNode implements Visitable {
   }
 
   isSignedInteger(): boolean {
-    return this.isNumber() && !this.leaf.number.startsWith('i');
+    return this.isNumber() && this.leaf.number.startsWith('i');
   }
 
   isUnsignedInteger(): boolean {
-    return this.isNumber() && !this.leaf.number.startsWith('u');
+    return this.isNumber() && this.leaf.number.startsWith('u');
   }
 
   isInteger(): boolean {
