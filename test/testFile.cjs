@@ -45,7 +45,7 @@ kinobi.update(
           kind: 'variable',
           name: 'mint',
           description: 'The address of the mint account',
-          type: new TypeLeafNode('publicKey'),
+          type: new TypeLeafNode({ kind: 'publicKey' }),
         },
         { kind: 'literal', value: 'edition' },
       ],
