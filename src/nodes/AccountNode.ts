@@ -103,7 +103,7 @@ export class AccountNode implements Visitable {
   > {
     return this.metadata.seeds.reduce((acc, seed) => {
       if (seed.kind !== 'variable') return acc;
-      if (isTypeLeafNode(seed.type) && seed.type.type === 'publicKey') {
+      if (isTypeLeafNode(seed.type) && seed.type.leaf.kind === 'publicKey') {
         acc[seed.name] = { kind: 'account', name: seed.name };
       } else {
         acc[seed.name] = { kind: 'arg', name: seed.name };

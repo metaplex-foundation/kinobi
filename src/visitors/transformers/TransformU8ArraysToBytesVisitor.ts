@@ -12,10 +12,11 @@ export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
 
     if (
       nodes.isTypeLeafNode(type) &&
-      type.type === 'u8' &&
+      type.isNumber() &&
+      type.leaf.number === 'u8' &&
       this.hasRequiredSize(typeArray.size)
     ) {
-      return new nodes.TypeLeafNode('bytes');
+      return nodes.TypeLeafNode.fromIdl('bytes');
     }
 
     return new nodes.TypeArrayNode(type, typeArray.size);

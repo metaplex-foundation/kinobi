@@ -128,7 +128,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         if (!leaf.isInteger()) {
           bag.error(
             `DateTime wrapper can only be applied to ` +
-              `integer types. Got type [${leaf.type}].`,
+              `integer types. Got type [${leaf.toString()}].`,
             typeLeafWrapper,
             this.stack
           );
@@ -138,7 +138,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         if (!leaf.isUnsignedInteger()) {
           bag.error(
             `Amount wrapper can only be applied to ` +
-              `unsigned integer types. Got type [${leaf.type}].`,
+              `unsigned integer types. Got type [${leaf.toString()}].`,
             typeLeafWrapper,
             this.stack
           );

@@ -32,7 +32,7 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
                   value: discriminator.value,
                 },
               },
-              discriminator.type ?? new nodes.TypeLeafNode('u8')
+              discriminator.type ?? nodes.TypeLeafNode.fromIdl('u8')
             );
 
             return new nodes.InstructionNode(

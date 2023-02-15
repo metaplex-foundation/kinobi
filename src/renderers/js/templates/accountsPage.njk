@@ -112,6 +112,8 @@ export function find{{ account.name | pascalCase }}Pda(
         programId.bytes,
       {% elif seed.kind === 'literal' %}
         utf8.serialize("{{ seed.value }}"),
+      {% elif seed.type %}
+        utf8.serialize(seeds.{{ seed.name | camelCase }}),
       {% else %}
         {{ seed.typeManifest.serializer }}.serialize(seeds.{{ seed.name | camelCase }}),
       {% endif %}

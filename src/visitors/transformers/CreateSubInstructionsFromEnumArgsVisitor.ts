@@ -60,7 +60,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                         value: nodes.vScalar(index),
                       },
                     },
-                    new nodes.TypeLeafNode('u8')
+                    nodes.TypeLeafNode.fromIdl('u8')
                   )
                 );
                 if (nodes.isTypeEnumStructVariantNode(variant)) {

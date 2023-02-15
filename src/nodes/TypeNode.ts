@@ -1,4 +1,4 @@
-import type { IdlType } from '../idl';
+import { IdlType, IDL_TYPE_LEAVES } from '../idl';
 import type { Node } from './Node';
 import { TypeArrayNode } from './TypeArrayNode';
 import { TypeDefinedLinkNode } from './TypeDefinedLinkNode';
@@ -45,8 +45,8 @@ function isArrayOfSize(array: any, size: number): boolean {
 
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
-  if (typeof idlType === 'string' && TypeLeafNode.isValidType(idlType)) {
-    return new TypeLeafNode(idlType);
+  if (typeof idlType === 'string' && IDL_TYPE_LEAVES.includes(idlType)) {
+    return TypeLeafNode.fromIdl(idlType);
   }
 
   // Ensure eveything else is an object.

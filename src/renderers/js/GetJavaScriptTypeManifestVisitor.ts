@@ -269,15 +269,27 @@ export class GetJavaScriptTypeManifestVisitor
     ): JavaScriptTypeManifest => ({
       strictType,
       looseType: looseType ?? strictType,
-      serializer: this.s(typeLeaf.type),
+      serializer: this.s(typeLeaf.leaf.kind),
       hasLooseType: !!looseType,
       isEnum: false,
       imports: new JavaScriptImportMap(),
     });
 
-    switch (typeLeaf.type) {
+    switch (typeLeaf.leaf.kind) {
       case 'string':
-        return { ...base('string'), serializer: this.s('string()') };
+        const stringPrefix =
+          typeLeaf.leaf.prefix === 'u32' ? '' : this.s(typeLeaf.leaf.prefix);
+        return {
+          ...base('string'),
+          serializer: this.s(`string(${stringPrefix})`),
+        };
+      case 'fixedString':
+        return {
+          ...base('string'),
+          serializer: this.s(`fixedString(${typeLeaf.leaf.bytes})`),
+        };
+      case 'variableString':
+        return { ...base('string'), serializer: this.s('variableString()') };
       case 'bytes':
         return { ...base('Uint8Array') };
       case 'publicKey':
@@ -286,14 +298,27 @@ export class GetJavaScriptTypeManifestVisitor
           imports: new JavaScriptImportMap().add('core', 'PublicKey'),
         };
       case 'bool':
-        return { ...base('boolean'), serializer: this.s('bool()') };
-      case 'u64':
-      case 'u128':
-      case 'i64':
-      case 'i128':
-        return { ...base('bigint', 'number | bigint') };
+        const boolPrefix =
+          typeLeaf.leaf.prefix === 'u8' ? '' : this.s(typeLeaf.leaf.prefix);
+        return {
+          ...base('boolean'),
+          serializer: this.s(`bool(${boolPrefix})`),
+        };
+      case 'number':
+        const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
+          typeLeaf.leaf.number
+        );
+        const numberBase = isBigNumber
+          ? base('bigint', 'number | bigint')
+          : base('number');
+        return {
+          ...numberBase,
+          serializer: this.s(typeLeaf.leaf.number),
+        };
       default:
-        return { ...base('number') };
+        // eslint-disable-next-line prefer-destructuring
+        const leaf: never = typeLeaf.leaf;
+        throw new Error(`Unknown type leaf kind: ${(leaf as any).kind}`);
     }
   }
 
@@ -307,7 +332,7 @@ export class GetJavaScriptTypeManifestVisitor
         if (!typeLeafWrapper.leaf.isInteger()) {
           throw new Error(
             `DateTime wrappers can only be applied to integer ` +
-              `types. Got type [${typeLeafWrapper.leaf.type}].`
+              `types. Got type [${typeLeafWrapper.leaf.toString()}].`
           );
         }
         return {
@@ -326,7 +351,7 @@ export class GetJavaScriptTypeManifestVisitor
         if (!typeLeafWrapper.leaf.isUnsignedInteger()) {
           throw new Error(
             `Amount wrappers can only be applied to unsigned ` +
-              `integer types. Got type [${typeLeafWrapper.leaf.type}].`
+              `integer types. Got type [${typeLeafWrapper.leaf.toString()}].`
           );
         }
         const identifier =
