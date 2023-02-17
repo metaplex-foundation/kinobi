@@ -12,6 +12,7 @@
   "scripts": {
     "build": "rimraf dist && tsc && tsc -p test/tsconfig.json && pnpm build:njk",
     "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/ && copyfiles -u 1 src/**/*.njk dist/test/src/",
+    "build:docs": "typedoc",
     "test": "ava && node ./test/testFile.cjs",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
@@ -50,6 +51,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "rimraf": "^3.0.2",
+    "typedoc": "^0.23.25",
     "typescript": "^4.9.4"
   },
   "dependencies": {
