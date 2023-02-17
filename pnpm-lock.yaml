@@ -22,6 +22,7 @@ specifiers:
   prettier: ^2.8.1
   rimraf: ^3.0.2
   typedoc: ^0.23.25
+  typedoc-plugin-missing-exports: ^1.0.0
   typescript: ^4.9.4
 
 dependencies:
@@ -48,6 +49,7 @@ devDependencies:
   eslint-plugin-prettier: 4.2.1_5dgjrgoi64tgrv3zzn3walur3u
   rimraf: 3.0.2
   typedoc: 0.23.25_typescript@4.9.4
+  typedoc-plugin-missing-exports: 1.0.0_typedoc@0.23.25
   typescript: 4.9.4
 
 packages:
@@ -3291,6 +3293,14 @@ packages:
   /type-fest/0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
+    dev: true
+
+  /typedoc-plugin-missing-exports/1.0.0_typedoc@0.23.25:
+    resolution: {integrity: sha512-7s6znXnuAj1eD9KYPyzVzR1lBF5nwAY8IKccP5sdoO9crG4lpd16RoFpLsh2PccJM+I2NASpr0+/NMka6ThwVA==}
+    peerDependencies:
+      typedoc: 0.22.x || 0.23.x
+    dependencies:
+      typedoc: 0.23.25_typescript@4.9.4
     dev: true
 
   /typedoc/0.23.25_typescript@4.9.4:

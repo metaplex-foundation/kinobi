@@ -17,7 +17,8 @@
   "typedocOptions": {
     "entryPoints": ["src/index.ts"],
     "out": "docs",
-    "name": "API References",
+    "readme": "none",
     "includeVersion": true,
+    "excludeExternals": true,
   }
 }
