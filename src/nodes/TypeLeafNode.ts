@@ -17,7 +17,7 @@ export type NumberLeafType =
   | 'f64';
 
 export type LeafType =
-  | { kind: 'number'; number: NumberLeafType }
+  | { kind: 'number'; number: NumberLeafType; endian: 'le' | 'be' }
   | { kind: 'bool'; prefix: NumberLeafType }
   | { kind: 'string'; prefix: NumberLeafType }
   | { kind: 'fixedString'; bytes: number }
