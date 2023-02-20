@@ -2,29 +2,40 @@ import type { IdlTypeOption } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
-
-export type TypeOptionNodeMetadata = {
-  idlType: 'option' | 'coption';
-  prefix: TypeLeafNode; // TODO: Unsigned Number?
-  fixed: boolean;
-};
+import { TypeNumberNode } from './TypeNumberNode';
 
 export class TypeOptionNode implements Visitable {
   readonly nodeClass = 'TypeOptionNode' as const;
 
-  readonly metadata: TypeOptionNodeMetadata;
+  readonly item: TypeNode;
 
-  readonly type: TypeNode;
+  readonly prefix: TypeNumberNode;
 
-  constructor(metadata: TypeOptionNodeMetadata, type: TypeNode) {
-    this.metadata = metadata;
-    this.type = type;
+  readonly fixed: boolean;
+
+  readonly idlType: 'option' | 'coption';
+
+  constructor(
+    item: TypeNode,
+    options: {
+      prefix?: TypeNumberNode;
+      fixed?: boolean;
+      idlType?: TypeOptionNode['idlType'];
+    } = {}
+  ) {
+    this.item = item;
+    this.prefix = options.prefix ?? new TypeNumberNode('u8');
+    this.fixed = options.fixed ?? false;
+    this.idlType = options.idlType ?? 'option';
   }
 
   static fromIdl(idl: IdlTypeOption): TypeOptionNode {
-    const optionType = 'option' in idl ? 'option' : 'coption';
-    const idlType = 'option' in idl ? idl.option : idl.coption;
-    return new TypeOptionNode(optionType, createTypeNodeFromIdl(idlType));
+    const item = 'option' in idl ? idl.option : idl.coption;
+    return new TypeOptionNode(createTypeNodeFromIdl(item), {
+      prefix: new TypeNumberNode('option' in idl ? 'u8' : 'u32'),
+      fixed: !('option' in idl),
+      idlType: 'option' in idl ? 'option' : 'coption',
+    });
   }
 
   accept<T>(visitor: Visitor<T>): T {

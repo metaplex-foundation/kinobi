@@ -1,41 +1,48 @@
 import type { IdlTypeMap } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
-
-export type TypeMapNodeMetadata = {
-  idlType: 'hashMap' | 'bTreeMap';
-  size:
-    | { kind: 'fixed'; number: number }
-    | { kind: 'prefixed'; prefix: TypeLeafNode } // TODO: Unsigned Number?
-    | { kind: 'remainder' };
-};
+import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { TypeNumberNode } from './TypeNumberNode';
 
 export class TypeMapNode implements Visitable {
   readonly nodeClass = 'TypeMapNode' as const;
 
-  readonly metadata: TypeMapNodeMetadata;
+  readonly key: TypeNode;
 
-  readonly keyType: TypeNode;
+  readonly value: TypeNode;
 
-  readonly valueType: TypeNode;
+  readonly size:
+    | { kind: 'fixed'; size: number }
+    | { kind: 'prefixed'; prefix: TypeNumberNode }
+    | { kind: 'remainder' };
+
+  readonly idlType: 'hashMap' | 'bTreeMap';
 
   constructor(
-    metadata: TypeMapNodeMetadata,
-    keyType: TypeNode,
-    valueType: TypeNode
+    key: TypeNode,
+    value: TypeNode,
+    options: {
+      size?: TypeMapNode['size'];
+      idlType?: 'hashMap' | 'bTreeMap';
+    } = {}
   ) {
-    this.metadata = metadata;
-    this.keyType = keyType;
-    this.valueType = valueType;
+    this.key = key;
+    this.value = value;
+    this.size = options.size ?? {
+      kind: 'prefixed',
+      prefix: new TypeNumberNode('u32'),
+    };
+    this.idlType = options.idlType ?? 'hashMap';
   }
 
   static fromIdl(idl: IdlTypeMap): TypeMapNode {
-    const mapType = 'hashMap' in idl ? 'hashMap' : 'bTreeMap';
+    const idlType = 'hashMap' in idl ? 'hashMap' : 'bTreeMap';
     const [key, value] = 'hashMap' in idl ? idl.hashMap : idl.bTreeMap;
-    const keyType = createTypeNodeFromIdl(key);
-    const valueType = createTypeNodeFromIdl(value);
-    return new TypeMapNode(mapType, keyType, valueType);
+    return new TypeMapNode(
+      createTypeNodeFromIdl(key),
+      createTypeNodeFromIdl(value),
+      { idlType }
+    );
   }
 
   accept<T>(visitor: Visitor<T>): T {

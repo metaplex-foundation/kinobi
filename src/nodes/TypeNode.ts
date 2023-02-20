@@ -6,6 +6,7 @@ import { TypeEnumNode } from './TypeEnumNode';
 import { TypeLeafNode } from './TypeLeafNode';
 import { TypeLeafWrapperNode } from './TypeLeafWrapperNode';
 import { TypeMapNode } from './TypeMapNode';
+import { TypeNumberNode } from './TypeNumberNode';
 import { TypeOptionNode } from './TypeOptionNode';
 import { TypeSetNode } from './TypeSetNode';
 import { TypeStructNode } from './TypeStructNode';
@@ -44,7 +45,11 @@ function isArrayOfSize(array: any, size: number): boolean {
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
   if (typeof idlType === 'string' && IDL_TYPE_LEAVES.includes(idlType)) {
-    return TypeLeafNode.fromIdl(idlType);
+    if (idlType === 'bool') return TypeLeafNode.fromIdl(idlType);
+    if (idlType === 'string') return TypeLeafNode.fromIdl(idlType);
+    if (idlType === 'publicKey') return TypeLeafNode.fromIdl(idlType);
+    if (idlType === 'bytes') return TypeLeafNode.fromIdl(idlType);
+    return new TypeNumberNode(idlType);
   }
 
   // Ensure eveything else is an object.
