@@ -3,7 +3,7 @@ import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 type Discriminator = {
   value: nodes.ValueNode;
-  /** @defaultValue `new TypeLeafNode('u32')` */
+  /** @defaultValue `new TypeNumberNode('u8')` */
   type?: nodes.TypeNode;
   /** @defaultValue `"discriminator"` */
   name?: string;
@@ -32,7 +32,7 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
                   value: discriminator.value,
                 },
               },
-              discriminator.type ?? nodes.TypeLeafNode.fromIdl('u8')
+              discriminator.type ?? new nodes.TypeNumberNode('u8')
             );
 
             return new nodes.InstructionNode(

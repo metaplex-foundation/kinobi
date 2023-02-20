@@ -133,22 +133,6 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedTypeEnumTupleVariant);
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node | null {
-    this.stack.push(typeLeaf);
-    const visitedTypeLeaf = super.visitTypeLeaf(typeLeaf);
-    this.stack.pop();
-    return this.applyTransforms(visitedTypeLeaf);
-  }
-
-  visitTypeLeafWrapper(
-    typeLeafWrapper: nodes.TypeLeafWrapperNode
-  ): nodes.Node | null {
-    this.stack.push(typeLeafWrapper);
-    const visitedTypeLeafWrapper = super.visitTypeLeafWrapper(typeLeafWrapper);
-    this.stack.pop();
-    return this.applyTransforms(visitedTypeLeafWrapper);
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node | null {
     this.stack.push(typeMap);
     const visitedTypeMap = super.visitTypeMap(typeMap);
@@ -193,11 +177,52 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedTypeTuple);
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): nodes.Node | null {
-    this.stack.push(typeVec);
-    const visitedTypeVec = super.visitTypeVec(typeVec);
+  visitTypeBool(typeBool: nodes.TypeBoolNode): nodes.Node | null {
+    this.stack.push(typeBool);
+    const visitedTypeBool = super.visitTypeBool(typeBool);
     this.stack.pop();
-    return this.applyTransforms(visitedTypeVec);
+    return this.applyTransforms(visitedTypeBool);
+  }
+
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): nodes.Node | null {
+    this.stack.push(typeBytes);
+    const visitedTypeBytes = super.visitTypeBytes(typeBytes);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeBytes);
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): nodes.Node | null {
+    this.stack.push(typeNumber);
+    const visitedTypeNumber = super.visitTypeNumber(typeNumber);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeNumber);
+  }
+
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  ): nodes.Node | null {
+    this.stack.push(typeNumberWrapper);
+    const visitedTypeNumberWrapper = super.visitTypeNumberWrapper(
+      typeNumberWrapper
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeNumberWrapper);
+  }
+
+  visitTypePublicKey(
+    typePublicKey: nodes.TypePublicKeyNode
+  ): nodes.Node | null {
+    this.stack.push(typePublicKey);
+    const visitedTypePublicKey = super.visitTypePublicKey(typePublicKey);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypePublicKey);
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): nodes.Node | null {
+    this.stack.push(typeString);
+    const visitedTypeString = super.visitTypeString(typeString);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeString);
   }
 
   protected applyTransforms(node: nodes.Node | null): nodes.Node | null {
