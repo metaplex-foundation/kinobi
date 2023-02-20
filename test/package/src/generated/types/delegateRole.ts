@@ -22,5 +22,5 @@ export function getDelegateRoleSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<DelegateRole> {
   const s = context.serializer;
-  return s.enum<DelegateRole>(DelegateRole, 'DelegateRole');
+  return s.enum<DelegateRole>(DelegateRole, { description: 'DelegateRole' });
 }

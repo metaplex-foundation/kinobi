@@ -17,5 +17,5 @@ export function getTaKeySerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<TaKey> {
   const s = context.serializer;
-  return s.enum<TaKey>(TaKey, 'TaKey');
+  return s.enum<TaKey>(TaKey, { description: 'TaKey' });
 }

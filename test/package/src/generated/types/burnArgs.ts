@@ -16,5 +16,5 @@ export function getBurnArgsSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<BurnArgs> {
   const s = context.serializer;
-  return s.enum<BurnArgs>(BurnArgs, 'BurnArgs');
+  return s.enum<BurnArgs>(BurnArgs, { description: 'BurnArgs' });
 }

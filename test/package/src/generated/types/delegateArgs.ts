@@ -31,7 +31,7 @@ export function getDelegateArgsSerializer(
   const s = context.serializer;
   return s.dataEnum<DelegateArgs>(
     [
-      ['CollectionV1', s.unit],
+      ['CollectionV1', s.unit()],
       [
         'SaleV1',
         s.struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>(

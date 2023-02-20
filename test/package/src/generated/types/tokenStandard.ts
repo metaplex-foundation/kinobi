@@ -20,5 +20,5 @@ export function getTokenStandardSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<TokenStandard> {
   const s = context.serializer;
-  return s.enum<TokenStandard>(TokenStandard, 'TokenStandard');
+  return s.enum<TokenStandard>(TokenStandard, { description: 'TokenStandard' });
 }

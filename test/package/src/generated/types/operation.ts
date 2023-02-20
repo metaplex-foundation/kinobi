@@ -19,5 +19,5 @@ export function getOperationSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<Operation> {
   const s = context.serializer;
-  return s.enum<Operation>(Operation, 'Operation');
+  return s.enum<Operation>(Operation, { description: 'Operation' });
 }

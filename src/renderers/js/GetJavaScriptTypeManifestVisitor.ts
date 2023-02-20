@@ -171,7 +171,7 @@ export class GetJavaScriptTypeManifestVisitor
         isEnum: true,
         serializer:
           `${this.s('enum')}<${definedName.strict}>` +
-          `(${definedName.strict}, '${definedName.strict}')`,
+          `(${definedName.strict}, { description: '${definedName.strict}' })`,
         imports: new JavaScriptImportMap(),
       };
     }
@@ -225,7 +225,7 @@ export class GetJavaScriptTypeManifestVisitor
       looseType: `{ ${kindAttribute} }`,
       hasLooseType: false,
       isEnum: false,
-      serializer: `['${name}', ${this.s('unit')}]`,
+      serializer: `['${name}', ${this.s('unit()')}]`,
       imports: new JavaScriptImportMap(),
     };
   }

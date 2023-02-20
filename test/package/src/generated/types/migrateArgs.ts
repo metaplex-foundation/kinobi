@@ -16,5 +16,5 @@ export function getMigrateArgsSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MigrateArgs> {
   const s = context.serializer;
-  return s.enum<MigrateArgs>(MigrateArgs, 'MigrateArgs');
+  return s.enum<MigrateArgs>(MigrateArgs, { description: 'MigrateArgs' });
 }
