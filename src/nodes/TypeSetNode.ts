@@ -3,15 +3,23 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
+export type TypeSetNodeMetadata = {
+  idlType: 'hashSet' | 'bTreeSet';
+  size:
+    | { kind: 'fixed'; number: number }
+    | { kind: 'prefixed'; prefix: TypeLeafNode } // TODO: Unsigned Number?
+    | { kind: 'remainder' };
+};
+
 export class TypeSetNode implements Visitable {
   readonly nodeClass = 'TypeSetNode' as const;
 
-  readonly setType: 'hashSet' | 'bTreeSet';
+  readonly metadata: TypeSetNodeMetadata;
 
   readonly type: TypeNode;
 
-  constructor(setType: 'hashSet' | 'bTreeSet', type: TypeNode) {
-    this.setType = setType;
+  constructor(metadata: TypeSetNodeMetadata, type: TypeNode) {
+    this.metadata = metadata;
     this.type = type;
   }
 

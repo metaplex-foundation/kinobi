@@ -3,21 +3,29 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
+export type TypeMapNodeMetadata = {
+  idlType: 'hashMap' | 'bTreeMap';
+  size:
+    | { kind: 'fixed'; number: number }
+    | { kind: 'prefixed'; prefix: TypeLeafNode } // TODO: Unsigned Number?
+    | { kind: 'remainder' };
+};
+
 export class TypeMapNode implements Visitable {
   readonly nodeClass = 'TypeMapNode' as const;
 
-  readonly mapType: 'hashMap' | 'bTreeMap';
+  readonly metadata: TypeMapNodeMetadata;
 
   readonly keyType: TypeNode;
 
   readonly valueType: TypeNode;
 
   constructor(
-    mapType: 'hashMap' | 'bTreeMap',
+    metadata: TypeMapNodeMetadata,
     keyType: TypeNode,
     valueType: TypeNode
   ) {
-    this.mapType = mapType;
+    this.metadata = metadata;
     this.keyType = keyType;
     this.valueType = valueType;
   }

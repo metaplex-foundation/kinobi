@@ -3,15 +3,21 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
+export type TypeOptionNodeMetadata = {
+  idlType: 'option' | 'coption';
+  prefix: TypeLeafNode; // TODO: Unsigned Number?
+  fixed: boolean;
+};
+
 export class TypeOptionNode implements Visitable {
   readonly nodeClass = 'TypeOptionNode' as const;
 
-  readonly optionType: 'option' | 'coption';
+  readonly metadata: TypeOptionNodeMetadata;
 
   readonly type: TypeNode;
 
-  constructor(optionType: 'option' | 'coption', type: TypeNode) {
-    this.optionType = optionType;
+  constructor(metadata: TypeOptionNodeMetadata, type: TypeNode) {
+    this.metadata = metadata;
     this.type = type;
   }
 

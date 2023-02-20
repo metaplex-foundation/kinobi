@@ -10,7 +10,6 @@ import { TypeOptionNode } from './TypeOptionNode';
 import { TypeSetNode } from './TypeSetNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeTupleNode } from './TypeTupleNode';
-import { TypeVecNode } from './TypeVecNode';
 
 export type TypeNode =
   | TypeArrayNode
@@ -22,8 +21,7 @@ export type TypeNode =
   | TypeOptionNode
   | TypeSetNode
   | TypeStructNode
-  | TypeTupleNode
-  | TypeVecNode;
+  | TypeTupleNode;
 
 const TYPE_NODE_CLASSES = [
   'TypeArrayNode',
