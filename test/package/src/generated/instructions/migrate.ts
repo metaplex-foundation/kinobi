@@ -65,7 +65,7 @@ export function getMigrateInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['migrateArgs', getMigrateArgsSerializer(context)],
       ],
-      'MigrateInstructionArgs'
+      { description: 'MigrateInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 50 } as MigrateInstructionData)
   ) as Serializer<MigrateInstructionArgs, MigrateInstructionData>;

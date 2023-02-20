@@ -90,7 +90,10 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
           getMintNewEditionFromMasterEditionViaTokenArgsSerializer(context),
         ],
       ],
-      'MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs'
+      {
+        description:
+          'MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs',
+      }
     ),
     (value) =>
       ({

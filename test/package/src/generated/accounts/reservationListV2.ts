@@ -148,7 +148,7 @@ export function getReservationListV2AccountDataSerializer(
         ['totalReservationSpots', s.u64()],
         ['currentReservationSpots', s.u64()],
       ],
-      'ReservationListV2'
+      { description: 'ReservationListV2' }
     ),
     (value) =>
       ({

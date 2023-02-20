@@ -39,10 +39,9 @@ export function getSignMetadataInstructionDataSerializer(
     SignMetadataInstructionData,
     SignMetadataInstructionData
   >(
-    s.struct<SignMetadataInstructionData>(
-      [['discriminator', s.u8()]],
-      'SignMetadataInstructionArgs'
-    ),
+    s.struct<SignMetadataInstructionData>([['discriminator', s.u8()]], {
+      description: 'SignMetadataInstructionArgs',
+    }),
     (value) => ({ ...value, discriminator: 7 } as SignMetadataInstructionData)
   ) as Serializer<SignMetadataInstructionArgs, SignMetadataInstructionData>;
 }

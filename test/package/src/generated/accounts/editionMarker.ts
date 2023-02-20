@@ -113,7 +113,7 @@ export function getEditionMarkerAccountDataSerializer(
         ['key', getTmKeySerializer(context)],
         ['ledger', s.array(s.u8(), { size: 31 })],
       ],
-      'EditionMarker'
+      { description: 'EditionMarker' }
     ),
     (value) =>
       ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)

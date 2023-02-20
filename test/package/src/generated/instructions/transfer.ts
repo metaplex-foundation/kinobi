@@ -79,7 +79,7 @@ export function getTransferInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['transferArgs', getTransferArgsSerializer(context)],
       ],
-      'TransferInstructionArgs'
+      { description: 'TransferInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 46 } as TransferInstructionData)
   ) as Serializer<TransferInstructionArgs, TransferInstructionData>;

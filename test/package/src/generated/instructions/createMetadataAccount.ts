@@ -89,12 +89,12 @@ export function getCreateMetadataAccountInstructionDataSerializer(
               ['sellerFeeBasisPoints', s.u16()],
               ['creators', s.option(s.array(getCreatorSerializer(context)))],
             ],
-            'Data'
+            { description: 'Data' }
           ),
         ],
         ['isMutable', s.bool()],
       ],
-      'CreateMetadataAccountInstructionArgs'
+      { description: 'CreateMetadataAccountInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 0 } as CreateMetadataAccountInstructionData)

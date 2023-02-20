@@ -197,7 +197,7 @@ export class GetJavaScriptTypeManifestVisitor
       .join(', ');
     const description = typeEnum.name || definedName?.strict;
     const descriptionArgs = description
-      ? `, undefined, '${pascalCase(description)}'`
+      ? `, { description: '${pascalCase(description)}' }`
       : '';
     const serializerTypeParams = definedName ? definedName.strict : 'any';
 
@@ -336,7 +336,7 @@ export class GetJavaScriptTypeManifestVisitor
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
     const structDescription = typeStruct.name
-      ? `, '${pascalCase(typeStruct.name)}'`
+      ? `, { description: '${pascalCase(typeStruct.name)}' }`
       : '';
     const serializerTypeParams = definedName ? definedName.strict : 'any';
     const baseManifest = {

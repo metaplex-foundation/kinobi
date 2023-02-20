@@ -162,7 +162,7 @@ export function getCandyMachineAccountDataSerializer(
         ['itemsRedeemed', s.u64()],
         ['data', getCandyMachineDataSerializer(context)],
       ],
-      'CandyMachine'
+      { description: 'CandyMachine' }
     ),
     (value) =>
       ({

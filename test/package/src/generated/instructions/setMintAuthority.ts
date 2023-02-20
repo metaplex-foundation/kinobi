@@ -43,7 +43,7 @@ export function getSetMintAuthorityInstructionDataSerializer(
   >(
     s.struct<SetMintAuthorityInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
-      'SetMintAuthorityInstructionArgs'
+      { description: 'SetMintAuthorityInstructionArgs' }
     ),
     (value) =>
       ({

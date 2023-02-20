@@ -25,6 +25,6 @@ export function getConfigLineSerializer(
       ['name', s.string()],
       ['uri', s.string()],
     ],
-    'ConfigLine'
+    { description: 'ConfigLine' }
   );
 }

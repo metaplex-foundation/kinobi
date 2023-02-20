@@ -47,12 +47,11 @@ export function getTransferArgsSerializer(
             ],
             ['amount', s.u64()],
           ],
-          'V1'
+          { description: 'V1' }
         ),
       ],
     ],
-    undefined,
-    'TransferArgs'
+    { description: 'TransferArgs' }
   ) as Serializer<TransferArgsArgs, TransferArgs>;
 }
 

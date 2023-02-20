@@ -24,6 +24,6 @@ export function getReservationV1Serializer(
       ['spotsRemaining', s.u8()],
       ['totalSpots', s.u8()],
     ],
-    'ReservationV1'
+    { description: 'ReservationV1' }
   );
 }

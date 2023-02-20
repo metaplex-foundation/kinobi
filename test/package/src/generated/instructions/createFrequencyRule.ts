@@ -63,7 +63,7 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
         ['lastUpdate', s.i64()],
         ['period', s.i64()],
       ],
-      'CreateFrequencyRuleInstructionArgs'
+      { description: 'CreateFrequencyRuleInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 2 } as CreateFrequencyRuleInstructionData)

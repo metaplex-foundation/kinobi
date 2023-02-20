@@ -144,7 +144,7 @@ export function getUpdateV1InstructionDataSerializer(
                 ['sellerFeeBasisPoints', s.u16()],
                 ['creators', s.option(s.array(getCreatorSerializer(context)))],
               ],
-              'Data'
+              { description: 'Data' }
             )
           ),
         ],
@@ -164,7 +164,7 @@ export function getUpdateV1InstructionDataSerializer(
         ['delegateState', s.option(getDelegateStateSerializer(context))],
         ['authorityType', getAuthorityTypeSerializer(context)],
       ],
-      'UpdateV1InstructionArgs'
+      { description: 'UpdateV1InstructionArgs' }
     ),
     (value) =>
       ({

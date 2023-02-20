@@ -75,7 +75,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
           getMintPrintingTokensViaTokenArgsSerializer(context),
         ],
       ],
-      'DeprecatedMintPrintingTokensViaTokenInstructionArgs'
+      { description: 'DeprecatedMintPrintingTokensViaTokenInstructionArgs' }
     ),
     (value) =>
       ({

@@ -59,7 +59,7 @@ export function getBurnInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['burnArgs', getBurnArgsSerializer(context)],
       ],
-      'BurnInstructionArgs'
+      { description: 'BurnInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 44 } as BurnInstructionData)
   ) as Serializer<BurnInstructionArgs, BurnInstructionData>;

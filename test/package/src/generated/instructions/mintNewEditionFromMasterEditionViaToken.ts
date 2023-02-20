@@ -84,7 +84,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSeriali
           getMintNewEditionFromMasterEditionViaTokenArgsSerializer(context),
         ],
       ],
-      'MintNewEditionFromMasterEditionViaTokenInstructionArgs'
+      { description: 'MintNewEditionFromMasterEditionViaTokenInstructionArgs' }
     ),
     (value) =>
       ({

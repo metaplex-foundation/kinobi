@@ -46,7 +46,7 @@ export function getDummyInstructionDataSerializer(
   >(
     s.struct<DummyInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
-      'DummyInstructionArgs'
+      { description: 'DummyInstructionArgs' }
     ),
     (value) =>
       ({

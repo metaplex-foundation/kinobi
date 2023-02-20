@@ -94,6 +94,6 @@ export function getAssetDataSerializer(
       ],
       ['delegateState', s.option(getDelegateStateSerializer(context))],
     ],
-    'AssetData'
+    { description: 'AssetData' }
   ) as Serializer<AssetDataArgs, AssetData>;
 }

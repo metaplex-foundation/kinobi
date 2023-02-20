@@ -71,7 +71,7 @@ export function getRevokeInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['revokeArgs', getRevokeArgsSerializer(context)],
       ],
-      'RevokeInstructionArgs'
+      { description: 'RevokeInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 49 } as RevokeInstructionData)
   ) as Serializer<RevokeInstructionArgs, RevokeInstructionData>;

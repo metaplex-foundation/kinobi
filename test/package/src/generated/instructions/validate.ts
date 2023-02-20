@@ -85,7 +85,7 @@ export function getValidateInstructionDataSerializer(
         ['operation', getOperationSerializer(context)],
         ['payload', getPayloadSerializer(context)],
       ],
-      'ValidateInstructionArgs'
+      { description: 'ValidateInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 1 } as ValidateInstructionData)
   ) as Serializer<ValidateInstructionArgs, ValidateInstructionData>;

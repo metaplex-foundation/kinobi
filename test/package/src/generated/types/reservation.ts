@@ -30,6 +30,6 @@ export function getReservationSerializer(
       ['spotsRemaining', s.u64()],
       ['totalSpots', s.u64()],
     ],
-    'Reservation'
+    { description: 'Reservation' }
   ) as Serializer<ReservationArgs, Reservation>;
 }

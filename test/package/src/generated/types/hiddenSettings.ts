@@ -28,6 +28,6 @@ export function getHiddenSettingsSerializer(
       ['uri', s.string()],
       ['hash', s.bytes()],
     ],
-    'HiddenSettings'
+    { description: 'HiddenSettings' }
   );
 }

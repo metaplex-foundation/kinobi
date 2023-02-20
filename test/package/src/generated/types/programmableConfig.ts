@@ -14,8 +14,7 @@ export function getProgrammableConfigSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<ProgrammableConfig> {
   const s = context.serializer;
-  return s.struct<ProgrammableConfig>(
-    [['ruleSet', s.publicKey()]],
-    'ProgrammableConfig'
-  );
+  return s.struct<ProgrammableConfig>([['ruleSet', s.publicKey()]], {
+    description: 'ProgrammableConfig',
+  });
 }

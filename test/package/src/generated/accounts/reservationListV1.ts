@@ -137,7 +137,7 @@ export function getReservationListV1AccountDataSerializer(
         ['supplySnapshot', s.option(s.u64())],
         ['reservations', s.array(getReservationV1Serializer(context))],
       ],
-      'ReservationListV1'
+      { description: 'ReservationListV1' }
     ),
     (value) =>
       ({

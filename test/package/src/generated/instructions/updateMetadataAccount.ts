@@ -79,14 +79,14 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
                 ['sellerFeeBasisPoints', s.u16()],
                 ['creators', s.option(s.array(getCreatorSerializer(context)))],
               ],
-              'Data'
+              { description: 'Data' }
             )
           ),
         ],
         ['updateAuthority', s.option(s.publicKey())],
         ['primarySaleHappened', s.option(s.bool())],
       ],
-      'UpdateMetadataAccountInstructionArgs'
+      { description: 'UpdateMetadataAccountInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 1 } as UpdateMetadataAccountInstructionData)

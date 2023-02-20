@@ -124,7 +124,7 @@ export function getUseAuthorityRecordAccountDataSerializer(
         ['allowedUses', s.u64()],
         ['bump', s.u8()],
       ],
-      'UseAuthorityRecord'
+      { description: 'UseAuthorityRecord' }
     ),
     (value) =>
       ({

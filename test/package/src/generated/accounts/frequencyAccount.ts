@@ -135,7 +135,7 @@ export function getFrequencyAccountAccountDataSerializer(
         ['lastUpdate', s.i64()],
         ['period', s.i64()],
       ],
-      'FrequencyAccount'
+      { description: 'FrequencyAccount' }
     ),
     (value) =>
       ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)

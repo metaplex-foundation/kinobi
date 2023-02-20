@@ -63,7 +63,7 @@ export function getUpdateMetadataAccountV2InstructionDataSerializer(
         ['primarySaleHappened', s.option(s.bool())],
         ['isMutable', s.option(s.bool())],
       ],
-      'UpdateMetadataAccountV2InstructionArgs'
+      { description: 'UpdateMetadataAccountV2InstructionArgs' }
     ),
     (value) =>
       ({

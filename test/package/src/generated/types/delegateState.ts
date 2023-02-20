@@ -25,6 +25,6 @@ export function getDelegateStateSerializer(
       ['delegate', s.publicKey()],
       ['hasData', s.bool()],
     ],
-    'DelegateState'
+    { description: 'DelegateState' }
   );
 }

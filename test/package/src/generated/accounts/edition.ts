@@ -124,7 +124,7 @@ export function getEditionAccountDataSerializer(
         ['parent', s.publicKey()],
         ['edition', s.u64()],
       ],
-      'Edition'
+      { description: 'Edition' }
     ),
     (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
   ) as Serializer<EditionAccountArgs, EditionAccountData>;

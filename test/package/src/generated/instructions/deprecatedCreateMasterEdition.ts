@@ -83,7 +83,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
           getCreateMasterEditionArgsSerializer(context),
         ],
       ],
-      'DeprecatedCreateMasterEditionInstructionArgs'
+      { description: 'DeprecatedCreateMasterEditionInstructionArgs' }
     ),
     (value) =>
       ({

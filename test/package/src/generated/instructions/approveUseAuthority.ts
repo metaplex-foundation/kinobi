@@ -70,7 +70,7 @@ export function getApproveUseAuthorityInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['numberOfUses', s.u64()],
       ],
-      'ApproveUseAuthorityInstructionArgs'
+      { description: 'ApproveUseAuthorityInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 20 } as ApproveUseAuthorityInstructionData)

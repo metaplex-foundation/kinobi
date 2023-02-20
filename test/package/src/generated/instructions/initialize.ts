@@ -59,7 +59,7 @@ export function getInitializeInstructionDataSerializer(
         ['discriminator', s.array(s.u8(), { size: 8 })],
         ['data', getCandyMachineDataSerializer(context)],
       ],
-      'InitializeInstructionArgs'
+      { description: 'InitializeInstructionArgs' }
     ),
     (value) =>
       ({

@@ -26,6 +26,6 @@ export function getCmCreatorSerializer(
       ['verified', s.bool()],
       ['percentageShare', s.u8()],
     ],
-    'CmCreator'
+    { description: 'CmCreator' }
   );
 }

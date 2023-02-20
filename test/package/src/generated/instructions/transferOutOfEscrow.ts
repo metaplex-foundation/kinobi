@@ -73,7 +73,7 @@ export function getTransferOutOfEscrowInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['amount', s.u64()],
       ],
-      'TransferOutOfEscrowInstructionArgs'
+      { description: 'TransferOutOfEscrowInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 40 } as TransferOutOfEscrowInstructionData)

@@ -50,10 +50,9 @@ export function getVerifyCollectionInstructionDataSerializer(
     VerifyCollectionInstructionData,
     VerifyCollectionInstructionData
   >(
-    s.struct<VerifyCollectionInstructionData>(
-      [['discriminator', s.u8()]],
-      'VerifyCollectionInstructionArgs'
-    ),
+    s.struct<VerifyCollectionInstructionData>([['discriminator', s.u8()]], {
+      description: 'VerifyCollectionInstructionArgs',
+    }),
     (value) =>
       ({ ...value, discriminator: 18 } as VerifyCollectionInstructionData)
   ) as Serializer<

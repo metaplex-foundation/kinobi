@@ -75,7 +75,7 @@ export function getDelegateInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['delegateArgs', getDelegateArgsSerializer(context)],
       ],
-      'DelegateInstructionArgs'
+      { description: 'DelegateInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 48 } as DelegateInstructionData)
   ) as Serializer<DelegateInstructionArgs, DelegateInstructionData>;

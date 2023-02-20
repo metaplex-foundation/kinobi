@@ -46,7 +46,7 @@ export function getRemoveCreatorVerificationInstructionDataSerializer(
   >(
     s.struct<RemoveCreatorVerificationInstructionData>(
       [['discriminator', s.u8()]],
-      'RemoveCreatorVerificationInstructionArgs'
+      { description: 'RemoveCreatorVerificationInstructionArgs' }
     ),
     (value) =>
       ({

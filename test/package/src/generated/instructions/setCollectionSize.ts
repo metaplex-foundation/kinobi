@@ -61,7 +61,7 @@ export function getSetCollectionSizeInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer(context)],
       ],
-      'SetCollectionSizeInstructionArgs'
+      { description: 'SetCollectionSizeInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 34 } as SetCollectionSizeInstructionData)

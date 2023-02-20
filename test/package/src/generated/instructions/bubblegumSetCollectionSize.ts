@@ -63,7 +63,7 @@ export function getBubblegumSetCollectionSizeInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer(context)],
       ],
-      'BubblegumSetCollectionSizeInstructionArgs'
+      { description: 'BubblegumSetCollectionSizeInstructionArgs' }
     ),
     (value) =>
       ({

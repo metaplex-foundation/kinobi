@@ -43,12 +43,11 @@ export function getTmCreateArgsSerializer(
             ['decimals', s.option(s.u8())],
             ['maxSupply', s.option(s.u64())],
           ],
-          'V1'
+          { description: 'V1' }
         ),
       ],
     ],
-    undefined,
-    'TmCreateArgs'
+    { description: 'TmCreateArgs' }
   ) as Serializer<TmCreateArgsArgs, TmCreateArgs>;
 }
 

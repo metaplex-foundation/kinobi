@@ -122,7 +122,7 @@ export function getUpdateArgsSerializer(
                         s.option(s.array(getCreatorSerializer(context))),
                       ],
                     ],
-                    'Data'
+                    { description: 'Data' }
                   )
                 ),
               ],
@@ -142,7 +142,7 @@ export function getUpdateArgsSerializer(
               ['delegateState', s.option(getDelegateStateSerializer(context))],
               ['authorityType', getAuthorityTypeSerializer(context)],
             ],
-            'V1'
+            { description: 'V1' }
           ),
           (value) =>
             ({
@@ -160,8 +160,7 @@ export function getUpdateArgsSerializer(
         ),
       ],
     ],
-    undefined,
-    'UpdateArgs'
+    { description: 'UpdateArgs' }
   ) as Serializer<UpdateArgsArgs, UpdateArgs>;
 }
 

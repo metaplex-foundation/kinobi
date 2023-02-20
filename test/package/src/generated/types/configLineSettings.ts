@@ -34,6 +34,6 @@ export function getConfigLineSettingsSerializer(
       ['uriLength', s.u32()],
       ['isSequential', s.bool()],
     ],
-    'ConfigLineSettings'
+    { description: 'ConfigLineSettings' }
   );
 }

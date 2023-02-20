@@ -36,19 +36,18 @@ export function getDelegateArgsSerializer(
         'SaleV1',
         s.struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>(
           [['amount', mapAmountSerializer(s.u64(), 'SOL', 9)]],
-          'SaleV1'
+          { description: 'SaleV1' }
         ),
       ],
       [
         'TransferV1',
         s.struct<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>(
           [['amount', s.u64()]],
-          'TransferV1'
+          { description: 'TransferV1' }
         ),
       ],
     ],
-    undefined,
-    'DelegateArgs'
+    { description: 'DelegateArgs' }
   ) as Serializer<DelegateArgsArgs, DelegateArgs>;
 }
 

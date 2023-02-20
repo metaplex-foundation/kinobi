@@ -58,7 +58,7 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(
   >(
     s.struct<ApproveCollectionAuthorityInstructionData>(
       [['discriminator', s.u8()]],
-      'ApproveCollectionAuthorityInstructionArgs'
+      { description: 'ApproveCollectionAuthorityInstructionArgs' }
     ),
     (value) =>
       ({

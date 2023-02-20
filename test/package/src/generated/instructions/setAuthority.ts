@@ -45,7 +45,7 @@ export function getSetAuthorityInstructionDataSerializer(
         ['discriminator', s.array(s.u8(), { size: 8 })],
         ['newAuthority', s.publicKey()],
       ],
-      'SetAuthorityInstructionArgs'
+      { description: 'SetAuthorityInstructionArgs' }
     ),
     (value) =>
       ({

@@ -66,7 +66,7 @@ export function getMintInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['mintArgs', getMintArgsSerializer(context)],
       ],
-      'MintInstructionArgs'
+      { description: 'MintInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 42 } as MintInstructionData)
   ) as Serializer<MintInstructionArgs, MintInstructionData>;

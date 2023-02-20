@@ -136,7 +136,7 @@ export function getTokenOwnedEscrowAccountDataSerializer(
         ['authority', getEscrowAuthoritySerializer(context)],
         ['bump', s.u8()],
       ],
-      'TokenOwnedEscrow'
+      { description: 'TokenOwnedEscrow' }
     ),
     (value) =>
       ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)

@@ -32,7 +32,7 @@ export function getCreatorSerializer(
         ['verified', s.bool()],
         ['share', s.u8()],
       ],
-      'Creator'
+      { description: 'Creator' }
     ),
     (value) =>
       ({

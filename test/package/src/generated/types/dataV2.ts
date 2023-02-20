@@ -53,6 +53,6 @@ export function getDataV2Serializer(
       ['collection', s.option(getCollectionSerializer(context))],
       ['uses', s.option(getUsesSerializer(context))],
     ],
-    'DataV2'
+    { description: 'DataV2' }
   ) as Serializer<DataV2Args, DataV2>;
 }

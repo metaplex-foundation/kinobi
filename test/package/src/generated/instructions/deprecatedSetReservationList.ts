@@ -69,7 +69,7 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
         ['offset', s.u64()],
         ['totalSpotOffset', s.u64()],
       ],
-      'DeprecatedSetReservationListInstructionArgs'
+      { description: 'DeprecatedSetReservationListInstructionArgs' }
     ),
     (value) =>
       ({

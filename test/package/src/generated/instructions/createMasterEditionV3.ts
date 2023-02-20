@@ -76,7 +76,7 @@ export function getCreateMasterEditionV3InstructionDataSerializer(
           getCreateMasterEditionArgsSerializer(context),
         ],
       ],
-      'CreateMasterEditionV3InstructionArgs'
+      { description: 'CreateMasterEditionV3InstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 17 } as CreateMasterEditionV3InstructionData)

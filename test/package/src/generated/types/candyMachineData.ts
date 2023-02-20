@@ -79,6 +79,6 @@ export function getCandyMachineDataSerializer(
       ],
       ['hiddenSettings', s.option(getHiddenSettingsSerializer(context))],
     ],
-    'CandyMachineData'
+    { description: 'CandyMachineData' }
   ) as Serializer<CandyMachineDataArgs, CandyMachineData>;
 }

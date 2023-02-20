@@ -29,12 +29,11 @@ export function getEscrowAuthoritySerializer(
         'Creator',
         s.struct<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>(
           [['fields', s.tuple([s.publicKey()])]],
-          'Creator'
+          { description: 'Creator' }
         ),
       ],
     ],
-    undefined,
-    'EscrowAuthority'
+    { description: 'EscrowAuthority' }
   );
 }
 

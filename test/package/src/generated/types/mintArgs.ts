@@ -47,12 +47,11 @@ export function getMintArgsSerializer(
               s.option(getAuthorizationDataSerializer(context)),
             ],
           ],
-          'V1'
+          { description: 'V1' }
         ),
       ],
     ],
-    undefined,
-    'MintArgs'
+    { description: 'MintArgs' }
   ) as Serializer<MintArgsArgs, MintArgs>;
 }
 

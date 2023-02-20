@@ -19,6 +19,6 @@ export function getLeafInfoSerializer(
       ['leaf', s.bytes()],
       ['proof', s.array(s.array(s.u8(), { size: 32 }))],
     ],
-    'LeafInfo'
+    { description: 'LeafInfo' }
   );
 }

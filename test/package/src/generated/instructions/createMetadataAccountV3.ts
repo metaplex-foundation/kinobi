@@ -82,7 +82,7 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(
           s.option(getCollectionDetailsSerializer(context)),
         ],
       ],
-      'CreateMetadataAccountV3InstructionArgs'
+      { description: 'CreateMetadataAccountV3InstructionArgs' }
     ),
     (value) =>
       ({

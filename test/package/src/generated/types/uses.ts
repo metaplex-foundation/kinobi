@@ -27,6 +27,6 @@ export function getUsesSerializer(
       ['remaining', s.u64()],
       ['total', s.u64()],
     ],
-    'Uses'
+    { description: 'Uses' }
   ) as Serializer<UsesArgs, Uses>;
 }

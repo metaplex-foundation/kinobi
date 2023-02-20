@@ -66,7 +66,7 @@ export function getCreateMetadataAccountV2InstructionDataSerializer(
         ['data', getDataV2Serializer(context)],
         ['isMutable', s.bool()],
       ],
-      'CreateMetadataAccountV2InstructionArgs'
+      { description: 'CreateMetadataAccountV2InstructionArgs' }
     ),
     (value) =>
       ({
