@@ -152,9 +152,9 @@ export function findMasterEditionV2Pda(
   const programId: PublicKey =
     context.programs.get('mplTokenMetadata').publicKey;
   return context.eddsa.findPda(programId, [
-    s.variableString().serialize('metadata'),
+    s.string({ size: 'variable' }).serialize('metadata'),
     programId.bytes,
     s.publicKey().serialize(seeds.mint),
-    s.variableString().serialize('edition'),
+    s.string({ size: 'variable' }).serialize('edition'),
   ]);
 }
