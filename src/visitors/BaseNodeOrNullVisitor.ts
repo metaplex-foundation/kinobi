@@ -67,10 +67,10 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node | null {
-    const type = typeArray.itemType.accept(this);
-    if (type === null) return null;
-    nodes.assertTypeNode(type);
-    return new nodes.TypeArrayNode(type, typeArray.size);
+    const item = typeArray.item.accept(this);
+    if (item === null) return null;
+    nodes.assertTypeNode(item);
+    return new nodes.TypeArrayNode(item, { ...typeArray });
   }
 
   visitTypeDefinedLink(
@@ -122,40 +122,27 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     );
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node | null {
-    return typeLeaf;
-  }
-
-  visitTypeLeafWrapper(
-    typeLeafWrapper: nodes.TypeLeafWrapperNode
-  ): nodes.Node | null {
-    const leaf = typeLeafWrapper.leaf.accept(this);
-    if (leaf === null) return null;
-    nodes.assertTypeLeafNode(leaf);
-    return new nodes.TypeLeafWrapperNode(typeLeafWrapper.wrapper, leaf);
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node | null {
-    const keyType = typeMap.keyType.accept(this);
-    const valueType = typeMap.valueType.accept(this);
-    if (keyType === null || valueType === null) return null;
-    nodes.assertTypeNode(keyType);
-    nodes.assertTypeNode(valueType);
-    return new nodes.TypeMapNode(typeMap.mapType, keyType, valueType);
+    const key = typeMap.key.accept(this);
+    const value = typeMap.value.accept(this);
+    if (key === null || value === null) return null;
+    nodes.assertTypeNode(key);
+    nodes.assertTypeNode(value);
+    return new nodes.TypeMapNode(key, value, { ...typeMap });
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): nodes.Node | null {
-    const type = typeOption.type.accept(this);
-    if (type === null) return null;
-    nodes.assertTypeNode(type);
-    return new nodes.TypeOptionNode(typeOption.optionType, type);
+    const item = typeOption.item.accept(this);
+    if (item === null) return null;
+    nodes.assertTypeNode(item);
+    return new nodes.TypeOptionNode(item, { ...typeOption });
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): nodes.Node | null {
-    const type = typeSet.type.accept(this);
-    if (type === null) return null;
-    nodes.assertTypeNode(type);
-    return new nodes.TypeSetNode(typeSet.setType, type);
+    const item = typeSet.item.accept(this);
+    if (item === null) return null;
+    nodes.assertTypeNode(item);
+    return new nodes.TypeSetNode(item, { ...typeSet });
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node | null {
@@ -181,22 +168,46 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node | null {
-    const items = typeTuple.itemTypes
-      .map((type) => {
-        const newType = type.accept(this);
-        if (newType === null) return null;
-        nodes.assertTypeNode(newType);
-        return newType;
+    const items = typeTuple.items
+      .map((item) => {
+        const newItem = item.accept(this);
+        if (newItem === null) return null;
+        nodes.assertTypeNode(newItem);
+        return newItem;
       })
       .filter((type): type is nodes.TypeNode => type !== null);
 
     return new nodes.TypeTupleNode(items);
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): nodes.Node | null {
-    const type = typeVec.itemType.accept(this);
-    if (type === null) return null;
-    nodes.assertTypeNode(type);
-    return new nodes.TypeVecNode(type);
+  visitTypeBool(typeBool: nodes.TypeBoolNode): nodes.Node | null {
+    return typeBool;
+  }
+
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): nodes.Node | null {
+    return typeBytes;
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): nodes.Node | null {
+    return typeNumber;
+  }
+
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  ): nodes.Node | null {
+    const item = typeNumberWrapper.item.accept(this);
+    if (item === null) return null;
+    nodes.assertTypeNumberNode(item);
+    return new nodes.TypeNumberWrapperNode(item, typeNumberWrapper.wrapper);
+  }
+
+  visitTypePublicKey(
+    typePublicKey: nodes.TypePublicKeyNode
+  ): nodes.Node | null {
+    return typePublicKey;
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): nodes.Node | null {
+    return typeString;
   }
 }

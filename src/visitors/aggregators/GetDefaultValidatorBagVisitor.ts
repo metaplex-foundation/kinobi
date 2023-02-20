@@ -133,7 +133,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): ValidatorBag {
     this.pushNode(typeArray);
-    const bag = typeArray.itemType.accept(this);
+    const bag = typeArray.item.accept(this);
     this.popNode();
     return bag;
   }
@@ -143,15 +143,15 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   ): ValidatorBag {
     this.pushNode(typeDefinedLink);
     const bag = new ValidatorBag();
-    if (!typeDefinedLink.definedType) {
+    if (!typeDefinedLink.name) {
       bag.error(
         'Pointing to a defined type with no name.',
         typeDefinedLink,
         this.stack
       );
-    } else if (!this.definedTypes.has(typeDefinedLink.definedType)) {
+    } else if (!this.definedTypes.has(typeDefinedLink.name)) {
       bag.error(
-        `Pointing to a missing defined type named "${typeDefinedLink.definedType}"`,
+        `Pointing to a missing defined type named "${typeDefinedLink.name}"`,
         typeDefinedLink,
         this.stack
       );
@@ -217,41 +217,24 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): ValidatorBag {
-    return new ValidatorBag();
-  }
-
-  visitTypeLeafWrapper(
-    typeLeafWrapper: nodes.TypeLeafWrapperNode
-  ): ValidatorBag {
-    this.pushNode(typeLeafWrapper);
-    const bag = typeLeafWrapper.leaf.accept(this);
-    this.popNode();
-    return bag;
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): ValidatorBag {
     this.pushNode(typeMap);
     const bag = new ValidatorBag();
-    bag.mergeWith([
-      typeMap.keyType.accept(this),
-      typeMap.valueType.accept(this),
-    ]);
+    bag.mergeWith([typeMap.key.accept(this), typeMap.value.accept(this)]);
     this.popNode();
     return bag;
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): ValidatorBag {
     this.pushNode(typeOption);
-    const bag = typeOption.type.accept(this);
+    const bag = typeOption.item.accept(this);
     this.popNode();
     return bag;
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): ValidatorBag {
     this.pushNode(typeSet);
-    const bag = typeSet.type.accept(this);
+    const bag = typeSet.item.accept(this);
     this.popNode();
     return bag;
   }
@@ -300,19 +283,46 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): ValidatorBag {
     this.pushNode(typeTuple);
     const bag = new ValidatorBag();
-    if (typeTuple.itemTypes.length === 0) {
+    if (typeTuple.items.length === 0) {
       bag.warn('Tuple has no items.', typeTuple, this.stack);
     }
-    bag.mergeWith(typeTuple.itemTypes.map((node) => node.accept(this)));
+    bag.mergeWith(typeTuple.items.map((node) => node.accept(this)));
     this.popNode();
     return bag;
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): ValidatorBag {
-    this.pushNode(typeVec);
-    const bag = typeVec.itemType.accept(this);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeBool(typeBool: nodes.TypeBoolNode): ValidatorBag {
+    return new ValidatorBag();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): ValidatorBag {
+    return new ValidatorBag();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): ValidatorBag {
+    return new ValidatorBag();
+  }
+
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  ): ValidatorBag {
+    this.pushNode(typeNumberWrapper);
+    const bag = typeNumberWrapper.item.accept(this);
     this.popNode();
     return bag;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): ValidatorBag {
+    return new ValidatorBag();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeString(typeString: nodes.TypeStringNode): ValidatorBag {
+    return new ValidatorBag();
   }
 
   protected pushNode(node: nodes.Node): void {

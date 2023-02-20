@@ -29,16 +29,14 @@ export class TypeStringNode implements Visitable {
     return visitor.visitTypeString(this);
   }
 
+  getSizeAsString(): string {
+    if (this.size.kind === 'fixed') return `${this.size.bytes}`;
+    if (this.size.kind === 'prefixed') return `${this.size.prefix.toString()}`;
+    return 'remainder';
+  }
+
   toString(): string {
-    let size = '';
-    if (this.size.kind === 'fixed') {
-      size = `${this.size.bytes}`;
-    } else if (this.size.kind === 'prefixed') {
-      size = `${this.size.prefix.toString()}`;
-    } else {
-      size = 'remainder';
-    }
-    return `string(${this.encoding}; ${size})`;
+    return `string(${this.encoding};${this.getSizeAsString()})`;
   }
 }
 

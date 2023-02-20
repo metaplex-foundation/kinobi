@@ -7,10 +7,6 @@ export class TypePublicKeyNode implements Visitable {
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypePublicKey(this);
   }
-
-  toString(): string {
-    return 'publicKey';
-  }
 }
 
 export function isTypePublicKeyNode(

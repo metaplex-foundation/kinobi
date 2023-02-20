@@ -60,14 +60,6 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
     return this.map(typeEnumTupleVariant.accept(this.visitor));
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): U {
-    return this.map(typeLeaf.accept(this.visitor));
-  }
-
-  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): U {
-    return this.map(typeLeafWrapper.accept(this.visitor));
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): U {
     return this.map(typeMap.accept(this.visitor));
   }
@@ -92,7 +84,27 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
     return this.map(typeTuple.accept(this.visitor));
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): U {
-    return this.map(typeVec.accept(this.visitor));
+  visitTypeBool(typeBool: nodes.TypeBoolNode): U {
+    return this.map(typeBool.accept(this.visitor));
+  }
+
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): U {
+    return this.map(typeBytes.accept(this.visitor));
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): U {
+    return this.map(typeNumber.accept(this.visitor));
+  }
+
+  visitTypeNumberWrapper(typeNumberWrapper: nodes.TypeNumberWrapperNode): U {
+    return this.map(typeNumberWrapper.accept(this.visitor));
+  }
+
+  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): U {
+    return this.map(typePublicKey.accept(this.visitor));
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): U {
+    return this.map(typeString.accept(this.visitor));
   }
 }

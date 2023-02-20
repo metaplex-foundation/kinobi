@@ -5,13 +5,10 @@ import { TypeNumberNode } from './TypeNumberNode';
 export class TypeBoolNode implements Visitable {
   readonly nodeClass = 'TypeBoolNode' as const;
 
-  readonly prefix: TypeNumberNode;
+  readonly size: TypeNumberNode;
 
-  readonly fixed: boolean;
-
-  constructor(options: { prefix?: TypeNumberNode; fixed?: boolean } = {}) {
-    this.prefix = options.prefix ?? new TypeNumberNode('u8');
-    this.fixed = options.fixed ?? false;
+  constructor(options: { size?: TypeNumberNode } = {}) {
+    this.size = options.size ?? new TypeNumberNode('u8');
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -19,8 +16,7 @@ export class TypeBoolNode implements Visitable {
   }
 
   toString(): string {
-    const fixed = this.fixed ? '; fixed' : '';
-    return `bool(${this.prefix.toString() + fixed})`;
+    return `bool(${this.size.toString()})`;
   }
 }
 

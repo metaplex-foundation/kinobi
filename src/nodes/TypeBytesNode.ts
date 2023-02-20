@@ -7,10 +7,6 @@ export class TypeBytesNode implements Visitable {
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypeBytes(this);
   }
-
-  toString(): string {
-    return 'bytes';
-  }
 }
 
 export function isTypeBytesNode(node: Node | null): node is TypeBytesNode {

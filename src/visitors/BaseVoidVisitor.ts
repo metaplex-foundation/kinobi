@@ -33,7 +33,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): void {
-    typeArray.itemType.accept(this);
+    typeArray.item.accept(this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -64,26 +64,17 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     typeEnumTupleVariant.tuple.accept(this);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): void {
-    //
-  }
-
-  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): void {
-    typeLeafWrapper.leaf.accept(this);
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): void {
-    typeMap.keyType.accept(this);
-    typeMap.valueType.accept(this);
+    typeMap.key.accept(this);
+    typeMap.value.accept(this);
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): void {
-    typeOption.type.accept(this);
+    typeOption.item.accept(this);
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): void {
-    typeSet.type.accept(this);
+    typeSet.item.accept(this);
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): void {
@@ -95,10 +86,35 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): void {
-    typeTuple.itemTypes.forEach((itemType) => itemType.accept(this));
+    typeTuple.items.forEach((item) => item.accept(this));
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): void {
-    typeVec.itemType.accept(this);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeBool(typeBool: nodes.TypeBoolNode): void {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): void {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): void {
+    //
+  }
+
+  visitTypeNumberWrapper(typeNumberWrapper: nodes.TypeNumberWrapperNode): void {
+    typeNumberWrapper.item.accept(this);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): void {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitTypeString(typeString: nodes.TypeStringNode): void {
+    //
   }
 }
