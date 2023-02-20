@@ -89,14 +89,16 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): JavaScriptTypeManifest {
-    const itemType = typeArray.itemType.accept(this);
+    const itemManifest = typeArray.item.accept(this);
+    const { imports } = itemManifest;
+    const sizeOption = this.getArrayLikeSizeOption(typeArray.size, imports);
+    const options = sizeOption ? `, { ${sizeOption} }` : '';
     return {
-      ...itemType,
-      strictType: `Array<${itemType.strictType}>`,
-      looseType: `Array<${itemType.looseType}>`,
-      serializer: `${this.s('array')}(${itemType.serializer}, ${
-        typeArray.size
-      })`,
+      ...itemManifest,
+      imports,
+      strictType: `Array<${itemManifest.strictType}>`,
+      looseType: `Array<${itemManifest.looseType}>`,
+      serializer: `${this.s('array')}(${itemManifest.serializer + options})`,
     };
   }
 
@@ -104,11 +106,11 @@ export class GetJavaScriptTypeManifestVisitor
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): JavaScriptTypeManifest {
     const linkedDefinedType = this.availableDefinedTypes.get(
-      typeDefinedLink.definedType
+      typeDefinedLink.name
     );
     if (!linkedDefinedType) {
       throw new Error(
-        `Cannot find linked defined type ${typeDefinedLink.definedType}.`
+        `Cannot find linked defined type ${typeDefinedLink.name}.`
       );
     }
 
@@ -122,7 +124,7 @@ export class GetJavaScriptTypeManifestVisitor
       linkedDefinedTypeHasLooseType = linkedManifest.hasLooseType;
     }
 
-    const pascalCaseDefinedType = pascalCase(typeDefinedLink.definedType);
+    const pascalCaseDefinedType = pascalCase(typeDefinedLink.name);
     const serializerName = `get${pascalCaseDefinedType}Serializer`;
     const rawDependency =
       typeDefinedLink.dependency ?? linkedDefinedType.metadata.importFrom;
@@ -262,155 +264,65 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): JavaScriptTypeManifest {
-    const base = (
-      strictType: string,
-      looseType?: string
-    ): JavaScriptTypeManifest => ({
-      strictType,
-      looseType: looseType ?? strictType,
-      serializer: this.s(typeLeaf.leaf.kind),
-      hasLooseType: !!looseType,
-      isEnum: false,
-      imports: new JavaScriptImportMap(),
-    });
-
-    switch (typeLeaf.leaf.kind) {
-      case 'string':
-        const stringPrefix =
-          typeLeaf.leaf.prefix === 'u32' ? '' : this.s(typeLeaf.leaf.prefix);
-        return {
-          ...base('string'),
-          serializer: this.s(`string(${stringPrefix})`),
-        };
-      case 'fixedString':
-        return {
-          ...base('string'),
-          serializer: this.s(`fixedString(${typeLeaf.leaf.bytes})`),
-        };
-      case 'variableString':
-        return { ...base('string'), serializer: this.s('variableString()') };
-      case 'bytes':
-        return { ...base('Uint8Array') };
-      case 'publicKey':
-        return {
-          ...base('PublicKey'),
-          imports: new JavaScriptImportMap().add('core', 'PublicKey'),
-        };
-      case 'bool':
-        const boolPrefix =
-          typeLeaf.leaf.prefix === 'u8' ? '' : this.s(typeLeaf.leaf.prefix);
-        return {
-          ...base('boolean'),
-          serializer: this.s(`bool(${boolPrefix})`),
-        };
-      case 'number':
-        const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
-          typeLeaf.leaf.number
-        );
-        const numberBase = isBigNumber
-          ? base('bigint', 'number | bigint')
-          : base('number');
-        return {
-          ...numberBase,
-          serializer: this.s(typeLeaf.leaf.number),
-        };
-      default:
-        // eslint-disable-next-line prefer-destructuring
-        const leaf: never = typeLeaf.leaf;
-        throw new Error(`Unknown type leaf kind: ${(leaf as any).kind}`);
-    }
-  }
-
-  visitTypeLeafWrapper(
-    typeLeafWrapper: nodes.TypeLeafWrapperNode
-  ): JavaScriptTypeManifest {
-    const leaf = typeLeafWrapper.leaf.accept(this);
-    const { wrapper } = typeLeafWrapper;
-    switch (wrapper.kind) {
-      case 'DateTime':
-        if (!typeLeafWrapper.leaf.isInteger()) {
-          throw new Error(
-            `DateTime wrappers can only be applied to integer ` +
-              `types. Got type [${typeLeafWrapper.leaf.toString()}].`
-          );
-        }
-        return {
-          ...leaf,
-          imports: leaf.imports.add('core', [
-            'DateTime',
-            'DateTimeInput',
-            'mapDateTimeSerializer',
-          ]),
-          strictType: `DateTime`,
-          looseType: `DateTimeInput`,
-          serializer: `mapDateTimeSerializer(${leaf.serializer})`,
-        };
-      case 'Amount':
-      case 'SolAmount':
-        if (!typeLeafWrapper.leaf.isUnsignedInteger()) {
-          throw new Error(
-            `Amount wrappers can only be applied to unsigned ` +
-              `integer types. Got type [${typeLeafWrapper.leaf.toString()}].`
-          );
-        }
-        const identifier =
-          wrapper.kind === 'SolAmount' ? 'SOL' : wrapper.identifier;
-        const decimals = wrapper.kind === 'SolAmount' ? 9 : wrapper.decimals;
-        const idAndDecimals = `'${identifier}', ${decimals}`;
-        const isSolAmount = identifier === 'SOL' && decimals === 9;
-        const amountType = isSolAmount
-          ? 'SolAmount'
-          : `Amount<${idAndDecimals}>`;
-        return {
-          ...leaf,
-          imports: leaf.imports.add('core', [
-            isSolAmount ? 'SolAmount' : 'Amount',
-            'mapAmountSerializer',
-          ]),
-          strictType: amountType,
-          looseType: amountType,
-          serializer: `mapAmountSerializer(${leaf.serializer}, ${idAndDecimals})`,
-        };
-      default:
-        return leaf;
-    }
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): JavaScriptTypeManifest {
-    const key = typeMap.keyType.accept(this);
-    const value = typeMap.valueType.accept(this);
+    const key = typeMap.key.accept(this);
+    const value = typeMap.value.accept(this);
+    const mergedManifest = this.mergeManifests([key, value]);
+    const { imports } = mergedManifest;
+    const sizeOption = this.getArrayLikeSizeOption(typeMap.size, imports);
+    const options = sizeOption ? `, { ${sizeOption} }` : '';
     return {
-      ...this.mergeManifests([key, value]),
+      ...mergedManifest,
+      imports,
       strictType: `Map<${key.strictType}, ${value.strictType}>`,
       looseType: `Map<${key.looseType}, ${value.looseType}>`,
-      serializer: `${this.s('map')}(${key.serializer}, ${value.serializer})`,
+      serializer:
+        `${this.s('map')}(` +
+        `${key.serializer}, ${value.serializer}${options}` +
+        `)`,
     };
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): JavaScriptTypeManifest {
-    const child = typeOption.type.accept(this);
-    const optionSerializer = this.s(
-      typeOption.optionType === 'coption' ? 'fixedOption' : 'option'
-    );
-    const prefixSerializer =
-      typeOption.optionType === 'coption' ? `, ${this.s('u32')}` : '';
+    const itemManifest = typeOption.item.accept(this);
+    const imports = itemManifest.imports.add('core', 'Option');
+    const options: string[] = [];
+
+    // Prefix option.
+    const prefixManifest = typeOption.prefix.accept(this);
+    if (prefixManifest.serializer !== this.s('u8()')) {
+      imports.mergeWith(prefixManifest.imports);
+      options.push(`prefix: ${prefixManifest.serializer}`);
+    }
+
+    // Fixed option.
+    if (typeOption.fixed) {
+      options.push(`fixed: true`);
+    }
+
+    const optionsAsString =
+      options.length > 0 ? `{ ${options.join(', ')} }` : '';
+
     return {
-      ...child,
-      strictType: `Option<${child.strictType}>`,
-      looseType: `Option<${child.looseType}>`,
-      serializer: `${optionSerializer}(${child.serializer}${prefixSerializer})`,
-      imports: child.imports.add('core', 'Option'),
+      ...itemManifest,
+      imports,
+      strictType: `Option<${itemManifest.strictType}>`,
+      looseType: `Option<${itemManifest.looseType}>`,
+      serializer: `option(${itemManifest.serializer}${optionsAsString})`,
     };
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): JavaScriptTypeManifest {
-    const child = typeSet.type.accept(this);
+    const itemManifest = typeSet.item.accept(this);
+    const { imports } = itemManifest;
+    const sizeOption = this.getArrayLikeSizeOption(typeSet.size, imports);
+    const options = sizeOption ? `, { ${sizeOption} }` : '';
     return {
-      ...child,
-      strictType: `Set<${child.strictType}>`,
-      looseType: `Set<${child.looseType}>`,
-      serializer: `${this.s('set')}(${child.serializer})`,
+      ...itemManifest,
+      imports,
+      strictType: `Set<${itemManifest.strictType}>`,
+      looseType: `Set<${itemManifest.looseType}>`,
+      serializer: `${this.s('set')}(${itemManifest.serializer + options})`,
     };
   }
 
@@ -502,7 +414,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): JavaScriptTypeManifest {
-    const items = typeTuple.itemTypes.map((itemType) => itemType.accept(this));
+    const items = typeTuple.items.map((item) => item.accept(this));
     const itemSerializers = items.map((item) => item.serializer).join(', ');
     return {
       ...this.mergeManifests(items),
@@ -512,13 +424,150 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): JavaScriptTypeManifest {
-    const itemType = typeVec.itemType.accept(this);
+  visitTypeBool(typeBool: nodes.TypeBoolNode): JavaScriptTypeManifest {
+    const size = typeBool.size.accept(this);
+    const sizeSerializer =
+      size.serializer === this.s('u8()') ? '' : `{ size: ${size.serializer} }`;
     return {
-      ...itemType,
-      strictType: `Array<${itemType.strictType}>`,
-      looseType: `Array<${itemType.looseType}>`,
-      serializer: `${this.s('vec')}(${itemType.serializer})`,
+      strictType: 'boolean',
+      looseType: 'boolean',
+      hasLooseType: false,
+      serializer: this.s(`bool(${sizeSerializer})`),
+      isEnum: false,
+      imports: size.imports,
+    };
+  }
+
+  visitTypeBytes(): JavaScriptTypeManifest {
+    return {
+      strictType: 'Uint8Array',
+      looseType: 'Uint8Array',
+      hasLooseType: false,
+      serializer: this.s(`bytes()`),
+      isEnum: false,
+      imports: new JavaScriptImportMap(),
+    };
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): JavaScriptTypeManifest {
+    const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
+      typeNumber.format
+    );
+    const imports = new JavaScriptImportMap();
+    let endianness = '';
+    if (typeNumber.endian === 'le') {
+      imports.add('core', 'Endian');
+      endianness = '{ endian: Endian.Little }';
+    }
+    return {
+      strictType: isBigNumber ? 'bigint' : 'number',
+      looseType: isBigNumber ? 'number | bigint' : 'number',
+      hasLooseType: isBigNumber,
+      serializer: this.s(`${typeNumber.format}(${endianness})`),
+      isEnum: false,
+      imports: new JavaScriptImportMap(),
+    };
+  }
+
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  ): JavaScriptTypeManifest {
+    const { item, wrapper } = typeNumberWrapper;
+    const itemManifest = item.accept(this);
+    switch (wrapper.kind) {
+      case 'DateTime':
+        if (!item.isInteger()) {
+          throw new Error(
+            `DateTime wrappers can only be applied to integer ` +
+              `types. Got type [${item.toString()}].`
+          );
+        }
+        return {
+          ...itemManifest,
+          imports: itemManifest.imports.add('core', [
+            'DateTime',
+            'DateTimeInput',
+            'mapDateTimeSerializer',
+          ]),
+          strictType: `DateTime`,
+          looseType: `DateTimeInput`,
+          serializer: `mapDateTimeSerializer(${itemManifest.serializer})`,
+        };
+      case 'Amount':
+      case 'SolAmount':
+        if (!item.isUnsignedInteger()) {
+          throw new Error(
+            `Amount wrappers can only be applied to unsigned ` +
+              `integer types. Got type [${item.toString()}].`
+          );
+        }
+        const identifier =
+          wrapper.kind === 'SolAmount' ? 'SOL' : wrapper.identifier;
+        const decimals = wrapper.kind === 'SolAmount' ? 9 : wrapper.decimals;
+        const idAndDecimals = `'${identifier}', ${decimals}`;
+        const isSolAmount = identifier === 'SOL' && decimals === 9;
+        const amountType = isSolAmount
+          ? 'SolAmount'
+          : `Amount<${idAndDecimals}>`;
+        return {
+          ...itemManifest,
+          imports: itemManifest.imports.add('core', [
+            isSolAmount ? 'SolAmount' : 'Amount',
+            'mapAmountSerializer',
+          ]),
+          strictType: amountType,
+          looseType: amountType,
+          serializer: `mapAmountSerializer(${itemManifest.serializer}, ${idAndDecimals})`,
+        };
+      default:
+        return itemManifest;
+    }
+  }
+
+  visitTypePublicKey(): JavaScriptTypeManifest {
+    return {
+      strictType: 'PublicKey',
+      looseType: 'PublicKey',
+      hasLooseType: false,
+      serializer: this.s(`publicKey()`),
+      isEnum: false,
+      imports: new JavaScriptImportMap().add('core', 'PublicKey'),
+    };
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): JavaScriptTypeManifest {
+    const imports = new JavaScriptImportMap();
+    const options: string[] = [];
+
+    // Encoding option.
+    if (typeString.encoding !== 'utf8') {
+      imports.add('core', typeString.encoding);
+      options.push(`encoding: ${typeString.encoding}`);
+    }
+
+    // Size option.
+    if (typeString.size.kind === 'variable') {
+      options.push(`size: 'variable'`);
+    } else if (typeString.size.kind === 'fixed') {
+      options.push(`size: ${typeString.size.bytes}`);
+    } else {
+      const prefix = typeString.size.prefix.accept(this);
+      if (prefix.serializer !== this.s('u32()')) {
+        imports.mergeWith(prefix.imports);
+        options.push(`size: ${prefix.serializer}`);
+      }
+    }
+
+    const optionsAsString =
+      options.length > 0 ? `{ ${options.join(', ')} }` : '';
+
+    return {
+      strictType: 'string',
+      looseType: 'string',
+      hasLooseType: false,
+      serializer: this.s(`string(${optionsAsString})`),
+      isEnum: false,
+      imports: new JavaScriptImportMap(),
     };
   }
 
@@ -543,5 +592,19 @@ export class GetJavaScriptTypeManifestVisitor
     if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
     const lines = docs.map((doc) => ` * ${doc}`);
     return `\n/**\n${lines.join('\n')}\n */\n`;
+  }
+
+  protected getArrayLikeSizeOption(
+    size: nodes.TypeArrayNode['size'],
+    imports: JavaScriptImportMap
+  ): string | null {
+    if (size.kind === 'fixed') return `size: ${size.size}`;
+    if (size.kind === 'remainder') return `size: 'remainder'`;
+
+    const prefixManifest = size.prefix.accept(this);
+    if (prefixManifest.serializer === this.s('u32()')) return null;
+
+    imports.mergeWith(prefixManifest.imports);
+    return `size: ${prefixManifest.serializer}`;
   }
 }

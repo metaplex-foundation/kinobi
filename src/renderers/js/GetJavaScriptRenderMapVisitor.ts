@@ -59,12 +59,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         ...options.prettierOptions,
       },
       dependencyMap: {
-        root: '../..',
-        rootHooked: '../../hooked',
         generated: '..',
+        hooked: '../../hooked',
         core: '@metaplex-foundation/umi-core',
         mplEssentials: '@metaplex-foundation/mpl-essentials',
-        mplDigitalAsset: '@lorisleiva/mpl-digital-assets',
         ...options.dependencyMap,
         // Custom relative dependencies to link generated files together.
         generatedAccounts: '../accounts',

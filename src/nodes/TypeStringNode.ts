@@ -8,7 +8,7 @@ export class TypeStringNode implements Visitable {
   readonly size:
     | { kind: 'fixed'; bytes: number }
     | { kind: 'prefixed'; prefix: TypeNumberNode }
-    | { kind: 'remainder' };
+    | { kind: 'variable' };
 
   readonly encoding: 'utf8' | 'base16' | 'base58' | 'base64';
 
@@ -32,7 +32,7 @@ export class TypeStringNode implements Visitable {
   getSizeAsString(): string {
     if (this.size.kind === 'fixed') return `${this.size.bytes}`;
     if (this.size.kind === 'prefixed') return `${this.size.prefix.toString()}`;
-    return 'remainder';
+    return 'variable';
   }
 
   toString(): string {
