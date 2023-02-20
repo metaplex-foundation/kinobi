@@ -14,8 +14,8 @@ export class TypeArrayNode implements Visitable {
     | { kind: 'prefixed'; prefix: TypeNumberNode }
     | { kind: 'remainder' };
 
-  constructor(options: { item: TypeNode; size?: TypeArrayNode['size'] }) {
-    this.item = options.item;
+  constructor(item: TypeNode, options: { size?: TypeArrayNode['size'] } = {}) {
+    this.item = item;
     this.size = options.size ?? {
       kind: 'prefixed',
       prefix: new TypeNumberNode('u32'),
@@ -25,12 +25,11 @@ export class TypeArrayNode implements Visitable {
   static fromIdl(idl: IdlTypeArray | IdlTypeVec): TypeArrayNode {
     if ('vec' in idl) {
       const item = createTypeNodeFromIdl(idl.vec);
-      return new TypeArrayNode({ item });
+      return new TypeArrayNode(item);
     }
 
     const item = createTypeNodeFromIdl(idl.array[0]);
-    return new TypeArrayNode({
-      item,
+    return new TypeArrayNode(item, {
       size: { kind: 'fixed', size: idl.array[1] },
     });
   }

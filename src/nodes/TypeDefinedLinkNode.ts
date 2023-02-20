@@ -5,21 +5,17 @@ import type { Node } from './Node';
 export class TypeDefinedLinkNode implements Visitable {
   readonly nodeClass = 'TypeDefinedLinkNode' as const;
 
-  readonly definedType: string;
+  readonly name: string;
 
-  readonly dependency: Dependency | null;
+  readonly dependency: Dependency;
 
-  constructor(definedType: string, dependency: Dependency | null = null) {
-    this.definedType = mainCase(definedType);
-    this.dependency = dependency;
+  constructor(name: string, options: { dependency?: Dependency } = {}) {
+    this.name = mainCase(name);
+    this.dependency = options.dependency ?? 'generated';
   }
 
   accept<T>(visitor: Visitor<T>): T {
     return visitor.visitTypeDefinedLink(this);
-  }
-
-  get name(): string {
-    return this.definedType;
   }
 }
 
