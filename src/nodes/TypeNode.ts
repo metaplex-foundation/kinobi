@@ -1,41 +1,51 @@
 import { IdlType, IDL_TYPE_LEAVES } from '../idl';
 import type { Node } from './Node';
 import { TypeArrayNode } from './TypeArrayNode';
+import { TypeBoolNode } from './TypeBoolNode';
+import { TypeBytesNode } from './TypeBytesNode';
 import { TypeDefinedLinkNode } from './TypeDefinedLinkNode';
 import { TypeEnumNode } from './TypeEnumNode';
-import { TypeLeafNode } from './TypeLeafNode';
-import { TypeLeafWrapperNode } from './TypeLeafWrapperNode';
 import { TypeMapNode } from './TypeMapNode';
 import { TypeNumberNode } from './TypeNumberNode';
+import { TypeNumberWrapperNode } from './TypeNumberWrapperNode';
 import { TypeOptionNode } from './TypeOptionNode';
+import { TypePublicKeyNode } from './TypePublicKeyNode';
 import { TypeSetNode } from './TypeSetNode';
+import { TypeStringNode } from './TypeStringNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeTupleNode } from './TypeTupleNode';
 
 export type TypeNode =
   | TypeArrayNode
+  | TypeBoolNode
+  | TypeBytesNode
   | TypeDefinedLinkNode
   | TypeEnumNode
-  | TypeLeafNode
-  | TypeLeafWrapperNode
   | TypeMapNode
+  | TypeNumberNode
+  | TypeNumberWrapperNode
   | TypeOptionNode
+  | TypePublicKeyNode
   | TypeSetNode
+  | TypeStringNode
   | TypeStructNode
   | TypeTupleNode;
 
 const TYPE_NODE_CLASSES = [
   'TypeArrayNode',
+  'TypeBoolNode',
+  'TypeBytesNode',
   'TypeDefinedLinkNode',
   'TypeEnumNode',
-  'TypeLeafNode',
-  'TypeLeafWrapperNode',
   'TypeMapNode',
+  'TypeNumberNode',
+  'TypeNumberWrapperNode',
   'TypeOptionNode',
+  'TypePublicKeyNode',
   'TypeSetNode',
+  'TypeStringNode',
   'TypeStructNode',
   'TypeTupleNode',
-  'TypeVecNode',
 ];
 
 function isArrayOfSize(array: any, size: number): boolean {
@@ -45,10 +55,10 @@ function isArrayOfSize(array: any, size: number): boolean {
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
   if (typeof idlType === 'string' && IDL_TYPE_LEAVES.includes(idlType)) {
-    if (idlType === 'bool') return TypeLeafNode.fromIdl(idlType);
-    if (idlType === 'string') return TypeLeafNode.fromIdl(idlType);
-    if (idlType === 'publicKey') return TypeLeafNode.fromIdl(idlType);
-    if (idlType === 'bytes') return TypeLeafNode.fromIdl(idlType);
+    if (idlType === 'bool') return new TypeBoolNode();
+    if (idlType === 'string') return new TypeStringNode();
+    if (idlType === 'publicKey') return new TypePublicKeyNode();
+    if (idlType === 'bytes') return new TypeBytesNode();
     return new TypeNumberNode(idlType);
   }
 
@@ -59,6 +69,11 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 
   // Array.
   if ('array' in idlType && isArrayOfSize(idlType.array, 2)) {
+    return TypeArrayNode.fromIdl(idlType);
+  }
+
+  // Vec.
+  if ('vec' in idlType) {
     return TypeArrayNode.fromIdl(idlType);
   }
 
@@ -98,11 +113,6 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Tuple.
   if ('tuple' in idlType && Array.isArray(idlType.tuple)) {
     return TypeTupleNode.fromIdl(idlType);
-  }
-
-  // Vec.
-  if ('vec' in idlType) {
-    return TypeVecNode.fromIdl(idlType);
   }
 
   // Throw an error for unsupported types.

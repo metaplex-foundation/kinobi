@@ -4,13 +4,6 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { TypeNumberNode } from './TypeNumberNode';
 
-export type TypeArrayNodeMetadata = {
-  size:
-    | { kind: 'fixed'; size: number }
-    | { kind: 'prefixed'; prefix: TypeNumberNode }
-    | { kind: 'remainder' };
-};
-
 export class TypeArrayNode implements Visitable {
   readonly nodeClass = 'TypeArrayNode' as const;
 
