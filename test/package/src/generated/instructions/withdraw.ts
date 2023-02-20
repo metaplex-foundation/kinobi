@@ -38,7 +38,7 @@ export function getWithdrawInstructionDataSerializer(
     WithdrawInstructionData
   >(
     s.struct<WithdrawInstructionData>(
-      [['discriminator', s.array(s.u8, 8)]],
+      [['discriminator', s.array(s.u8(), { size: 8 })]],
       'WithdrawInstructionArgs'
     ),
     (value) =>

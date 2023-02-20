@@ -51,7 +51,7 @@ export function getVerifyCollectionInstructionDataSerializer(
     VerifyCollectionInstructionData
   >(
     s.struct<VerifyCollectionInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'VerifyCollectionInstructionArgs'
     ),
     (value) =>

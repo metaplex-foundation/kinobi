@@ -69,7 +69,7 @@ export function getCreateMasterEditionInstructionDataSerializer(
   >(
     s.struct<CreateMasterEditionInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'createMasterEditionArgs',
           getCreateMasterEditionArgsSerializer(context),

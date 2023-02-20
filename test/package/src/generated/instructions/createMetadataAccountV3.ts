@@ -74,7 +74,7 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(
   >(
     s.struct<CreateMetadataAccountV3InstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['data', getDataV2Serializer(context)],
         ['isMutable', s.bool()],
         [

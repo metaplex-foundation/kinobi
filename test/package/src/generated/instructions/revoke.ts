@@ -68,7 +68,7 @@ export function getRevokeInstructionDataSerializer(
   >(
     s.struct<RevokeInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['revokeArgs', getRevokeArgsSerializer(context)],
       ],
       'RevokeInstructionArgs'

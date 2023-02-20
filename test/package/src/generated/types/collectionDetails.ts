@@ -26,7 +26,7 @@ export function getCollectionDetailsSerializer(
       [
         'V1',
         s.struct<GetDataEnumKindContent<CollectionDetails, 'V1'>>(
-          [['size', s.u64]],
+          [['size', s.u64()]],
           'V1'
         ),
       ],

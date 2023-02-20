@@ -47,7 +47,7 @@ export function getCreateRuleSetInstructionDataSerializer(
   >(
     s.struct<CreateRuleSetInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['createArgs', getTaCreateArgsSerializer(context)],
       ],
       'CreateRuleSetInstructionArgs'

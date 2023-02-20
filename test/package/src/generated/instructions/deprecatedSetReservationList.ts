@@ -63,11 +63,11 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
   >(
     s.struct<DeprecatedSetReservationListInstructionData>(
       [
-        ['discriminator', s.u8],
-        ['reservations', s.vec(getReservationSerializer(context))],
-        ['totalReservationSpots', s.option(s.u64)],
-        ['offset', s.u64],
-        ['totalSpotOffset', s.u64],
+        ['discriminator', s.u8()],
+        ['reservations', s.array(getReservationSerializer(context))],
+        ['totalReservationSpots', s.option(s.u64())],
+        ['offset', s.u64()],
+        ['totalSpotOffset', s.u64()],
       ],
       'DeprecatedSetReservationListInstructionArgs'
     ),

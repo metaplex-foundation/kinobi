@@ -26,7 +26,7 @@ export function getUseAssetArgsSerializer(
       [
         'V1',
         s.struct<GetDataEnumKindContent<UseAssetArgs, 'V1'>>(
-          [['useCount', s.u64]],
+          [['useCount', s.u64()]],
           'V1'
         ),
       ],

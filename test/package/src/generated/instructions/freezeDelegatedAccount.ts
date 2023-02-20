@@ -49,7 +49,7 @@ export function getFreezeDelegatedAccountInstructionDataSerializer(
     FreezeDelegatedAccountInstructionData
   >(
     s.struct<FreezeDelegatedAccountInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'FreezeDelegatedAccountInstructionArgs'
     ),
     (value) =>

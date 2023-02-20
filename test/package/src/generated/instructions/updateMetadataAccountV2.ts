@@ -57,9 +57,9 @@ export function getUpdateMetadataAccountV2InstructionDataSerializer(
   >(
     s.struct<UpdateMetadataAccountV2InstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['data', s.option(getDataV2Serializer(context))],
-        ['updateAuthority', s.option(s.publicKey)],
+        ['updateAuthority', s.option(s.publicKey())],
         ['primarySaleHappened', s.option(s.bool())],
         ['isMutable', s.option(s.bool())],
       ],

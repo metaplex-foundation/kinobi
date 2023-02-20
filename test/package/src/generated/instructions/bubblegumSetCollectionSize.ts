@@ -60,7 +60,7 @@ export function getBubblegumSetCollectionSizeInstructionDataSerializer(
   >(
     s.struct<BubblegumSetCollectionSizeInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer(context)],
       ],
       'BubblegumSetCollectionSizeInstructionArgs'

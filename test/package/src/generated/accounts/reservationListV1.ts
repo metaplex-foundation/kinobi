@@ -101,9 +101,9 @@ export function getReservationListV1GpaBuilder(
       reservations: Array<ReservationV1>;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['masterEdition', s.publicKey],
-      ['supplySnapshot', s.option(s.u64)],
-      ['reservations', s.vec(getReservationV1Serializer(context))],
+      ['masterEdition', s.publicKey()],
+      ['supplySnapshot', s.option(s.u64())],
+      ['reservations', s.array(getReservationV1Serializer(context))],
     ])
     .deserializeUsing<ReservationListV1>((account) =>
       deserializeReservationListV1(context, account)
@@ -133,9 +133,9 @@ export function getReservationListV1AccountDataSerializer(
     s.struct<ReservationListV1AccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey],
-        ['supplySnapshot', s.option(s.u64)],
-        ['reservations', s.vec(getReservationV1Serializer(context))],
+        ['masterEdition', s.publicKey()],
+        ['supplySnapshot', s.option(s.u64())],
+        ['reservations', s.array(getReservationV1Serializer(context))],
       ],
       'ReservationListV1'
     ),

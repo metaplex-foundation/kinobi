@@ -67,7 +67,7 @@ export function getUseAssetInstructionDataSerializer(
   >(
     s.struct<UseAssetInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['useAssetArgs', getUseAssetArgsSerializer(context)],
       ],
       'UseAssetInstructionArgs'

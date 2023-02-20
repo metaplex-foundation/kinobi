@@ -70,8 +70,8 @@ export function getTransferOutOfEscrowInstructionDataSerializer(
   >(
     s.struct<TransferOutOfEscrowInstructionData>(
       [
-        ['discriminator', s.u8],
-        ['amount', s.u64],
+        ['discriminator', s.u8()],
+        ['amount', s.u64()],
       ],
       'TransferOutOfEscrowInstructionArgs'
     ),

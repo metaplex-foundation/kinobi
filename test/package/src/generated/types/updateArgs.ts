@@ -107,7 +107,7 @@ export function getUpdateArgsSerializer(
                 'authorizationData',
                 s.option(getAuthorizationDataSerializer(context)),
               ],
-              ['newUpdateAuthority', s.option(s.publicKey)],
+              ['newUpdateAuthority', s.option(s.publicKey())],
               [
                 'data',
                 s.option(
@@ -116,10 +116,10 @@ export function getUpdateArgsSerializer(
                       ['name', s.string()],
                       ['symbol', s.string()],
                       ['uri', s.string()],
-                      ['sellerFeeBasisPoints', s.u16],
+                      ['sellerFeeBasisPoints', s.u16()],
                       [
                         'creators',
-                        s.option(s.vec(getCreatorSerializer(context))),
+                        s.option(s.array(getCreatorSerializer(context))),
                       ],
                     ],
                     'Data'

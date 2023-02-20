@@ -301,14 +301,16 @@ export class GetJavaScriptTypeManifestVisitor
     }
 
     const optionsAsString =
-      options.length > 0 ? `{ ${options.join(', ')} }` : '';
+      options.length > 0 ? `, { ${options.join(', ')} }` : '';
 
     return {
       ...itemManifest,
       imports,
       strictType: `Option<${itemManifest.strictType}>`,
       looseType: `Option<${itemManifest.looseType}>`,
-      serializer: `option(${itemManifest.serializer}${optionsAsString})`,
+      serializer: this.s(
+        `option(${itemManifest.serializer}${optionsAsString})`
+      ),
     };
   }
 
@@ -455,9 +457,9 @@ export class GetJavaScriptTypeManifestVisitor
     );
     const imports = new JavaScriptImportMap();
     let endianness = '';
-    if (typeNumber.endian === 'le') {
+    if (typeNumber.endian === 'be') {
       imports.add('core', 'Endian');
-      endianness = '{ endian: Endian.Little }';
+      endianness = '{ endian: Endian.Big }';
     }
     return {
       strictType: isBigNumber ? 'bigint' : 'number',

@@ -14,5 +14,5 @@ export function getSeedsVecSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<SeedsVec> {
   const s = context.serializer;
-  return s.struct<SeedsVec>([['seeds', s.vec(s.bytes)]], 'SeedsVec');
+  return s.struct<SeedsVec>([['seeds', s.array(s.bytes())]], 'SeedsVec');
 }

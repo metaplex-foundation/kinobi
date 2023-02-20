@@ -56,7 +56,7 @@ export function getBurnEditionNftInstructionDataSerializer(
     BurnEditionNftInstructionData
   >(
     s.struct<BurnEditionNftInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'BurnEditionNftInstructionArgs'
     ),
     (value) =>

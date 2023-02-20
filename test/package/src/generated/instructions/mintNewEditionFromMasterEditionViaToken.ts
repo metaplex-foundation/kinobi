@@ -78,7 +78,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSeriali
   >(
     s.struct<MintNewEditionFromMasterEditionViaTokenInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'mintNewEditionFromMasterEditionViaTokenArgs',
           getMintNewEditionFromMasterEditionViaTokenArgsSerializer(context),

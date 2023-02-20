@@ -17,7 +17,7 @@ export function getSetCollectionSizeArgsSerializer(
 ): Serializer<SetCollectionSizeArgsArgs, SetCollectionSizeArgs> {
   const s = context.serializer;
   return s.struct<SetCollectionSizeArgs>(
-    [['size', s.u64]],
+    [['size', s.u64()]],
     'SetCollectionSizeArgs'
   ) as Serializer<SetCollectionSizeArgsArgs, SetCollectionSizeArgs>;
 }

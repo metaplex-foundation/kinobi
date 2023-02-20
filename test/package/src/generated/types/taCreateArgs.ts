@@ -20,7 +20,7 @@ export function getTaCreateArgsSerializer(
   return s.struct<TaCreateArgs>(
     [
       ['ruleSetName', s.string()],
-      ['serializedRuleSet', s.bytes],
+      ['serializedRuleSet', s.bytes()],
     ],
     'TaCreateArgs'
   );

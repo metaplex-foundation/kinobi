@@ -94,8 +94,8 @@ export function getMasterEditionV2GpaBuilder(
       maxSupply: Option<number | bigint>;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['supply', s.u64],
-      ['maxSupply', s.option(s.u64)],
+      ['supply', s.u64()],
+      ['maxSupply', s.option(s.u64())],
     ])
     .deserializeUsing<MasterEditionV2>((account) =>
       deserializeMasterEditionV2(context, account)
@@ -125,8 +125,8 @@ export function getMasterEditionV2AccountDataSerializer(
     s.struct<MasterEditionV2AccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['supply', s.u64],
-        ['maxSupply', s.option(s.u64)],
+        ['supply', s.u64()],
+        ['maxSupply', s.option(s.u64())],
       ],
       'MasterEditionV2'
     ),
@@ -154,7 +154,7 @@ export function findMasterEditionV2Pda(
   return context.eddsa.findPda(programId, [
     s.variableString().serialize('metadata'),
     programId.bytes,
-    s.publicKey.serialize(seeds.mint),
+    s.publicKey().serialize(seeds.mint),
     s.variableString().serialize('edition'),
   ]);
 }

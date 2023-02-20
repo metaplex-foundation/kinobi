@@ -42,7 +42,7 @@ export function getPayloadTypeSerializer(
       [
         'Pubkey',
         s.struct<GetDataEnumKindContent<PayloadType, 'Pubkey'>>(
-          [['fields', s.tuple([s.publicKey])]],
+          [['fields', s.tuple([s.publicKey()])]],
           'Pubkey'
         ),
       ],
@@ -63,7 +63,7 @@ export function getPayloadTypeSerializer(
       [
         'Number',
         s.struct<GetDataEnumKindContent<PayloadType, 'Number'>>(
-          [['fields', s.tuple([s.u64])]],
+          [['fields', s.tuple([s.u64()])]],
           'Number'
         ),
       ],

@@ -119,12 +119,12 @@ export function getCandyMachineGpaBuilder(
       itemsRedeemed: number | bigint;
       data: CandyMachineDataArgs;
     }>([
-      ['discriminator', s.array(s.u8, 8)],
-      ['features', s.u64],
-      ['authority', s.publicKey],
-      ['mintAuthority', s.publicKey],
-      ['collectionMint', s.publicKey],
-      ['itemsRedeemed', s.u64],
+      ['discriminator', s.array(s.u8(), { size: 8 })],
+      ['features', s.u64()],
+      ['authority', s.publicKey()],
+      ['mintAuthority', s.publicKey()],
+      ['collectionMint', s.publicKey()],
+      ['itemsRedeemed', s.u64()],
       ['data', getCandyMachineDataSerializer(context)],
     ])
     .deserializeUsing<CandyMachine>((account) =>
@@ -154,12 +154,12 @@ export function getCandyMachineAccountDataSerializer(
   >(
     s.struct<CandyMachineAccountData>(
       [
-        ['discriminator', s.array(s.u8, 8)],
-        ['features', s.u64],
-        ['authority', s.publicKey],
-        ['mintAuthority', s.publicKey],
-        ['collectionMint', s.publicKey],
-        ['itemsRedeemed', s.u64],
+        ['discriminator', s.array(s.u8(), { size: 8 })],
+        ['features', s.u64()],
+        ['authority', s.publicKey()],
+        ['mintAuthority', s.publicKey()],
+        ['collectionMint', s.publicKey()],
+        ['itemsRedeemed', s.u64()],
         ['data', getCandyMachineDataSerializer(context)],
       ],
       'CandyMachine'

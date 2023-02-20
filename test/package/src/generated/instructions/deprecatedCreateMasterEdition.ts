@@ -77,7 +77,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
   >(
     s.struct<DeprecatedCreateMasterEditionInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'createMasterEditionArgs',
           getCreateMasterEditionArgsSerializer(context),

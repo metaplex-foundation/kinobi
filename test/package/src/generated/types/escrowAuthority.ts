@@ -28,7 +28,7 @@ export function getEscrowAuthoritySerializer(
       [
         'Creator',
         s.struct<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>(
-          [['fields', s.tuple([s.publicKey])]],
+          [['fields', s.tuple([s.publicKey()])]],
           'Creator'
         ),
       ],

@@ -63,7 +63,7 @@ export function getMintInstructionDataSerializer(
   >(
     s.struct<MintInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['mintArgs', getMintArgsSerializer(context)],
       ],
       'MintInstructionArgs'

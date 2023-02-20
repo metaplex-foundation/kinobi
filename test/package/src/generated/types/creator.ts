@@ -28,9 +28,9 @@ export function getCreatorSerializer(
   return mapSerializer<CreatorArgs, Creator, Creator>(
     s.struct<Creator>(
       [
-        ['address', s.publicKey],
+        ['address', s.publicKey()],
         ['verified', s.bool()],
-        ['share', s.u8],
+        ['share', s.u8()],
       ],
       'Creator'
     ),

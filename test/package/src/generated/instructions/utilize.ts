@@ -63,8 +63,8 @@ export function getUtilizeInstructionDataSerializer(
   >(
     s.struct<UtilizeInstructionData>(
       [
-        ['discriminator', s.u8],
-        ['numberOfUses', s.u64],
+        ['discriminator', s.u8()],
+        ['numberOfUses', s.u64()],
       ],
       'UtilizeInstructionArgs'
     ),

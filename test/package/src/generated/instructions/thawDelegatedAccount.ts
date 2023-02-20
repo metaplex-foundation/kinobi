@@ -49,7 +49,7 @@ export function getThawDelegatedAccountInstructionDataSerializer(
     ThawDelegatedAccountInstructionData
   >(
     s.struct<ThawDelegatedAccountInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'ThawDelegatedAccountInstructionArgs'
     ),
     (value) =>

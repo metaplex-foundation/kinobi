@@ -47,7 +47,7 @@ export function getSetTokenStandardInstructionDataSerializer(
     SetTokenStandardInstructionData
   >(
     s.struct<SetTokenStandardInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'SetTokenStandardInstructionArgs'
     ),
     (value) =>

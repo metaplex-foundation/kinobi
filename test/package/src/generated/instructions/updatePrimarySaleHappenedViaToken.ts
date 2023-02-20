@@ -47,7 +47,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
     UpdatePrimarySaleHappenedViaTokenInstructionData
   >(
     s.struct<UpdatePrimarySaleHappenedViaTokenInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'UpdatePrimarySaleHappenedViaTokenInstructionArgs'
     ),
     (value) =>

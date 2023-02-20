@@ -22,9 +22,9 @@ export function getCmCreatorSerializer(
   const s = context.serializer;
   return s.struct<CmCreator>(
     [
-      ['address', s.publicKey],
+      ['address', s.publicKey()],
       ['verified', s.bool()],
-      ['percentageShare', s.u8],
+      ['percentageShare', s.u8()],
     ],
     'CmCreator'
   );

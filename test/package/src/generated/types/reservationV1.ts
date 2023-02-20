@@ -20,9 +20,9 @@ export function getReservationV1Serializer(
   const s = context.serializer;
   return s.struct<ReservationV1>(
     [
-      ['address', s.publicKey],
-      ['spotsRemaining', s.u8],
-      ['totalSpots', s.u8],
+      ['address', s.publicKey()],
+      ['spotsRemaining', s.u8()],
+      ['totalSpots', s.u8()],
     ],
     'ReservationV1'
   );

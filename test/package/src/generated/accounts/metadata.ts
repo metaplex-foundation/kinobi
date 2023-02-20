@@ -157,16 +157,16 @@ export function getMetadataGpaBuilder(
       delegateState: Option<DelegateState>;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['updateAuthority', s.publicKey],
-      ['mint', s.publicKey],
+      ['updateAuthority', s.publicKey()],
+      ['mint', s.publicKey()],
       ['name', s.string()],
       ['symbol', s.string()],
       ['uri', s.string()],
-      ['sellerFeeBasisPoints', s.u16],
-      ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+      ['sellerFeeBasisPoints', s.u16()],
+      ['creators', s.option(s.array(getCreatorSerializer(context)))],
       ['primarySaleHappened', s.bool()],
       ['isMutable', s.bool()],
-      ['editionNonce', s.option(s.u8)],
+      ['editionNonce', s.option(s.u8())],
       ['tokenStandard', s.option(getTokenStandardSerializer(context))],
       ['collection', s.option(getCollectionSerializer(context))],
       ['uses', s.option(getUsesSerializer(context))],
@@ -205,16 +205,16 @@ export function getMetadataAccountDataSerializer(
     s.struct<MetadataAccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['updateAuthority', s.publicKey],
-        ['mint', s.publicKey],
+        ['updateAuthority', s.publicKey()],
+        ['mint', s.publicKey()],
         ['name', s.string()],
         ['symbol', s.string()],
         ['uri', s.string()],
-        ['sellerFeeBasisPoints', s.u16],
-        ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+        ['sellerFeeBasisPoints', s.u16()],
+        ['creators', s.option(s.array(getCreatorSerializer(context)))],
         ['primarySaleHappened', s.bool()],
         ['isMutable', s.bool()],
-        ['editionNonce', s.option(s.u8)],
+        ['editionNonce', s.option(s.u8())],
         ['tokenStandard', s.option(getTokenStandardSerializer(context))],
         ['collection', s.option(getCollectionSerializer(context))],
         ['uses', s.option(getUsesSerializer(context))],
@@ -253,6 +253,6 @@ export function findMetadataPda(
   return context.eddsa.findPda(programId, [
     s.variableString().serialize('metadata'),
     programId.bytes,
-    s.publicKey.serialize(seeds.mint),
+    s.publicKey().serialize(seeds.mint),
   ]);
 }

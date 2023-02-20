@@ -76,7 +76,7 @@ export function getTransferInstructionDataSerializer(
   >(
     s.struct<TransferInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['transferArgs', getTransferArgsSerializer(context)],
       ],
       'TransferInstructionArgs'

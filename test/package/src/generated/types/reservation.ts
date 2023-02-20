@@ -26,9 +26,9 @@ export function getReservationSerializer(
   const s = context.serializer;
   return s.struct<Reservation>(
     [
-      ['address', s.publicKey],
-      ['spotsRemaining', s.u64],
-      ['totalSpots', s.u64],
+      ['address', s.publicKey()],
+      ['spotsRemaining', s.u64()],
+      ['totalSpots', s.u64()],
     ],
     'Reservation'
   ) as Serializer<ReservationArgs, Reservation>;

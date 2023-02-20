@@ -67,7 +67,7 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
   >(
     s.struct<UpdateMetadataAccountInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'data',
           s.option(
@@ -76,14 +76,14 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
                 ['name', s.string()],
                 ['symbol', s.string()],
                 ['uri', s.string()],
-                ['sellerFeeBasisPoints', s.u16],
-                ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+                ['sellerFeeBasisPoints', s.u16()],
+                ['creators', s.option(s.array(getCreatorSerializer(context)))],
               ],
               'Data'
             )
           ),
         ],
-        ['updateAuthority', s.option(s.publicKey)],
+        ['updateAuthority', s.option(s.publicKey())],
         ['primarySaleHappened', s.option(s.bool())],
       ],
       'UpdateMetadataAccountInstructionArgs'

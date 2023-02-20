@@ -72,7 +72,7 @@ export function getDelegateInstructionDataSerializer(
   >(
     s.struct<DelegateInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['delegateArgs', getDelegateArgsSerializer(context)],
       ],
       'DelegateInstructionArgs'

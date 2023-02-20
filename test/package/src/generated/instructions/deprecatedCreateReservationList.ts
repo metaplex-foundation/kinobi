@@ -58,7 +58,7 @@ export function getDeprecatedCreateReservationListInstructionDataSerializer(
     DeprecatedCreateReservationListInstructionData
   >(
     s.struct<DeprecatedCreateReservationListInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'DeprecatedCreateReservationListInstructionArgs'
     ),
     (value) =>

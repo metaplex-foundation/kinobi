@@ -22,7 +22,7 @@ export function getDelegateStateSerializer(
   return s.struct<DelegateState>(
     [
       ['role', getDelegateRoleSerializer(context)],
-      ['delegate', s.publicKey],
+      ['delegate', s.publicKey()],
       ['hasData', s.bool()],
     ],
     'DelegateState'

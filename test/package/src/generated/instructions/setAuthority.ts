@@ -42,8 +42,8 @@ export function getSetAuthorityInstructionDataSerializer(
   >(
     s.struct<SetAuthorityInstructionData>(
       [
-        ['discriminator', s.array(s.u8, 8)],
-        ['newAuthority', s.publicKey],
+        ['discriminator', s.array(s.u8(), { size: 8 })],
+        ['newAuthority', s.publicKey()],
       ],
       'SetAuthorityInstructionArgs'
     ),

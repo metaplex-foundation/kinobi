@@ -56,7 +56,7 @@ export function getBurnInstructionDataSerializer(
   >(
     s.struct<BurnInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['burnArgs', getBurnArgsSerializer(context)],
       ],
       'BurnInstructionArgs'

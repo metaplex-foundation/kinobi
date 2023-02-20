@@ -58,7 +58,7 @@ export function getSetCollectionSizeInstructionDataSerializer(
   >(
     s.struct<SetCollectionSizeInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer(context)],
       ],
       'SetCollectionSizeInstructionArgs'

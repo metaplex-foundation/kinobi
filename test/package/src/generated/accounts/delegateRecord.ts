@@ -91,7 +91,7 @@ export function getDelegateRecordGpaBuilder(
     .registerFields<{ key: TmKey; role: DelegateRole; bump: number }>([
       ['key', getTmKeySerializer(context)],
       ['role', getDelegateRoleSerializer(context)],
-      ['bump', s.u8],
+      ['bump', s.u8()],
     ])
     .deserializeUsing<DelegateRecord>((account) =>
       deserializeDelegateRecord(context, account)
@@ -122,7 +122,7 @@ export function getDelegateRecordAccountDataSerializer(
       [
         ['key', getTmKeySerializer(context)],
         ['role', getDelegateRoleSerializer(context)],
-        ['bump', s.u8],
+        ['bump', s.u8()],
       ],
       'DelegateRecord'
     ),

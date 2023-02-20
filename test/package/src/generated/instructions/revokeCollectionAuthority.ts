@@ -51,7 +51,7 @@ export function getRevokeCollectionAuthorityInstructionDataSerializer(
     RevokeCollectionAuthorityInstructionData
   >(
     s.struct<RevokeCollectionAuthorityInstructionData>(
-      [['discriminator', s.u8]],
+      [['discriminator', s.u8()]],
       'RevokeCollectionAuthorityInstructionArgs'
     ),
     (value) =>
