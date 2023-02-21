@@ -1,4 +1,4 @@
-{% if instruction.hasData %}
+{% if not instruction.isLinked and instruction.hasData %}
 // Arguments.
 {{ macros.exportType(instruction.name | pascalCase + 'InstructionData', typeManifest) }}
 

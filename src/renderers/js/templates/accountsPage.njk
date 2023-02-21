@@ -4,12 +4,17 @@
 {% block main %}
 {{ imports }}
 
-{{ macros.docblock(definedType.docs) }}
-export type {{ account.name | pascalCase }} = Account<{{ account.name | pascalCase }}AccountData>;
+{% if account.isLinked %}
+  {{ macros.docblock(definedType.docs) }}
+  export type {{ account.name | pascalCase }} = Account<{{ account.type.name | pascalCase }}>;
+{% else %}
+  {{ macros.docblock(definedType.docs) }}
+  export type {{ account.name | pascalCase }} = Account<{{ account.name | pascalCase }}AccountData>;
 
-{{ macros.exportType(account.name | pascalCase + 'AccountData', typeManifest) }}
+  {{ macros.exportType(account.name | pascalCase + 'AccountData', typeManifest) }}
 
-{{ macros.exportSerializer(account.name | pascalCase + 'AccountData', typeManifest) }}
+  {{ macros.exportSerializer(account.name | pascalCase + 'AccountData', typeManifest) }}
+{% endif %}
 
 export function deserialize{{ account.name | pascalCase }}(
   context: Pick<Context, 'serializer'>,

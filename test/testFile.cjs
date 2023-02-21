@@ -50,6 +50,9 @@ kinobi.update(
         { kind: 'literal', value: 'edition' },
       ],
     },
+    ReservationListV1: {
+      link: true,
+    },
   })
 );
 

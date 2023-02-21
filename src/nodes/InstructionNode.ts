@@ -181,6 +181,10 @@ export class InstructionNode implements Visitable {
     return this.metadata.docs;
   }
 
+  get isLinked(): boolean {
+    return isTypeDefinedLinkNode(this.args);
+  }
+
   get hasAccounts(): boolean {
     return this.accounts.length > 0;
   }

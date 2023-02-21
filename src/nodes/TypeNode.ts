@@ -128,3 +128,25 @@ export function assertTypeNode(node: Node | null): asserts node is TypeNode {
     throw new Error(`Expected TypeNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }
+
+export function isTypeStructOrDefinedLinkNode(
+  node: Node | null
+): node is TypeStructNode | TypeDefinedLinkNode {
+  return (
+    !!node &&
+    (node.nodeClass === 'TypeStructNode' ||
+      node.nodeClass === 'TypeDefinedLinkNode')
+  );
+}
+
+export function assertTypeStructOrDefinedLinkNode(
+  node: Node | null
+): asserts node is TypeStructNode | TypeDefinedLinkNode {
+  if (!isTypeStructOrDefinedLinkNode(node)) {
+    throw new Error(
+      `Expected TypeStructNode | TypeDefinedLinkNode, got ${
+        node?.nodeClass ?? 'null'
+      }.`
+    );
+  }
+}

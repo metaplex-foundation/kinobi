@@ -84,6 +84,10 @@ export class AccountNode implements Visitable {
     return this.metadata.docs;
   }
 
+  get isLinked(): boolean {
+    return isTypeDefinedLinkNode(this.type);
+  }
+
   get discriminatorField(): TypeStructFieldNode | null {
     if (isTypeDefinedLinkNode(this.type)) return null;
     if (this.metadata.discriminator?.kind !== 'field') return null;

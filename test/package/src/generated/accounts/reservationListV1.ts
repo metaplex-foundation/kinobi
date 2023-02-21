@@ -9,7 +9,6 @@
 import {
   Account,
   Context,
-  Option,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
@@ -18,60 +17,14 @@ import {
   assertAccountExists,
   deserializeAccount,
   gpaBuilder,
-  mapSerializer,
 } from '@metaplex-foundation/umi-core';
 import {
-  ReservationV1,
-  ReservationV1Args,
-  TmKey,
-  TmKeyArgs,
-  getReservationV1Serializer,
-  getTmKeySerializer,
-} from '../types';
+  ReservationListV1AccountData,
+  ReservationListV1AccountDataArgs,
+  getReservationListV1AccountDataSerializer,
+} from '../../hooked';
 
 export type ReservationListV1 = Account<ReservationListV1AccountData>;
-
-export type ReservationListV1AccountData = {
-  key: TmKey;
-  masterEdition: PublicKey;
-  supplySnapshot: Option<bigint>;
-  reservations: Array<ReservationV1>;
-};
-
-export type ReservationListV1AccountDataArgs = {
-  masterEdition: PublicKey;
-  supplySnapshot: Option<number | bigint>;
-  reservations: Array<ReservationV1Args>;
-};
-
-export function getReservationListV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    ReservationListV1AccountDataArgs,
-    ReservationListV1AccountData,
-    ReservationListV1AccountData
-  >(
-    s.struct<ReservationListV1AccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey()],
-        ['supplySnapshot', s.option(s.u64())],
-        ['reservations', s.array(getReservationV1Serializer(context))],
-      ],
-      { description: 'ReservationListV1' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.ReservationListV1,
-      } as ReservationListV1AccountData)
-  ) as Serializer<
-    ReservationListV1AccountDataArgs,
-    ReservationListV1AccountData
-  >;
-}
 
 export function deserializeReservationListV1(
   context: Pick<Context, 'serializer'>,
@@ -127,29 +80,6 @@ export async function safeFetchAllReservationListV1(
     .map((maybeAccount) =>
       deserializeReservationListV1(context, maybeAccount as RpcAccount)
     );
-}
-
-export function getReservationListV1GpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
-) {
-  const s = context.serializer;
-  const programId = context.programs.get('mplTokenMetadata').publicKey;
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      key: TmKeyArgs;
-      masterEdition: PublicKey;
-      supplySnapshot: Option<number | bigint>;
-      reservations: Array<ReservationV1Args>;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['masterEdition', s.publicKey()],
-      ['supplySnapshot', s.option(s.u64())],
-      ['reservations', s.array(getReservationV1Serializer(context))],
-    ])
-    .deserializeUsing<ReservationListV1>((account) =>
-      deserializeReservationListV1(context, account)
-    )
-    .whereField('key', TmKey.ReservationListV1);
 }
 
 export function getReservationListV1Size(

@@ -30,13 +30,13 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const accountType = account.type.accept(this);
-    nodes.assertTypeStructNode(accountType);
+    nodes.assertTypeStructOrDefinedLinkNode(accountType);
     return new nodes.AccountNode(account.metadata, accountType);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const args = instruction.args.accept(this);
-    nodes.assertTypeStructNode(args);
+    nodes.assertTypeStructOrDefinedLinkNode(args);
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,

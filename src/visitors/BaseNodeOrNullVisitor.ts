@@ -35,14 +35,14 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitAccount(account: nodes.AccountNode): nodes.Node | null {
     const accountType = account.type.accept(this);
     if (accountType === null) return null;
-    nodes.assertTypeStructNode(accountType);
+    nodes.assertTypeStructOrDefinedLinkNode(accountType);
     return new nodes.AccountNode(account.metadata, accountType);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
     const args = instruction.args.accept(this);
     if (args === null) return null;
-    nodes.assertTypeStructNode(args);
+    nodes.assertTypeStructOrDefinedLinkNode(args);
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
