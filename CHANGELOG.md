@@ -1,5 +1,17 @@
 # @metaplex-foundation/kinobi
 
+## 0.2.0
+
+### Minor Changes
+
+- [#8](https://github.com/metaplex-foundation/kinobi/pull/8) [`4a3b3f1`](https://github.com/metaplex-foundation/kinobi/commit/4a3b3f19b290c727daea80c40683a298a3e401ab) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Allow account and instruction nodes to use defined links
+
+### Patch Changes
+
+- [#6](https://github.com/metaplex-foundation/kinobi/pull/6) [`8265b23`](https://github.com/metaplex-foundation/kinobi/commit/8265b23ed983740b73aef7dfbea58189074e7e6c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update serializers
+
+- [#9](https://github.com/metaplex-foundation/kinobi/pull/9) [`06818b7`](https://github.com/metaplex-foundation/kinobi/commit/06818b7dde8f5ecd083488eed0277a1e15a351aa) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Link PDA instruction account with their bump argument
+
 ## 0.1.1
 
 ### Patch Changes
