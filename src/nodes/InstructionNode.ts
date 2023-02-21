@@ -119,7 +119,7 @@ export class InstructionNode implements Visitable {
 
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => {
-        const isOptional = account.optional ?? false;
+        const isOptional = account.optional ?? account.isOptional ?? false;
         return {
           name: camelCase(account.name ?? ''),
           isWritable: account.isMut ?? false,
