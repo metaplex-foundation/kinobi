@@ -1,10 +1,10 @@
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
-type LeafWrapperMap = Record<string, nodes.NumberWrapper>;
+type NumberWrapperMap = Record<string, nodes.NumberWrapper>;
 
-export class SetLeafWrappersVisitor extends TransformNodesVisitor {
-  constructor(readonly map: LeafWrapperMap) {
+export class SetNumberWrappersVisitor extends TransformNodesVisitor {
+  constructor(readonly map: NumberWrapperMap) {
     const transforms = Object.entries(map).map(
       ([selectorStack, wrapper]): NodeTransform => ({
         selector: { type: 'typeNumber', stack: selectorStack },
