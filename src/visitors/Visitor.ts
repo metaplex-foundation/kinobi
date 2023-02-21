@@ -24,13 +24,18 @@ export interface Visitor<T = void> {
   visitTypeEnumTupleVariant: (
     typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
   ) => T;
-  visitTypeLeaf: (typeLeaf: nodes.TypeLeafNode) => T;
-  visitTypeLeafWrapper: (typeLeafWrapper: nodes.TypeLeafWrapperNode) => T;
   visitTypeMap: (typeMap: nodes.TypeMapNode) => T;
   visitTypeOption: (typeOption: nodes.TypeOptionNode) => T;
   visitTypeSet: (typeSet: nodes.TypeSetNode) => T;
   visitTypeStruct: (typeStruct: nodes.TypeStructNode) => T;
   visitTypeStructField: (typeStructField: nodes.TypeStructFieldNode) => T;
   visitTypeTuple: (typeTuple: nodes.TypeTupleNode) => T;
-  visitTypeVec: (typeVec: nodes.TypeVecNode) => T;
+
+  // Type leaves.
+  visitTypeBool: (typeBool: nodes.TypeBoolNode) => T;
+  visitTypeBytes: (typeBytes: nodes.TypeBytesNode) => T;
+  visitTypeNumber: (typeNumber: nodes.TypeNumberNode) => T;
+  visitTypeNumberWrapper: (typeNumberWrapper: nodes.TypeNumberWrapperNode) => T;
+  visitTypePublicKey: (typePublicKey: nodes.TypePublicKeyNode) => T;
+  visitTypeString: (typeString: nodes.TypeStringNode) => T;
 }

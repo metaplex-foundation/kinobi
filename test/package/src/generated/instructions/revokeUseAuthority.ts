@@ -56,10 +56,9 @@ export function getRevokeUseAuthorityInstructionDataSerializer(
     RevokeUseAuthorityInstructionData,
     RevokeUseAuthorityInstructionData
   >(
-    s.struct<RevokeUseAuthorityInstructionData>(
-      [['discriminator', s.u8]],
-      'RevokeUseAuthorityInstructionArgs'
-    ),
+    s.struct<RevokeUseAuthorityInstructionData>([['discriminator', s.u8()]], {
+      description: 'RevokeUseAuthorityInstructionArgs',
+    }),
     (value) =>
       ({ ...value, discriminator: 21 } as RevokeUseAuthorityInstructionData)
   ) as Serializer<

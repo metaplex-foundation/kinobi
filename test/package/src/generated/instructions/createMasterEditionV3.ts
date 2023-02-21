@@ -70,13 +70,13 @@ export function getCreateMasterEditionV3InstructionDataSerializer(
   >(
     s.struct<CreateMasterEditionV3InstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'createMasterEditionArgs',
           getCreateMasterEditionArgsSerializer(context),
         ],
       ],
-      'CreateMasterEditionV3InstructionArgs'
+      { description: 'CreateMasterEditionV3InstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 17 } as CreateMasterEditionV3InstructionData)

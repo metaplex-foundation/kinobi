@@ -24,17 +24,16 @@ export function getEscrowAuthoritySerializer(
   const s = context.serializer;
   return s.dataEnum<EscrowAuthority>(
     [
-      ['TokenOwner', s.unit],
+      ['TokenOwner', s.unit()],
       [
         'Creator',
         s.struct<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>(
-          [['fields', s.tuple([s.publicKey])]],
-          'Creator'
+          [['fields', s.tuple([s.publicKey()])]],
+          { description: 'Creator' }
         ),
       ],
     ],
-    undefined,
-    'EscrowAuthority'
+    { description: 'EscrowAuthority' }
   );
 }
 

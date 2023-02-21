@@ -16,5 +16,5 @@ export function getVerifyArgsSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<VerifyArgs> {
   const s = context.serializer;
-  return s.enum<VerifyArgs>(VerifyArgs, 'VerifyArgs');
+  return s.enum<VerifyArgs>(VerifyArgs, { description: 'VerifyArgs' });
 }

@@ -56,10 +56,10 @@ export function getInitializeInstructionDataSerializer(
   >(
     s.struct<InitializeInstructionData>(
       [
-        ['discriminator', s.array(s.u8, 8)],
+        ['discriminator', s.array(s.u8(), { size: 8 })],
         ['data', getCandyMachineDataSerializer(context)],
       ],
-      'InitializeInstructionArgs'
+      { description: 'InitializeInstructionArgs' }
     ),
     (value) =>
       ({

@@ -19,5 +19,5 @@ export function getPayloadKeySerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<PayloadKey> {
   const s = context.serializer;
-  return s.enum<PayloadKey>(PayloadKey, 'PayloadKey');
+  return s.enum<PayloadKey>(PayloadKey, { description: 'PayloadKey' });
 }

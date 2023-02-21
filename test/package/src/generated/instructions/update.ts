@@ -62,10 +62,10 @@ export function getUpdateInstructionDataSerializer(
   >(
     s.struct<UpdateInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['updateArgs', getUpdateArgsSerializer(context)],
       ],
-      'UpdateInstructionArgs'
+      { description: 'UpdateInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 43 } as UpdateInstructionData)
   ) as Serializer<UpdateInstructionArgs, UpdateInstructionData>;

@@ -89,8 +89,8 @@ export function getUseAuthorityRecordGpaBuilder(
     .registerFields<{ key: TmKey; allowedUses: number | bigint; bump: number }>(
       [
         ['key', getTmKeySerializer(context)],
-        ['allowedUses', s.u64],
-        ['bump', s.u8],
+        ['allowedUses', s.u64()],
+        ['bump', s.u8()],
       ]
     )
     .deserializeUsing<UseAuthorityRecord>((account) =>
@@ -121,10 +121,10 @@ export function getUseAuthorityRecordAccountDataSerializer(
     s.struct<UseAuthorityRecordAccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['allowedUses', s.u64],
-        ['bump', s.u8],
+        ['allowedUses', s.u64()],
+        ['bump', s.u8()],
       ],
-      'UseAuthorityRecord'
+      { description: 'UseAuthorityRecord' }
     ),
     (value) =>
       ({

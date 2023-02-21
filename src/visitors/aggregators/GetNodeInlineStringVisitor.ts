@@ -50,12 +50,13 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): string {
-    const child = typeArray.itemType.accept(this);
-    return `array(${typeArray.size};${child})`;
+    const item = typeArray.item.accept(this);
+    const size = this.displayArrayLikeSize(typeArray.size);
+    return `array(${item};${size})`;
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): string {
-    return `link(${typeDefinedLink.definedType})`;
+    return `link(${typeDefinedLink.name};${typeDefinedLink.dependency})`;
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {
@@ -83,37 +84,24 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return `${typeEnumTupleVariant.name}:${child}`;
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): string {
-    return typeLeaf.toString();
-  }
-
-  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): string {
-    const child = typeLeafWrapper.leaf.accept(this);
-    const { wrapper } = typeLeafWrapper;
-    switch (wrapper.kind) {
-      case 'DateTime':
-        return `DateTime(${child})`;
-      case 'Amount':
-        return `Amount(${child},${wrapper.identifier},${wrapper.decimals})`;
-      default:
-        return child;
-    }
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): string {
-    const key = typeMap.keyType.accept(this);
-    const value = typeMap.valueType.accept(this);
-    return `map(${key},${value})`;
+    const key = typeMap.key.accept(this);
+    const value = typeMap.value.accept(this);
+    const size = this.displayArrayLikeSize(typeMap.size);
+    return `map(${key},${value};${size})`;
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): string {
-    const child = typeOption.type.accept(this);
-    return `option(${child})`;
+    const item = typeOption.item.accept(this);
+    const prefix = typeOption.prefix.accept(this);
+    const fixed = typeOption.fixed ? ';fixed' : '';
+    return `option(${item};${prefix + fixed})`;
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): string {
-    const child = typeSet.type.accept(this);
-    return `set(${child})`;
+    const item = typeSet.item.accept(this);
+    const size = this.displayArrayLikeSize(typeSet.size);
+    return `set(${item};${size})`;
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): string {
@@ -127,14 +115,50 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {
-    const children = typeTuple.itemTypes.map((itemType) =>
-      itemType.accept(this)
-    );
+    const children = typeTuple.items.map((item) => item.accept(this));
     return `tuple(${children.join(',')})`;
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): string {
-    const child = typeVec.itemType.accept(this);
-    return `vec(${child})`;
+  visitTypeBool(typeBool: nodes.TypeBoolNode): string {
+    return typeBool.toString();
+  }
+
+  visitTypeBytes(): string {
+    return 'bytes';
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): string {
+    return typeNumber.toString();
+  }
+
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  ): string {
+    const item = typeNumberWrapper.item.accept(this);
+    const { wrapper } = typeNumberWrapper;
+    switch (wrapper.kind) {
+      case 'DateTime':
+        return `DateTime(${item})`;
+      case 'Amount':
+        return `Amount(${item},${wrapper.identifier},${wrapper.decimals})`;
+      case 'SolAmount':
+        return `SolAmount(${item})`;
+      default:
+        return item;
+    }
+  }
+
+  visitTypePublicKey(): string {
+    return 'publicKey';
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): string {
+    return typeString.toString();
+  }
+
+  displayArrayLikeSize(size: nodes.TypeArrayNode['size']): string {
+    if (size.kind === 'fixed') return `${size.size}`;
+    if (size.kind === 'prefixed') return size.prefix.accept(this);
+    return 'remainder';
   }
 }

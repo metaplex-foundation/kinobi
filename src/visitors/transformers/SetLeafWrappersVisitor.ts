@@ -1,16 +1,16 @@
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
-type LeafWrapperMap = Record<string, nodes.LeafWrapper>;
+type LeafWrapperMap = Record<string, nodes.NumberWrapper>;
 
 export class SetLeafWrappersVisitor extends TransformNodesVisitor {
   constructor(readonly map: LeafWrapperMap) {
     const transforms = Object.entries(map).map(
       ([selectorStack, wrapper]): NodeTransform => ({
-        selector: { type: 'typeLeaf', stack: selectorStack },
+        selector: { type: 'typeNumber', stack: selectorStack },
         transformer: (node) => {
-          nodes.assertTypeLeafNode(node);
-          return new nodes.TypeLeafWrapperNode(wrapper, node);
+          nodes.assertTypeNumberNode(node);
+          return new nodes.TypeNumberWrapperNode(node, wrapper);
         },
       })
     );

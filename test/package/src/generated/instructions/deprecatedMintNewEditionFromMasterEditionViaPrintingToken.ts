@@ -75,8 +75,11 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
     DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
   >(
     s.struct<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>(
-      [['discriminator', s.u8]],
-      'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs'
+      [['discriminator', s.u8()]],
+      {
+        description:
+          'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs',
+      }
     ),
     (value) =>
       ({

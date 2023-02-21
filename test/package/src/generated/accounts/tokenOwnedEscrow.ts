@@ -100,9 +100,9 @@ export function getTokenOwnedEscrowGpaBuilder(
       bump: number;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['baseToken', s.publicKey],
+      ['baseToken', s.publicKey()],
       ['authority', getEscrowAuthoritySerializer(context)],
-      ['bump', s.u8],
+      ['bump', s.u8()],
     ])
     .deserializeUsing<TokenOwnedEscrow>((account) =>
       deserializeTokenOwnedEscrow(context, account)
@@ -132,11 +132,11 @@ export function getTokenOwnedEscrowAccountDataSerializer(
     s.struct<TokenOwnedEscrowAccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['baseToken', s.publicKey],
+        ['baseToken', s.publicKey()],
         ['authority', getEscrowAuthoritySerializer(context)],
-        ['bump', s.u8],
+        ['bump', s.u8()],
       ],
-      'TokenOwnedEscrow'
+      { description: 'TokenOwnedEscrow' }
     ),
     (value) =>
       ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)

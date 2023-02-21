@@ -48,10 +48,9 @@ export function getThawDelegatedAccountInstructionDataSerializer(
     ThawDelegatedAccountInstructionData,
     ThawDelegatedAccountInstructionData
   >(
-    s.struct<ThawDelegatedAccountInstructionData>(
-      [['discriminator', s.u8]],
-      'ThawDelegatedAccountInstructionArgs'
-    ),
+    s.struct<ThawDelegatedAccountInstructionData>([['discriminator', s.u8()]], {
+      description: 'ThawDelegatedAccountInstructionArgs',
+    }),
     (value) =>
       ({ ...value, discriminator: 27 } as ThawDelegatedAccountInstructionData)
   ) as Serializer<

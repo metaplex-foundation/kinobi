@@ -47,8 +47,8 @@ export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
     ConvertMasterEditionV1ToV2InstructionData
   >(
     s.struct<ConvertMasterEditionV1ToV2InstructionData>(
-      [['discriminator', s.u8]],
-      'ConvertMasterEditionV1ToV2InstructionArgs'
+      [['discriminator', s.u8()]],
+      { description: 'ConvertMasterEditionV1ToV2InstructionArgs' }
     ),
     (value) =>
       ({

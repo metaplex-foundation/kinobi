@@ -67,18 +67,18 @@ export function getCandyMachineDataSerializer(
   const s = context.serializer;
   return s.struct<CandyMachineData>(
     [
-      ['itemsAvailable', s.u64],
+      ['itemsAvailable', s.u64()],
       ['symbol', s.string()],
-      ['sellerFeeBasisPoints', mapAmountSerializer(s.u16, '%', 2)],
-      ['maxSupply', s.u64],
+      ['sellerFeeBasisPoints', mapAmountSerializer(s.u16(), '%', 2)],
+      ['maxSupply', s.u64()],
       ['isMutable', s.bool()],
-      ['creators', s.vec(getCmCreatorSerializer(context))],
+      ['creators', s.array(getCmCreatorSerializer(context))],
       [
         'configLineSettings',
         s.option(getConfigLineSettingsSerializer(context)),
       ],
       ['hiddenSettings', s.option(getHiddenSettingsSerializer(context))],
     ],
-    'CandyMachineData'
+    { description: 'CandyMachineData' }
   ) as Serializer<CandyMachineDataArgs, CandyMachineData>;
 }

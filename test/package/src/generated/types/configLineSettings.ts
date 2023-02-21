@@ -29,11 +29,11 @@ export function getConfigLineSettingsSerializer(
   return s.struct<ConfigLineSettings>(
     [
       ['prefixName', s.string()],
-      ['nameLength', s.u32],
+      ['nameLength', s.u32()],
       ['prefixUri', s.string()],
-      ['uriLength', s.u32],
+      ['uriLength', s.u32()],
       ['isSequential', s.bool()],
     ],
-    'ConfigLineSettings'
+    { description: 'ConfigLineSettings' }
   );
 }

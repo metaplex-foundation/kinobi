@@ -60,9 +60,9 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node {
-    const type = typeArray.itemType.accept(this);
-    nodes.assertTypeNode(type);
-    return new nodes.TypeArrayNode(type, typeArray.size);
+    const item = typeArray.item.accept(this);
+    nodes.assertTypeNode(item);
+    return new nodes.TypeArrayNode(item, { ...typeArray });
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
@@ -108,34 +108,24 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): nodes.Node {
-    return typeLeaf;
-  }
-
-  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): nodes.Node {
-    const leaf = typeLeafWrapper.leaf.accept(this);
-    nodes.assertTypeLeafNode(leaf);
-    return new nodes.TypeLeafWrapperNode(typeLeafWrapper.wrapper, leaf);
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node {
-    const keyType = typeMap.keyType.accept(this);
-    nodes.assertTypeNode(keyType);
-    const valueType = typeMap.valueType.accept(this);
-    nodes.assertTypeNode(valueType);
-    return new nodes.TypeMapNode(typeMap.mapType, keyType, valueType);
+    const key = typeMap.key.accept(this);
+    nodes.assertTypeNode(key);
+    const value = typeMap.value.accept(this);
+    nodes.assertTypeNode(value);
+    return new nodes.TypeMapNode(key, value, { ...typeMap });
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): nodes.Node {
-    const type = typeOption.type.accept(this);
-    nodes.assertTypeNode(type);
-    return new nodes.TypeOptionNode(typeOption.optionType, type);
+    const item = typeOption.item.accept(this);
+    nodes.assertTypeNode(item);
+    return new nodes.TypeOptionNode(item, { ...typeOption });
   }
 
   visitTypeSet(typeSet: nodes.TypeSetNode): nodes.Node {
-    const type = typeSet.type.accept(this);
-    nodes.assertTypeNode(type);
-    return new nodes.TypeSetNode(typeSet.setType, type);
+    const item = typeSet.item.accept(this);
+    nodes.assertTypeNode(item);
+    return new nodes.TypeSetNode(item, { ...typeSet });
   }
 
   visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node {
@@ -157,17 +147,39 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node {
     return new nodes.TypeTupleNode(
-      typeTuple.itemTypes.map((type) => {
-        const newType = type.accept(this);
-        nodes.assertTypeNode(newType);
-        return newType;
+      typeTuple.items.map((item) => {
+        const newItem = item.accept(this);
+        nodes.assertTypeNode(newItem);
+        return newItem;
       })
     );
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): nodes.Node {
-    const type = typeVec.itemType.accept(this);
-    nodes.assertTypeNode(type);
-    return new nodes.TypeVecNode(type);
+  visitTypeBool(typeBool: nodes.TypeBoolNode): nodes.Node {
+    return typeBool;
+  }
+
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): nodes.Node {
+    return typeBytes;
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): nodes.Node {
+    return typeNumber;
+  }
+
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  ): nodes.Node {
+    const item = typeNumberWrapper.item.accept(this);
+    nodes.assertTypeNumberNode(item);
+    return new nodes.TypeNumberWrapperNode(item, typeNumberWrapper.wrapper);
+  }
+
+  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): nodes.Node {
+    return typePublicKey;
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): nodes.Node {
+    return typeString;
   }
 }

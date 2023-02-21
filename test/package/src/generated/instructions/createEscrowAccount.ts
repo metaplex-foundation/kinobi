@@ -57,10 +57,9 @@ export function getCreateEscrowAccountInstructionDataSerializer(
     CreateEscrowAccountInstructionData,
     CreateEscrowAccountInstructionData
   >(
-    s.struct<CreateEscrowAccountInstructionData>(
-      [['discriminator', s.u8]],
-      'CreateEscrowAccountInstructionArgs'
-    ),
+    s.struct<CreateEscrowAccountInstructionData>([['discriminator', s.u8()]], {
+      description: 'CreateEscrowAccountInstructionArgs',
+    }),
     (value) =>
       ({ ...value, discriminator: 38 } as CreateEscrowAccountInstructionData)
   ) as Serializer<

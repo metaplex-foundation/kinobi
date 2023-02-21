@@ -63,14 +63,6 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     );
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): T {
-    throw new Error('This visitor does not support TypeLeaf nodes.');
-  }
-
-  visitTypeLeafWrapper(typeLeafWrapper: nodes.TypeLeafWrapperNode): T {
-    throw new Error('This visitor does not support TypeLeafWrapper nodes.');
-  }
-
   visitTypeMap(typeMap: nodes.TypeMapNode): T {
     throw new Error('This visitor does not support TypeMap nodes.');
   }
@@ -95,7 +87,27 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     throw new Error('This visitor does not support TypeTuple nodes.');
   }
 
-  visitTypeVec(typeVec: nodes.TypeVecNode): T {
-    throw new Error('This visitor does not support TypeVec nodes.');
+  visitTypeBool(typeBool: nodes.TypeBoolNode): T {
+    throw new Error('This visitor does not support TypeBool nodes.');
+  }
+
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): T {
+    throw new Error('This visitor does not support TypeBytes nodes.');
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): T {
+    throw new Error('This visitor does not support TypeNumber nodes.');
+  }
+
+  visitTypeNumberWrapper(typeNumberWrapper: nodes.TypeNumberWrapperNode): T {
+    throw new Error('This visitor does not support TypeNumberWrapper nodes.');
+  }
+
+  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): T {
+    throw new Error('This visitor does not support TypePublicKey nodes.');
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): T {
+    throw new Error('This visitor does not support TypeString nodes.');
   }
 }

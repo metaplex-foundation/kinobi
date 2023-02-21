@@ -90,8 +90,8 @@ export function getEditionGpaBuilder(
       edition: number | bigint;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['parent', s.publicKey],
-      ['edition', s.u64],
+      ['parent', s.publicKey()],
+      ['edition', s.u64()],
     ])
     .deserializeUsing<Edition>((account) =>
       deserializeEdition(context, account)
@@ -121,10 +121,10 @@ export function getEditionAccountDataSerializer(
     s.struct<EditionAccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['parent', s.publicKey],
-        ['edition', s.u64],
+        ['parent', s.publicKey()],
+        ['edition', s.u64()],
       ],
-      'Edition'
+      { description: 'Edition' }
     ),
     (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
   ) as Serializer<EditionAccountArgs, EditionAccountData>;

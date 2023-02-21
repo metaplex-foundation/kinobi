@@ -99,10 +99,10 @@ export function getMasterEditionV1GpaBuilder(
       oneTimePrintingAuthorizationMint: PublicKey;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['supply', s.u64],
-      ['maxSupply', s.option(s.u64)],
-      ['printingMint', s.publicKey],
-      ['oneTimePrintingAuthorizationMint', s.publicKey],
+      ['supply', s.u64()],
+      ['maxSupply', s.option(s.u64())],
+      ['printingMint', s.publicKey()],
+      ['oneTimePrintingAuthorizationMint', s.publicKey()],
     ])
     .deserializeUsing<MasterEditionV1>((account) =>
       deserializeMasterEditionV1(context, account)
@@ -132,12 +132,12 @@ export function getMasterEditionV1AccountDataSerializer(
     s.struct<MasterEditionV1AccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['supply', s.u64],
-        ['maxSupply', s.option(s.u64)],
-        ['printingMint', s.publicKey],
-        ['oneTimePrintingAuthorizationMint', s.publicKey],
+        ['supply', s.u64()],
+        ['maxSupply', s.option(s.u64())],
+        ['printingMint', s.publicKey()],
+        ['oneTimePrintingAuthorizationMint', s.publicKey()],
       ],
-      'MasterEditionV1'
+      { description: 'MasterEditionV1' }
     ),
     (value) =>
       ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)

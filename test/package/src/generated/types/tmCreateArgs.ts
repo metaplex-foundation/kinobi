@@ -40,15 +40,14 @@ export function getTmCreateArgsSerializer(
         s.struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>(
           [
             ['assetData', getAssetDataSerializer(context)],
-            ['decimals', s.option(s.u8)],
-            ['maxSupply', s.option(s.u64)],
+            ['decimals', s.option(s.u8())],
+            ['maxSupply', s.option(s.u64())],
           ],
-          'V1'
+          { description: 'V1' }
         ),
       ],
     ],
-    undefined,
-    'TmCreateArgs'
+    { description: 'TmCreateArgs' }
   ) as Serializer<TmCreateArgsArgs, TmCreateArgs>;
 }
 

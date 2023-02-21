@@ -94,8 +94,8 @@ export function getCollectionAuthorityRecordGpaBuilder(
       updateAuthority: Option<PublicKey>;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['bump', s.u8],
-      ['updateAuthority', s.option(s.publicKey)],
+      ['bump', s.u8()],
+      ['updateAuthority', s.option(s.publicKey())],
     ])
     .deserializeUsing<CollectionAuthorityRecord>((account) =>
       deserializeCollectionAuthorityRecord(context, account)
@@ -128,10 +128,10 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
     s.struct<CollectionAuthorityRecordAccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['bump', s.u8],
-        ['updateAuthority', s.option(s.publicKey)],
+        ['bump', s.u8()],
+        ['updateAuthority', s.option(s.publicKey())],
       ],
-      'CollectionAuthorityRecord'
+      { description: 'CollectionAuthorityRecord' }
     ),
     (value) =>
       ({

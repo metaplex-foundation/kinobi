@@ -108,11 +108,11 @@ export function getReservationListV2GpaBuilder(
       currentReservationSpots: number | bigint;
     }>([
       ['key', getTmKeySerializer(context)],
-      ['masterEdition', s.publicKey],
-      ['supplySnapshot', s.option(s.u64)],
-      ['reservations', s.vec(getReservationSerializer(context))],
-      ['totalReservationSpots', s.u64],
-      ['currentReservationSpots', s.u64],
+      ['masterEdition', s.publicKey()],
+      ['supplySnapshot', s.option(s.u64())],
+      ['reservations', s.array(getReservationSerializer(context))],
+      ['totalReservationSpots', s.u64()],
+      ['currentReservationSpots', s.u64()],
     ])
     .deserializeUsing<ReservationListV2>((account) =>
       deserializeReservationListV2(context, account)
@@ -142,13 +142,13 @@ export function getReservationListV2AccountDataSerializer(
     s.struct<ReservationListV2AccountData>(
       [
         ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey],
-        ['supplySnapshot', s.option(s.u64)],
-        ['reservations', s.vec(getReservationSerializer(context))],
-        ['totalReservationSpots', s.u64],
-        ['currentReservationSpots', s.u64],
+        ['masterEdition', s.publicKey()],
+        ['supplySnapshot', s.option(s.u64())],
+        ['reservations', s.array(getReservationSerializer(context))],
+        ['totalReservationSpots', s.u64()],
+        ['currentReservationSpots', s.u64()],
       ],
-      'ReservationListV2'
+      { description: 'ReservationListV2' }
     ),
     (value) =>
       ({

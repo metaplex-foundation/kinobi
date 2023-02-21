@@ -68,13 +68,13 @@ export function getCreateV1InstructionDataSerializer(
   >(
     s.struct<CreateV1InstructionData>(
       [
-        ['discriminator', s.u8],
-        ['createV1Discriminator', s.u8],
+        ['discriminator', s.u8()],
+        ['createV1Discriminator', s.u8()],
         ['assetData', getAssetDataSerializer(context)],
-        ['decimals', s.option(s.u8)],
-        ['maxSupply', s.option(s.u64)],
+        ['decimals', s.option(s.u8())],
+        ['maxSupply', s.option(s.u64())],
       ],
-      'CreateV1InstructionArgs'
+      { description: 'CreateV1InstructionArgs' }
     ),
     (value) =>
       ({

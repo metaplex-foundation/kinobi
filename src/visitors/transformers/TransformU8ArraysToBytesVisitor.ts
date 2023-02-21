@@ -7,22 +7,22 @@ export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node {
-    const type = typeArray.itemType.accept(this);
-    nodes.assertTypeNode(type);
+    const item = typeArray.item.accept(this);
+    nodes.assertTypeNode(item);
 
     if (
-      nodes.isTypeLeafNode(type) &&
-      type.isNumber() &&
-      type.leaf.number === 'u8' &&
+      nodes.isTypeNumberNode(item) &&
+      item.format === 'u8' &&
       this.hasRequiredSize(typeArray.size)
     ) {
-      return nodes.TypeLeafNode.fromIdl('bytes');
+      return new nodes.TypeBytesNode();
     }
 
-    return new nodes.TypeArrayNode(type, typeArray.size);
+    return typeArray;
   }
 
-  protected hasRequiredSize(size: number): boolean {
-    return this.sizes === '*' || this.sizes.includes(size);
+  protected hasRequiredSize(size: nodes.TypeArrayNode['size']): boolean {
+    if (size.kind !== 'fixed') return false;
+    return this.sizes === '*' || this.sizes.includes(size.size);
   }
 }

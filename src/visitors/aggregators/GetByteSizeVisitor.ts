@@ -35,21 +35,22 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   }
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): number | null {
-    const itemSize = typeArray.itemType.accept(this);
-    const arraySize = itemSize !== null ? itemSize * typeArray.size : null;
-    return typeArray.size === 0 ? 0 : arraySize;
+    if (typeArray.size.kind !== 'fixed') return null;
+    const itemSize = typeArray.item.accept(this);
+    const arraySize = itemSize !== null ? itemSize * typeArray.size.size : null;
+    return typeArray.size.size === 0 ? 0 : arraySize;
   }
 
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): number | null {
     const linkedDefinedType = this.availableDefinedTypes.get(
-      typeDefinedLink.definedType
+      typeDefinedLink.name
     );
 
     if (!linkedDefinedType) {
       throw new Error(
-        `Cannot find linked defined type ${typeDefinedLink.definedType}.`
+        `Cannot find linked defined type ${typeDefinedLink.name}.`
       );
     }
 
@@ -91,38 +92,15 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return typeEnumTupleVariant.tuple.accept(this);
   }
 
-  visitTypeLeaf(typeLeaf: nodes.TypeLeafNode): number | null {
-    switch (typeLeaf.leaf.kind) {
-      case 'number':
-        return parseInt(typeLeaf.leaf.number.slice(1), 10) / 8;
-      case 'bool':
-        return 1;
-      case 'publicKey':
-        return 32;
-      case 'fixedString':
-        return typeLeaf.leaf.bytes;
-      case 'variableString':
-      case 'string':
-      case 'bytes':
-      default:
-        return null;
-    }
-  }
-
-  visitTypeLeafWrapper(
-    typeLeafWrapper: nodes.TypeLeafWrapperNode
-  ): number | null {
-    return typeLeafWrapper.leaf.accept(this);
-  }
-
   visitTypeMap(): number | null {
     return null;
   }
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): number | null {
-    const child = typeOption.type.accept(this);
-    if (typeOption.optionType === 'option') return null;
-    return child !== null ? child + 4 : null;
+    if (!typeOption.fixed) return null;
+    const prefixSize = typeOption.prefix.accept(this) as number;
+    const itemSize = typeOption.item.accept(this);
+    return itemSize !== null ? itemSize + prefixSize : null;
   }
 
   visitTypeSet(): number | null {
@@ -140,11 +118,34 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): number | null {
-    return this.sumSizes(typeTuple.itemTypes.map((i) => i.accept(this)));
+    return this.sumSizes(typeTuple.items.map((i) => i.accept(this)));
   }
 
-  visitTypeVec(): number | null {
+  visitTypeBool(typeBool: nodes.TypeBoolNode): number | null {
+    return typeBool.size.accept(this);
+  }
+
+  visitTypeBytes(): number | null {
     return null;
+  }
+
+  visitTypeNumber(typeNumber: nodes.TypeNumberNode): number | null {
+    return parseInt(typeNumber.format.slice(1), 10) / 8;
+  }
+
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  ): number | null {
+    return typeNumberWrapper.item.accept(this);
+  }
+
+  visitTypePublicKey(): number | null {
+    return 32;
+  }
+
+  visitTypeString(typeString: nodes.TypeStringNode): number | null {
+    if (typeString.size.kind !== 'fixed') return null;
+    return typeString.size.bytes;
   }
 
   protected sumSizes(sizes: (number | null)[]): number | null {

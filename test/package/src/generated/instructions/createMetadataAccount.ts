@@ -78,7 +78,7 @@ export function getCreateMetadataAccountInstructionDataSerializer(
   >(
     s.struct<CreateMetadataAccountInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'data',
           s.struct<any>(
@@ -86,15 +86,15 @@ export function getCreateMetadataAccountInstructionDataSerializer(
               ['name', s.string()],
               ['symbol', s.string()],
               ['uri', s.string()],
-              ['sellerFeeBasisPoints', s.u16],
-              ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+              ['sellerFeeBasisPoints', s.u16()],
+              ['creators', s.option(s.array(getCreatorSerializer(context)))],
             ],
-            'Data'
+            { description: 'Data' }
           ),
         ],
         ['isMutable', s.bool()],
       ],
-      'CreateMetadataAccountInstructionArgs'
+      { description: 'CreateMetadataAccountInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 0 } as CreateMetadataAccountInstructionData)

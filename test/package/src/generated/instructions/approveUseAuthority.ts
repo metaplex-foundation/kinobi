@@ -67,10 +67,10 @@ export function getApproveUseAuthorityInstructionDataSerializer(
   >(
     s.struct<ApproveUseAuthorityInstructionData>(
       [
-        ['discriminator', s.u8],
-        ['numberOfUses', s.u64],
+        ['discriminator', s.u8()],
+        ['numberOfUses', s.u64()],
       ],
-      'ApproveUseAuthorityInstructionArgs'
+      { description: 'ApproveUseAuthorityInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 20 } as ApproveUseAuthorityInstructionData)

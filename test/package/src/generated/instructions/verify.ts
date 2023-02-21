@@ -51,10 +51,10 @@ export function getVerifyInstructionDataSerializer(
   >(
     s.struct<VerifyInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['verifyArgs', getVerifyArgsSerializer(context)],
       ],
-      'VerifyInstructionArgs'
+      { description: 'VerifyInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 47 } as VerifyInstructionData)
   ) as Serializer<VerifyInstructionArgs, VerifyInstructionData>;

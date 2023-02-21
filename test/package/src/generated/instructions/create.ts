@@ -64,10 +64,10 @@ export function getCreateInstructionDataSerializer(
   >(
     s.struct<CreateInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['createArgs', getTmCreateArgsSerializer(context)],
       ],
-      'CreateInstructionArgs'
+      { description: 'CreateInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 41 } as CreateInstructionData)
   ) as Serializer<CreateInstructionArgs, CreateInstructionData>;

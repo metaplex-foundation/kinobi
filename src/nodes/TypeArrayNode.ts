@@ -1,23 +1,37 @@
-import type { IdlTypeArray } from '../idl';
+import type { IdlTypeArray, IdlTypeVec } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { TypeNumberNode } from './TypeNumberNode';
 
 export class TypeArrayNode implements Visitable {
   readonly nodeClass = 'TypeArrayNode' as const;
 
-  readonly itemType: TypeNode;
+  readonly item: TypeNode;
 
-  readonly size: number;
+  readonly size:
+    | { kind: 'fixed'; size: number }
+    | { kind: 'prefixed'; prefix: TypeNumberNode }
+    | { kind: 'remainder' };
 
-  constructor(itemType: TypeNode, size: number) {
-    this.itemType = itemType;
-    this.size = size;
+  constructor(item: TypeNode, options: { size?: TypeArrayNode['size'] } = {}) {
+    this.item = item;
+    this.size = options.size ?? {
+      kind: 'prefixed',
+      prefix: new TypeNumberNode('u32'),
+    };
   }
 
-  static fromIdl(idl: IdlTypeArray): TypeArrayNode {
-    const itemType = createTypeNodeFromIdl(idl.array[0]);
-    return new TypeArrayNode(itemType, idl.array[1]);
+  static fromIdl(idl: IdlTypeArray | IdlTypeVec): TypeArrayNode {
+    if ('vec' in idl) {
+      const item = createTypeNodeFromIdl(idl.vec);
+      return new TypeArrayNode(item);
+    }
+
+    const item = createTypeNodeFromIdl(idl.array[0]);
+    return new TypeArrayNode(item, {
+      size: { kind: 'fixed', size: idl.array[1] },
+    });
   }
 
   accept<T>(visitor: Visitor<T>): T {

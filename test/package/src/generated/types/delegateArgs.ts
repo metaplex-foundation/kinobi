@@ -31,24 +31,23 @@ export function getDelegateArgsSerializer(
   const s = context.serializer;
   return s.dataEnum<DelegateArgs>(
     [
-      ['CollectionV1', s.unit],
+      ['CollectionV1', s.unit()],
       [
         'SaleV1',
         s.struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>(
-          [['amount', mapAmountSerializer(s.u64, 'SOL', 9)]],
-          'SaleV1'
+          [['amount', mapAmountSerializer(s.u64(), 'SOL', 9)]],
+          { description: 'SaleV1' }
         ),
       ],
       [
         'TransferV1',
         s.struct<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>(
-          [['amount', s.u64]],
-          'TransferV1'
+          [['amount', s.u64()]],
+          { description: 'TransferV1' }
         ),
       ],
     ],
-    undefined,
-    'DelegateArgs'
+    { description: 'DelegateArgs' }
   ) as Serializer<DelegateArgsArgs, DelegateArgs>;
 }
 

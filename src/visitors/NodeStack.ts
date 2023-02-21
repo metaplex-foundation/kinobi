@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import { mainCase } from '../utils';
+import { mainCase, titleCase } from '../utils';
 
 export class NodeStack {
   private readonly stack: nodes.Node[];
@@ -55,38 +55,22 @@ export class NodeStack {
             : 'Unnamed Defined Type';
         case 'ErrorNode':
           return node.name ? `Error: ${node.name}` : 'Unnamed Error';
-        case 'TypeArrayNode':
-          return 'Array';
-        case 'TypeDefinedLinkNode':
-          return 'Defined Link';
         case 'TypeEnumNode':
           return node.name ? `Enum: ${node.name}` : 'Enum';
         case 'TypeEnumEmptyVariantNode':
         case 'TypeEnumStructVariantNode':
         case 'TypeEnumTupleVariantNode':
           return node.name ? `Variant: ${node.name}` : 'Variant';
-        case 'TypeLeafNode':
-          return 'Leaf';
-        case 'TypeLeafWrapperNode':
-          return `LeafWrapper: ${node.wrapper.kind}`;
-        case 'TypeMapNode':
-          return 'Map';
-        case 'TypeOptionNode':
-          return 'Option';
-        case 'TypeSetNode':
-          return 'Set';
+        case 'TypeNumberWrapperNode':
+          return `Number Wrapper: ${node.wrapper.kind}`;
         case 'TypeStructNode':
           return node.name ? `Struct: ${node.name}` : 'Struct';
         case 'TypeStructFieldNode':
           return node.name ? `Field: ${node.name}` : 'Field';
-        case 'TypeTupleNode':
-          return 'Tuple';
-        case 'TypeVecNode':
-          return 'Vec';
         default:
-          // eslint-disable-next-line no-case-declarations
-          const neverNode: never = node;
-          throw new Error(`Unknown node type: ${(neverNode as any).nodeClass}`);
+          return titleCase(
+            node.nodeClass.replace(/Node$/, '').replace(/^Type/, '')
+          );
       }
     });
   }

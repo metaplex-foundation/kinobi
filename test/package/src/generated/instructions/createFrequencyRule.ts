@@ -57,13 +57,13 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
   >(
     s.struct<CreateFrequencyRuleInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['ruleSetName', s.string()],
         ['freqRuleName', s.string()],
-        ['lastUpdate', s.i64],
-        ['period', s.i64],
+        ['lastUpdate', s.i64()],
+        ['period', s.i64()],
       ],
-      'CreateFrequencyRuleInstructionArgs'
+      { description: 'CreateFrequencyRuleInstructionArgs' }
     ),
     (value) =>
       ({ ...value, discriminator: 2 } as CreateFrequencyRuleInstructionData)

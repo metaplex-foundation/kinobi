@@ -47,10 +47,10 @@ export function getCreateRuleSetInstructionDataSerializer(
   >(
     s.struct<CreateRuleSetInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['createArgs', getTaCreateArgsSerializer(context)],
       ],
-      'CreateRuleSetInstructionArgs'
+      { description: 'CreateRuleSetInstructionArgs' }
     ),
     (value) => ({ ...value, discriminator: 0 } as CreateRuleSetInstructionData)
   ) as Serializer<CreateRuleSetInstructionArgs, CreateRuleSetInstructionData>;

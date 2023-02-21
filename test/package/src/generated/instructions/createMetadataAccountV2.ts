@@ -62,11 +62,11 @@ export function getCreateMetadataAccountV2InstructionDataSerializer(
   >(
     s.struct<CreateMetadataAccountV2InstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         ['data', getDataV2Serializer(context)],
         ['isMutable', s.bool()],
       ],
-      'CreateMetadataAccountV2InstructionArgs'
+      { description: 'CreateMetadataAccountV2InstructionArgs' }
     ),
     (value) =>
       ({

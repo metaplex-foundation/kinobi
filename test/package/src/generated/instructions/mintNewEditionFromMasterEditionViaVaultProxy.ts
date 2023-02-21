@@ -84,13 +84,16 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
   >(
     s.struct<MintNewEditionFromMasterEditionViaVaultProxyInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'mintNewEditionFromMasterEditionViaTokenArgs',
           getMintNewEditionFromMasterEditionViaTokenArgsSerializer(context),
         ],
       ],
-      'MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs'
+      {
+        description:
+          'MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs',
+      }
     ),
     (value) =>
       ({

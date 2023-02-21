@@ -45,14 +45,13 @@ export function getTransferArgsSerializer(
               'authorizationData',
               s.option(getAuthorizationDataSerializer(context)),
             ],
-            ['amount', s.u64],
+            ['amount', s.u64()],
           ],
-          'V1'
+          { description: 'V1' }
         ),
       ],
     ],
-    undefined,
-    'TransferArgs'
+    { description: 'TransferArgs' }
   ) as Serializer<TransferArgsArgs, TransferArgs>;
 }
 

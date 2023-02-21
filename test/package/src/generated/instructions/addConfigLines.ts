@@ -47,11 +47,11 @@ export function getAddConfigLinesInstructionDataSerializer(
   >(
     s.struct<AddConfigLinesInstructionData>(
       [
-        ['discriminator', s.array(s.u8, 8)],
-        ['index', s.u32],
-        ['configLines', s.vec(getConfigLineSerializer(context))],
+        ['discriminator', s.array(s.u8(), { size: 8 })],
+        ['index', s.u32()],
+        ['configLines', s.array(getConfigLineSerializer(context))],
       ],
-      'AddConfigLinesInstructionArgs'
+      { description: 'AddConfigLinesInstructionArgs' }
     ),
     (value) =>
       ({

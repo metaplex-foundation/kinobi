@@ -69,13 +69,13 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
   >(
     s.struct<DeprecatedMintPrintingTokensViaTokenInstructionData>(
       [
-        ['discriminator', s.u8],
+        ['discriminator', s.u8()],
         [
           'mintPrintingTokensViaTokenArgs',
           getMintPrintingTokensViaTokenArgsSerializer(context),
         ],
       ],
-      'DeprecatedMintPrintingTokensViaTokenInstructionArgs'
+      { description: 'DeprecatedMintPrintingTokensViaTokenInstructionArgs' }
     ),
     (value) =>
       ({

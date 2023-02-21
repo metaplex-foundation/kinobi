@@ -1,24 +1,41 @@
 import type { IdlTypeSet } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
+import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { TypeNumberNode } from './TypeNumberNode';
 
 export class TypeSetNode implements Visitable {
   readonly nodeClass = 'TypeSetNode' as const;
 
-  readonly setType: 'hashSet' | 'bTreeSet';
+  readonly item: TypeNode;
 
-  readonly type: TypeNode;
+  readonly size:
+    | { kind: 'fixed'; size: number }
+    | { kind: 'prefixed'; prefix: TypeNumberNode }
+    | { kind: 'remainder' };
 
-  constructor(setType: 'hashSet' | 'bTreeSet', type: TypeNode) {
-    this.setType = setType;
-    this.type = type;
+  readonly idlType: 'hashSet' | 'bTreeSet';
+
+  constructor(
+    item: TypeNode,
+    options: {
+      size?: TypeSetNode['size'];
+      idlType?: TypeSetNode['idlType'];
+    } = {}
+  ) {
+    this.item = item;
+    this.size = options.size ?? {
+      kind: 'prefixed',
+      prefix: new TypeNumberNode('u32'),
+    };
+    this.idlType = options.idlType ?? 'hashSet';
   }
 
   static fromIdl(idl: IdlTypeSet): TypeSetNode {
-    const setType = 'hashSet' in idl ? 'hashSet' : 'bTreeSet';
-    const idlType = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
-    return new TypeSetNode(setType, createTypeNodeFromIdl(idlType));
+    const item = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
+    return new TypeSetNode(createTypeNodeFromIdl(item), {
+      idlType: 'hashSet' in idl ? 'hashSet' : 'bTreeSet',
+    });
   }
 
   accept<T>(visitor: Visitor<T>): T {

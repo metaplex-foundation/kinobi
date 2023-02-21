@@ -101,8 +101,8 @@ export function getFrequencyAccountGpaBuilder(
       period: number | bigint;
     }>([
       ['key', getTaKeySerializer(context)],
-      ['lastUpdate', s.i64],
-      ['period', s.i64],
+      ['lastUpdate', s.i64()],
+      ['period', s.i64()],
     ])
     .deserializeUsing<FrequencyAccount>((account) =>
       deserializeFrequencyAccount(context, account)
@@ -132,10 +132,10 @@ export function getFrequencyAccountAccountDataSerializer(
     s.struct<FrequencyAccountAccountData>(
       [
         ['key', getTaKeySerializer(context)],
-        ['lastUpdate', s.i64],
-        ['period', s.i64],
+        ['lastUpdate', s.i64()],
+        ['period', s.i64()],
       ],
-      'FrequencyAccount'
+      { description: 'FrequencyAccount' }
     ),
     (value) =>
       ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)

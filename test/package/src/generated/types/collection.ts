@@ -25,9 +25,9 @@ export function getCollectionSerializer(
     s.struct<Collection>(
       [
         ['verified', s.bool()],
-        ['key', s.publicKey],
+        ['key', s.publicKey()],
       ],
-      'Collection'
+      { description: 'Collection' }
     ),
     (value) => ({ ...value, verified: value.verified ?? false } as Collection)
   ) as Serializer<CollectionArgs, Collection>;

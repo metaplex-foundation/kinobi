@@ -24,9 +24,9 @@ export function getUsesSerializer(
   return s.struct<Uses>(
     [
       ['useMethod', getUseMethodSerializer(context)],
-      ['remaining', s.u64],
-      ['total', s.u64],
+      ['remaining', s.u64()],
+      ['total', s.u64()],
     ],
-    'Uses'
+    { description: 'Uses' }
   ) as Serializer<UsesArgs, Uses>;
 }

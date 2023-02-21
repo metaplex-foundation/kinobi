@@ -55,10 +55,9 @@ export function getCloseEscrowAccountInstructionDataSerializer(
     CloseEscrowAccountInstructionData,
     CloseEscrowAccountInstructionData
   >(
-    s.struct<CloseEscrowAccountInstructionData>(
-      [['discriminator', s.u8]],
-      'CloseEscrowAccountInstructionArgs'
-    ),
+    s.struct<CloseEscrowAccountInstructionData>([['discriminator', s.u8()]], {
+      description: 'CloseEscrowAccountInstructionArgs',
+    }),
     (value) =>
       ({ ...value, discriminator: 39 } as CloseEscrowAccountInstructionData)
   ) as Serializer<

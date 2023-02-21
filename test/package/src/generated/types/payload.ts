@@ -33,6 +33,6 @@ export function getPayloadSerializer(
         ),
       ],
     ],
-    'Payload'
+    { description: 'Payload' }
   ) as Serializer<PayloadArgs, Payload>;
 }

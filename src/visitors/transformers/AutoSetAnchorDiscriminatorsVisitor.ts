@@ -39,7 +39,9 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
           value: getValueNodeFromBytes(hash),
         },
       },
-      new nodes.TypeArrayNode(nodes.TypeLeafNode.fromIdl('u8'), 8)
+      new nodes.TypeArrayNode(new nodes.TypeNumberNode('u8'), {
+        size: { kind: 'fixed', size: 8 },
+      })
     );
 
     return new nodes.AccountNode(
@@ -70,7 +72,9 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
           value: getValueNodeFromBytes(hash),
         },
       },
-      new nodes.TypeArrayNode(nodes.TypeLeafNode.fromIdl('u8'), 8)
+      new nodes.TypeArrayNode(new nodes.TypeNumberNode('u8'), {
+        size: { kind: 'fixed', size: 8 },
+      })
     );
 
     return new nodes.InstructionNode(

@@ -117,29 +117,29 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     return bag;
   }
 
-  visitTypeLeafWrapper(
-    typeLeafWrapper: nodes.TypeLeafWrapperNode
+  visitTypeNumberWrapper(
+    typeNumberWrapper: nodes.TypeNumberWrapperNode
   ): ValidatorBag {
-    const bag = super.visitTypeLeafWrapper(typeLeafWrapper);
-    this.pushNode(typeLeafWrapper);
-    const { wrapper, leaf } = typeLeafWrapper;
+    const bag = super.visitTypeNumberWrapper(typeNumberWrapper);
+    this.pushNode(typeNumberWrapper);
+    const { wrapper, item } = typeNumberWrapper;
     switch (wrapper.kind) {
       case 'DateTime':
-        if (!leaf.isInteger()) {
+        if (!item.isInteger()) {
           bag.error(
             `DateTime wrapper can only be applied to ` +
-              `integer types. Got type [${leaf.toString()}].`,
-            typeLeafWrapper,
+              `integer types. Got type [${item.toString()}].`,
+            typeNumberWrapper,
             this.stack
           );
         }
         break;
       case 'Amount':
-        if (!leaf.isUnsignedInteger()) {
+        if (!item.isUnsignedInteger()) {
           bag.error(
             `Amount wrapper can only be applied to ` +
-              `unsigned integer types. Got type [${leaf.toString()}].`,
-            typeLeafWrapper,
+              `unsigned integer types. Got type [${item.toString()}].`,
+            typeNumberWrapper,
             this.stack
           );
         }

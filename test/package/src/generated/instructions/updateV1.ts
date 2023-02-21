@@ -126,13 +126,13 @@ export function getUpdateV1InstructionDataSerializer(
   >(
     s.struct<UpdateV1InstructionData>(
       [
-        ['discriminator', s.u8],
-        ['updateV1Discriminator', s.u8],
+        ['discriminator', s.u8()],
+        ['updateV1Discriminator', s.u8()],
         [
           'authorizationData',
           s.option(getAuthorizationDataSerializer(context)),
         ],
-        ['newUpdateAuthority', s.option(s.publicKey)],
+        ['newUpdateAuthority', s.option(s.publicKey())],
         [
           'data',
           s.option(
@@ -141,10 +141,10 @@ export function getUpdateV1InstructionDataSerializer(
                 ['name', s.string()],
                 ['symbol', s.string()],
                 ['uri', s.string()],
-                ['sellerFeeBasisPoints', s.u16],
-                ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+                ['sellerFeeBasisPoints', s.u16()],
+                ['creators', s.option(s.array(getCreatorSerializer(context)))],
               ],
-              'Data'
+              { description: 'Data' }
             )
           ),
         ],
@@ -164,7 +164,7 @@ export function getUpdateV1InstructionDataSerializer(
         ['delegateState', s.option(getDelegateStateSerializer(context))],
         ['authorityType', getAuthorityTypeSerializer(context)],
       ],
-      'UpdateV1InstructionArgs'
+      { description: 'UpdateV1InstructionArgs' }
     ),
     (value) =>
       ({

@@ -27,5 +27,5 @@ export function getTmKeySerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<TmKey> {
   const s = context.serializer;
-  return s.enum<TmKey>(TmKey, 'TmKey');
+  return s.enum<TmKey>(TmKey, { description: 'TmKey' });
 }

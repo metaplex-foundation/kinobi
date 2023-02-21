@@ -26,13 +26,12 @@ export function getUseAssetArgsSerializer(
       [
         'V1',
         s.struct<GetDataEnumKindContent<UseAssetArgs, 'V1'>>(
-          [['useCount', s.u64]],
-          'V1'
+          [['useCount', s.u64()]],
+          { description: 'V1' }
         ),
       ],
     ],
-    undefined,
-    'UseAssetArgs'
+    { description: 'UseAssetArgs' }
   ) as Serializer<UseAssetArgsArgs, UseAssetArgs>;
 }
 

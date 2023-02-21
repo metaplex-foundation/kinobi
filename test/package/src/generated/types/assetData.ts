@@ -75,15 +75,15 @@ export function getAssetDataSerializer(
   const s = context.serializer;
   return s.struct<AssetData>(
     [
-      ['updateAuthority', s.publicKey],
+      ['updateAuthority', s.publicKey()],
       ['name', s.string()],
       ['symbol', s.string()],
       ['uri', s.string()],
-      ['sellerFeeBasisPoints', s.u16],
-      ['creators', s.option(s.vec(getCreatorSerializer(context)))],
+      ['sellerFeeBasisPoints', s.u16()],
+      ['creators', s.option(s.array(getCreatorSerializer(context)))],
       ['primarySaleHappened', s.bool()],
       ['isMutable', s.bool()],
-      ['editionNonce', s.option(s.u8)],
+      ['editionNonce', s.option(s.u8())],
       ['tokenStandard', getTokenStandardSerializer(context)],
       ['collection', s.option(getCollectionSerializer(context))],
       ['uses', s.option(getUsesSerializer(context))],
@@ -94,6 +94,6 @@ export function getAssetDataSerializer(
       ],
       ['delegateState', s.option(getDelegateStateSerializer(context))],
     ],
-    'AssetData'
+    { description: 'AssetData' }
   ) as Serializer<AssetDataArgs, AssetData>;
 }

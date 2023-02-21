@@ -55,8 +55,8 @@ export function getVerifySizedCollectionItemInstructionDataSerializer(
     VerifySizedCollectionItemInstructionData
   >(
     s.struct<VerifySizedCollectionItemInstructionData>(
-      [['discriminator', s.u8]],
-      'VerifySizedCollectionItemInstructionArgs'
+      [['discriminator', s.u8()]],
+      { description: 'VerifySizedCollectionItemInstructionArgs' }
     ),
     (value) =>
       ({

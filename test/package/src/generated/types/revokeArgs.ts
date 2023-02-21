@@ -18,5 +18,5 @@ export function getRevokeArgsSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<RevokeArgs> {
   const s = context.serializer;
-  return s.enum<RevokeArgs>(RevokeArgs, 'RevokeArgs');
+  return s.enum<RevokeArgs>(RevokeArgs, { description: 'RevokeArgs' });
 }
