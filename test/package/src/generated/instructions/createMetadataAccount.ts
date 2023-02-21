@@ -11,6 +11,7 @@ import {
   AccountMeta,
   Context,
   Option,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -25,7 +26,7 @@ import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 // Accounts.
 export type CreateMetadataAccountInstructionAccounts = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata?: PublicKey;
+  metadata?: Pda;
   /** Mint of token asset */
   mint: PublicKey;
   /** Mint authority */
@@ -51,6 +52,7 @@ export type CreateMetadataAccountInstructionData = {
     creators: Option<Array<Creator>>;
   };
   isMutable: boolean;
+  metadataBump: number;
 };
 
 export type CreateMetadataAccountInstructionDataArgs = {
@@ -62,6 +64,7 @@ export type CreateMetadataAccountInstructionDataArgs = {
     creators: Option<Array<CreatorArgs>>;
   };
   isMutable: boolean;
+  metadataBump: number;
 };
 
 export function getCreateMetadataAccountInstructionDataSerializer(
@@ -93,6 +96,7 @@ export function getCreateMetadataAccountInstructionDataSerializer(
           ),
         ],
         ['isMutable', s.bool()],
+        ['metadataBump', s.u8()],
       ],
       { description: 'CreateMetadataAccountInstructionData' }
     ),
@@ -108,7 +112,7 @@ export function getCreateMetadataAccountInstructionDataSerializer(
 export function createMetadataAccount(
   context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
   input: CreateMetadataAccountInstructionAccounts &
-    CreateMetadataAccountInstructionDataArgs
+    Omit<CreateMetadataAccountInstructionDataArgs, 'metadataBump'>
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -184,8 +188,12 @@ export function createMetadataAccount(
   });
 
   // Data.
-  const data =
-    getCreateMetadataAccountInstructionDataSerializer(context).serialize(input);
+  const data = getCreateMetadataAccountInstructionDataSerializer(
+    context
+  ).serialize({
+    ...input,
+    metadataBump: metadataAccount.bump,
+  });
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain =

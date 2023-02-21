@@ -133,6 +133,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
       );
       return {
         ...account,
+        ...accountUpdate,
         defaultsTo: {
           pdaAccount,
           dependency: 'generated',

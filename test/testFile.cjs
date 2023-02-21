@@ -73,7 +73,7 @@ kinobi.update(
     CreateMetadataAccount: {
       bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
       accounts: {
-        metadata: { defaultsTo: { kind: 'pda' } },
+        metadata: { defaultsTo: { kind: 'pda' }, pdaBumpArg: 'metadataBump' },
       },
     },
     CreateMetadataAccountV3: {

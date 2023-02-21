@@ -3610,6 +3610,10 @@
           {
             "name": "isMutable",
             "type": "bool"
+          },
+          {
+            "name": "metadataBump",
+            "type": "u8"
           }
         ]
       }
