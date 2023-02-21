@@ -6,7 +6,7 @@ const {
   RenderJavaScriptVisitor,
   SetAccountDiscriminatorFromFieldVisitor,
   SetStructDefaultValuesVisitor,
-  SetLeafWrappersVisitor,
+  SetNumberWrappersVisitor,
   TypePublicKeyNode,
   UnwrapDefinedTypesVisitor,
   UnwrapStructVisitor,
@@ -141,7 +141,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new SetLeafWrappersVisitor({
+  new SetNumberWrappersVisitor({
     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
     'CandyMachineData.sellerFeeBasisPoints': {
       kind: 'Amount',
