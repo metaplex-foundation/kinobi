@@ -73,6 +73,10 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): DefinedTypeHistogram {
+    if (typeDefinedLink.dependency !== 'generated') {
+      return {};
+    }
+
     return {
       [typeDefinedLink.name]: {
         total: 1,
