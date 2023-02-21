@@ -63,14 +63,14 @@ export type TransferInstructionData = {
   transferArgs: TransferArgs;
 };
 
-export type TransferInstructionArgs = { transferArgs: TransferArgsArgs };
+export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
 export function getTransferInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TransferInstructionArgs, TransferInstructionData> {
+): Serializer<TransferInstructionDataArgs, TransferInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    TransferInstructionArgs,
+    TransferInstructionDataArgs,
     TransferInstructionData,
     TransferInstructionData
   >(
@@ -79,16 +79,16 @@ export function getTransferInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['transferArgs', getTransferArgsSerializer(context)],
       ],
-      { description: 'TransferInstructionArgs' }
+      { description: 'TransferInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 46 } as TransferInstructionData)
-  ) as Serializer<TransferInstructionArgs, TransferInstructionData>;
+  ) as Serializer<TransferInstructionDataArgs, TransferInstructionData>;
 }
 
 // Instruction.
 export function transfer(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: TransferInstructionAccounts & TransferInstructionArgs
+  input: TransferInstructionAccounts & TransferInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

@@ -43,14 +43,14 @@ export type BurnInstructionAccounts = {
 // Arguments.
 export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
 
-export type BurnInstructionArgs = { burnArgs: BurnArgs };
+export type BurnInstructionDataArgs = { burnArgs: BurnArgs };
 
 export function getBurnInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<BurnInstructionArgs, BurnInstructionData> {
+): Serializer<BurnInstructionDataArgs, BurnInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    BurnInstructionArgs,
+    BurnInstructionDataArgs,
     BurnInstructionData,
     BurnInstructionData
   >(
@@ -59,16 +59,16 @@ export function getBurnInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['burnArgs', getBurnArgsSerializer(context)],
       ],
-      { description: 'BurnInstructionArgs' }
+      { description: 'BurnInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 44 } as BurnInstructionData)
-  ) as Serializer<BurnInstructionArgs, BurnInstructionData>;
+  ) as Serializer<BurnInstructionDataArgs, BurnInstructionData>;
 }
 
 // Instruction.
 export function burn(
   context: Pick<Context, 'serializer' | 'programs'>,
-  input: BurnInstructionAccounts & BurnInstructionArgs
+  input: BurnInstructionAccounts & BurnInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

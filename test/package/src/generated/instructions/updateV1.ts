@@ -94,7 +94,7 @@ export type UpdateV1InstructionData = {
   authorityType: AuthorityType;
 };
 
-export type UpdateV1InstructionArgs = {
+export type UpdateV1InstructionDataArgs = {
   authorizationData: Option<AuthorizationDataArgs>;
   newUpdateAuthority: Option<PublicKey>;
   data: Option<{
@@ -117,10 +117,10 @@ export type UpdateV1InstructionArgs = {
 
 export function getUpdateV1InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UpdateV1InstructionArgs, UpdateV1InstructionData> {
+): Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    UpdateV1InstructionArgs,
+    UpdateV1InstructionDataArgs,
     UpdateV1InstructionData,
     UpdateV1InstructionData
   >(
@@ -164,7 +164,7 @@ export function getUpdateV1InstructionDataSerializer(
         ['delegateState', s.option(getDelegateStateSerializer(context))],
         ['authorityType', getAuthorityTypeSerializer(context)],
       ],
-      { description: 'UpdateV1InstructionArgs' }
+      { description: 'UpdateV1InstructionData' }
     ),
     (value) =>
       ({
@@ -180,13 +180,13 @@ export function getUpdateV1InstructionDataSerializer(
             ])
           ),
       } as UpdateV1InstructionData)
-  ) as Serializer<UpdateV1InstructionArgs, UpdateV1InstructionData>;
+  ) as Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData>;
 }
 
 // Instruction.
 export function updateV1(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: UpdateV1InstructionAccounts & UpdateV1InstructionArgs
+  input: UpdateV1InstructionAccounts & UpdateV1InstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

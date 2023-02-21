@@ -34,14 +34,14 @@ export type CreateRuleSetInstructionData = {
   createArgs: TaCreateArgs;
 };
 
-export type CreateRuleSetInstructionArgs = { createArgs: TaCreateArgs };
+export type CreateRuleSetInstructionDataArgs = { createArgs: TaCreateArgs };
 
 export function getCreateRuleSetInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateRuleSetInstructionArgs, CreateRuleSetInstructionData> {
+): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    CreateRuleSetInstructionArgs,
+    CreateRuleSetInstructionDataArgs,
     CreateRuleSetInstructionData,
     CreateRuleSetInstructionData
   >(
@@ -50,16 +50,19 @@ export function getCreateRuleSetInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['createArgs', getTaCreateArgsSerializer(context)],
       ],
-      { description: 'CreateRuleSetInstructionArgs' }
+      { description: 'CreateRuleSetInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 0 } as CreateRuleSetInstructionData)
-  ) as Serializer<CreateRuleSetInstructionArgs, CreateRuleSetInstructionData>;
+  ) as Serializer<
+    CreateRuleSetInstructionDataArgs,
+    CreateRuleSetInstructionData
+  >;
 }
 
 // Instruction.
 export function createRuleSet(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionArgs
+  input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

@@ -59,14 +59,14 @@ export type DelegateInstructionData = {
   delegateArgs: DelegateArgs;
 };
 
-export type DelegateInstructionArgs = { delegateArgs: DelegateArgsArgs };
+export type DelegateInstructionDataArgs = { delegateArgs: DelegateArgsArgs };
 
 export function getDelegateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateInstructionArgs, DelegateInstructionData> {
+): Serializer<DelegateInstructionDataArgs, DelegateInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    DelegateInstructionArgs,
+    DelegateInstructionDataArgs,
     DelegateInstructionData,
     DelegateInstructionData
   >(
@@ -75,16 +75,16 @@ export function getDelegateInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['delegateArgs', getDelegateArgsSerializer(context)],
       ],
-      { description: 'DelegateInstructionArgs' }
+      { description: 'DelegateInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 48 } as DelegateInstructionData)
-  ) as Serializer<DelegateInstructionArgs, DelegateInstructionData>;
+  ) as Serializer<DelegateInstructionDataArgs, DelegateInstructionData>;
 }
 
 // Instruction.
 export function delegate(
   context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
-  input: DelegateInstructionAccounts & DelegateInstructionArgs
+  input: DelegateInstructionAccounts & DelegateInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

@@ -51,14 +51,14 @@ export type CreateInstructionData = {
   createArgs: TmCreateArgs;
 };
 
-export type CreateInstructionArgs = { createArgs: TmCreateArgsArgs };
+export type CreateInstructionDataArgs = { createArgs: TmCreateArgsArgs };
 
 export function getCreateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateInstructionArgs, CreateInstructionData> {
+): Serializer<CreateInstructionDataArgs, CreateInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    CreateInstructionArgs,
+    CreateInstructionDataArgs,
     CreateInstructionData,
     CreateInstructionData
   >(
@@ -67,16 +67,16 @@ export function getCreateInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['createArgs', getTmCreateArgsSerializer(context)],
       ],
-      { description: 'CreateInstructionArgs' }
+      { description: 'CreateInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 41 } as CreateInstructionData)
-  ) as Serializer<CreateInstructionArgs, CreateInstructionData>;
+  ) as Serializer<CreateInstructionDataArgs, CreateInstructionData>;
 }
 
 // Instruction.
 export function create(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: CreateInstructionAccounts & CreateInstructionArgs
+  input: CreateInstructionAccounts & CreateInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

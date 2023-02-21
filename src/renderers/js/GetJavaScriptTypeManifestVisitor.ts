@@ -60,7 +60,7 @@ export class GetJavaScriptTypeManifestVisitor
   visitInstruction(instruction: nodes.InstructionNode): JavaScriptTypeManifest {
     this.definedName = {
       strict: `${pascalCase(instruction.name)}InstructionData`,
-      loose: `${pascalCase(instruction.name)}InstructionArgs`,
+      loose: `${pascalCase(instruction.name)}InstructionDataArgs`,
     };
     const child = instruction.args.accept(this);
     this.definedName = null;

@@ -33,27 +33,27 @@ export type DummyInstructionAccounts = {
 // Arguments.
 export type DummyInstructionData = { discriminator: Array<number> };
 
-export type DummyInstructionArgs = {};
+export type DummyInstructionDataArgs = {};
 
 export function getDummyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DummyInstructionArgs, DummyInstructionData> {
+): Serializer<DummyInstructionDataArgs, DummyInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    DummyInstructionArgs,
+    DummyInstructionDataArgs,
     DummyInstructionData,
     DummyInstructionData
   >(
     s.struct<DummyInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
-      { description: 'DummyInstructionArgs' }
+      { description: 'DummyInstructionData' }
     ),
     (value) =>
       ({
         ...value,
         discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
       } as DummyInstructionData)
-  ) as Serializer<DummyInstructionArgs, DummyInstructionData>;
+  ) as Serializer<DummyInstructionDataArgs, DummyInstructionData>;
 }
 
 // Instruction.

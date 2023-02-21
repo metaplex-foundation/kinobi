@@ -20,11 +20,11 @@ export function {{ instruction.name | camelCase }}(
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
     {% if instruction.hasAccounts and instruction.hasArgs %}
-      input: {{ instruction.name | pascalCase }}InstructionAccounts & {{ instruction.name | pascalCase + 'InstructionArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
+      input: {{ instruction.name | pascalCase }}InstructionAccounts & {{ instruction.name | pascalCase + 'InstructionDataArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
     {% elif instruction.hasAccounts %}
       input: {{ instruction.name | pascalCase }}InstructionAccounts,
     {% elif instruction.hasArgs %}
-      input: {{ instruction.name | pascalCase + 'InstructionArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
+      input: {{ instruction.name | pascalCase + 'InstructionDataArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
     {% endif %}
   {% else %}
     {% set accountsObj = 'accounts' %}
@@ -33,7 +33,7 @@ export function {{ instruction.name | camelCase }}(
       accounts: {{ instruction.name | pascalCase }}InstructionAccounts,
     {% endif %}
     {% if instruction.hasArgs %}
-      args: {{ instruction.name | pascalCase + 'InstructionArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
+      args: {{ instruction.name | pascalCase + 'InstructionDataArgs' if typeManifest.hasLooseType else instruction.name | pascalCase + 'InstructionData' }},
     {% endif %}
   {% endif %}
 ): WrappedInstruction {

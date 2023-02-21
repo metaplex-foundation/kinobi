@@ -137,7 +137,7 @@ export class InstructionNode implements Visitable {
 
     let args = TypeStructNode.fromIdl({
       kind: 'struct',
-      name: name ? `${name}InstructionArgs` : '',
+      name: name ? `${name}InstructionData` : '',
       fields: idl.args ?? [],
     });
 

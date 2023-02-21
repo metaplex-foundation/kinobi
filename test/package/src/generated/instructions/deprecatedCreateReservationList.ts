@@ -43,23 +43,23 @@ export type DeprecatedCreateReservationListInstructionData = {
   discriminator: number;
 };
 
-export type DeprecatedCreateReservationListInstructionArgs = {};
+export type DeprecatedCreateReservationListInstructionDataArgs = {};
 
 export function getDeprecatedCreateReservationListInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  DeprecatedCreateReservationListInstructionArgs,
+  DeprecatedCreateReservationListInstructionDataArgs,
   DeprecatedCreateReservationListInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    DeprecatedCreateReservationListInstructionArgs,
+    DeprecatedCreateReservationListInstructionDataArgs,
     DeprecatedCreateReservationListInstructionData,
     DeprecatedCreateReservationListInstructionData
   >(
     s.struct<DeprecatedCreateReservationListInstructionData>(
       [['discriminator', s.u8()]],
-      { description: 'DeprecatedCreateReservationListInstructionArgs' }
+      { description: 'DeprecatedCreateReservationListInstructionData' }
     ),
     (value) =>
       ({
@@ -67,7 +67,7 @@ export function getDeprecatedCreateReservationListInstructionDataSerializer(
         discriminator: 6,
       } as DeprecatedCreateReservationListInstructionData)
   ) as Serializer<
-    DeprecatedCreateReservationListInstructionArgs,
+    DeprecatedCreateReservationListInstructionDataArgs,
     DeprecatedCreateReservationListInstructionData
   >;
 }

@@ -88,7 +88,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                   node.accounts,
                   unwrapStruct(
                     new nodes.TypeStructNode(
-                      `${subName}InstructionArgs`,
+                      `${subName}InstructionData`,
                       subFields
                     )
                   ),

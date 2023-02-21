@@ -36,7 +36,7 @@ export type CreateFrequencyRuleInstructionData = {
   period: bigint;
 };
 
-export type CreateFrequencyRuleInstructionArgs = {
+export type CreateFrequencyRuleInstructionDataArgs = {
   ruleSetName: string;
   freqRuleName: string;
   lastUpdate: number | bigint;
@@ -46,12 +46,12 @@ export type CreateFrequencyRuleInstructionArgs = {
 export function getCreateFrequencyRuleInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  CreateFrequencyRuleInstructionArgs,
+  CreateFrequencyRuleInstructionDataArgs,
   CreateFrequencyRuleInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    CreateFrequencyRuleInstructionArgs,
+    CreateFrequencyRuleInstructionDataArgs,
     CreateFrequencyRuleInstructionData,
     CreateFrequencyRuleInstructionData
   >(
@@ -63,12 +63,12 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
         ['lastUpdate', s.i64()],
         ['period', s.i64()],
       ],
-      { description: 'CreateFrequencyRuleInstructionArgs' }
+      { description: 'CreateFrequencyRuleInstructionData' }
     ),
     (value) =>
       ({ ...value, discriminator: 2 } as CreateFrequencyRuleInstructionData)
   ) as Serializer<
-    CreateFrequencyRuleInstructionArgs,
+    CreateFrequencyRuleInstructionDataArgs,
     CreateFrequencyRuleInstructionData
   >;
 }
@@ -77,7 +77,7 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
 export function createFrequencyRule(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: CreateFrequencyRuleInstructionAccounts &
-    CreateFrequencyRuleInstructionArgs
+    CreateFrequencyRuleInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

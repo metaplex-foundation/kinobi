@@ -64,7 +64,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
             const { accounts: accountUpdates, ...metadataUpdates } = updates;
             const newName = `${mainCase(
               updates.name ?? node.name
-            )}InstructionArgs`;
+            )}InstructionData`;
             return new nodes.InstructionNode(
               { ...node.metadata, ...this.handleMetadata(metadataUpdates) },
               node.accounts.map((account) =>

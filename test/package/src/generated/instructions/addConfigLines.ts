@@ -31,17 +31,20 @@ export type AddConfigLinesInstructionData = {
   configLines: Array<ConfigLine>;
 };
 
-export type AddConfigLinesInstructionArgs = {
+export type AddConfigLinesInstructionDataArgs = {
   index: number;
   configLines: Array<ConfigLine>;
 };
 
 export function getAddConfigLinesInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<AddConfigLinesInstructionArgs, AddConfigLinesInstructionData> {
+): Serializer<
+  AddConfigLinesInstructionDataArgs,
+  AddConfigLinesInstructionData
+> {
   const s = context.serializer;
   return mapSerializer<
-    AddConfigLinesInstructionArgs,
+    AddConfigLinesInstructionDataArgs,
     AddConfigLinesInstructionData,
     AddConfigLinesInstructionData
   >(
@@ -51,20 +54,23 @@ export function getAddConfigLinesInstructionDataSerializer(
         ['index', s.u32()],
         ['configLines', s.array(getConfigLineSerializer(context))],
       ],
-      { description: 'AddConfigLinesInstructionArgs' }
+      { description: 'AddConfigLinesInstructionData' }
     ),
     (value) =>
       ({
         ...value,
         discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
       } as AddConfigLinesInstructionData)
-  ) as Serializer<AddConfigLinesInstructionArgs, AddConfigLinesInstructionData>;
+  ) as Serializer<
+    AddConfigLinesInstructionDataArgs,
+    AddConfigLinesInstructionData
+  >;
 }
 
 // Instruction.
 export function addConfigLines(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionArgs
+  input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

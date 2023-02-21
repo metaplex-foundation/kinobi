@@ -53,7 +53,7 @@ export type CreateMetadataAccountInstructionData = {
   isMutable: boolean;
 };
 
-export type CreateMetadataAccountInstructionArgs = {
+export type CreateMetadataAccountInstructionDataArgs = {
   data: {
     name: string;
     symbol: string;
@@ -67,12 +67,12 @@ export type CreateMetadataAccountInstructionArgs = {
 export function getCreateMetadataAccountInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  CreateMetadataAccountInstructionArgs,
+  CreateMetadataAccountInstructionDataArgs,
   CreateMetadataAccountInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    CreateMetadataAccountInstructionArgs,
+    CreateMetadataAccountInstructionDataArgs,
     CreateMetadataAccountInstructionData,
     CreateMetadataAccountInstructionData
   >(
@@ -94,12 +94,12 @@ export function getCreateMetadataAccountInstructionDataSerializer(
         ],
         ['isMutable', s.bool()],
       ],
-      { description: 'CreateMetadataAccountInstructionArgs' }
+      { description: 'CreateMetadataAccountInstructionData' }
     ),
     (value) =>
       ({ ...value, discriminator: 0 } as CreateMetadataAccountInstructionData)
   ) as Serializer<
-    CreateMetadataAccountInstructionArgs,
+    CreateMetadataAccountInstructionDataArgs,
     CreateMetadataAccountInstructionData
   >;
 }
@@ -108,7 +108,7 @@ export function getCreateMetadataAccountInstructionDataSerializer(
 export function createMetadataAccount(
   context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
   input: CreateMetadataAccountInstructionAccounts &
-    CreateMetadataAccountInstructionArgs
+    CreateMetadataAccountInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

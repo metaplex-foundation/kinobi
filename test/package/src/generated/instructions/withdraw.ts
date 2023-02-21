@@ -26,27 +26,27 @@ export type WithdrawInstructionAccounts = {
 // Arguments.
 export type WithdrawInstructionData = { discriminator: Array<number> };
 
-export type WithdrawInstructionArgs = {};
+export type WithdrawInstructionDataArgs = {};
 
 export function getWithdrawInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<WithdrawInstructionArgs, WithdrawInstructionData> {
+): Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    WithdrawInstructionArgs,
+    WithdrawInstructionDataArgs,
     WithdrawInstructionData,
     WithdrawInstructionData
   >(
     s.struct<WithdrawInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
-      { description: 'WithdrawInstructionArgs' }
+      { description: 'WithdrawInstructionData' }
     ),
     (value) =>
       ({
         ...value,
         discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
       } as WithdrawInstructionData)
-  ) as Serializer<WithdrawInstructionArgs, WithdrawInstructionData>;
+  ) as Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData>;
 }
 
 // Instruction.

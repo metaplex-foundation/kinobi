@@ -63,7 +63,7 @@ export type ValidateInstructionData = {
   payload: Payload;
 };
 
-export type ValidateInstructionArgs = {
+export type ValidateInstructionDataArgs = {
   ruleSetName: string;
   operation: Operation;
   payload: PayloadArgs;
@@ -71,10 +71,10 @@ export type ValidateInstructionArgs = {
 
 export function getValidateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ValidateInstructionArgs, ValidateInstructionData> {
+): Serializer<ValidateInstructionDataArgs, ValidateInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    ValidateInstructionArgs,
+    ValidateInstructionDataArgs,
     ValidateInstructionData,
     ValidateInstructionData
   >(
@@ -85,16 +85,16 @@ export function getValidateInstructionDataSerializer(
         ['operation', getOperationSerializer(context)],
         ['payload', getPayloadSerializer(context)],
       ],
-      { description: 'ValidateInstructionArgs' }
+      { description: 'ValidateInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 1 } as ValidateInstructionData)
-  ) as Serializer<ValidateInstructionArgs, ValidateInstructionData>;
+  ) as Serializer<ValidateInstructionDataArgs, ValidateInstructionData>;
 }
 
 // Instruction.
 export function validate(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: ValidateInstructionAccounts & ValidateInstructionArgs
+  input: ValidateInstructionAccounts & ValidateInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

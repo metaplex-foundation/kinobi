@@ -49,14 +49,14 @@ export type UpdateInstructionData = {
   updateArgs: UpdateArgs;
 };
 
-export type UpdateInstructionArgs = { updateArgs: UpdateArgsArgs };
+export type UpdateInstructionDataArgs = { updateArgs: UpdateArgsArgs };
 
 export function getUpdateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UpdateInstructionArgs, UpdateInstructionData> {
+): Serializer<UpdateInstructionDataArgs, UpdateInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    UpdateInstructionArgs,
+    UpdateInstructionDataArgs,
     UpdateInstructionData,
     UpdateInstructionData
   >(
@@ -65,16 +65,16 @@ export function getUpdateInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['updateArgs', getUpdateArgsSerializer(context)],
       ],
-      { description: 'UpdateInstructionArgs' }
+      { description: 'UpdateInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 43 } as UpdateInstructionData)
-  ) as Serializer<UpdateInstructionArgs, UpdateInstructionData>;
+  ) as Serializer<UpdateInstructionDataArgs, UpdateInstructionData>;
 }
 
 // Instruction.
 export function update(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: UpdateInstructionAccounts & UpdateInstructionArgs
+  input: UpdateInstructionAccounts & UpdateInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

@@ -74,7 +74,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         [camelCase(instruction.name)]: 'function',
         [`${instruction.name}InstructionAccounts`]: 'type',
         [`${instruction.name}InstructionData`]: 'type',
-        [`${instruction.name}InstructionArgs`]: 'type',
+        [`${instruction.name}InstructionDataArgs`]: 'type',
         [`get${instruction.name}InstructionDataSerializer`]: 'function',
       }),
     ]);

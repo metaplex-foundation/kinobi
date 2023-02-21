@@ -42,7 +42,7 @@ export type DeprecatedSetReservationListInstructionData = {
   totalSpotOffset: bigint;
 };
 
-export type DeprecatedSetReservationListInstructionArgs = {
+export type DeprecatedSetReservationListInstructionDataArgs = {
   reservations: Array<ReservationArgs>;
   totalReservationSpots: Option<number | bigint>;
   offset: number | bigint;
@@ -52,12 +52,12 @@ export type DeprecatedSetReservationListInstructionArgs = {
 export function getDeprecatedSetReservationListInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  DeprecatedSetReservationListInstructionArgs,
+  DeprecatedSetReservationListInstructionDataArgs,
   DeprecatedSetReservationListInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    DeprecatedSetReservationListInstructionArgs,
+    DeprecatedSetReservationListInstructionDataArgs,
     DeprecatedSetReservationListInstructionData,
     DeprecatedSetReservationListInstructionData
   >(
@@ -69,7 +69,7 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
         ['offset', s.u64()],
         ['totalSpotOffset', s.u64()],
       ],
-      { description: 'DeprecatedSetReservationListInstructionArgs' }
+      { description: 'DeprecatedSetReservationListInstructionData' }
     ),
     (value) =>
       ({
@@ -77,7 +77,7 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
         discriminator: 5,
       } as DeprecatedSetReservationListInstructionData)
   ) as Serializer<
-    DeprecatedSetReservationListInstructionArgs,
+    DeprecatedSetReservationListInstructionDataArgs,
     DeprecatedSetReservationListInstructionData
   >;
 }
@@ -86,7 +86,7 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
 export function deprecatedSetReservationList(
   context: Pick<Context, 'serializer' | 'programs'>,
   input: DeprecatedSetReservationListInstructionAccounts &
-    DeprecatedSetReservationListInstructionArgs
+    DeprecatedSetReservationListInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

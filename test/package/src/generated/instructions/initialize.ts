@@ -43,14 +43,14 @@ export type InitializeInstructionData = {
   data: CandyMachineData;
 };
 
-export type InitializeInstructionArgs = { data: CandyMachineDataArgs };
+export type InitializeInstructionDataArgs = { data: CandyMachineDataArgs };
 
 export function getInitializeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<InitializeInstructionArgs, InitializeInstructionData> {
+): Serializer<InitializeInstructionDataArgs, InitializeInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    InitializeInstructionArgs,
+    InitializeInstructionDataArgs,
     InitializeInstructionData,
     InitializeInstructionData
   >(
@@ -59,20 +59,20 @@ export function getInitializeInstructionDataSerializer(
         ['discriminator', s.array(s.u8(), { size: 8 })],
         ['data', getCandyMachineDataSerializer(context)],
       ],
-      { description: 'InitializeInstructionArgs' }
+      { description: 'InitializeInstructionData' }
     ),
     (value) =>
       ({
         ...value,
         discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
       } as InitializeInstructionData)
-  ) as Serializer<InitializeInstructionArgs, InitializeInstructionData>;
+  ) as Serializer<InitializeInstructionDataArgs, InitializeInstructionData>;
 }
 
 // Instruction.
 export function initialize(
   context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
-  input: InitializeInstructionAccounts & InitializeInstructionArgs
+  input: InitializeInstructionAccounts & InitializeInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

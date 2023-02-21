@@ -50,14 +50,14 @@ export type UtilizeInstructionData = {
   numberOfUses: bigint;
 };
 
-export type UtilizeInstructionArgs = { numberOfUses: number | bigint };
+export type UtilizeInstructionDataArgs = { numberOfUses: number | bigint };
 
 export function getUtilizeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UtilizeInstructionArgs, UtilizeInstructionData> {
+): Serializer<UtilizeInstructionDataArgs, UtilizeInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    UtilizeInstructionArgs,
+    UtilizeInstructionDataArgs,
     UtilizeInstructionData,
     UtilizeInstructionData
   >(
@@ -66,16 +66,16 @@ export function getUtilizeInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['numberOfUses', s.u64()],
       ],
-      { description: 'UtilizeInstructionArgs' }
+      { description: 'UtilizeInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 19 } as UtilizeInstructionData)
-  ) as Serializer<UtilizeInstructionArgs, UtilizeInstructionData>;
+  ) as Serializer<UtilizeInstructionDataArgs, UtilizeInstructionData>;
 }
 
 // Instruction.
 export function utilize(
   context: Pick<Context, 'serializer' | 'programs'>,
-  input: UtilizeInstructionAccounts & UtilizeInstructionArgs
+  input: UtilizeInstructionAccounts & UtilizeInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

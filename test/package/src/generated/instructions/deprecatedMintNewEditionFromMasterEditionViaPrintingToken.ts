@@ -59,18 +59,18 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData =
   { discriminator: number };
 
-export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs =
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs =
   {};
 
 export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs,
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs,
   DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs,
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs,
     DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData,
     DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
   >(
@@ -78,7 +78,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
       [['discriminator', s.u8()]],
       {
         description:
-          'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs',
+          'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData',
       }
     ),
     (value) =>
@@ -87,7 +87,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
         discriminator: 3,
       } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData)
   ) as Serializer<
-    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs,
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs,
     DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
   >;
 }

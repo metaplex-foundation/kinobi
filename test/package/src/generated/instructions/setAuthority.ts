@@ -29,14 +29,14 @@ export type SetAuthorityInstructionData = {
   newAuthority: PublicKey;
 };
 
-export type SetAuthorityInstructionArgs = { newAuthority: PublicKey };
+export type SetAuthorityInstructionDataArgs = { newAuthority: PublicKey };
 
 export function getSetAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<SetAuthorityInstructionArgs, SetAuthorityInstructionData> {
+): Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    SetAuthorityInstructionArgs,
+    SetAuthorityInstructionDataArgs,
     SetAuthorityInstructionData,
     SetAuthorityInstructionData
   >(
@@ -45,20 +45,20 @@ export function getSetAuthorityInstructionDataSerializer(
         ['discriminator', s.array(s.u8(), { size: 8 })],
         ['newAuthority', s.publicKey()],
       ],
-      { description: 'SetAuthorityInstructionArgs' }
+      { description: 'SetAuthorityInstructionData' }
     ),
     (value) =>
       ({
         ...value,
         discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
       } as SetAuthorityInstructionData)
-  ) as Serializer<SetAuthorityInstructionArgs, SetAuthorityInstructionData>;
+  ) as Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData>;
 }
 
 // Instruction.
 export function setAuthority(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: SetAuthorityInstructionAccounts & SetAuthorityInstructionArgs
+  input: SetAuthorityInstructionAccounts & SetAuthorityInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
