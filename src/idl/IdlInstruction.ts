@@ -17,6 +17,7 @@ export type IdlInstructionAccount = {
   isOptional?: boolean;
   optional?: boolean;
   desc?: string;
+  pdaBumpArg?: string;
 };
 
 export type IdlInstructionArg = {

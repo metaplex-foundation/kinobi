@@ -22,7 +22,7 @@ import {
 // Accounts.
 export type DummyInstructionAccounts = {
   edition?: Signer;
-  mint: PublicKey;
+  mint?: PublicKey;
   updateAuthority: Signer;
   mintAuthority?: Signer;
   payer?: Signer;
@@ -78,22 +78,26 @@ export function dummy(
   const barAccount = input.bar ?? { ...programId, isWritable: false };
   const fooAccount = input.foo ?? barAccount;
 
-  // Edition.
-  if (isSigner(editionAccount)) {
-    signers.push(editionAccount);
+  // Edition (optional).
+  if (editionAccount) {
+    if (isSigner(editionAccount)) {
+      signers.push(editionAccount);
+    }
+    keys.push({
+      pubkey: publicKey(editionAccount),
+      isSigner: isSigner(editionAccount),
+      isWritable: isWritable(editionAccount, true),
+    });
   }
-  keys.push({
-    pubkey: publicKey(editionAccount),
-    isSigner: isSigner(editionAccount),
-    isWritable: isWritable(editionAccount, true),
-  });
 
-  // Mint.
-  keys.push({
-    pubkey: mintAccount,
-    isSigner: false,
-    isWritable: isWritable(mintAccount, true),
-  });
+  // Mint (optional).
+  if (mintAccount) {
+    keys.push({
+      pubkey: mintAccount,
+      isSigner: false,
+      isWritable: isWritable(mintAccount, true),
+    });
+  }
 
   // Update Authority.
   signers.push(updateAuthorityAccount);
