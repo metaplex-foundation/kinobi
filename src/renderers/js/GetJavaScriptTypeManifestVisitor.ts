@@ -7,7 +7,6 @@ import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 export type JavaScriptTypeManifest = {
   strictType: string;
   looseType: string;
-  hasLooseType: boolean;
   isEnum: boolean;
   serializer: string;
   imports: JavaScriptImportMap;
@@ -17,10 +16,6 @@ export class GetJavaScriptTypeManifestVisitor
   implements Visitor<JavaScriptTypeManifest>
 {
   private availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
-
-  private visitedDefinedTypes = new Map<string, JavaScriptTypeManifest>();
-
-  private definedTypeStack: string[] = [];
 
   private definedName: {
     strict: string;
@@ -68,19 +63,12 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): JavaScriptTypeManifest {
-    if (this.visitedDefinedTypes.has(definedType.name)) {
-      return this.visitedDefinedTypes.get(definedType.name)!;
-    }
-
-    this.definedTypeStack.push(definedType.name);
     this.definedName = {
       strict: pascalCase(definedType.name),
       loose: `${pascalCase(definedType.name)}Args`,
     };
     const child = definedType.type.accept(this);
     this.definedName = null;
-    this.definedTypeStack.pop();
-    this.visitedDefinedTypes.set(definedType.name, child);
     return child;
   }
 
@@ -105,46 +93,22 @@ export class GetJavaScriptTypeManifestVisitor
   visitTypeDefinedLink(
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): JavaScriptTypeManifest {
-    const linkedDefinedType = this.availableDefinedTypes.get(
-      typeDefinedLink.name
-    );
-    if (!linkedDefinedType) {
-      throw new Error(
-        `Cannot find linked defined type ${typeDefinedLink.name}.`
-      );
-    }
-
-    let linkedDefinedTypeHasLooseType = false;
-    if (this.definedTypeStack.includes(linkedDefinedType.name)) {
-      // This prevents infinite recursion by using loose types
-      // for all types in a cyclic dependency.
-      linkedDefinedTypeHasLooseType = true;
-    } else {
-      const linkedManifest = linkedDefinedType.accept(this);
-      linkedDefinedTypeHasLooseType = linkedManifest.hasLooseType;
-    }
-
     const pascalCaseDefinedType = pascalCase(typeDefinedLink.name);
     const serializerName = `get${pascalCaseDefinedType}Serializer`;
-    const rawDependency =
-      typeDefinedLink.dependency ?? linkedDefinedType.metadata.importFrom;
     const dependency =
-      rawDependency === 'generated' ? 'generatedTypes' : rawDependency;
+      typeDefinedLink.dependency === 'generated'
+        ? 'generatedTypes'
+        : typeDefinedLink.dependency;
 
     return {
       strictType: pascalCaseDefinedType,
-      looseType: linkedDefinedTypeHasLooseType
-        ? `${pascalCaseDefinedType}Args`
-        : pascalCaseDefinedType,
-      hasLooseType: linkedDefinedTypeHasLooseType,
+      looseType: `${pascalCaseDefinedType}Args`,
       isEnum: false,
       serializer: `${serializerName}(context)`,
       imports: new JavaScriptImportMap().add(dependency, [
         serializerName,
         pascalCaseDefinedType,
-        ...(linkedDefinedTypeHasLooseType
-          ? [`${pascalCaseDefinedType}Args`]
-          : []),
+        `${pascalCaseDefinedType}Args`,
       ]),
     };
   }
@@ -167,7 +131,6 @@ export class GetJavaScriptTypeManifestVisitor
       return {
         strictType: `{ ${variantNames.join(', ')} }`,
         looseType: `{ ${variantNames.join(', ')} }`,
-        hasLooseType: false,
         isEnum: true,
         serializer:
           `${this.s('enum')}<${definedName.strict}>` +
@@ -223,7 +186,6 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       strictType: `{ ${kindAttribute} }`,
       looseType: `{ ${kindAttribute} }`,
-      hasLooseType: false,
       isEnum: false,
       serializer: `['${name}', ${this.s('unit()')}]`,
       imports: new JavaScriptImportMap(),
@@ -408,11 +370,10 @@ export class GetJavaScriptTypeManifestVisitor
     if (metadata.defaultsTo.strategy === 'optional') {
       return {
         ...baseField,
-        hasLooseType: true,
         looseType: `${docblock}${name}?: ${fieldType.looseType}; `,
       };
     }
-    return { ...baseField, hasLooseType: true, looseType: '' };
+    return { ...baseField, looseType: '' };
   }
 
   visitTypeTuple(typeTuple: nodes.TypeTupleNode): JavaScriptTypeManifest {
@@ -433,7 +394,6 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       strictType: 'boolean',
       looseType: 'boolean',
-      hasLooseType: false,
       serializer: this.s(`bool(${sizeSerializer})`),
       isEnum: false,
       imports: size.imports,
@@ -444,7 +404,6 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       strictType: 'Uint8Array',
       looseType: 'Uint8Array',
-      hasLooseType: false,
       serializer: this.s(`bytes()`),
       isEnum: false,
       imports: new JavaScriptImportMap(),
@@ -464,7 +423,6 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       strictType: isBigNumber ? 'bigint' : 'number',
       looseType: isBigNumber ? 'number | bigint' : 'number',
-      hasLooseType: isBigNumber,
       serializer: this.s(`${typeNumber.format}(${endianness})`),
       isEnum: false,
       imports: new JavaScriptImportMap(),
@@ -530,7 +488,6 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       strictType: 'PublicKey',
       looseType: 'PublicKey',
-      hasLooseType: false,
       serializer: this.s(`publicKey()`),
       isEnum: false,
       imports: new JavaScriptImportMap().add('core', 'PublicKey'),
@@ -566,7 +523,6 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       strictType: 'string',
       looseType: 'string',
-      hasLooseType: false,
       serializer: this.s(`string(${optionsAsString})`),
       isEnum: false,
       imports: new JavaScriptImportMap(),
@@ -579,12 +535,11 @@ export class GetJavaScriptTypeManifestVisitor
 
   protected mergeManifests(
     manifests: JavaScriptTypeManifest[]
-  ): Pick<JavaScriptTypeManifest, 'imports' | 'hasLooseType' | 'isEnum'> {
+  ): Pick<JavaScriptTypeManifest, 'imports' | 'isEnum'> {
     return {
       imports: new JavaScriptImportMap().mergeWith(
         ...manifests.map((td) => td.imports)
       ),
-      hasLooseType: manifests.some((td) => td.hasLooseType),
       isEnum: false,
     };
   }

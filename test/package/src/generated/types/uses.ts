@@ -7,12 +7,12 @@
  */
 
 import { Context, Serializer } from '@metaplex-foundation/umi-core';
-import { UseMethod, getUseMethodSerializer } from '.';
+import { UseMethod, UseMethodArgs, getUseMethodSerializer } from '.';
 
 export type Uses = { useMethod: UseMethod; remaining: bigint; total: bigint };
 
 export type UsesArgs = {
-  useMethod: UseMethod;
+  useMethod: UseMethodArgs;
   remaining: number | bigint;
   total: number | bigint;
 };

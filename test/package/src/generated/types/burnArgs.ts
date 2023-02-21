@@ -12,9 +12,14 @@ export enum BurnArgs {
   V1,
 }
 
+export type BurnArgsArgs = BurnArgs;
+
 export function getBurnArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<BurnArgs> {
+): Serializer<BurnArgsArgs, BurnArgs> {
   const s = context.serializer;
-  return s.enum<BurnArgs>(BurnArgs, { description: 'BurnArgs' });
+  return s.enum<BurnArgs>(BurnArgs, { description: 'BurnArgs' }) as Serializer<
+    BurnArgsArgs,
+    BurnArgs
+  >;
 }

@@ -29,9 +29,13 @@ import {
   Creator,
   CreatorArgs,
   DelegateState,
+  DelegateStateArgs,
   ProgrammableConfig,
+  ProgrammableConfigArgs,
   TmKey,
+  TmKeyArgs,
   TokenStandard,
+  TokenStandardArgs,
   Uses,
   UsesArgs,
   getCollectionDetailsSerializer,
@@ -77,12 +81,12 @@ export type MetadataAccountDataArgs = {
   primarySaleHappened: boolean;
   isMutable: boolean;
   editionNonce: Option<number>;
-  tokenStandard: Option<TokenStandard>;
+  tokenStandard: Option<TokenStandardArgs>;
   collection: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
-  programmableConfig: Option<ProgrammableConfig>;
-  delegateState: Option<DelegateState>;
+  programmableConfig: Option<ProgrammableConfigArgs>;
+  delegateState: Option<DelegateStateArgs>;
 };
 
 export async function fetchMetadata(
@@ -138,7 +142,7 @@ export function getMetadataGpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       updateAuthority: PublicKey;
       mint: PublicKey;
       name: string;
@@ -149,12 +153,12 @@ export function getMetadataGpaBuilder(
       primarySaleHappened: boolean;
       isMutable: boolean;
       editionNonce: Option<number>;
-      tokenStandard: Option<TokenStandard>;
+      tokenStandard: Option<TokenStandardArgs>;
       collection: Option<CollectionArgs>;
       uses: Option<UsesArgs>;
       collectionDetails: Option<CollectionDetailsArgs>;
-      programmableConfig: Option<ProgrammableConfig>;
-      delegateState: Option<DelegateState>;
+      programmableConfig: Option<ProgrammableConfigArgs>;
+      delegateState: Option<DelegateStateArgs>;
     }>([
       ['key', getTmKeySerializer(context)],
       ['updateAuthority', s.publicKey()],

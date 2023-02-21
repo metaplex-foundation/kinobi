@@ -19,7 +19,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, getTmKeySerializer } from '../types';
+import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type EditionMarker = Account<EditionMarkerAccountData>;
 
@@ -79,7 +79,7 @@ export function getEditionMarkerGpaBuilder(
   const s = context.serializer;
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
-    .registerFields<{ key: TmKey; ledger: Array<number> }>([
+    .registerFields<{ key: TmKeyArgs; ledger: Array<number> }>([
       ['key', getTmKeySerializer(context)],
       ['ledger', s.array(s.u8(), { size: 31 })],
     ])

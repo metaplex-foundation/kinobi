@@ -13,9 +13,14 @@ export enum TaKey {
   Frequency,
 }
 
+export type TaKeyArgs = TaKey;
+
 export function getTaKeySerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TaKey> {
+): Serializer<TaKeyArgs, TaKey> {
   const s = context.serializer;
-  return s.enum<TaKey>(TaKey, { description: 'TaKey' });
+  return s.enum<TaKey>(TaKey, { description: 'TaKey' }) as Serializer<
+    TaKeyArgs,
+    TaKey
+  >;
 }

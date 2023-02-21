@@ -16,7 +16,11 @@ import {
   checkForIsWritableOverride as isWritable,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TaCreateArgs, getTaCreateArgsSerializer } from '../types';
+import {
+  TaCreateArgs,
+  TaCreateArgsArgs,
+  getTaCreateArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type CreateRuleSetInstructionAccounts = {
@@ -34,7 +38,7 @@ export type CreateRuleSetInstructionData = {
   createArgs: TaCreateArgs;
 };
 
-export type CreateRuleSetInstructionDataArgs = { createArgs: TaCreateArgs };
+export type CreateRuleSetInstructionDataArgs = { createArgs: TaCreateArgsArgs };
 
 export function getCreateRuleSetInstructionDataSerializer(
   context: Pick<Context, 'serializer'>

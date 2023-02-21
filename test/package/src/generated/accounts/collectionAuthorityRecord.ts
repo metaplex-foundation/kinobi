@@ -20,7 +20,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, getTmKeySerializer } from '../types';
+import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type CollectionAuthorityRecord =
   Account<CollectionAuthorityRecordAccountData>;
@@ -89,7 +89,7 @@ export function getCollectionAuthorityRecordGpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       bump: number;
       updateAuthority: Option<PublicKey>;
     }>([

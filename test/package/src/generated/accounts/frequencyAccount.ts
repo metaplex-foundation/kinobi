@@ -19,7 +19,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TaKey, getTaKeySerializer } from '../types';
+import { TaKey, TaKeyArgs, getTaKeySerializer } from '../types';
 
 export type FrequencyAccount = Account<FrequencyAccountAccountData>;
 
@@ -96,7 +96,7 @@ export function getFrequencyAccountGpaBuilder(
   const programId = context.programs.get('mplTokenAuthRules').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TaKey;
+      key: TaKeyArgs;
       lastUpdate: number | bigint;
       period: number | bigint;
     }>([

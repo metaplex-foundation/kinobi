@@ -16,7 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { VerifyArgs, getVerifyArgsSerializer } from '../types';
+import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 
 // Accounts.
 export type VerifyInstructionAccounts = {
@@ -38,7 +38,7 @@ export type VerifyInstructionData = {
   verifyArgs: VerifyArgs;
 };
 
-export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgs };
+export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
 export function getVerifyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>

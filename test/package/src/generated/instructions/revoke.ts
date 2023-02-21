@@ -17,7 +17,7 @@ import {
   mapSerializer,
   publicKey,
 } from '@metaplex-foundation/umi-core';
-import { RevokeArgs, getRevokeArgsSerializer } from '../types';
+import { RevokeArgs, RevokeArgsArgs, getRevokeArgsSerializer } from '../types';
 
 // Accounts.
 export type RevokeInstructionAccounts = {
@@ -55,7 +55,7 @@ export type RevokeInstructionData = {
   revokeArgs: RevokeArgs;
 };
 
-export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgs };
+export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
 
 export function getRevokeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>

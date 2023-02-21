@@ -17,7 +17,11 @@ import {
   mapSerializer,
   publicKey,
 } from '@metaplex-foundation/umi-core';
-import { MigrateArgs, getMigrateArgsSerializer } from '../types';
+import {
+  MigrateArgs,
+  MigrateArgsArgs,
+  getMigrateArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type MigrateInstructionAccounts = {
@@ -49,7 +53,7 @@ export type MigrateInstructionData = {
   migrateArgs: MigrateArgs;
 };
 
-export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgs };
+export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
 export function getMigrateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>

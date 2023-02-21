@@ -15,26 +15,19 @@
 {% macro exportType(strictName, looseName, typeManifest) %}
 {%- if typeManifest.isEnum -%}
 export enum {{ strictName }} {{ typeManifest.strictType }};
-{%- elif typeManifest.hasLooseType -%}
-export type {{ strictName }} = {{ typeManifest.strictType }};
 
-export type {{ looseName }} = {{ typeManifest.looseType }};
+export type {{ looseName }} = {{ strictName }};
 {%- else -%}
 export type {{ strictName }} = {{ typeManifest.strictType }};
+
+export type {{ looseName }} = {{ typeManifest.looseType if typeManifest.strictType != typeManifest.looseType else strictName }};
 {% endif %}
 {% endmacro %}
 
 {# Export a serializer. #}
 {% macro exportSerializer(strictName, looseName, typeManifest) %}
-{%- if typeManifest.hasLooseType -%}
 export function get{{ strictName }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ looseName }}, {{ strictName }}> {
   const s = context.serializer;
   return {{ typeManifest.serializer }} as Serializer<{{ looseName }}, {{ strictName }}>;
 }
-{%- else -%}
-export function get{{ strictName }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ strictName }}> {
-  const s = context.serializer;
-  return {{ typeManifest.serializer }};
-}
-{% endif %}
 {% endmacro %}

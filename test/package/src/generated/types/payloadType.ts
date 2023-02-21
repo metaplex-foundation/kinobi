@@ -15,7 +15,9 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   LeafInfo,
+  LeafInfoArgs,
   SeedsVec,
+  SeedsVecArgs,
   getLeafInfoSerializer,
   getSeedsVecSerializer,
 } from '.';
@@ -29,8 +31,8 @@ export type PayloadType =
 
 export type PayloadTypeArgs =
   | { __kind: 'Pubkey'; fields: [PublicKey] }
-  | { __kind: 'Seeds'; fields: [SeedsVec] }
-  | { __kind: 'MerkleProof'; fields: [LeafInfo] }
+  | { __kind: 'Seeds'; fields: [SeedsVecArgs] }
+  | { __kind: 'MerkleProof'; fields: [LeafInfoArgs] }
   | { __kind: 'Number'; fields: [number | bigint] };
 
 export function getPayloadTypeSerializer(

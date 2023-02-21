@@ -15,8 +15,11 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   CmCreator,
+  CmCreatorArgs,
   ConfigLineSettings,
+  ConfigLineSettingsArgs,
   HiddenSettings,
+  HiddenSettingsArgs,
   getCmCreatorSerializer,
   getConfigLineSettingsSerializer,
   getHiddenSettingsSerializer,
@@ -54,11 +57,11 @@ export type CandyMachineDataArgs = {
   /** Indicates if the asset is mutable or not (default yes) */
   isMutable: boolean;
   /** List of creators */
-  creators: Array<CmCreator>;
+  creators: Array<CmCreatorArgs>;
   /** Config line settings */
-  configLineSettings: Option<ConfigLineSettings>;
+  configLineSettings: Option<ConfigLineSettingsArgs>;
   /** Hidden setttings */
-  hiddenSettings: Option<HiddenSettings>;
+  hiddenSettings: Option<HiddenSettingsArgs>;
 };
 
 export function getCandyMachineDataSerializer(

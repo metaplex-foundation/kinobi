@@ -21,7 +21,9 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   DelegateRole,
+  DelegateRoleArgs,
   TmKey,
+  TmKeyArgs,
   getDelegateRoleSerializer,
   getTmKeySerializer,
 } from '../types';
@@ -35,7 +37,7 @@ export type DelegateRecordAccountData = {
 };
 
 export type DelegateRecordAccountDataArgs = {
-  role: DelegateRole;
+  role: DelegateRoleArgs;
   bump: number;
 };
 
@@ -91,7 +93,7 @@ export function getDelegateRecordGpaBuilder(
   const s = context.serializer;
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
-    .registerFields<{ key: TmKey; role: DelegateRole; bump: number }>([
+    .registerFields<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>([
       ['key', getTmKeySerializer(context)],
       ['role', getDelegateRoleSerializer(context)],
       ['bump', s.u8()],

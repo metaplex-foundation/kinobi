@@ -21,7 +21,9 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   EscrowAuthority,
+  EscrowAuthorityArgs,
   TmKey,
+  TmKeyArgs,
   getEscrowAuthoritySerializer,
   getTmKeySerializer,
 } from '../types';
@@ -37,7 +39,7 @@ export type TokenOwnedEscrowAccountData = {
 
 export type TokenOwnedEscrowAccountDataArgs = {
   baseToken: PublicKey;
-  authority: EscrowAuthority;
+  authority: EscrowAuthorityArgs;
   bump: number;
 };
 
@@ -94,9 +96,9 @@ export function getTokenOwnedEscrowGpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       baseToken: PublicKey;
-      authority: EscrowAuthority;
+      authority: EscrowAuthorityArgs;
       bump: number;
     }>([
       ['key', getTmKeySerializer(context)],

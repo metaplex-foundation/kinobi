@@ -24,6 +24,7 @@ import {
   Reservation,
   ReservationArgs,
   TmKey,
+  TmKeyArgs,
   getReservationSerializer,
   getTmKeySerializer,
 } from '../types';
@@ -100,7 +101,7 @@ export function getReservationListV2GpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       masterEdition: PublicKey;
       supplySnapshot: Option<number | bigint>;
       reservations: Array<ReservationArgs>;

@@ -20,7 +20,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, getTmKeySerializer } from '../types';
+import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type MasterEditionV1 = Account<MasterEditionV1AccountData>;
 
@@ -92,7 +92,7 @@ export function getMasterEditionV1GpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       supply: number | bigint;
       maxSupply: Option<number | bigint>;
       printingMint: PublicKey;

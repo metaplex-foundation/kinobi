@@ -14,9 +14,13 @@ export enum RevokeArgs {
   SaleV1,
 }
 
+export type RevokeArgsArgs = RevokeArgs;
+
 export function getRevokeArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<RevokeArgs> {
+): Serializer<RevokeArgsArgs, RevokeArgs> {
   const s = context.serializer;
-  return s.enum<RevokeArgs>(RevokeArgs, { description: 'RevokeArgs' });
+  return s.enum<RevokeArgs>(RevokeArgs, {
+    description: 'RevokeArgs',
+  }) as Serializer<RevokeArgsArgs, RevokeArgs>;
 }

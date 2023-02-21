@@ -22,7 +22,9 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   ReservationV1,
+  ReservationV1Args,
   TmKey,
+  TmKeyArgs,
   getReservationV1Serializer,
   getTmKeySerializer,
 } from '../types';
@@ -39,7 +41,7 @@ export type ReservationListV1AccountData = {
 export type ReservationListV1AccountDataArgs = {
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
-  reservations: Array<ReservationV1>;
+  reservations: Array<ReservationV1Args>;
 };
 
 export async function fetchReservationListV1(
@@ -95,10 +97,10 @@ export function getReservationListV1GpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       masterEdition: PublicKey;
       supplySnapshot: Option<number | bigint>;
-      reservations: Array<ReservationV1>;
+      reservations: Array<ReservationV1Args>;
     }>([
       ['key', getTmKeySerializer(context)],
       ['masterEdition', s.publicKey()],

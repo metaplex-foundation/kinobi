@@ -20,6 +20,7 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   Operation,
+  OperationArgs,
   Payload,
   PayloadArgs,
   getOperationSerializer,
@@ -65,7 +66,7 @@ export type ValidateInstructionData = {
 
 export type ValidateInstructionDataArgs = {
   ruleSetName: string;
-  operation: Operation;
+  operation: OperationArgs;
   payload: PayloadArgs;
 };
 

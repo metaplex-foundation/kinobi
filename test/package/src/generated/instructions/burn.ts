@@ -16,7 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { BurnArgs, getBurnArgsSerializer } from '../types';
+import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
 
 // Accounts.
 export type BurnInstructionAccounts = {
@@ -43,7 +43,7 @@ export type BurnInstructionAccounts = {
 // Arguments.
 export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
 
-export type BurnInstructionDataArgs = { burnArgs: BurnArgs };
+export type BurnInstructionDataArgs = { burnArgs: BurnArgsArgs };
 
 export function getBurnInstructionDataSerializer(
   context: Pick<Context, 'serializer'>

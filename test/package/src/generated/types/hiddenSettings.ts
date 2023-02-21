@@ -18,9 +18,11 @@ export type HiddenSettings = {
   hash: Uint8Array;
 };
 
+export type HiddenSettingsArgs = HiddenSettings;
+
 export function getHiddenSettingsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<HiddenSettings> {
+): Serializer<HiddenSettingsArgs, HiddenSettings> {
   const s = context.serializer;
   return s.struct<HiddenSettings>(
     [
@@ -29,5 +31,5 @@ export function getHiddenSettingsSerializer(
       ['hash', s.bytes()],
     ],
     { description: 'HiddenSettings' }
-  );
+  ) as Serializer<HiddenSettingsArgs, HiddenSettings>;
 }

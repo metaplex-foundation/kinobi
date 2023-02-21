@@ -16,7 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { ConfigLine, getConfigLineSerializer } from '../types';
+import { ConfigLine, ConfigLineArgs, getConfigLineSerializer } from '../types';
 
 // Accounts.
 export type AddConfigLinesInstructionAccounts = {
@@ -33,7 +33,7 @@ export type AddConfigLinesInstructionData = {
 
 export type AddConfigLinesInstructionDataArgs = {
   index: number;
-  configLines: Array<ConfigLine>;
+  configLines: Array<ConfigLineArgs>;
 };
 
 export function getAddConfigLinesInstructionDataSerializer(

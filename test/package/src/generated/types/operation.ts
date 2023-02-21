@@ -15,9 +15,13 @@ export enum Operation {
   MigrateClass,
 }
 
+export type OperationArgs = Operation;
+
 export function getOperationSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<Operation> {
+): Serializer<OperationArgs, Operation> {
   const s = context.serializer;
-  return s.enum<Operation>(Operation, { description: 'Operation' });
+  return s.enum<Operation>(Operation, {
+    description: 'Operation',
+  }) as Serializer<OperationArgs, Operation>;
 }
