@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.2.1
+
+### Patch Changes
+
+- [`d19fd82`](https://github.com/metaplex-foundation/kinobi/commit/d19fd820b8e7fca54ee4b1a4899120ac5607037a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Rename SetLeafWrapperVisitor
+
+- [`39dff3e`](https://github.com/metaplex-foundation/kinobi/commit/39dff3e7acbb9f9d40dbcd46f4d78157c85ba4c8) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support sizes and prefixes for some IDL types
+
 ## 0.2.0
 
 ### Minor Changes
