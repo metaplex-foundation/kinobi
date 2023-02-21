@@ -23,14 +23,20 @@ export class TypeArrayNode implements Visitable {
   }
 
   static fromIdl(idl: IdlTypeArray | IdlTypeVec): TypeArrayNode {
-    if ('vec' in idl) {
-      const item = createTypeNodeFromIdl(idl.vec);
-      return new TypeArrayNode(item);
+    if ('array' in idl) {
+      const item = createTypeNodeFromIdl(idl.array[0]);
+      return new TypeArrayNode(item, {
+        size: { kind: 'fixed', size: idl.array[1] },
+      });
     }
 
-    const item = createTypeNodeFromIdl(idl.array[0]);
+    const item = createTypeNodeFromIdl(idl.vec);
+    if (!idl.size) return new TypeArrayNode(item);
+    if (idl.size === 'remainder') {
+      return new TypeArrayNode(item, { size: { kind: 'remainder' } });
+    }
     return new TypeArrayNode(item, {
-      size: { kind: 'fixed', size: idl.array[1] },
+      size: { kind: 'prefixed', prefix: new TypeNumberNode(idl.size) },
     });
   }
 

@@ -14,22 +14,32 @@ export type IdlType =
 export type IdlTypeDefinedLink = { defined: string };
 
 // Options.
-export type IdlTypeOption = { option: IdlType } | { coption: IdlType };
+export type IdlTypeOption = ({ option: IdlType } | { coption: IdlType }) & {
+  prefix?: IdlTypeUnsignedInteger;
+  fixed?: boolean;
+};
 
 // Lists.
 export type IdlTypeTuple = { tuple: IdlType[] };
-export type IdlTypeVec = { vec: IdlType };
+export type IdlTypeVec = {
+  vec: IdlType;
+  size?: IdlTypeUnsignedInteger | 'remainder';
+};
 export type IdlTypeArray = { array: [idlType: IdlType, size: number] };
 
 // Maps.
-export type IdlTypeMap = IdlTypeHashMap | IdlTypeBTreeMap;
 export type IdlTypeHashMap = { hashMap: [IdlType, IdlType] };
 export type IdlTypeBTreeMap = { bTreeMap: [IdlType, IdlType] };
+export type IdlTypeMap = (IdlTypeHashMap | IdlTypeBTreeMap) & {
+  size?: IdlTypeUnsignedInteger | number | 'remainder';
+};
 
 // Sets.
-export type IdlTypeSet = IdlTypeHashSet | IdlTypeBTreeSet;
 export type IdlTypeHashSet = { hashSet: IdlType };
 export type IdlTypeBTreeSet = { bTreeSet: IdlType };
+export type IdlTypeSet = (IdlTypeHashSet | IdlTypeBTreeSet) & {
+  size?: IdlTypeUnsignedInteger | number | 'remainder';
+};
 
 // Struct.
 export type IdlTypeStruct = {
@@ -74,3 +84,9 @@ export const IDL_TYPE_LEAVES = [
   'f64',
 ] as const;
 export type IdlTypeLeaf = typeof IDL_TYPE_LEAVES[number];
+
+export type IdlTypeUnsignedInteger = 'u8' | 'u16' | 'u32' | 'u64' | 'u128';
+export type IdlTypeSignedInteger = 'i8' | 'i16' | 'i32' | 'i64' | 'i128';
+export type IdlTypeInteger = IdlTypeUnsignedInteger | IdlTypeSignedInteger;
+export type IdlTypeDecimals = 'f32' | 'f64';
+export type IdlTypeNumber = IdlTypeInteger | IdlTypeDecimals;

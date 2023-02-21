@@ -31,9 +31,11 @@ export class TypeOptionNode implements Visitable {
 
   static fromIdl(idl: IdlTypeOption): TypeOptionNode {
     const item = 'option' in idl ? idl.option : idl.coption;
+    const defaultPrefix = new TypeNumberNode('option' in idl ? 'u8' : 'u32');
+    const defaultFixed = !('option' in idl);
     return new TypeOptionNode(createTypeNodeFromIdl(item), {
-      prefix: new TypeNumberNode('option' in idl ? 'u8' : 'u32'),
-      fixed: !('option' in idl),
+      prefix: idl.prefix ? new TypeNumberNode(idl.prefix) : defaultPrefix,
+      fixed: idl.fixed !== undefined ? idl.fixed : defaultFixed,
       idlType: 'option' in idl ? 'option' : 'coption',
     });
   }

@@ -38,10 +38,18 @@ export class TypeMapNode implements Visitable {
   static fromIdl(idl: IdlTypeMap): TypeMapNode {
     const idlType = 'hashMap' in idl ? 'hashMap' : 'bTreeMap';
     const [key, value] = 'hashMap' in idl ? idl.hashMap : idl.bTreeMap;
+    let size: TypeMapNode['size'] | undefined;
+    if (idl.size === 'remainder') {
+      size = { kind: 'remainder' };
+    } else if (typeof idl.size === 'number') {
+      size = { kind: 'fixed', size: idl.size };
+    } else if (idl.size) {
+      size = { kind: 'prefixed', prefix: new TypeNumberNode(idl.size) };
+    }
     return new TypeMapNode(
       createTypeNodeFromIdl(key),
       createTypeNodeFromIdl(value),
-      { idlType }
+      { idlType, size }
     );
   }
 

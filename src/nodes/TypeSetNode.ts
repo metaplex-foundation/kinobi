@@ -32,10 +32,17 @@ export class TypeSetNode implements Visitable {
   }
 
   static fromIdl(idl: IdlTypeSet): TypeSetNode {
+    const idlType = 'hashSet' in idl ? 'hashSet' : 'bTreeSet';
     const item = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
-    return new TypeSetNode(createTypeNodeFromIdl(item), {
-      idlType: 'hashSet' in idl ? 'hashSet' : 'bTreeSet',
-    });
+    let size: TypeSetNode['size'] | undefined;
+    if (idl.size === 'remainder') {
+      size = { kind: 'remainder' };
+    } else if (typeof idl.size === 'number') {
+      size = { kind: 'fixed', size: idl.size };
+    } else if (idl.size) {
+      size = { kind: 'prefixed', prefix: new TypeNumberNode(idl.size) };
+    }
+    return new TypeSetNode(createTypeNodeFromIdl(item), { idlType, size });
   }
 
   accept<T>(visitor: Visitor<T>): T {
