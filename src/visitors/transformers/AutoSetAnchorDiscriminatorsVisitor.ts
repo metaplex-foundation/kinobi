@@ -26,6 +26,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
     if (!shouldAddDiscriminator) return account;
+    if (nodes.isTypeDefinedLinkNode(account.type)) return account;
 
     const idlName = snakeCase(account.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
@@ -59,6 +60,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
     if (!shouldAddDiscriminator) return instruction;
+    if (nodes.isTypeDefinedLinkNode(instruction.args)) return instruction;
 
     const idlName = snakeCase(instruction.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);

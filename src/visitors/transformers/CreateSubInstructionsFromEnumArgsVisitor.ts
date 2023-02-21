@@ -16,12 +16,15 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
           selector: { type: 'instruction', stack: selectorStack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
+            if (nodes.isTypeDefinedLinkNode(node.args)) return node;
+
+            const argFields = node.args.fields;
             const argName = mainCase(argNameInput);
-            const argFieldIndex = node.args.fields.findIndex(
+            const argFieldIndex = argFields.findIndex(
               (field) => field.name === argName
             );
             const argField =
-              argFieldIndex >= 0 ? node.args.fields[argFieldIndex] : null;
+              argFieldIndex >= 0 ? argFields[argFieldIndex] : null;
             if (!argField) {
               logWarn(`Could not find instruction argument [${argName}].`);
               return node;
@@ -49,7 +52,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
             const subInstructions = argType.variants.map(
               (variant, index): nodes.InstructionNode => {
                 const subName = mainCase(`${node.name} ${variant.name}`);
-                const subFields = node.args.fields.slice(0, argFieldIndex);
+                const subFields = argFields.slice(0, argFieldIndex);
                 subFields.push(
                   new nodes.TypeStructFieldNode(
                     {
@@ -78,7 +81,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                     )
                   );
                 }
-                subFields.push(...node.args.fields.slice(argFieldIndex + 1));
+                subFields.push(...argFields.slice(argFieldIndex + 1));
 
                 return new nodes.InstructionNode(
                   { ...node.metadata, name: subName },

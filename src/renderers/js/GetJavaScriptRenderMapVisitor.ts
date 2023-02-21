@@ -203,32 +203,40 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .remove('generatedTypes', [account.name]);
 
     // GPA Fields.
-    const gpaFieldManifests = account.type.fields.map((field) => {
-      const fieldWithNoDefaults = new nodes.TypeStructFieldNode(
-        { ...field.metadata, defaultsTo: null, docs: [] },
-        field.type
-      );
-      const fieldManifest = fieldWithNoDefaults.accept(
-        this.typeManifestVisitor
-      );
-      imports.mergeWith(fieldManifest.imports);
-      return fieldManifest;
-    });
-    const gpaFields = {
-      type: `{ ${gpaFieldManifests.map((m) => m.looseType).join('')} }`,
-      serializers: `[${gpaFieldManifests.map((m) => m.serializer).join(', ')}]`,
-    };
-
-    // Discriminator.
-    const { discriminatorField } = account;
-    const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value
-      ? renderJavaScriptValueNode(
-          discriminatorField.metadata.defaultsTo.value,
-          this.availableDefinedTypes
-        )
-      : undefined;
-    if (discriminatorValue) {
-      imports.mergeWith(discriminatorValue.imports);
+    let gpaFields: {
+      type: string;
+      serializers: string;
+      discriminator: string | null;
+    } | null = null;
+    if (!nodes.isTypeDefinedLinkNode(account.type)) {
+      const gpaFieldManifests = account.type.fields.map((field) => {
+        const fieldWithNoDefaults = new nodes.TypeStructFieldNode(
+          { ...field.metadata, defaultsTo: null, docs: [] },
+          field.type
+        );
+        const fieldManifest = fieldWithNoDefaults.accept(
+          this.typeManifestVisitor
+        );
+        imports.mergeWith(fieldManifest.imports);
+        return fieldManifest;
+      });
+      const { discriminatorField } = account;
+      const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value
+        ? renderJavaScriptValueNode(
+            discriminatorField.metadata.defaultsTo.value,
+            this.availableDefinedTypes
+          )
+        : undefined;
+      if (discriminatorValue) {
+        imports.mergeWith(discriminatorValue.imports);
+      }
+      gpaFields = {
+        type: `{ ${gpaFieldManifests.map((m) => m.looseType).join('')} }`,
+        serializers: `[${gpaFieldManifests
+          .map((m) => m.serializer)
+          .join(', ')}]`,
+        discriminator: discriminatorValue?.render ?? null,
+      };
     }
 
     // Seeds.
@@ -253,7 +261,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         program: this.program,
         typeManifest,
         gpaFields,
-        discriminatorValue: discriminatorValue?.render,
         seeds,
         pdaHelperNeedsSerializer,
       })
@@ -316,15 +323,21 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     ]);
 
     // canMergeAccountsAndArgs
-    const accountsAndArgsConflicts =
-      this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
-    if (accountsAndArgsConflicts.length > 0) {
-      logWarn(
-        `Accounts and args of instruction [${instruction.name}] have the following ` +
-          `conflicting attributes [${accountsAndArgsConflicts.join(', ')}]. ` +
-          `Thus, they could not be merged into a single input object. ` +
-          'You may want to rename the conflicting attributes.'
-      );
+    let canMergeAccountsAndArgs = false;
+    if (!nodes.isTypeDefinedLinkNode(instruction.args)) {
+      const accountsAndArgsConflicts =
+        this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
+      if (accountsAndArgsConflicts.length > 0) {
+        logWarn(
+          `Accounts and args of instruction [${instruction.name}] have the following ` +
+            `conflicting attributes [${accountsAndArgsConflicts.join(
+              ', '
+            )}]. ` +
+            `Thus, they could not be merged into a single input object. ` +
+            'You may want to rename the conflicting attributes.'
+        );
+      }
+      canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
     }
 
     return new RenderMap().add(
@@ -338,7 +351,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         needsIdentity: accounts.some((a) => a.defaultsTo.kind === 'identity'),
         needsPayer: accounts.some((a) => a.defaultsTo.kind === 'payer'),
         typeManifest,
-        canMergeAccountsAndArgs: accountsAndArgsConflicts.length === 0,
+        canMergeAccountsAndArgs,
       })
     );
   }
@@ -409,6 +422,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   protected getMergeConflictsForInstructionAccountsAndArgs(
     instruction: nodes.InstructionNode
   ): string[] {
+    nodes.assertTypeStructNode(instruction.args);
     const allNames = [
       ...instruction.accounts.map((account) => account.name),
       ...instruction.args.fields.map((field) => field.name),

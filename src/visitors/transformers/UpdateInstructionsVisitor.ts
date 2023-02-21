@@ -70,7 +70,9 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               node.accounts.map((account) =>
                 this.handleInstructionAccount(account, accountUpdates ?? {})
               ),
-              renameStructNode(node.args, updates.args ?? {}, newName),
+              nodes.isTypeDefinedLinkNode(node.args)
+                ? node.args
+                : renameStructNode(node.args, updates.args ?? {}, newName),
               node.subInstructions
             );
           },

@@ -33,7 +33,9 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
             const newName = mainCase(updates.name ?? node.name);
             return new nodes.AccountNode(
               { ...node.metadata, ...updates },
-              renameStructNode(node.type, updates.data ?? {}, newName)
+              nodes.isTypeDefinedLinkNode(node.type)
+                ? node.type
+                : renameStructNode(node.type, updates.data ?? {}, newName)
             );
           },
         };

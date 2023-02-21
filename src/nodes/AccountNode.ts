@@ -7,6 +7,10 @@ import { assertTypeStructNode, TypeStructNode } from './TypeStructNode';
 import type { InstructionNodeAccountDefaultsSeed } from './InstructionNode';
 import { TypeStructFieldNode } from './TypeStructFieldNode';
 import { isTypePublicKeyNode } from './TypePublicKeyNode';
+import {
+  isTypeDefinedLinkNode,
+  TypeDefinedLinkNode,
+} from './TypeDefinedLinkNode';
 
 export type AccountNodeMetadata = {
   readonly name: string;
@@ -32,9 +36,9 @@ export class AccountNode implements Visitable {
 
   readonly metadata: AccountNodeMetadata;
 
-  readonly type: TypeStructNode;
+  readonly type: TypeStructNode | TypeDefinedLinkNode;
 
-  constructor(metadata: AccountNodeMetadata, type: TypeStructNode) {
+  constructor(metadata: AccountNodeMetadata, type: AccountNode['type']) {
     this.metadata = {
       ...metadata,
       name: mainCase(metadata.name),
@@ -81,6 +85,7 @@ export class AccountNode implements Visitable {
   }
 
   get discriminatorField(): TypeStructFieldNode | null {
+    if (isTypeDefinedLinkNode(this.type)) return null;
     if (this.metadata.discriminator?.kind !== 'field') return null;
     const { name } = this.metadata.discriminator;
     return name ? this.type.fields.find((f) => f.name === name) ?? null : null;
