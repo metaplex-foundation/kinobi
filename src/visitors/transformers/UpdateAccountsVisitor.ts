@@ -1,5 +1,6 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
+import { Dependency } from '../Dependency';
 import {
   NodeTransform,
   NodeTransformer,
@@ -12,6 +13,7 @@ export type AccountUpdates =
   | { delete: true }
   | (Partial<nodes.AccountNodeMetadata> & {
       data?: Record<string, string>;
+      link?: true | string | { name: string; dependency: Dependency };
     });
 
 export class UpdateAccountsVisitor extends TransformNodesVisitor {
@@ -31,11 +33,21 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
               return null;
             }
             const newName = mainCase(updates.name ?? node.name);
+            const data = updates.data ?? {};
+            const link = updates.link ? parseLink(node, updates.link) : null;
+
+            let newType: nodes.AccountNode['type'] = node.type;
+            if (link) {
+              newType = new nodes.TypeDefinedLinkNode(link.name, {
+                dependency: link.dependency,
+              });
+            } else if (nodes.isTypeStructNode(node.type)) {
+              newType = renameStructNode(node.type, data, newName);
+            }
+
             return new nodes.AccountNode(
               { ...node.metadata, ...updates },
-              nodes.isTypeDefinedLinkNode(node.type)
-                ? node.type
-                : renameStructNode(node.type, updates.data ?? {}, newName)
+              newType
             );
           },
         };
@@ -44,4 +56,17 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
 
     super(transforms);
   }
+}
+
+function parseLink(
+  account: nodes.AccountNode,
+  link: true | string | { name: string; dependency: Dependency }
+): { name: string; dependency: Dependency } {
+  if (typeof link === 'boolean') {
+    return { name: `${account.name}AccountData`, dependency: 'hooked' };
+  }
+  if (typeof link === 'string') {
+    return { name: link, dependency: 'hooked' };
+  }
+  return link;
 }
