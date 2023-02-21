@@ -36,6 +36,47 @@ export type CollectionAuthorityRecordAccountDataArgs = {
   updateAuthority: Option<PublicKey>;
 };
 
+export function getCollectionAuthorityRecordAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<
+  CollectionAuthorityRecordAccountDataArgs,
+  CollectionAuthorityRecordAccountData
+> {
+  const s = context.serializer;
+  return mapSerializer<
+    CollectionAuthorityRecordAccountDataArgs,
+    CollectionAuthorityRecordAccountData,
+    CollectionAuthorityRecordAccountData
+  >(
+    s.struct<CollectionAuthorityRecordAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['bump', s.u8()],
+        ['updateAuthority', s.option(s.publicKey())],
+      ],
+      { description: 'CollectionAuthorityRecord' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.CollectionAuthorityRecord,
+      } as CollectionAuthorityRecordAccountData)
+  ) as Serializer<
+    CollectionAuthorityRecordAccountDataArgs,
+    CollectionAuthorityRecordAccountData
+  >;
+}
+
+export function deserializeCollectionAuthorityRecord(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): CollectionAuthorityRecord {
+  return deserializeAccount(
+    rawAccount,
+    getCollectionAuthorityRecordAccountDataSerializer(context)
+  );
+}
+
 export async function fetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -101,47 +142,6 @@ export function getCollectionAuthorityRecordGpaBuilder(
       deserializeCollectionAuthorityRecord(context, account)
     )
     .whereField('key', TmKey.CollectionAuthorityRecord);
-}
-
-export function deserializeCollectionAuthorityRecord(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): CollectionAuthorityRecord {
-  return deserializeAccount(
-    rawAccount,
-    getCollectionAuthorityRecordAccountDataSerializer(context)
-  );
-}
-
-export function getCollectionAuthorityRecordAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<
-  CollectionAuthorityRecordAccountDataArgs,
-  CollectionAuthorityRecordAccountData
-> {
-  const s = context.serializer;
-  return mapSerializer<
-    CollectionAuthorityRecordAccountDataArgs,
-    CollectionAuthorityRecordAccountData,
-    CollectionAuthorityRecordAccountData
-  >(
-    s.struct<CollectionAuthorityRecordAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['bump', s.u8()],
-        ['updateAuthority', s.option(s.publicKey())],
-      ],
-      { description: 'CollectionAuthorityRecord' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.CollectionAuthorityRecord,
-      } as CollectionAuthorityRecordAccountData)
-  ) as Serializer<
-    CollectionAuthorityRecordAccountDataArgs,
-    CollectionAuthorityRecordAccountData
-  >;
 }
 
 export function getCollectionAuthorityRecordSize(

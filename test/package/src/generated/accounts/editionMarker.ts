@@ -27,6 +27,37 @@ export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
+export function getEditionMarkerAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    EditionMarkerAccountDataArgs,
+    EditionMarkerAccountData,
+    EditionMarkerAccountData
+  >(
+    s.struct<EditionMarkerAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['ledger', s.array(s.u8(), { size: 31 })],
+      ],
+      { description: 'EditionMarker' }
+    ),
+    (value) =>
+      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
+  ) as Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
+}
+
+export function deserializeEditionMarker(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): EditionMarker {
+  return deserializeAccount(
+    rawAccount,
+    getEditionMarkerAccountDataSerializer(context)
+  );
+}
+
 export async function fetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -87,37 +118,6 @@ export function getEditionMarkerGpaBuilder(
       deserializeEditionMarker(context, account)
     )
     .whereField('key', TmKey.EditionMarker);
-}
-
-export function deserializeEditionMarker(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): EditionMarker {
-  return deserializeAccount(
-    rawAccount,
-    getEditionMarkerAccountDataSerializer(context)
-  );
-}
-
-export function getEditionMarkerAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    EditionMarkerAccountDataArgs,
-    EditionMarkerAccountData,
-    EditionMarkerAccountData
-  >(
-    s.struct<EditionMarkerAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['ledger', s.array(s.u8(), { size: 31 })],
-      ],
-      { description: 'EditionMarker' }
-    ),
-    (value) =>
-      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
-  ) as Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
 }
 
 export function getEditionMarkerSize(_context = {}): number {

@@ -44,6 +44,45 @@ export type ReservationListV1AccountDataArgs = {
   reservations: Array<ReservationV1Args>;
 };
 
+export function getReservationListV1AccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    ReservationListV1AccountDataArgs,
+    ReservationListV1AccountData,
+    ReservationListV1AccountData
+  >(
+    s.struct<ReservationListV1AccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['masterEdition', s.publicKey()],
+        ['supplySnapshot', s.option(s.u64())],
+        ['reservations', s.array(getReservationV1Serializer(context))],
+      ],
+      { description: 'ReservationListV1' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.ReservationListV1,
+      } as ReservationListV1AccountData)
+  ) as Serializer<
+    ReservationListV1AccountDataArgs,
+    ReservationListV1AccountData
+  >;
+}
+
+export function deserializeReservationListV1(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): ReservationListV1 {
+  return deserializeAccount(
+    rawAccount,
+    getReservationListV1AccountDataSerializer(context)
+  );
+}
+
 export async function fetchReservationListV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -111,45 +150,6 @@ export function getReservationListV1GpaBuilder(
       deserializeReservationListV1(context, account)
     )
     .whereField('key', TmKey.ReservationListV1);
-}
-
-export function deserializeReservationListV1(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): ReservationListV1 {
-  return deserializeAccount(
-    rawAccount,
-    getReservationListV1AccountDataSerializer(context)
-  );
-}
-
-export function getReservationListV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    ReservationListV1AccountDataArgs,
-    ReservationListV1AccountData,
-    ReservationListV1AccountData
-  >(
-    s.struct<ReservationListV1AccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey()],
-        ['supplySnapshot', s.option(s.u64())],
-        ['reservations', s.array(getReservationV1Serializer(context))],
-      ],
-      { description: 'ReservationListV1' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.ReservationListV1,
-      } as ReservationListV1AccountData)
-  ) as Serializer<
-    ReservationListV1AccountDataArgs,
-    ReservationListV1AccountData
-  >;
 }
 
 export function getReservationListV1Size(

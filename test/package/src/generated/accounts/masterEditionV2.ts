@@ -36,6 +36,38 @@ export type MasterEditionV2AccountDataArgs = {
   maxSupply: Option<number | bigint>;
 };
 
+export function getMasterEditionV2AccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    MasterEditionV2AccountDataArgs,
+    MasterEditionV2AccountData,
+    MasterEditionV2AccountData
+  >(
+    s.struct<MasterEditionV2AccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['supply', s.u64()],
+        ['maxSupply', s.option(s.u64())],
+      ],
+      { description: 'MasterEditionV2' }
+    ),
+    (value) =>
+      ({ ...value, key: TmKey.MasterEditionV2 } as MasterEditionV2AccountData)
+  ) as Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
+}
+
+export function deserializeMasterEditionV2(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): MasterEditionV2 {
+  return deserializeAccount(
+    rawAccount,
+    getMasterEditionV2AccountDataSerializer(context)
+  );
+}
+
 export async function fetchMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -101,38 +133,6 @@ export function getMasterEditionV2GpaBuilder(
       deserializeMasterEditionV2(context, account)
     )
     .whereField('key', TmKey.MasterEditionV2);
-}
-
-export function deserializeMasterEditionV2(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): MasterEditionV2 {
-  return deserializeAccount(
-    rawAccount,
-    getMasterEditionV2AccountDataSerializer(context)
-  );
-}
-
-export function getMasterEditionV2AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    MasterEditionV2AccountDataArgs,
-    MasterEditionV2AccountData,
-    MasterEditionV2AccountData
-  >(
-    s.struct<MasterEditionV2AccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['supply', s.u64()],
-        ['maxSupply', s.option(s.u64())],
-      ],
-      { description: 'MasterEditionV2' }
-    ),
-    (value) =>
-      ({ ...value, key: TmKey.MasterEditionV2 } as MasterEditionV2AccountData)
-  ) as Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
 }
 
 export function getMasterEditionV2Size(

@@ -34,6 +34,47 @@ export type UseAuthorityRecordAccountDataArgs = {
   bump: number;
 };
 
+export function getUseAuthorityRecordAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<
+  UseAuthorityRecordAccountDataArgs,
+  UseAuthorityRecordAccountData
+> {
+  const s = context.serializer;
+  return mapSerializer<
+    UseAuthorityRecordAccountDataArgs,
+    UseAuthorityRecordAccountData,
+    UseAuthorityRecordAccountData
+  >(
+    s.struct<UseAuthorityRecordAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['allowedUses', s.u64()],
+        ['bump', s.u8()],
+      ],
+      { description: 'UseAuthorityRecord' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.UseAuthorityRecord,
+      } as UseAuthorityRecordAccountData)
+  ) as Serializer<
+    UseAuthorityRecordAccountDataArgs,
+    UseAuthorityRecordAccountData
+  >;
+}
+
+export function deserializeUseAuthorityRecord(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): UseAuthorityRecord {
+  return deserializeAccount(
+    rawAccount,
+    getUseAuthorityRecordAccountDataSerializer(context)
+  );
+}
+
 export async function fetchUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -99,47 +140,6 @@ export function getUseAuthorityRecordGpaBuilder(
       deserializeUseAuthorityRecord(context, account)
     )
     .whereField('key', TmKey.UseAuthorityRecord);
-}
-
-export function deserializeUseAuthorityRecord(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): UseAuthorityRecord {
-  return deserializeAccount(
-    rawAccount,
-    getUseAuthorityRecordAccountDataSerializer(context)
-  );
-}
-
-export function getUseAuthorityRecordAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<
-  UseAuthorityRecordAccountDataArgs,
-  UseAuthorityRecordAccountData
-> {
-  const s = context.serializer;
-  return mapSerializer<
-    UseAuthorityRecordAccountDataArgs,
-    UseAuthorityRecordAccountData,
-    UseAuthorityRecordAccountData
-  >(
-    s.struct<UseAuthorityRecordAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['allowedUses', s.u64()],
-        ['bump', s.u8()],
-      ],
-      { description: 'UseAuthorityRecord' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.UseAuthorityRecord,
-      } as UseAuthorityRecordAccountData)
-  ) as Serializer<
-    UseAuthorityRecordAccountDataArgs,
-    UseAuthorityRecordAccountData
-  >;
 }
 
 export function getUseAuthorityRecordSize(_context = {}): number {

@@ -43,6 +43,39 @@ export type TokenOwnedEscrowAccountDataArgs = {
   bump: number;
 };
 
+export function getTokenOwnedEscrowAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    TokenOwnedEscrowAccountDataArgs,
+    TokenOwnedEscrowAccountData,
+    TokenOwnedEscrowAccountData
+  >(
+    s.struct<TokenOwnedEscrowAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['baseToken', s.publicKey()],
+        ['authority', getEscrowAuthoritySerializer(context)],
+        ['bump', s.u8()],
+      ],
+      { description: 'TokenOwnedEscrow' }
+    ),
+    (value) =>
+      ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)
+  ) as Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData>;
+}
+
+export function deserializeTokenOwnedEscrow(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): TokenOwnedEscrow {
+  return deserializeAccount(
+    rawAccount,
+    getTokenOwnedEscrowAccountDataSerializer(context)
+  );
+}
+
 export async function fetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -110,39 +143,6 @@ export function getTokenOwnedEscrowGpaBuilder(
       deserializeTokenOwnedEscrow(context, account)
     )
     .whereField('key', TmKey.TokenOwnedEscrow);
-}
-
-export function deserializeTokenOwnedEscrow(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): TokenOwnedEscrow {
-  return deserializeAccount(
-    rawAccount,
-    getTokenOwnedEscrowAccountDataSerializer(context)
-  );
-}
-
-export function getTokenOwnedEscrowAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    TokenOwnedEscrowAccountDataArgs,
-    TokenOwnedEscrowAccountData,
-    TokenOwnedEscrowAccountData
-  >(
-    s.struct<TokenOwnedEscrowAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['baseToken', s.publicKey()],
-        ['authority', getEscrowAuthoritySerializer(context)],
-        ['bump', s.u8()],
-      ],
-      { description: 'TokenOwnedEscrow' }
-    ),
-    (value) =>
-      ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)
-  ) as Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData>;
 }
 
 export function getTokenOwnedEscrowSize(

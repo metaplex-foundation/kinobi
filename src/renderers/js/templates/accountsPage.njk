@@ -7,7 +7,16 @@
 {{ macros.docblock(definedType.docs) }}
 export type {{ account.name | pascalCase }} = Account<{{ account.name | pascalCase }}AccountData>;
 
-{{ macros.exportType(account.name | pascalCase + 'AccountData', account.name | pascalCase + 'AccountDataArgs', typeManifest) }}
+{{ macros.exportType(account.name | pascalCase + 'AccountData', typeManifest) }}
+
+{{ macros.exportSerializer(account.name | pascalCase + 'AccountData', typeManifest) }}
+
+export function deserialize{{ account.name | pascalCase }}(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount,
+): {{ account.name | pascalCase }} {
+  return deserializeAccount(rawAccount, get{{ account.name | pascalCase }}AccountDataSerializer(context));
+}
 
 export async function fetch{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -68,15 +77,6 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
     ;
   }
 {% endif %}
-
-export function deserialize{{ account.name | pascalCase }}(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount,
-): {{ account.name | pascalCase }} {
-  return deserializeAccount(rawAccount, get{{ account.name | pascalCase }}AccountDataSerializer(context));
-}
-
-{{ macros.exportSerializer(account.name | pascalCase + 'AccountData', account.name | pascalCase + 'AccountDataArgs', typeManifest) }}
 
 {% if account.metadata.size !== null %}
 export function get{{ account.name | pascalCase }}Size(_context = {}): number {

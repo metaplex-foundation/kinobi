@@ -43,6 +43,38 @@ export type FrequencyAccountAccountDataArgs = {
   period: number | bigint;
 };
 
+export function getFrequencyAccountAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    FrequencyAccountAccountDataArgs,
+    FrequencyAccountAccountData,
+    FrequencyAccountAccountData
+  >(
+    s.struct<FrequencyAccountAccountData>(
+      [
+        ['key', getTaKeySerializer(context)],
+        ['lastUpdate', s.i64()],
+        ['period', s.i64()],
+      ],
+      { description: 'FrequencyAccount' }
+    ),
+    (value) =>
+      ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
+  ) as Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
+}
+
+export function deserializeFrequencyAccount(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): FrequencyAccount {
+  return deserializeAccount(
+    rawAccount,
+    getFrequencyAccountAccountDataSerializer(context)
+  );
+}
+
 export async function fetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -108,38 +140,6 @@ export function getFrequencyAccountGpaBuilder(
       deserializeFrequencyAccount(context, account)
     )
     .whereField('key', TaKey.Frequency);
-}
-
-export function deserializeFrequencyAccount(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): FrequencyAccount {
-  return deserializeAccount(
-    rawAccount,
-    getFrequencyAccountAccountDataSerializer(context)
-  );
-}
-
-export function getFrequencyAccountAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    FrequencyAccountAccountDataArgs,
-    FrequencyAccountAccountData,
-    FrequencyAccountAccountData
-  >(
-    s.struct<FrequencyAccountAccountData>(
-      [
-        ['key', getTaKeySerializer(context)],
-        ['lastUpdate', s.i64()],
-        ['period', s.i64()],
-      ],
-      { description: 'FrequencyAccount' }
-    ),
-    (value) =>
-      ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
-  ) as Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
 }
 
 export function getFrequencyAccountSize(_context = {}): number {

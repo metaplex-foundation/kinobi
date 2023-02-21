@@ -58,6 +58,45 @@ export type CandyMachineAccountDataArgs = {
   data: CandyMachineDataArgs;
 };
 
+export function getCandyMachineAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    CandyMachineAccountDataArgs,
+    CandyMachineAccountData,
+    CandyMachineAccountData
+  >(
+    s.struct<CandyMachineAccountData>(
+      [
+        ['discriminator', s.array(s.u8(), { size: 8 })],
+        ['features', s.u64()],
+        ['authority', s.publicKey()],
+        ['mintAuthority', s.publicKey()],
+        ['collectionMint', s.publicKey()],
+        ['itemsRedeemed', s.u64()],
+        ['data', getCandyMachineDataSerializer(context)],
+      ],
+      { description: 'CandyMachine' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
+      } as CandyMachineAccountData)
+  ) as Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
+}
+
+export function deserializeCandyMachine(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): CandyMachine {
+  return deserializeAccount(
+    rawAccount,
+    getCandyMachineAccountDataSerializer(context)
+  );
+}
+
 export async function fetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -131,45 +170,6 @@ export function getCandyMachineGpaBuilder(
       deserializeCandyMachine(context, account)
     )
     .whereField('discriminator', [115, 157, 18, 166, 35, 44, 221, 13]);
-}
-
-export function deserializeCandyMachine(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): CandyMachine {
-  return deserializeAccount(
-    rawAccount,
-    getCandyMachineAccountDataSerializer(context)
-  );
-}
-
-export function getCandyMachineAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    CandyMachineAccountDataArgs,
-    CandyMachineAccountData,
-    CandyMachineAccountData
-  >(
-    s.struct<CandyMachineAccountData>(
-      [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['features', s.u64()],
-        ['authority', s.publicKey()],
-        ['mintAuthority', s.publicKey()],
-        ['collectionMint', s.publicKey()],
-        ['itemsRedeemed', s.u64()],
-        ['data', getCandyMachineDataSerializer(context)],
-      ],
-      { description: 'CandyMachine' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
-      } as CandyMachineAccountData)
-  ) as Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
 }
 
 export function getCandyMachineSize(

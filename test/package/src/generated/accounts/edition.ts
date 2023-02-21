@@ -34,6 +34,37 @@ export type EditionAccountDataArgs = {
   edition: number | bigint;
 };
 
+export function getEditionAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<EditionAccountDataArgs, EditionAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    EditionAccountDataArgs,
+    EditionAccountData,
+    EditionAccountData
+  >(
+    s.struct<EditionAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['parent', s.publicKey()],
+        ['edition', s.u64()],
+      ],
+      { description: 'Edition' }
+    ),
+    (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
+  ) as Serializer<EditionAccountDataArgs, EditionAccountData>;
+}
+
+export function deserializeEdition(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): Edition {
+  return deserializeAccount(
+    rawAccount,
+    getEditionAccountDataSerializer(context)
+  );
+}
+
 export async function fetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -97,37 +128,6 @@ export function getEditionGpaBuilder(
       deserializeEdition(context, account)
     )
     .whereField('key', TmKey.EditionV1);
-}
-
-export function deserializeEdition(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): Edition {
-  return deserializeAccount(
-    rawAccount,
-    getEditionAccountDataSerializer(context)
-  );
-}
-
-export function getEditionAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<EditionAccountDataArgs, EditionAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    EditionAccountDataArgs,
-    EditionAccountData,
-    EditionAccountData
-  >(
-    s.struct<EditionAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['parent', s.publicKey()],
-        ['edition', s.u64()],
-      ],
-      { description: 'Edition' }
-    ),
-    (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
-  ) as Serializer<EditionAccountDataArgs, EditionAccountData>;
 }
 
 export function getEditionSize(_context = {}): number {

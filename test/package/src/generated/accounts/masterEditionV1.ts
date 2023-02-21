@@ -39,6 +39,40 @@ export type MasterEditionV1AccountDataArgs = {
   oneTimePrintingAuthorizationMint: PublicKey;
 };
 
+export function getMasterEditionV1AccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    MasterEditionV1AccountDataArgs,
+    MasterEditionV1AccountData,
+    MasterEditionV1AccountData
+  >(
+    s.struct<MasterEditionV1AccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['supply', s.u64()],
+        ['maxSupply', s.option(s.u64())],
+        ['printingMint', s.publicKey()],
+        ['oneTimePrintingAuthorizationMint', s.publicKey()],
+      ],
+      { description: 'MasterEditionV1' }
+    ),
+    (value) =>
+      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
+  ) as Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData>;
+}
+
+export function deserializeMasterEditionV1(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): MasterEditionV1 {
+  return deserializeAccount(
+    rawAccount,
+    getMasterEditionV1AccountDataSerializer(context)
+  );
+}
+
 export async function fetchMasterEditionV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -108,40 +142,6 @@ export function getMasterEditionV1GpaBuilder(
       deserializeMasterEditionV1(context, account)
     )
     .whereField('key', TmKey.MasterEditionV1);
-}
-
-export function deserializeMasterEditionV1(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): MasterEditionV1 {
-  return deserializeAccount(
-    rawAccount,
-    getMasterEditionV1AccountDataSerializer(context)
-  );
-}
-
-export function getMasterEditionV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    MasterEditionV1AccountDataArgs,
-    MasterEditionV1AccountData,
-    MasterEditionV1AccountData
-  >(
-    s.struct<MasterEditionV1AccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['supply', s.u64()],
-        ['maxSupply', s.option(s.u64())],
-        ['printingMint', s.publicKey()],
-        ['oneTimePrintingAuthorizationMint', s.publicKey()],
-      ],
-      { description: 'MasterEditionV1' }
-    ),
-    (value) =>
-      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
-  ) as Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData>;
 }
 
 export function getMasterEditionV1Size(

@@ -89,6 +89,57 @@ export type MetadataAccountDataArgs = {
   delegateState: Option<DelegateStateArgs>;
 };
 
+export function getMetadataAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<MetadataAccountDataArgs, MetadataAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    MetadataAccountDataArgs,
+    MetadataAccountData,
+    MetadataAccountData
+  >(
+    s.struct<MetadataAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['updateAuthority', s.publicKey()],
+        ['mint', s.publicKey()],
+        ['name', s.string()],
+        ['symbol', s.string()],
+        ['uri', s.string()],
+        ['sellerFeeBasisPoints', s.u16()],
+        ['creators', s.option(s.array(getCreatorSerializer(context)))],
+        ['primarySaleHappened', s.bool()],
+        ['isMutable', s.bool()],
+        ['editionNonce', s.option(s.u8())],
+        ['tokenStandard', s.option(getTokenStandardSerializer(context))],
+        ['collection', s.option(getCollectionSerializer(context))],
+        ['uses', s.option(getUsesSerializer(context))],
+        [
+          'collectionDetails',
+          s.option(getCollectionDetailsSerializer(context)),
+        ],
+        [
+          'programmableConfig',
+          s.option(getProgrammableConfigSerializer(context)),
+        ],
+        ['delegateState', s.option(getDelegateStateSerializer(context))],
+      ],
+      { description: 'Metadata' }
+    ),
+    (value) => ({ ...value, key: TmKey.MetadataV1 } as MetadataAccountData)
+  ) as Serializer<MetadataAccountDataArgs, MetadataAccountData>;
+}
+
+export function deserializeMetadata(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): Metadata {
+  return deserializeAccount(
+    rawAccount,
+    getMetadataAccountDataSerializer(context)
+  );
+}
+
 export async function fetchMetadata(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -185,57 +236,6 @@ export function getMetadataGpaBuilder(
       deserializeMetadata(context, account)
     )
     .whereField('key', TmKey.MetadataV1);
-}
-
-export function deserializeMetadata(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): Metadata {
-  return deserializeAccount(
-    rawAccount,
-    getMetadataAccountDataSerializer(context)
-  );
-}
-
-export function getMetadataAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<MetadataAccountDataArgs, MetadataAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    MetadataAccountDataArgs,
-    MetadataAccountData,
-    MetadataAccountData
-  >(
-    s.struct<MetadataAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['updateAuthority', s.publicKey()],
-        ['mint', s.publicKey()],
-        ['name', s.string()],
-        ['symbol', s.string()],
-        ['uri', s.string()],
-        ['sellerFeeBasisPoints', s.u16()],
-        ['creators', s.option(s.array(getCreatorSerializer(context)))],
-        ['primarySaleHappened', s.bool()],
-        ['isMutable', s.bool()],
-        ['editionNonce', s.option(s.u8())],
-        ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-        ['collection', s.option(getCollectionSerializer(context))],
-        ['uses', s.option(getUsesSerializer(context))],
-        [
-          'collectionDetails',
-          s.option(getCollectionDetailsSerializer(context)),
-        ],
-        [
-          'programmableConfig',
-          s.option(getProgrammableConfigSerializer(context)),
-        ],
-        ['delegateState', s.option(getDelegateStateSerializer(context))],
-      ],
-      { description: 'Metadata' }
-    ),
-    (value) => ({ ...value, key: TmKey.MetadataV1 } as MetadataAccountData)
-  ) as Serializer<MetadataAccountDataArgs, MetadataAccountData>;
 }
 
 export function getMetadataSize(

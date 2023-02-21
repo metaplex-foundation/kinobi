@@ -41,6 +41,37 @@ export type DelegateRecordAccountDataArgs = {
   bump: number;
 };
 
+export function getDelegateRecordAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    DelegateRecordAccountDataArgs,
+    DelegateRecordAccountData,
+    DelegateRecordAccountData
+  >(
+    s.struct<DelegateRecordAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['role', getDelegateRoleSerializer(context)],
+        ['bump', s.u8()],
+      ],
+      { description: 'DelegateRecord' }
+    ),
+    (value) => ({ ...value, key: TmKey.Delegate } as DelegateRecordAccountData)
+  ) as Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
+}
+
+export function deserializeDelegateRecord(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): DelegateRecord {
+  return deserializeAccount(
+    rawAccount,
+    getDelegateRecordAccountDataSerializer(context)
+  );
+}
+
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
   publicKey: PublicKey,
@@ -102,37 +133,6 @@ export function getDelegateRecordGpaBuilder(
       deserializeDelegateRecord(context, account)
     )
     .whereField('key', TmKey.Delegate);
-}
-
-export function deserializeDelegateRecord(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): DelegateRecord {
-  return deserializeAccount(
-    rawAccount,
-    getDelegateRecordAccountDataSerializer(context)
-  );
-}
-
-export function getDelegateRecordAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    DelegateRecordAccountDataArgs,
-    DelegateRecordAccountData,
-    DelegateRecordAccountData
-  >(
-    s.struct<DelegateRecordAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['role', getDelegateRoleSerializer(context)],
-        ['bump', s.u8()],
-      ],
-      { description: 'DelegateRecord' }
-    ),
-    (value) => ({ ...value, key: TmKey.Delegate } as DelegateRecordAccountData)
-  ) as Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
 }
 
 export function getDelegateRecordSize(_context = {}): number {

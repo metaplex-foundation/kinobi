@@ -12,22 +12,24 @@
 {% endmacro %}
 
 {# Export a type or an enum. #}
-{% macro exportType(strictName, looseName, typeManifest) %}
+{% macro exportType(name, typeManifest) %}
+{% set looseName = name + 'Args' %}
 {%- if typeManifest.isEnum -%}
-export enum {{ strictName }} {{ typeManifest.strictType }};
+export enum {{ name }} {{ typeManifest.strictType }};
 
-export type {{ looseName }} = {{ strictName }};
+export type {{ looseName }} = {{ name }};
 {%- else -%}
-export type {{ strictName }} = {{ typeManifest.strictType }};
+export type {{ name }} = {{ typeManifest.strictType }};
 
-export type {{ looseName }} = {{ typeManifest.looseType if typeManifest.strictType != typeManifest.looseType else strictName }};
+export type {{ looseName }} = {{ typeManifest.looseType if typeManifest.strictType != typeManifest.looseType else name }};
 {% endif %}
 {% endmacro %}
 
 {# Export a serializer. #}
-{% macro exportSerializer(strictName, looseName, typeManifest) %}
-export function get{{ strictName }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ looseName }}, {{ strictName }}> {
+{% macro exportSerializer(name, typeManifest) %}
+{% set looseName = name + 'Args' %}
+export function get{{ name }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ looseName }}, {{ name }}> {
   const s = context.serializer;
-  return {{ typeManifest.serializer }} as Serializer<{{ looseName }}, {{ strictName }}>;
+  return {{ typeManifest.serializer }} as Serializer<{{ looseName }}, {{ name }}>;
 }
 {% endmacro %}
