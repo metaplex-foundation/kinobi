@@ -193,12 +193,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         'assertAccountExists',
         'Context',
         'deserializeAccount',
-        'gpaBuilder',
         'PublicKey',
         'RpcAccount',
         'RpcGetAccountOptions',
         'RpcGetAccountsOptions',
-        'Serializer',
       ])
       .remove('generatedTypes', [account.name]);
 
@@ -209,6 +207,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       discriminator: string | null;
     } | null = null;
     if (!nodes.isTypeDefinedLinkNode(account.type)) {
+      imports.add('core', ['gpaBuilder', 'Serializer']);
       const gpaFieldManifests = account.type.fields.map((field) => {
         const fieldWithNoDefaults = new nodes.TypeStructFieldNode(
           { ...field.metadata, defaultsTo: null, docs: [] },
@@ -275,7 +274,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       'PublicKey',
       'Signer',
       'WrappedInstruction',
-      ...(instruction.hasData ? ['Serializer'] : []),
     ]);
 
     // Accounts.
@@ -300,6 +298,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Arguments.
     const typeManifest = instruction.accept(this.typeManifestVisitor);
     imports.mergeWith(typeManifest.imports);
+    if (!nodes.isTypeDefinedLinkNode(instruction.args) && instruction.hasData) {
+      imports.add('core', ['Serializer']);
+    }
 
     // Bytes created on chain.
     const bytes = instruction.metadata.bytesCreatedOnChain;

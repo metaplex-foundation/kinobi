@@ -1,4 +1,5 @@
 import * as nodes from '../../nodes';
+import { isTypeDefinedLinkNode } from '../../nodes';
 import { camelCase, pascalCase } from '../../utils';
 import { Visitor } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
@@ -48,6 +49,15 @@ export class GetJavaScriptTypeManifestVisitor
       loose: `${pascalCase(account.name)}AccountDataArgs`,
     };
     const child = account.type.accept(this);
+    if (isTypeDefinedLinkNode(account.type)) {
+      const dependency =
+        account.type.dependency === 'generated'
+          ? 'generatedTypes'
+          : account.type.dependency;
+      child.imports.remove(dependency, [
+        `${pascalCase(account.type.name)}Args`,
+      ]);
+    }
     this.definedName = null;
     return child;
   }
@@ -58,6 +68,13 @@ export class GetJavaScriptTypeManifestVisitor
       loose: `${pascalCase(instruction.name)}InstructionDataArgs`,
     };
     const child = instruction.args.accept(this);
+    if (isTypeDefinedLinkNode(instruction.args)) {
+      const dependency =
+        instruction.args.dependency === 'generated'
+          ? 'generatedTypes'
+          : instruction.args.dependency;
+      child.imports.remove(dependency, [pascalCase(instruction.args.name)]);
+    }
     this.definedName = null;
     return child;
   }

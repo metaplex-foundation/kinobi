@@ -10,14 +10,12 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
   publicKey,
 } from '@metaplex-foundation/umi-core';
 import {
-  CreateReservationListInstructionData,
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
 } from '../../hooked';
