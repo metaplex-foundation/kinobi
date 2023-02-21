@@ -20,7 +20,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, getTmKeySerializer } from '../types';
+import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type CollectionAuthorityRecord =
   Account<CollectionAuthorityRecordAccountData>;
@@ -31,10 +31,51 @@ export type CollectionAuthorityRecordAccountData = {
   updateAuthority: Option<PublicKey>;
 };
 
-export type CollectionAuthorityRecordAccountArgs = {
+export type CollectionAuthorityRecordAccountDataArgs = {
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
+
+export function getCollectionAuthorityRecordAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<
+  CollectionAuthorityRecordAccountDataArgs,
+  CollectionAuthorityRecordAccountData
+> {
+  const s = context.serializer;
+  return mapSerializer<
+    CollectionAuthorityRecordAccountDataArgs,
+    CollectionAuthorityRecordAccountData,
+    CollectionAuthorityRecordAccountData
+  >(
+    s.struct<CollectionAuthorityRecordAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['bump', s.u8()],
+        ['updateAuthority', s.option(s.publicKey())],
+      ],
+      { description: 'CollectionAuthorityRecord' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.CollectionAuthorityRecord,
+      } as CollectionAuthorityRecordAccountData)
+  ) as Serializer<
+    CollectionAuthorityRecordAccountDataArgs,
+    CollectionAuthorityRecordAccountData
+  >;
+}
+
+export function deserializeCollectionAuthorityRecord(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): CollectionAuthorityRecord {
+  return deserializeAccount(
+    rawAccount,
+    getCollectionAuthorityRecordAccountDataSerializer(context)
+  );
+}
 
 export async function fetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -89,7 +130,7 @@ export function getCollectionAuthorityRecordGpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       bump: number;
       updateAuthority: Option<PublicKey>;
     }>([
@@ -101,47 +142,6 @@ export function getCollectionAuthorityRecordGpaBuilder(
       deserializeCollectionAuthorityRecord(context, account)
     )
     .whereField('key', TmKey.CollectionAuthorityRecord);
-}
-
-export function deserializeCollectionAuthorityRecord(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): CollectionAuthorityRecord {
-  return deserializeAccount(
-    rawAccount,
-    getCollectionAuthorityRecordAccountDataSerializer(context)
-  );
-}
-
-export function getCollectionAuthorityRecordAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<
-  CollectionAuthorityRecordAccountArgs,
-  CollectionAuthorityRecordAccountData
-> {
-  const s = context.serializer;
-  return mapSerializer<
-    CollectionAuthorityRecordAccountArgs,
-    CollectionAuthorityRecordAccountData,
-    CollectionAuthorityRecordAccountData
-  >(
-    s.struct<CollectionAuthorityRecordAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['bump', s.u8()],
-        ['updateAuthority', s.option(s.publicKey())],
-      ],
-      { description: 'CollectionAuthorityRecord' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.CollectionAuthorityRecord,
-      } as CollectionAuthorityRecordAccountData)
-  ) as Serializer<
-    CollectionAuthorityRecordAccountArgs,
-    CollectionAuthorityRecordAccountData
-  >;
 }
 
 export function getCollectionAuthorityRecordSize(

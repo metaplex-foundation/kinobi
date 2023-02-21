@@ -21,6 +21,7 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   AuthorityType,
+  AuthorityTypeArgs,
   AuthorizationData,
   AuthorizationDataArgs,
   Collection,
@@ -30,8 +31,11 @@ import {
   Creator,
   CreatorArgs,
   DelegateState,
+  DelegateStateArgs,
   ProgrammableConfig,
+  ProgrammableConfigArgs,
   TokenStandard,
+  TokenStandardArgs,
   Uses,
   UsesArgs,
   getAuthorityTypeSerializer,
@@ -94,7 +98,7 @@ export type UpdateV1InstructionData = {
   authorityType: AuthorityType;
 };
 
-export type UpdateV1InstructionArgs = {
+export type UpdateV1InstructionDataArgs = {
   authorizationData: Option<AuthorizationDataArgs>;
   newUpdateAuthority: Option<PublicKey>;
   data: Option<{
@@ -106,21 +110,21 @@ export type UpdateV1InstructionArgs = {
   }>;
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
-  tokenStandard?: Option<TokenStandard>;
+  tokenStandard?: Option<TokenStandardArgs>;
   collection?: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
-  programmableConfig: Option<ProgrammableConfig>;
-  delegateState: Option<DelegateState>;
-  authorityType: AuthorityType;
+  programmableConfig: Option<ProgrammableConfigArgs>;
+  delegateState: Option<DelegateStateArgs>;
+  authorityType: AuthorityTypeArgs;
 };
 
 export function getUpdateV1InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UpdateV1InstructionArgs, UpdateV1InstructionData> {
+): Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    UpdateV1InstructionArgs,
+    UpdateV1InstructionDataArgs,
     UpdateV1InstructionData,
     UpdateV1InstructionData
   >(
@@ -164,7 +168,7 @@ export function getUpdateV1InstructionDataSerializer(
         ['delegateState', s.option(getDelegateStateSerializer(context))],
         ['authorityType', getAuthorityTypeSerializer(context)],
       ],
-      { description: 'UpdateV1InstructionArgs' }
+      { description: 'UpdateV1InstructionData' }
     ),
     (value) =>
       ({
@@ -180,13 +184,13 @@ export function getUpdateV1InstructionDataSerializer(
             ])
           ),
       } as UpdateV1InstructionData)
-  ) as Serializer<UpdateV1InstructionArgs, UpdateV1InstructionData>;
+  ) as Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData>;
 }
 
 // Instruction.
 export function updateV1(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: UpdateV1InstructionAccounts & UpdateV1InstructionArgs
+  input: UpdateV1InstructionAccounts & UpdateV1InstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

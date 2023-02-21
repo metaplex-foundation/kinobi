@@ -51,19 +51,19 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionData = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgs;
 };
 
-export type DeprecatedMintPrintingTokensViaTokenInstructionArgs = {
+export type DeprecatedMintPrintingTokensViaTokenInstructionDataArgs = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
 };
 
 export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  DeprecatedMintPrintingTokensViaTokenInstructionArgs,
+  DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
   DeprecatedMintPrintingTokensViaTokenInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    DeprecatedMintPrintingTokensViaTokenInstructionArgs,
+    DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
     DeprecatedMintPrintingTokensViaTokenInstructionData,
     DeprecatedMintPrintingTokensViaTokenInstructionData
   >(
@@ -75,7 +75,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
           getMintPrintingTokensViaTokenArgsSerializer(context),
         ],
       ],
-      { description: 'DeprecatedMintPrintingTokensViaTokenInstructionArgs' }
+      { description: 'DeprecatedMintPrintingTokensViaTokenInstructionData' }
     ),
     (value) =>
       ({
@@ -83,7 +83,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
         discriminator: 8,
       } as DeprecatedMintPrintingTokensViaTokenInstructionData)
   ) as Serializer<
-    DeprecatedMintPrintingTokensViaTokenInstructionArgs,
+    DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
     DeprecatedMintPrintingTokensViaTokenInstructionData
   >;
 }
@@ -92,7 +92,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
 export function deprecatedMintPrintingTokensViaToken(
   context: Pick<Context, 'serializer' | 'programs'>,
   input: DeprecatedMintPrintingTokensViaTokenInstructionAccounts &
-    DeprecatedMintPrintingTokensViaTokenInstructionArgs
+    DeprecatedMintPrintingTokensViaTokenInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

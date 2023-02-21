@@ -7,7 +7,7 @@
  */
 
 import { Context, PublicKey, Serializer } from '@metaplex-foundation/umi-core';
-import { DelegateRole, getDelegateRoleSerializer } from '.';
+import { DelegateRole, DelegateRoleArgs, getDelegateRoleSerializer } from '.';
 
 export type DelegateState = {
   role: DelegateRole;
@@ -15,9 +15,15 @@ export type DelegateState = {
   hasData: boolean;
 };
 
+export type DelegateStateArgs = {
+  role: DelegateRoleArgs;
+  delegate: PublicKey;
+  hasData: boolean;
+};
+
 export function getDelegateStateSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateState> {
+): Serializer<DelegateStateArgs, DelegateState> {
   const s = context.serializer;
   return s.struct<DelegateState>(
     [
@@ -26,5 +32,5 @@ export function getDelegateStateSerializer(
       ['hasData', s.bool()],
     ],
     { description: 'DelegateState' }
-  );
+  ) as Serializer<DelegateStateArgs, DelegateState>;
 }

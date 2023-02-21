@@ -10,16 +10,18 @@ import {
   AccountMeta,
   Context,
   PublicKey,
-  Serializer,
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  mapSerializer,
   publicKey,
 } from '@metaplex-foundation/umi-core';
+import {
+  CreateReservationListInstructionDataArgs,
+  getCreateReservationListInstructionDataSerializer,
+} from '../../hooked';
 
 // Accounts.
-export type DeprecatedCreateReservationListInstructionAccounts = {
+export type CreateReservationListInstructionAccounts = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: PublicKey;
   /** Payer */
@@ -38,44 +40,11 @@ export type DeprecatedCreateReservationListInstructionAccounts = {
   rent?: PublicKey;
 };
 
-// Arguments.
-export type DeprecatedCreateReservationListInstructionData = {
-  discriminator: number;
-};
-
-export type DeprecatedCreateReservationListInstructionArgs = {};
-
-export function getDeprecatedCreateReservationListInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<
-  DeprecatedCreateReservationListInstructionArgs,
-  DeprecatedCreateReservationListInstructionData
-> {
-  const s = context.serializer;
-  return mapSerializer<
-    DeprecatedCreateReservationListInstructionArgs,
-    DeprecatedCreateReservationListInstructionData,
-    DeprecatedCreateReservationListInstructionData
-  >(
-    s.struct<DeprecatedCreateReservationListInstructionData>(
-      [['discriminator', s.u8()]],
-      { description: 'DeprecatedCreateReservationListInstructionArgs' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 6,
-      } as DeprecatedCreateReservationListInstructionData)
-  ) as Serializer<
-    DeprecatedCreateReservationListInstructionArgs,
-    DeprecatedCreateReservationListInstructionData
-  >;
-}
-
 // Instruction.
-export function deprecatedCreateReservationList(
+export function createReservationList(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: DeprecatedCreateReservationListInstructionAccounts
+  accounts: CreateReservationListInstructionAccounts,
+  args: CreateReservationListInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -85,18 +54,18 @@ export function deprecatedCreateReservationList(
     context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
-  const reservationListAccount = input.reservationList;
-  const payerAccount = input.payer ?? context.payer;
-  const updateAuthorityAccount = input.updateAuthority;
-  const masterEditionAccount = input.masterEdition;
-  const resourceAccount = input.resource;
-  const metadataAccount = input.metadata;
-  const systemProgramAccount = input.systemProgram ?? {
+  const reservationListAccount = accounts.reservationList;
+  const payerAccount = accounts.payer ?? context.payer;
+  const updateAuthorityAccount = accounts.updateAuthority;
+  const masterEditionAccount = accounts.masterEdition;
+  const resourceAccount = accounts.resource;
+  const metadataAccount = accounts.metadata;
+  const systemProgramAccount = accounts.systemProgram ?? {
     ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const rentAccount =
-    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
+    accounts.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
 
   // Reservation List.
   keys.push({
@@ -157,9 +126,8 @@ export function deprecatedCreateReservationList(
   });
 
   // Data.
-  const data = getDeprecatedCreateReservationListInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getCreateReservationListInstructionDataSerializer(context).serialize(args);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

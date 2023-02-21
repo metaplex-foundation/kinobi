@@ -19,13 +19,44 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, getTmKeySerializer } from '../types';
+import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type EditionMarker = Account<EditionMarkerAccountData>;
 
 export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
-export type EditionMarkerAccountArgs = { ledger: Array<number> };
+export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
+
+export function getEditionMarkerAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    EditionMarkerAccountDataArgs,
+    EditionMarkerAccountData,
+    EditionMarkerAccountData
+  >(
+    s.struct<EditionMarkerAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['ledger', s.array(s.u8(), { size: 31 })],
+      ],
+      { description: 'EditionMarker' }
+    ),
+    (value) =>
+      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
+  ) as Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
+}
+
+export function deserializeEditionMarker(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): EditionMarker {
+  return deserializeAccount(
+    rawAccount,
+    getEditionMarkerAccountDataSerializer(context)
+  );
+}
 
 export async function fetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -79,7 +110,7 @@ export function getEditionMarkerGpaBuilder(
   const s = context.serializer;
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
-    .registerFields<{ key: TmKey; ledger: Array<number> }>([
+    .registerFields<{ key: TmKeyArgs; ledger: Array<number> }>([
       ['key', getTmKeySerializer(context)],
       ['ledger', s.array(s.u8(), { size: 31 })],
     ])
@@ -87,37 +118,6 @@ export function getEditionMarkerGpaBuilder(
       deserializeEditionMarker(context, account)
     )
     .whereField('key', TmKey.EditionMarker);
-}
-
-export function deserializeEditionMarker(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): EditionMarker {
-  return deserializeAccount(
-    rawAccount,
-    getEditionMarkerAccountDataSerializer(context)
-  );
-}
-
-export function getEditionMarkerAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    EditionMarkerAccountArgs,
-    EditionMarkerAccountData,
-    EditionMarkerAccountData
-  >(
-    s.struct<EditionMarkerAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['ledger', s.array(s.u8(), { size: 31 })],
-      ],
-      { description: 'EditionMarker' }
-    ),
-    (value) =>
-      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
-  ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
 }
 
 export function getEditionMarkerSize(_context = {}): number {

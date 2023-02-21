@@ -59,19 +59,19 @@ export type DeprecatedCreateMasterEditionInstructionData = {
   createMasterEditionArgs: CreateMasterEditionArgs;
 };
 
-export type DeprecatedCreateMasterEditionInstructionArgs = {
+export type DeprecatedCreateMasterEditionInstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
 export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  DeprecatedCreateMasterEditionInstructionArgs,
+  DeprecatedCreateMasterEditionInstructionDataArgs,
   DeprecatedCreateMasterEditionInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    DeprecatedCreateMasterEditionInstructionArgs,
+    DeprecatedCreateMasterEditionInstructionDataArgs,
     DeprecatedCreateMasterEditionInstructionData,
     DeprecatedCreateMasterEditionInstructionData
   >(
@@ -83,7 +83,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
           getCreateMasterEditionArgsSerializer(context),
         ],
       ],
-      { description: 'DeprecatedCreateMasterEditionInstructionArgs' }
+      { description: 'DeprecatedCreateMasterEditionInstructionData' }
     ),
     (value) =>
       ({
@@ -91,7 +91,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
         discriminator: 2,
       } as DeprecatedCreateMasterEditionInstructionData)
   ) as Serializer<
-    DeprecatedCreateMasterEditionInstructionArgs,
+    DeprecatedCreateMasterEditionInstructionDataArgs,
     DeprecatedCreateMasterEditionInstructionData
   >;
 }
@@ -100,7 +100,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
 export function deprecatedCreateMasterEdition(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: DeprecatedCreateMasterEditionInstructionAccounts &
-    DeprecatedCreateMasterEditionInstructionArgs
+    DeprecatedCreateMasterEditionInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

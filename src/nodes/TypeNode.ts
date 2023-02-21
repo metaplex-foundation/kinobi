@@ -129,21 +129,22 @@ export function assertTypeNode(node: Node | null): asserts node is TypeNode {
   }
 }
 
-export function isTypeStructOrEnumNode(
+export function isTypeStructOrDefinedLinkNode(
   node: Node | null
-): node is TypeStructNode | TypeEnumNode {
+): node is TypeStructNode | TypeDefinedLinkNode {
   return (
     !!node &&
-    (node.nodeClass === 'TypeStructNode' || node.nodeClass === 'TypeEnumNode')
+    (node.nodeClass === 'TypeStructNode' ||
+      node.nodeClass === 'TypeDefinedLinkNode')
   );
 }
 
-export function assertTypeStructOrEnumNode(
+export function assertTypeStructOrDefinedLinkNode(
   node: Node | null
-): asserts node is TypeStructNode | TypeEnumNode {
-  if (!isTypeStructOrEnumNode(node)) {
+): asserts node is TypeStructNode | TypeDefinedLinkNode {
+  if (!isTypeStructOrDefinedLinkNode(node)) {
     throw new Error(
-      `Expected TypeStructNode | TypeEnumNode, got ${
+      `Expected TypeStructNode | TypeDefinedLinkNode, got ${
         node?.nodeClass ?? 'null'
       }.`
     );

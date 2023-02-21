@@ -37,7 +37,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const exports = {
       [account.name]: 'type',
       [`${account.name}AccountData`]: 'type',
-      [`${account.name}AccountArgs`]: 'type',
+      [`${account.name}AccountDataArgs`]: 'type',
       [`fetch${account.name}`]: 'function',
       [`safeFetch${account.name}`]: 'function',
       [`deserialize${account.name}`]: 'function',
@@ -49,16 +49,18 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     }
     bag.mergeWith([this.checkExportConflicts(account, exports)]);
     const reservedAccountFields = new Set(['publicKey', 'header']);
-    const invalidFields = account.type.fields
-      .map((field) => field.name)
-      .filter((name) => reservedAccountFields.has(name));
-    if (invalidFields.length > 0) {
-      const x = invalidFields.join(', ');
-      const message =
-        invalidFields.length === 1
-          ? `Account field [${x}] is reserved. Please rename it.`
-          : `Account fields [${x}] are reserved. Please rename them.`;
-      bag.error(message, account, this.stack);
+    if (!nodes.isTypeDefinedLinkNode(account.type)) {
+      const invalidFields = account.type.fields
+        .map((field) => field.name)
+        .filter((name) => reservedAccountFields.has(name));
+      if (invalidFields.length > 0) {
+        const x = invalidFields.join(', ');
+        const message =
+          invalidFields.length === 1
+            ? `Account field [${x}] is reserved. Please rename it.`
+            : `Account fields [${x}] are reserved. Please rename them.`;
+        bag.error(message, account, this.stack);
+      }
     }
     this.popNode();
     return bag;
@@ -72,7 +74,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
         [camelCase(instruction.name)]: 'function',
         [`${instruction.name}InstructionAccounts`]: 'type',
         [`${instruction.name}InstructionData`]: 'type',
-        [`${instruction.name}InstructionArgs`]: 'type',
+        [`${instruction.name}InstructionDataArgs`]: 'type',
         [`get${instruction.name}InstructionDataSerializer`]: 'function',
       }),
     ]);

@@ -38,27 +38,30 @@ export type SetCollectionInstructionAccounts = {
 // Arguments.
 export type SetCollectionInstructionData = { discriminator: Array<number> };
 
-export type SetCollectionInstructionArgs = {};
+export type SetCollectionInstructionDataArgs = {};
 
 export function getSetCollectionInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<SetCollectionInstructionArgs, SetCollectionInstructionData> {
+): Serializer<SetCollectionInstructionDataArgs, SetCollectionInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    SetCollectionInstructionArgs,
+    SetCollectionInstructionDataArgs,
     SetCollectionInstructionData,
     SetCollectionInstructionData
   >(
     s.struct<SetCollectionInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
-      { description: 'SetCollectionInstructionArgs' }
+      { description: 'SetCollectionInstructionData' }
     ),
     (value) =>
       ({
         ...value,
         discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
       } as SetCollectionInstructionData)
-  ) as Serializer<SetCollectionInstructionArgs, SetCollectionInstructionData>;
+  ) as Serializer<
+    SetCollectionInstructionDataArgs,
+    SetCollectionInstructionData
+  >;
 }
 
 // Instruction.

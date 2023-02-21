@@ -16,7 +16,7 @@ import {
   checkForIsWritableOverride as isWritable,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { VerifyArgs, getVerifyArgsSerializer } from '../types';
+import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 
 // Accounts.
 export type VerifyInstructionAccounts = {
@@ -38,14 +38,14 @@ export type VerifyInstructionData = {
   verifyArgs: VerifyArgs;
 };
 
-export type VerifyInstructionArgs = { verifyArgs: VerifyArgs };
+export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
 export function getVerifyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<VerifyInstructionArgs, VerifyInstructionData> {
+): Serializer<VerifyInstructionDataArgs, VerifyInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    VerifyInstructionArgs,
+    VerifyInstructionDataArgs,
     VerifyInstructionData,
     VerifyInstructionData
   >(
@@ -54,16 +54,16 @@ export function getVerifyInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['verifyArgs', getVerifyArgsSerializer(context)],
       ],
-      { description: 'VerifyInstructionArgs' }
+      { description: 'VerifyInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 47 } as VerifyInstructionData)
-  ) as Serializer<VerifyInstructionArgs, VerifyInstructionData>;
+  ) as Serializer<VerifyInstructionDataArgs, VerifyInstructionData>;
 }
 
 // Instruction.
 export function verify(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: VerifyInstructionAccounts & VerifyInstructionArgs
+  input: VerifyInstructionAccounts & VerifyInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

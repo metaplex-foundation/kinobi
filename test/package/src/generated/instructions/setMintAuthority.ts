@@ -27,23 +27,23 @@ export type SetMintAuthorityInstructionAccounts = {
 // Arguments.
 export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
 
-export type SetMintAuthorityInstructionArgs = {};
+export type SetMintAuthorityInstructionDataArgs = {};
 
 export function getSetMintAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  SetMintAuthorityInstructionArgs,
+  SetMintAuthorityInstructionDataArgs,
   SetMintAuthorityInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    SetMintAuthorityInstructionArgs,
+    SetMintAuthorityInstructionDataArgs,
     SetMintAuthorityInstructionData,
     SetMintAuthorityInstructionData
   >(
     s.struct<SetMintAuthorityInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
-      { description: 'SetMintAuthorityInstructionArgs' }
+      { description: 'SetMintAuthorityInstructionData' }
     ),
     (value) =>
       ({
@@ -51,7 +51,7 @@ export function getSetMintAuthorityInstructionDataSerializer(
         discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
       } as SetMintAuthorityInstructionData)
   ) as Serializer<
-    SetMintAuthorityInstructionArgs,
+    SetMintAuthorityInstructionDataArgs,
     SetMintAuthorityInstructionData
   >;
 }

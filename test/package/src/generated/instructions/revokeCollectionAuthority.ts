@@ -36,23 +36,23 @@ export type RevokeCollectionAuthorityInstructionData = {
   discriminator: number;
 };
 
-export type RevokeCollectionAuthorityInstructionArgs = {};
+export type RevokeCollectionAuthorityInstructionDataArgs = {};
 
 export function getRevokeCollectionAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  RevokeCollectionAuthorityInstructionArgs,
+  RevokeCollectionAuthorityInstructionDataArgs,
   RevokeCollectionAuthorityInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    RevokeCollectionAuthorityInstructionArgs,
+    RevokeCollectionAuthorityInstructionDataArgs,
     RevokeCollectionAuthorityInstructionData,
     RevokeCollectionAuthorityInstructionData
   >(
     s.struct<RevokeCollectionAuthorityInstructionData>(
       [['discriminator', s.u8()]],
-      { description: 'RevokeCollectionAuthorityInstructionArgs' }
+      { description: 'RevokeCollectionAuthorityInstructionData' }
     ),
     (value) =>
       ({
@@ -60,7 +60,7 @@ export function getRevokeCollectionAuthorityInstructionDataSerializer(
         discriminator: 24,
       } as RevokeCollectionAuthorityInstructionData)
   ) as Serializer<
-    RevokeCollectionAuthorityInstructionArgs,
+    RevokeCollectionAuthorityInstructionDataArgs,
     RevokeCollectionAuthorityInstructionData
   >;
 }

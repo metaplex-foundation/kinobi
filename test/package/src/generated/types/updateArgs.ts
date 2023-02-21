@@ -19,6 +19,7 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   AuthorityType,
+  AuthorityTypeArgs,
   AuthorizationData,
   AuthorizationDataArgs,
   Collection,
@@ -28,8 +29,11 @@ import {
   Creator,
   CreatorArgs,
   DelegateState,
+  DelegateStateArgs,
   ProgrammableConfig,
+  ProgrammableConfigArgs,
   TokenStandard,
+  TokenStandardArgs,
   Uses,
   UsesArgs,
   getAuthorityTypeSerializer,
@@ -79,13 +83,13 @@ export type UpdateArgsArgs = {
   }>;
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
-  tokenStandard?: Option<TokenStandard>;
+  tokenStandard?: Option<TokenStandardArgs>;
   collection?: Option<CollectionArgs>;
   uses: Option<UsesArgs>;
   collectionDetails: Option<CollectionDetailsArgs>;
-  programmableConfig: Option<ProgrammableConfig>;
-  delegateState: Option<DelegateState>;
-  authorityType: AuthorityType;
+  programmableConfig: Option<ProgrammableConfigArgs>;
+  delegateState: Option<DelegateStateArgs>;
+  authorityType: AuthorityTypeArgs;
 };
 
 export function getUpdateArgsSerializer(

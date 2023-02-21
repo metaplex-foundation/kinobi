@@ -6,6 +6,10 @@ import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeStructFieldNode } from './TypeStructFieldNode';
 import { vScalar } from './ValueNode';
+import {
+  isTypeDefinedLinkNode,
+  TypeDefinedLinkNode,
+} from './TypeDefinedLinkNode';
 
 export type InstructionNodeMetadata = {
   name: string;
@@ -62,14 +66,14 @@ export class InstructionNode implements Visitable {
 
   readonly accounts: InstructionNodeAccount[];
 
-  readonly args: TypeStructNode;
+  readonly args: TypeStructNode | TypeDefinedLinkNode;
 
   readonly subInstructions: InstructionNode[];
 
   constructor(
     metadata: InstructionNodeMetadata,
     accounts: InstructionNodeAccount[],
-    args: TypeStructNode,
+    args: InstructionNode['args'],
     subInstructions: InstructionNode[]
   ) {
     const bytes = metadata.bytesCreatedOnChain;
@@ -133,7 +137,7 @@ export class InstructionNode implements Visitable {
 
     let args = TypeStructNode.fromIdl({
       kind: 'struct',
-      name: name ? `${name}InstructionArgs` : '',
+      name: name ? `${name}InstructionData` : '',
       fields: idl.args ?? [],
     });
 
@@ -177,15 +181,21 @@ export class InstructionNode implements Visitable {
     return this.metadata.docs;
   }
 
+  get isLinked(): boolean {
+    return isTypeDefinedLinkNode(this.args);
+  }
+
   get hasAccounts(): boolean {
     return this.accounts.length > 0;
   }
 
   get hasData(): boolean {
+    if (isTypeDefinedLinkNode(this.args)) return true;
     return this.args.fields.length > 0;
   }
 
   get hasArgs(): boolean {
+    if (isTypeDefinedLinkNode(this.args)) return true;
     const nonOmittedFields = this.args.fields.filter(
       (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
     );
@@ -193,6 +203,7 @@ export class InstructionNode implements Visitable {
   }
 
   get hasRequiredArgs(): boolean {
+    if (isTypeDefinedLinkNode(this.args)) return true;
     const requiredFields = this.args.fields.filter(
       (field) => field.metadata.defaultsTo === null
     );

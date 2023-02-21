@@ -19,7 +19,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TaKey, getTaKeySerializer } from '../types';
+import { TaKey, TaKeyArgs, getTaKeySerializer } from '../types';
 
 export type FrequencyAccount = Account<FrequencyAccountAccountData>;
 
@@ -34,7 +34,7 @@ export type FrequencyAccountAccountData = {
   period: bigint;
 };
 
-export type FrequencyAccountAccountArgs = {
+export type FrequencyAccountAccountDataArgs = {
   /**
    * Test with multiple lines
    * and this is the second line.
@@ -42,6 +42,38 @@ export type FrequencyAccountAccountArgs = {
   lastUpdate: number | bigint;
   period: number | bigint;
 };
+
+export function getFrequencyAccountAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    FrequencyAccountAccountDataArgs,
+    FrequencyAccountAccountData,
+    FrequencyAccountAccountData
+  >(
+    s.struct<FrequencyAccountAccountData>(
+      [
+        ['key', getTaKeySerializer(context)],
+        ['lastUpdate', s.i64()],
+        ['period', s.i64()],
+      ],
+      { description: 'FrequencyAccount' }
+    ),
+    (value) =>
+      ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
+  ) as Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
+}
+
+export function deserializeFrequencyAccount(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): FrequencyAccount {
+  return deserializeAccount(
+    rawAccount,
+    getFrequencyAccountAccountDataSerializer(context)
+  );
+}
 
 export async function fetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -96,7 +128,7 @@ export function getFrequencyAccountGpaBuilder(
   const programId = context.programs.get('mplTokenAuthRules').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TaKey;
+      key: TaKeyArgs;
       lastUpdate: number | bigint;
       period: number | bigint;
     }>([
@@ -108,38 +140,6 @@ export function getFrequencyAccountGpaBuilder(
       deserializeFrequencyAccount(context, account)
     )
     .whereField('key', TaKey.Frequency);
-}
-
-export function deserializeFrequencyAccount(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): FrequencyAccount {
-  return deserializeAccount(
-    rawAccount,
-    getFrequencyAccountAccountDataSerializer(context)
-  );
-}
-
-export function getFrequencyAccountAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    FrequencyAccountAccountArgs,
-    FrequencyAccountAccountData,
-    FrequencyAccountAccountData
-  >(
-    s.struct<FrequencyAccountAccountData>(
-      [
-        ['key', getTaKeySerializer(context)],
-        ['lastUpdate', s.i64()],
-        ['period', s.i64()],
-      ],
-      { description: 'FrequencyAccount' }
-    ),
-    (value) =>
-      ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
-  ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
 }
 
 export function getFrequencyAccountSize(_context = {}): number {

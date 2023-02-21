@@ -12,9 +12,13 @@ export enum MigrateArgs {
   V1,
 }
 
+export type MigrateArgsArgs = MigrateArgs;
+
 export function getMigrateArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MigrateArgs> {
+): Serializer<MigrateArgsArgs, MigrateArgs> {
   const s = context.serializer;
-  return s.enum<MigrateArgs>(MigrateArgs, { description: 'MigrateArgs' });
+  return s.enum<MigrateArgs>(MigrateArgs, {
+    description: 'MigrateArgs',
+  }) as Serializer<MigrateArgsArgs, MigrateArgs>;
 }

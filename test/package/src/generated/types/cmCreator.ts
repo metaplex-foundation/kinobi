@@ -16,9 +16,11 @@ export type CmCreator = {
   percentageShare: number;
 };
 
+export type CmCreatorArgs = CmCreator;
+
 export function getCmCreatorSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CmCreator> {
+): Serializer<CmCreatorArgs, CmCreator> {
   const s = context.serializer;
   return s.struct<CmCreator>(
     [
@@ -27,5 +29,5 @@ export function getCmCreatorSerializer(
       ['percentageShare', s.u8()],
     ],
     { description: 'CmCreator' }
-  );
+  ) as Serializer<CmCreatorArgs, CmCreator>;
 }

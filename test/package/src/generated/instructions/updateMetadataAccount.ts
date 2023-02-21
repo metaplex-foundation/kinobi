@@ -41,7 +41,7 @@ export type UpdateMetadataAccountInstructionData = {
   primarySaleHappened: Option<boolean>;
 };
 
-export type UpdateMetadataAccountInstructionArgs = {
+export type UpdateMetadataAccountInstructionDataArgs = {
   data: Option<{
     name: string;
     symbol: string;
@@ -56,12 +56,12 @@ export type UpdateMetadataAccountInstructionArgs = {
 export function getUpdateMetadataAccountInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  UpdateMetadataAccountInstructionArgs,
+  UpdateMetadataAccountInstructionDataArgs,
   UpdateMetadataAccountInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    UpdateMetadataAccountInstructionArgs,
+    UpdateMetadataAccountInstructionDataArgs,
     UpdateMetadataAccountInstructionData,
     UpdateMetadataAccountInstructionData
   >(
@@ -86,12 +86,12 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
         ['updateAuthority', s.option(s.publicKey())],
         ['primarySaleHappened', s.option(s.bool())],
       ],
-      { description: 'UpdateMetadataAccountInstructionArgs' }
+      { description: 'UpdateMetadataAccountInstructionData' }
     ),
     (value) =>
       ({ ...value, discriminator: 1 } as UpdateMetadataAccountInstructionData)
   ) as Serializer<
-    UpdateMetadataAccountInstructionArgs,
+    UpdateMetadataAccountInstructionDataArgs,
     UpdateMetadataAccountInstructionData
   >;
 }
@@ -100,7 +100,7 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
 export function updateMetadataAccount(
   context: Pick<Context, 'serializer' | 'programs'>,
   accounts: UpdateMetadataAccountInstructionAccounts,
-  args: UpdateMetadataAccountInstructionArgs
+  args: UpdateMetadataAccountInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

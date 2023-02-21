@@ -15,9 +15,13 @@ export enum AuthorityType {
   Other,
 }
 
+export type AuthorityTypeArgs = AuthorityType;
+
 export function getAuthorityTypeSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<AuthorityType> {
+): Serializer<AuthorityTypeArgs, AuthorityType> {
   const s = context.serializer;
-  return s.enum<AuthorityType>(AuthorityType, { description: 'AuthorityType' });
+  return s.enum<AuthorityType>(AuthorityType, {
+    description: 'AuthorityType',
+  }) as Serializer<AuthorityTypeArgs, AuthorityType>;
 }

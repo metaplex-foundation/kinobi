@@ -43,23 +43,23 @@ export type MintFromCandyMachineInstructionData = {
   discriminator: Array<number>;
 };
 
-export type MintFromCandyMachineInstructionArgs = {};
+export type MintFromCandyMachineInstructionDataArgs = {};
 
 export function getMintFromCandyMachineInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  MintFromCandyMachineInstructionArgs,
+  MintFromCandyMachineInstructionDataArgs,
   MintFromCandyMachineInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    MintFromCandyMachineInstructionArgs,
+    MintFromCandyMachineInstructionDataArgs,
     MintFromCandyMachineInstructionData,
     MintFromCandyMachineInstructionData
   >(
     s.struct<MintFromCandyMachineInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
-      { description: 'MintFromCandyMachineInstructionArgs' }
+      { description: 'MintFromCandyMachineInstructionData' }
     ),
     (value) =>
       ({
@@ -67,7 +67,7 @@ export function getMintFromCandyMachineInstructionDataSerializer(
         discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
       } as MintFromCandyMachineInstructionData)
   ) as Serializer<
-    MintFromCandyMachineInstructionArgs,
+    MintFromCandyMachineInstructionDataArgs,
     MintFromCandyMachineInstructionData
   >;
 }

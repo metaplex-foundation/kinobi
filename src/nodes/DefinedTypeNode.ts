@@ -1,16 +1,13 @@
-import { mainCase } from '../utils';
 import type { IdlDefinedType } from '../idl';
-import type { Dependency, Visitable, Visitor } from '../visitors';
+import { mainCase } from '../utils';
+import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import type { TypeEnumNode } from './TypeEnumNode';
-import { assertTypeStructOrEnumNode, createTypeNodeFromIdl } from './TypeNode';
-import type { TypeStructNode } from './TypeStructNode';
+import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 
 export type DefinedTypeNodeMetadata = {
   name: string;
   idlName: string;
   docs: string[];
-  importFrom: Dependency;
   internal: boolean;
 };
 
@@ -19,12 +16,9 @@ export class DefinedTypeNode implements Visitable {
 
   readonly metadata: DefinedTypeNodeMetadata;
 
-  readonly type: TypeStructNode | TypeEnumNode;
+  readonly type: TypeNode;
 
-  constructor(
-    metadata: DefinedTypeNodeMetadata,
-    type: TypeStructNode | TypeEnumNode
-  ) {
+  constructor(metadata: DefinedTypeNodeMetadata, type: TypeNode) {
     this.metadata = { ...metadata, name: mainCase(metadata.name) };
     this.type = type;
   }
@@ -34,9 +28,8 @@ export class DefinedTypeNode implements Visitable {
     const docs = idl.docs ?? [];
     const idlType = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlType });
-    assertTypeStructOrEnumNode(type);
     return new DefinedTypeNode(
-      { name, idlName: name, docs, importFrom: 'generated', internal: false },
+      { name, idlName: name, docs, internal: false },
       type
     );
   }

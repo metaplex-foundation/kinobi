@@ -16,9 +16,11 @@ export type ConfigLine = {
   uri: string;
 };
 
+export type ConfigLineArgs = ConfigLine;
+
 export function getConfigLineSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ConfigLine> {
+): Serializer<ConfigLineArgs, ConfigLine> {
   const s = context.serializer;
   return s.struct<ConfigLine>(
     [
@@ -26,5 +28,5 @@ export function getConfigLineSerializer(
       ['uri', s.string()],
     ],
     { description: 'ConfigLine' }
-  );
+  ) as Serializer<ConfigLineArgs, ConfigLine>;
 }

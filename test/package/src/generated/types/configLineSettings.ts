@@ -22,9 +22,11 @@ export type ConfigLineSettings = {
   isSequential: boolean;
 };
 
+export type ConfigLineSettingsArgs = ConfigLineSettings;
+
 export function getConfigLineSettingsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ConfigLineSettings> {
+): Serializer<ConfigLineSettingsArgs, ConfigLineSettings> {
   const s = context.serializer;
   return s.struct<ConfigLineSettings>(
     [
@@ -35,5 +37,5 @@ export function getConfigLineSettingsSerializer(
       ['isSequential', s.bool()],
     ],
     { description: 'ConfigLineSettings' }
-  );
+  ) as Serializer<ConfigLineSettingsArgs, ConfigLineSettings>;
 }

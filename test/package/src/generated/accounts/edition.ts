@@ -19,7 +19,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, getTmKeySerializer } from '../types';
+import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type Edition = Account<EditionAccountData>;
 
@@ -29,10 +29,41 @@ export type EditionAccountData = {
   edition: bigint;
 };
 
-export type EditionAccountArgs = {
+export type EditionAccountDataArgs = {
   parent: PublicKey;
   edition: number | bigint;
 };
+
+export function getEditionAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<EditionAccountDataArgs, EditionAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    EditionAccountDataArgs,
+    EditionAccountData,
+    EditionAccountData
+  >(
+    s.struct<EditionAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['parent', s.publicKey()],
+        ['edition', s.u64()],
+      ],
+      { description: 'Edition' }
+    ),
+    (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
+  ) as Serializer<EditionAccountDataArgs, EditionAccountData>;
+}
+
+export function deserializeEdition(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): Edition {
+  return deserializeAccount(
+    rawAccount,
+    getEditionAccountDataSerializer(context)
+  );
+}
 
 export async function fetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -85,7 +116,7 @@ export function getEditionGpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       parent: PublicKey;
       edition: number | bigint;
     }>([
@@ -97,37 +128,6 @@ export function getEditionGpaBuilder(
       deserializeEdition(context, account)
     )
     .whereField('key', TmKey.EditionV1);
-}
-
-export function deserializeEdition(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): Edition {
-  return deserializeAccount(
-    rawAccount,
-    getEditionAccountDataSerializer(context)
-  );
-}
-
-export function getEditionAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<EditionAccountArgs, EditionAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    EditionAccountArgs,
-    EditionAccountData,
-    EditionAccountData
-  >(
-    s.struct<EditionAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['parent', s.publicKey()],
-        ['edition', s.u64()],
-      ],
-      { description: 'Edition' }
-    ),
-    (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
-  ) as Serializer<EditionAccountArgs, EditionAccountData>;
 }
 
 export function getEditionSize(_context = {}): number {

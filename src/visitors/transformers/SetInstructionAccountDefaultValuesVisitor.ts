@@ -192,6 +192,9 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
                   (a) => a.name === mainCase(seed.name)
                 );
               }
+              if (nodes.isTypeDefinedLinkNode(instruction.args)) {
+                return true;
+              }
               return instruction.args.fields.some(
                 (f) => f.name === mainCase(seed.name)
               );

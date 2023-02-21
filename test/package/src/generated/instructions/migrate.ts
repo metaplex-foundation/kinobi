@@ -17,7 +17,11 @@ import {
   mapSerializer,
   publicKey,
 } from '@metaplex-foundation/umi-core';
-import { MigrateArgs, getMigrateArgsSerializer } from '../types';
+import {
+  MigrateArgs,
+  MigrateArgsArgs,
+  getMigrateArgsSerializer,
+} from '../types';
 
 // Accounts.
 export type MigrateInstructionAccounts = {
@@ -49,14 +53,14 @@ export type MigrateInstructionData = {
   migrateArgs: MigrateArgs;
 };
 
-export type MigrateInstructionArgs = { migrateArgs: MigrateArgs };
+export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
 export function getMigrateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MigrateInstructionArgs, MigrateInstructionData> {
+): Serializer<MigrateInstructionDataArgs, MigrateInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    MigrateInstructionArgs,
+    MigrateInstructionDataArgs,
     MigrateInstructionData,
     MigrateInstructionData
   >(
@@ -65,16 +69,16 @@ export function getMigrateInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['migrateArgs', getMigrateArgsSerializer(context)],
       ],
-      { description: 'MigrateInstructionArgs' }
+      { description: 'MigrateInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 50 } as MigrateInstructionData)
-  ) as Serializer<MigrateInstructionArgs, MigrateInstructionData>;
+  ) as Serializer<MigrateInstructionDataArgs, MigrateInstructionData>;
 }
 
 // Instruction.
 export function migrate(
   context: Pick<Context, 'serializer' | 'programs'>,
-  input: MigrateInstructionAccounts & MigrateInstructionArgs
+  input: MigrateInstructionAccounts & MigrateInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

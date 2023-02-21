@@ -66,19 +66,19 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionData = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
 };
 
-export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs = {
+export type MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };
 
 export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
   MintNewEditionFromMasterEditionViaVaultProxyInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
     MintNewEditionFromMasterEditionViaVaultProxyInstructionData,
     MintNewEditionFromMasterEditionViaVaultProxyInstructionData
   >(
@@ -92,7 +92,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
       ],
       {
         description:
-          'MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs',
+          'MintNewEditionFromMasterEditionViaVaultProxyInstructionData',
       }
     ),
     (value) =>
@@ -101,7 +101,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
         discriminator: 13,
       } as MintNewEditionFromMasterEditionViaVaultProxyInstructionData)
   ) as Serializer<
-    MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
     MintNewEditionFromMasterEditionViaVaultProxyInstructionData
   >;
 }
@@ -110,7 +110,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
 export function mintNewEditionFromMasterEditionViaVaultProxy(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: MintNewEditionFromMasterEditionViaVaultProxyInstructionAccounts &
-    MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs
+    MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

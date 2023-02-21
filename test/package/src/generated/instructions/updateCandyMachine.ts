@@ -34,17 +34,19 @@ export type UpdateCandyMachineInstructionData = {
   data: CandyMachineData;
 };
 
-export type UpdateCandyMachineInstructionArgs = { data: CandyMachineDataArgs };
+export type UpdateCandyMachineInstructionDataArgs = {
+  data: CandyMachineDataArgs;
+};
 
 export function getUpdateCandyMachineInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  UpdateCandyMachineInstructionArgs,
+  UpdateCandyMachineInstructionDataArgs,
   UpdateCandyMachineInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    UpdateCandyMachineInstructionArgs,
+    UpdateCandyMachineInstructionDataArgs,
     UpdateCandyMachineInstructionData,
     UpdateCandyMachineInstructionData
   >(
@@ -53,7 +55,7 @@ export function getUpdateCandyMachineInstructionDataSerializer(
         ['discriminator', s.array(s.u8(), { size: 8 })],
         ['data', getCandyMachineDataSerializer(context)],
       ],
-      { description: 'UpdateCandyMachineInstructionArgs' }
+      { description: 'UpdateCandyMachineInstructionData' }
     ),
     (value) =>
       ({
@@ -61,7 +63,7 @@ export function getUpdateCandyMachineInstructionDataSerializer(
         discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
       } as UpdateCandyMachineInstructionData)
   ) as Serializer<
-    UpdateCandyMachineInstructionArgs,
+    UpdateCandyMachineInstructionDataArgs,
     UpdateCandyMachineInstructionData
   >;
 }
@@ -70,7 +72,7 @@ export function getUpdateCandyMachineInstructionDataSerializer(
 export function updateCandyMachine(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
   input: UpdateCandyMachineInstructionAccounts &
-    UpdateCandyMachineInstructionArgs
+    UpdateCandyMachineInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

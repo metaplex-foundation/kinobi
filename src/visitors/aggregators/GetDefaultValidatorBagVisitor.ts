@@ -149,7 +149,10 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
         typeDefinedLink,
         this.stack
       );
-    } else if (!this.definedTypes.has(typeDefinedLink.name)) {
+    } else if (
+      typeDefinedLink.dependency === 'generated' &&
+      !this.definedTypes.has(typeDefinedLink.name)
+    ) {
       bag.error(
         `Pointing to a missing defined type named "${typeDefinedLink.name}"`,
         typeDefinedLink,

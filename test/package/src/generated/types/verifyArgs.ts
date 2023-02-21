@@ -12,9 +12,13 @@ export enum VerifyArgs {
   V1,
 }
 
+export type VerifyArgsArgs = VerifyArgs;
+
 export function getVerifyArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<VerifyArgs> {
+): Serializer<VerifyArgsArgs, VerifyArgs> {
   const s = context.serializer;
-  return s.enum<VerifyArgs>(VerifyArgs, { description: 'VerifyArgs' });
+  return s.enum<VerifyArgs>(VerifyArgs, {
+    description: 'VerifyArgs',
+  }) as Serializer<VerifyArgsArgs, VerifyArgs>;
 }

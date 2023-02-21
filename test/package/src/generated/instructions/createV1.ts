@@ -51,7 +51,7 @@ export type CreateV1InstructionData = {
   maxSupply: Option<bigint>;
 };
 
-export type CreateV1InstructionArgs = {
+export type CreateV1InstructionDataArgs = {
   assetData: AssetDataArgs;
   decimals: Option<number>;
   maxSupply: Option<number | bigint>;
@@ -59,10 +59,10 @@ export type CreateV1InstructionArgs = {
 
 export function getCreateV1InstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CreateV1InstructionArgs, CreateV1InstructionData> {
+): Serializer<CreateV1InstructionDataArgs, CreateV1InstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    CreateV1InstructionArgs,
+    CreateV1InstructionDataArgs,
     CreateV1InstructionData,
     CreateV1InstructionData
   >(
@@ -74,7 +74,7 @@ export function getCreateV1InstructionDataSerializer(
         ['decimals', s.option(s.u8())],
         ['maxSupply', s.option(s.u64())],
       ],
-      { description: 'CreateV1InstructionArgs' }
+      { description: 'CreateV1InstructionData' }
     ),
     (value) =>
       ({
@@ -82,13 +82,13 @@ export function getCreateV1InstructionDataSerializer(
         discriminator: 41,
         createV1Discriminator: 0,
       } as CreateV1InstructionData)
-  ) as Serializer<CreateV1InstructionArgs, CreateV1InstructionData>;
+  ) as Serializer<CreateV1InstructionDataArgs, CreateV1InstructionData>;
 }
 
 // Instruction.
 export function createV1(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: CreateV1InstructionAccounts & CreateV1InstructionArgs
+  input: CreateV1InstructionAccounts & CreateV1InstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

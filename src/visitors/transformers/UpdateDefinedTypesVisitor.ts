@@ -36,19 +36,23 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
               if ('delete' in updates) {
                 return null;
               }
+              let newType = node.type;
+              if (nodes.isTypeStructNode(node.type)) {
+                newType = renameStructNode(
+                  node.type,
+                  updates.data ?? {},
+                  newName ?? node.name
+                );
+              } else if (nodes.isTypeEnumNode(node.type)) {
+                newType = renameEnumNode(
+                  node.type,
+                  updates.data ?? {},
+                  newName ?? node.name
+                );
+              }
               return new nodes.DefinedTypeNode(
                 { ...node.metadata, ...updates },
-                nodes.isTypeStructNode(node.type)
-                  ? renameStructNode(
-                      node.type,
-                      updates.data ?? {},
-                      newName ?? node.name
-                    )
-                  : renameEnumNode(
-                      node.type,
-                      updates.data ?? {},
-                      newName ?? node.name
-                    )
+                newType
               );
             },
           },
@@ -59,6 +63,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
             selector: { type: 'typeDefinedLink', stack: selectorStack, name },
             transformer: (node: nodes.Node) => {
               nodes.assertTypeDefinedLinkNode(node);
+              if (node.dependency !== 'generated') return node;
               return new nodes.TypeDefinedLinkNode(newName, { ...node });
             },
           });

@@ -42,23 +42,23 @@ export type ApproveCollectionAuthorityInstructionData = {
   discriminator: number;
 };
 
-export type ApproveCollectionAuthorityInstructionArgs = {};
+export type ApproveCollectionAuthorityInstructionDataArgs = {};
 
 export function getApproveCollectionAuthorityInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  ApproveCollectionAuthorityInstructionArgs,
+  ApproveCollectionAuthorityInstructionDataArgs,
   ApproveCollectionAuthorityInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    ApproveCollectionAuthorityInstructionArgs,
+    ApproveCollectionAuthorityInstructionDataArgs,
     ApproveCollectionAuthorityInstructionData,
     ApproveCollectionAuthorityInstructionData
   >(
     s.struct<ApproveCollectionAuthorityInstructionData>(
       [['discriminator', s.u8()]],
-      { description: 'ApproveCollectionAuthorityInstructionArgs' }
+      { description: 'ApproveCollectionAuthorityInstructionData' }
     ),
     (value) =>
       ({
@@ -66,7 +66,7 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(
         discriminator: 23,
       } as ApproveCollectionAuthorityInstructionData)
   ) as Serializer<
-    ApproveCollectionAuthorityInstructionArgs,
+    ApproveCollectionAuthorityInstructionDataArgs,
     ApproveCollectionAuthorityInstructionData
   >;
 }

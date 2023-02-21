@@ -54,14 +54,14 @@ export type UseAssetInstructionData = {
   useAssetArgs: UseAssetArgs;
 };
 
-export type UseAssetInstructionArgs = { useAssetArgs: UseAssetArgsArgs };
+export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
 export function getUseAssetInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UseAssetInstructionArgs, UseAssetInstructionData> {
+): Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    UseAssetInstructionArgs,
+    UseAssetInstructionDataArgs,
     UseAssetInstructionData,
     UseAssetInstructionData
   >(
@@ -70,16 +70,16 @@ export function getUseAssetInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['useAssetArgs', getUseAssetArgsSerializer(context)],
       ],
-      { description: 'UseAssetInstructionArgs' }
+      { description: 'UseAssetInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 45 } as UseAssetInstructionData)
-  ) as Serializer<UseAssetInstructionArgs, UseAssetInstructionData>;
+  ) as Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData>;
 }
 
 // Instruction.
 export function useAsset(
   context: Pick<Context, 'serializer' | 'programs'>,
-  input: UseAssetInstructionAccounts & UseAssetInstructionArgs
+  input: UseAssetInstructionAccounts & UseAssetInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

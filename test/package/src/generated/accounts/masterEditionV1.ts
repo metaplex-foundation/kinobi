@@ -20,7 +20,7 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, getTmKeySerializer } from '../types';
+import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type MasterEditionV1 = Account<MasterEditionV1AccountData>;
 
@@ -32,12 +32,46 @@ export type MasterEditionV1AccountData = {
   oneTimePrintingAuthorizationMint: PublicKey;
 };
 
-export type MasterEditionV1AccountArgs = {
+export type MasterEditionV1AccountDataArgs = {
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
   printingMint: PublicKey;
   oneTimePrintingAuthorizationMint: PublicKey;
 };
+
+export function getMasterEditionV1AccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    MasterEditionV1AccountDataArgs,
+    MasterEditionV1AccountData,
+    MasterEditionV1AccountData
+  >(
+    s.struct<MasterEditionV1AccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['supply', s.u64()],
+        ['maxSupply', s.option(s.u64())],
+        ['printingMint', s.publicKey()],
+        ['oneTimePrintingAuthorizationMint', s.publicKey()],
+      ],
+      { description: 'MasterEditionV1' }
+    ),
+    (value) =>
+      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
+  ) as Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData>;
+}
+
+export function deserializeMasterEditionV1(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): MasterEditionV1 {
+  return deserializeAccount(
+    rawAccount,
+    getMasterEditionV1AccountDataSerializer(context)
+  );
+}
 
 export async function fetchMasterEditionV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -92,7 +126,7 @@ export function getMasterEditionV1GpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       supply: number | bigint;
       maxSupply: Option<number | bigint>;
       printingMint: PublicKey;
@@ -108,40 +142,6 @@ export function getMasterEditionV1GpaBuilder(
       deserializeMasterEditionV1(context, account)
     )
     .whereField('key', TmKey.MasterEditionV1);
-}
-
-export function deserializeMasterEditionV1(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): MasterEditionV1 {
-  return deserializeAccount(
-    rawAccount,
-    getMasterEditionV1AccountDataSerializer(context)
-  );
-}
-
-export function getMasterEditionV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    MasterEditionV1AccountArgs,
-    MasterEditionV1AccountData,
-    MasterEditionV1AccountData
-  >(
-    s.struct<MasterEditionV1AccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['supply', s.u64()],
-        ['maxSupply', s.option(s.u64())],
-        ['printingMint', s.publicKey()],
-        ['oneTimePrintingAuthorizationMint', s.publicKey()],
-      ],
-      { description: 'MasterEditionV1' }
-    ),
-    (value) =>
-      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
-  ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
 }
 
 export function getMasterEditionV1Size(

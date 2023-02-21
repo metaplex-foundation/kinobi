@@ -17,7 +17,7 @@ import {
   mapSerializer,
   publicKey,
 } from '@metaplex-foundation/umi-core';
-import { RevokeArgs, getRevokeArgsSerializer } from '../types';
+import { RevokeArgs, RevokeArgsArgs, getRevokeArgsSerializer } from '../types';
 
 // Accounts.
 export type RevokeInstructionAccounts = {
@@ -55,14 +55,14 @@ export type RevokeInstructionData = {
   revokeArgs: RevokeArgs;
 };
 
-export type RevokeInstructionArgs = { revokeArgs: RevokeArgs };
+export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
 
 export function getRevokeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<RevokeInstructionArgs, RevokeInstructionData> {
+): Serializer<RevokeInstructionDataArgs, RevokeInstructionData> {
   const s = context.serializer;
   return mapSerializer<
-    RevokeInstructionArgs,
+    RevokeInstructionDataArgs,
     RevokeInstructionData,
     RevokeInstructionData
   >(
@@ -71,16 +71,16 @@ export function getRevokeInstructionDataSerializer(
         ['discriminator', s.u8()],
         ['revokeArgs', getRevokeArgsSerializer(context)],
       ],
-      { description: 'RevokeInstructionArgs' }
+      { description: 'RevokeInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 49 } as RevokeInstructionData)
-  ) as Serializer<RevokeInstructionArgs, RevokeInstructionData>;
+  ) as Serializer<RevokeInstructionDataArgs, RevokeInstructionData>;
 }
 
 // Instruction.
 export function revoke(
   context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
-  input: RevokeInstructionAccounts & RevokeInstructionArgs
+  input: RevokeInstructionAccounts & RevokeInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];

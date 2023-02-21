@@ -23,6 +23,7 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
           selector: { type: 'instruction', stack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
+            if (nodes.isTypeDefinedLinkNode(node.args)) return node;
             const discriminatorField = new nodes.TypeStructFieldNode(
               {
                 name: discriminator.name ?? 'discriminator',

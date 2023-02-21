@@ -24,6 +24,7 @@ import {
   Reservation,
   ReservationArgs,
   TmKey,
+  TmKeyArgs,
   getReservationSerializer,
   getTmKeySerializer,
 } from '../types';
@@ -39,13 +40,54 @@ export type ReservationListV2AccountData = {
   currentReservationSpots: bigint;
 };
 
-export type ReservationListV2AccountArgs = {
+export type ReservationListV2AccountDataArgs = {
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
   reservations: Array<ReservationArgs>;
   totalReservationSpots: number | bigint;
   currentReservationSpots: number | bigint;
 };
+
+export function getReservationListV2AccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<ReservationListV2AccountDataArgs, ReservationListV2AccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    ReservationListV2AccountDataArgs,
+    ReservationListV2AccountData,
+    ReservationListV2AccountData
+  >(
+    s.struct<ReservationListV2AccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['masterEdition', s.publicKey()],
+        ['supplySnapshot', s.option(s.u64())],
+        ['reservations', s.array(getReservationSerializer(context))],
+        ['totalReservationSpots', s.u64()],
+        ['currentReservationSpots', s.u64()],
+      ],
+      { description: 'ReservationListV2' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.ReservationListV2,
+      } as ReservationListV2AccountData)
+  ) as Serializer<
+    ReservationListV2AccountDataArgs,
+    ReservationListV2AccountData
+  >;
+}
+
+export function deserializeReservationListV2(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): ReservationListV2 {
+  return deserializeAccount(
+    rawAccount,
+    getReservationListV2AccountDataSerializer(context)
+  );
+}
 
 export async function fetchReservationListV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -100,7 +142,7 @@ export function getReservationListV2GpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       masterEdition: PublicKey;
       supplySnapshot: Option<number | bigint>;
       reservations: Array<ReservationArgs>;
@@ -118,44 +160,6 @@ export function getReservationListV2GpaBuilder(
       deserializeReservationListV2(context, account)
     )
     .whereField('key', TmKey.ReservationListV2);
-}
-
-export function deserializeReservationListV2(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): ReservationListV2 {
-  return deserializeAccount(
-    rawAccount,
-    getReservationListV2AccountDataSerializer(context)
-  );
-}
-
-export function getReservationListV2AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    ReservationListV2AccountArgs,
-    ReservationListV2AccountData,
-    ReservationListV2AccountData
-  >(
-    s.struct<ReservationListV2AccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey()],
-        ['supplySnapshot', s.option(s.u64())],
-        ['reservations', s.array(getReservationSerializer(context))],
-        ['totalReservationSpots', s.u64()],
-        ['currentReservationSpots', s.u64()],
-      ],
-      { description: 'ReservationListV2' }
-    ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.ReservationListV2,
-      } as ReservationListV2AccountData)
-  ) as Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData>;
 }
 
 export function getReservationListV2Size(

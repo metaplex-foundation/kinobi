@@ -10,11 +10,13 @@ import { Context, PublicKey, Serializer } from '@metaplex-foundation/umi-core';
 
 export type ProgrammableConfig = { ruleSet: PublicKey };
 
+export type ProgrammableConfigArgs = ProgrammableConfig;
+
 export function getProgrammableConfigSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ProgrammableConfig> {
+): Serializer<ProgrammableConfigArgs, ProgrammableConfig> {
   const s = context.serializer;
   return s.struct<ProgrammableConfig>([['ruleSet', s.publicKey()]], {
     description: 'ProgrammableConfig',
-  });
+  }) as Serializer<ProgrammableConfigArgs, ProgrammableConfig>;
 }

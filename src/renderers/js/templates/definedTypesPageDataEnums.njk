@@ -1,6 +1,6 @@
 {% if definedType.type.nodeClass === 'TypeEnumNode' and definedType.type.isDataEnum() %}
   {% set strictName = definedType.name | pascalCase %}
-  {% set looseName = definedType.name | pascalCase + 'Args' if typeManifest.hasLooseType else strictName %}
+  {% set looseName = definedType.name | pascalCase + 'Args' %}
   // Data Enum Helpers.
   {% for variant in definedType.type.variants %}
     {% if variant.nodeClass === 'TypeEnumStructVariantNode' %}

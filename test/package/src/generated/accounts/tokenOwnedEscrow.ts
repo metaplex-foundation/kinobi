@@ -21,7 +21,9 @@ import {
 } from '@metaplex-foundation/umi-core';
 import {
   EscrowAuthority,
+  EscrowAuthorityArgs,
   TmKey,
+  TmKeyArgs,
   getEscrowAuthoritySerializer,
   getTmKeySerializer,
 } from '../types';
@@ -35,11 +37,44 @@ export type TokenOwnedEscrowAccountData = {
   bump: number;
 };
 
-export type TokenOwnedEscrowAccountArgs = {
+export type TokenOwnedEscrowAccountDataArgs = {
   baseToken: PublicKey;
-  authority: EscrowAuthority;
+  authority: EscrowAuthorityArgs;
   bump: number;
 };
+
+export function getTokenOwnedEscrowAccountDataSerializer(
+  context: Pick<Context, 'serializer'>
+): Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData> {
+  const s = context.serializer;
+  return mapSerializer<
+    TokenOwnedEscrowAccountDataArgs,
+    TokenOwnedEscrowAccountData,
+    TokenOwnedEscrowAccountData
+  >(
+    s.struct<TokenOwnedEscrowAccountData>(
+      [
+        ['key', getTmKeySerializer(context)],
+        ['baseToken', s.publicKey()],
+        ['authority', getEscrowAuthoritySerializer(context)],
+        ['bump', s.u8()],
+      ],
+      { description: 'TokenOwnedEscrow' }
+    ),
+    (value) =>
+      ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)
+  ) as Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData>;
+}
+
+export function deserializeTokenOwnedEscrow(
+  context: Pick<Context, 'serializer'>,
+  rawAccount: RpcAccount
+): TokenOwnedEscrow {
+  return deserializeAccount(
+    rawAccount,
+    getTokenOwnedEscrowAccountDataSerializer(context)
+  );
+}
 
 export async function fetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -94,9 +129,9 @@ export function getTokenOwnedEscrowGpaBuilder(
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TmKey;
+      key: TmKeyArgs;
       baseToken: PublicKey;
-      authority: EscrowAuthority;
+      authority: EscrowAuthorityArgs;
       bump: number;
     }>([
       ['key', getTmKeySerializer(context)],
@@ -108,39 +143,6 @@ export function getTokenOwnedEscrowGpaBuilder(
       deserializeTokenOwnedEscrow(context, account)
     )
     .whereField('key', TmKey.TokenOwnedEscrow);
-}
-
-export function deserializeTokenOwnedEscrow(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount
-): TokenOwnedEscrow {
-  return deserializeAccount(
-    rawAccount,
-    getTokenOwnedEscrowAccountDataSerializer(context)
-  );
-}
-
-export function getTokenOwnedEscrowAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData> {
-  const s = context.serializer;
-  return mapSerializer<
-    TokenOwnedEscrowAccountArgs,
-    TokenOwnedEscrowAccountData,
-    TokenOwnedEscrowAccountData
-  >(
-    s.struct<TokenOwnedEscrowAccountData>(
-      [
-        ['key', getTmKeySerializer(context)],
-        ['baseToken', s.publicKey()],
-        ['authority', getEscrowAuthoritySerializer(context)],
-        ['bump', s.u8()],
-      ],
-      { description: 'TokenOwnedEscrow' }
-    ),
-    (value) =>
-      ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)
-  ) as Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData>;
 }
 
 export function getTokenOwnedEscrowSize(

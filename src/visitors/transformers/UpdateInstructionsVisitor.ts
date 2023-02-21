@@ -1,5 +1,6 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
+import { Dependency } from '../Dependency';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
   NodeTransform,
@@ -14,6 +15,7 @@ export type InstructionUpdates =
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
       args?: Record<string, string>;
+      link?: true | string | { name: string; dependency: Dependency };
     });
 
 export type InstructionMetadataUpdates = Partial<
@@ -62,15 +64,29 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               return null;
             }
             const { accounts: accountUpdates, ...metadataUpdates } = updates;
-            const newName = `${mainCase(
-              updates.name ?? node.name
-            )}InstructionArgs`;
+            const newName = mainCase(updates.name ?? node.name);
+            const args = updates.args ?? {};
+            const link = updates.link ? parseLink(newName, updates.link) : null;
+
+            let newArgs: nodes.InstructionNode['args'] = node.args;
+            if (link) {
+              newArgs = new nodes.TypeDefinedLinkNode(link.name, {
+                dependency: link.dependency,
+              });
+            } else if (nodes.isTypeStructNode(node.args)) {
+              newArgs = renameStructNode(
+                node.args,
+                args,
+                `${newName}InstructionData`
+              );
+            }
+
             return new nodes.InstructionNode(
               { ...node.metadata, ...this.handleMetadata(metadataUpdates) },
               node.accounts.map((account) =>
                 this.handleInstructionAccount(account, accountUpdates ?? {})
               ),
-              renameStructNode(node.args, updates.args ?? {}, newName),
+              newArgs,
               node.subInstructions
             );
           },
@@ -132,4 +148,17 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
       ? ({ ...account, ...accountUpdate } as nodes.InstructionNodeAccount)
       : account;
   }
+}
+
+function parseLink(
+  name: string,
+  link: true | string | { name: string; dependency: Dependency }
+): { name: string; dependency: Dependency } {
+  if (typeof link === 'boolean') {
+    return { name: `${name}InstructionData`, dependency: 'hooked' };
+  }
+  if (typeof link === 'string') {
+    return { name: link, dependency: 'hooked' };
+  }
+  return link;
 }

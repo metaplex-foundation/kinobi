@@ -50,6 +50,9 @@ kinobi.update(
         { kind: 'literal', value: 'edition' },
       ],
     },
+    ReservationListV1: {
+      link: true,
+    },
   })
 );
 
@@ -96,6 +99,10 @@ kinobi.update(
         foo: { defaultsTo: { kind: 'account', name: 'bar' } },
         bar: { defaultsTo: { kind: 'programId' } },
       },
+    },
+    DeprecatedCreateReservationList: {
+      name: 'CreateReservationList',
+      link: true,
     },
   })
 );

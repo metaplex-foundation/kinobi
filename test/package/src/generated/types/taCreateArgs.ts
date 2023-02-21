@@ -13,9 +13,11 @@ export type TaCreateArgs = {
   serializedRuleSet: Uint8Array;
 };
 
+export type TaCreateArgsArgs = TaCreateArgs;
+
 export function getTaCreateArgsSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TaCreateArgs> {
+): Serializer<TaCreateArgsArgs, TaCreateArgs> {
   const s = context.serializer;
   return s.struct<TaCreateArgs>(
     [
@@ -23,5 +25,5 @@ export function getTaCreateArgsSerializer(
       ['serializedRuleSet', s.bytes()],
     ],
     { description: 'TaCreateArgs' }
-  );
+  ) as Serializer<TaCreateArgsArgs, TaCreateArgs>;
 }

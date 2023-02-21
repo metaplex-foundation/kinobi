@@ -14,6 +14,7 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
           selector: { type: 'account', stack, name },
           transformer: (node) => {
             nodes.assertAccountNode(node);
+            if (nodes.isTypeDefinedLinkNode(node.type)) return node;
 
             const fieldIndex = node.type.fields.findIndex(
               (f) => f.name === field

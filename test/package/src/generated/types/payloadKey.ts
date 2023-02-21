@@ -15,9 +15,13 @@ export enum PayloadKey {
   Amount,
 }
 
+export type PayloadKeyArgs = PayloadKey;
+
 export function getPayloadKeySerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<PayloadKey> {
+): Serializer<PayloadKeyArgs, PayloadKey> {
   const s = context.serializer;
-  return s.enum<PayloadKey>(PayloadKey, { description: 'PayloadKey' });
+  return s.enum<PayloadKey>(PayloadKey, {
+    description: 'PayloadKey',
+  }) as Serializer<PayloadKeyArgs, PayloadKey>;
 }

@@ -9,6 +9,7 @@
 import { Context, Serializer } from '@metaplex-foundation/umi-core';
 import {
   PayloadKey,
+  PayloadKeyArgs,
   PayloadType,
   PayloadTypeArgs,
   getPayloadKeySerializer,
@@ -17,7 +18,7 @@ import {
 
 export type Payload = { map: Map<PayloadKey, PayloadType> };
 
-export type PayloadArgs = { map: Map<PayloadKey, PayloadTypeArgs> };
+export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
 
 export function getPayloadSerializer(
   context: Pick<Context, 'serializer'>
