@@ -34,7 +34,10 @@ export type DelegateRecordAccountData = {
   bump: number;
 };
 
-export type DelegateRecordAccountArgs = { role: DelegateRole; bump: number };
+export type DelegateRecordAccountDataArgs = {
+  role: DelegateRole;
+  bump: number;
+};
 
 export async function fetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -111,10 +114,10 @@ export function deserializeDelegateRecord(
 
 export function getDelegateRecordAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData> {
+): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    DelegateRecordAccountArgs,
+    DelegateRecordAccountDataArgs,
     DelegateRecordAccountData,
     DelegateRecordAccountData
   >(
@@ -127,7 +130,7 @@ export function getDelegateRecordAccountDataSerializer(
       { description: 'DelegateRecord' }
     ),
     (value) => ({ ...value, key: TmKey.Delegate } as DelegateRecordAccountData)
-  ) as Serializer<DelegateRecordAccountArgs, DelegateRecordAccountData>;
+  ) as Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
 }
 
 export function getDelegateRecordSize(_context = {}): number {

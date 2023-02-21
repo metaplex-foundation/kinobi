@@ -31,7 +31,7 @@ export type CollectionAuthorityRecordAccountData = {
   updateAuthority: Option<PublicKey>;
 };
 
-export type CollectionAuthorityRecordAccountArgs = {
+export type CollectionAuthorityRecordAccountDataArgs = {
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
@@ -116,12 +116,12 @@ export function deserializeCollectionAuthorityRecord(
 export function getCollectionAuthorityRecordAccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  CollectionAuthorityRecordAccountArgs,
+  CollectionAuthorityRecordAccountDataArgs,
   CollectionAuthorityRecordAccountData
 > {
   const s = context.serializer;
   return mapSerializer<
-    CollectionAuthorityRecordAccountArgs,
+    CollectionAuthorityRecordAccountDataArgs,
     CollectionAuthorityRecordAccountData,
     CollectionAuthorityRecordAccountData
   >(
@@ -139,7 +139,7 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
         key: TmKey.CollectionAuthorityRecord,
       } as CollectionAuthorityRecordAccountData)
   ) as Serializer<
-    CollectionAuthorityRecordAccountArgs,
+    CollectionAuthorityRecordAccountDataArgs,
     CollectionAuthorityRecordAccountData
   >;
 }

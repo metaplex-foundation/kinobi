@@ -25,7 +25,7 @@ export type EditionMarker = Account<EditionMarkerAccountData>;
 
 export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
-export type EditionMarkerAccountArgs = { ledger: Array<number> };
+export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
 export async function fetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
@@ -101,10 +101,10 @@ export function deserializeEditionMarker(
 
 export function getEditionMarkerAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData> {
+): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    EditionMarkerAccountArgs,
+    EditionMarkerAccountDataArgs,
     EditionMarkerAccountData,
     EditionMarkerAccountData
   >(
@@ -117,7 +117,7 @@ export function getEditionMarkerAccountDataSerializer(
     ),
     (value) =>
       ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
-  ) as Serializer<EditionMarkerAccountArgs, EditionMarkerAccountData>;
+  ) as Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
 }
 
 export function getEditionMarkerSize(_context = {}): number {

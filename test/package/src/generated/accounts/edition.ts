@@ -29,7 +29,7 @@ export type EditionAccountData = {
   edition: bigint;
 };
 
-export type EditionAccountArgs = {
+export type EditionAccountDataArgs = {
   parent: PublicKey;
   edition: number | bigint;
 };
@@ -111,10 +111,10 @@ export function deserializeEdition(
 
 export function getEditionAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<EditionAccountArgs, EditionAccountData> {
+): Serializer<EditionAccountDataArgs, EditionAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    EditionAccountArgs,
+    EditionAccountDataArgs,
     EditionAccountData,
     EditionAccountData
   >(
@@ -127,7 +127,7 @@ export function getEditionAccountDataSerializer(
       { description: 'Edition' }
     ),
     (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
-  ) as Serializer<EditionAccountArgs, EditionAccountData>;
+  ) as Serializer<EditionAccountDataArgs, EditionAccountData>;
 }
 
 export function getEditionSize(_context = {}): number {

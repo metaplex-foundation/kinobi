@@ -37,7 +37,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const exports = {
       [account.name]: 'type',
       [`${account.name}AccountData`]: 'type',
-      [`${account.name}AccountArgs`]: 'type',
+      [`${account.name}AccountDataArgs`]: 'type',
       [`fetch${account.name}`]: 'function',
       [`safeFetch${account.name}`]: 'function',
       [`deserialize${account.name}`]: 'function',

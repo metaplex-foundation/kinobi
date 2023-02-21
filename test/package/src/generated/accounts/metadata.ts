@@ -66,7 +66,7 @@ export type MetadataAccountData = {
   delegateState: Option<DelegateState>;
 };
 
-export type MetadataAccountArgs = {
+export type MetadataAccountDataArgs = {
   updateAuthority: PublicKey;
   mint: PublicKey;
   name: string;
@@ -195,10 +195,10 @@ export function deserializeMetadata(
 
 export function getMetadataAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MetadataAccountArgs, MetadataAccountData> {
+): Serializer<MetadataAccountDataArgs, MetadataAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    MetadataAccountArgs,
+    MetadataAccountDataArgs,
     MetadataAccountData,
     MetadataAccountData
   >(
@@ -231,7 +231,7 @@ export function getMetadataAccountDataSerializer(
       { description: 'Metadata' }
     ),
     (value) => ({ ...value, key: TmKey.MetadataV1 } as MetadataAccountData)
-  ) as Serializer<MetadataAccountArgs, MetadataAccountData>;
+  ) as Serializer<MetadataAccountDataArgs, MetadataAccountData>;
 }
 
 export function getMetadataSize(

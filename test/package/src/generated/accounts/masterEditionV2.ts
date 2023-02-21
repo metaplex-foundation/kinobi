@@ -31,7 +31,7 @@ export type MasterEditionV2AccountData = {
   maxSupply: Option<bigint>;
 };
 
-export type MasterEditionV2AccountArgs = {
+export type MasterEditionV2AccountDataArgs = {
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
 };
@@ -115,10 +115,10 @@ export function deserializeMasterEditionV2(
 
 export function getMasterEditionV2AccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MasterEditionV2AccountArgs, MasterEditionV2AccountData> {
+): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData> {
   const s = context.serializer;
   return mapSerializer<
-    MasterEditionV2AccountArgs,
+    MasterEditionV2AccountDataArgs,
     MasterEditionV2AccountData,
     MasterEditionV2AccountData
   >(
@@ -132,7 +132,7 @@ export function getMasterEditionV2AccountDataSerializer(
     ),
     (value) =>
       ({ ...value, key: TmKey.MasterEditionV2 } as MasterEditionV2AccountData)
-  ) as Serializer<MasterEditionV2AccountArgs, MasterEditionV2AccountData>;
+  ) as Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
 }
 
 export function getMasterEditionV2Size(

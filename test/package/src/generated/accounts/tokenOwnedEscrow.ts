@@ -35,7 +35,7 @@ export type TokenOwnedEscrowAccountData = {
   bump: number;
 };
 
-export type TokenOwnedEscrowAccountArgs = {
+export type TokenOwnedEscrowAccountDataArgs = {
   baseToken: PublicKey;
   authority: EscrowAuthority;
   bump: number;
@@ -122,10 +122,10 @@ export function deserializeTokenOwnedEscrow(
 
 export function getTokenOwnedEscrowAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData> {
+): Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    TokenOwnedEscrowAccountArgs,
+    TokenOwnedEscrowAccountDataArgs,
     TokenOwnedEscrowAccountData,
     TokenOwnedEscrowAccountData
   >(
@@ -140,7 +140,7 @@ export function getTokenOwnedEscrowAccountDataSerializer(
     ),
     (value) =>
       ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)
-  ) as Serializer<TokenOwnedEscrowAccountArgs, TokenOwnedEscrowAccountData>;
+  ) as Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData>;
 }
 
 export function getTokenOwnedEscrowSize(

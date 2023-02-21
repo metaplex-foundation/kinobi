@@ -50,7 +50,7 @@ export class GetJavaScriptTypeManifestVisitor
   visitAccount(account: nodes.AccountNode): JavaScriptTypeManifest {
     this.definedName = {
       strict: `${pascalCase(account.name)}AccountData`,
-      loose: `${pascalCase(account.name)}AccountArgs`,
+      loose: `${pascalCase(account.name)}AccountDataArgs`,
     };
     const child = account.type.accept(this);
     this.definedName = null;

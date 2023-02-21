@@ -43,7 +43,7 @@ export type CandyMachineAccountData = {
   data: CandyMachineData;
 };
 
-export type CandyMachineAccountArgs = {
+export type CandyMachineAccountDataArgs = {
   /** Features versioning flags. */
   features: number | bigint;
   /** Authority address. */
@@ -145,10 +145,10 @@ export function deserializeCandyMachine(
 
 export function getCandyMachineAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<CandyMachineAccountArgs, CandyMachineAccountData> {
+): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    CandyMachineAccountArgs,
+    CandyMachineAccountDataArgs,
     CandyMachineAccountData,
     CandyMachineAccountData
   >(
@@ -169,7 +169,7 @@ export function getCandyMachineAccountDataSerializer(
         ...value,
         discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
       } as CandyMachineAccountData)
-  ) as Serializer<CandyMachineAccountArgs, CandyMachineAccountData>;
+  ) as Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
 }
 
 export function getCandyMachineSize(

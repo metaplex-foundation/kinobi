@@ -39,7 +39,7 @@ export type ReservationListV2AccountData = {
   currentReservationSpots: bigint;
 };
 
-export type ReservationListV2AccountArgs = {
+export type ReservationListV2AccountDataArgs = {
   masterEdition: PublicKey;
   supplySnapshot: Option<number | bigint>;
   reservations: Array<ReservationArgs>;
@@ -132,10 +132,10 @@ export function deserializeReservationListV2(
 
 export function getReservationListV2AccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData> {
+): Serializer<ReservationListV2AccountDataArgs, ReservationListV2AccountData> {
   const s = context.serializer;
   return mapSerializer<
-    ReservationListV2AccountArgs,
+    ReservationListV2AccountDataArgs,
     ReservationListV2AccountData,
     ReservationListV2AccountData
   >(
@@ -155,7 +155,10 @@ export function getReservationListV2AccountDataSerializer(
         ...value,
         key: TmKey.ReservationListV2,
       } as ReservationListV2AccountData)
-  ) as Serializer<ReservationListV2AccountArgs, ReservationListV2AccountData>;
+  ) as Serializer<
+    ReservationListV2AccountDataArgs,
+    ReservationListV2AccountData
+  >;
 }
 
 export function getReservationListV2Size(

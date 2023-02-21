@@ -32,7 +32,7 @@ export type MasterEditionV1AccountData = {
   oneTimePrintingAuthorizationMint: PublicKey;
 };
 
-export type MasterEditionV1AccountArgs = {
+export type MasterEditionV1AccountDataArgs = {
   supply: number | bigint;
   maxSupply: Option<number | bigint>;
   printingMint: PublicKey;
@@ -122,10 +122,10 @@ export function deserializeMasterEditionV1(
 
 export function getMasterEditionV1AccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData> {
+): Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData> {
   const s = context.serializer;
   return mapSerializer<
-    MasterEditionV1AccountArgs,
+    MasterEditionV1AccountDataArgs,
     MasterEditionV1AccountData,
     MasterEditionV1AccountData
   >(
@@ -141,7 +141,7 @@ export function getMasterEditionV1AccountDataSerializer(
     ),
     (value) =>
       ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
-  ) as Serializer<MasterEditionV1AccountArgs, MasterEditionV1AccountData>;
+  ) as Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData>;
 }
 
 export function getMasterEditionV1Size(

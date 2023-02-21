@@ -34,7 +34,7 @@ export type FrequencyAccountAccountData = {
   period: bigint;
 };
 
-export type FrequencyAccountAccountArgs = {
+export type FrequencyAccountAccountDataArgs = {
   /**
    * Test with multiple lines
    * and this is the second line.
@@ -122,10 +122,10 @@ export function deserializeFrequencyAccount(
 
 export function getFrequencyAccountAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData> {
+): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData> {
   const s = context.serializer;
   return mapSerializer<
-    FrequencyAccountAccountArgs,
+    FrequencyAccountAccountDataArgs,
     FrequencyAccountAccountData,
     FrequencyAccountAccountData
   >(
@@ -139,7 +139,7 @@ export function getFrequencyAccountAccountDataSerializer(
     ),
     (value) =>
       ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
-  ) as Serializer<FrequencyAccountAccountArgs, FrequencyAccountAccountData>;
+  ) as Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
 }
 
 export function getFrequencyAccountSize(_context = {}): number {

@@ -29,7 +29,7 @@ export type UseAuthorityRecordAccountData = {
   bump: number;
 };
 
-export type UseAuthorityRecordAccountArgs = {
+export type UseAuthorityRecordAccountDataArgs = {
   allowedUses: number | bigint;
   bump: number;
 };
@@ -111,10 +111,13 @@ export function deserializeUseAuthorityRecord(
 
 export function getUseAuthorityRecordAccountDataSerializer(
   context: Pick<Context, 'serializer'>
-): Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData> {
+): Serializer<
+  UseAuthorityRecordAccountDataArgs,
+  UseAuthorityRecordAccountData
+> {
   const s = context.serializer;
   return mapSerializer<
-    UseAuthorityRecordAccountArgs,
+    UseAuthorityRecordAccountDataArgs,
     UseAuthorityRecordAccountData,
     UseAuthorityRecordAccountData
   >(
@@ -131,7 +134,10 @@ export function getUseAuthorityRecordAccountDataSerializer(
         ...value,
         key: TmKey.UseAuthorityRecord,
       } as UseAuthorityRecordAccountData)
-  ) as Serializer<UseAuthorityRecordAccountArgs, UseAuthorityRecordAccountData>;
+  ) as Serializer<
+    UseAuthorityRecordAccountDataArgs,
+    UseAuthorityRecordAccountData
+  >;
 }
 
 export function getUseAuthorityRecordSize(_context = {}): number {
