@@ -128,24 +128,3 @@ export function assertTypeNode(node: Node | null): asserts node is TypeNode {
     throw new Error(`Expected TypeNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }
-
-export function isTypeStructOrEnumNode(
-  node: Node | null
-): node is TypeStructNode | TypeEnumNode {
-  return (
-    !!node &&
-    (node.nodeClass === 'TypeStructNode' || node.nodeClass === 'TypeEnumNode')
-  );
-}
-
-export function assertTypeStructOrEnumNode(
-  node: Node | null
-): asserts node is TypeStructNode | TypeEnumNode {
-  if (!isTypeStructOrEnumNode(node)) {
-    throw new Error(
-      `Expected TypeStructNode | TypeEnumNode, got ${
-        node?.nodeClass ?? 'null'
-      }.`
-    );
-  }
-}

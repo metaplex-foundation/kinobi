@@ -58,7 +58,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node | null {
     const type = definedType.type.accept(this);
     if (type === null) return null;
-    nodes.assertTypeStructOrEnumNode(type);
+    nodes.assertTypeNode(type);
     return new nodes.DefinedTypeNode(definedType.metadata, type);
   }
 

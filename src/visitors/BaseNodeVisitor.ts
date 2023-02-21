@@ -51,7 +51,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node {
     const type = definedType.type.accept(this);
-    nodes.assertTypeStructOrEnumNode(type);
+    nodes.assertTypeNode(type);
     return new nodes.DefinedTypeNode(definedType.metadata, type);
   }
 
