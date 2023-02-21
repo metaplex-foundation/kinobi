@@ -57,7 +57,7 @@ export function renderJavaScriptValueNode(
 
       const enumName = pascalCase(definedType.type.name);
       const variantName = pascalCase(value.variant);
-      const rawDependency = value.dependency ?? definedType.metadata.importFrom;
+      const rawDependency = value.dependency ?? 'generated';
       const dependency =
         rawDependency === 'generated' ? 'generatedTypes' : rawDependency;
 

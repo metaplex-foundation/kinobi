@@ -1,6 +1,6 @@
 import { mainCase } from '../utils';
 import type { IdlDefinedType } from '../idl';
-import type { Dependency, Visitable, Visitor } from '../visitors';
+import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import type { TypeEnumNode } from './TypeEnumNode';
 import { assertTypeStructOrEnumNode, createTypeNodeFromIdl } from './TypeNode';
@@ -10,7 +10,6 @@ export type DefinedTypeNodeMetadata = {
   name: string;
   idlName: string;
   docs: string[];
-  importFrom: Dependency;
   internal: boolean;
 };
 
@@ -36,7 +35,7 @@ export class DefinedTypeNode implements Visitable {
     const type = createTypeNodeFromIdl({ name, ...idlType });
     assertTypeStructOrEnumNode(type);
     return new DefinedTypeNode(
-      { name, idlName: name, docs, importFrom: 'generated', internal: false },
+      { name, idlName: name, docs, internal: false },
       type
     );
   }
