@@ -16,24 +16,36 @@ export function {{ instruction.name | camelCase }}(
     {{- '| \'identity\'' if needsIdentity else '' }}
     {{- '| \'payer\'' if needsPayer else '' }}
   >,
+  {% set accountsType = instruction.name | pascalCase + 'InstructionAccounts' %}
+  {% if instruction.hasPdaAccounts %}
+    {% set argsType %}
+      Omit<{{ instruction.name | pascalCase + 'InstructionDataArgs' }}, 
+      {%- for account in instruction.pdaAccounts -%}
+        "{{ account.pdaBumpArg }}"{% if not loop.last %} | {% endif %}
+      {%- endfor -%}
+      >
+    {% endset %}
+  {% else %}
+    {% set argsType = instruction.name | pascalCase + 'InstructionDataArgs' %}
+  {% endif %}
   {% if canMergeAccountsAndArgs %}
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
     {% if instruction.hasAccounts and instruction.hasArgs %}
-      input: {{ instruction.name | pascalCase }}InstructionAccounts & {{ instruction.name | pascalCase + 'InstructionDataArgs' }},
+      input: {{ accountsType }} & {{ argsType }},
     {% elif instruction.hasAccounts %}
-      input: {{ instruction.name | pascalCase }}InstructionAccounts,
+      input: {{ accountsType }},
     {% elif instruction.hasArgs %}
-      input: {{ instruction.name | pascalCase + 'InstructionDataArgs' }},
+      input: {{ argsType }},
     {% endif %}
   {% else %}
     {% set accountsObj = 'accounts' %}
     {% set argsObj = 'args' %}
     {% if instruction.hasAccounts %}
-      accounts: {{ instruction.name | pascalCase }}InstructionAccounts,
+      accounts: {{ accountsType }},
     {% endif %}
     {% if instruction.hasArgs %}
-      args: {{ instruction.name | pascalCase + 'InstructionDataArgs' }},
+      args: {{ argsType }},
     {% endif %}
   {% endif %}
 ): WrappedInstruction {
@@ -46,7 +58,14 @@ export function {{ instruction.name | camelCase }}(
   {% include "instructionsPageAccountMetas.njk" -%}
 
   // Data.
-  {% if instruction.hasArgs %}
+  {% if instruction.hasArgs and instruction.hasPdaAccounts %}
+    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({
+      ...{{ argsObj }},
+      {% for account in instruction.pdaAccounts %}
+        {{ account.pdaBumpArg }}: {{ account.name | camelCase }}Account.bump,
+      {% endfor %}
+    });
+  {% elif instruction.hasArgs %}
     const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({{ argsObj }});
   {% elif instruction.hasData %}
     const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({});

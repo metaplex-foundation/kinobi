@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -27,7 +28,7 @@ export type CreateRuleSetInstructionAccounts = {
   /** Payer and creator of the RuleSet */
   payer?: Signer;
   /** The PDA account where the RuleSet is stored */
-  ruleSetPda: PublicKey;
+  ruleSetPda: Pda;
   /** System program */
   systemProgram?: PublicKey;
 };
@@ -36,9 +37,13 @@ export type CreateRuleSetInstructionAccounts = {
 export type CreateRuleSetInstructionData = {
   discriminator: number;
   createArgs: TaCreateArgs;
+  ruleSetBump: number;
 };
 
-export type CreateRuleSetInstructionDataArgs = { createArgs: TaCreateArgsArgs };
+export type CreateRuleSetInstructionDataArgs = {
+  createArgs: TaCreateArgsArgs;
+  ruleSetBump: number;
+};
 
 export function getCreateRuleSetInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
@@ -53,6 +58,7 @@ export function getCreateRuleSetInstructionDataSerializer(
       [
         ['discriminator', s.u8()],
         ['createArgs', getTaCreateArgsSerializer(context)],
+        ['ruleSetBump', s.u8()],
       ],
       { description: 'CreateRuleSetInstructionData' }
     ),
@@ -66,7 +72,8 @@ export function getCreateRuleSetInstructionDataSerializer(
 // Instruction.
 export function createRuleSet(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionDataArgs
+  input: CreateRuleSetInstructionAccounts &
+    Omit<CreateRuleSetInstructionDataArgs, 'ruleSetBump'>
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -106,8 +113,10 @@ export function createRuleSet(
   });
 
   // Data.
-  const data =
-    getCreateRuleSetInstructionDataSerializer(context).serialize(input);
+  const data = getCreateRuleSetInstructionDataSerializer(context).serialize({
+    ...input,
+    ruleSetBump: ruleSetPdaAccount.bump,
+  });
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

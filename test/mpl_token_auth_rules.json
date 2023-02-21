@@ -15,7 +15,8 @@
           "name": "ruleSetPda",
           "isMut": true,
           "isSigner": false,
-          "desc": "The PDA account where the RuleSet is stored"
+          "desc": "The PDA account where the RuleSet is stored",
+          "pdaBumpArg": "ruleSetBump"
         },
         {
           "name": "systemProgram",
@@ -30,6 +31,10 @@
           "type": {
             "defined": "CreateArgs"
           }
+        },
+        {
+          "name": "ruleSetBump",
+          "type": "u8"
         }
       ],
       "discriminant": {

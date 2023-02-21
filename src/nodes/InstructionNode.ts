@@ -27,6 +27,7 @@ export type InstructionNodeAccount = {
   isOptional: boolean;
   description: string;
   defaultsTo: InstructionNodeAccountDefaults;
+  pdaBumpArg: string | null;
 };
 
 export type InstructionNodeAccountDefaults =
@@ -119,7 +120,7 @@ export class InstructionNode implements Visitable {
 
     const accounts = (idl.accounts ?? []).map(
       (account): InstructionNodeAccount => {
-        const isOptional = account.optional ?? false;
+        const isOptional = account.optional ?? account.isOptional ?? false;
         return {
           name: camelCase(account.name ?? ''),
           isWritable: account.isMut ?? false,
@@ -131,6 +132,7 @@ export class InstructionNode implements Visitable {
             isOptional && useProgramIdForOptionalAccounts
               ? { kind: 'programId' }
               : { kind: 'none' },
+          pdaBumpArg: account.pdaBumpArg ?? null,
         };
       }
     );
@@ -187,6 +189,14 @@ export class InstructionNode implements Visitable {
 
   get hasAccounts(): boolean {
     return this.accounts.length > 0;
+  }
+
+  get pdaAccounts(): InstructionNodeAccount[] {
+    return this.accounts.filter((account) => account.pdaBumpArg !== null);
+  }
+
+  get hasPdaAccounts(): boolean {
+    return this.pdaAccounts.length > 0;
   }
 
   get hasData(): boolean {
