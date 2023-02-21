@@ -19,7 +19,7 @@ import {
 } from '@metaplex-foundation/umi-core';
 
 // Accounts.
-export type DeprecatedCreateReservationListInstructionAccounts = {
+export type CreateReservationListInstructionAccounts = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: PublicKey;
   /** Payer */
@@ -39,43 +39,38 @@ export type DeprecatedCreateReservationListInstructionAccounts = {
 };
 
 // Arguments.
-export type DeprecatedCreateReservationListInstructionData = {
-  discriminator: number;
-};
+export type CreateReservationListInstructionData = { discriminator: number };
 
-export type DeprecatedCreateReservationListInstructionDataArgs = {};
+export type CreateReservationListInstructionDataArgs = {};
 
-export function getDeprecatedCreateReservationListInstructionDataSerializer(
+export function getCreateReservationListInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<
-  DeprecatedCreateReservationListInstructionDataArgs,
-  DeprecatedCreateReservationListInstructionData
+  CreateReservationListInstructionDataArgs,
+  CreateReservationListInstructionData
 > {
   const s = context.serializer;
   return mapSerializer<
-    DeprecatedCreateReservationListInstructionDataArgs,
-    DeprecatedCreateReservationListInstructionData,
-    DeprecatedCreateReservationListInstructionData
+    CreateReservationListInstructionDataArgs,
+    CreateReservationListInstructionData,
+    CreateReservationListInstructionData
   >(
-    s.struct<DeprecatedCreateReservationListInstructionData>(
+    s.struct<CreateReservationListInstructionData>(
       [['discriminator', s.u8()]],
-      { description: 'DeprecatedCreateReservationListInstructionData' }
+      { description: 'CreateReservationListInstructionData' }
     ),
     (value) =>
-      ({
-        ...value,
-        discriminator: 6,
-      } as DeprecatedCreateReservationListInstructionData)
+      ({ ...value, discriminator: 6 } as CreateReservationListInstructionData)
   ) as Serializer<
-    DeprecatedCreateReservationListInstructionDataArgs,
-    DeprecatedCreateReservationListInstructionData
+    CreateReservationListInstructionDataArgs,
+    CreateReservationListInstructionData
   >;
 }
 
 // Instruction.
-export function deprecatedCreateReservationList(
+export function createReservationList(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: DeprecatedCreateReservationListInstructionAccounts
+  input: CreateReservationListInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -157,7 +152,7 @@ export function deprecatedCreateReservationList(
   });
 
   // Data.
-  const data = getDeprecatedCreateReservationListInstructionDataSerializer(
+  const data = getCreateReservationListInstructionDataSerializer(
     context
   ).serialize({});
 

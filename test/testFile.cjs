@@ -100,6 +100,10 @@ kinobi.update(
         bar: { defaultsTo: { kind: 'programId' } },
       },
     },
+    DeprecatedCreateReservationList: {
+      name: 'CreateReservationList',
+      // link: true,
+    },
   })
 );
 
