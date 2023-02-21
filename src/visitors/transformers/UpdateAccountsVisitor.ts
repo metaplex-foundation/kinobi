@@ -34,7 +34,7 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
             }
             const newName = mainCase(updates.name ?? node.name);
             const data = updates.data ?? {};
-            const link = updates.link ? parseLink(node, updates.link) : null;
+            const link = updates.link ? parseLink(newName, updates.link) : null;
 
             let newType: nodes.AccountNode['type'] = node.type;
             if (link) {
@@ -59,11 +59,11 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
 }
 
 function parseLink(
-  account: nodes.AccountNode,
+  name: string,
   link: true | string | { name: string; dependency: Dependency }
 ): { name: string; dependency: Dependency } {
   if (typeof link === 'boolean') {
-    return { name: `${account.name}AccountData`, dependency: 'hooked' };
+    return { name: `${name}AccountData`, dependency: 'hooked' };
   }
   if (typeof link === 'string') {
     return { name: link, dependency: 'hooked' };

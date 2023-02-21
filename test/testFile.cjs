@@ -102,7 +102,7 @@ kinobi.update(
     },
     DeprecatedCreateReservationList: {
       name: 'CreateReservationList',
-      // link: true,
+      link: true,
     },
   })
 );

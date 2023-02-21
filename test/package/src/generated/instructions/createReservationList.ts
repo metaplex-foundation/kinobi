@@ -14,9 +14,13 @@ import {
   Signer,
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
-  mapSerializer,
   publicKey,
 } from '@metaplex-foundation/umi-core';
+import {
+  CreateReservationListInstructionData,
+  CreateReservationListInstructionDataArgs,
+  getCreateReservationListInstructionDataSerializer,
+} from '../../hooked';
 
 // Accounts.
 export type CreateReservationListInstructionAccounts = {
@@ -38,39 +42,11 @@ export type CreateReservationListInstructionAccounts = {
   rent?: PublicKey;
 };
 
-// Arguments.
-export type CreateReservationListInstructionData = { discriminator: number };
-
-export type CreateReservationListInstructionDataArgs = {};
-
-export function getCreateReservationListInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<
-  CreateReservationListInstructionDataArgs,
-  CreateReservationListInstructionData
-> {
-  const s = context.serializer;
-  return mapSerializer<
-    CreateReservationListInstructionDataArgs,
-    CreateReservationListInstructionData,
-    CreateReservationListInstructionData
-  >(
-    s.struct<CreateReservationListInstructionData>(
-      [['discriminator', s.u8()]],
-      { description: 'CreateReservationListInstructionData' }
-    ),
-    (value) =>
-      ({ ...value, discriminator: 6 } as CreateReservationListInstructionData)
-  ) as Serializer<
-    CreateReservationListInstructionDataArgs,
-    CreateReservationListInstructionData
-  >;
-}
-
 // Instruction.
 export function createReservationList(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: CreateReservationListInstructionAccounts
+  accounts: CreateReservationListInstructionAccounts,
+  args: CreateReservationListInstructionDataArgs
 ): WrappedInstruction {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -80,18 +56,18 @@ export function createReservationList(
     context.programs.get('mplTokenMetadata').publicKey;
 
   // Resolved accounts.
-  const reservationListAccount = input.reservationList;
-  const payerAccount = input.payer ?? context.payer;
-  const updateAuthorityAccount = input.updateAuthority;
-  const masterEditionAccount = input.masterEdition;
-  const resourceAccount = input.resource;
-  const metadataAccount = input.metadata;
-  const systemProgramAccount = input.systemProgram ?? {
+  const reservationListAccount = accounts.reservationList;
+  const payerAccount = accounts.payer ?? context.payer;
+  const updateAuthorityAccount = accounts.updateAuthority;
+  const masterEditionAccount = accounts.masterEdition;
+  const resourceAccount = accounts.resource;
+  const metadataAccount = accounts.metadata;
+  const systemProgramAccount = accounts.systemProgram ?? {
     ...context.programs.get('splSystem').publicKey,
     isWritable: false,
   };
   const rentAccount =
-    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
+    accounts.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
 
   // Reservation List.
   keys.push({
@@ -152,9 +128,8 @@ export function createReservationList(
   });
 
   // Data.
-  const data = getCreateReservationListInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getCreateReservationListInstructionDataSerializer(context).serialize(args);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

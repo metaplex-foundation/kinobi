@@ -64,12 +64,9 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               return null;
             }
             const { accounts: accountUpdates, ...metadataUpdates } = updates;
-            const newName = `${mainCase(
-              updates.name ?? node.name
-            )}InstructionData`;
-
+            const newName = mainCase(updates.name ?? node.name);
             const args = updates.args ?? {};
-            const link = updates.link ? parseLink(node, updates.link) : null;
+            const link = updates.link ? parseLink(newName, updates.link) : null;
 
             let newArgs: nodes.InstructionNode['args'] = node.args;
             if (link) {
@@ -77,7 +74,11 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
                 dependency: link.dependency,
               });
             } else if (nodes.isTypeStructNode(node.args)) {
-              newArgs = renameStructNode(node.args, args, newName);
+              newArgs = renameStructNode(
+                node.args,
+                args,
+                `${newName}InstructionData`
+              );
             }
 
             return new nodes.InstructionNode(
@@ -150,11 +151,11 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
 }
 
 function parseLink(
-  instruction: nodes.InstructionNode,
+  name: string,
   link: true | string | { name: string; dependency: Dependency }
 ): { name: string; dependency: Dependency } {
   if (typeof link === 'boolean') {
-    return { name: `${instruction.name}InstructionData`, dependency: 'hooked' };
+    return { name: `${name}InstructionData`, dependency: 'hooked' };
   }
   if (typeof link === 'string') {
     return { name: link, dependency: 'hooked' };
