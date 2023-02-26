@@ -129,8 +129,9 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return typeBool.size.accept(this);
   }
 
-  visitTypeBytes(): number | null {
-    return null;
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): number | null {
+    if (typeBytes.size.kind !== 'fixed') return null;
+    return typeBytes.size.bytes;
   }
 
   visitTypeNumber(typeNumber: nodes.TypeNumberNode): number | null {

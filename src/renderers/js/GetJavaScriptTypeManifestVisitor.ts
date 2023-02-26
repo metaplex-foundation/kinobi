@@ -417,11 +417,26 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeBytes(): JavaScriptTypeManifest {
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): JavaScriptTypeManifest {
+    const imports = new JavaScriptImportMap();
+    const options: string[] = [];
+
+    // Size option.
+    if (typeBytes.size.kind === 'prefixed') {
+      const prefix = typeBytes.size.prefix.accept(this);
+      imports.mergeWith(prefix.imports);
+      options.push(`size: ${prefix.serializer}`);
+    } else if (typeBytes.size.kind === 'fixed') {
+      options.push(`size: ${typeBytes.size.bytes}`);
+    }
+
+    const optionsAsString =
+      options.length > 0 ? `{ ${options.join(', ')} }` : '';
+
     return {
       strictType: 'Uint8Array',
       looseType: 'Uint8Array',
-      serializer: this.s(`bytes()`),
+      serializer: this.s(`bytes(${optionsAsString})`),
       isEnum: false,
       imports: new JavaScriptImportMap(),
     };

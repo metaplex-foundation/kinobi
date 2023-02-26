@@ -1,19 +1,19 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@metaplex-foundation/umi-core': ^0.3.0
+  '@metaplex-foundation/umi-core': ^0.4.0
   typescript: ^4.9.4
 
 dependencies:
-  '@metaplex-foundation/umi-core': 0.3.0
+  '@metaplex-foundation/umi-core': 0.4.0
 
 devDependencies:
   typescript: 4.9.4
 
 packages:
 
-  /@metaplex-foundation/umi-core/0.3.0:
-    resolution: {integrity: sha512-gTyt7WMm/MDPlfZQGHiSroG1goQWaFwRN4LI3ZcVUtmQuVPgDE72ElEGYgef8jgz0toHhPIqzPamcaMyy3KUtg==}
+  /@metaplex-foundation/umi-core/0.4.0:
+    resolution: {integrity: sha512-VCaIDnP3IgsXz3T3kRfRWhvt2LAXIhKmCdsfN4t9cI4w64OG8+wvGfpX9JGJXM4hLzpzh84sjFE36fh2zeN9QA==}
     dev: false
 
   /typescript/4.9.4:

@@ -241,8 +241,10 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     return this.indented(`[TypeBoolNode] ${typeBool.size.toString()}`);
   }
 
-  visitTypeBytes(): string {
-    return this.indented('[TypeBytesNode]');
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): string {
+    return this.indented(
+      `[TypeBytesNode] size: ${typeBytes.getSizeAsString()}`
+    );
   }
 
   visitTypeNumber(typeNumber: nodes.TypeNumberNode): string {

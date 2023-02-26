@@ -123,8 +123,8 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return typeBool.toString();
   }
 
-  visitTypeBytes(): string {
-    return 'bytes';
+  visitTypeBytes(typeBytes: nodes.TypeBytesNode): string {
+    return typeBytes.toString();
   }
 
   visitTypeNumber(typeNumber: nodes.TypeNumberNode): string {
