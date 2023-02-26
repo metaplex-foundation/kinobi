@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.2.2
+
+### Patch Changes
+
+- [`decf050`](https://github.com/metaplex-foundation/kinobi/commit/decf0508f4bcb40dd688df5f9ec6bd545bf986dd) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add size to bytes node
+
 ## 0.2.1
 
 ### Patch Changes
