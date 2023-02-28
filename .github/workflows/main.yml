@@ -89,6 +89,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     needs: [lint, tests]
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
