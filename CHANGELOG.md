@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.2.3
+
+### Patch Changes
+
+- [`627afcb`](https://github.com/metaplex-foundation/kinobi/commit/627afcbd6fa84a79187f190395077608eeb034fe) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add importStrategy to JSTypeManifestVisitor
+
 ## 0.2.2
 
 ### Patch Changes
