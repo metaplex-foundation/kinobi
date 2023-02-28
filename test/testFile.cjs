@@ -14,6 +14,7 @@ const {
   UpdateInstructionsVisitor,
   UpdateProgramsVisitor,
   UpdateDefinedTypesVisitor,
+  TypeDefinedLinkNode,
   vScalar,
   vSome,
   vEnum,
@@ -37,6 +38,18 @@ kinobi.update(
 
 kinobi.update(
   new UpdateAccountsVisitor({
+    MasterEditionV1: {
+      seeds: [
+        { kind: 'literal', value: 'metadata' },
+        { kind: 'programId' },
+        {
+          kind: 'variable',
+          name: 'delegateRole',
+          description: 'The role of the delegate',
+          type: new TypeDefinedLinkNode('delegateRole'),
+        },
+      ],
+    },
     MasterEditionV2: {
       seeds: [
         { kind: 'literal', value: 'metadata' },

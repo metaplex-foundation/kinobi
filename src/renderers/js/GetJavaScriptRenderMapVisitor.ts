@@ -35,7 +35,10 @@ export type GetJavaScriptRenderMapOptions = {
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<Dependency, string>;
   typeManifestVisitor?: Visitor<JavaScriptTypeManifest> & {
-    registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
+    registerDefinedTypes: (definedTypes: nodes.DefinedTypeNode[]) => void;
+    setImportStrategy: (
+      importStrategy: 'all' | 'looseOnly' | 'strictOnly'
+    ) => void;
   };
 };
 
@@ -81,9 +84,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     root.allDefinedTypes.forEach((definedType) => {
       this.availableDefinedTypes.set(definedType.name, definedType);
     });
-    if (this.typeManifestVisitor.registerDefinedTypes) {
-      this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
-    }
+    this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
 
     const programsToExport = root.programs.filter((p) => !p.metadata.internal);
     const accountsToExport = root.allAccounts.filter(
@@ -244,7 +245,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         .length > 0;
     const seeds = account.metadata.seeds.map((seed) => {
       if (seed.kind !== 'variable') return seed;
+      this.typeManifestVisitor.setImportStrategy('looseOnly');
       const seedManifest = seed.type.accept(this.typeManifestVisitor);
+      this.typeManifestVisitor.setImportStrategy('all');
       imports.mergeWith(seedManifest.imports);
       return { ...seed, typeManifest: seedManifest };
     });

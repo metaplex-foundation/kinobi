@@ -10,6 +10,7 @@ import {
   Account,
   Context,
   Option,
+  Pda,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
@@ -20,7 +21,13 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi-core';
-import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
+import {
+  DelegateRoleArgs,
+  TmKey,
+  TmKeyArgs,
+  getDelegateRoleSerializer,
+  getTmKeySerializer,
+} from '../types';
 
 export type MasterEditionV1 = Account<MasterEditionV1AccountData>;
 
@@ -148,4 +155,21 @@ export function getMasterEditionV1Size(
   context: Pick<Context, 'serializer'>
 ): number | null {
   return getMasterEditionV1AccountDataSerializer(context).fixedSize;
+}
+
+export function findMasterEditionV1Pda(
+  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
+  seeds: {
+    /** The role of the delegate */
+    delegateRole: DelegateRoleArgs;
+  }
+): Pda {
+  const s = context.serializer;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
+  return context.eddsa.findPda(programId, [
+    s.string({ size: 'variable' }).serialize('metadata'),
+    programId.bytes,
+    getDelegateRoleSerializer(context).serialize(seeds.delegateRole),
+  ]);
 }

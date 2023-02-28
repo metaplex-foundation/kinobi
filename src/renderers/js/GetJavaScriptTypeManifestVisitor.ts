@@ -18,6 +18,8 @@ export class GetJavaScriptTypeManifestVisitor
 {
   private availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
 
+  private importStrategy: 'all' | 'looseOnly' | 'strictOnly' = 'all';
+
   private definedName: {
     strict: string;
     loose: string;
@@ -29,6 +31,12 @@ export class GetJavaScriptTypeManifestVisitor
     definedTypes.forEach((definedType) => {
       this.availableDefinedTypes.set(definedType.name, definedType);
     });
+  }
+
+  setImportStrategy(
+    strategy: GetJavaScriptTypeManifestVisitor['importStrategy']
+  ): void {
+    this.importStrategy = strategy;
   }
 
   visitRoot(): JavaScriptTypeManifest {
@@ -48,16 +56,11 @@ export class GetJavaScriptTypeManifestVisitor
       strict: `${pascalCase(account.name)}AccountData`,
       loose: `${pascalCase(account.name)}AccountDataArgs`,
     };
-    const child = account.type.accept(this);
     if (isTypeDefinedLinkNode(account.type)) {
-      const dependency =
-        account.type.dependency === 'generated'
-          ? 'generatedTypes'
-          : account.type.dependency;
-      child.imports.remove(dependency, [
-        `${pascalCase(account.type.name)}Args`,
-      ]);
+      this.setImportStrategy('strictOnly');
     }
+    const child = account.type.accept(this);
+    this.setImportStrategy('all');
     this.definedName = null;
     return child;
   }
@@ -67,14 +70,11 @@ export class GetJavaScriptTypeManifestVisitor
       strict: `${pascalCase(instruction.name)}InstructionData`,
       loose: `${pascalCase(instruction.name)}InstructionDataArgs`,
     };
-    const child = instruction.args.accept(this);
     if (isTypeDefinedLinkNode(instruction.args)) {
-      const dependency =
-        instruction.args.dependency === 'generated'
-          ? 'generatedTypes'
-          : instruction.args.dependency;
-      child.imports.remove(dependency, [pascalCase(instruction.args.name)]);
+      this.setImportStrategy('looseOnly');
     }
+    const child = instruction.args.accept(this);
+    this.setImportStrategy('all');
     this.definedName = null;
     return child;
   }
@@ -124,8 +124,10 @@ export class GetJavaScriptTypeManifestVisitor
       serializer: `${serializerName}(context)`,
       imports: new JavaScriptImportMap().add(dependency, [
         serializerName,
-        pascalCaseDefinedType,
-        `${pascalCaseDefinedType}Args`,
+        ...(this.importStrategy === 'looseOnly' ? [] : [pascalCaseDefinedType]),
+        ...(this.importStrategy === 'strictOnly'
+          ? []
+          : [`${pascalCaseDefinedType}Args`]),
       ]),
     };
   }
