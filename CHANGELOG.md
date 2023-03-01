@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.3.0
+
+### Minor Changes
+
+- [`9883739`](https://github.com/metaplex-foundation/kinobi/commit/9883739822c6a16ae544c03cc593fff7aa519833) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Upgrade Umi
+
 ## 0.2.3
 
 ### Patch Changes
