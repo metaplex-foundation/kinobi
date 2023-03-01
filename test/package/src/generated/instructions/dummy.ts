@@ -17,7 +17,7 @@ import {
   isSigner,
   mapSerializer,
   publicKey,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 
 // Accounts.
 export type DummyInstructionAccounts = {

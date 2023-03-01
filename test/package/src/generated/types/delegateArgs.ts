@@ -13,7 +13,7 @@ import {
   Serializer,
   SolAmount,
   mapAmountSerializer,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 
 export type DelegateArgs =
   | { __kind: 'CollectionV1' }

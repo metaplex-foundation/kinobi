@@ -1,4 +1,4 @@
-import type { Umi, UmiPlugin } from '@metaplex-foundation/umi-core';
+import type { Umi, UmiPlugin } from '@metaplex-foundation/umi';
 import {
   getMplCandyMachineCoreProgram,
   getMplTokenAuthRulesProgram,

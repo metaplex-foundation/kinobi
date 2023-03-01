@@ -1,8 +1,4 @@
-import {
-  Context,
-  mapSerializer,
-  Serializer,
-} from '@metaplex-foundation/umi-core';
+import { Context, mapSerializer, Serializer } from '@metaplex-foundation/umi';
 
 export type CreateReservationListInstructionData = { discriminator: number };
 

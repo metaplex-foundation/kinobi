@@ -14,7 +14,7 @@ import {
   WrappedInstruction,
   checkForIsWritableOverride as isWritable,
   publicKey,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,

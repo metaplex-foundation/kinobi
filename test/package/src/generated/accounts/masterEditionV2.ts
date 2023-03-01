@@ -20,7 +20,7 @@ import {
   deserializeAccount,
   gpaBuilder,
   mapSerializer,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;

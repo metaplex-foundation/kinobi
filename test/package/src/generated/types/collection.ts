@@ -11,7 +11,7 @@ import {
   PublicKey,
   Serializer,
   mapSerializer,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 
 export type Collection = { verified: boolean; key: PublicKey };
 

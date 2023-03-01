@@ -18,7 +18,7 @@ import {
   mapSerializer,
   publicKey,
   some,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 import {
   AuthorityType,
   AuthorityTypeArgs,

@@ -15,7 +15,7 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 import {
   ReservationListV1AccountData,
   getReservationListV1AccountDataSerializer,

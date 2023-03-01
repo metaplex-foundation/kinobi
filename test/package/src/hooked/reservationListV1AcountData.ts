@@ -5,7 +5,7 @@ import {
   Option,
   PublicKey,
   Serializer,
-} from '@metaplex-foundation/umi-core';
+} from '@metaplex-foundation/umi';
 import {
   deserializeReservationListV1,
   getReservationV1Serializer,

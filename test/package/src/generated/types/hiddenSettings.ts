@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi-core';
+import { Context, Serializer } from '@metaplex-foundation/umi';
 
 /** Hidden settings for large mints used with off-chain data. */
 export type HiddenSettings = {
