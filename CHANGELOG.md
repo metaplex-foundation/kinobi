@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.3.3
+
+### Patch Changes
+
+- [`2dacc74`](https://github.com/metaplex-foundation/kinobi/commit/2dacc748c21f6167115b34e80724b23ecbcf2d6b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Separate scalar and empty cases in Enum value
+
 ## 0.3.2
 
 ### Patch Changes
