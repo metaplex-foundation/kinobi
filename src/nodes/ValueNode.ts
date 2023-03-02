@@ -75,18 +75,18 @@ export type EnumValueNode = {
   __kind: 'enum';
   enumType: string;
   variant: string;
-  value: StructValueNode | TupleValueNode | null;
+  value: StructValueNode | TupleValueNode | 'empty' | 'scalar';
   dependency: Dependency | null;
 };
 export const vEnum = (
   enumType: string,
   variant: string,
-  value?: StructValueNode | TupleValueNode | null,
+  value?: StructValueNode | TupleValueNode | 'empty' | 'scalar',
   dependency?: Dependency | null
 ): EnumValueNode => ({
   __kind: 'enum',
   enumType,
   variant,
-  value: value ?? null,
+  value: value ?? 'scalar',
   dependency: dependency ?? null,
 });

@@ -21,7 +21,6 @@ const {
   vTuple,
   vPublicKey,
 } = require('../dist/cjs/index.js');
-const { TypeNumberNode } = require('../dist/cjs/nodes/TypeNumberNode.js');
 
 const kinobi = new Kinobi([
   __dirname + '/mpl_candy_machine_core.json',
@@ -77,7 +76,7 @@ kinobi.update(
           kind: 'variable',
           name: 'role',
           description: 'The delegate role',
-          type: new TypeNumberNode('u8'),
+          type: new TypeDefinedLinkNode('delegateRole'),
         },
       ],
     },
@@ -134,8 +133,10 @@ kinobi.update(
             kind: 'pda',
             name: 'delegateRecord',
             seeds: {
-              mint: { kind: 'account', name: 'foo' },
-              role: { kind: 'value', value: vScalar(42) },
+              role: {
+                kind: 'value',
+                value: vEnum('delegateRole', 'Collection'),
+              },
             },
           },
         },

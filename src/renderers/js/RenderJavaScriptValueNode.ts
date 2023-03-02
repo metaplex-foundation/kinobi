@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { camelCase, mainCase, pascalCase } from '../../utils';
+import { camelCase, pascalCase } from '../../utils';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
 export function renderJavaScriptValueNode(
@@ -50,28 +50,23 @@ export function renderJavaScriptValueNode(
         render: `{ ${struct.map((c) => c.render).join(', ')} }`,
       };
     case 'enum':
-      const definedType = types.get(mainCase(value.enumType));
-      if (!definedType || !nodes.isTypeEnumNode(definedType.type)) {
-        throw new Error(`Cannot find enum ${value.enumType}.`);
-      }
-
-      const enumName = pascalCase(definedType.type.name);
+      const enumName = pascalCase(value.enumType);
       const variantName = pascalCase(value.variant);
       const rawDependency = value.dependency ?? 'generated';
       const dependency =
         rawDependency === 'generated' ? 'generatedTypes' : rawDependency;
 
-      if (definedType.type.isScalarEnum()) {
+      if (value.value === 'scalar') {
         return {
           imports: imports.add(dependency, enumName),
           render: `${enumName}.${variantName}`,
         };
       }
 
-      const enumFn = camelCase(definedType.type.name);
+      const enumFn = camelCase(value.enumType);
       imports.add(dependency, enumFn);
 
-      if (!value.value) {
+      if (value.value === 'empty') {
         return { imports, render: `${enumFn}('${variantName}')` };
       }
 

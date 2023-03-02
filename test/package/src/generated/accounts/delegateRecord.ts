@@ -144,7 +144,7 @@ export function findDelegateRecordPda(
   context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
   seeds: {
     /** The delegate role */
-    role: number;
+    role: DelegateRoleArgs;
   }
 ): Pda {
   const s = context.serializer;
@@ -153,6 +153,6 @@ export function findDelegateRecordPda(
   return context.eddsa.findPda(programId, [
     s.string({ size: 'variable' }).serialize('delegate_record'),
     programId.bytes,
-    s.u8().serialize(seeds.role),
+    getDelegateRoleSerializer(context).serialize(seeds.role),
   ]);
 }

@@ -19,6 +19,7 @@ import {
   publicKey,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';
+import { DelegateRole } from '../types';
 
 // Accounts.
 export type DummyInstructionAccounts = {
@@ -81,7 +82,7 @@ export function dummy(
   const fooAccount = input.foo ?? barAccount;
   const delegateRecordAccount =
     input.delegateRecord ??
-    findDelegateRecordPda(context, { mint: publicKey(fooAccount), role: 42 });
+    findDelegateRecordPda(context, { role: DelegateRole.Collection });
 
   // Edition (optional).
   if (editionAccount) {
