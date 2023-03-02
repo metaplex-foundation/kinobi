@@ -284,6 +284,19 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .accept(this.resolvedInstructionAccountVisitor)
       .map((account) => {
         const hasDefaultValue = account.defaultsTo.kind !== 'none';
+        if (account.defaultsTo.kind === 'pda') {
+          const { seeds } = account.defaultsTo;
+          Object.keys(seeds).forEach((seed: string) => {
+            const seedValue = seeds[seed];
+            if (seedValue.kind !== 'value') return;
+            const seedManifest = renderJavaScriptValueNode(
+              seedValue.value,
+              this.availableDefinedTypes
+            );
+            (seedValue as any).render = seedManifest.render;
+            imports.mergeWith(seedManifest.imports);
+          });
+        }
         return {
           ...account,
           type: this.getInstructionAccountType(account),

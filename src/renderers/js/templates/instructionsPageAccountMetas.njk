@@ -8,7 +8,9 @@
       {%- if (account.defaultsTo.seeds | length) > 0 -%}
         {
           {%- for seedKey, seedValue in account.defaultsTo.seeds -%}
-            {%- if seedValue.kind === 'account' -%}
+            {%- if seedValue.kind === 'value' -%}
+              {{ seedKey }}: {{ seedValue.render }},
+            {%- elif seedValue.kind === 'account' -%}
               {{ seedKey }}: publicKey({{ seedValue.name | camelCase }}Account),
             {%- else -%}
               {{ seedKey }}: {{ argsObj }}.{{ seedValue.name | camelCase }},

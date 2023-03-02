@@ -40,6 +40,11 @@
           "name": "bar",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "delegateRecord",
+          "isMut": true,
+          "isSigner": false
         }
       ]
     },

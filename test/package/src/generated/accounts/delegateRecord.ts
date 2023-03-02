@@ -9,6 +9,7 @@
 import {
   Account,
   Context,
+  Pda,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
@@ -136,5 +137,22 @@ export function getDelegateRecordGpaBuilder(
 }
 
 export function getDelegateRecordSize(): number {
-  return 3;
+  return 282;
+}
+
+export function findDelegateRecordPda(
+  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
+  seeds: {
+    /** The delegate role */
+    role: number;
+  }
+): Pda {
+  const s = context.serializer;
+  const programId: PublicKey =
+    context.programs.get('mplTokenMetadata').publicKey;
+  return context.eddsa.findPda(programId, [
+    s.string({ size: 'variable' }).serialize('delegate_record'),
+    programId.bytes,
+    s.u8().serialize(seeds.role),
+  ]);
 }

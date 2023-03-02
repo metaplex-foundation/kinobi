@@ -187,14 +187,13 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
 
           const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
             ([, seed]) => {
+              if (seed.kind === 'value') return true;
               if (seed.kind === 'account') {
                 return instruction.accounts.some(
                   (a) => a.name === mainCase(seed.name)
                 );
               }
-              if (nodes.isTypeDefinedLinkNode(instruction.args)) {
-                return true;
-              }
+              if (nodes.isTypeDefinedLinkNode(instruction.args)) return true;
               return instruction.args.fields.some(
                 (f) => f.name === mainCase(seed.name)
               );

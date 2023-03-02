@@ -21,6 +21,7 @@ const {
   vTuple,
   vPublicKey,
 } = require('../dist/cjs/index.js');
+const { TypeNumberNode } = require('../dist/cjs/nodes/TypeNumberNode.js');
 
 const kinobi = new Kinobi([
   __dirname + '/mpl_candy_machine_core.json',
@@ -65,6 +66,19 @@ kinobi.update(
           type: new TypePublicKeyNode(),
         },
         { kind: 'literal', value: 'edition' },
+      ],
+    },
+    delegateRecord: {
+      size: 282,
+      seeds: [
+        { kind: 'literal', value: 'delegate_record' },
+        { kind: 'programId' },
+        {
+          kind: 'variable',
+          name: 'role',
+          description: 'The delegate role',
+          type: new TypeNumberNode('u8'),
+        },
       ],
     },
     ReservationListV1: {
@@ -115,6 +129,16 @@ kinobi.update(
         edition: { defaultsTo: { kind: 'account', name: 'mint' } },
         foo: { defaultsTo: { kind: 'account', name: 'bar' } },
         bar: { defaultsTo: { kind: 'programId' } },
+        delegateRecord: {
+          defaultsTo: {
+            kind: 'pda',
+            name: 'delegateRecord',
+            seeds: {
+              mint: { kind: 'account', name: 'foo' },
+              role: { kind: 'value', value: vScalar(42) },
+            },
+          },
+        },
       },
     },
     DeprecatedCreateReservationList: {

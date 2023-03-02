@@ -18,6 +18,7 @@ import {
   mapSerializer,
   publicKey,
 } from '@metaplex-foundation/umi';
+import { findDelegateRecordPda } from '../accounts';
 
 // Accounts.
 export type DummyInstructionAccounts = {
@@ -28,6 +29,7 @@ export type DummyInstructionAccounts = {
   payer?: Signer;
   foo?: PublicKey;
   bar?: Signer;
+  delegateRecord?: PublicKey;
 };
 
 // Arguments.
@@ -58,7 +60,7 @@ export function getDummyInstructionDataSerializer(
 
 // Instruction.
 export function dummy(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
   input: DummyInstructionAccounts
 ): WrappedInstruction {
   const signers: Signer[] = [];
@@ -77,6 +79,9 @@ export function dummy(
   const payerAccount = input.payer ?? context.payer;
   const barAccount = input.bar ?? { ...programId, isWritable: false };
   const fooAccount = input.foo ?? barAccount;
+  const delegateRecordAccount =
+    input.delegateRecord ??
+    findDelegateRecordPda(context, { mint: publicKey(fooAccount), role: 42 });
 
   // Edition (optional).
   if (editionAccount) {
@@ -141,6 +146,13 @@ export function dummy(
     pubkey: publicKey(barAccount),
     isSigner: isSigner(barAccount),
     isWritable: isWritable(barAccount, false),
+  });
+
+  // Delegate Record.
+  keys.push({
+    pubkey: delegateRecordAccount,
+    isSigner: false,
+    isWritable: isWritable(delegateRecordAccount, true),
   });
 
   // Data.

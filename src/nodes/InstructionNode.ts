@@ -5,7 +5,7 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
 import { TypeStructFieldNode } from './TypeStructFieldNode';
-import { vScalar } from './ValueNode';
+import { ValueNode, vScalar } from './ValueNode';
 import {
   isTypeDefinedLinkNode,
   TypeDefinedLinkNode,
@@ -47,7 +47,8 @@ export type InstructionNodeAccountDefaults =
 
 export type InstructionNodeAccountDefaultsSeed =
   | { kind: 'account'; name: string }
-  | { kind: 'arg'; name: string };
+  | { kind: 'arg'; name: string }
+  | { kind: 'value'; value: ValueNode };
 
 export type InstructionNodeBytesCreatedOnChain =
   | { kind: 'number'; value: number; includeHeader: boolean }
@@ -95,7 +96,9 @@ export class InstructionNode implements Visitable {
         defaultsTo.seeds = Object.fromEntries(
           Object.entries(defaultsTo.seeds).map(([key, seed]) => [
             mainCase(key),
-            { ...seed, name: mainCase(seed.name) },
+            seed.kind === 'value'
+              ? seed
+              : { ...seed, name: mainCase(seed.name) },
           ])
         );
       }
