@@ -143,9 +143,3 @@ export function getCollectionAuthorityRecordGpaBuilder(
     )
     .whereField('key', TmKey.CollectionAuthorityRecord);
 }
-
-export function getCollectionAuthorityRecordSize(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getCollectionAuthorityRecordAccountDataSerializer(context).fixedSize;
-}

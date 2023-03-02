@@ -135,10 +135,8 @@ export function getMasterEditionV2GpaBuilder(
     .whereField('key', TmKey.MasterEditionV2);
 }
 
-export function getMasterEditionV2Size(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getMasterEditionV2AccountDataSerializer(context).fixedSize;
+export function getMasterEditionV2Size(): number {
+  return 282;
 }
 
 export function findMasterEditionV2Pda(

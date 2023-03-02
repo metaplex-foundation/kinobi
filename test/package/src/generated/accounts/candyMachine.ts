@@ -171,9 +171,3 @@ export function getCandyMachineGpaBuilder(
     )
     .whereField('discriminator', [115, 157, 18, 166, 35, 44, 221, 13]);
 }
-
-export function getCandyMachineSize(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getCandyMachineAccountDataSerializer(context).fixedSize;
-}

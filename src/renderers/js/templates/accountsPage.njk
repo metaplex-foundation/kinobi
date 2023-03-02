@@ -84,14 +84,8 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
 {% endif %}
 
 {% if account.metadata.size !== null %}
-export function get{{ account.name | pascalCase }}Size(_context = {}): number {
+export function get{{ account.name | pascalCase }}Size(): number {
   return {{ account.metadata.size }};
-}
-{% else %}
-export function get{{ account.name | pascalCase }}Size(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return get{{ account.name | pascalCase }}AccountDataSerializer(context).fixedSize;
 }
 {% endif %}
 

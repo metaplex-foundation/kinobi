@@ -130,6 +130,6 @@ export function getEditionGpaBuilder(
     .whereField('key', TmKey.EditionV1);
 }
 
-export function getEditionSize(_context = {}): number {
+export function getEditionSize(): number {
   return 41;
 }

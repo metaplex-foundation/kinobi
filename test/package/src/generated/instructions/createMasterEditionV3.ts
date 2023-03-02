@@ -189,8 +189,7 @@ export function createMasterEditionV3(
     getCreateMasterEditionV3InstructionDataSerializer(context).serialize(input);
 
   // Bytes Created On Chain.
-  const bytesCreatedOnChain =
-    (getMasterEditionV2Size(context) ?? 0) + ACCOUNT_HEADER_SIZE;
+  const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: { keys, programId, data },

@@ -135,6 +135,6 @@ export function getDelegateRecordGpaBuilder(
     .whereField('key', TmKey.Delegate);
 }
 
-export function getDelegateRecordSize(_context = {}): number {
+export function getDelegateRecordSize(): number {
   return 3;
 }

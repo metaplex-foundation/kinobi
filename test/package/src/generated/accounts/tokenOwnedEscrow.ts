@@ -144,9 +144,3 @@ export function getTokenOwnedEscrowGpaBuilder(
     )
     .whereField('key', TmKey.TokenOwnedEscrow);
 }
-
-export function getTokenOwnedEscrowSize(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getTokenOwnedEscrowAccountDataSerializer(context).fixedSize;
-}

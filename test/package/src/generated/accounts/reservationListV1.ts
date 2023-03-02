@@ -78,9 +78,3 @@ export async function safeFetchAllReservationListV1(
       deserializeReservationListV1(context, maybeAccount as RpcAccount)
     );
 }
-
-export function getReservationListV1Size(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getReservationListV1AccountDataSerializer(context).fixedSize;
-}

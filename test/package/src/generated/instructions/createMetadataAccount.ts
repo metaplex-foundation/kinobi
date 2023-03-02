@@ -196,8 +196,7 @@ export function createMetadataAccount(
   });
 
   // Bytes Created On Chain.
-  const bytesCreatedOnChain =
-    (getMetadataSize(context) ?? 0) + ACCOUNT_HEADER_SIZE;
+  const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: { keys, programId, data },

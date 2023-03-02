@@ -142,6 +142,6 @@ export function getUseAuthorityRecordGpaBuilder(
     .whereField('key', TmKey.UseAuthorityRecord);
 }
 
-export function getUseAuthorityRecordSize(_context = {}): number {
+export function getUseAuthorityRecordSize(): number {
   return 10;
 }

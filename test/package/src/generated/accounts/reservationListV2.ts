@@ -161,9 +161,3 @@ export function getReservationListV2GpaBuilder(
     )
     .whereField('key', TmKey.ReservationListV2);
 }
-
-export function getReservationListV2Size(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getReservationListV2AccountDataSerializer(context).fixedSize;
-}

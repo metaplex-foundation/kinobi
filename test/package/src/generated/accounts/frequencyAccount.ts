@@ -142,6 +142,6 @@ export function getFrequencyAccountGpaBuilder(
     .whereField('key', TaKey.Frequency);
 }
 
-export function getFrequencyAccountSize(_context = {}): number {
+export function getFrequencyAccountSize(): number {
   return 17;
 }

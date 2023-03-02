@@ -38,6 +38,9 @@ kinobi.update(
 
 kinobi.update(
   new UpdateAccountsVisitor({
+    Metadata: {
+      size: 679,
+    },
     MasterEditionV1: {
       seeds: [
         { kind: 'literal', value: 'metadata' },
@@ -51,6 +54,7 @@ kinobi.update(
       ],
     },
     MasterEditionV2: {
+      size: 282,
       seeds: [
         { kind: 'literal', value: 'metadata' },
         { kind: 'programId' },

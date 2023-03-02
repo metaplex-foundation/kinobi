@@ -238,10 +238,8 @@ export function getMetadataGpaBuilder(
     .whereField('key', TmKey.MetadataV1);
 }
 
-export function getMetadataSize(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getMetadataAccountDataSerializer(context).fixedSize;
+export function getMetadataSize(): number {
+  return 679;
 }
 
 export function findMetadataPda(

@@ -151,12 +151,6 @@ export function getMasterEditionV1GpaBuilder(
     .whereField('key', TmKey.MasterEditionV1);
 }
 
-export function getMasterEditionV1Size(
-  context: Pick<Context, 'serializer'>
-): number | null {
-  return getMasterEditionV1AccountDataSerializer(context).fixedSize;
-}
-
 export function findMasterEditionV1Pda(
   context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
   seeds: {
