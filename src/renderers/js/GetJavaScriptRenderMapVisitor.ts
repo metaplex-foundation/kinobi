@@ -35,7 +35,6 @@ export type GetJavaScriptRenderMapOptions = {
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<Dependency, string>;
   typeManifestVisitor?: Visitor<JavaScriptTypeManifest> & {
-    registerDefinedTypes: (definedTypes: nodes.DefinedTypeNode[]) => void;
     setImportStrategy: (
       importStrategy: 'all' | 'looseOnly' | 'strictOnly'
     ) => void;
@@ -46,8 +45,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   readonly options: Required<GetJavaScriptRenderMapOptions>;
 
   private program: nodes.ProgramNode | null = null;
-
-  private availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
 
   private resolvedInstructionAccountVisitor: Visitor<
     ResolvedInstructionAccount[]
@@ -80,12 +77,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
-    // Make defined types available to all descendants.
-    root.allDefinedTypes.forEach((definedType) => {
-      this.availableDefinedTypes.set(definedType.name, definedType);
-    });
-    this.typeManifestVisitor.registerDefinedTypes(root.allDefinedTypes);
-
     const programsToExport = root.programs.filter((p) => !p.metadata.internal);
     const accountsToExport = root.allAccounts.filter(
       (a) => !a.metadata.internal
@@ -223,8 +214,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       const { discriminatorField } = account;
       const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value
         ? renderJavaScriptValueNode(
-            discriminatorField.metadata.defaultsTo.value,
-            this.availableDefinedTypes
+            discriminatorField.metadata.defaultsTo.value
           )
         : undefined;
       if (discriminatorValue) {
@@ -289,10 +279,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           Object.keys(seeds).forEach((seed: string) => {
             const seedValue = seeds[seed];
             if (seedValue.kind !== 'value') return;
-            const seedManifest = renderJavaScriptValueNode(
-              seedValue.value,
-              this.availableDefinedTypes
-            );
+            const seedManifest = renderJavaScriptValueNode(seedValue.value);
             (seedValue as any).render = seedManifest.render;
             imports.mergeWith(seedManifest.imports);
           });

@@ -16,8 +16,6 @@ export type JavaScriptTypeManifest = {
 export class GetJavaScriptTypeManifestVisitor
   implements Visitor<JavaScriptTypeManifest>
 {
-  private availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
-
   private importStrategy: 'all' | 'looseOnly' | 'strictOnly' = 'all';
 
   private definedName: {
@@ -26,12 +24,6 @@ export class GetJavaScriptTypeManifestVisitor
   } | null = null;
 
   constructor(readonly serializerVariable = 's') {}
-
-  registerDefinedTypes(definedTypes: nodes.DefinedTypeNode[]): void {
-    definedTypes.forEach((definedType) => {
-      this.availableDefinedTypes.set(definedType.name, definedType);
-    });
-  }
 
   setImportStrategy(
     strategy: GetJavaScriptTypeManifestVisitor['importStrategy']
@@ -343,8 +335,7 @@ export class GetJavaScriptTypeManifestVisitor
           typeof f.metadata.defaultsTo
         >;
         const { render: renderedValue, imports } = renderJavaScriptValueNode(
-          defaultsTo.value,
-          this.availableDefinedTypes
+          defaultsTo.value
         );
         baseManifest.imports.mergeWith(imports);
         if (defaultsTo.strategy === 'omitted') {

@@ -2,10 +2,7 @@ import * as nodes from '../../nodes';
 import { camelCase, pascalCase } from '../../utils';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
-export function renderJavaScriptValueNode(
-  value: nodes.ValueNode,
-  types: Map<string, nodes.DefinedTypeNode>
-): {
+export function renderJavaScriptValueNode(value: nodes.ValueNode): {
   imports: JavaScriptImportMap;
   render: string;
 } {
@@ -13,21 +10,21 @@ export function renderJavaScriptValueNode(
   switch (value.__kind) {
     case 'list':
     case 'tuple':
-      const list = value.values.map((v) => renderJavaScriptValueNode(v, types));
+      const list = value.values.map((v) => renderJavaScriptValueNode(v));
       return {
         imports: imports.mergeWith(...list.map((c) => c.imports)),
         render: `[${list.map((c) => c.render).join(', ')}]`,
       };
     case 'set':
-      const set = value.values.map((v) => renderJavaScriptValueNode(v, types));
+      const set = value.values.map((v) => renderJavaScriptValueNode(v));
       return {
         imports: imports.mergeWith(...set.map((c) => c.imports)),
         render: `new Set([${set.map((c) => c.render).join(', ')}])`,
       };
     case 'map':
       const map = value.values.map(([k, v]) => {
-        const mapKey = renderJavaScriptValueNode(k, types);
-        const mapValue = renderJavaScriptValueNode(v, types);
+        const mapKey = renderJavaScriptValueNode(k);
+        const mapValue = renderJavaScriptValueNode(v);
         return {
           imports: mapKey.imports.mergeWith(mapValue.imports),
           render: `[${mapKey.render}, ${mapValue.render}]`,
@@ -39,7 +36,7 @@ export function renderJavaScriptValueNode(
       };
     case 'struct':
       const struct = Object.entries(value.values).map(([k, v]) => {
-        const structValue = renderJavaScriptValueNode(v, types);
+        const structValue = renderJavaScriptValueNode(v);
         return {
           imports: structValue.imports,
           render: `${k}: ${structValue.render}`,
@@ -70,7 +67,7 @@ export function renderJavaScriptValueNode(
         return { imports, render: `${enumFn}('${variantName}')` };
       }
 
-      const enumValue = renderJavaScriptValueNode(value.value, types);
+      const enumValue = renderJavaScriptValueNode(value.value);
       const fields = enumValue.render;
       imports.mergeWith(enumValue.imports);
 
@@ -79,7 +76,7 @@ export function renderJavaScriptValueNode(
         render: `${enumFn}('${variantName}', ${fields})`,
       };
     case 'optionSome':
-      const child = renderJavaScriptValueNode(value.value, types);
+      const child = renderJavaScriptValueNode(value.value);
       return {
         imports: child.imports.add('core', 'some'),
         render: `some(${child.render})`,
