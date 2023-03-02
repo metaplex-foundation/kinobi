@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.3.2
+
+### Patch Changes
+
+- [`485a697`](https://github.com/metaplex-foundation/kinobi/commit/485a69764fd64a193f32fd8c6f3c663a4746afb8) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Allow value seeds on account default values
+
 ## 0.3.1
 
 ### Patch Changes
