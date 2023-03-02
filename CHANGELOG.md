@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.3.1
+
+### Patch Changes
+
+- [`36497cb`](https://github.com/metaplex-foundation/kinobi/commit/36497cb309ee274941d6efed900cd7bb90263362) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Only export getAccountSize if size is not null
+
 ## 0.3.0
 
 ### Minor Changes
