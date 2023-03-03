@@ -17,6 +17,7 @@ export * from './UnwrapDefinedTypesVisitor';
 export * from './UnwrapInstructionArgsDefinedTypesVisitor';
 export * from './UnwrapInstructionArgsStructVisitor';
 export * from './UnwrapStructVisitor';
+export * from './UnwrapTypeDefinedLinksVisitor';
 export * from './UpdateAccountsVisitor';
 export * from './UpdateDefinedTypesVisitor';
 export * from './UpdateErrorsVisitor';
