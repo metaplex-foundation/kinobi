@@ -54,7 +54,7 @@ export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<no
       // Get selectors from the defined types and their programs.
       .map(
         ({ program, type }): NodeSelector => ({
-          type: 'definedType',
+          type: 'DefinedTypeNode',
           name: type.name,
           program: program.name,
         })

@@ -20,7 +20,7 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { type: 'account', stack: selectorStack, name },
+          selector: { type: 'AccountNode', stack: selectorStack, name },
           transformer: (node, stack, program) => {
             nodes.assertAccountNode(node);
             if (typeof updates === 'function') {

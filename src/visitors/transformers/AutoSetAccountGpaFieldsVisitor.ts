@@ -18,7 +18,7 @@ export class AutoSetAccountGpaFieldsVisitor extends TransformNodesVisitor {
   ) {
     super([
       {
-        selector: { type: 'account' },
+        selector: { type: 'AccountNode' },
         transformer: (node) => {
           nodes.assertAccountNode(node);
           if (!this.override && node.metadata.gpaFields.length > 0) return node;

@@ -6,7 +6,7 @@ export class UnwrapInstructionArgsStructVisitor extends TransformNodesVisitor {
   constructor() {
     super([
       {
-        selector: { type: 'instruction' },
+        selector: { type: 'InstructionNode' },
         transformer: (instruction) => {
           nodes.assertInstructionNode(instruction);
           return new nodes.InstructionNode(

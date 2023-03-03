@@ -17,7 +17,7 @@ export class UpdateErrorsVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, ErrorUpdates>) {
     const transforms = Object.entries(map).map(
       ([name, updates]): NodeTransform => ({
-        selector: { type: 'error', name },
+        selector: { type: 'ErrorNode', name },
         transformer: (node, stack, program) => {
           nodes.assertErrorNode(node);
           if (typeof updates === 'function') {

@@ -2,20 +2,9 @@ import * as nodes from '../nodes';
 import { mainCase } from '../utils';
 import type { NodeStack } from './NodeStack';
 
-export type NodeSelectorType =
-  | 'program'
-  | 'instruction'
-  | 'account'
-  | 'definedType'
-  | 'error'
-  | 'typeDefinedLink'
-  | 'typeStruct'
-  | 'typeString'
-  | 'typeNumber';
-
 export type NodeSelector =
   | {
-      type: NodeSelectorType | '*';
+      type: nodes.Node['nodeClass'] | '*';
       name?: string;
       stack?: string | string[];
       program?: string;
@@ -34,29 +23,8 @@ export const toNodeSelectorFunction = (
   if (typeof selector === 'function') return selector;
 
   const checkType: NodeSelectorFunction = (node) => {
-    switch (selector.type) {
-      case 'program':
-        return nodes.isProgramNode(node);
-      case 'instruction':
-        return nodes.isInstructionNode(node);
-      case 'account':
-        return nodes.isAccountNode(node);
-      case 'definedType':
-        return nodes.isDefinedTypeNode(node);
-      case 'error':
-        return nodes.isErrorNode(node);
-      case 'typeDefinedLink':
-        return nodes.isTypeDefinedLinkNode(node);
-      case 'typeStruct':
-        return nodes.isTypeStructNode(node);
-      case 'typeString':
-        return nodes.isTypeStringNode(node);
-      case 'typeNumber':
-        return nodes.isTypeNumberNode(node);
-      case '*':
-      default:
-        return true;
-    }
+    if (!selector.type || selector.type === '*') return true;
+    return selector.type === node.nodeClass;
   };
 
   const checkName: NodeSelectorFunction = (node) => {

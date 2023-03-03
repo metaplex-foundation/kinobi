@@ -12,7 +12,7 @@ export class FlattenStructVisitor extends TransformNodesVisitor {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'typeStruct', stack, name },
+          selector: { type: 'TypeStructNode', stack, name },
           transformer: (node) => flattenStruct(node, options),
         };
       }
