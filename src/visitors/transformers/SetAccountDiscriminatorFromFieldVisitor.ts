@@ -29,7 +29,7 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
             return new nodes.AccountNode(
               {
                 ...node.metadata,
-                discriminator: { kind: 'field', name: field },
+                discriminator: { kind: 'field', name: field, value: null },
               },
               new nodes.TypeStructNode(node.type.name, [
                 ...node.type.fields.slice(0, fieldIndex),

@@ -65,7 +65,7 @@ export function getReservationListV1GpaBuilder(
   const s = context.serializer;
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
-    .registerFields<{
+    .registerFieldsFromStruct<{
       key: TmKeyArgs;
       masterEdition: PublicKey;
       supplySnapshot: Option<number | bigint>;

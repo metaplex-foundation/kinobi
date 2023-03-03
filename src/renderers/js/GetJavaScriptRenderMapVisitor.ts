@@ -189,6 +189,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         'RpcAccount',
         'RpcGetAccountOptions',
         'RpcGetAccountsOptions',
+        ...(!nodes.isTypeDefinedLinkNode(account.type) ? ['Serializer'] : []),
       ])
       .remove('generatedTypes', [account.name]);
 
@@ -240,6 +241,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     });
     let resolvedGpaFields: { type: string; argument: string } | null = null;
     if (gpaFields.length > 0) {
+      imports.add('core', ['gpaBuilder']);
       resolvedGpaFields = {
         type: `{ ${gpaFields.map((f) => f.manifest.looseType).join('')} }`,
         argument: `{ ${gpaFields
