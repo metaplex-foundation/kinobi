@@ -125,11 +125,11 @@ export function getDelegateRecordGpaBuilder(
   const s = context.serializer;
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
-    .registerFields<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>([
-      ['key', getTmKeySerializer(context)],
-      ['role', getDelegateRoleSerializer(context)],
-      ['bump', s.u8()],
-    ])
+    .registerFields<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>({
+      key: [0, getTmKeySerializer(context)],
+      role: [1, getDelegateRoleSerializer(context)],
+      bump: [2, s.u8()],
+    })
     .deserializeUsing<DelegateRecord>((account) =>
       deserializeDelegateRecord(context, account)
     )

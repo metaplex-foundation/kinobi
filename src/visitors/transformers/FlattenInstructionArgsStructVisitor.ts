@@ -1,18 +1,18 @@
 import * as nodes from '../../nodes';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
-import { unwrapStruct } from './UnwrapStructVisitor';
+import { flattenStruct } from './FlattenStructVisitor';
 
 export class UnwrapInstructionArgsStructVisitor extends TransformNodesVisitor {
   constructor() {
     super([
       {
-        selector: { type: 'instruction' },
+        selector: { type: 'InstructionNode' },
         transformer: (instruction) => {
           nodes.assertInstructionNode(instruction);
           return new nodes.InstructionNode(
             instruction.metadata,
             instruction.accounts,
-            unwrapStruct(instruction.args),
+            flattenStruct(instruction.args),
             instruction.subInstructions
           );
         },

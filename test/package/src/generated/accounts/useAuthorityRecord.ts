@@ -131,11 +131,11 @@ export function getUseAuthorityRecordGpaBuilder(
       key: TmKeyArgs;
       allowedUses: number | bigint;
       bump: number;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['allowedUses', s.u64()],
-      ['bump', s.u8()],
-    ])
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      allowedUses: [1, s.u64()],
+      bump: [9, s.u8()],
+    })
     .deserializeUsing<UseAuthorityRecord>((account) =>
       deserializeUseAuthorityRecord(context, account)
     )

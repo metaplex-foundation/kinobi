@@ -2,7 +2,7 @@ import { mainCase } from '../../utils';
 import { logWarn } from '../../logs';
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
-import { unwrapStruct } from './UnwrapStructVisitor';
+import { flattenStruct } from './FlattenStructVisitor';
 
 export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisitor {
   protected allDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
@@ -13,7 +13,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { type: 'instruction', stack: selectorStack, name },
+          selector: { type: 'InstructionNode', stack: selectorStack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
             if (nodes.isTypeDefinedLinkNode(node.args)) return node;
@@ -86,7 +86,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                 return new nodes.InstructionNode(
                   { ...node.metadata, name: subName },
                   node.accounts,
-                  unwrapStruct(
+                  flattenStruct(
                     new nodes.TypeStructNode(
                       `${subName}InstructionData`,
                       subFields

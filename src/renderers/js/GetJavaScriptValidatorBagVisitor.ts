@@ -34,20 +34,27 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   visitAccount(account: nodes.AccountNode): ValidatorBag {
     const bag = super.visitAccount(account);
     this.pushNode(account);
+    const pascalCaseName = pascalCase(account.name);
     const exports = {
-      [account.name]: 'type',
-      [`${account.name}AccountData`]: 'type',
-      [`${account.name}AccountDataArgs`]: 'type',
-      [`fetch${account.name}`]: 'function',
-      [`safeFetch${account.name}`]: 'function',
-      [`deserialize${account.name}`]: 'function',
-      [`get${account.name}AccountDataSerializer`]: 'function',
-      [`get${account.name}Size`]: 'function',
+      [pascalCaseName]: 'type',
+      [`${pascalCaseName}AccountData`]: 'type',
+      [`${pascalCaseName}AccountDataArgs`]: 'type',
+      [`fetch${pascalCaseName}`]: 'function',
+      [`safeFetch${pascalCaseName}`]: 'function',
+      [`deserialize${pascalCaseName}`]: 'function',
+      [`get${pascalCaseName}AccountDataSerializer`]: 'function',
+      [`get${pascalCaseName}Size`]: 'function',
     };
     if (account.metadata.seeds.length > 0) {
-      exports[`find${account.name}Pda`] = 'function';
+      exports[`find${pascalCaseName}Pda`] = 'function';
     }
-    bag.mergeWith([this.checkExportConflicts(account, exports)]);
+    if (account.metadata.gpaFields.length > 0) {
+      exports[`get${pascalCaseName}GpaBuilder`] = 'function';
+    }
+    if (!account.metadata.internal) {
+      bag.mergeWith([this.checkExportConflicts(account, exports)]);
+    }
+
     const reservedAccountFields = new Set(['publicKey', 'header']);
     if (!nodes.isTypeDefinedLinkNode(account.type)) {
       const invalidFields = account.type.fields
@@ -69,15 +76,19 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   visitInstruction(instruction: nodes.InstructionNode): ValidatorBag {
     const bag = super.visitInstruction(instruction);
     this.pushNode(instruction);
-    bag.mergeWith([
-      this.checkExportConflicts(instruction, {
-        [camelCase(instruction.name)]: 'function',
-        [`${instruction.name}InstructionAccounts`]: 'type',
-        [`${instruction.name}InstructionData`]: 'type',
-        [`${instruction.name}InstructionDataArgs`]: 'type',
-        [`get${instruction.name}InstructionDataSerializer`]: 'function',
-      }),
-    ]);
+    const camelCaseName = camelCase(instruction.name);
+    const pascalCaseName = pascalCase(instruction.name);
+    if (!instruction.metadata.internal) {
+      bag.mergeWith([
+        this.checkExportConflicts(instruction, {
+          [camelCaseName]: 'function',
+          [`${pascalCaseName}InstructionAccounts`]: 'type',
+          [`${pascalCaseName}InstructionData`]: 'type',
+          [`${pascalCaseName}InstructionDataArgs`]: 'type',
+          [`get${pascalCaseName}InstructionDataSerializer`]: 'function',
+        }),
+      ]);
+    }
     this.popNode();
     return bag;
   }
@@ -87,19 +98,23 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     this.pushNode(definedType);
     const isDataEnum =
       nodes.isTypeEnumNode(definedType.type) && definedType.type.isDataEnum();
-    bag.mergeWith([
-      this.checkExportConflicts(definedType, {
-        [definedType.name]: 'type',
-        [`${definedType.name}Args`]: 'type',
-        [`fetch${definedType.name}`]: 'function',
-        ...(isDataEnum
-          ? {
-              [camelCase(definedType.name)]: 'function',
-              [`is${definedType.name}`]: 'function',
-            }
-          : {}),
-      }),
-    ]);
+    const camelCaseName = camelCase(definedType.name);
+    const pascalCaseName = pascalCase(definedType.name);
+    if (!definedType.metadata.internal) {
+      bag.mergeWith([
+        this.checkExportConflicts(definedType, {
+          [pascalCaseName]: 'type',
+          [`${pascalCaseName}Args`]: 'type',
+          [`fetch${pascalCaseName}`]: 'function',
+          ...(isDataEnum
+            ? {
+                [camelCaseName]: 'function',
+                [`is${pascalCaseName}`]: 'function',
+              }
+            : {}),
+        }),
+      ]);
+    }
     this.popNode();
     return bag;
   }

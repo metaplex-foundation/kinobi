@@ -48,7 +48,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     return new nodes.AccountNode(
       {
         ...account.metadata,
-        discriminator: { kind: 'field', name: 'discriminator' },
+        discriminator: { kind: 'field', name: 'discriminator', value: null },
       },
       new nodes.TypeStructNode(account.type.name, [
         discriminatorField,

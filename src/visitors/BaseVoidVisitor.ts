@@ -16,6 +16,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   visitAccount(account: nodes.AccountNode): void {
     account.type.accept(this);
     account.variableSeeds.forEach((seed) => seed.type.accept(this));
+    account.metadata.gpaFields.forEach((field) => field.type.accept(this));
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {

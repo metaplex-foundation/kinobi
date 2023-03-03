@@ -138,13 +138,13 @@ export function getMasterEditionV1GpaBuilder(
       maxSupply: Option<number | bigint>;
       printingMint: PublicKey;
       oneTimePrintingAuthorizationMint: PublicKey;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['supply', s.u64()],
-      ['maxSupply', s.option(s.u64())],
-      ['printingMint', s.publicKey()],
-      ['oneTimePrintingAuthorizationMint', s.publicKey()],
-    ])
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      supply: [1, s.u64()],
+      maxSupply: [9, s.option(s.u64())],
+      printingMint: [null, s.publicKey()],
+      oneTimePrintingAuthorizationMint: [null, s.publicKey()],
+    })
     .deserializeUsing<MasterEditionV1>((account) =>
       deserializeMasterEditionV1(context, account)
     )

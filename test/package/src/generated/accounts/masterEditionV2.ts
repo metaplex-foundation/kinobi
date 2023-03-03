@@ -124,11 +124,11 @@ export function getMasterEditionV2GpaBuilder(
       key: TmKeyArgs;
       supply: number | bigint;
       maxSupply: Option<number | bigint>;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['supply', s.u64()],
-      ['maxSupply', s.option(s.u64())],
-    ])
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      supply: [1, s.u64()],
+      maxSupply: [9, s.option(s.u64())],
+    })
     .deserializeUsing<MasterEditionV2>((account) =>
       deserializeMasterEditionV2(context, account)
     )

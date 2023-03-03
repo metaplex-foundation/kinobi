@@ -20,7 +20,7 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'instruction', stack, name },
+          selector: { type: 'InstructionNode', stack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
             if (nodes.isTypeDefinedLinkNode(node.args)) return node;

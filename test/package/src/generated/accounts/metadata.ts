@@ -210,28 +210,31 @@ export function getMetadataGpaBuilder(
       collectionDetails: Option<CollectionDetailsArgs>;
       programmableConfig: Option<ProgrammableConfigArgs>;
       delegateState: Option<DelegateStateArgs>;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['updateAuthority', s.publicKey()],
-      ['mint', s.publicKey()],
-      ['name', s.string()],
-      ['symbol', s.string()],
-      ['uri', s.string()],
-      ['sellerFeeBasisPoints', s.u16()],
-      ['creators', s.option(s.array(getCreatorSerializer(context)))],
-      ['primarySaleHappened', s.bool()],
-      ['isMutable', s.bool()],
-      ['editionNonce', s.option(s.u8())],
-      ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-      ['collection', s.option(getCollectionSerializer(context))],
-      ['uses', s.option(getUsesSerializer(context))],
-      ['collectionDetails', s.option(getCollectionDetailsSerializer(context))],
-      [
-        'programmableConfig',
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      updateAuthority: [1, s.publicKey()],
+      mint: [33, s.publicKey()],
+      name: [65, s.string()],
+      symbol: [null, s.string()],
+      uri: [null, s.string()],
+      sellerFeeBasisPoints: [null, s.u16()],
+      creators: [null, s.option(s.array(getCreatorSerializer(context)))],
+      primarySaleHappened: [null, s.bool()],
+      isMutable: [null, s.bool()],
+      editionNonce: [null, s.option(s.u8())],
+      tokenStandard: [null, s.option(getTokenStandardSerializer(context))],
+      collection: [null, s.option(getCollectionSerializer(context))],
+      uses: [null, s.option(getUsesSerializer(context))],
+      collectionDetails: [
+        null,
+        s.option(getCollectionDetailsSerializer(context)),
+      ],
+      programmableConfig: [
+        null,
         s.option(getProgrammableConfigSerializer(context)),
       ],
-      ['delegateState', s.option(getDelegateStateSerializer(context))],
-    ])
+      delegateState: [null, s.option(getDelegateStateSerializer(context))],
+    })
     .deserializeUsing<Metadata>((account) =>
       deserializeMetadata(context, account)
     )

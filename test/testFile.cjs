@@ -9,7 +9,7 @@ const {
   SetNumberWrappersVisitor,
   TypePublicKeyNode,
   UnwrapDefinedTypesVisitor,
-  UnwrapStructVisitor,
+  FlattenStructVisitor,
   UpdateAccountsVisitor,
   UpdateInstructionsVisitor,
   UpdateProgramsVisitor,
@@ -20,6 +20,9 @@ const {
   vEnum,
   vTuple,
   vPublicKey,
+  AutoSetAccountGpaFieldsVisitor,
+  UseCustomAccountSerializerVisitor,
+  UseCustomInstructionSerializerVisitor,
 } = require('../dist/cjs/index.js');
 
 const kinobi = new Kinobi([
@@ -80,9 +83,6 @@ kinobi.update(
         },
       ],
     },
-    ReservationListV1: {
-      link: true,
-    },
   })
 );
 
@@ -142,10 +142,7 @@ kinobi.update(
         },
       },
     },
-    DeprecatedCreateReservationList: {
-      name: 'CreateReservationList',
-      link: true,
-    },
+    DeprecatedCreateReservationList: { name: 'CreateReservationList' },
   })
 );
 
@@ -167,6 +164,18 @@ kinobi.update(
     'mplTokenMetadata.TokenOwnedEscrow': tmKey('TokenOwnedEscrow'),
     'mplTokenMetadata.DelegateRecord': tmKey('Delegate'),
     'mplTokenAuthRules.FrequencyAccount': taKey('Frequency'),
+  })
+);
+
+// Custom serializers.
+kinobi.update(
+  new UseCustomAccountSerializerVisitor({
+    ReservationListV1: { extract: true },
+  })
+);
+kinobi.update(
+  new UseCustomInstructionSerializerVisitor({
+    CreateReservationList: true,
   })
 );
 
@@ -195,7 +204,7 @@ kinobi.update(
 
 kinobi.update(new UnwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
-  new UnwrapStructVisitor({
+  new FlattenStructVisitor({
     'mplTokenMetadata.Metadata': ['Data'],
   })
 );
@@ -207,5 +216,6 @@ kinobi.update(
   })
 );
 
+kinobi.update(new AutoSetAccountGpaFieldsVisitor({ override: true }));
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./test/package/src/generated'));

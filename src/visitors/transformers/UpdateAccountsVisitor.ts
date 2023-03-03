@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
+import { AccountNodeMetadata } from '../../nodes';
 import { mainCase } from '../../utils';
-import { Dependency } from '../Dependency';
 import {
   NodeTransform,
   NodeTransformer,
@@ -11,10 +11,7 @@ import { renameStructNode } from './_renameHelpers';
 export type AccountUpdates =
   | NodeTransformer<nodes.AccountNode>
   | { delete: true }
-  | (Partial<nodes.AccountNodeMetadata> & {
-      data?: Record<string, string>;
-      link?: true | string | { name: string; dependency: Dependency };
-    });
+  | (Partial<nodes.AccountNodeMetadata> & { data?: Record<string, string> });
 
 export class UpdateAccountsVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, AccountUpdates>) {
@@ -23,7 +20,7 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { type: 'account', stack: selectorStack, name },
+          selector: { type: 'AccountNode', stack: selectorStack, name },
           transformer: (node, stack, program) => {
             nodes.assertAccountNode(node);
             if (typeof updates === 'function') {
@@ -32,23 +29,28 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
             if ('delete' in updates) {
               return null;
             }
+
             const newName = mainCase(updates.name ?? node.name);
             const data = updates.data ?? {};
-            const link = updates.link ? parseLink(newName, updates.link) : null;
+            const newGpaFields: nodes.AccountNodeGpaField[] =
+              node.metadata.gpaFields.map((f) => ({
+                ...f,
+                name: data[f.name] ?? f.name,
+              }));
+            const newMetadata: AccountNodeMetadata = {
+              ...node.metadata,
+              gpaFields: newGpaFields,
+              ...updates,
+            };
 
-            let newType: nodes.AccountNode['type'] = node.type;
-            if (link) {
-              newType = new nodes.TypeDefinedLinkNode(link.name, {
-                dependency: link.dependency,
-              });
-            } else if (nodes.isTypeStructNode(node.type)) {
-              newType = renameStructNode(node.type, data, newName);
+            if (nodes.isTypeStructNode(node.type)) {
+              return new nodes.AccountNode(
+                newMetadata,
+                renameStructNode(node.type, data, newName)
+              );
             }
 
-            return new nodes.AccountNode(
-              { ...node.metadata, ...updates },
-              newType
-            );
+            return new nodes.AccountNode(newMetadata, node.type);
           },
         };
       }
@@ -56,17 +58,4 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
 
     super(transforms);
   }
-}
-
-function parseLink(
-  name: string,
-  link: true | string | { name: string; dependency: Dependency }
-): { name: string; dependency: Dependency } {
-  if (typeof link === 'boolean') {
-    return { name: `${name}AccountData`, dependency: 'hooked' };
-  }
-  if (typeof link === 'string') {
-    return { name: link, dependency: 'hooked' };
-  }
-  return link;
 }

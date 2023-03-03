@@ -72,12 +72,12 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
     const s = context.serializer;
     const programId = context.programs.get('{{ program.name | camelCase }}').publicKey;
     return gpaBuilder(context, programId)
-      .registerFields<{{ gpaFields.type }}>({{ gpaFields.serializers }})
+      .registerFields<{{ gpaFields.type }}>({{ gpaFields.argument }})
       .deserializeUsing<{{ account.name | pascalCase }}>((account) => deserialize{{ account.name | pascalCase }}(context, account))
-      {%- if account.metadata.discriminator.kind === 'field' and gpaFields.discriminator %}
-        .whereField('{{ account.metadata.discriminator.name }}', {{ gpaFields.discriminator }})
-      {% elif account.metadata.discriminator.kind === 'size' and account.metadata.size %}
-        .whereSize({{ account.metadata.size }})
+      {%- if discriminator.kind === 'field' %}
+        .whereField('{{ discriminator.name }}', {{ discriminator.value }})
+      {% elif discriminator.kind === 'size' %}
+        .whereSize({{ discriminator.value }})
       {% endif -%}
     ;
   }

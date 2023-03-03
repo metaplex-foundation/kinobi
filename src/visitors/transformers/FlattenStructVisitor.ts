@@ -3,17 +3,17 @@ import * as nodes from '../../nodes';
 import { camelCase } from '../../utils';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
-export type UnwrapStructOptions = string[] | '*';
+export type FlattenStructOptions = string[] | '*';
 
-export class UnwrapStructVisitor extends TransformNodesVisitor {
-  constructor(readonly map: Record<string, UnwrapStructOptions>) {
+export class FlattenStructVisitor extends TransformNodesVisitor {
+  constructor(readonly map: Record<string, FlattenStructOptions>) {
     const transforms = Object.entries(map).map(
       ([selectorStack, options]): NodeTransform => {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'typeStruct', stack, name },
-          transformer: (node) => unwrapStruct(node, options),
+          selector: { type: 'TypeStructNode', stack, name },
+          transformer: (node) => flattenStruct(node, options),
         };
       }
     );
@@ -22,9 +22,9 @@ export class UnwrapStructVisitor extends TransformNodesVisitor {
   }
 }
 
-export const unwrapStruct = (
+export const flattenStruct = (
   node: nodes.Node,
-  options: UnwrapStructOptions = '*'
+  options: FlattenStructOptions = '*'
 ): nodes.TypeStructNode => {
   nodes.assertTypeStructNode(node);
   const camelCaseOptions = options === '*' ? options : options.map(camelCase);
@@ -49,7 +49,7 @@ export const unwrapStruct = (
 
   if (hasConflictingNames) {
     logWarn(
-      `Cound not unwrap the attributes of struct [${node.name}] ` +
+      `Cound not flatten the attributes of struct [${node.name}] ` +
         `since this would cause the following attributes ` +
         `to conflict [${uniqueDuplicates.join(', ')}].` +
         'You may want to rename the conflicting attributes.'

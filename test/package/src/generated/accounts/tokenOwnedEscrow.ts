@@ -133,12 +133,12 @@ export function getTokenOwnedEscrowGpaBuilder(
       baseToken: PublicKey;
       authority: EscrowAuthorityArgs;
       bump: number;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['baseToken', s.publicKey()],
-      ['authority', getEscrowAuthoritySerializer(context)],
-      ['bump', s.u8()],
-    ])
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      baseToken: [1, s.publicKey()],
+      authority: [33, getEscrowAuthoritySerializer(context)],
+      bump: [null, s.u8()],
+    })
     .deserializeUsing<TokenOwnedEscrow>((account) =>
       deserializeTokenOwnedEscrow(context, account)
     )

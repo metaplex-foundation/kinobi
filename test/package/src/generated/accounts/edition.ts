@@ -119,11 +119,11 @@ export function getEditionGpaBuilder(
       key: TmKeyArgs;
       parent: PublicKey;
       edition: number | bigint;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['parent', s.publicKey()],
-      ['edition', s.u64()],
-    ])
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      parent: [1, s.publicKey()],
+      edition: [33, s.u64()],
+    })
     .deserializeUsing<Edition>((account) =>
       deserializeEdition(context, account)
     )
