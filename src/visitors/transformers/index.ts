@@ -1,3 +1,4 @@
+export * from './AutoSetAccountGpaFieldsVisitor';
 export * from './AutoSetAnchorDiscriminatorsVisitor';
 export * from './AutoSetFixedAccountSizesVisitor';
 export * from './CreateSubInstructionsFromEnumArgsVisitor';

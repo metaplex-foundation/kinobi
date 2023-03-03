@@ -243,11 +243,13 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     if (gpaFields.length > 0) {
       imports.add('core', ['gpaBuilder']);
       resolvedGpaFields = {
-        type: `{ ${gpaFields.map((f) => f.manifest.looseType).join('')} }`,
+        type: `{ ${gpaFields
+          .map((f) => `'${f.name}': ${f.manifest.looseType}`)
+          .join(', ')} }`,
         argument: `{ ${gpaFields
           .map((f) => {
             const offset = f.offset === null ? 'null' : `${f.offset}`;
-            return `${f.name}: [${offset}, ${f.manifest.serializer}]`;
+            return `'${f.name}': [${offset}, ${f.manifest.serializer}]`;
           })
           .join(', ')} }`,
       };
