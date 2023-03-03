@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.4.0
+
+### Minor Changes
+
+- [#17](https://github.com/metaplex-foundation/kinobi/pull/17) [`a4a7eb0`](https://github.com/metaplex-foundation/kinobi/commit/a4a7eb03098655bc84f0e4bc1fd7fc1c02e62098) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add GPA fields and custom serializer visitors
+
 ## 0.3.3
 
 ### Patch Changes
