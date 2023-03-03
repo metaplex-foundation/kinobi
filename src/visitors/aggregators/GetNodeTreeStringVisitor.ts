@@ -194,7 +194,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent += 1;
     const item = typeOption.item.accept(this);
     this.indent -= 1;
-    const prefix = typeOption.prefix.accept(this);
+    const prefix = typeOption.prefix.toString();
     const fixed = typeOption.fixed ? ', fixed' : '';
     return [
       this.indented(`[TypeOptionNode] prefix: ${prefix}${fixed}`),
