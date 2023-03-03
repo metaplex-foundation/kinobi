@@ -23,7 +23,6 @@ import {
   getReservationListV1AccountDataSerializer,
 } from '../../hooked';
 import {
-  ReservationV1,
   ReservationV1Args,
   TmKey,
   TmKeyArgs,

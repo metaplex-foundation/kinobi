@@ -177,6 +177,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
+    const isLinked = nodes.isTypeDefinedLinkNode(account.type);
     const typeManifest = account.accept(this.typeManifestVisitor);
     const imports = new JavaScriptImportMap()
       .mergeWith(typeManifest.imports)
@@ -189,7 +190,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         'RpcAccount',
         'RpcGetAccountOptions',
         'RpcGetAccountsOptions',
-        ...(!nodes.isTypeDefinedLinkNode(account.type) ? ['Serializer'] : []),
+        ...(!isLinked ? ['Serializer'] : []),
       ])
       .remove('generatedTypes', [account.name]);
 
@@ -235,7 +236,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // GPA Fields.
     const gpaFields = account.metadata.gpaFields.map((gpaField) => {
+      this.typeManifestVisitor.setImportStrategy('looseOnly');
       const gpaFieldManifest = gpaField.type.accept(this.typeManifestVisitor);
+      this.typeManifestVisitor.setImportStrategy('all');
       imports.mergeWith(gpaFieldManifest.imports);
       return { ...gpaField, manifest: gpaFieldManifest };
     });
