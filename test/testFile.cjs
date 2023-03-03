@@ -149,7 +149,7 @@ kinobi.update(
 // Custom serializers.
 kinobi.update(
   new UseCustomAccountSerializerVisitor({
-    ReservationListV1: true,
+    ReservationListV1: { extract: true },
   })
 );
 kinobi.update(
