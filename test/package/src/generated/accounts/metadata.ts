@@ -196,13 +196,11 @@ export function getMetadataGpaBuilder(
       key: TmKeyArgs;
       updateAuthority: PublicKey;
       mint: PublicKey;
-      data: {
-        name: string;
-        symbol: string;
-        uri: string;
-        sellerFeeBasisPoints: number;
-        creators: Option<Array<CreatorArgs>>;
-      };
+      name: string;
+      symbol: string;
+      uri: string;
+      sellerFeeBasisPoints: number;
+      creators: Option<Array<CreatorArgs>>;
       primarySaleHappened: boolean;
       isMutable: boolean;
       editionNonce: Option<number>;
@@ -216,19 +214,11 @@ export function getMetadataGpaBuilder(
       key: [0, getTmKeySerializer(context)],
       updateAuthority: [1, s.publicKey()],
       mint: [33, s.publicKey()],
-      data: [
-        65,
-        s.struct<any>(
-          [
-            ['name', s.string()],
-            ['symbol', s.string()],
-            ['uri', s.string()],
-            ['sellerFeeBasisPoints', s.u16()],
-            ['creators', s.option(s.array(getCreatorSerializer(context)))],
-          ],
-          { description: 'Data' }
-        ),
-      ],
+      name: [65, s.string()],
+      symbol: [null, s.string()],
+      uri: [null, s.string()],
+      sellerFeeBasisPoints: [null, s.u16()],
+      creators: [null, s.option(s.array(getCreatorSerializer(context)))],
       primarySaleHappened: [null, s.bool()],
       isMutable: [null, s.bool()],
       editionNonce: [null, s.option(s.u8())],

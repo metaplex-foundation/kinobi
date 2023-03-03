@@ -20,6 +20,7 @@ const {
   vEnum,
   vTuple,
   vPublicKey,
+  AutoSetAccountGpaFieldsVisitor,
 } = require('../dist/cjs/index.js');
 
 const kinobi = new Kinobi([
@@ -207,5 +208,6 @@ kinobi.update(
   })
 );
 
+kinobi.update(new AutoSetAccountGpaFieldsVisitor({ override: true }));
 // kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
 kinobi.accept(new RenderJavaScriptVisitor('./test/package/src/generated'));
