@@ -37,16 +37,22 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
             const link = updates.link ? parseLink(newName, updates.link) : null;
 
             let newType: nodes.AccountNode['type'] = node.type;
+            let newGpaFields: nodes.AccountNodeGpaField[] =
+              node.metadata.gpaFields;
             if (link) {
               newType = new nodes.TypeDefinedLinkNode(link.name, {
                 dependency: link.dependency,
               });
             } else if (nodes.isTypeStructNode(node.type)) {
               newType = renameStructNode(node.type, data, newName);
+              newGpaFields = node.metadata.gpaFields.map((f) => ({
+                ...f,
+                name: data[f.name] ?? f.name,
+              }));
             }
 
             return new nodes.AccountNode(
-              { ...node.metadata, ...updates },
+              { ...node.metadata, gpaFields: newGpaFields, ...updates },
               newType
             );
           },
