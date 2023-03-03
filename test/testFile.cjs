@@ -21,6 +21,8 @@ const {
   vTuple,
   vPublicKey,
   AutoSetAccountGpaFieldsVisitor,
+  UseCustomAccountSerializerVisitor,
+  UseCustomInstructionSerializerVisitor,
 } = require('../dist/cjs/index.js');
 
 const kinobi = new Kinobi([
@@ -81,9 +83,6 @@ kinobi.update(
         },
       ],
     },
-    ReservationListV1: {
-      link: true,
-    },
   })
 );
 
@@ -143,10 +142,19 @@ kinobi.update(
         },
       },
     },
-    DeprecatedCreateReservationList: {
-      name: 'CreateReservationList',
-      link: true,
-    },
+    DeprecatedCreateReservationList: { name: 'CreateReservationList' },
+  })
+);
+
+// Custom serializers.
+kinobi.update(
+  new UseCustomAccountSerializerVisitor({
+    ReservationListV1: true,
+  })
+);
+kinobi.update(
+  new UseCustomInstructionSerializerVisitor({
+    CreateReservationList: true,
   })
 );
 

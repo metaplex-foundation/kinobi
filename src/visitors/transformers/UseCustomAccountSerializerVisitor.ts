@@ -62,8 +62,30 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
     const options: CustomAccountSerializerOptions | null =
       this.map[account.name] ?? null;
     if (!options) return account;
+    if (nodes.isTypeDefinedLinkNode(account.type)) return account;
+
+    let newMetadata = account.metadata;
+
+    // Ensure the discriminator value is not lost.
+    if (
+      account.metadata.discriminator?.kind === 'field' &&
+      account.metadata.discriminator.value === null
+    ) {
+      const fieldName = account.metadata.discriminator.name;
+      const discriminatorField =
+        account.type.fields.find((field) => field.name === fieldName) ?? null;
+      const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value;
+      newMetadata = {
+        ...account.metadata,
+        discriminator: {
+          ...account.metadata.discriminator,
+          value: discriminatorValue ?? null,
+        },
+      };
+    }
+
     return new nodes.AccountNode(
-      account.metadata,
+      newMetadata,
       new nodes.TypeDefinedLinkNode(options.name, {
         dependency: options.dependency,
       })

@@ -62,6 +62,8 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
     const options: CustomInstructionSerializerOptions | null =
       this.map[instruction.name] ?? null;
     if (!options) return instruction;
+    if (nodes.isTypeDefinedLinkNode(instruction.args)) return instruction;
+
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
