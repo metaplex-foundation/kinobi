@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.4.1
+
+### Patch Changes
+
+- [`79aa49f`](https://github.com/metaplex-foundation/kinobi/commit/79aa49fcc682fa84e89a34877214cfaf81fedf13) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix class that should have been renamed
+
 ## 0.4.0
 
 ### Minor Changes
