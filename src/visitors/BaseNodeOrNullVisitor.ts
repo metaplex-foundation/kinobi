@@ -36,7 +36,27 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const accountType = account.type.accept(this);
     if (accountType === null) return null;
     nodes.assertTypeStructOrDefinedLinkNode(accountType);
-    return new nodes.AccountNode(account.metadata, accountType);
+    const seeds = account.metadata.seeds
+      .map((seed) => {
+        if (seed.kind !== 'variable') return seed;
+        const newType = seed.type.accept(this);
+        if (newType === null) return null;
+        nodes.assertTypeNode(newType);
+        return { ...seed, type: newType };
+      })
+      .filter((s): s is nodes.AccountNodeSeed => s !== null);
+    const gpaFields = account.metadata.gpaFields
+      .map((gpaField) => {
+        const newType = gpaField.type.accept(this);
+        if (newType === null) return null;
+        nodes.assertTypeNode(newType);
+        return { ...gpaField, type: newType };
+      })
+      .filter((f): f is nodes.AccountNodeGpaField => f !== null);
+    return new nodes.AccountNode(
+      { ...account.metadata, seeds, gpaFields },
+      accountType
+    );
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {

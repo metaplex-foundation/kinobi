@@ -31,7 +31,21 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const accountType = account.type.accept(this);
     nodes.assertTypeStructOrDefinedLinkNode(accountType);
-    return new nodes.AccountNode(account.metadata, accountType);
+    const seeds = account.metadata.seeds.map((seed) => {
+      if (seed.kind !== 'variable') return seed;
+      const newType = seed.type.accept(this);
+      nodes.assertTypeNode(newType);
+      return { ...seed, type: newType };
+    });
+    const gpaFields = account.metadata.gpaFields.map((gpaField) => {
+      const newType = gpaField.type.accept(this);
+      nodes.assertTypeNode(newType);
+      return { ...gpaField, type: newType };
+    });
+    return new nodes.AccountNode(
+      { ...account.metadata, seeds, gpaFields },
+      accountType
+    );
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
