@@ -1,6 +1,5 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
-import { Dependency } from '../Dependency';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
   NodeTransform,
@@ -9,21 +8,12 @@ import {
 } from './TransformNodesVisitor';
 import { renameStructNode } from './_renameHelpers';
 
-type InstructionLinkOptions = {
-  name: string;
-  dependency: Dependency;
-  extract: boolean;
-  extractAs: string;
-  extractedTypeShouldBeInternal: boolean;
-};
-
 export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
       args?: Record<string, string>;
-      link?: true | Partial<InstructionLinkOptions>;
     });
 
 export type InstructionMetadataUpdates = Partial<
@@ -82,18 +72,6 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
             const newAccounts = node.accounts.map((account) =>
               this.handleInstructionAccount(account, accountUpdates ?? {})
             );
-
-            const link = updates.link ? parseLink(newName, updates.link) : null;
-            if (link) {
-              return new nodes.InstructionNode(
-                newMetadata,
-                newAccounts,
-                new nodes.TypeDefinedLinkNode(link.name, {
-                  dependency: link.dependency,
-                }),
-                node.subInstructions
-              );
-            }
 
             if (nodes.isTypeStructNode(node.args)) {
               return new nodes.InstructionNode(
@@ -170,20 +148,4 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
       ? ({ ...account, ...accountUpdate } as nodes.InstructionNodeAccount)
       : account;
   }
-}
-
-function parseLink(
-  name: string,
-  link: true | Partial<InstructionLinkOptions>
-): InstructionLinkOptions {
-  const defaultOptions = {
-    name: `${name}InstructionData`,
-    dependency: 'hooked',
-    extract: false,
-    extractAs: `${name}InstructionData`,
-    extractedTypeShouldBeInternal: true,
-  };
-  return typeof link === 'boolean'
-    ? defaultOptions
-    : { ...defaultOptions, ...link };
 }

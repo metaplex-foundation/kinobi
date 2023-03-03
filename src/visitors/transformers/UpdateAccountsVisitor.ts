@@ -1,7 +1,6 @@
 import * as nodes from '../../nodes';
 import { AccountNodeMetadata } from '../../nodes';
 import { mainCase } from '../../utils';
-import { Dependency } from '../Dependency';
 import {
   NodeTransform,
   NodeTransformer,
@@ -9,21 +8,10 @@ import {
 } from './TransformNodesVisitor';
 import { renameStructNode } from './_renameHelpers';
 
-type AccountLinkOptions = {
-  name: string;
-  dependency: Dependency;
-  extract: boolean;
-  extractAs: string;
-  extractedTypeShouldBeInternal: boolean;
-};
-
 export type AccountUpdates =
   | NodeTransformer<nodes.AccountNode>
   | { delete: true }
-  | (Partial<nodes.AccountNodeMetadata> & {
-      data?: Record<string, string>;
-      link?: true | Partial<AccountLinkOptions>;
-    });
+  | (Partial<nodes.AccountNodeMetadata> & { data?: Record<string, string> });
 
 export class UpdateAccountsVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, AccountUpdates>) {
@@ -55,16 +43,6 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
               ...updates,
             };
 
-            const link = updates.link ? parseLink(newName, updates.link) : null;
-            if (link) {
-              return new nodes.AccountNode(
-                newMetadata,
-                new nodes.TypeDefinedLinkNode(link.name, {
-                  dependency: link.dependency,
-                })
-              );
-            }
-
             if (nodes.isTypeStructNode(node.type)) {
               return new nodes.AccountNode(
                 newMetadata,
@@ -80,20 +58,4 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
 
     super(transforms);
   }
-}
-
-function parseLink(
-  name: string,
-  link: true | Partial<AccountLinkOptions>
-): AccountLinkOptions {
-  const defaultOptions = {
-    name: `${name}AccountData`,
-    dependency: 'hooked',
-    extract: false,
-    extractAs: `${name}AccountData`,
-    extractedTypeShouldBeInternal: true,
-  };
-  return typeof link === 'boolean'
-    ? defaultOptions
-    : { ...defaultOptions, ...link };
 }
