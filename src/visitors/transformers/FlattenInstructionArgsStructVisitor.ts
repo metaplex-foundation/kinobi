@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 import { flattenStruct } from './FlattenStructVisitor';
 
-export class UnwrapInstructionArgsStructVisitor extends TransformNodesVisitor {
+export class FlattenInstructionArgsStructVisitor extends TransformNodesVisitor {
   constructor() {
     super([
       {
