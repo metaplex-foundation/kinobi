@@ -9,7 +9,7 @@ const {
   SetNumberWrappersVisitor,
   TypePublicKeyNode,
   UnwrapDefinedTypesVisitor,
-  UnwrapStructVisitor,
+  FlattenStructVisitor,
   UpdateAccountsVisitor,
   UpdateInstructionsVisitor,
   UpdateProgramsVisitor,
@@ -204,7 +204,7 @@ kinobi.update(
 
 kinobi.update(new UnwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
-  new UnwrapStructVisitor({
+  new FlattenStructVisitor({
     'mplTokenMetadata.Metadata': ['Data'],
   })
 );
