@@ -108,5 +108,6 @@ export function getReservationListV1GpaBuilder(
     })
     .deserializeUsing<ReservationListV1>((account) =>
       deserializeReservationListV1(context, account)
-    );
+    )
+    .whereField('key', TmKey.ReservationListV1);
 }

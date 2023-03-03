@@ -146,18 +146,6 @@ kinobi.update(
   })
 );
 
-// Custom serializers.
-kinobi.update(
-  new UseCustomAccountSerializerVisitor({
-    ReservationListV1: { extract: true },
-  })
-);
-kinobi.update(
-  new UseCustomInstructionSerializerVisitor({
-    CreateReservationList: true,
-  })
-);
-
 const tmKey = (name) => ({ field: 'key', value: vEnum('TmKey', name) });
 const taKey = (name) => ({ field: 'key', value: vEnum('TaKey', name) });
 kinobi.update(
@@ -176,6 +164,18 @@ kinobi.update(
     'mplTokenMetadata.TokenOwnedEscrow': tmKey('TokenOwnedEscrow'),
     'mplTokenMetadata.DelegateRecord': tmKey('Delegate'),
     'mplTokenAuthRules.FrequencyAccount': taKey('Frequency'),
+  })
+);
+
+// Custom serializers.
+kinobi.update(
+  new UseCustomAccountSerializerVisitor({
+    ReservationListV1: { extract: true },
+  })
+);
+kinobi.update(
+  new UseCustomInstructionSerializerVisitor({
+    CreateReservationList: true,
   })
 );
 
