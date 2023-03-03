@@ -9,13 +9,21 @@ import {
 } from './TransformNodesVisitor';
 import { renameStructNode } from './_renameHelpers';
 
+type InstructionLinkOptions = {
+  name: string;
+  dependency: Dependency;
+  extract: boolean;
+  extractAs: string;
+  extractedTypeShouldBeInternal: boolean;
+};
+
 export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
       args?: Record<string, string>;
-      link?: true | string | { name: string; dependency: Dependency };
+      link?: true | Partial<InstructionLinkOptions>;
     });
 
 export type InstructionMetadataUpdates = Partial<
@@ -63,30 +71,43 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
             if ('delete' in updates) {
               return null;
             }
+
             const { accounts: accountUpdates, ...metadataUpdates } = updates;
             const newName = mainCase(updates.name ?? node.name);
             const args = updates.args ?? {};
-            const link = updates.link ? parseLink(newName, updates.link) : null;
+            const newMetadata = {
+              ...node.metadata,
+              ...this.handleMetadata(metadataUpdates),
+            };
+            const newAccounts = node.accounts.map((account) =>
+              this.handleInstructionAccount(account, accountUpdates ?? {})
+            );
 
-            let newArgs: nodes.InstructionNode['args'] = node.args;
+            const link = updates.link ? parseLink(newName, updates.link) : null;
             if (link) {
-              newArgs = new nodes.TypeDefinedLinkNode(link.name, {
-                dependency: link.dependency,
-              });
-            } else if (nodes.isTypeStructNode(node.args)) {
-              newArgs = renameStructNode(
-                node.args,
-                args,
-                `${newName}InstructionData`
+              return new nodes.InstructionNode(
+                newMetadata,
+                newAccounts,
+                new nodes.TypeDefinedLinkNode(link.name, {
+                  dependency: link.dependency,
+                }),
+                node.subInstructions
+              );
+            }
+
+            if (nodes.isTypeStructNode(node.args)) {
+              return new nodes.InstructionNode(
+                newMetadata,
+                newAccounts,
+                renameStructNode(node.args, args, `${newName}InstructionData`),
+                node.subInstructions
               );
             }
 
             return new nodes.InstructionNode(
-              { ...node.metadata, ...this.handleMetadata(metadataUpdates) },
-              node.accounts.map((account) =>
-                this.handleInstructionAccount(account, accountUpdates ?? {})
-              ),
-              newArgs,
+              newMetadata,
+              newAccounts,
+              node.args,
               node.subInstructions
             );
           },
@@ -153,13 +174,16 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
 
 function parseLink(
   name: string,
-  link: true | string | { name: string; dependency: Dependency }
-): { name: string; dependency: Dependency } {
-  if (typeof link === 'boolean') {
-    return { name: `${name}InstructionData`, dependency: 'hooked' };
-  }
-  if (typeof link === 'string') {
-    return { name: link, dependency: 'hooked' };
-  }
-  return link;
+  link: true | Partial<InstructionLinkOptions>
+): InstructionLinkOptions {
+  const defaultOptions = {
+    name: `${name}InstructionData`,
+    dependency: 'hooked',
+    extract: false,
+    extractAs: `${name}InstructionData`,
+    extractedTypeShouldBeInternal: true,
+  };
+  return typeof link === 'boolean'
+    ? defaultOptions
+    : { ...defaultOptions, ...link };
 }
