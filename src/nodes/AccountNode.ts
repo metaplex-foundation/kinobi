@@ -11,6 +11,7 @@ import {
   isTypeDefinedLinkNode,
   TypeDefinedLinkNode,
 } from './TypeDefinedLinkNode';
+import { ValueNode } from './ValueNode';
 
 export type AccountNodeMetadata = {
   readonly name: string;
@@ -18,18 +19,25 @@ export type AccountNodeMetadata = {
   readonly docs: string[];
   readonly internal: boolean;
   readonly size: number | null;
-  readonly discriminator: AccountNodeDiscriminator | null;
   readonly seeds: AccountNodeSeed[];
+  readonly discriminator: AccountNodeDiscriminator | null;
+  readonly gpaFields: AccountNodeGpaField[];
 };
-
-export type AccountNodeDiscriminator =
-  | { kind: 'field'; name: string }
-  | { kind: 'size' };
 
 export type AccountNodeSeed =
   | { kind: 'programId' }
   | { kind: 'literal'; value: string }
   | { kind: 'variable'; name: string; description: string; type: TypeNode };
+
+export type AccountNodeDiscriminator =
+  | { kind: 'field'; name: string; value: ValueNode | null }
+  | { kind: 'size' };
+
+export type AccountNodeGpaField = {
+  name: string;
+  offset: number | null;
+  type: TypeNode;
+};
 
 export class AccountNode implements Visitable {
   readonly nodeClass = 'AccountNode' as const;
@@ -66,8 +74,9 @@ export class AccountNode implements Visitable {
       docs: idl.docs ?? [],
       internal: false,
       size: idl.size ?? null,
-      discriminator: null,
       seeds,
+      discriminator: null,
+      gpaFields: [],
     };
     return new AccountNode(metadata, type);
   }
@@ -86,13 +95,6 @@ export class AccountNode implements Visitable {
 
   get isLinked(): boolean {
     return isTypeDefinedLinkNode(this.type);
-  }
-
-  get discriminatorField(): TypeStructFieldNode | null {
-    if (isTypeDefinedLinkNode(this.type)) return null;
-    if (this.metadata.discriminator?.kind !== 'field') return null;
-    const { name } = this.metadata.discriminator;
-    return name ? this.type.fields.find((f) => f.name === name) ?? null : null;
   }
 
   get variableSeeds(): Extract<AccountNodeSeed, { kind: 'variable' }>[] {

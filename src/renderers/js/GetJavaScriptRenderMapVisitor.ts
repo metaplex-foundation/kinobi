@@ -192,26 +192,26 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       ])
       .remove('generatedTypes', [account.name]);
 
-    // GPA Fields.
-    let gpaFields: {
-      type: string;
-      serializers: string;
-      discriminator: string | null;
-    } | null = null;
-    if (!nodes.isTypeDefinedLinkNode(account.type)) {
-      imports.add('core', ['gpaBuilder', 'Serializer']);
-      const gpaFieldManifests = account.type.fields.map((field) => {
-        const fieldWithNoDefaults = new nodes.TypeStructFieldNode(
-          { ...field.metadata, defaultsTo: null, docs: [] },
-          field.type
-        );
-        const fieldManifest = fieldWithNoDefaults.accept(
-          this.typeManifestVisitor
-        );
-        imports.mergeWith(fieldManifest.imports);
-        return fieldManifest;
-      });
-      const { discriminatorField } = account;
+    // Discriminator.
+    const { discriminator } = account.metadata;
+    let resolvedDiscriminator:
+      | { kind: 'size'; value: string }
+      | { kind: 'field'; name: string; value: string }
+      | null = null;
+    if (discriminator?.kind === 'field' && discriminator.value !== null) {
+      const rendered = renderJavaScriptValueNode(discriminator.value);
+      imports.mergeWith(rendered.imports);
+      resolvedDiscriminator = {
+        kind: 'field',
+        name: discriminator.name,
+        value: rendered.render,
+      };
+    } else if (
+      discriminator?.kind === 'field' &&
+      !nodes.isTypeDefinedLinkNode(account.type)
+    ) {
+      const discriminatorField =
+        account.type.fields.find((f) => f.name === discriminator.name) ?? null;
       const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value
         ? renderJavaScriptValueNode(
             discriminatorField.metadata.defaultsTo.value
@@ -219,13 +219,35 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         : undefined;
       if (discriminatorValue) {
         imports.mergeWith(discriminatorValue.imports);
+        resolvedDiscriminator = {
+          kind: 'field',
+          name: discriminator.name,
+          value: discriminatorValue.render,
+        };
       }
-      gpaFields = {
-        type: `{ ${gpaFieldManifests.map((m) => m.looseType).join('')} }`,
-        serializers: `[${gpaFieldManifests
-          .map((m) => m.serializer)
-          .join(', ')}]`,
-        discriminator: discriminatorValue?.render ?? null,
+    } else if (discriminator?.kind === 'size') {
+      resolvedDiscriminator =
+        account.metadata.size !== null
+          ? { kind: 'size', value: `${account.metadata.size}` }
+          : null;
+    }
+
+    // GPA Fields.
+    const gpaFields = account.metadata.gpaFields.map((gpaField) => {
+      const gpaFieldManifest = gpaField.type.accept(this.typeManifestVisitor);
+      imports.mergeWith(gpaFieldManifest.imports);
+      return { ...gpaField, manifest: gpaFieldManifest };
+    });
+    let resolvedGpaFields: { type: string; argument: string } | null = null;
+    if (gpaFields.length > 0) {
+      resolvedGpaFields = {
+        type: `{ ${gpaFields.map((f) => f.manifest.looseType).join('')} }`,
+        argument: `{ ${gpaFields
+          .map((f) => {
+            const offset = f.offset === null ? 'null' : `${f.offset}`;
+            return `${f.name}: [${offset}, ${f.manifest.serializer}]`;
+          })
+          .join(', ')} }`,
       };
     }
 
@@ -252,7 +274,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         typeManifest,
-        gpaFields,
+        discriminator: resolvedDiscriminator,
+        gpaFields: resolvedGpaFields,
         seeds,
         pdaHelperNeedsSerializer,
       })
