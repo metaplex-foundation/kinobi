@@ -133,11 +133,11 @@ export function getCollectionAuthorityRecordGpaBuilder(
       key: TmKeyArgs;
       bump: number;
       updateAuthority: Option<PublicKey>;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['bump', s.u8()],
-      ['updateAuthority', s.option(s.publicKey())],
-    ])
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      bump: [1, s.u8()],
+      updateAuthority: [2, s.option(s.publicKey())],
+    })
     .deserializeUsing<CollectionAuthorityRecord>((account) =>
       deserializeCollectionAuthorityRecord(context, account)
     )

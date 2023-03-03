@@ -9,17 +9,27 @@
 import {
   Account,
   Context,
+  Option,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
 } from '@metaplex-foundation/umi';
 import {
   ReservationListV1AccountData,
   getReservationListV1AccountDataSerializer,
 } from '../../hooked';
+import {
+  ReservationV1,
+  ReservationV1Args,
+  TmKey,
+  TmKeyArgs,
+  getReservationV1Serializer,
+  getTmKeySerializer,
+} from '../types';
 
 export type ReservationListV1 = Account<ReservationListV1AccountData>;
 
@@ -76,5 +86,27 @@ export async function safeFetchAllReservationListV1(
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
       deserializeReservationListV1(context, maybeAccount as RpcAccount)
+    );
+}
+
+export function getReservationListV1GpaBuilder(
+  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+) {
+  const s = context.serializer;
+  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKeyArgs;
+      masterEdition: PublicKey;
+      supplySnapshot: Option<number | bigint>;
+      reservations: Array<ReservationV1Args>;
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      masterEdition: [1, s.publicKey()],
+      supplySnapshot: [33, s.option(s.u64())],
+      reservations: [null, s.array(getReservationV1Serializer(context))],
+    })
+    .deserializeUsing<ReservationListV1>((account) =>
+      deserializeReservationListV1(context, account)
     );
 }

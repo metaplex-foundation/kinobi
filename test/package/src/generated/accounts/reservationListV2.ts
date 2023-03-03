@@ -148,14 +148,14 @@ export function getReservationListV2GpaBuilder(
       reservations: Array<ReservationArgs>;
       totalReservationSpots: number | bigint;
       currentReservationSpots: number | bigint;
-    }>([
-      ['key', getTmKeySerializer(context)],
-      ['masterEdition', s.publicKey()],
-      ['supplySnapshot', s.option(s.u64())],
-      ['reservations', s.array(getReservationSerializer(context))],
-      ['totalReservationSpots', s.u64()],
-      ['currentReservationSpots', s.u64()],
-    ])
+    }>({
+      key: [0, getTmKeySerializer(context)],
+      masterEdition: [1, s.publicKey()],
+      supplySnapshot: [33, s.option(s.u64())],
+      reservations: [null, s.array(getReservationSerializer(context))],
+      totalReservationSpots: [null, s.u64()],
+      currentReservationSpots: [null, s.u64()],
+    })
     .deserializeUsing<ReservationListV2>((account) =>
       deserializeReservationListV2(context, account)
     )

@@ -110,10 +110,10 @@ export function getEditionMarkerGpaBuilder(
   const s = context.serializer;
   const programId = context.programs.get('mplTokenMetadata').publicKey;
   return gpaBuilder(context, programId)
-    .registerFields<{ key: TmKeyArgs; ledger: Array<number> }>([
-      ['key', getTmKeySerializer(context)],
-      ['ledger', s.array(s.u8(), { size: 31 })],
-    ])
+    .registerFields<{ key: TmKeyArgs; ledger: Array<number> }>({
+      key: [0, getTmKeySerializer(context)],
+      ledger: [1, s.array(s.u8(), { size: 31 })],
+    })
     .deserializeUsing<EditionMarker>((account) =>
       deserializeEditionMarker(context, account)
     )
