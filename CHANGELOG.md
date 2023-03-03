@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.4.2
+
+### Patch Changes
+
+- [`901de71`](https://github.com/metaplex-foundation/kinobi/commit/901de71f4c47c643d7b85b7309ca7943e51c6f2a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove unused exports when using custom serializers
+
 ## 0.4.1
 
 ### Patch Changes
