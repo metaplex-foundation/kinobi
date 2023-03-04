@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.4.3
+
+### Patch Changes
+
+- [`565a31b`](https://github.com/metaplex-foundation/kinobi/commit/565a31bc2588f00738c35644a35155db3b55d860) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use getPublicKey with fallback from program repository
+
 ## 0.4.2
 
 ### Patch Changes
