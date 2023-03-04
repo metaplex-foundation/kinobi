@@ -78,9 +78,10 @@ export function updateCandyMachine(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get(
-    'mplCandyMachineCore'
-  ).publicKey;
+  const programId = context.programs.getPublicKey(
+    'mplCandyMachineCore',
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  );
 
   // Resolved accounts.
   const candyMachineAccount = input.candyMachine;

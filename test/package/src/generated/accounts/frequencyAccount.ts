@@ -125,7 +125,10 @@ export function getFrequencyAccountGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  const programId = context.programs.get('mplTokenAuthRules').publicKey;
+  const programId = context.programs.getPublicKey(
+    'mplTokenAuthRules',
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  );
   return gpaBuilder(context, programId)
     .registerFields<{
       key: TaKeyArgs;

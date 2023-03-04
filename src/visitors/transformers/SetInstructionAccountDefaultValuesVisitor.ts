@@ -67,6 +67,43 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
+      kind: 'program',
+      account: /^tokenMetadataProgram|mplTokenMetadataProgram$/,
+      program: {
+        name: 'mplTokenMetadata',
+        publicKey: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+      },
+      ignoreIfOptional: true,
+    },
+    {
+      kind: 'program',
+      account:
+        /^(tokenAuth|mplTokenAuth|authorization|mplAuthorization|auth|mplAuth)RulesProgram$/,
+      program: {
+        name: 'mplTokenAuthRules',
+        publicKey: 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+      },
+      ignoreIfOptional: true,
+    },
+    {
+      kind: 'program',
+      account: /^candyMachineProgram|mplCandyMachineProgram$/,
+      program: {
+        name: 'mplCandyMachine',
+        publicKey: 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+      },
+      ignoreIfOptional: true,
+    },
+    {
+      kind: 'program',
+      account: /^candyGuardProgram|mplCandyGuardProgram$/,
+      program: {
+        name: 'mplCandyGuard',
+        publicKey: 'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g',
+      },
+      ignoreIfOptional: true,
+    },
+    {
       kind: 'publicKey',
       account: /^clockSysvar|sysvarClockSysvar$/,
       publicKey: 'SysvarC1ock11111111111111111111111111111111',
@@ -80,7 +117,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
     },
     {
       kind: 'publicKey',
-      account: /^instructionsSysvar|sysvarInstructions$/,
+      account: /^(instructions?Sysvar|sysvarInstructions?)(Account)?$/,
       publicKey: 'Sysvar1nstructions1111111111111111111111111',
       ignoreIfOptional: true,
     },

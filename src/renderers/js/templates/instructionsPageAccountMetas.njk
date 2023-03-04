@@ -22,7 +22,7 @@
     {% elif account.defaultsTo.kind === 'publicKey' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? publicKey('{{ account.defaultsTo.publicKey }}');
     {% elif account.defaultsTo.kind === 'program' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? { ...context.programs.get('{{ account.defaultsTo.program.name }}').publicKey, isWritable: false };
+      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.publicKey }}'), isWritable: false };
     {% elif account.defaultsTo.kind === 'programId' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? { ...programId, isWritable: false };
     {% elif account.defaultsTo.kind === 'identity' and (account.isSigner or account.isOptionalSigner) %}

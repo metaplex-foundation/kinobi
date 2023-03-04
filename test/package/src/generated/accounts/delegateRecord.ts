@@ -123,7 +123,10 @@ export function getDelegateRecordGpaBuilder(
   context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
 ) {
   const s = context.serializer;
-  const programId = context.programs.get('mplTokenMetadata').publicKey;
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
   return gpaBuilder(context, programId)
     .registerFields<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>({
       key: [0, getTmKeySerializer(context)],
@@ -148,8 +151,10 @@ export function findDelegateRecordPda(
   }
 ): Pda {
   const s = context.serializer;
-  const programId: PublicKey =
-    context.programs.get('mplTokenMetadata').publicKey;
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
   return context.eddsa.findPda(programId, [
     s.string({ size: 'variable' }).serialize('delegate_record'),
     programId.bytes,

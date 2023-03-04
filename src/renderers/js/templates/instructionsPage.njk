@@ -53,7 +53,7 @@ export function {{ instruction.name | camelCase }}(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId: PublicKey = context.programs.get('{{ program.name | camelCase }}').publicKey;
+  const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.metadata.publicKey }}');
 
   {% include "instructionsPageAccountMetas.njk" -%}
 
