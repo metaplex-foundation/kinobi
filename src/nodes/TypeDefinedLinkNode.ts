@@ -9,9 +9,18 @@ export class TypeDefinedLinkNode implements Visitable {
 
   readonly dependency: Dependency;
 
-  constructor(name: string, options: { dependency?: Dependency } = {}) {
+  readonly size: number | null;
+
+  constructor(
+    name: string,
+    options: {
+      dependency?: Dependency;
+      size?: number | null;
+    } = {}
+  ) {
     this.name = mainCase(name);
     this.dependency = options.dependency ?? 'generated';
+    this.size = options.size ?? null;
   }
 
   accept<T>(visitor: Visitor<T>): T {
