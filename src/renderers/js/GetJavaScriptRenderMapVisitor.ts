@@ -294,7 +294,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const imports = new JavaScriptImportMap().add('core', [
       'AccountMeta',
       'Context',
-      'PublicKey',
       'Signer',
       'WrappedInstruction',
     ]);
