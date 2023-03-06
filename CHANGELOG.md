@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.4.5
+
+### Patch Changes
+
+- [`db04505`](https://github.com/metaplex-foundation/kinobi/commit/db0450530da3706313c0a3d31f26d94e8388d7c8) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix unused dependency
+
 ## 0.4.4
 
 ### Patch Changes
