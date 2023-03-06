@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.4.4
+
+### Patch Changes
+
+- [`3f2014b`](https://github.com/metaplex-foundation/kinobi/commit/3f2014bbc22c351db52318065ff49317774cf387) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add size to TypeDefinedLinkNode
+
 ## 0.4.3
 
 ### Patch Changes
