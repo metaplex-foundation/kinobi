@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.4.6
+
+### Patch Changes
+
+- [`3701cc4`](https://github.com/metaplex-foundation/kinobi/commit/3701cc494417a96746ed5cf5cef847e39253dd05) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use programId as default for Anchor optional accounts
+
 ## 0.4.5
 
 ### Patch Changes
