@@ -49,8 +49,17 @@ export class ProgramNode implements Visitable {
   }
 
   static fromIdl(idl: Partial<Idl>): ProgramNode {
+    const origin = idl.metadata?.origin ?? null;
     const accounts = (idl.accounts ?? []).map(AccountNode.fromIdl);
-    const instructions = (idl.instructions ?? []).map(InstructionNode.fromIdl);
+    const instructions = (idl.instructions ?? []).map((ix) => {
+      if (origin === 'anchor') {
+        return InstructionNode.fromIdl({
+          ...ix,
+          defaultOptionalAccounts: ix.defaultOptionalAccounts ?? true,
+        });
+      }
+      return InstructionNode.fromIdl(ix);
+    });
     const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
     const errors = (idl.errors ?? []).map(ErrorNode.fromIdl);
     const metadata = {
@@ -58,7 +67,7 @@ export class ProgramNode implements Visitable {
       prefix: '',
       publicKey: idl.metadata?.address ?? '',
       version: idl.version ?? '',
-      origin: idl.metadata?.origin ?? null,
+      origin,
       idl,
       internal: false,
     };

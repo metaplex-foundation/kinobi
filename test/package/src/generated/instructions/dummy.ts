@@ -74,7 +74,7 @@ export function dummy(
   );
 
   // Resolved accounts.
-  const mintAccount = input.mint;
+  const mintAccount = input.mint ?? { ...programId, isWritable: false };
   const editionAccount = input.edition ?? mintAccount;
   const updateAuthorityAccount = input.updateAuthority;
   const mintAuthorityAccount = input.mintAuthority ?? updateAuthorityAccount;
@@ -97,14 +97,12 @@ export function dummy(
     });
   }
 
-  // Mint (optional).
-  if (mintAccount) {
-    keys.push({
-      pubkey: mintAccount,
-      isSigner: false,
-      isWritable: isWritable(mintAccount, true),
-    });
-  }
+  // Mint.
+  keys.push({
+    pubkey: mintAccount,
+    isSigner: false,
+    isWritable: isWritable(mintAccount, true),
+  });
 
   // Update Authority.
   signers.push(updateAuthorityAccount);
