@@ -1,7 +1,9 @@
 {% if accounts.length > 0 %}
   // Resolved accounts.
   {% for account in accounts | sort(false, false, 'dependencyPosition') %}
-    {% if account.defaultsTo.kind === 'account' %}
+    {% if not account.defaultsTo %}
+      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }};
+    {% elif account.defaultsTo.kind === 'account' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? {{ account.defaultsTo.name | camelCase }}Account;
     {% elif account.defaultsTo.kind === 'pda' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? find{{ account.defaultsTo.pdaAccount | pascalCase }}Pda(context,
@@ -25,11 +27,11 @@
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.publicKey }}'), isWritable: false };
     {% elif account.defaultsTo.kind === 'programId' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? { ...programId, isWritable: false };
-    {% elif account.defaultsTo.kind === 'identity' and (account.isSigner or account.isOptionalSigner) %}
+    {% elif account.defaultsTo.kind === 'identity' and (account.isSigner !== false) %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.identity;
     {% elif account.defaultsTo.kind === 'identity' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.identity.publicKey;
-    {% elif account.defaultsTo.kind === 'payer' and (account.isSigner or account.isOptionalSigner) %}
+    {% elif account.defaultsTo.kind === 'payer' and (account.isSigner !== false) %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.payer;
     {% elif account.defaultsTo.kind === 'payer' %}
       const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.payer.publicKey;
@@ -45,7 +47,7 @@
   {% if account.resolvedIsOptional %}
   if ({{ account.name | camelCase }}Account) {
   {% endif %}
-    {% if account.resolvedIsOptionalSigner %}
+    {% if account.resolvedIsSigner === 'either' %}
       if (isSigner({{ account.name | camelCase }}Account)) {
         signers.push({{ account.name | camelCase }}Account);
       }

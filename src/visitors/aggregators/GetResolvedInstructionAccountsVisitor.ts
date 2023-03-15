@@ -6,8 +6,7 @@ export type ResolvedInstructionAccount = nodes.InstructionNodeAccount & {
   position: number;
   dependencyPosition: number;
   dependsOn: string[];
-  resolvedIsSigner: boolean;
-  resolvedIsOptionalSigner: boolean;
+  resolvedIsSigner: boolean | 'either';
   resolvedIsOptional: boolean;
 };
 
@@ -68,9 +67,9 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
 
     // Get account dependencies.
     const dependsOn: string[] = [];
-    if (account.defaultsTo.kind === 'account') {
+    if (account.defaultsTo?.kind === 'account') {
       dependsOn.push(account.defaultsTo.name);
-    } else if (account.defaultsTo.kind === 'pda') {
+    } else if (account.defaultsTo?.kind === 'pda') {
       type AccountSeed = Extract<
         InstructionNodeAccountDefaultsSeed,
         { kind: 'account' }
@@ -102,30 +101,33 @@ export class GetResolvedInstructionAccountsVisitor extends BaseThrowVisitor<
       dependencyPosition: this.visited.size,
       dependsOn,
       resolvedIsSigner: account.isSigner,
-      resolvedIsOptionalSigner: account.isOptionalSigner,
       resolvedIsOptional: account.isOptional,
     };
 
-    switch (resolved.defaultsTo.kind) {
+    switch (resolved.defaultsTo?.kind) {
       case 'account':
         const defaultAccount = this.visited.get(resolved.defaultsTo.name)!;
         const resolvedIsPublicKey =
-          !account.isSigner && !defaultAccount.isSigner;
-        resolved.resolvedIsSigner = account.isSigner && defaultAccount.isSigner;
-        resolved.resolvedIsOptionalSigner =
-          !resolved.resolvedIsSigner && !resolvedIsPublicKey;
+          account.isSigner === false && defaultAccount.isSigner === false;
+        const resolvedIsSigner =
+          account.isSigner === true && defaultAccount.isSigner === true;
+        const resolvedIsOptionalSigner =
+          !resolvedIsPublicKey && !resolvedIsSigner;
+        resolved.resolvedIsSigner = resolvedIsOptionalSigner
+          ? 'either'
+          : resolvedIsSigner;
         resolved.resolvedIsOptional = defaultAccount.isOptional;
         break;
       case 'publicKey':
       case 'program':
       case 'programId':
-        resolved.resolvedIsOptionalSigner = account.isSigner;
-        resolved.resolvedIsSigner = false;
+        resolved.resolvedIsSigner =
+          account.isSigner === false ? false : 'either';
         resolved.resolvedIsOptional = false;
         break;
       case 'pda':
-        resolved.resolvedIsOptionalSigner = account.isSigner;
-        resolved.resolvedIsSigner = false;
+        resolved.resolvedIsSigner =
+          account.isSigner === false ? false : 'either';
         resolved.resolvedIsOptional = false;
         const { seeds } = resolved.defaultsTo;
         Object.keys(seeds).forEach((seedKey) => {

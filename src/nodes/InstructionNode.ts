@@ -16,17 +16,16 @@ export type InstructionNodeMetadata = {
   idlName: string;
   docs: string[];
   internal: boolean;
-  bytesCreatedOnChain: InstructionNodeBytesCreatedOnChain;
+  bytesCreatedOnChain: InstructionNodeBytesCreatedOnChain | null;
 };
 
 export type InstructionNodeAccount = {
   name: string;
   isWritable: boolean;
-  isSigner: boolean;
-  isOptionalSigner: boolean;
+  isSigner: boolean | 'either';
   isOptional: boolean;
   description: string;
-  defaultsTo: InstructionNodeAccountDefaults;
+  defaultsTo: InstructionNodeAccountDefaults | null;
   pdaBumpArg: string | null;
 };
 
@@ -42,8 +41,7 @@ export type InstructionNodeAccountDefaults =
       seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
     }
   | { kind: 'program'; program: { name: string; publicKey: string } }
-  | { kind: 'programId' }
-  | { kind: 'none' };
+  | { kind: 'programId' };
 
 export type InstructionNodeAccountDefaultsSeed =
   | { kind: 'account'; name: string }
@@ -58,8 +56,7 @@ export type InstructionNodeBytesCreatedOnChain =
       name: string;
       dependency: string;
       includeHeader: boolean;
-    }
-  | { kind: 'none' };
+    };
 
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
@@ -83,15 +80,17 @@ export class InstructionNode implements Visitable {
       ...metadata,
       name: mainCase(metadata.name),
       bytesCreatedOnChain:
-        'name' in bytes ? { ...bytes, name: mainCase(bytes.name) } : bytes,
+        bytes && 'name' in bytes
+          ? { ...bytes, name: mainCase(bytes.name) }
+          : bytes,
     };
     this.accounts = accounts.map((account) => {
       const { defaultsTo } = account;
-      if (defaultsTo.kind === 'account') {
+      if (defaultsTo?.kind === 'account') {
         defaultsTo.name = mainCase(defaultsTo.name);
-      } else if (defaultsTo.kind === 'program') {
+      } else if (defaultsTo?.kind === 'program') {
         defaultsTo.program.name = mainCase(defaultsTo.program.name);
-      } else if (defaultsTo.kind === 'pda') {
+      } else if (defaultsTo?.kind === 'pda') {
         defaultsTo.pdaAccount = mainCase(defaultsTo.pdaAccount);
         defaultsTo.seeds = Object.fromEntries(
           Object.entries(defaultsTo.seeds).map(([key, seed]) => [
@@ -118,7 +117,7 @@ export class InstructionNode implements Visitable {
       idlName,
       docs: idl.docs ?? [],
       internal: false,
-      bytesCreatedOnChain: { kind: 'none' },
+      bytesCreatedOnChain: null,
     };
 
     const accounts = (idl.accounts ?? []).map(
@@ -127,14 +126,15 @@ export class InstructionNode implements Visitable {
         return {
           name: camelCase(account.name ?? ''),
           isWritable: account.isMut ?? false,
-          isSigner: account.isSigner ?? false,
-          isOptionalSigner: account.isOptionalSigner ?? false,
+          isSigner: account.isOptionalSigner
+            ? 'either'
+            : account.isSigner ?? false,
           isOptional,
           description: account.desc ?? '',
           defaultsTo:
             isOptional && useProgramIdForOptionalAccounts
               ? { kind: 'programId' }
-              : { kind: 'none' },
+              : null,
           pdaBumpArg: account.pdaBumpArg ?? null,
         };
       }

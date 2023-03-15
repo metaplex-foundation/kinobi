@@ -303,8 +303,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const accounts = instruction
       .accept(this.resolvedInstructionAccountVisitor)
       .map((account) => {
-        const hasDefaultValue = account.defaultsTo.kind !== 'none';
-        if (account.defaultsTo.kind === 'pda') {
+        const hasDefaultValue = !!account.defaultsTo;
+        if (account.defaultsTo?.kind === 'pda') {
           const { seeds } = account.defaultsTo;
           Object.keys(seeds).forEach((seed: string) => {
             const seedValue = seeds[seed];
@@ -337,10 +337,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // Bytes created on chain.
     const bytes = instruction.metadata.bytesCreatedOnChain;
-    if (bytes.kind !== 'none' && bytes.includeHeader) {
+    if (bytes && bytes.includeHeader) {
       imports.add('core', 'ACCOUNT_HEADER_SIZE');
     }
-    if (bytes.kind === 'account') {
+    if (bytes?.kind === 'account') {
       const accountName = pascalCase(bytes.name);
       const dependency =
         bytes.dependency === 'generated'
@@ -381,9 +381,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         accounts,
-        needsEddsa: accounts.some((a) => a.defaultsTo.kind === 'pda'),
-        needsIdentity: accounts.some((a) => a.defaultsTo.kind === 'identity'),
-        needsPayer: accounts.some((a) => a.defaultsTo.kind === 'payer'),
+        needsEddsa: accounts.some((a) => a.defaultsTo?.kind === 'pda'),
+        needsIdentity: accounts.some((a) => a.defaultsTo?.kind === 'identity'),
+        needsPayer: accounts.some((a) => a.defaultsTo?.kind === 'payer'),
         typeManifest,
         canMergeAccountsAndArgs,
       })
@@ -418,7 +418,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     account: ResolvedInstructionAccount
   ): string {
     if (account.pdaBumpArg) return 'Pda';
-    if (account.isOptionalSigner) return 'PublicKey | Signer';
+    if (account.isSigner === 'either') return 'PublicKey | Signer';
     return account.isSigner ? 'Signer' : 'PublicKey';
   }
 
@@ -430,10 +430,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       if (account.pdaBumpArg) {
         imports.add('core', 'Pda');
       }
-      if (account.defaultsTo.kind === 'publicKey') {
+      if (account.defaultsTo?.kind === 'publicKey') {
         imports.add('core', 'publicKey');
       }
-      if (account.defaultsTo.kind === 'pda') {
+      if (account.defaultsTo?.kind === 'pda') {
         const pdaAccount = pascalCase(account.defaultsTo.pdaAccount);
         const dependency =
           account.defaultsTo.dependency === 'generated'
@@ -446,7 +446,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           }
         });
       }
-      if (account.resolvedIsOptionalSigner) {
+      if (account.resolvedIsSigner === 'either') {
         imports.add('core', ['PublicKey', 'publicKey', 'Signer', 'isSigner']);
       } else if (account.resolvedIsSigner) {
         imports.add('core', 'Signer');

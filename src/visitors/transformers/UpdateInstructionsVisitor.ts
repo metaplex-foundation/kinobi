@@ -18,7 +18,7 @@ export type InstructionUpdates =
 
 export type InstructionMetadataUpdates = Partial<
   Omit<nodes.InstructionNodeMetadata, 'bytesCreatedOnChain'> & {
-    bytesCreatedOnChain: InstructionNodeBytesCreatedOnChainInput;
+    bytesCreatedOnChain: InstructionNodeBytesCreatedOnChainInput | null;
     accounts: InstructionAccountUpdates;
   }
 >;
@@ -40,8 +40,7 @@ type InstructionNodeBytesCreatedOnChainInput =
       name: string;
       dependency?: string;
       includeHeader?: boolean;
-    }
-  | { kind: 'none' };
+    };
 
 export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   protected allAccounts = new Map<string, nodes.AccountNode>();
@@ -107,14 +106,14 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     metadataUpdates: InstructionMetadataUpdates
   ): Partial<nodes.InstructionNodeMetadata> {
     const metadata = metadataUpdates as Partial<nodes.InstructionNodeMetadata>;
-    if (metadata.bytesCreatedOnChain) {
+    if (metadataUpdates.bytesCreatedOnChain) {
       metadata.bytesCreatedOnChain = {
         includeHeader: true,
         dependency:
-          metadata.bytesCreatedOnChain.kind === 'account'
+          metadataUpdates.bytesCreatedOnChain.kind === 'account'
             ? 'generated'
             : undefined,
-        ...metadata.bytesCreatedOnChain,
+        ...metadataUpdates.bytesCreatedOnChain,
       } as nodes.InstructionNodeBytesCreatedOnChain;
     }
     return metadata;
