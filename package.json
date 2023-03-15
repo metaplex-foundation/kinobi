@@ -1,6 +1,6 @@
 {
   "name": "@metaplex-foundation/kinobi",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "Generate powerful clients for your Solana programs",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
