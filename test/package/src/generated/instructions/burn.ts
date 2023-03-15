@@ -12,9 +12,10 @@ import {
   PublicKey,
   Serializer,
   Signer,
-  WrappedInstruction,
+  TransactionBuilder,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
+  transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
 
@@ -69,7 +70,7 @@ export function getBurnInstructionDataSerializer(
 export function burn(
   context: Pick<Context, 'serializer' | 'programs'>,
   input: BurnInstructionAccounts & BurnInstructionDataArgs
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -175,9 +176,7 @@ export function burn(
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain,
-  };
+  return transactionBuilder([
+    { instruction: { keys, programId, data }, signers, bytesCreatedOnChain },
+  ]);
 }

@@ -13,10 +13,11 @@ import {
   PublicKey,
   Serializer,
   Signer,
-  WrappedInstruction,
+  TransactionBuilder,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
   publicKey,
+  transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
 
@@ -89,7 +90,7 @@ export function getCreateV1InstructionDataSerializer(
 export function createV1(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: CreateV1InstructionAccounts & CreateV1InstructionDataArgs
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -198,9 +199,7 @@ export function createV1(
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain,
-  };
+  return transactionBuilder([
+    { instruction: { keys, programId, data }, signers, bytesCreatedOnChain },
+  ]);
 }

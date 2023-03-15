@@ -12,9 +12,10 @@ import {
   PublicKey,
   Serializer,
   Signer,
-  WrappedInstruction,
+  TransactionBuilder,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
+  transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { ConfigLine, ConfigLineArgs, getConfigLineSerializer } from '../types';
 
@@ -71,7 +72,7 @@ export function getAddConfigLinesInstructionDataSerializer(
 export function addConfigLines(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
   input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionDataArgs
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -107,9 +108,7 @@ export function addConfigLines(
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain,
-  };
+  return transactionBuilder([
+    { instruction: { keys, programId, data }, signers, bytesCreatedOnChain },
+  ]);
 }

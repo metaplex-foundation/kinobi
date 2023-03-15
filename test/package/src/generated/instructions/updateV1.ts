@@ -13,11 +13,12 @@ import {
   PublicKey,
   Serializer,
   Signer,
-  WrappedInstruction,
+  TransactionBuilder,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
   publicKey,
   some,
+  transactionBuilder,
 } from '@metaplex-foundation/umi';
 import {
   AuthorityType,
@@ -191,7 +192,7 @@ export function getUpdateV1InstructionDataSerializer(
 export function updateV1(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
   input: UpdateV1InstructionAccounts & UpdateV1InstructionDataArgs
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -310,9 +311,7 @@ export function updateV1(
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain,
-  };
+  return transactionBuilder([
+    { instruction: { keys, programId, data }, signers, bytesCreatedOnChain },
+  ]);
 }

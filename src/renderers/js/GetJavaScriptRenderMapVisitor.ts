@@ -295,7 +295,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       'AccountMeta',
       'Context',
       'Signer',
-      'WrappedInstruction',
+      'TransactionBuilder',
+      'transactionBuilder',
     ]);
 
     // Accounts.

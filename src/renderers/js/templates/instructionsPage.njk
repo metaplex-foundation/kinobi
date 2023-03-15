@@ -48,7 +48,7 @@ export function {{ instruction.name | camelCase }}(
       args: {{ argsType }},
     {% endif %}
   {% endif %}
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -85,6 +85,6 @@ export function {{ instruction.name | camelCase }}(
     const bytesCreatedOnChain = 0;
   {% endif %}
 
-  return { instruction: { keys, programId, data }, signers, bytesCreatedOnChain };
+  return transactionBuilder([{ instruction: { keys, programId, data }, signers, bytesCreatedOnChain }]);
 }
 {% endblock %}

@@ -15,10 +15,11 @@ import {
   PublicKey,
   Serializer,
   Signer,
-  WrappedInstruction,
+  TransactionBuilder,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
   publicKey,
+  transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
@@ -113,7 +114,7 @@ export function createMetadataAccount(
   context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
   input: CreateMetadataAccountInstructionAccounts &
     Omit<CreateMetadataAccountInstructionDataArgs, 'metadataBump'>
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -203,9 +204,7 @@ export function createMetadataAccount(
   // Bytes Created On Chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain,
-  };
+  return transactionBuilder([
+    { instruction: { keys, programId, data }, signers, bytesCreatedOnChain },
+  ]);
 }

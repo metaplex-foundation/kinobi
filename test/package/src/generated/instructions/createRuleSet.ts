@@ -13,9 +13,10 @@ import {
   PublicKey,
   Serializer,
   Signer,
-  WrappedInstruction,
+  TransactionBuilder,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
+  transactionBuilder,
 } from '@metaplex-foundation/umi';
 import {
   TaCreateArgs,
@@ -74,7 +75,7 @@ export function createRuleSet(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: CreateRuleSetInstructionAccounts &
     Omit<CreateRuleSetInstructionDataArgs, 'ruleSetBump'>
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -126,9 +127,7 @@ export function createRuleSet(
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain,
-  };
+  return transactionBuilder([
+    { instruction: { keys, programId, data }, signers, bytesCreatedOnChain },
+  ]);
 }

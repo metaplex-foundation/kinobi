@@ -13,9 +13,10 @@ import {
   PublicKey,
   Serializer,
   Signer,
-  WrappedInstruction,
+  TransactionBuilder,
   checkForIsWritableOverride as isWritable,
   mapSerializer,
+  transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { getMasterEditionV2Size } from '../accounts';
 import {
@@ -91,7 +92,7 @@ export function createMasterEditionV3(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: CreateMasterEditionV3InstructionAccounts &
     CreateMasterEditionV3InstructionDataArgs
-): WrappedInstruction {
+): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
@@ -199,9 +200,7 @@ export function createMasterEditionV3(
   // Bytes Created On Chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
 
-  return {
-    instruction: { keys, programId, data },
-    signers,
-    bytesCreatedOnChain,
-  };
+  return transactionBuilder([
+    { instruction: { keys, programId, data }, signers, bytesCreatedOnChain },
+  ]);
 }
