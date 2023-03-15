@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.5.0
+
+### Minor Changes
+
+- [`3ed5f4c`](https://github.com/metaplex-foundation/kinobi/commit/3ed5f4c8bb93984e450c7543554129ac657f2119) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update to Umi 0.6.0
+
+- [`d651771`](https://github.com/metaplex-foundation/kinobi/commit/d65177190cb33709befdeaacb9ec80116838427c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Refactor isOptionalSigner as "either" union
+
 ## 0.4.6
 
 ### Patch Changes
