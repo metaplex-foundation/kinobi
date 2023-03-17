@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.6.0
+
+### Minor Changes
+
+- [`b372624`](https://github.com/metaplex-foundation/kinobi/commit/b372624f251e157eca452aedbfcac60dbbba6ee0) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Generate get program helpers
+
 ## 0.5.0
 
 ### Minor Changes
