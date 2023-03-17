@@ -1,16 +1,16 @@
 import type { Umi, UmiPlugin } from '@metaplex-foundation/umi';
 import {
-  getMplCandyMachineCoreProgram,
-  getMplTokenAuthRulesProgram,
-  getMplTokenMetadataProgram,
+  createMplCandyMachineCoreProgram,
+  createMplTokenAuthRulesProgram,
+  createMplTokenMetadataProgram,
 } from './generated';
 
 export function plugin(): UmiPlugin {
   return {
     install(umi: Umi) {
-      umi.programs.add(getMplCandyMachineCoreProgram(), false);
-      umi.programs.add(getMplTokenAuthRulesProgram(), false);
-      umi.programs.add(getMplTokenMetadataProgram(), false);
+      umi.programs.add(createMplCandyMachineCoreProgram(), false);
+      umi.programs.add(createMplTokenAuthRulesProgram(), false);
+      umi.programs.add(createMplTokenMetadataProgram(), false);
     },
   };
 }

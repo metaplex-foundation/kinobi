@@ -163,7 +163,13 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         `programs/${camelCase(name)}.ts`,
         this.render('programsPage.njk', {
           imports: new JavaScriptImportMap()
-            .add('core', ['Program', 'publicKey'])
+            .add('core', [
+              'ClusterFilter',
+              'Context',
+              'Program',
+              'publicKey',
+              'PublicKey',
+            ])
             .add('errors', [
               `get${pascalCaseName}ErrorFromCode`,
               `get${pascalCaseName}ErrorFromName`,

@@ -6,16 +6,26 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Program, publicKey } from '@metaplex-foundation/umi';
+import {
+  ClusterFilter,
+  Context,
+  Program,
+  PublicKey,
+  publicKey,
+} from '@metaplex-foundation/umi';
 import {
   getMplTokenAuthRulesErrorFromCode,
   getMplTokenAuthRulesErrorFromName,
 } from '../errors';
 
-export function getMplTokenAuthRulesProgram(): Program {
+export const MPL_TOKEN_AUTH_RULES_PROGRAM_ID = publicKey(
+  'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+);
+
+export function createMplTokenAuthRulesProgram(): Program {
   return {
     name: 'mplTokenAuthRules',
-    publicKey: publicKey('auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'),
+    publicKey: MPL_TOKEN_AUTH_RULES_PROGRAM_ID,
     getErrorFromCode(code: number, cause?: Error) {
       return getMplTokenAuthRulesErrorFromCode(code, this, cause);
     },
@@ -26,4 +36,22 @@ export function getMplTokenAuthRulesProgram(): Program {
       return true;
     },
   };
+}
+
+export function getMplTokenAuthRulesProgram<T extends Program = Program>(
+  context: Pick<Context, 'programs'>,
+  clusterFilter?: ClusterFilter
+): T {
+  return context.programs.get<T>('mplTokenAuthRules', clusterFilter);
+}
+
+export function getMplTokenAuthRulesProgramId(
+  context: Pick<Context, 'programs'>,
+  clusterFilter?: ClusterFilter
+): PublicKey {
+  return context.programs.getPublicKey(
+    'mplTokenAuthRules',
+    MPL_TOKEN_AUTH_RULES_PROGRAM_ID,
+    clusterFilter
+  );
 }
