@@ -1,7 +1,7 @@
 {% if accounts.length > 0 %}
   // Resolved inputs.
-  const resolvedAccounts = { ...{{ accountsObj }} };
-  const resolvedArgs = { ...{{ argsObj }} };
+  const resolvedAccounts: any = { ...{{ accountsObj }} };
+  const resolvedArgs: any = { ...{{ argsObj }} };
   {% for input in resolvedInputs %}
     {% if input.kind === 'account' and input.defaultsTo %}
       {% if input.defaultsTo.kind === 'account' %}
