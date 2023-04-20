@@ -1,0 +1,46 @@
+{% if accounts.length > 0 %}
+  // Resolved inputs.
+  const accounts = { ...{{ accountsObj }} };
+  const args = { ...{{ argsObj }} };
+  {% for input in resolvedInputs %}
+    {% if input.kind === 'account' and input.defaultsTo %}
+      {% if input.defaultsTo.kind === 'account' %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}Account;
+      {% elif input.defaultsTo.kind === 'pda' %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
+        {%- if (input.defaultsTo.seeds | length) > 0 -%}
+          {
+            {%- for seedKey, seedValue in input.defaultsTo.seeds -%}
+              {%- if seedValue.kind === 'value' -%}
+                {{ seedKey }}: {{ seedValue.render }},
+              {%- elif seedValue.kind === 'account' -%}
+                {{ seedKey }}: publicKey({{ seedValue.name | camelCase }}Account),
+              {%- else -%}
+                {{ seedKey }}: {{ argsObj }}.{{ seedValue.name | camelCase }},
+              {%- endif -%}
+            {%- endfor -%}
+          }
+        {%- endif -%}
+        );
+      {% elif input.defaultsTo.kind === 'publicKey' %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? publicKey('{{ input.defaultsTo.publicKey }}');
+      {% elif input.defaultsTo.kind === 'program' %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'), isWritable: false };
+      {% elif input.defaultsTo.kind === 'programId' %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? { ...programId, isWritable: false };
+      {% elif input.defaultsTo.kind === 'identity' and (input.isSigner !== false) %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? context.identity;
+      {% elif input.defaultsTo.kind === 'identity' %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? context.identity.publicKey;
+      {% elif input.defaultsTo.kind === 'payer' and (input.isSigner !== false) %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? context.payer;
+      {% elif input.defaultsTo.kind === 'payer' %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }} ?? context.payer.publicKey;
+      {% else %}
+        const {{ input.name | camelCase }}Account = {{ accountsObj }}.{{ input.name | camelCase }};
+      {% endif %}
+    {% elif input.kind === 'arg' %}
+     // TODO
+    {% endif %}
+  {% endfor %}
+{% endif %}
