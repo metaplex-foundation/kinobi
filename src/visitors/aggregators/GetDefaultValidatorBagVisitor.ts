@@ -124,6 +124,25 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       }
     }
 
+    // Check arg defaults.
+    Object.entries(instruction.metadata.argDefaults).forEach(
+      ([name, defaultsTo]) => {
+        if (defaultsTo.kind === 'accountBump') {
+          const defaultAccount = instruction.accounts.find(
+            (account) => account.name === defaultsTo.name
+          );
+          if (defaultAccount && defaultAccount.isSigner !== false) {
+            bag.error(
+              `Argument ${name} cannot default to the bump attribute of ` +
+                `the [${defaultsTo.name}] account as it may be a Signer.`,
+              instruction,
+              this.stack
+            );
+          }
+        }
+      }
+    );
+
     // Check sub-instructions.
     bag.mergeWith(instruction.subInstructions.map((ix) => ix.accept(this)));
 
