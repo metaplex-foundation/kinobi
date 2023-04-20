@@ -262,9 +262,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
           `"${parent.name}" in the "${instruction.name}" instruction.`;
         throw new Error(this.error);
       }
-      if (dependencyAccount.defaultsTo) {
-        input = { kind: 'account', ...dependencyAccount };
-      }
+      input = { kind: 'account', ...dependencyAccount };
     } else if (dependency.kind === 'arg') {
       const dependencyArg =
         instruction.metadata.argDefaults[dependency.name] ?? null;
