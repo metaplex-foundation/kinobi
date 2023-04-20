@@ -216,8 +216,12 @@ export class InstructionNode implements Visitable {
     return this.metadata.docs;
   }
 
-  get isLinked(): boolean {
+  get hasLinkedArgs(): boolean {
     return isTypeDefinedLinkNode(this.args);
+  }
+
+  get hasLinkedExtraArgs(): boolean {
+    return isTypeDefinedLinkNode(this.extraArgs);
   }
 
   get hasAccounts(): boolean {
@@ -234,15 +238,22 @@ export class InstructionNode implements Visitable {
     const nonOmittedFields = this.args.fields.filter(
       (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
     );
+    // TODO: Add check when argDefaults supports omitted default strategy.
     return nonOmittedFields.length > 0;
   }
 
-  get hasRequiredArgs(): boolean {
-    if (isTypeDefinedLinkNode(this.args)) return true;
-    const requiredFields = this.args.fields.filter(
-      (field) => field.metadata.defaultsTo === null
-    );
-    return requiredFields.length > 0;
+  get hasExtraArgs(): boolean {
+    if (isTypeDefinedLinkNode(this.extraArgs)) return true;
+    const nonOmittedFields =
+      this.extraArgs?.fields.filter(
+        (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
+      ) ?? [];
+    // TODO: Add check when argDefaults supports omitted default strategy.
+    return nonOmittedFields.length > 0;
+  }
+
+  get hasAnyArgs(): boolean {
+    return this.hasArgs || this.hasExtraArgs;
   }
 }
 

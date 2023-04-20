@@ -374,7 +374,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Arg defaults.
-    Object.values(instruction.metadata.argDefaults).forEach((argDefault) => {
+    const argDefaultKeys = Object.keys(instruction.metadata.argDefaults);
+    const argDefaults = Object.values(instruction.metadata.argDefaults);
+    argDefaults.forEach((argDefault) => {
       if (argDefault.kind === 'resolver') {
         imports.add(argDefault.dependency, camelCase(argDefault.name));
       }
@@ -440,6 +442,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         needsEddsa: hasAccountDefaultKinds(['pda', 'resolver']),
         needsIdentity: hasAccountDefaultKinds(['identity', 'resolver']),
         needsPayer: hasAccountDefaultKinds(['payer', 'resolver']),
+        argDefaultKeys,
         argManifest,
         extraArgManifest,
         canMergeAccountsAndArgs,

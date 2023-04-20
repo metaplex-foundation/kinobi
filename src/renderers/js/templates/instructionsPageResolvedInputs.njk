@@ -1,46 +1,44 @@
-{% if accounts.length > 0 %}
-  // Resolved inputs.
-  const resolvedAccounts: any = { ...{{ accountsObj }} };
-  const resolvedArgs: any = { ...{{ argsObj }} };
-  {% for input in resolvedInputs %}
-    {% if input.kind === 'account' and input.defaultsTo %}
-      {% if input.defaultsTo.kind === 'account' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? resolvedAccounts.{{ input.defaultsTo.name | camelCase }};
-      {% elif input.defaultsTo.kind === 'pda' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
-        {%- if (input.defaultsTo.seeds | length) > 0 -%}
-          {
-            {%- for seedKey, seedValue in input.defaultsTo.seeds -%}
-              {%- if seedValue.kind === 'value' -%}
-                {{ seedKey }}: {{ seedValue.render }},
-              {%- elif seedValue.kind === 'account' -%}
-                {{ seedKey }}: publicKey(resolvedAccounts.{{ seedValue.name | camelCase }}),
-              {%- else -%}
-                {{ seedKey }}: resolvedArgs.{{ seedValue.name | camelCase }},
-              {%- endif -%}
-            {%- endfor -%}
-          }
-        {%- endif -%}
-        );
-      {% elif input.defaultsTo.kind === 'publicKey' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? publicKey('{{ input.defaultsTo.publicKey }}');
-      {% elif input.defaultsTo.kind === 'program' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'), isWritable: false };
-      {% elif input.defaultsTo.kind === 'programId' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? { ...programId, isWritable: false };
-      {% elif input.defaultsTo.kind === 'identity' and (input.isSigner !== false) %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.identity;
-      {% elif input.defaultsTo.kind === 'identity' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.identity.publicKey;
-      {% elif input.defaultsTo.kind === 'payer' and (input.isSigner !== false) %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.payer;
-      {% elif input.defaultsTo.kind === 'payer' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.payer.publicKey;
-      {% elif input.defaultsTo.kind === 'resolver' %}
-        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs);
-      {% endif %}
-    {% elif input.kind === 'arg' %}
-     // TODO
+// Resolved inputs.
+const resolvedAccounts: any = { ...{{ accountsObj }} };
+const resolvedArgs: any = { ...{{ argsObj }} };
+{% for input in resolvedInputs %}
+  {% if input.kind === 'account' and input.defaultsTo %}
+    {% if input.defaultsTo.kind === 'account' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? resolvedAccounts.{{ input.defaultsTo.name | camelCase }};
+    {% elif input.defaultsTo.kind === 'pda' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
+      {%- if (input.defaultsTo.seeds | length) > 0 -%}
+        {
+          {%- for seedKey, seedValue in input.defaultsTo.seeds -%}
+            {%- if seedValue.kind === 'value' -%}
+              {{ seedKey }}: {{ seedValue.render }},
+            {%- elif seedValue.kind === 'account' -%}
+              {{ seedKey }}: publicKey(resolvedAccounts.{{ seedValue.name | camelCase }}),
+            {%- else -%}
+              {{ seedKey }}: resolvedArgs.{{ seedValue.name | camelCase }},
+            {%- endif -%}
+          {%- endfor -%}
+        }
+      {%- endif -%}
+      );
+    {% elif input.defaultsTo.kind === 'publicKey' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? publicKey('{{ input.defaultsTo.publicKey }}');
+    {% elif input.defaultsTo.kind === 'program' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'), isWritable: false };
+    {% elif input.defaultsTo.kind === 'programId' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? { ...programId, isWritable: false };
+    {% elif input.defaultsTo.kind === 'identity' and (input.isSigner !== false) %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.identity;
+    {% elif input.defaultsTo.kind === 'identity' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.identity.publicKey;
+    {% elif input.defaultsTo.kind === 'payer' and (input.isSigner !== false) %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.payer;
+    {% elif input.defaultsTo.kind === 'payer' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.payer.publicKey;
+    {% elif input.defaultsTo.kind === 'resolver' %}
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs);
     {% endif %}
-  {% endfor %}
-{% endif %}
+  {% elif input.kind === 'arg' %}
+    // TODO
+  {% endif %}
+{% endfor %}
