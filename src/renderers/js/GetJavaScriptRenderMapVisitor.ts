@@ -373,6 +373,13 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       imports.mergeWith(extraArgManifest.imports);
     }
 
+    // Arg defaults.
+    Object.values(instruction.metadata.argDefaults).forEach((argDefault) => {
+      if (argDefault.kind === 'resolver') {
+        imports.add(argDefault.dependency, camelCase(argDefault.name));
+      }
+    });
+
     // Bytes created on chain.
     const bytes = instruction.metadata.bytesCreatedOnChain;
     if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
@@ -385,6 +392,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           ? 'generatedAccounts'
           : bytes.dependency;
       imports.add(dependency, `get${accountName}Size`);
+    } else if (bytes?.kind === 'resolver') {
+      imports.add(bytes.dependency, camelCase(bytes.name));
     }
 
     // Remove imports from the same module.
@@ -480,8 +489,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       }
       if (account.defaultsTo?.kind === 'publicKey') {
         imports.add('core', 'publicKey');
-      }
-      if (account.defaultsTo?.kind === 'pda') {
+      } else if (account.defaultsTo?.kind === 'pda') {
         const pdaAccount = pascalCase(account.defaultsTo.pdaAccount);
         const dependency =
           account.defaultsTo.dependency === 'generated'
@@ -493,6 +501,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
             imports.add('core', 'publicKey');
           }
         });
+      } else if (account.defaultsTo?.kind === 'resolver') {
+        imports.add(
+          account.defaultsTo.dependency,
+          camelCase(account.defaultsTo.name)
+        );
       }
       if (account.resolvedIsSigner === 'either') {
         imports.add('core', ['PublicKey', 'publicKey', 'Signer', 'isSigner']);
