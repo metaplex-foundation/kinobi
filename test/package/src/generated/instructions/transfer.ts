@@ -94,8 +94,11 @@ export function getTransferInstructionDataSerializer(
 export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
 
 // Args.
-export type TransferInstructionArgs = TransferInstructionDataArgs &
-  TransferInstructionExtraArgs;
+type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type TransferInstructionArgs = PickPartial<
+  TransferInstructionDataArgs & TransferInstructionExtraArgs,
+  'tokenStandard'
+>;
 
 // Instruction.
 export function transfer(
@@ -123,6 +126,8 @@ export function transfer(
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.delegateRecord =
     resolvedAccounts.delegateRecord ?? programId;
+  resolvedArgs.tokenStandard =
+    resolvedArgs.tokenStandard ?? TokenStandard.NonFungible;
   resolvedAccounts.masterEdition =
     resolvedAccounts.masterEdition ??
     resolveMasterEditionFromTokenStandard(

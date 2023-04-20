@@ -160,6 +160,12 @@ kinobi.update(
           new TypeDefinedLinkNode('tokenStandard')
         ),
       ]),
+      argDefaults: {
+        tokenStandard: {
+          kind: 'value',
+          value: vEnum('tokenStandard', 'NonFungible'),
+        },
+      },
       accounts: {
         masterEdition: {
           defaultsTo: {
@@ -168,7 +174,10 @@ kinobi.update(
             dependency: 'hooked',
             resolvedIsSigner: false,
             resolvedIsOptional: false,
-            dependsOn: [{ kind: 'account', name: 'mint' }],
+            dependsOn: [
+              { kind: 'account', name: 'mint' },
+              { kind: 'arg', name: 'tokenStandard' },
+            ],
           },
         },
       },
