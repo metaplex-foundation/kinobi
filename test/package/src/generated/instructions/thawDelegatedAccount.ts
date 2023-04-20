@@ -79,7 +79,6 @@ export function thawDelegatedAccount(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
   resolvedAccounts.tokenProgram = resolvedAccounts.tokenProgram ?? {
     ...context.programs.getPublicKey(
       'splToken',

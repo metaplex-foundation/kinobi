@@ -112,7 +112,6 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.tokenProgram = resolvedAccounts.tokenProgram ?? {
     ...context.programs.getPublicKey(

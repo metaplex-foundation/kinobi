@@ -84,7 +84,6 @@ export function setCollection(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.tokenMetadataProgram =

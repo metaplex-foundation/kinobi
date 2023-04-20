@@ -81,7 +81,6 @@ export function convertMasterEditionV1ToV2(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
 
   // Master Edition.
   keys.push({

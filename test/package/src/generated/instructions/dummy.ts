@@ -79,7 +79,6 @@ export function dummy(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
   resolvedAccounts.mint = resolvedAccounts.mint ?? programId;
   resolvedAccounts.edition = resolvedAccounts.edition ?? resolvedAccounts.mint;
   resolvedAccounts.mintAuthority =

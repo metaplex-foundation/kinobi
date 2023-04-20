@@ -1,5 +1,5 @@
 {% set hasResolvedAccounts = accounts.length > 0 or instruction.hasResolvers %}
-{% set hasResolvedArgs = instruction.hasData or instruction.hasArgDefaults or instruction.hasResolvers %}
+{% set hasResolvedArgs = instruction.hasArgs or instruction.hasArgDefaults or instruction.hasResolvers %}
 
 {% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
   // Resolved inputs.

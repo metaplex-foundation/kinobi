@@ -81,7 +81,6 @@ export function unverifyCollection(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
 
   // Metadata.
   keys.push({

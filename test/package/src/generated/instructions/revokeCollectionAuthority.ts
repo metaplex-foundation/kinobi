@@ -85,7 +85,6 @@ export function revokeCollectionAuthority(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
 
   // Collection Authority Record.
   keys.push({

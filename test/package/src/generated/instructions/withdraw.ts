@@ -69,7 +69,6 @@ export function withdraw(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.

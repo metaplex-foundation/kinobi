@@ -91,7 +91,6 @@ export function approveCollectionAuthority(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(

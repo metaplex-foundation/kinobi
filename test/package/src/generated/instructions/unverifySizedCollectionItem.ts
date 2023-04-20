@@ -89,7 +89,6 @@ export function unverifySizedCollectionItem(
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
 
   // Metadata.
