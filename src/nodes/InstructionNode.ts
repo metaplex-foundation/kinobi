@@ -259,7 +259,6 @@ export class InstructionNode implements Visitable {
     const nonOmittedFields = this.args.fields.filter(
       (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
     );
-    // TODO: Add check when argDefaults supports omitted default strategy.
     return nonOmittedFields.length > 0;
   }
 
@@ -269,7 +268,6 @@ export class InstructionNode implements Visitable {
       this.extraArgs?.fields.filter(
         (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
       ) ?? [];
-    // TODO: Add check when argDefaults supports omitted default strategy.
     return nonOmittedFields.length > 0;
   }
 
