@@ -55,6 +55,7 @@ export function {{ instruction.name | camelCase }}(
   // Program ID.
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.metadata.publicKey }}');
 
+  {% include "instructionsPageResolvedInputs.njk" -%}
   {% include "instructionsPageAccountMetas.njk" -%}
 
   // Data.
