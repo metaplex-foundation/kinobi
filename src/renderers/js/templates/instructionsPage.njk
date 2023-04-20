@@ -17,7 +17,8 @@ export function {{ instruction.name | camelCase }}(
     {{- '| \'payer\'' if needsPayer else '' }}
   >,
   {% set accountsType = instruction.name | pascalCase + 'InstructionAccounts' %}
-  {% if instruction.hasPdaAccounts %}
+  {% set argsType = instruction.name | pascalCase + 'InstructionDataArgs' %}
+  {# {% if instruction.hasPdaAccounts %}
     {% set argsType %}
       Omit<{{ instruction.name | pascalCase + 'InstructionDataArgs' }}, 
       {%- for account in instruction.pdaAccounts -%}
@@ -25,9 +26,7 @@ export function {{ instruction.name | camelCase }}(
       {%- endfor -%}
       >
     {% endset %}
-  {% else %}
-    {% set argsType = instruction.name | pascalCase + 'InstructionDataArgs' %}
-  {% endif %}
+  {% endif %} #}
   {% if canMergeAccountsAndArgs %}
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
@@ -60,15 +59,8 @@ export function {{ instruction.name | camelCase }}(
   {% include "instructionsPageAccountMetas.njk" -%}
 
   // Data.
-  {% if instruction.hasArgs and instruction.hasPdaAccounts %}
-    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({
-      ...{{ argsObj }},
-      {% for account in instruction.pdaAccounts %}
-        {{ account.pdaBumpArg }}: {{ account.name | camelCase }}Account.bump,
-      {% endfor %}
-    });
-  {% elif instruction.hasArgs %}
-    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({{ argsObj }});
+  {% if instruction.hasArgs %}
+    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize(resolvedArgs);
   {% elif instruction.hasData %}
     const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({});
   {% else %}
@@ -83,6 +75,8 @@ export function {{ instruction.name | camelCase }}(
     const bytesCreatedOnChain = Number({{ argsObj }}.{{ bytes.name }}){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif bytes.kind === 'account' %}
     const bytesCreatedOnChain = get{{ bytes.name | pascalCase }}Size(){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% elif bytes.kind === 'resolver' %}
+    const bytesCreatedOnChain = {{ bytes.name | camelCase }}(context, resolvedAccounts, resolvedArgs);
   {% else %}
     const bytesCreatedOnChain = 0;
   {% endif %}

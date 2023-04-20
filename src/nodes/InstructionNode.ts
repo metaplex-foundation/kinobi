@@ -27,7 +27,6 @@ export type InstructionNodeAccount = {
   isOptional: boolean;
   description: string;
   defaultsTo: InstructionNodeAccountDefaults | null;
-  pdaBumpArg: string | null; // TODO: Replace with arg defaults "accountBump".
 };
 
 export type InstructionNodeInputDependency = {
@@ -167,7 +166,6 @@ export class InstructionNode implements Visitable {
             isOptional && useProgramIdForOptionalAccounts
               ? { kind: 'programId' }
               : null,
-          pdaBumpArg: account.pdaBumpArg ?? null,
         };
       }
     );
@@ -224,14 +222,6 @@ export class InstructionNode implements Visitable {
 
   get hasAccounts(): boolean {
     return this.accounts.length > 0;
-  }
-
-  get pdaAccounts(): InstructionNodeAccount[] {
-    return this.accounts.filter((account) => account.pdaBumpArg !== null);
-  }
-
-  get hasPdaAccounts(): boolean {
-    return this.pdaAccounts.length > 0;
   }
 
   get hasData(): boolean {

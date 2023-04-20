@@ -16,7 +16,6 @@
           "isMut": true,
           "isSigner": false,
           "desc": "The PDA account where the RuleSet is stored",
-          "pdaBumpArg": "ruleSetBump"
         },
         {
           "name": "systemProgram",
