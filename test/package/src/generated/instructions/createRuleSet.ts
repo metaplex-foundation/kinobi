@@ -86,10 +86,13 @@ export function createRuleSet(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplTokenAuthRules',
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplTokenAuthRules',
+      'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+    ),
+    isWritable: false,
+  };
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };

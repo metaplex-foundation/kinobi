@@ -98,18 +98,18 @@ export function createV1(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplTokenMetadata',
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    ),
+    isWritable: false,
+  };
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
   const resolvedArgs: any = { ...input };
-  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(

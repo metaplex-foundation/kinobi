@@ -90,22 +90,19 @@ export function revoke(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplTokenMetadata',
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    ),
+    isWritable: false,
+  };
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
   const resolvedArgs: any = { ...input };
-  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? {
-    ...programId,
-    isWritable: false,
-  };
-  resolvedAccounts.token = resolvedAccounts.token ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
+  resolvedAccounts.token = resolvedAccounts.token ?? programId;
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
@@ -118,19 +115,12 @@ export function revoke(
   resolvedAccounts.sysvarInstructions =
     resolvedAccounts.sysvarInstructions ??
     publicKey('Sysvar1nstructions1111111111111111111111111');
-  resolvedAccounts.splTokenProgram = resolvedAccounts.splTokenProgram ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.splTokenProgram =
+    resolvedAccounts.splTokenProgram ?? programId;
   resolvedAccounts.authorizationRulesProgram =
-    resolvedAccounts.authorizationRulesProgram ?? {
-      ...programId,
-      isWritable: false,
-    };
-  resolvedAccounts.authorizationRules = resolvedAccounts.authorizationRules ?? {
-    ...programId,
-    isWritable: false,
-  };
+    resolvedAccounts.authorizationRulesProgram ?? programId;
+  resolvedAccounts.authorizationRules =
+    resolvedAccounts.authorizationRules ?? programId;
 
   // Delegate Record.
   keys.push({

@@ -85,18 +85,18 @@ export function mint(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplTokenMetadata',
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    ),
+    isWritable: false,
+  };
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
   const resolvedArgs: any = { ...input };
-  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
@@ -124,14 +124,9 @@ export function mint(
     isWritable: false,
   };
   resolvedAccounts.authorizationRulesProgram =
-    resolvedAccounts.authorizationRulesProgram ?? {
-      ...programId,
-      isWritable: false,
-    };
-  resolvedAccounts.authorizationRules = resolvedAccounts.authorizationRules ?? {
-    ...programId,
-    isWritable: false,
-  };
+    resolvedAccounts.authorizationRulesProgram ?? programId;
+  resolvedAccounts.authorizationRules =
+    resolvedAccounts.authorizationRules ?? programId;
 
   // Token.
   keys.push({

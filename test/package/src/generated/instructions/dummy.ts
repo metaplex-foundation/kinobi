@@ -69,26 +69,23 @@ export function dummy(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplCandyMachineCore',
+      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+    ),
+    isWritable: false,
+  };
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
   const resolvedArgs: any = { ...input };
-  resolvedAccounts.mint = resolvedAccounts.mint ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.mint = resolvedAccounts.mint ?? programId;
   resolvedAccounts.edition = resolvedAccounts.edition ?? resolvedAccounts.mint;
   resolvedAccounts.mintAuthority =
     resolvedAccounts.mintAuthority ?? resolvedAccounts.updateAuthority;
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.bar = resolvedAccounts.bar ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.bar = resolvedAccounts.bar ?? programId;
   resolvedAccounts.foo = resolvedAccounts.foo ?? resolvedAccounts.bar;
   resolvedAccounts.delegateRecord =
     resolvedAccounts.delegateRecord ??

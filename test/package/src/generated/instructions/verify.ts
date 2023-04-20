@@ -73,24 +73,22 @@ export function verify(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplTokenMetadata',
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    ),
+    isWritable: false,
+  };
 
   // Resolved inputs.
   const resolvedAccounts: any = { ...input };
   const resolvedArgs: any = { ...input };
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.authorizationRules = resolvedAccounts.authorizationRules ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.authorizationRules =
+    resolvedAccounts.authorizationRules ?? programId;
   resolvedAccounts.authorizationRulesProgram =
-    resolvedAccounts.authorizationRulesProgram ?? {
-      ...programId,
-      isWritable: false,
-    };
+    resolvedAccounts.authorizationRulesProgram ?? programId;
 
   // Metadata.
   keys.push({
