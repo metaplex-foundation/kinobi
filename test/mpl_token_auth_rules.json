@@ -15,7 +15,7 @@
           "name": "ruleSetPda",
           "isMut": true,
           "isSigner": false,
-          "desc": "The PDA account where the RuleSet is stored",
+          "desc": "The PDA account where the RuleSet is stored"
         },
         {
           "name": "systemProgram",
