@@ -77,6 +77,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
                 newMetadata,
                 newAccounts,
                 renameStructNode(node.args, args, `${newName}InstructionData`),
+                node.extraArgs,
                 node.subInstructions
               );
             }
@@ -85,6 +86,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               newMetadata,
               newAccounts,
               node.args,
+              node.extraArgs,
               node.subInstructions
             );
           },

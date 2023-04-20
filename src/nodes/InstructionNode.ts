@@ -17,6 +17,7 @@ export type InstructionNodeMetadata = {
   docs: string[];
   internal: boolean;
   bytesCreatedOnChain: InstructionNodeBytesCreatedOnChain | null;
+  argDefaults: Record<string, InstructionNodeArgDefaults>;
 };
 
 export type InstructionNodeAccount = {
@@ -26,10 +27,27 @@ export type InstructionNodeAccount = {
   isOptional: boolean;
   description: string;
   defaultsTo: InstructionNodeAccountDefaults | null;
-  pdaBumpArg: string | null;
+  pdaBumpArg: string | null; // TODO: Replace with arg defaults "accountBump".
 };
 
+export type InstructionNodeArgDefaults =
+  | { kind: 'arg'; name: string }
+  | { kind: 'account'; name: string }
+  | { kind: 'accountBump'; name: string }
+  | { kind: 'value'; value: ValueNode }
+  | {
+      kind: 'resolver';
+      name: string;
+      dependency: Dependency;
+      dependsOn: (
+        | { kind: 'account'; name: string }
+        | { kind: 'arg'; name: string }
+      )[];
+    };
+
 export type InstructionNodeAccountDefaults =
+  | { kind: 'programId' }
+  | { kind: 'program'; program: { name: string; publicKey: string } }
   | { kind: 'publicKey'; publicKey: string }
   | { kind: 'account'; name: string }
   | { kind: 'identity' }
@@ -40,8 +58,15 @@ export type InstructionNodeAccountDefaults =
       dependency: Dependency;
       seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
     }
-  | { kind: 'program'; program: { name: string; publicKey: string } }
-  | { kind: 'programId' };
+  | {
+      kind: 'resolver';
+      name: string;
+      dependency: Dependency;
+      dependsOn: (
+        | { kind: 'account'; name: string }
+        | { kind: 'arg'; name: string }
+      )[];
+    };
 
 export type InstructionNodeAccountDefaultsSeed =
   | { kind: 'account'; name: string }
@@ -56,7 +81,8 @@ export type InstructionNodeBytesCreatedOnChain =
       name: string;
       dependency: string;
       includeHeader: boolean;
-    };
+    }
+  | { kind: 'resolver'; name: string; dependency: Dependency };
 
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
@@ -67,12 +93,15 @@ export class InstructionNode implements Visitable {
 
   readonly args: TypeStructNode | TypeDefinedLinkNode;
 
+  readonly extraArgs: TypeStructNode | TypeDefinedLinkNode | null;
+
   readonly subInstructions: InstructionNode[];
 
   constructor(
     metadata: InstructionNodeMetadata,
     accounts: InstructionNodeAccount[],
     args: InstructionNode['args'],
+    extraArgs: InstructionNode['extraArgs'],
     subInstructions: InstructionNode[]
   ) {
     const bytes = metadata.bytesCreatedOnChain;
@@ -104,6 +133,7 @@ export class InstructionNode implements Visitable {
       return { ...account, name: mainCase(account.name), defaultsTo };
     });
     this.args = args;
+    this.extraArgs = extraArgs;
     this.subInstructions = subInstructions;
   }
 
@@ -118,6 +148,7 @@ export class InstructionNode implements Visitable {
       docs: idl.docs ?? [],
       internal: false,
       bytesCreatedOnChain: null,
+      argDefaults: {},
     };
 
     const accounts = (idl.accounts ?? []).map(
@@ -164,7 +195,7 @@ export class InstructionNode implements Visitable {
       ]);
     }
 
-    return new InstructionNode(metadata, accounts, args, []);
+    return new InstructionNode(metadata, accounts, args, null, []);
   }
 
   accept<T>(visitor: Visitor<T>): T {

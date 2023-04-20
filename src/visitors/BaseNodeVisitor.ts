@@ -55,6 +55,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
       instruction.metadata,
       instruction.accounts,
       args,
+      instruction.extraArgs,
       instruction.subInstructions
         .map((ix) => ix.accept(this))
         .filter(

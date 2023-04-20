@@ -43,6 +43,7 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
                 discriminatorField,
                 ...node.args.fields,
               ]),
+              node.extraArgs,
               node.subInstructions
             );
           },

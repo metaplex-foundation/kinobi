@@ -343,7 +343,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // Bytes created on chain.
     const bytes = instruction.metadata.bytesCreatedOnChain;
-    if (bytes && bytes.includeHeader) {
+    if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
       imports.add('core', 'ACCOUNT_HEADER_SIZE');
     }
     if (bytes?.kind === 'account') {

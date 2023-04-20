@@ -70,6 +70,7 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
       new nodes.TypeDefinedLinkNode(options.name, {
         dependency: options.dependency,
       }),
+      instruction.extraArgs,
       instruction.subInstructions
     );
   }

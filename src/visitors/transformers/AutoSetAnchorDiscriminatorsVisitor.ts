@@ -86,6 +86,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
         discriminatorField,
         ...instruction.args.fields,
       ]),
+      instruction.extraArgs,
       instruction.subInstructions
     );
   }

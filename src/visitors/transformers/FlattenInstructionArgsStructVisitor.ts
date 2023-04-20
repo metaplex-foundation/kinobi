@@ -13,6 +13,7 @@ export class FlattenInstructionArgsStructVisitor extends TransformNodesVisitor {
             instruction.metadata,
             instruction.accounts,
             flattenStruct(instruction.args),
+            instruction.extraArgs,
             instruction.subInstructions
           );
         },

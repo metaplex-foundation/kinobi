@@ -67,6 +67,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       instruction.metadata,
       instruction.accounts,
       args,
+      instruction.extraArgs,
       instruction.subInstructions
         .map((ix) => ix.accept(this))
         .filter(
