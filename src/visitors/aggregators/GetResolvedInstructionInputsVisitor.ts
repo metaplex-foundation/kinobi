@@ -12,6 +12,7 @@ type InstructionNodeArg = {
 
 export type ResolvedInstructionAccount = nodes.InstructionNodeAccount & {
   kind: 'account';
+  isPda: boolean;
   dependsOn: nodes.InstructionNodeInputDependency[];
   resolvedIsSigner: boolean | 'either';
   resolvedIsOptional: boolean;
@@ -54,9 +55,10 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
     this.visitedArgs = new Map();
 
     const inputs: InstructionNodeInput[] = [
-      ...instruction.accounts
-        .filter((account) => account.defaultsTo !== null)
-        .map((account) => ({ kind: 'account' as const, ...account })),
+      ...instruction.accounts.map((account) => ({
+        kind: 'account' as const,
+        ...account,
+      })),
       ...Object.entries(instruction.metadata.argDefaults).map(
         ([argName, argDefault]) => ({
           kind: 'arg' as const,
@@ -95,9 +97,9 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
         ' -> '
       );
       this.error =
-        `Circular dependency detected in the accounts of ` +
+        `Circular dependency detected in the accounts and args of ` +
         `the "${instruction.name}" instruction. ` +
-        `Got the following account dependency cycle: ${cycle}.`;
+        `Got the following dependency cycle: ${cycle}.`;
       throw new Error(this.error);
     }
 
@@ -145,6 +147,10 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
     const resolved: ResolvedInstructionAccount = {
       ...account,
+      isPda: Object.values(instruction.metadata.argDefaults).some(
+        (argDefault) =>
+          argDefault.kind === 'accountBump' && argDefault.name === account.name
+      ),
       dependsOn,
       resolvedIsSigner: account.isSigner,
       resolvedIsOptional: account.isOptional,

@@ -6,9 +6,10 @@ import { camelCase, pascalCase } from '../../utils';
 import {
   Visitor,
   BaseThrowVisitor,
-  GetResolvedInstructionAccountsVisitor,
-  ResolvedInstructionAccount,
+  GetResolvedInstructionInputsVisitor,
   Dependency,
+  ResolvedInstructionInput,
+  ResolvedInstructionAccount,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
@@ -46,9 +47,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   private program: nodes.ProgramNode | null = null;
 
-  private resolvedInstructionAccountVisitor: Visitor<
-    ResolvedInstructionAccount[]
-  >;
+  private resolvedInstructionInputVisitor: Visitor<ResolvedInstructionInput[]>;
 
   constructor(options: GetJavaScriptRenderMapOptions = {}) {
     super();
@@ -72,8 +71,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
     };
-    this.resolvedInstructionAccountVisitor =
-      new GetResolvedInstructionAccountsVisitor();
+    this.resolvedInstructionInputVisitor =
+      new GetResolvedInstructionInputsVisitor();
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
@@ -305,28 +304,42 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       'transactionBuilder',
     ]);
 
-    // Accounts.
-    const accounts = instruction
-      .accept(this.resolvedInstructionAccountVisitor)
-      .map((account) => {
-        const hasDefaultValue = !!account.defaultsTo;
-        if (account.defaultsTo?.kind === 'pda') {
-          const { seeds } = account.defaultsTo;
+    // Resolved inputs.
+    const resolvedInputs = instruction
+      .accept(this.resolvedInstructionInputVisitor)
+      .map((input: ResolvedInstructionInput) => {
+        if (input.kind === 'account' && input.defaultsTo?.kind === 'pda') {
+          const { seeds } = input.defaultsTo;
           Object.keys(seeds).forEach((seed: string) => {
             const seedValue = seeds[seed];
             if (seedValue.kind !== 'value') return;
-            const seedManifest = renderJavaScriptValueNode(seedValue.value);
-            (seedValue as any).render = seedManifest.render;
-            imports.mergeWith(seedManifest.imports);
+            const valueManifest = renderJavaScriptValueNode(seedValue.value);
+            (seedValue as any).render = valueManifest.render;
+            imports.mergeWith(valueManifest.imports);
           });
         }
-        return {
-          ...account,
-          type: this.getInstructionAccountType(account),
-          optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
-          hasDefaultValue,
-        };
+        if (input.kind === 'arg' && input.defaultsTo.kind === 'value') {
+          const { defaultsTo } = input;
+          const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
+          (defaultsTo as any).render = valueManifest.render;
+          imports.mergeWith(valueManifest.imports);
+        }
+        return input;
       });
+
+    // Accounts.
+    const accounts = instruction.accounts.map((account) => {
+      const hasDefaultValue = !!account.defaultsTo;
+      const resolvedAccount = resolvedInputs.find(
+        (input) => input.kind === 'account' && input.name === account.name
+      ) as ResolvedInstructionAccount;
+      return {
+        ...resolvedAccount,
+        type: this.getInstructionAccountType(resolvedAccount),
+        optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
+        hasDefaultValue,
+      };
+    });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
     if (accounts.length > 0) {
       imports
@@ -380,16 +393,22 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
     }
 
+    const hasAccountDefaultKinds = (
+      kinds: Array<nodes.InstructionNodeAccountDefaults['kind']>
+    ) =>
+      accounts.some((a) => a.defaultsTo && kinds.includes(a.defaultsTo.kind));
+
     return new RenderMap().add(
       `instructions/${camelCase(instruction.name)}.ts`,
       this.render('instructionsPage.njk', {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
+        resolvedInputs,
         accounts,
-        needsEddsa: accounts.some((a) => a.defaultsTo?.kind === 'pda'),
-        needsIdentity: accounts.some((a) => a.defaultsTo?.kind === 'identity'),
-        needsPayer: accounts.some((a) => a.defaultsTo?.kind === 'payer'),
+        needsEddsa: hasAccountDefaultKinds(['pda', 'resolver']),
+        needsIdentity: hasAccountDefaultKinds(['identity', 'resolver']),
+        needsPayer: hasAccountDefaultKinds(['payer', 'resolver']),
         typeManifest,
         canMergeAccountsAndArgs,
       })
@@ -423,7 +442,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   protected getInstructionAccountType(
     account: ResolvedInstructionAccount
   ): string {
-    if (account.pdaBumpArg) return 'Pda';
+    if (account.isPda && account.isSigner === false) return 'Pda';
     if (account.isSigner === 'either') return 'PublicKey | Signer';
     return account.isSigner ? 'Signer' : 'PublicKey';
   }
@@ -433,7 +452,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   ): JavaScriptImportMap {
     const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
-      if (account.pdaBumpArg) {
+      if (account.isPda && account.isSigner === false) {
         imports.add('core', 'Pda');
       }
       if (account.defaultsTo?.kind === 'publicKey') {
