@@ -17,24 +17,15 @@ export function {{ instruction.name | camelCase }}(
     {{- '| \'payer\'' if needsPayer else '' }}
   >,
   {% set accountsType = instruction.name | pascalCase + 'InstructionAccounts' %}
-  {% set argsType = instruction.name | pascalCase + 'InstructionDataArgs' %}
-  {# {% if instruction.hasPdaAccounts %}
-    {% set argsType %}
-      Omit<{{ instruction.name | pascalCase + 'InstructionDataArgs' }}, 
-      {%- for account in instruction.pdaAccounts -%}
-        "{{ account.pdaBumpArg }}"{% if not loop.last %} | {% endif %}
-      {%- endfor -%}
-      >
-    {% endset %}
-  {% endif %} #}
+  {% set argsType = instruction.name | pascalCase + 'InstructionArgs' %}
   {% if canMergeAccountsAndArgs %}
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
-    {% if instruction.hasAccounts and instruction.hasArgs %}
+    {% if instruction.hasAccounts and instruction.hasAnyArgs %}
       input: {{ accountsType }} & {{ argsType }},
     {% elif instruction.hasAccounts %}
       input: {{ accountsType }},
-    {% elif instruction.hasArgs %}
+    {% elif instruction.hasAnyArgs %}
       input: {{ argsType }},
     {% endif %}
   {% else %}
@@ -43,7 +34,7 @@ export function {{ instruction.name | camelCase }}(
     {% if instruction.hasAccounts %}
       accounts: {{ accountsType }},
     {% endif %}
-    {% if instruction.hasArgs %}
+    {% if instruction.hasAnyArgs %}
       args: {{ argsType }},
     {% endif %}
   {% endif %}

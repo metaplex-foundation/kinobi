@@ -10,7 +10,7 @@
   export type {{ instruction.name | pascalCase + 'InstructionExtraArgs' }} = {{ extraArgManifest.looseType }};
 {% endif %}
 
-{% if instruction.hasAnyData %}
+{% if instruction.hasAnyArgs %}
   type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
   {% set argType %}
@@ -27,9 +27,10 @@
     export type {{ instruction.name | pascalCase + 'InstructionArgs' }} = PickPartial<
       {{ argType }}, 
       {% for key in argDefaultKeys %}
-        '{{ key }}'
-        {% if not loop.last %} | {% endif %}
+        "{{ key }}"{% if not loop.last %} | {% endif %}
       {% endfor %}
-    >
+    >;
+  {% else %}
+    export type {{ instruction.name | pascalCase + 'InstructionArgs' }} = {{ argType }};
   {% endif %}
 {% endif %}
