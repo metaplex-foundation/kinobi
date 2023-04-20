@@ -2,18 +2,18 @@
   {% set isWritableString = 'true' if account.isWritable else 'false' %}
   // {{ account.name | camelCase | titleCase }}{% if account.resolvedIsOptional %} (optional){% endif %}.
   {% if account.resolvedIsOptional %}
-  if ({{ account.name | camelCase }}Account) {
+  if (resolvedAccounts.{{ account.name | camelCase }}) {
   {% endif %}
     {% if account.resolvedIsSigner === 'either' %}
-      if (isSigner({{ account.name | camelCase }}Account)) {
-        signers.push({{ account.name | camelCase }}Account);
+      if (isSigner(resolvedAccounts.{{ account.name | camelCase }})) {
+        signers.push(resolvedAccounts.{{ account.name | camelCase }});
       }
-      keys.push({ pubkey: publicKey({{ account.name | camelCase }}Account), isSigner: isSigner({{ account.name | camelCase }}Account), isWritable: isWritable({{ account.name | camelCase }}Account, {{ isWritableString }}) });
+      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}), isSigner: isSigner(resolvedAccounts.{{ account.name | camelCase }}), isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% elif account.resolvedIsSigner  %}
-      signers.push({{ account.name | camelCase }}Account);
-      keys.push({ pubkey: {{ account.name | camelCase }}Account.publicKey, isSigner: true, isWritable: isWritable({{ account.name | camelCase }}Account, {{ isWritableString }}) });
+      signers.push(resolvedAccounts.{{ account.name | camelCase }});
+      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}.publicKey, isSigner: true, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% else %}
-      keys.push({ pubkey: {{ account.name | camelCase }}Account, isSigner: false, isWritable: isWritable({{ account.name | camelCase }}Account, {{ isWritableString }}) });
+      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}, isSigner: false, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% endif %}
   {% if account.resolvedIsOptional %}
   }
