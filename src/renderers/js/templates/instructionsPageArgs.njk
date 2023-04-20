@@ -11,8 +11,6 @@
 {% endif %}
 
 {% if instruction.hasAnyArgs %}
-  type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
   {% set argType %}
     {% if instruction.hasArgs and instruction.hasExtraArgs %}
       {{ instruction.name | pascalCase + 'InstructionDataArgs' }} & {{ instruction.name | pascalCase + 'InstructionExtraArgs' }}
@@ -24,6 +22,7 @@
   {% endset %}
 
   {% if argDefaultKeys.length > 0 %}
+    type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
     export type {{ instruction.name | pascalCase + 'InstructionArgs' }} = PickPartial<
       {{ argType }}, 
       {% for key in argDefaultKeys %}
