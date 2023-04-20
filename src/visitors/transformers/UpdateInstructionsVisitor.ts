@@ -1,5 +1,6 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
+import { Dependency } from '../Dependency';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
   NodeTransform,
@@ -12,7 +13,6 @@ export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
-      accounts?: InstructionAccountUpdates;
       args?: Record<string, string>;
       extraArgs?: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
     });
@@ -39,9 +39,10 @@ type InstructionNodeBytesCreatedOnChainInput =
   | {
       kind: 'account';
       name: string;
-      dependency?: string;
+      dependency?: Dependency;
       includeHeader?: boolean;
-    };
+    }
+  | { kind: 'resolver'; name: string; dependency?: Dependency };
 
 export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   protected allAccounts = new Map<string, nodes.AccountNode>();

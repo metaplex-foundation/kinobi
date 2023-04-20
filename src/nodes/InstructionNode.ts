@@ -79,7 +79,7 @@ export type InstructionNodeBytesCreatedOnChain =
   | {
       kind: 'account';
       name: string;
-      dependency: string;
+      dependency: Dependency;
       includeHeader: boolean;
     }
   | { kind: 'resolver'; name: string; dependency: Dependency };
