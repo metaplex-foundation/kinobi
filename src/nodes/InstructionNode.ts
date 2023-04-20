@@ -30,6 +30,11 @@ export type InstructionNodeAccount = {
   pdaBumpArg: string | null; // TODO: Replace with arg defaults "accountBump".
 };
 
+export type InstructionNodeInputDependency = {
+  kind: 'account' | 'arg';
+  name: string;
+};
+
 export type InstructionNodeArgDefaults =
   | { kind: 'arg'; name: string }
   | { kind: 'account'; name: string }
@@ -39,10 +44,7 @@ export type InstructionNodeArgDefaults =
       kind: 'resolver';
       name: string;
       dependency: Dependency;
-      dependsOn: (
-        | { kind: 'account'; name: string }
-        | { kind: 'arg'; name: string }
-      )[];
+      dependsOn: InstructionNodeInputDependency[];
     };
 
 export type InstructionNodeAccountDefaults =
@@ -62,10 +64,9 @@ export type InstructionNodeAccountDefaults =
       kind: 'resolver';
       name: string;
       dependency: Dependency;
-      dependsOn: (
-        | { kind: 'account'; name: string }
-        | { kind: 'arg'; name: string }
-      )[];
+      resolvedIsSigner: boolean | 'either';
+      resolvedIsOptional: boolean;
+      dependsOn: InstructionNodeInputDependency[];
     };
 
 export type InstructionNodeAccountDefaultsSeed =
