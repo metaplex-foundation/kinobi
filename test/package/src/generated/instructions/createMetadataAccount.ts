@@ -148,7 +148,8 @@ export function createMetadataAccount(
   resolvedAccounts.rent =
     resolvedAccounts.rent ??
     publicKey('SysvarRent111111111111111111111111111111111');
-  // TODO
+  resolvedArgs.metadataBump =
+    resolvedArgs.metadataBump ?? resolvedAccounts.metadata.bump;
 
   // Metadata.
   keys.push({

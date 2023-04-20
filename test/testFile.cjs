@@ -98,7 +98,12 @@ kinobi.update(
 
 kinobi.update(
   new UpdateInstructionsVisitor({
-    'mplTokenAuthRules.Create': { name: 'CreateRuleSet' },
+    'mplTokenAuthRules.Create': {
+      name: 'CreateRuleSet',
+      argDefaults: {
+        ruleSetBump: { kind: 'accountBump', name: 'ruleSetPda' },
+      },
+    },
     'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
     CreateMetadataAccount: {
       bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },

@@ -39,6 +39,16 @@ const resolvedArgs: any = { ...{{ argsObj }} };
       resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs);
     {% endif %}
   {% elif input.kind === 'arg' %}
-    // TODO
+    {% if input.defaultsTo.kind === 'arg' %}
+      resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? resolvedArgs.{{ input.defaultsTo.name | camelCase }};
+    {% elif input.defaultsTo.kind === 'account' %}
+      resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? resolvedAccounts.{{ input.defaultsTo.name | camelCase }};
+    {% elif input.defaultsTo.kind === 'accountBump' %}
+      resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? resolvedAccounts.{{ input.defaultsTo.name | camelCase }}.bump;
+    {% elif input.defaultsTo.kind === 'value' %}
+      resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? {{ input.defaultsTo.render }};
+    {% elif input.defaultsTo.kind === 'resolver' %}
+      resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs);
+    {% endif %}
   {% endif %}
 {% endfor %}

@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -28,7 +29,7 @@ export type CreateRuleSetInstructionAccounts = {
   /** Payer and creator of the RuleSet */
   payer?: Signer;
   /** The PDA account where the RuleSet is stored */
-  ruleSetPda: PublicKey;
+  ruleSetPda: Pda;
   /** System program */
   systemProgram?: PublicKey;
 };
@@ -70,7 +71,11 @@ export function getCreateRuleSetInstructionDataSerializer(
 }
 
 // Args.
-export type CreateRuleSetInstructionArgs = CreateRuleSetInstructionDataArgs;
+type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type CreateRuleSetInstructionArgs = PickPartial<
+  CreateRuleSetInstructionDataArgs,
+  'ruleSetBump'
+>;
 
 // Instruction.
 export function createRuleSet(
@@ -97,6 +102,8 @@ export function createRuleSet(
     ),
     isWritable: false,
   };
+  resolvedArgs.ruleSetBump =
+    resolvedArgs.ruleSetBump ?? resolvedAccounts.ruleSetPda.bump;
 
   // Payer.
   signers.push(resolvedAccounts.payer);
