@@ -103,12 +103,16 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
       throw new Error(this.error);
     }
 
+    // Resolve whilst keeping track of the stack.
+    this.stack.push(input);
     const resolved =
       input.kind === 'account'
         ? this.resolveInstructionAccount(instruction, input)
         : this.resolveInstructionArg(instruction, input);
-    this.resolved.push(resolved);
+    this.stack.pop();
 
+    // Store the resolved input.
+    this.resolved.push(resolved);
     if (resolved.kind === 'account') {
       this.visitedAccounts.set(input.name, resolved);
     } else {
@@ -239,43 +243,33 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
     parent: InstructionNodeInput,
     dependencies: nodes.InstructionNodeInputDependency[]
   ): void {
-    this.stack.push(parent);
-    dependencies.forEach((dependency) =>
-      this.resolveInstructionDependency(instruction, parent, dependency)
-    );
-    this.stack.pop();
-  }
-
-  resolveInstructionDependency(
-    instruction: nodes.InstructionNode,
-    parent: InstructionNodeInput,
-    dependency: nodes.InstructionNodeInputDependency
-  ): void {
-    let input: InstructionNodeInput | null = null;
-    if (dependency.kind === 'account') {
-      const dependencyAccount = instruction.accounts.find(
-        ({ name }) => name === dependency.name
-      );
-      if (!dependencyAccount) {
-        this.error =
-          `Account "${dependency.name}" is not a valid dependency of ${parent.kind} ` +
-          `"${parent.name}" in the "${instruction.name}" instruction.`;
-        throw new Error(this.error);
+    dependencies.forEach((dependency) => {
+      let input: InstructionNodeInput | null = null;
+      if (dependency.kind === 'account') {
+        const dependencyAccount = instruction.accounts.find(
+          ({ name }) => name === dependency.name
+        );
+        if (!dependencyAccount) {
+          this.error =
+            `Account "${dependency.name}" is not a valid dependency of ${parent.kind} ` +
+            `"${parent.name}" in the "${instruction.name}" instruction.`;
+          throw new Error(this.error);
+        }
+        input = { kind: 'account', ...dependencyAccount };
+      } else if (dependency.kind === 'arg') {
+        const dependencyArg =
+          instruction.metadata.argDefaults[dependency.name] ?? null;
+        if (dependencyArg) {
+          input = {
+            kind: 'arg',
+            name: dependency.name,
+            defaultsTo: dependencyArg,
+          };
+        }
       }
-      input = { kind: 'account', ...dependencyAccount };
-    } else if (dependency.kind === 'arg') {
-      const dependencyArg =
-        instruction.metadata.argDefaults[dependency.name] ?? null;
-      if (dependencyArg) {
-        input = {
-          kind: 'arg',
-          name: dependency.name,
-          defaultsTo: dependencyArg,
-        };
+      if (input) {
+        this.resolveInstructionInput(instruction, input);
       }
-    }
-    if (input) {
-      this.resolveInstructionInput(instruction, input);
-    }
+    });
   }
 }
