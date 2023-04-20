@@ -14,6 +14,7 @@ export type InstructionUpdates =
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
       args?: Record<string, string>;
+      extraArgs?: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
     });
 
 export type InstructionMetadataUpdates = Partial<
@@ -61,7 +62,11 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               return null;
             }
 
-            const { accounts: accountUpdates, ...metadataUpdates } = updates;
+            const {
+              accounts: accountUpdates,
+              extraArgs: extraArgsUpdates,
+              ...metadataUpdates
+            } = updates;
             const newName = mainCase(updates.name ?? node.name);
             const args = updates.args ?? {};
             const newMetadata = {
@@ -71,22 +76,19 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
             const newAccounts = node.accounts.map((account) =>
               this.handleInstructionAccount(account, accountUpdates ?? {})
             );
-
-            if (nodes.isTypeStructNode(node.args)) {
-              return new nodes.InstructionNode(
-                newMetadata,
-                newAccounts,
-                renameStructNode(node.args, args, `${newName}InstructionData`),
-                node.extraArgs,
-                node.subInstructions
-              );
-            }
+            const newArgs = nodes.isTypeStructNode(node.args)
+              ? renameStructNode(node.args, args, `${newName}InstructionData`)
+              : node.args;
+            const newExtraArgs =
+              extraArgsUpdates === undefined
+                ? node.extraArgs
+                : extraArgsUpdates;
 
             return new nodes.InstructionNode(
               newMetadata,
               newAccounts,
-              node.args,
-              node.extraArgs,
+              newArgs,
+              newExtraArgs,
               node.subInstructions
             );
           },
