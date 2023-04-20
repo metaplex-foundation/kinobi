@@ -113,6 +113,7 @@ export class InstructionNode implements Visitable {
           ? { ...bytes, name: mainCase(bytes.name) }
           : bytes,
     };
+    // TODO: sanitize arg default names.
     this.accounts = accounts.map((account) => {
       const { defaultsTo } = account;
       if (defaultsTo?.kind === 'account') {
