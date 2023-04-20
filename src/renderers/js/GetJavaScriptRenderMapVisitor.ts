@@ -39,6 +39,9 @@ export type GetJavaScriptRenderMapOptions = {
     setImportStrategy: (
       importStrategy: 'all' | 'looseOnly' | 'strictOnly'
     ) => void;
+    setDefinedName: (
+      definedName: { strict: string; loose: string } | null
+    ) => void;
   };
 };
 
@@ -347,11 +350,27 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         .addAlias('core', 'checkForIsWritableOverride', 'isWritable');
     }
 
-    // Arguments.
-    const typeManifest = instruction.accept(this.typeManifestVisitor);
-    imports.mergeWith(typeManifest.imports);
+    // Args.
+    const argManifest = instruction.accept(this.typeManifestVisitor);
+    imports.mergeWith(argManifest.imports);
     if (!nodes.isTypeDefinedLinkNode(instruction.args) && instruction.hasData) {
       imports.add('core', ['Serializer']);
+    }
+
+    // Extra args.
+    let extraArgManifest: JavaScriptTypeManifest | null = null;
+    if (instruction.extraArgs) {
+      this.typeManifestVisitor.setDefinedName({
+        strict: `${pascalCase(instruction.name)}InstructionExtra`,
+        loose: `${pascalCase(instruction.name)}InstructionExtraArgs`,
+      });
+      if (nodes.isTypeDefinedLinkNode(instruction.extraArgs)) {
+        this.typeManifestVisitor.setImportStrategy('looseOnly');
+      }
+      extraArgManifest = instruction.extraArgs.accept(this.typeManifestVisitor);
+      this.typeManifestVisitor.setDefinedName(null);
+      this.typeManifestVisitor.setImportStrategy('all');
+      imports.mergeWith(extraArgManifest.imports);
     }
 
     // Bytes created on chain.
@@ -377,7 +396,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // canMergeAccountsAndArgs
     let canMergeAccountsAndArgs = false;
-    if (!nodes.isTypeDefinedLinkNode(instruction.args)) {
+    if (
+      !nodes.isTypeDefinedLinkNode(instruction.args) &&
+      !nodes.isTypeDefinedLinkNode(instruction.extraArgs)
+    ) {
       const accountsAndArgsConflicts =
         this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
       if (accountsAndArgsConflicts.length > 0) {
@@ -409,7 +431,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         needsEddsa: hasAccountDefaultKinds(['pda', 'resolver']),
         needsIdentity: hasAccountDefaultKinds(['identity', 'resolver']),
         needsPayer: hasAccountDefaultKinds(['payer', 'resolver']),
-        typeManifest,
+        argManifest,
+        extraArgManifest,
         canMergeAccountsAndArgs,
       })
     );
@@ -486,9 +509,14 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     instruction: nodes.InstructionNode
   ): string[] {
     nodes.assertTypeStructNode(instruction.args);
+    let extraArgsFields: nodes.TypeStructFieldNode[] = [];
+    if (nodes.isTypeStructNode(instruction.extraArgs)) {
+      extraArgsFields = instruction.extraArgs.fields;
+    }
     const allNames = [
       ...instruction.accounts.map((account) => account.name),
       ...instruction.args.fields.map((field) => field.name),
+      ...extraArgsFields.map((field) => field.name),
     ];
     const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
     return [...new Set(duplicates)];
