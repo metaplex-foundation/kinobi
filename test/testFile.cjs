@@ -15,6 +15,8 @@ const {
   UpdateProgramsVisitor,
   UpdateDefinedTypesVisitor,
   TypeDefinedLinkNode,
+  TypeStructNode,
+  TypeStructFieldNode,
   vScalar,
   vSome,
   vEnum,
@@ -151,6 +153,26 @@ kinobi.update(
       },
     },
     DeprecatedCreateReservationList: { name: 'CreateReservationList' },
+    Transfer: {
+      extraArgs: new TypeStructNode('TransferExtraArgs', [
+        new TypeStructFieldNode(
+          { name: 'tokenStandard', docs: [], defaultsTo: null },
+          new TypeDefinedLinkNode('tokenStandard')
+        ),
+      ]),
+      accounts: {
+        masterEdition: {
+          defaultsTo: {
+            kind: 'resolver',
+            name: 'resolveMasterEditionFromTokenStandard',
+            dependency: 'hooked',
+            resolvedIsSigner: false,
+            resolvedIsOptional: false,
+            dependsOn: [{ kind: 'account', name: 'mint' }],
+          },
+        },
+      },
+    },
   })
 );
 

@@ -18,9 +18,13 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import {
+  TokenStandard,
+  TokenStandardArgs,
   TransferArgs,
   TransferArgsArgs,
+  getTokenStandardSerializer,
   getTransferArgsSerializer,
 } from '../types';
 
@@ -86,12 +90,19 @@ export function getTransferInstructionDataSerializer(
   ) as Serializer<TransferInstructionDataArgs, TransferInstructionData>;
 }
 
+// Extra Args.
+export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
+
 // Args.
-export type TransferInstructionArgs = TransferInstructionDataArgs;
+export type TransferInstructionArgs = TransferInstructionDataArgs &
+  TransferInstructionExtraArgs;
 
 // Instruction.
 export function transfer(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<
+    Context,
+    'serializer' | 'programs' | 'eddsa' | 'identity' | 'payer'
+  >,
   input: TransferInstructionAccounts & TransferInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -112,7 +123,14 @@ export function transfer(
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.delegateRecord =
     resolvedAccounts.delegateRecord ?? programId;
-  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
+  resolvedAccounts.masterEdition =
+    resolvedAccounts.masterEdition ??
+    resolveMasterEditionFromTokenStandard(
+      context,
+      resolvedAccounts,
+      resolvedArgs,
+      programId
+    );
   resolvedAccounts.splTokenProgram = resolvedAccounts.splTokenProgram ?? {
     ...context.programs.getPublicKey(
       'splToken',
