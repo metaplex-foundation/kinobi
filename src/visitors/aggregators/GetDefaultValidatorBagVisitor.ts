@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { NodeStack } from '../NodeStack';
 import { ValidatorBag } from '../ValidatorBag';
 import { Visitor } from '../Visitor';
-import { GetResolvedInstructionAccountsVisitor } from './GetResolvedInstructionAccountsVisitor';
+import { GetResolvedInstructionInputsVisitor } from './GetResolvedInstructionInputsVisitor';
 
 export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   protected stack: NodeStack = new NodeStack();
@@ -84,7 +84,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     });
 
     // Check for cyclic dependencies in account defaults.
-    const cyclicCheckVisitor = new GetResolvedInstructionAccountsVisitor();
+    const cyclicCheckVisitor = new GetResolvedInstructionInputsVisitor();
     try {
       instruction.accept(cyclicCheckVisitor);
     } catch (error) {
