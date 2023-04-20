@@ -42,7 +42,7 @@ export type CreateMetadataAccountInstructionAccounts = {
   rent?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type CreateMetadataAccountInstructionData = {
   discriminator: number;
   data: {
@@ -109,11 +109,18 @@ export function getCreateMetadataAccountInstructionDataSerializer(
   >;
 }
 
+// Args.
+type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type CreateMetadataAccountInstructionArgs = PickPartial<
+  CreateMetadataAccountInstructionDataArgs,
+  'metadataBump'
+>;
+
 // Instruction.
 export function createMetadataAccount(
   context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
   input: CreateMetadataAccountInstructionAccounts &
-    Omit<CreateMetadataAccountInstructionDataArgs, 'metadataBump'>
+    CreateMetadataAccountInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -124,82 +131,81 @@ export function createMetadataAccount(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const mintAccount = input.mint;
-  const metadataAccount =
-    input.metadata ??
-    findMetadataPda(context, { mint: publicKey(mintAccount) });
-  const mintAuthorityAccount = input.mintAuthority;
-  const payerAccount = input.payer ?? context.payer;
-  const updateAuthorityAccount = input.updateAuthority;
-  const systemProgramAccount = input.systemProgram ?? {
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.metadata =
+    resolvedAccounts.metadata ??
+    findMetadataPda(context, { mint: publicKey(resolvedAccounts.mint) });
+  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
+  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(
       'splSystem',
       '11111111111111111111111111111111'
     ),
     isWritable: false,
   };
-  const rentAccount =
-    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
+  resolvedAccounts.rent =
+    resolvedAccounts.rent ??
+    publicKey('SysvarRent111111111111111111111111111111111');
+  // TODO
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: mintAccount,
+    pubkey: resolvedAccounts.mint,
     isSigner: false,
-    isWritable: isWritable(mintAccount, false),
+    isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Mint Authority.
-  signers.push(mintAuthorityAccount);
+  signers.push(resolvedAccounts.mintAuthority);
   keys.push({
-    pubkey: mintAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.mintAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(mintAuthorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.mintAuthority, false),
   });
 
   // Payer.
-  signers.push(payerAccount);
+  signers.push(resolvedAccounts.payer);
   keys.push({
-    pubkey: payerAccount.publicKey,
+    pubkey: resolvedAccounts.payer.publicKey,
     isSigner: true,
-    isWritable: isWritable(payerAccount, true),
+    isWritable: isWritable(resolvedAccounts.payer, true),
   });
 
   // Update Authority.
   keys.push({
-    pubkey: updateAuthorityAccount,
+    pubkey: resolvedAccounts.updateAuthority,
     isSigner: false,
-    isWritable: isWritable(updateAuthorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: systemProgramAccount,
+    pubkey: resolvedAccounts.systemProgram,
     isSigner: false,
-    isWritable: isWritable(systemProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: rentAccount,
+    pubkey: resolvedAccounts.rent,
     isSigner: false,
-    isWritable: isWritable(rentAccount, false),
+    isWritable: isWritable(resolvedAccounts.rent, false),
   });
 
   // Data.
-  const data = getCreateMetadataAccountInstructionDataSerializer(
-    context
-  ).serialize({
-    ...input,
-    metadataBump: metadataAccount.bump,
-  });
+  const data =
+    getCreateMetadataAccountInstructionDataSerializer(context).serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;

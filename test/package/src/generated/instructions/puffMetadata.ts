@@ -24,7 +24,7 @@ export type PuffMetadataInstructionAccounts = {
   metadata: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type PuffMetadataInstructionData = { discriminator: number };
 
 export type PuffMetadataInstructionDataArgs = {};
@@ -59,14 +59,15 @@ export function puffMetadata(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const metadataAccount = input.metadata;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Data.

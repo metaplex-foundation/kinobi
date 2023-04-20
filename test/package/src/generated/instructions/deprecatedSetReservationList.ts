@@ -34,7 +34,7 @@ export type DeprecatedSetReservationListInstructionAccounts = {
   resource: Signer;
 };
 
-// Arguments.
+// Data.
 export type DeprecatedSetReservationListInstructionData = {
   discriminator: number;
   reservations: Array<Reservation>;
@@ -83,11 +83,15 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
   >;
 }
 
+// Args.
+export type DeprecatedSetReservationListInstructionArgs =
+  DeprecatedSetReservationListInstructionDataArgs;
+
 // Instruction.
 export function deprecatedSetReservationList(
   context: Pick<Context, 'serializer' | 'programs'>,
   input: DeprecatedSetReservationListInstructionAccounts &
-    DeprecatedSetReservationListInstructionDataArgs
+    DeprecatedSetReservationListInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -98,37 +102,36 @@ export function deprecatedSetReservationList(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const masterEditionAccount = input.masterEdition;
-  const reservationListAccount = input.reservationList;
-  const resourceAccount = input.resource;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
 
   // Master Edition.
   keys.push({
-    pubkey: masterEditionAccount,
+    pubkey: resolvedAccounts.masterEdition,
     isSigner: false,
-    isWritable: isWritable(masterEditionAccount, true),
+    isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // Reservation List.
   keys.push({
-    pubkey: reservationListAccount,
+    pubkey: resolvedAccounts.reservationList,
     isSigner: false,
-    isWritable: isWritable(reservationListAccount, true),
+    isWritable: isWritable(resolvedAccounts.reservationList, true),
   });
 
   // Resource.
-  signers.push(resourceAccount);
+  signers.push(resolvedAccounts.resource);
   keys.push({
-    pubkey: resourceAccount.publicKey,
+    pubkey: resolvedAccounts.resource.publicKey,
     isSigner: true,
-    isWritable: isWritable(resourceAccount, false),
+    isWritable: isWritable(resolvedAccounts.resource, false),
   });
 
   // Data.
   const data =
     getDeprecatedSetReservationListInstructionDataSerializer(context).serialize(
-      input
+      resolvedArgs
     );
 
   // Bytes Created On Chain.

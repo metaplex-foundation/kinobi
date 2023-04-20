@@ -24,7 +24,7 @@ export type SetAuthorityInstructionAccounts = {
   authority?: Signer;
 };
 
-// Arguments.
+// Data.
 export type SetAuthorityInstructionData = {
   discriminator: Array<number>;
   newAuthority: PublicKey;
@@ -56,10 +56,13 @@ export function getSetAuthorityInstructionDataSerializer(
   ) as Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData>;
 }
 
+// Args.
+export type SetAuthorityInstructionArgs = SetAuthorityInstructionDataArgs;
+
 // Instruction.
 export function setAuthority(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: SetAuthorityInstructionAccounts & SetAuthorityInstructionDataArgs
+  input: SetAuthorityInstructionAccounts & SetAuthorityInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -70,28 +73,29 @@ export function setAuthority(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
-  // Resolved accounts.
-  const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.
   keys.push({
-    pubkey: candyMachineAccount,
+    pubkey: resolvedAccounts.candyMachine,
     isSigner: false,
-    isWritable: isWritable(candyMachineAccount, true),
+    isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority.
-  signers.push(authorityAccount);
+  signers.push(resolvedAccounts.authority);
   keys.push({
-    pubkey: authorityAccount.publicKey,
+    pubkey: resolvedAccounts.authority.publicKey,
     isSigner: true,
-    isWritable: isWritable(authorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.authority, false),
   });
 
   // Data.
   const data =
-    getSetAuthorityInstructionDataSerializer(context).serialize(input);
+    getSetAuthorityInstructionDataSerializer(context).serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

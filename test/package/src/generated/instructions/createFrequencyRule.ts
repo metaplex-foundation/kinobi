@@ -28,7 +28,7 @@ export type CreateFrequencyRuleInstructionAccounts = {
   systemProgram?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type CreateFrequencyRuleInstructionData = {
   discriminator: number;
   ruleSetName: string;
@@ -74,11 +74,15 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
   >;
 }
 
+// Args.
+export type CreateFrequencyRuleInstructionArgs =
+  CreateFrequencyRuleInstructionDataArgs;
+
 // Instruction.
 export function createFrequencyRule(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   input: CreateFrequencyRuleInstructionAccounts &
-    CreateFrequencyRuleInstructionDataArgs
+    CreateFrequencyRuleInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -89,10 +93,11 @@ export function createFrequencyRule(
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
 
-  // Resolved accounts.
-  const payerAccount = input.payer ?? context.payer;
-  const frequencyPdaAccount = input.frequencyPda;
-  const systemProgramAccount = input.systemProgram ?? {
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
+  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(
       'splSystem',
       '11111111111111111111111111111111'
@@ -101,30 +106,32 @@ export function createFrequencyRule(
   };
 
   // Payer.
-  signers.push(payerAccount);
+  signers.push(resolvedAccounts.payer);
   keys.push({
-    pubkey: payerAccount.publicKey,
+    pubkey: resolvedAccounts.payer.publicKey,
     isSigner: true,
-    isWritable: isWritable(payerAccount, true),
+    isWritable: isWritable(resolvedAccounts.payer, true),
   });
 
   // Frequency Pda.
   keys.push({
-    pubkey: frequencyPdaAccount,
+    pubkey: resolvedAccounts.frequencyPda,
     isSigner: false,
-    isWritable: isWritable(frequencyPdaAccount, true),
+    isWritable: isWritable(resolvedAccounts.frequencyPda, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: systemProgramAccount,
+    pubkey: resolvedAccounts.systemProgram,
     isSigner: false,
-    isWritable: isWritable(systemProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Data.
   const data =
-    getCreateFrequencyRuleInstructionDataSerializer(context).serialize(input);
+    getCreateFrequencyRuleInstructionDataSerializer(context).serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

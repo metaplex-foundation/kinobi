@@ -25,7 +25,7 @@ export type SetMintAuthorityInstructionAccounts = {
   mintAuthority: Signer;
 };
 
-// Arguments.
+// Data.
 export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
 
 export type SetMintAuthorityInstructionDataArgs = {};
@@ -71,32 +71,32 @@ export function setMintAuthority(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
-  // Resolved accounts.
-  const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity;
-  const mintAuthorityAccount = input.mintAuthority;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.
   keys.push({
-    pubkey: candyMachineAccount,
+    pubkey: resolvedAccounts.candyMachine,
     isSigner: false,
-    isWritable: isWritable(candyMachineAccount, true),
+    isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority.
-  signers.push(authorityAccount);
+  signers.push(resolvedAccounts.authority);
   keys.push({
-    pubkey: authorityAccount.publicKey,
+    pubkey: resolvedAccounts.authority.publicKey,
     isSigner: true,
-    isWritable: isWritable(authorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.authority, false),
   });
 
   // Mint Authority.
-  signers.push(mintAuthorityAccount);
+  signers.push(resolvedAccounts.mintAuthority);
   keys.push({
-    pubkey: mintAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.mintAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(mintAuthorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.mintAuthority, false),
   });
 
   // Data.

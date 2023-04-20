@@ -26,7 +26,7 @@ export type SignMetadataInstructionAccounts = {
   creator: Signer;
 };
 
-// Arguments.
+// Data.
 export type SignMetadataInstructionData = { discriminator: number };
 
 export type SignMetadataInstructionDataArgs = {};
@@ -61,23 +61,23 @@ export function signMetadata(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const metadataAccount = input.metadata;
-  const creatorAccount = input.creator;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Creator.
-  signers.push(creatorAccount);
+  signers.push(resolvedAccounts.creator);
   keys.push({
-    pubkey: creatorAccount.publicKey,
+    pubkey: resolvedAccounts.creator.publicKey,
     isSigner: true,
-    isWritable: isWritable(creatorAccount, false),
+    isWritable: isWritable(resolvedAccounts.creator, false),
   });
 
   // Data.

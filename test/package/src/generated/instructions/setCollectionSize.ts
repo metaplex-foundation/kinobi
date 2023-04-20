@@ -35,7 +35,7 @@ export type SetCollectionSizeInstructionAccounts = {
   collectionAuthorityRecord?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type SetCollectionSizeInstructionData = {
   discriminator: number;
   setCollectionSizeArgs: SetCollectionSizeArgs;
@@ -72,11 +72,14 @@ export function getSetCollectionSizeInstructionDataSerializer(
   >;
 }
 
+// Args.
+export type SetCollectionSizeInstructionArgs =
+  SetCollectionSizeInstructionDataArgs;
+
 // Instruction.
 export function setCollectionSize(
   context: Pick<Context, 'serializer' | 'programs'>,
-  input: SetCollectionSizeInstructionAccounts &
-    SetCollectionSizeInstructionDataArgs
+  input: SetCollectionSizeInstructionAccounts & SetCollectionSizeInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -87,46 +90,46 @@ export function setCollectionSize(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const collectionMetadataAccount = input.collectionMetadata;
-  const collectionAuthorityAccount = input.collectionAuthority;
-  const collectionMintAccount = input.collectionMint;
-  const collectionAuthorityRecordAccount = input.collectionAuthorityRecord;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
 
   // Collection Metadata.
   keys.push({
-    pubkey: collectionMetadataAccount,
+    pubkey: resolvedAccounts.collectionMetadata,
     isSigner: false,
-    isWritable: isWritable(collectionMetadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
 
   // Collection Authority.
-  signers.push(collectionAuthorityAccount);
+  signers.push(resolvedAccounts.collectionAuthority);
   keys.push({
-    pubkey: collectionAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.collectionAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(collectionAuthorityAccount, true),
+    isWritable: isWritable(resolvedAccounts.collectionAuthority, true),
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: collectionMintAccount,
+    pubkey: resolvedAccounts.collectionMint,
     isSigner: false,
-    isWritable: isWritable(collectionMintAccount, false),
+    isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection Authority Record (optional).
-  if (collectionAuthorityRecordAccount) {
+  if (resolvedAccounts.collectionAuthorityRecord) {
     keys.push({
-      pubkey: collectionAuthorityRecordAccount,
+      pubkey: resolvedAccounts.collectionAuthorityRecord,
       isSigner: false,
-      isWritable: isWritable(collectionAuthorityRecordAccount, false),
+      isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
     });
   }
 
   // Data.
   const data =
-    getSetCollectionSizeInstructionDataSerializer(context).serialize(input);
+    getSetCollectionSizeInstructionDataSerializer(context).serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

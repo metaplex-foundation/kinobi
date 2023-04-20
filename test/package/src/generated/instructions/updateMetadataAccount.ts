@@ -28,7 +28,7 @@ export type UpdateMetadataAccountInstructionAccounts = {
   updateAuthority: Signer;
 };
 
-// Arguments.
+// Data.
 export type UpdateMetadataAccountInstructionData = {
   discriminator: number;
   data: Option<{
@@ -97,11 +97,15 @@ export function getUpdateMetadataAccountInstructionDataSerializer(
   >;
 }
 
+// Args.
+export type UpdateMetadataAccountInstructionArgs =
+  UpdateMetadataAccountInstructionDataArgs;
+
 // Instruction.
 export function updateMetadataAccount(
   context: Pick<Context, 'serializer' | 'programs'>,
   accounts: UpdateMetadataAccountInstructionAccounts,
-  args: UpdateMetadataAccountInstructionDataArgs
+  args: UpdateMetadataAccountInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -112,28 +116,30 @@ export function updateMetadataAccount(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const metadataAccount = accounts.metadata;
-  const updateAuthorityAccount = accounts.updateAuthority;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...accounts };
+  const resolvedArgs: any = { ...args };
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Update Authority.
-  signers.push(updateAuthorityAccount);
+  signers.push(resolvedAccounts.updateAuthority);
   keys.push({
-    pubkey: updateAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.updateAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(updateAuthorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // Data.
   const data =
-    getUpdateMetadataAccountInstructionDataSerializer(context).serialize(args);
+    getUpdateMetadataAccountInstructionDataSerializer(context).serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -33,7 +33,7 @@ export type VerifyInstructionAccounts = {
   authorizationRulesProgram?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type VerifyInstructionData = {
   discriminator: number;
   verifyArgs: VerifyArgs;
@@ -61,10 +61,13 @@ export function getVerifyInstructionDataSerializer(
   ) as Serializer<VerifyInstructionDataArgs, VerifyInstructionData>;
 }
 
+// Args.
+export type VerifyInstructionArgs = VerifyInstructionDataArgs;
+
 // Instruction.
 export function verify(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: VerifyInstructionAccounts & VerifyInstructionDataArgs
+  input: VerifyInstructionAccounts & VerifyInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -75,58 +78,60 @@ export function verify(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const metadataAccount = input.metadata;
-  const collectionAuthorityAccount = input.collectionAuthority;
-  const payerAccount = input.payer ?? context.payer;
-  const authorizationRulesAccount = input.authorizationRules ?? {
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
+  resolvedAccounts.authorizationRules = resolvedAccounts.authorizationRules ?? {
     ...programId,
     isWritable: false,
   };
-  const authorizationRulesProgramAccount = input.authorizationRulesProgram ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.authorizationRulesProgram =
+    resolvedAccounts.authorizationRulesProgram ?? {
+      ...programId,
+      isWritable: false,
+    };
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Collection Authority.
-  signers.push(collectionAuthorityAccount);
+  signers.push(resolvedAccounts.collectionAuthority);
   keys.push({
-    pubkey: collectionAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.collectionAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(collectionAuthorityAccount, true),
+    isWritable: isWritable(resolvedAccounts.collectionAuthority, true),
   });
 
   // Payer.
-  signers.push(payerAccount);
+  signers.push(resolvedAccounts.payer);
   keys.push({
-    pubkey: payerAccount.publicKey,
+    pubkey: resolvedAccounts.payer.publicKey,
     isSigner: true,
-    isWritable: isWritable(payerAccount, true),
+    isWritable: isWritable(resolvedAccounts.payer, true),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: authorizationRulesAccount,
+    pubkey: resolvedAccounts.authorizationRules,
     isSigner: false,
-    isWritable: isWritable(authorizationRulesAccount, false),
+    isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: authorizationRulesProgramAccount,
+    pubkey: resolvedAccounts.authorizationRulesProgram,
     isSigner: false,
-    isWritable: isWritable(authorizationRulesProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });
 
   // Data.
-  const data = getVerifyInstructionDataSerializer(context).serialize(input);
+  const data =
+    getVerifyInstructionDataSerializer(context).serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

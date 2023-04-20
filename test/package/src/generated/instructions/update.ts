@@ -44,7 +44,7 @@ export type UpdateInstructionAccounts = {
   authorizationRules?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type UpdateInstructionData = {
   discriminator: number;
   updateArgs: UpdateArgs;
@@ -72,10 +72,13 @@ export function getUpdateInstructionDataSerializer(
   ) as Serializer<UpdateInstructionDataArgs, UpdateInstructionData>;
 }
 
+// Args.
+export type UpdateInstructionArgs = UpdateInstructionDataArgs;
+
 // Instruction.
 export function update(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: UpdateInstructionAccounts & UpdateInstructionDataArgs
+  input: UpdateInstructionAccounts & UpdateInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -86,111 +89,116 @@ export function update(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const authorityAccount = input.authority ?? context.identity;
-  const metadataAccount = input.metadata;
-  const masterEditionAccount = input.masterEdition ?? {
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
+  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? {
     ...programId,
     isWritable: false,
   };
-  const mintAccount = input.mint;
-  const systemProgramAccount = input.systemProgram ?? {
+  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(
       'splSystem',
       '11111111111111111111111111111111'
     ),
     isWritable: false,
   };
-  const sysvarInstructionsAccount =
-    input.sysvarInstructions ??
+  resolvedAccounts.sysvarInstructions =
+    resolvedAccounts.sysvarInstructions ??
     publicKey('Sysvar1nstructions1111111111111111111111111');
-  const tokenAccount = input.token ?? { ...programId, isWritable: false };
-  const delegateRecordAccount = input.delegateRecord ?? {
+  resolvedAccounts.token = resolvedAccounts.token ?? {
     ...programId,
     isWritable: false,
   };
-  const authorizationRulesProgramAccount = input.authorizationRulesProgram ?? {
+  resolvedAccounts.delegateRecord = resolvedAccounts.delegateRecord ?? {
     ...programId,
     isWritable: false,
   };
-  const authorizationRulesAccount = input.authorizationRules ?? {
+  resolvedAccounts.authorizationRulesProgram =
+    resolvedAccounts.authorizationRulesProgram ?? {
+      ...programId,
+      isWritable: false,
+    };
+  resolvedAccounts.authorizationRules = resolvedAccounts.authorizationRules ?? {
     ...programId,
     isWritable: false,
   };
 
   // Authority.
-  signers.push(authorityAccount);
+  signers.push(resolvedAccounts.authority);
   keys.push({
-    pubkey: authorityAccount.publicKey,
+    pubkey: resolvedAccounts.authority.publicKey,
     isSigner: true,
-    isWritable: isWritable(authorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.authority, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: masterEditionAccount,
+    pubkey: resolvedAccounts.masterEdition,
     isSigner: false,
-    isWritable: isWritable(masterEditionAccount, true),
+    isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: mintAccount,
+    pubkey: resolvedAccounts.mint,
     isSigner: false,
-    isWritable: isWritable(mintAccount, false),
+    isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: systemProgramAccount,
+    pubkey: resolvedAccounts.systemProgram,
     isSigner: false,
-    isWritable: isWritable(systemProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: sysvarInstructionsAccount,
+    pubkey: resolvedAccounts.sysvarInstructions,
     isSigner: false,
-    isWritable: isWritable(sysvarInstructionsAccount, false),
+    isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });
 
   // Token.
   keys.push({
-    pubkey: tokenAccount,
+    pubkey: resolvedAccounts.token,
     isSigner: false,
-    isWritable: isWritable(tokenAccount, false),
+    isWritable: isWritable(resolvedAccounts.token, false),
   });
 
   // Delegate Record.
   keys.push({
-    pubkey: delegateRecordAccount,
+    pubkey: resolvedAccounts.delegateRecord,
     isSigner: false,
-    isWritable: isWritable(delegateRecordAccount, false),
+    isWritable: isWritable(resolvedAccounts.delegateRecord, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: authorizationRulesProgramAccount,
+    pubkey: resolvedAccounts.authorizationRulesProgram,
     isSigner: false,
-    isWritable: isWritable(authorizationRulesProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: authorizationRulesAccount,
+    pubkey: resolvedAccounts.authorizationRules,
     isSigner: false,
-    isWritable: isWritable(authorizationRulesAccount, false),
+    isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });
 
   // Data.
-  const data = getUpdateInstructionDataSerializer(context).serialize(input);
+  const data =
+    getUpdateInstructionDataSerializer(context).serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

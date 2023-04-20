@@ -24,7 +24,7 @@ export type WithdrawInstructionAccounts = {
   authority?: Signer;
 };
 
-// Arguments.
+// Data.
 export type WithdrawInstructionData = { discriminator: Array<number> };
 
 export type WithdrawInstructionDataArgs = {};
@@ -64,23 +64,24 @@ export function withdraw(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
-  // Resolved accounts.
-  const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.
   keys.push({
-    pubkey: candyMachineAccount,
+    pubkey: resolvedAccounts.candyMachine,
     isSigner: false,
-    isWritable: isWritable(candyMachineAccount, true),
+    isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority.
-  signers.push(authorityAccount);
+  signers.push(resolvedAccounts.authority);
   keys.push({
-    pubkey: authorityAccount.publicKey,
+    pubkey: resolvedAccounts.authority.publicKey,
     isSigner: true,
-    isWritable: isWritable(authorityAccount, true),
+    isWritable: isWritable(resolvedAccounts.authority, true),
   });
 
   // Data.

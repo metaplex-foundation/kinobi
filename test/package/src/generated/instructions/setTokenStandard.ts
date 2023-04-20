@@ -30,7 +30,7 @@ export type SetTokenStandardInstructionAccounts = {
   edition?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type SetTokenStandardInstructionData = { discriminator: number };
 
 export type SetTokenStandardInstructionDataArgs = {};
@@ -72,40 +72,38 @@ export function setTokenStandard(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved accounts.
-  const metadataAccount = input.metadata;
-  const updateAuthorityAccount = input.updateAuthority;
-  const mintAccount = input.mint;
-  const editionAccount = input.edition;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Update Authority.
-  signers.push(updateAuthorityAccount);
+  signers.push(resolvedAccounts.updateAuthority);
   keys.push({
-    pubkey: updateAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.updateAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(updateAuthorityAccount, true),
+    isWritable: isWritable(resolvedAccounts.updateAuthority, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: mintAccount,
+    pubkey: resolvedAccounts.mint,
     isSigner: false,
-    isWritable: isWritable(mintAccount, false),
+    isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Edition (optional).
-  if (editionAccount) {
+  if (resolvedAccounts.edition) {
     keys.push({
-      pubkey: editionAccount,
+      pubkey: resolvedAccounts.edition,
       isSigner: false,
-      isWritable: isWritable(editionAccount, false),
+      isWritable: isWritable(resolvedAccounts.edition, false),
     });
   }
 

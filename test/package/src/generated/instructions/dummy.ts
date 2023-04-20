@@ -34,7 +34,7 @@ export type DummyInstructionAccounts = {
   delegateRecord?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type DummyInstructionData = { discriminator: Array<number> };
 
 export type DummyInstructionDataArgs = {};
@@ -74,86 +74,94 @@ export function dummy(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
-  // Resolved accounts.
-  const mintAccount = input.mint ?? { ...programId, isWritable: false };
-  const editionAccount = input.edition ?? mintAccount;
-  const updateAuthorityAccount = input.updateAuthority;
-  const mintAuthorityAccount = input.mintAuthority ?? updateAuthorityAccount;
-  const payerAccount = input.payer ?? context.payer;
-  const barAccount = input.bar ?? { ...programId, isWritable: false };
-  const fooAccount = input.foo ?? barAccount;
-  const delegateRecordAccount =
-    input.delegateRecord ??
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.mint = resolvedAccounts.mint ?? {
+    ...programId,
+    isWritable: false,
+  };
+  resolvedAccounts.edition = resolvedAccounts.edition ?? resolvedAccounts.mint;
+  resolvedAccounts.mintAuthority =
+    resolvedAccounts.mintAuthority ?? resolvedAccounts.updateAuthority;
+  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
+  resolvedAccounts.bar = resolvedAccounts.bar ?? {
+    ...programId,
+    isWritable: false,
+  };
+  resolvedAccounts.foo = resolvedAccounts.foo ?? resolvedAccounts.bar;
+  resolvedAccounts.delegateRecord =
+    resolvedAccounts.delegateRecord ??
     findDelegateRecordPda(context, { role: DelegateRole.Collection });
 
   // Edition (optional).
-  if (editionAccount) {
-    if (isSigner(editionAccount)) {
-      signers.push(editionAccount);
+  if (resolvedAccounts.edition) {
+    if (isSigner(resolvedAccounts.edition)) {
+      signers.push(resolvedAccounts.edition);
     }
     keys.push({
-      pubkey: publicKey(editionAccount),
-      isSigner: isSigner(editionAccount),
-      isWritable: isWritable(editionAccount, true),
+      pubkey: publicKey(resolvedAccounts.edition),
+      isSigner: isSigner(resolvedAccounts.edition),
+      isWritable: isWritable(resolvedAccounts.edition, true),
     });
   }
 
   // Mint.
   keys.push({
-    pubkey: mintAccount,
+    pubkey: resolvedAccounts.mint,
     isSigner: false,
-    isWritable: isWritable(mintAccount, true),
+    isWritable: isWritable(resolvedAccounts.mint, true),
   });
 
   // Update Authority.
-  signers.push(updateAuthorityAccount);
+  signers.push(resolvedAccounts.updateAuthority);
   keys.push({
-    pubkey: updateAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.updateAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(updateAuthorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // Mint Authority.
-  signers.push(mintAuthorityAccount);
+  signers.push(resolvedAccounts.mintAuthority);
   keys.push({
-    pubkey: mintAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.mintAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(mintAuthorityAccount, true),
+    isWritable: isWritable(resolvedAccounts.mintAuthority, true),
   });
 
   // Payer.
-  signers.push(payerAccount);
+  signers.push(resolvedAccounts.payer);
   keys.push({
-    pubkey: payerAccount.publicKey,
+    pubkey: resolvedAccounts.payer.publicKey,
     isSigner: true,
-    isWritable: isWritable(payerAccount, true),
+    isWritable: isWritable(resolvedAccounts.payer, true),
   });
 
   // Foo.
-  if (isSigner(fooAccount)) {
-    signers.push(fooAccount);
+  if (isSigner(resolvedAccounts.foo)) {
+    signers.push(resolvedAccounts.foo);
   }
   keys.push({
-    pubkey: publicKey(fooAccount),
-    isSigner: isSigner(fooAccount),
-    isWritable: isWritable(fooAccount, true),
+    pubkey: publicKey(resolvedAccounts.foo),
+    isSigner: isSigner(resolvedAccounts.foo),
+    isWritable: isWritable(resolvedAccounts.foo, true),
   });
 
   // Bar.
-  if (isSigner(barAccount)) {
-    signers.push(barAccount);
+  if (isSigner(resolvedAccounts.bar)) {
+    signers.push(resolvedAccounts.bar);
   }
   keys.push({
-    pubkey: publicKey(barAccount),
-    isSigner: isSigner(barAccount),
-    isWritable: isWritable(barAccount, false),
+    pubkey: publicKey(resolvedAccounts.bar),
+    isSigner: isSigner(resolvedAccounts.bar),
+    isWritable: isWritable(resolvedAccounts.bar, false),
   });
 
   // Delegate Record.
   keys.push({
-    pubkey: delegateRecordAccount,
+    pubkey: resolvedAccounts.delegateRecord,
     isSigner: false,
-    isWritable: isWritable(delegateRecordAccount, true),
+    isWritable: isWritable(resolvedAccounts.delegateRecord, true),
   });
 
   // Data.

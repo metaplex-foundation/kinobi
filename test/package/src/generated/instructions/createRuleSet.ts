@@ -9,7 +9,6 @@
 import {
   AccountMeta,
   Context,
-  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -29,12 +28,12 @@ export type CreateRuleSetInstructionAccounts = {
   /** Payer and creator of the RuleSet */
   payer?: Signer;
   /** The PDA account where the RuleSet is stored */
-  ruleSetPda: Pda;
+  ruleSetPda: PublicKey;
   /** System program */
   systemProgram?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type CreateRuleSetInstructionData = {
   discriminator: number;
   createArgs: TaCreateArgs;
@@ -70,11 +69,13 @@ export function getCreateRuleSetInstructionDataSerializer(
   >;
 }
 
+// Args.
+export type CreateRuleSetInstructionArgs = CreateRuleSetInstructionDataArgs;
+
 // Instruction.
 export function createRuleSet(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
-  input: CreateRuleSetInstructionAccounts &
-    Omit<CreateRuleSetInstructionDataArgs, 'ruleSetBump'>
+  input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -85,10 +86,11 @@ export function createRuleSet(
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
 
-  // Resolved accounts.
-  const payerAccount = input.payer ?? context.payer;
-  const ruleSetPdaAccount = input.ruleSetPda;
-  const systemProgramAccount = input.systemProgram ?? {
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
+  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(
       'splSystem',
       '11111111111111111111111111111111'
@@ -97,32 +99,30 @@ export function createRuleSet(
   };
 
   // Payer.
-  signers.push(payerAccount);
+  signers.push(resolvedAccounts.payer);
   keys.push({
-    pubkey: payerAccount.publicKey,
+    pubkey: resolvedAccounts.payer.publicKey,
     isSigner: true,
-    isWritable: isWritable(payerAccount, true),
+    isWritable: isWritable(resolvedAccounts.payer, true),
   });
 
   // Rule Set Pda.
   keys.push({
-    pubkey: ruleSetPdaAccount,
+    pubkey: resolvedAccounts.ruleSetPda,
     isSigner: false,
-    isWritable: isWritable(ruleSetPdaAccount, true),
+    isWritable: isWritable(resolvedAccounts.ruleSetPda, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: systemProgramAccount,
+    pubkey: resolvedAccounts.systemProgram,
     isSigner: false,
-    isWritable: isWritable(systemProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Data.
-  const data = getCreateRuleSetInstructionDataSerializer(context).serialize({
-    ...input,
-    ruleSetBump: ruleSetPdaAccount.bump,
-  });
+  const data =
+    getCreateRuleSetInstructionDataSerializer(context).serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -29,7 +29,7 @@ export type UpdateCandyMachineInstructionAccounts = {
   authority?: Signer;
 };
 
-// Arguments.
+// Data.
 export type UpdateCandyMachineInstructionData = {
   discriminator: Array<number>;
   data: CandyMachineData;
@@ -69,11 +69,15 @@ export function getUpdateCandyMachineInstructionDataSerializer(
   >;
 }
 
+// Args.
+export type UpdateCandyMachineInstructionArgs =
+  UpdateCandyMachineInstructionDataArgs;
+
 // Instruction.
 export function updateCandyMachine(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
   input: UpdateCandyMachineInstructionAccounts &
-    UpdateCandyMachineInstructionDataArgs
+    UpdateCandyMachineInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -84,28 +88,31 @@ export function updateCandyMachine(
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
-  // Resolved accounts.
-  const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.
   keys.push({
-    pubkey: candyMachineAccount,
+    pubkey: resolvedAccounts.candyMachine,
     isSigner: false,
-    isWritable: isWritable(candyMachineAccount, true),
+    isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority.
-  signers.push(authorityAccount);
+  signers.push(resolvedAccounts.authority);
   keys.push({
-    pubkey: authorityAccount.publicKey,
+    pubkey: resolvedAccounts.authority.publicKey,
     isSigner: true,
-    isWritable: isWritable(authorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.authority, false),
   });
 
   // Data.
   const data =
-    getUpdateCandyMachineInstructionDataSerializer(context).serialize(input);
+    getUpdateCandyMachineInstructionDataSerializer(context).serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
