@@ -113,7 +113,10 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     const metadata = metadataUpdates as Partial<nodes.InstructionNodeMetadata>;
     if (metadataUpdates.bytesCreatedOnChain) {
       metadata.bytesCreatedOnChain = {
-        includeHeader: true,
+        includeHeader:
+          metadataUpdates.bytesCreatedOnChain.kind === 'resolver'
+            ? undefined
+            : true,
         dependency:
           metadataUpdates.bytesCreatedOnChain.kind === 'account'
             ? 'generated'
