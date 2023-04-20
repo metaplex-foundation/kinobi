@@ -1,62 +1,19 @@
-{% if accounts.length > 0 %}
-  // Resolved accounts.
-  {% for account in accounts | sort(false, false, 'dependencyPosition') %}
-    {% if not account.defaultsTo %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }};
-    {% elif account.defaultsTo.kind === 'account' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? {{ account.defaultsTo.name | camelCase }}Account;
-    {% elif account.defaultsTo.kind === 'pda' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? find{{ account.defaultsTo.pdaAccount | pascalCase }}Pda(context,
-      {%- if (account.defaultsTo.seeds | length) > 0 -%}
-        {
-          {%- for seedKey, seedValue in account.defaultsTo.seeds -%}
-            {%- if seedValue.kind === 'value' -%}
-              {{ seedKey }}: {{ seedValue.render }},
-            {%- elif seedValue.kind === 'account' -%}
-              {{ seedKey }}: publicKey({{ seedValue.name | camelCase }}Account),
-            {%- else -%}
-              {{ seedKey }}: {{ argsObj }}.{{ seedValue.name | camelCase }},
-            {%- endif -%}
-          {%- endfor -%}
-        }
-      {%- endif -%}
-      );
-    {% elif account.defaultsTo.kind === 'publicKey' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? publicKey('{{ account.defaultsTo.publicKey }}');
-    {% elif account.defaultsTo.kind === 'program' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ account.defaultsTo.program.name }}', '{{ account.defaultsTo.program.publicKey }}'), isWritable: false };
-    {% elif account.defaultsTo.kind === 'programId' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? { ...programId, isWritable: false };
-    {% elif account.defaultsTo.kind === 'identity' and (account.isSigner !== false) %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.identity;
-    {% elif account.defaultsTo.kind === 'identity' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.identity.publicKey;
-    {% elif account.defaultsTo.kind === 'payer' and (account.isSigner !== false) %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.payer;
-    {% elif account.defaultsTo.kind === 'payer' %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }} ?? context.payer.publicKey;
-    {% else %}
-      const {{ account.name | camelCase }}Account = {{ accountsObj }}.{{ account.name | camelCase }};
-    {% endif %}
-  {% endfor %}
-{% endif %}
-
-{% for account in accounts | sort(false, false, 'position') %}
+{% for account in accounts %}
   {% set isWritableString = 'true' if account.isWritable else 'false' %}
   // {{ account.name | camelCase | titleCase }}{% if account.resolvedIsOptional %} (optional){% endif %}.
   {% if account.resolvedIsOptional %}
-  if ({{ account.name | camelCase }}Account) {
+  if (resolvedAccounts.{{ account.name | camelCase }}) {
   {% endif %}
     {% if account.resolvedIsSigner === 'either' %}
-      if (isSigner({{ account.name | camelCase }}Account)) {
-        signers.push({{ account.name | camelCase }}Account);
+      if (isSigner(resolvedAccounts.{{ account.name | camelCase }})) {
+        signers.push(resolvedAccounts.{{ account.name | camelCase }});
       }
-      keys.push({ pubkey: publicKey({{ account.name | camelCase }}Account), isSigner: isSigner({{ account.name | camelCase }}Account), isWritable: isWritable({{ account.name | camelCase }}Account, {{ isWritableString }}) });
+      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}), isSigner: isSigner(resolvedAccounts.{{ account.name | camelCase }}), isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% elif account.resolvedIsSigner  %}
-      signers.push({{ account.name | camelCase }}Account);
-      keys.push({ pubkey: {{ account.name | camelCase }}Account.publicKey, isSigner: true, isWritable: isWritable({{ account.name | camelCase }}Account, {{ isWritableString }}) });
+      signers.push(resolvedAccounts.{{ account.name | camelCase }});
+      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}.publicKey, isSigner: true, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% else %}
-      keys.push({ pubkey: {{ account.name | camelCase }}Account, isSigner: false, isWritable: isWritable({{ account.name | camelCase }}Account, {{ isWritableString }}) });
+      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}, isSigner: false, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% endif %}
   {% if account.resolvedIsOptional %}
   }

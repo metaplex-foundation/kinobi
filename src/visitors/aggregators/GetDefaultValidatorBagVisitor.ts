@@ -1,8 +1,9 @@
 import * as nodes from '../../nodes';
+import { mainCase } from '../../utils';
 import { NodeStack } from '../NodeStack';
 import { ValidatorBag } from '../ValidatorBag';
 import { Visitor } from '../Visitor';
-import { GetResolvedInstructionAccountsVisitor } from './GetResolvedInstructionAccountsVisitor';
+import { GetResolvedInstructionInputsVisitor } from './GetResolvedInstructionInputsVisitor';
 
 export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   protected stack: NodeStack = new NodeStack();
@@ -84,7 +85,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     });
 
     // Check for cyclic dependencies in account defaults.
-    const cyclicCheckVisitor = new GetResolvedInstructionAccountsVisitor();
+    const cyclicCheckVisitor = new GetResolvedInstructionInputsVisitor();
     try {
       instruction.accept(cyclicCheckVisitor);
     } catch (error) {
@@ -95,7 +96,52 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       );
     }
 
+    // Check args.
     bag.mergeWith([instruction.args.accept(this)]);
+
+    // Check extra args.
+    if (instruction.extraArgs) {
+      bag.mergeWith([instruction.extraArgs.accept(this)]);
+      if (
+        nodes.isTypeStructNode(instruction.args) &&
+        nodes.isTypeStructNode(instruction.extraArgs)
+      ) {
+        const names = [
+          ...instruction.args.fields.map(({ name }) => mainCase(name)),
+          ...instruction.extraArgs.fields.map(({ name }) => mainCase(name)),
+        ];
+        const duplicates = names.filter((e, i, a) => a.indexOf(e) !== i);
+        const uniqueDuplicates = [...new Set(duplicates)];
+        const hasConflictingNames = uniqueDuplicates.length > 0;
+        if (hasConflictingNames) {
+          bag.error(
+            `The names of the following instruction arguments are conflicting: ` +
+              `[${uniqueDuplicates.join(', ')}].`,
+            instruction,
+            this.stack
+          );
+        }
+      }
+    }
+
+    // Check arg defaults.
+    Object.entries(instruction.metadata.argDefaults).forEach(
+      ([name, defaultsTo]) => {
+        if (defaultsTo.kind === 'accountBump') {
+          const defaultAccount = instruction.accounts.find(
+            (account) => account.name === defaultsTo.name
+          );
+          if (defaultAccount && defaultAccount.isSigner !== false) {
+            bag.error(
+              `Argument ${name} cannot default to the bump attribute of ` +
+                `the [${defaultsTo.name}] account as it may be a Signer.`,
+              instruction,
+              this.stack
+            );
+          }
+        }
+      }
+    );
 
     // Check sub-instructions.
     bag.mergeWith(instruction.subInstructions.map((ix) => ix.accept(this)));

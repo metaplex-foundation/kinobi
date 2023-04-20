@@ -49,7 +49,7 @@ export type UseAssetInstructionAccounts = {
   authorizationRulesProgram?: PublicKey;
 };
 
-// Arguments.
+// Data.
 export type UseAssetInstructionData = {
   discriminator: number;
   useAssetArgs: UseAssetArgs;
@@ -77,140 +77,138 @@ export function getUseAssetInstructionDataSerializer(
   ) as Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData>;
 }
 
+// Args.
+export type UseAssetInstructionArgs = UseAssetInstructionDataArgs;
+
 // Instruction.
 export function useAsset(
   context: Pick<Context, 'serializer' | 'programs'>,
-  input: UseAssetInstructionAccounts & UseAssetInstructionDataArgs
+  input: UseAssetInstructionAccounts & UseAssetInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplTokenMetadata',
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    ),
+    isWritable: false,
+  };
 
-  // Resolved accounts.
-  const metadataAccount = input.metadata;
-  const tokenAccountAccount = input.tokenAccount;
-  const mintAccount = input.mint;
-  const useAuthorityAccount = input.useAuthority;
-  const ownerAccount = input.owner;
-  const splTokenProgramAccount = input.splTokenProgram ?? {
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.splTokenProgram = resolvedAccounts.splTokenProgram ?? {
     ...context.programs.getPublicKey(
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
     ),
     isWritable: false,
   };
-  const ataProgramAccount = input.ataProgram ?? {
+  resolvedAccounts.ataProgram = resolvedAccounts.ataProgram ?? {
     ...context.programs.getPublicKey(
       'splAssociatedToken',
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
     ),
     isWritable: false,
   };
-  const systemProgramAccount = input.systemProgram ?? {
+  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(
       'splSystem',
       '11111111111111111111111111111111'
     ),
     isWritable: false,
   };
-  const useAuthorityRecordAccount = input.useAuthorityRecord ?? {
-    ...programId,
-    isWritable: false,
-  };
-  const authorizationRulesAccount = input.authorizationRules ?? {
-    ...programId,
-    isWritable: false,
-  };
-  const authorizationRulesProgramAccount = input.authorizationRulesProgram ?? {
-    ...programId,
-    isWritable: false,
-  };
+  resolvedAccounts.useAuthorityRecord =
+    resolvedAccounts.useAuthorityRecord ?? programId;
+  resolvedAccounts.authorizationRules =
+    resolvedAccounts.authorizationRules ?? programId;
+  resolvedAccounts.authorizationRulesProgram =
+    resolvedAccounts.authorizationRulesProgram ?? programId;
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, true),
+    isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Token Account.
   keys.push({
-    pubkey: tokenAccountAccount,
+    pubkey: resolvedAccounts.tokenAccount,
     isSigner: false,
-    isWritable: isWritable(tokenAccountAccount, true),
+    isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: mintAccount,
+    pubkey: resolvedAccounts.mint,
     isSigner: false,
-    isWritable: isWritable(mintAccount, true),
+    isWritable: isWritable(resolvedAccounts.mint, true),
   });
 
   // Use Authority.
-  signers.push(useAuthorityAccount);
+  signers.push(resolvedAccounts.useAuthority);
   keys.push({
-    pubkey: useAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.useAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(useAuthorityAccount, true),
+    isWritable: isWritable(resolvedAccounts.useAuthority, true),
   });
 
   // Owner.
   keys.push({
-    pubkey: ownerAccount,
+    pubkey: resolvedAccounts.owner,
     isSigner: false,
-    isWritable: isWritable(ownerAccount, false),
+    isWritable: isWritable(resolvedAccounts.owner, false),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: splTokenProgramAccount,
+    pubkey: resolvedAccounts.splTokenProgram,
     isSigner: false,
-    isWritable: isWritable(splTokenProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Ata Program.
   keys.push({
-    pubkey: ataProgramAccount,
+    pubkey: resolvedAccounts.ataProgram,
     isSigner: false,
-    isWritable: isWritable(ataProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.ataProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: systemProgramAccount,
+    pubkey: resolvedAccounts.systemProgram,
     isSigner: false,
-    isWritable: isWritable(systemProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Use Authority Record.
   keys.push({
-    pubkey: useAuthorityRecordAccount,
+    pubkey: resolvedAccounts.useAuthorityRecord,
     isSigner: false,
-    isWritable: isWritable(useAuthorityRecordAccount, true),
+    isWritable: isWritable(resolvedAccounts.useAuthorityRecord, true),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: authorizationRulesAccount,
+    pubkey: resolvedAccounts.authorizationRules,
     isSigner: false,
-    isWritable: isWritable(authorizationRulesAccount, false),
+    isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: authorizationRulesProgramAccount,
+    pubkey: resolvedAccounts.authorizationRulesProgram,
     isSigner: false,
-    isWritable: isWritable(authorizationRulesProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });
 
   // Data.
-  const data = getUseAssetInstructionDataSerializer(context).serialize(input);
+  const data =
+    getUseAssetInstructionDataSerializer(context).serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

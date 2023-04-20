@@ -86,6 +86,8 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
           [`${pascalCaseName}InstructionData`]: 'type',
           [`${pascalCaseName}InstructionDataArgs`]: 'type',
           [`get${pascalCaseName}InstructionDataSerializer`]: 'function',
+          [`${pascalCaseName}InstructionExtraArgs`]: 'type',
+          [`${pascalCaseName}InstructionArgs`]: 'type',
         }),
       ]);
     }

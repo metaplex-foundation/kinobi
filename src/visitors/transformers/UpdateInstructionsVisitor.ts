@@ -1,5 +1,6 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
+import { Dependency } from '../Dependency';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
   NodeTransform,
@@ -12,8 +13,8 @@ export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
-      accounts?: InstructionAccountUpdates;
       args?: Record<string, string>;
+      extraArgs?: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
     });
 
 export type InstructionMetadataUpdates = Partial<
@@ -38,9 +39,10 @@ type InstructionNodeBytesCreatedOnChainInput =
   | {
       kind: 'account';
       name: string;
-      dependency?: string;
+      dependency?: Dependency;
       includeHeader?: boolean;
-    };
+    }
+  | { kind: 'resolver'; name: string; dependency?: Dependency };
 
 export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   protected allAccounts = new Map<string, nodes.AccountNode>();
@@ -61,7 +63,11 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               return null;
             }
 
-            const { accounts: accountUpdates, ...metadataUpdates } = updates;
+            const {
+              accounts: accountUpdates,
+              extraArgs: extraArgsUpdates,
+              ...metadataUpdates
+            } = updates;
             const newName = mainCase(updates.name ?? node.name);
             const args = updates.args ?? {};
             const newMetadata = {
@@ -71,20 +77,19 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
             const newAccounts = node.accounts.map((account) =>
               this.handleInstructionAccount(account, accountUpdates ?? {})
             );
-
-            if (nodes.isTypeStructNode(node.args)) {
-              return new nodes.InstructionNode(
-                newMetadata,
-                newAccounts,
-                renameStructNode(node.args, args, `${newName}InstructionData`),
-                node.subInstructions
-              );
-            }
+            const newArgs = nodes.isTypeStructNode(node.args)
+              ? renameStructNode(node.args, args, `${newName}InstructionData`)
+              : node.args;
+            const newExtraArgs =
+              extraArgsUpdates === undefined
+                ? node.extraArgs
+                : extraArgsUpdates;
 
             return new nodes.InstructionNode(
               newMetadata,
               newAccounts,
-              node.args,
+              newArgs,
+              newExtraArgs,
               node.subInstructions
             );
           },

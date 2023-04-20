@@ -1,0 +1,63 @@
+{% set hasResolvedAccounts = accounts.length > 0 or instruction.hasResolvers %}
+{% set hasResolvedArgs = instruction.hasArgs or instruction.hasArgDefaults or instruction.hasResolvers %}
+
+{% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
+  // Resolved inputs.
+  {% if hasResolvedAccounts %}
+    const resolvedAccounts: any = { ...{{ accountsObj }} };
+  {% endif %}
+  {% if hasResolvedArgs %}
+    const resolvedArgs: any = { ...{{ argsObj }} };
+  {% endif %}
+  {% for input in resolvedInputs %}
+    {% if input.kind === 'account' and input.defaultsTo %}
+      {% if input.defaultsTo.kind === 'account' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? resolvedAccounts.{{ input.defaultsTo.name | camelCase }};
+      {% elif input.defaultsTo.kind === 'pda' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
+        {%- if (input.defaultsTo.seeds | length) > 0 -%}
+          {
+            {%- for seedKey, seedValue in input.defaultsTo.seeds -%}
+              {%- if seedValue.kind === 'value' -%}
+                {{ seedKey }}: {{ seedValue.render }},
+              {%- elif seedValue.kind === 'account' -%}
+                {{ seedKey }}: publicKey(resolvedAccounts.{{ seedValue.name | camelCase }}),
+              {%- else -%}
+                {{ seedKey }}: resolvedArgs.{{ seedValue.name | camelCase }},
+              {%- endif -%}
+            {%- endfor -%}
+          }
+        {%- endif -%}
+        );
+      {% elif input.defaultsTo.kind === 'publicKey' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? publicKey('{{ input.defaultsTo.publicKey }}');
+      {% elif input.defaultsTo.kind === 'program' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'), isWritable: false };
+      {% elif input.defaultsTo.kind === 'programId' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? programId;
+      {% elif input.defaultsTo.kind === 'identity' and (input.isSigner !== false) %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.identity;
+      {% elif input.defaultsTo.kind === 'identity' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.identity.publicKey;
+      {% elif input.defaultsTo.kind === 'payer' and (input.isSigner !== false) %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.payer;
+      {% elif input.defaultsTo.kind === 'payer' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.payer.publicKey;
+      {% elif input.defaultsTo.kind === 'resolver' %}
+        resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+      {% endif %}
+    {% elif input.kind === 'arg' %}
+      {% if input.defaultsTo.kind === 'arg' %}
+        resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? resolvedArgs.{{ input.defaultsTo.name | camelCase }};
+      {% elif input.defaultsTo.kind === 'account' %}
+        resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? resolvedAccounts.{{ input.defaultsTo.name | camelCase }};
+      {% elif input.defaultsTo.kind === 'accountBump' %}
+        resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? resolvedAccounts.{{ input.defaultsTo.name | camelCase }}.bump;
+      {% elif input.defaultsTo.kind === 'value' %}
+        resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? {{ input.defaultsTo.render }};
+      {% elif input.defaultsTo.kind === 'resolver' %}
+        resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}

@@ -1,7 +1,36 @@
-{% if not instruction.isLinked and instruction.hasData %}
-// Arguments.
-{{ macros.exportType(instruction.name | pascalCase + 'InstructionData', typeManifest) }}
+{% if not instruction.hasLinkedArgs and instruction.hasData %}
+  // Data.
+  {{ macros.exportType(instruction.name | pascalCase + 'InstructionData', argManifest) }}
 
-{{ macros.exportSerializer(instruction.name | pascalCase + 'InstructionData', typeManifest) }}
+  {{ macros.exportSerializer(instruction.name | pascalCase + 'InstructionData', argManifest) }}
+{% endif %}
 
+{% if not instruction.hasLinkedExtraArgs and instruction.hasExtraArgs %}
+  // Extra Args.
+  export type {{ instruction.name | pascalCase + 'InstructionExtraArgs' }} = {{ extraArgManifest.looseType }};
+{% endif %}
+
+{% if instruction.hasAnyArgs %}
+  {% set argType %}
+    {% if instruction.hasArgs and instruction.hasExtraArgs %}
+      {{ instruction.name | pascalCase + 'InstructionDataArgs' }} & {{ instruction.name | pascalCase + 'InstructionExtraArgs' }}
+    {% elif instruction.hasArgs %}
+      {{ instruction.name | pascalCase + 'InstructionDataArgs' }}
+    {% elif instruction.hasExtraArgs %}
+      {{ instruction.name | pascalCase + 'InstructionExtraArgs' }}
+    {% endif %}
+  {% endset %}
+
+  // Args.
+  {% if argDefaultKeys.length > 0 %}
+    type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+    export type {{ instruction.name | pascalCase + 'InstructionArgs' }} = PickPartial<
+      {{ argType }}, 
+      {% for key in argDefaultKeys %}
+        "{{ key }}"{% if not loop.last %} | {% endif %}
+      {% endfor %}
+    >;
+  {% else %}
+    export type {{ instruction.name | pascalCase + 'InstructionArgs' }} = {{ argType }};
+  {% endif %}
 {% endif %}

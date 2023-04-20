@@ -92,6 +92,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                       subFields
                     )
                   ),
+                  node.extraArgs,
                   []
                 );
               }
@@ -101,6 +102,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
               node.metadata,
               node.accounts,
               node.args,
+              node.extraArgs,
               [...node.subInstructions, ...subInstructions]
             );
           },

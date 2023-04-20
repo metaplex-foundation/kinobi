@@ -25,7 +25,7 @@ export type AddConfigLinesInstructionAccounts = {
   authority?: Signer;
 };
 
-// Arguments.
+// Data.
 export type AddConfigLinesInstructionData = {
   discriminator: Array<number>;
   index: number;
@@ -68,42 +68,49 @@ export function getAddConfigLinesInstructionDataSerializer(
   >;
 }
 
+// Args.
+export type AddConfigLinesInstructionArgs = AddConfigLinesInstructionDataArgs;
+
 // Instruction.
 export function addConfigLines(
   context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
-  input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionDataArgs
+  input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplCandyMachineCore',
+      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+    ),
+    isWritable: false,
+  };
 
-  // Resolved accounts.
-  const candyMachineAccount = input.candyMachine;
-  const authorityAccount = input.authority ?? context.identity;
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...input };
+  const resolvedArgs: any = { ...input };
+  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.
   keys.push({
-    pubkey: candyMachineAccount,
+    pubkey: resolvedAccounts.candyMachine,
     isSigner: false,
-    isWritable: isWritable(candyMachineAccount, true),
+    isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority.
-  signers.push(authorityAccount);
+  signers.push(resolvedAccounts.authority);
   keys.push({
-    pubkey: authorityAccount.publicKey,
+    pubkey: resolvedAccounts.authority.publicKey,
     isSigner: true,
-    isWritable: isWritable(authorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.authority, false),
   });
 
   // Data.
   const data =
-    getAddConfigLinesInstructionDataSerializer(context).serialize(input);
+    getAddConfigLinesInstructionDataSerializer(context).serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

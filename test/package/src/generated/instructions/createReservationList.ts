@@ -41,99 +41,106 @@ export type CreateReservationListInstructionAccounts = {
   rent?: PublicKey;
 };
 
+// Args.
+export type CreateReservationListInstructionArgs =
+  CreateReservationListInstructionDataArgs;
+
 // Instruction.
 export function createReservationList(
   context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
   accounts: CreateReservationListInstructionAccounts,
-  args: CreateReservationListInstructionDataArgs
+  args: CreateReservationListInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
+  const programId = {
+    ...context.programs.getPublicKey(
+      'mplTokenMetadata',
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    ),
+    isWritable: false,
+  };
 
-  // Resolved accounts.
-  const reservationListAccount = accounts.reservationList;
-  const payerAccount = accounts.payer ?? context.payer;
-  const updateAuthorityAccount = accounts.updateAuthority;
-  const masterEditionAccount = accounts.masterEdition;
-  const resourceAccount = accounts.resource;
-  const metadataAccount = accounts.metadata;
-  const systemProgramAccount = accounts.systemProgram ?? {
+  // Resolved inputs.
+  const resolvedAccounts: any = { ...accounts };
+  const resolvedArgs: any = { ...args };
+  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
+  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(
       'splSystem',
       '11111111111111111111111111111111'
     ),
     isWritable: false,
   };
-  const rentAccount =
-    accounts.rent ?? publicKey('SysvarRent111111111111111111111111111111111');
+  resolvedAccounts.rent =
+    resolvedAccounts.rent ??
+    publicKey('SysvarRent111111111111111111111111111111111');
 
   // Reservation List.
   keys.push({
-    pubkey: reservationListAccount,
+    pubkey: resolvedAccounts.reservationList,
     isSigner: false,
-    isWritable: isWritable(reservationListAccount, true),
+    isWritable: isWritable(resolvedAccounts.reservationList, true),
   });
 
   // Payer.
-  signers.push(payerAccount);
+  signers.push(resolvedAccounts.payer);
   keys.push({
-    pubkey: payerAccount.publicKey,
+    pubkey: resolvedAccounts.payer.publicKey,
     isSigner: true,
-    isWritable: isWritable(payerAccount, false),
+    isWritable: isWritable(resolvedAccounts.payer, false),
   });
 
   // Update Authority.
-  signers.push(updateAuthorityAccount);
+  signers.push(resolvedAccounts.updateAuthority);
   keys.push({
-    pubkey: updateAuthorityAccount.publicKey,
+    pubkey: resolvedAccounts.updateAuthority.publicKey,
     isSigner: true,
-    isWritable: isWritable(updateAuthorityAccount, false),
+    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: masterEditionAccount,
+    pubkey: resolvedAccounts.masterEdition,
     isSigner: false,
-    isWritable: isWritable(masterEditionAccount, false),
+    isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Resource.
   keys.push({
-    pubkey: resourceAccount,
+    pubkey: resolvedAccounts.resource,
     isSigner: false,
-    isWritable: isWritable(resourceAccount, false),
+    isWritable: isWritable(resolvedAccounts.resource, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: metadataAccount,
+    pubkey: resolvedAccounts.metadata,
     isSigner: false,
-    isWritable: isWritable(metadataAccount, false),
+    isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: systemProgramAccount,
+    pubkey: resolvedAccounts.systemProgram,
     isSigner: false,
-    isWritable: isWritable(systemProgramAccount, false),
+    isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: rentAccount,
+    pubkey: resolvedAccounts.rent,
     isSigner: false,
-    isWritable: isWritable(rentAccount, false),
+    isWritable: isWritable(resolvedAccounts.rent, false),
   });
 
   // Data.
   const data =
-    getCreateReservationListInstructionDataSerializer(context).serialize(args);
+    getCreateReservationListInstructionDataSerializer(context).serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

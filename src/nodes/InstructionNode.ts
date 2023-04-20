@@ -17,6 +17,7 @@ export type InstructionNodeMetadata = {
   docs: string[];
   internal: boolean;
   bytesCreatedOnChain: InstructionNodeBytesCreatedOnChain | null;
+  argDefaults: Record<string, InstructionNodeArgDefaults>;
 };
 
 export type InstructionNodeAccount = {
@@ -26,10 +27,28 @@ export type InstructionNodeAccount = {
   isOptional: boolean;
   description: string;
   defaultsTo: InstructionNodeAccountDefaults | null;
-  pdaBumpArg: string | null;
 };
 
+export type InstructionNodeInputDependency = {
+  kind: 'account' | 'arg';
+  name: string;
+};
+
+export type InstructionNodeArgDefaults =
+  | { kind: 'arg'; name: string }
+  | { kind: 'account'; name: string }
+  | { kind: 'accountBump'; name: string }
+  | { kind: 'value'; value: ValueNode }
+  | {
+      kind: 'resolver';
+      name: string;
+      dependency: Dependency;
+      dependsOn: InstructionNodeInputDependency[];
+    };
+
 export type InstructionNodeAccountDefaults =
+  | { kind: 'programId' }
+  | { kind: 'program'; program: { name: string; publicKey: string } }
   | { kind: 'publicKey'; publicKey: string }
   | { kind: 'account'; name: string }
   | { kind: 'identity' }
@@ -40,8 +59,14 @@ export type InstructionNodeAccountDefaults =
       dependency: Dependency;
       seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
     }
-  | { kind: 'program'; program: { name: string; publicKey: string } }
-  | { kind: 'programId' };
+  | {
+      kind: 'resolver';
+      name: string;
+      dependency: Dependency;
+      resolvedIsSigner: boolean | 'either';
+      resolvedIsOptional: boolean;
+      dependsOn: InstructionNodeInputDependency[];
+    };
 
 export type InstructionNodeAccountDefaultsSeed =
   | { kind: 'account'; name: string }
@@ -54,9 +79,10 @@ export type InstructionNodeBytesCreatedOnChain =
   | {
       kind: 'account';
       name: string;
-      dependency: string;
+      dependency: Dependency;
       includeHeader: boolean;
-    };
+    }
+  | { kind: 'resolver'; name: string; dependency: Dependency };
 
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
@@ -67,12 +93,15 @@ export class InstructionNode implements Visitable {
 
   readonly args: TypeStructNode | TypeDefinedLinkNode;
 
+  readonly extraArgs: TypeStructNode | TypeDefinedLinkNode | null;
+
   readonly subInstructions: InstructionNode[];
 
   constructor(
     metadata: InstructionNodeMetadata,
     accounts: InstructionNodeAccount[],
     args: InstructionNode['args'],
+    extraArgs: InstructionNode['extraArgs'],
     subInstructions: InstructionNode[]
   ) {
     const bytes = metadata.bytesCreatedOnChain;
@@ -83,6 +112,21 @@ export class InstructionNode implements Visitable {
         bytes && 'name' in bytes
           ? { ...bytes, name: mainCase(bytes.name) }
           : bytes,
+      argDefaults: Object.fromEntries(
+        Object.entries(metadata.argDefaults).map(([key, value]) => {
+          const newValue = { ...value };
+          if ('name' in newValue) {
+            newValue.name = mainCase(newValue.name);
+          }
+          if (newValue.kind === 'resolver') {
+            newValue.dependsOn = newValue.dependsOn.map((dep) => ({
+              ...dep,
+              name: mainCase(dep.name),
+            }));
+          }
+          return [mainCase(key), newValue];
+        })
+      ),
     };
     this.accounts = accounts.map((account) => {
       const { defaultsTo } = account;
@@ -100,10 +144,17 @@ export class InstructionNode implements Visitable {
               : { ...seed, name: mainCase(seed.name) },
           ])
         );
+      } else if (defaultsTo?.kind === 'resolver') {
+        defaultsTo.name = mainCase(defaultsTo.name);
+        defaultsTo.dependsOn = defaultsTo.dependsOn.map((dep) => ({
+          ...dep,
+          name: mainCase(dep.name),
+        }));
       }
       return { ...account, name: mainCase(account.name), defaultsTo };
     });
     this.args = args;
+    this.extraArgs = extraArgs;
     this.subInstructions = subInstructions;
   }
 
@@ -118,6 +169,7 @@ export class InstructionNode implements Visitable {
       docs: idl.docs ?? [],
       internal: false,
       bytesCreatedOnChain: null,
+      argDefaults: {},
     };
 
     const accounts = (idl.accounts ?? []).map(
@@ -135,7 +187,6 @@ export class InstructionNode implements Visitable {
             isOptional && useProgramIdForOptionalAccounts
               ? { kind: 'programId' }
               : null,
-          pdaBumpArg: account.pdaBumpArg ?? null,
         };
       }
     );
@@ -164,7 +215,7 @@ export class InstructionNode implements Visitable {
       ]);
     }
 
-    return new InstructionNode(metadata, accounts, args, []);
+    return new InstructionNode(metadata, accounts, args, null, []);
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -186,20 +237,16 @@ export class InstructionNode implements Visitable {
     return this.metadata.docs;
   }
 
-  get isLinked(): boolean {
+  get hasLinkedArgs(): boolean {
     return isTypeDefinedLinkNode(this.args);
+  }
+
+  get hasLinkedExtraArgs(): boolean {
+    return isTypeDefinedLinkNode(this.extraArgs);
   }
 
   get hasAccounts(): boolean {
     return this.accounts.length > 0;
-  }
-
-  get pdaAccounts(): InstructionNodeAccount[] {
-    return this.accounts.filter((account) => account.pdaBumpArg !== null);
-  }
-
-  get hasPdaAccounts(): boolean {
-    return this.pdaAccounts.length > 0;
   }
 
   get hasData(): boolean {
@@ -215,12 +262,43 @@ export class InstructionNode implements Visitable {
     return nonOmittedFields.length > 0;
   }
 
-  get hasRequiredArgs(): boolean {
-    if (isTypeDefinedLinkNode(this.args)) return true;
-    const requiredFields = this.args.fields.filter(
-      (field) => field.metadata.defaultsTo === null
+  get hasExtraArgs(): boolean {
+    if (isTypeDefinedLinkNode(this.extraArgs)) return true;
+    const nonOmittedFields =
+      this.extraArgs?.fields.filter(
+        (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
+      ) ?? [];
+    return nonOmittedFields.length > 0;
+  }
+
+  get hasAnyArgs(): boolean {
+    return this.hasArgs || this.hasExtraArgs;
+  }
+
+  get hasArgDefaults(): boolean {
+    return Object.keys(this.metadata.argDefaults).length > 0;
+  }
+
+  get hasArgResolvers(): boolean {
+    return Object.values(this.metadata.argDefaults).some(
+      ({ kind }) => kind === 'resolver'
     );
-    return requiredFields.length > 0;
+  }
+
+  get hasAccountResolvers(): boolean {
+    return this.accounts.some(
+      ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
+    );
+  }
+
+  get hasByteResolver(): boolean {
+    return this.metadata.bytesCreatedOnChain?.kind === 'resolver';
+  }
+
+  get hasResolvers(): boolean {
+    return (
+      this.hasArgResolvers || this.hasAccountResolvers || this.hasByteResolver
+    );
   }
 }
 

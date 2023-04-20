@@ -31,6 +31,12 @@ export class GetJavaScriptTypeManifestVisitor
     this.importStrategy = strategy;
   }
 
+  setDefinedName(
+    definedName: GetJavaScriptTypeManifestVisitor['definedName']
+  ): void {
+    this.definedName = definedName;
+  }
+
   visitRoot(): JavaScriptTypeManifest {
     throw new Error(
       'Cannot get type manifest for root node. Please select a child node.'
