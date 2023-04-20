@@ -26,7 +26,7 @@ const resolvedArgs: any = { ...{{ argsObj }} };
     {% elif input.defaultsTo.kind === 'program' %}
       resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? { ...context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'), isWritable: false };
     {% elif input.defaultsTo.kind === 'programId' %}
-      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? { ...programId, isWritable: false };
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? programId;
     {% elif input.defaultsTo.kind === 'identity' and (input.isSigner !== false) %}
       resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.identity;
     {% elif input.defaultsTo.kind === 'identity' %}
@@ -36,7 +36,7 @@ const resolvedArgs: any = { ...{{ argsObj }} };
     {% elif input.defaultsTo.kind === 'payer' %}
       resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? context.payer.publicKey;
     {% elif input.defaultsTo.kind === 'resolver' %}
-      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs);
+      resolvedAccounts.{{ input.name | camelCase }} = resolvedAccounts.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
     {% endif %}
   {% elif input.kind === 'arg' %}
     {% if input.defaultsTo.kind === 'arg' %}
@@ -48,7 +48,7 @@ const resolvedArgs: any = { ...{{ argsObj }} };
     {% elif input.defaultsTo.kind === 'value' %}
       resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? {{ input.defaultsTo.render }};
     {% elif input.defaultsTo.kind === 'resolver' %}
-      resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs);
+      resolvedArgs.{{ input.name | camelCase }} = resolvedArgs.{{ input.name | camelCase }} ?? {{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
     {% endif %}
   {% endif %}
 {% endfor %}
