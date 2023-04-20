@@ -112,8 +112,22 @@ export class InstructionNode implements Visitable {
         bytes && 'name' in bytes
           ? { ...bytes, name: mainCase(bytes.name) }
           : bytes,
+      argDefaults: Object.fromEntries(
+        Object.entries(metadata.argDefaults).map(([key, value]) => {
+          const newValue = { ...value };
+          if ('name' in newValue) {
+            newValue.name = mainCase(newValue.name);
+          }
+          if (newValue.kind === 'resolver') {
+            newValue.dependsOn = newValue.dependsOn.map((dep) => ({
+              ...dep,
+              name: mainCase(dep.name),
+            }));
+          }
+          return [mainCase(key), newValue];
+        })
+      ),
     };
-    // TODO: sanitize arg default names.
     this.accounts = accounts.map((account) => {
       const { defaultsTo } = account;
       if (defaultsTo?.kind === 'account') {
@@ -130,6 +144,12 @@ export class InstructionNode implements Visitable {
               : { ...seed, name: mainCase(seed.name) },
           ])
         );
+      } else if (defaultsTo?.kind === 'resolver') {
+        defaultsTo.name = mainCase(defaultsTo.name);
+        defaultsTo.dependsOn = defaultsTo.dependsOn.map((dep) => ({
+          ...dep,
+          name: mainCase(dep.name),
+        }));
       }
       return { ...account, name: mainCase(account.name), defaultsTo };
     });
