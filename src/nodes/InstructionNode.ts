@@ -274,6 +274,32 @@ export class InstructionNode implements Visitable {
   get hasAnyArgs(): boolean {
     return this.hasArgs || this.hasExtraArgs;
   }
+
+  get hasArgDefaults(): boolean {
+    return Object.keys(this.metadata.argDefaults).length > 0;
+  }
+
+  get hasArgResolvers(): boolean {
+    return Object.values(this.metadata.argDefaults).some(
+      ({ kind }) => kind === 'resolver'
+    );
+  }
+
+  get hasAccountResolvers(): boolean {
+    return this.accounts.some(
+      ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
+    );
+  }
+
+  get hasByteResolver(): boolean {
+    return this.metadata.bytesCreatedOnChain?.kind === 'resolver';
+  }
+
+  get hasResolvers(): boolean {
+    return (
+      this.hasArgResolvers || this.hasAccountResolvers || this.hasByteResolver
+    );
+  }
 }
 
 export function isInstructionNode(node: Node | null): node is InstructionNode {
