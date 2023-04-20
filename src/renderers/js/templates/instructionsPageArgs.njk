@@ -1,7 +1,7 @@
 {% if not instruction.isLinked and instruction.hasData %}
 // Arguments.
-{{ macros.exportType(instruction.name | pascalCase + 'InstructionData', typeManifest) }}
+{{ macros.exportType(instruction.name | pascalCase + 'InstructionData', argManifest) }}
 
-{{ macros.exportSerializer(instruction.name | pascalCase + 'InstructionData', typeManifest) }}
+{{ macros.exportSerializer(instruction.name | pascalCase + 'InstructionData', argManifest) }}
 
 {% endif %}
