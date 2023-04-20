@@ -1,4 +1,5 @@
 import * as nodes from '../../nodes';
+import { mainCase } from '../../utils';
 import { NodeStack } from '../NodeStack';
 import { ValidatorBag } from '../ValidatorBag';
 import { Visitor } from '../Visitor';
@@ -95,7 +96,33 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       );
     }
 
+    // Check args.
     bag.mergeWith([instruction.args.accept(this)]);
+
+    // Check extra args.
+    if (instruction.extraArgs) {
+      bag.mergeWith([instruction.extraArgs.accept(this)]);
+      if (
+        nodes.isTypeStructNode(instruction.args) &&
+        nodes.isTypeStructNode(instruction.extraArgs)
+      ) {
+        const names = [
+          ...instruction.args.fields.map(({ name }) => mainCase(name)),
+          ...instruction.extraArgs.fields.map(({ name }) => mainCase(name)),
+        ];
+        const duplicates = names.filter((e, i, a) => a.indexOf(e) !== i);
+        const uniqueDuplicates = [...new Set(duplicates)];
+        const hasConflictingNames = uniqueDuplicates.length > 0;
+        if (hasConflictingNames) {
+          bag.error(
+            `The names of the following instruction arguments are conflicting: ` +
+              `[${uniqueDuplicates.join(', ')}].`,
+            instruction,
+            this.stack
+          );
+        }
+      }
+    }
 
     // Check sub-instructions.
     bag.mergeWith(instruction.subInstructions.map((ix) => ix.accept(this)));

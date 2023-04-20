@@ -91,6 +91,12 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent += 1;
     children.push(instruction.args.accept(this));
     this.indent -= 1;
+    if (instruction.extraArgs) {
+      children.push(this.indented('extra arguments:'));
+      this.indent += 1;
+      children.push(instruction.extraArgs.accept(this));
+      this.indent -= 1;
+    }
     this.indent -= 1;
     return children.join('\n');
   }

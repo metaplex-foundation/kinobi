@@ -32,11 +32,12 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitInstruction(instruction: nodes.InstructionNode): string {
     const accounts = instruction.accounts.map((account) => account.name);
     const args = instruction.args.accept(this);
+    const extraArgs = instruction.extraArgs?.accept(this);
+    const extraArgsString = extraArgs ? `,extraArgs:(${extraArgs})` : '';
     return (
       `${INSTRUCTION_PREFIX}[${instruction.name}](` +
       `accounts:(${accounts.join(',')}),` +
-      `args:(${args})` +
-      `)`
+      `args:(${args})${extraArgsString})`
     );
   }
 
