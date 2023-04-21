@@ -85,15 +85,12 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               ...metadataUpdates
             } = updates;
             const newName = mainCase(updates.name ?? node.name);
-            const {
-              args: newArgs,
-              extraArgs: newExtraArgs,
-              argDefaults,
-            } = this.handleInstructionArgs(node, newName, argsUpdates ?? {});
+            const { newArgs, newExtraArgs, newArgDefaults } =
+              this.handleInstructionArgs(node, newName, argsUpdates ?? {});
             const newMetadata = {
               ...node.metadata,
               ...this.handleMetadata(metadataUpdates),
-              argDefaults,
+              argDefaults: newArgDefaults,
             };
             const newAccounts = node.accounts.map((account) =>
               this.handleInstructionAccount(account, accountUpdates ?? {})
@@ -189,14 +186,37 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
 
   handleInstructionArgs(
     instruction: nodes.InstructionNode,
-    newName: string,
+    newInstructionName: string,
     argUpdates: InstructionArgUpdates
   ): {
-    args: nodes.TypeStructNode | nodes.TypeDefinedLinkNode;
-    extraArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
-    argDefaults: Record<string, nodes.InstructionNodeArgDefaults>;
+    newArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode;
+    newExtraArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
+    newArgDefaults: Record<string, nodes.InstructionNodeArgDefaults>;
   } {
-    // TODO
-    throw new Error('Not yet implemented');
+    let newArgs = instruction.args;
+    if (!nodes.isTypeDefinedLinkNode(instruction.args)) {
+      const fields = [] as any[]; // TODO: handle args
+      newArgs = new nodes.TypeStructNode(
+        `${newInstructionName}InstructionData`,
+        fields
+      );
+    }
+
+    let newExtraArgs = instruction.extraArgs;
+    if (!nodes.isTypeDefinedLinkNode(instruction.extraArgs)) {
+      const fields = [] as any[]; // TODO: handle extra args
+      newExtraArgs =
+        fields.length > 0
+          ? new nodes.TypeStructNode(
+              `${newInstructionName}InstructionExtra`,
+              fields
+            )
+          : null;
+    }
+
+    const newArgDefaults = instruction.metadata.argDefaults;
+    // TODO: handle arg defaults
+
+    return { newArgs, newExtraArgs, newArgDefaults };
   }
 }
