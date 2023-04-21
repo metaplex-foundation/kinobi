@@ -13,13 +13,13 @@ import {
   Serializer,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   isSigner,
   mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';
+import { isWritable } from '../shared';
 import { DelegateRole } from '../types';
 
 // Accounts.

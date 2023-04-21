@@ -6,15 +6,35 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-/** @internal */
+/**
+ * Transforms the given object such that the given keys are optional.
+ * @internal
+ */
 export type PickPartial<T, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
 
-/** @internal */
-export function setObject<T extends object, U extends string, V>(
+/**
+ * Helper function that dynamically updates the type of
+ * an object as we add more properties to the object.
+ * @internal
+ */
+export function addObjectProperty<T extends object, U extends string, V>(
   obj: T,
   key: U,
   value: V
 ): asserts obj is T & { [K in U]: V } {
   (obj as any)[key] = value;
 }
+
+/**
+ * Helper function that enables public keys and signers
+ * to override the `isWritable` property of an account meta.
+ * @internal
+ */
+export const isWritable = (
+  account: (PublicKey | HasPublicKey) & { isWritable?: boolean },
+  value: boolean
+): boolean =>
+  'isWritable' in account && typeof account.isWritable === 'boolean'
+    ? account.isWritable
+    : value;

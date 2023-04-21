@@ -14,11 +14,11 @@ import {
   Serializer,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { isWritable } from '../shared';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
 
 // Accounts.

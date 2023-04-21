@@ -14,12 +14,12 @@ import {
   Serializer,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findMetadataPda } from '../accounts';
+import { isWritable } from '../shared';
 import {
   CollectionDetails,
   CollectionDetailsArgs,

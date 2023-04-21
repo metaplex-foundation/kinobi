@@ -12,7 +12,6 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
@@ -20,6 +19,7 @@ import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
 } from '../../hooked';
+import { isWritable } from '../shared';
 
 // Accounts.
 export type CreateReservationListInstructionAccounts = {

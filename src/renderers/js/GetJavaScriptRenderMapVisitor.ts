@@ -353,9 +353,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
     if (accounts.length > 0) {
-      imports
-        .add('core', 'checkForIsWritableOverride')
-        .addAlias('core', 'checkForIsWritableOverride', 'isWritable');
+      imports.add('shared', 'isWritable');
     }
 
     // Args.
