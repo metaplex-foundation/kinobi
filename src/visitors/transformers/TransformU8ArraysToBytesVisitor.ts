@@ -21,7 +21,7 @@ export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
       });
     }
 
-    return typeArray;
+    return new nodes.TypeArrayNode(item, { ...typeArray });
   }
 
   protected hasRequiredSize(size: nodes.TypeArrayNode['size']): boolean {
