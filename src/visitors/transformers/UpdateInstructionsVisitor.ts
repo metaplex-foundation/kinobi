@@ -7,7 +7,6 @@ import {
   NodeTransformer,
   TransformNodesVisitor,
 } from './TransformNodesVisitor';
-import { renameStructNode } from './_renameHelpers';
 
 export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
@@ -82,25 +81,23 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
 
             const {
               accounts: accountUpdates,
-              extraArgs: extraArgsUpdates,
+              args: argsUpdates,
               ...metadataUpdates
             } = updates;
             const newName = mainCase(updates.name ?? node.name);
-            const args = updates.args ?? {};
+            const {
+              args: newArgs,
+              extraArgs: newExtraArgs,
+              argDefaults,
+            } = this.handleInstructionArgs(node, newName, argsUpdates ?? {});
             const newMetadata = {
               ...node.metadata,
               ...this.handleMetadata(metadataUpdates),
+              argDefaults,
             };
             const newAccounts = node.accounts.map((account) =>
               this.handleInstructionAccount(account, accountUpdates ?? {})
             );
-            const newArgs = nodes.isTypeStructNode(node.args)
-              ? renameStructNode(node.args, args, `${newName}InstructionData`)
-              : node.args;
-            const newExtraArgs =
-              extraArgsUpdates === undefined
-                ? node.extraArgs
-                : extraArgsUpdates;
 
             return new nodes.InstructionNode(
               newMetadata,
@@ -188,5 +185,18 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     return accountUpdate
       ? ({ ...account, ...accountUpdate } as nodes.InstructionNodeAccount)
       : account;
+  }
+
+  handleInstructionArgs(
+    instruction: nodes.InstructionNode,
+    newName: string,
+    argUpdates: InstructionArgUpdates
+  ): {
+    args: nodes.TypeStructNode | nodes.TypeDefinedLinkNode;
+    extraArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
+    argDefaults: Record<string, nodes.InstructionNodeArgDefaults>;
+  } {
+    // TODO
+    throw new Error('Not yet implemented');
   }
 }
