@@ -219,7 +219,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           };
 
           if (rule.instruction) {
-            return { ...account, importFrom };
+            return { ...account, defaultsTo };
           }
 
           const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
@@ -238,7 +238,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           );
 
           if (allSeedsAreValid) {
-            return { ...account, importFrom };
+            return { ...account, defaultsTo };
           }
 
           return account;
