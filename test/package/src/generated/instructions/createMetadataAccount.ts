@@ -141,19 +141,28 @@ export function createMetadataAccount(
     'metadata',
     input.metadata ?? findMetadataPda(context, { mint: publicKey(input.mint) })
   );
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
-    ...context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
-    isWritable: false,
-  };
-  resolvedAccounts.rent =
-    resolvedAccounts.rent ??
-    publicKey('SysvarRent111111111111111111111111111111111');
-  resolvedArgs.metadataBump =
-    resolvedArgs.metadataBump ?? resolvedAccounts.metadata.bump;
+  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(
+    resolvedAccounts,
+    'systemProgram',
+    input.systemProgram ?? {
+      ...context.programs.getPublicKey(
+        'splSystem',
+        '11111111111111111111111111111111'
+      ),
+      isWritable: false,
+    }
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'rent',
+    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
+  );
+  addObjectProperty(
+    resolvedArgs,
+    'metadataBump',
+    input.metadataBump ?? resolvedAccounts.metadata.bump
+  );
 
   // Metadata.
   keys.push({

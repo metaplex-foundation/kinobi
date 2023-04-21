@@ -96,16 +96,23 @@ export function createRuleSet(
   // Resolved inputs.
   const resolvedAccounts = {};
   const resolvedArgs = {};
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
-    ...context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
-    isWritable: false,
-  };
-  resolvedArgs.ruleSetBump =
-    resolvedArgs.ruleSetBump ?? resolvedAccounts.ruleSetPda.bump;
+  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(
+    resolvedAccounts,
+    'systemProgram',
+    input.systemProgram ?? {
+      ...context.programs.getPublicKey(
+        'splSystem',
+        '11111111111111111111111111111111'
+      ),
+      isWritable: false,
+    }
+  );
+  addObjectProperty(
+    resolvedArgs,
+    'ruleSetBump',
+    input.ruleSetBump ?? input.ruleSetPda.bump
+  );
 
   // Payer.
   signers.push(resolvedAccounts.payer);

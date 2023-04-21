@@ -211,25 +211,49 @@ export function updateV1(
   // Resolved inputs.
   const resolvedAccounts = {};
   const resolvedArgs = {};
-  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
-  resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
-  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
-    ...context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
-    isWritable: false,
-  };
-  resolvedAccounts.sysvarInstructions =
-    resolvedAccounts.sysvarInstructions ??
-    publicKey('Sysvar1nstructions1111111111111111111111111');
-  resolvedAccounts.token = resolvedAccounts.token ?? programId;
-  resolvedAccounts.delegateRecord =
-    resolvedAccounts.delegateRecord ?? programId;
-  resolvedAccounts.authorizationRulesProgram =
-    resolvedAccounts.authorizationRulesProgram ?? programId;
-  resolvedAccounts.authorizationRules =
-    resolvedAccounts.authorizationRules ?? programId;
+  addObjectProperty(
+    resolvedAccounts,
+    'authority',
+    input.authority ?? context.identity
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'masterEdition',
+    input.masterEdition ?? programId
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'systemProgram',
+    input.systemProgram ?? {
+      ...context.programs.getPublicKey(
+        'splSystem',
+        '11111111111111111111111111111111'
+      ),
+      isWritable: false,
+    }
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'sysvarInstructions',
+    input.sysvarInstructions ??
+      publicKey('Sysvar1nstructions1111111111111111111111111')
+  );
+  addObjectProperty(resolvedAccounts, 'token', input.token ?? programId);
+  addObjectProperty(
+    resolvedAccounts,
+    'delegateRecord',
+    input.delegateRecord ?? programId
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'authorizationRulesProgram',
+    input.authorizationRulesProgram ?? programId
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'authorizationRules',
+    input.authorizationRules ?? programId
+  );
 
   // Authority.
   signers.push(resolvedAccounts.authority);

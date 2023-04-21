@@ -92,31 +92,45 @@ export function mintFromCandyMachine(
 
   // Resolved inputs.
   const resolvedAccounts = {};
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.nftMintAuthority =
-    resolvedAccounts.nftMintAuthority ?? context.identity;
-  resolvedAccounts.tokenMetadataProgram =
-    resolvedAccounts.tokenMetadataProgram ?? {
+  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(
+    resolvedAccounts,
+    'nftMintAuthority',
+    input.nftMintAuthority ?? context.identity
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'tokenMetadataProgram',
+    input.tokenMetadataProgram ?? {
       ...context.programs.getPublicKey(
         'mplTokenMetadata',
         'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ),
       isWritable: false,
-    };
-  resolvedAccounts.tokenProgram = resolvedAccounts.tokenProgram ?? {
-    ...context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    ),
-    isWritable: false,
-  };
-  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
-    ...context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
-    isWritable: false,
-  };
+    }
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'tokenProgram',
+    input.tokenProgram ?? {
+      ...context.programs.getPublicKey(
+        'splToken',
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      ),
+      isWritable: false,
+    }
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'systemProgram',
+    input.systemProgram ?? {
+      ...context.programs.getPublicKey(
+        'splSystem',
+        '11111111111111111111111111111111'
+      ),
+      isWritable: false,
+    }
+  );
 
   // Candy Machine.
   keys.push({

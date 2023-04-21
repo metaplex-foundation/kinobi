@@ -37,7 +37,7 @@
         {%- endif -%}
         ));
       {% elif input.defaultsTo.kind === 'publicKey' %}
-        addObjectProperty({{ accountPrefix }} publicKey('{{ input.defaultsTo.publicKey }}');
+        addObjectProperty({{ accountPrefix }} publicKey('{{ input.defaultsTo.publicKey }}'));
       {% elif input.defaultsTo.kind === 'program' %}
         addObjectProperty({{ accountPrefix }} { ...context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'), isWritable: false });
       {% elif input.defaultsTo.kind === 'programId' %}

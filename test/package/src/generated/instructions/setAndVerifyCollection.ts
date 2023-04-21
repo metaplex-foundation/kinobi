@@ -86,7 +86,7 @@ export function setAndVerifyCollection(
 
   // Resolved inputs.
   const resolvedAccounts = {};
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
+  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
 
   // Metadata.
   keys.push({

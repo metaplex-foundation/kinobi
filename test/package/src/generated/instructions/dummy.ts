@@ -79,7 +79,7 @@ export function dummy(
 
   // Resolved inputs.
   const resolvedAccounts = {};
-  resolvedAccounts.mint = resolvedAccounts.mint ?? programId;
+  addObjectProperty(resolvedAccounts, 'mint', input.mint ?? programId);
   addObjectProperty(
     resolvedAccounts,
     'edition',
@@ -90,8 +90,8 @@ export function dummy(
     'mintAuthority',
     input.mintAuthority ?? input.updateAuthority
   );
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.bar = resolvedAccounts.bar ?? programId;
+  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(resolvedAccounts, 'bar', input.bar ?? programId);
   addObjectProperty(resolvedAccounts, 'foo', input.foo ?? resolvedAccounts.bar);
   addObjectProperty(
     resolvedAccounts,

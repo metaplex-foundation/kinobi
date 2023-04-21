@@ -79,7 +79,11 @@ export function setAuthority(
   // Resolved inputs.
   const resolvedAccounts = {};
   const resolvedArgs = {};
-  resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
+  addObjectProperty(
+    resolvedAccounts,
+    'authority',
+    input.authority ?? context.identity
+  );
 
   // Candy Machine.
   keys.push({
