@@ -184,8 +184,14 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   visitAccount(account: nodes.AccountNode): RenderMap {
     const isLinked = nodes.isTypeDefinedLinkNode(account.type);
     const typeManifest = account.accept(this.typeManifestVisitor);
-    const imports = new JavaScriptImportMap()
-      .mergeWithManifest(typeManifest)
+    const imports = new JavaScriptImportMap().mergeWith(
+      typeManifest.strictImports,
+      typeManifest.serializerImports
+    );
+    if (!isLinked) {
+      imports.mergeWith(typeManifest.looseImports);
+    }
+    imports
       .add('core', [
         'Account',
         'assertAccountExists',
@@ -351,7 +357,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // Args.
     const argManifest = instruction.accept(this.typeManifestVisitor);
-    imports.mergeWithManifest(argManifest);
+    imports.mergeWith(argManifest.looseImports, argManifest.serializerImports);
+    if (!nodes.isTypeDefinedLinkNode(instruction.args)) {
+      imports.mergeWith(argManifest.strictImports);
+    }
     if (!nodes.isTypeDefinedLinkNode(instruction.args) && instruction.hasData) {
       imports.add('core', ['Serializer']);
     }
