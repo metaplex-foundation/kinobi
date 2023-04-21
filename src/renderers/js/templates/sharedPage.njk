@@ -2,6 +2,8 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
+import { PublicKey, Signer } from '@metaplex-foundation/umi';
+
 /**
  * Transforms the given object such that the given keys are optional.
  * @internal
