@@ -57,7 +57,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): string {
-    return `link(${typeDefinedLink.name};${typeDefinedLink.dependency})`;
+    return `link(${typeDefinedLink.name};${typeDefinedLink.importFrom})`;
   }
 
   visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {

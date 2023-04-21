@@ -1,14 +1,14 @@
 import { mainCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { Dependency } from '../Dependency';
+import { ImportFrom } from '../ImportFrom';
 
 export type InstructionNodeAccountDefaultsInput =
   | nodes.InstructionNodeAccountDefaults
   | {
       kind: 'pda';
       pdaAccount?: string;
-      dependency?: Dependency;
+      importFrom?: ImportFrom;
       seeds?: Record<string, nodes.InstructionNodeAccountDefaultsSeed>;
     };
 
@@ -211,7 +211,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
             (typeof rule.account === 'string' ? rule.account : '');
           const defaultsTo = {
             pdaAccount,
-            dependency: 'generated',
+            importFrom: 'generated',
             seeds:
               this.allAccounts.get(mainCase(pdaAccount))
                 ?.instructionAccountDefaultSeeds ?? {},
@@ -219,7 +219,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           };
 
           if (rule.instruction) {
-            return { ...account, defaultsTo };
+            return { ...account, importFrom };
           }
 
           const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
@@ -238,7 +238,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           );
 
           if (allSeedsAreValid) {
-            return { ...account, defaultsTo };
+            return { ...account, importFrom };
           }
 
           return account;

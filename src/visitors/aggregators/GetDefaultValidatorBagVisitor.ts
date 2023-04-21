@@ -196,7 +196,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
         this.stack
       );
     } else if (
-      typeDefinedLink.dependency === 'generated' &&
+      typeDefinedLink.importFrom === 'generated' &&
       !this.definedTypes.has(typeDefinedLink.name)
     ) {
       bag.error(

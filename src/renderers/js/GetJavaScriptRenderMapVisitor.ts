@@ -7,7 +7,7 @@ import {
   Visitor,
   BaseThrowVisitor,
   GetResolvedInstructionInputsVisitor,
-  Dependency,
+  ImportFrom,
   ResolvedInstructionInput,
   ResolvedInstructionAccount,
 } from '../../visitors';
@@ -34,7 +34,7 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
 export type GetJavaScriptRenderMapOptions = {
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
-  dependencyMap?: Record<Dependency, string>;
+  dependencyMap?: Record<ImportFrom, string>;
   typeManifestVisitor?: Visitor<JavaScriptTypeManifest> & {
     setDefinedName: (
       definedName: { strict: string; loose: string } | null
@@ -393,7 +393,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Arg defaults.
     Object.values(instruction.metadata.argDefaults).forEach((argDefault) => {
       if (argDefault.kind === 'resolver') {
-        imports.add(argDefault.dependency, camelCase(argDefault.name));
+        imports.add(argDefault.importFrom, camelCase(argDefault.name));
       }
     });
     if (argsWithDefaults.length > 0) {
@@ -407,13 +407,13 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
     if (bytes?.kind === 'account') {
       const accountName = pascalCase(bytes.name);
-      const dependency =
-        bytes.dependency === 'generated'
+      const importFrom =
+        bytes.importFrom === 'generated'
           ? 'generatedAccounts'
-          : bytes.dependency;
-      imports.add(dependency, `get${accountName}Size`);
+          : bytes.importFrom;
+      imports.add(importFrom, `get${accountName}Size`);
     } else if (bytes?.kind === 'resolver') {
-      imports.add(bytes.dependency, camelCase(bytes.name));
+      imports.add(bytes.importFrom, camelCase(bytes.name));
     }
 
     // Remove imports from the same module.
@@ -514,11 +514,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports.add('core', 'publicKey');
       } else if (account.defaultsTo?.kind === 'pda') {
         const pdaAccount = pascalCase(account.defaultsTo.pdaAccount);
-        const dependency =
-          account.defaultsTo.dependency === 'generated'
+        const importFrom =
+          account.defaultsTo.importFrom === 'generated'
             ? 'generatedAccounts'
-            : account.defaultsTo.dependency;
-        imports.add(dependency, `find${pdaAccount}Pda`);
+            : account.defaultsTo.importFrom;
+        imports.add(importFrom, `find${pdaAccount}Pda`);
         Object.values(account.defaultsTo.seeds).forEach((seed) => {
           if (seed.kind === 'account') {
             imports.add('core', 'publicKey');
@@ -526,7 +526,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         });
       } else if (account.defaultsTo?.kind === 'resolver') {
         imports.add(
-          account.defaultsTo.dependency,
+          account.defaultsTo.importFrom,
           camelCase(account.defaultsTo.name)
         );
       }

@@ -1,6 +1,6 @@
 import { camelCase, mainCase } from '../utils';
 import type { IdlInstruction } from '../idl';
-import type { Dependency, Visitable, Visitor } from '../visitors';
+import type { ImportFrom, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
@@ -42,7 +42,7 @@ export type InstructionNodeArgDefaults =
   | {
       kind: 'resolver';
       name: string;
-      dependency: Dependency;
+      importFrom: ImportFrom;
       dependsOn: InstructionNodeInputDependency[];
     };
 
@@ -56,13 +56,13 @@ export type InstructionNodeAccountDefaults =
   | {
       kind: 'pda';
       pdaAccount: string;
-      dependency: Dependency;
+      importFrom: ImportFrom;
       seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
     }
   | {
       kind: 'resolver';
       name: string;
-      dependency: Dependency;
+      importFrom: ImportFrom;
       resolvedIsSigner: boolean | 'either';
       resolvedIsOptional: boolean;
       dependsOn: InstructionNodeInputDependency[];
@@ -79,10 +79,10 @@ export type InstructionNodeBytesCreatedOnChain =
   | {
       kind: 'account';
       name: string;
-      dependency: Dependency;
+      importFrom: ImportFrom;
       includeHeader: boolean;
     }
-  | { kind: 'resolver'; name: string; dependency: Dependency };
+  | { kind: 'resolver'; name: string; importFrom: ImportFrom };
 
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;

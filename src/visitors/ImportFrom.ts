@@ -3,7 +3,7 @@
  * This could be a recognized dependency, or any other string
  * as long as renderers know how to map them into real libraries.
  */
-export type Dependency = RelativeDependecy | 'core' | 'mplEssentials' | string;
+export type ImportFrom = RelativeImportFrom | 'core' | 'mplEssentials' | string;
 
 /**
  * Tells Kinobi where a local dependency is located.
@@ -14,4 +14,4 @@ export type Dependency = RelativeDependecy | 'core' | 'mplEssentials' | string;
  * These can be interpreted by renderers as they see fit as different languages
  * have different ways of importing local files.
  */
-export type RelativeDependecy = 'generated' | 'hooked';
+export type RelativeImportFrom = 'generated' | 'hooked';

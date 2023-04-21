@@ -8,7 +8,7 @@ export * from './BaseNodeVisitor';
 export * from './BaseThrowVisitor';
 export * from './BaseVoidVisitor';
 export * from './DefaultVisitor';
-export * from './Dependency';
+export * from './ImportFrom';
 export * from './NodeSelector';
 export * from './ValidatorBag';
 export * from './NodeStack';

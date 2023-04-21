@@ -49,19 +49,19 @@ export function renderJavaScriptValueNode(value: nodes.ValueNode): {
     case 'enum':
       const enumName = pascalCase(value.enumType);
       const variantName = pascalCase(value.variant);
-      const rawDependency = value.dependency ?? 'generated';
-      const dependency =
-        rawDependency === 'generated' ? 'generatedTypes' : rawDependency;
+      const rawImportFrom = value.importFrom ?? 'generated';
+      const importFrom =
+        rawImportFrom === 'generated' ? 'generatedTypes' : rawImportFrom;
 
       if (value.value === 'scalar') {
         return {
-          imports: imports.add(dependency, enumName),
+          imports: imports.add(importFrom, enumName),
           render: `${enumName}.${variantName}`,
         };
       }
 
       const enumFn = camelCase(value.enumType);
-      imports.add(dependency, enumFn);
+      imports.add(importFrom, enumFn);
 
       if (value.value === 'empty') {
         return { imports, render: `${enumFn}('${variantName}')` };

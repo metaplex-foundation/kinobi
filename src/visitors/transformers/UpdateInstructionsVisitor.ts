@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
-import { Dependency } from '../Dependency';
+import { ImportFrom } from '../ImportFrom';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
   NodeTransform,
@@ -39,10 +39,10 @@ type InstructionNodeBytesCreatedOnChainInput =
   | {
       kind: 'account';
       name: string;
-      dependency?: Dependency;
+      importFrom?: ImportFrom;
       includeHeader?: boolean;
     }
-  | { kind: 'resolver'; name: string; dependency?: Dependency };
+  | { kind: 'resolver'; name: string; importFrom?: ImportFrom };
 
 export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   protected allAccounts = new Map<string, nodes.AccountNode>();
@@ -117,7 +117,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
           metadataUpdates.bytesCreatedOnChain.kind === 'resolver'
             ? undefined
             : true,
-        dependency:
+        importFrom:
           metadataUpdates.bytesCreatedOnChain.kind === 'account'
             ? 'generated'
             : undefined,
@@ -142,7 +142,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         ...accountUpdate,
         defaultsTo: {
           pdaAccount,
-          dependency: 'generated',
+          importFrom: 'generated',
           seeds:
             this.allAccounts.get(pdaAccount)?.instructionAccountDefaultSeeds ??
             {},

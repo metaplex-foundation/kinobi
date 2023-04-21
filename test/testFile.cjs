@@ -171,7 +171,7 @@ kinobi.update(
           defaultsTo: {
             kind: 'resolver',
             name: 'resolveMasterEditionFromTokenStandard',
-            dependency: 'hooked',
+            importFrom: 'hooked',
             resolvedIsSigner: false,
             resolvedIsOptional: false,
             dependsOn: [

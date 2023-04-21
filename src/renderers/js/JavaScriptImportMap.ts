@@ -1,4 +1,4 @@
-import { Dependency } from '../../visitors';
+import { ImportFrom } from '../../visitors';
 import { JavaScriptTypeManifest } from './GetJavaScriptTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
@@ -9,13 +9,13 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
 };
 
 export class JavaScriptImportMap {
-  protected readonly _imports: Map<Dependency, Set<string>> = new Map();
+  protected readonly _imports: Map<ImportFrom, Set<string>> = new Map();
 
-  protected readonly _aliases: Map<Dependency, Record<string, string>> =
+  protected readonly _aliases: Map<ImportFrom, Record<string, string>> =
     new Map();
 
   add(
-    module: Dependency,
+    module: ImportFrom,
     imports: string | string[] | Set<string>
   ): JavaScriptImportMap {
     const currentImports = this._imports.get(module) ?? new Set();
@@ -26,7 +26,7 @@ export class JavaScriptImportMap {
   }
 
   remove(
-    module: Dependency,
+    module: ImportFrom,
     imports: string | string[] | Set<string>
   ): JavaScriptImportMap {
     const currentImports = this._imports.get(module) ?? new Set();
@@ -58,7 +58,7 @@ export class JavaScriptImportMap {
   }
 
   addAlias(
-    module: Dependency,
+    module: ImportFrom,
     name: string,
     alias: string
   ): JavaScriptImportMap {
@@ -72,7 +72,7 @@ export class JavaScriptImportMap {
     return this._imports.size === 0;
   }
 
-  toString(dependencies: Record<Dependency, string>): string {
+  toString(dependencies: Record<ImportFrom, string>): string {
     const dependencyMap = { ...DEFAULT_MODULE_MAP, ...dependencies };
     const importStatements = [...this._imports.entries()]
       .map(([module, imports]) => {

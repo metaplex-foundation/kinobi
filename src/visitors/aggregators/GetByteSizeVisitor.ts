@@ -45,7 +45,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     typeDefinedLink: nodes.TypeDefinedLinkNode
   ): number | null {
     if (typeDefinedLink.size !== null) return typeDefinedLink.size;
-    if (typeDefinedLink.dependency !== 'generated') return null;
+    if (typeDefinedLink.importFrom !== 'generated') return null;
 
     const linkedDefinedType = this.availableDefinedTypes.get(
       typeDefinedLink.name

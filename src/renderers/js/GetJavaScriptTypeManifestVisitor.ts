@@ -96,26 +96,26 @@ export class GetJavaScriptTypeManifestVisitor
   ): JavaScriptTypeManifest {
     const pascalCaseDefinedType = pascalCase(typeDefinedLink.name);
     const serializerName = `get${pascalCaseDefinedType}Serializer`;
-    const dependency =
-      typeDefinedLink.dependency === 'generated'
+    const importFrom =
+      typeDefinedLink.importFrom === 'generated'
         ? 'generatedTypes'
-        : typeDefinedLink.dependency;
+        : typeDefinedLink.importFrom;
 
     return {
       isEnum: false,
       strictType: pascalCaseDefinedType,
       strictImports: new JavaScriptImportMap().add(
-        dependency,
+        importFrom,
         pascalCaseDefinedType
       ),
       looseType: `${pascalCaseDefinedType}Args`,
       looseImports: new JavaScriptImportMap().add(
-        dependency,
+        importFrom,
         `${pascalCaseDefinedType}Args`
       ),
       serializer: `${serializerName}(context)`,
       serializerImports: new JavaScriptImportMap().add(
-        dependency,
+        importFrom,
         serializerName
       ),
     };
