@@ -24,7 +24,6 @@ import {
   TokenStandardArgs,
   TransferArgs,
   TransferArgsArgs,
-  getTokenStandardSerializer,
   getTransferArgsSerializer,
 } from '../types';
 
