@@ -16,7 +16,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -92,8 +92,8 @@ export function updateCandyMachine(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.

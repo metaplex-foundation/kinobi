@@ -17,7 +17,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import {
   TmCreateArgs,
   TmCreateArgsArgs,
@@ -95,8 +95,8 @@ export function create(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {

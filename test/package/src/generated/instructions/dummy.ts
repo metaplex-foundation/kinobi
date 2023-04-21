@@ -19,7 +19,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import { DelegateRole } from '../types';
 
 // Accounts.
@@ -78,14 +78,21 @@ export function dummy(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
   resolvedAccounts.mint = resolvedAccounts.mint ?? programId;
-  resolvedAccounts.edition = resolvedAccounts.edition ?? resolvedAccounts.mint;
-  resolvedAccounts.mintAuthority =
-    resolvedAccounts.mintAuthority ?? resolvedAccounts.updateAuthority;
+  addObjectProperty(
+    resolvedAccounts,
+    'edition',
+    input.edition ?? resolvedAccounts.mint
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'mintAuthority',
+    input.mintAuthority ?? input.updateAuthority
+  );
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.bar = resolvedAccounts.bar ?? programId;
-  resolvedAccounts.foo = resolvedAccounts.foo ?? resolvedAccounts.bar;
+  addObjectProperty(resolvedAccounts, 'foo', input.foo ?? resolvedAccounts.bar);
   resolvedAccounts.delegateRecord =
     resolvedAccounts.delegateRecord ??
     findDelegateRecordPda(context, { role: DelegateRole.Collection });

@@ -16,7 +16,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type SetMintAuthorityInstructionAccounts = {
@@ -75,7 +75,7 @@ export function setMintAuthority(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
 
   // Candy Machine.

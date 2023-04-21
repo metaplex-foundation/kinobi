@@ -17,7 +17,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type UtilizeInstructionAccounts = {
@@ -94,8 +94,8 @@ export function utilize(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.tokenProgram = resolvedAccounts.tokenProgram ?? {
     ...context.programs.getPublicKey(
       'splToken',

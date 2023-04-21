@@ -16,7 +16,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 
 // Accounts.
@@ -82,8 +82,8 @@ export function verify(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.authorizationRules =
     resolvedAccounts.authorizationRules ?? programId;

@@ -78,7 +78,7 @@ export function removeCreatorVerification(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
 
   // Metadata.
   keys.push({

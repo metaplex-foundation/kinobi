@@ -17,7 +17,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts =
@@ -111,7 +111,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.tokenProgram = resolvedAccounts.tokenProgram ?? {
     ...context.programs.getPublicKey(

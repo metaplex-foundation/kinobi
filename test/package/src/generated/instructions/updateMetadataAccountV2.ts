@@ -100,8 +100,8 @@ export function updateMetadataAccountV2(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...accounts };
-  const resolvedArgs: any = { ...args };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
 
   // Metadata.
   keys.push({

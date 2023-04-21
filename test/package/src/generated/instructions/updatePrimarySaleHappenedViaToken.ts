@@ -80,7 +80,7 @@ export function updatePrimarySaleHappenedViaToken(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
 
   // Metadata.
   keys.push({

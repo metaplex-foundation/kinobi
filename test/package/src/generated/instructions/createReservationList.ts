@@ -19,7 +19,7 @@ import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
 } from '../../hooked';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type CreateReservationListInstructionAccounts = {
@@ -64,8 +64,8 @@ export function createReservationList(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...accounts };
-  const resolvedArgs: any = { ...args };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(

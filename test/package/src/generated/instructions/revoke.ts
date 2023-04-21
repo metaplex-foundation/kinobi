@@ -17,7 +17,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import { RevokeArgs, RevokeArgsArgs, getRevokeArgsSerializer } from '../types';
 
 // Accounts.
@@ -99,8 +99,8 @@ export function revoke(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
   resolvedAccounts.token = resolvedAccounts.token ?? programId;
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;

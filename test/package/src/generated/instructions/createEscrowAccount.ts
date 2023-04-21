@@ -17,7 +17,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type CreateEscrowAccountInstructionAccounts = {
@@ -87,7 +87,7 @@ export function createEscrowAccount(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(

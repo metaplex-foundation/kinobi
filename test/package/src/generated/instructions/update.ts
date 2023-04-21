@@ -17,7 +17,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import { UpdateArgs, UpdateArgsArgs, getUpdateArgsSerializer } from '../types';
 
 // Accounts.
@@ -93,8 +93,8 @@ export function update(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {

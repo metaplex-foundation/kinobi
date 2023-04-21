@@ -106,8 +106,8 @@ export function deprecatedSetReservationList(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
 
   // Master Edition.
   keys.push({

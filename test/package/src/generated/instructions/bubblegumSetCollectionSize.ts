@@ -100,8 +100,8 @@ export function bubblegumSetCollectionSize(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
 
   // Collection Metadata.
   keys.push({

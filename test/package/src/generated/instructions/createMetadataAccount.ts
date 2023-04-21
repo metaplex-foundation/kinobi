@@ -21,7 +21,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findMetadataPda, getMetadataSize } from '../accounts';
-import { PickPartial, isWritable } from '../shared';
+import { PickPartial, addObjectProperty, isWritable } from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 
 // Accounts.
@@ -134,8 +134,8 @@ export function createMetadataAccount(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.metadata =
     resolvedAccounts.metadata ??
     findMetadataPda(context, { mint: publicKey(resolvedAccounts.mint) });

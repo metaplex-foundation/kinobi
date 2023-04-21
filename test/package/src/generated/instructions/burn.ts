@@ -16,7 +16,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
 
 // Accounts.
@@ -87,8 +87,8 @@ export function burn(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.splTokenProgram = resolvedAccounts.splTokenProgram ?? {
     ...context.programs.getPublicKey(
       'splToken',

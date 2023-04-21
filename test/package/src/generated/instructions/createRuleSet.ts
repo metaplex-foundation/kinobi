@@ -17,7 +17,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { PickPartial, isWritable } from '../shared';
+import { PickPartial, addObjectProperty, isWritable } from '../shared';
 import {
   TaCreateArgs,
   TaCreateArgsArgs,
@@ -94,8 +94,8 @@ export function createRuleSet(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
     ...context.programs.getPublicKey(

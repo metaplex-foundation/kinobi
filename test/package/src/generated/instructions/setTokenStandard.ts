@@ -76,7 +76,7 @@ export function setTokenStandard(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
 
   // Metadata.
   keys.push({

@@ -16,7 +16,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type BurnEditionNftInstructionAccounts = {
@@ -88,7 +88,7 @@ export function burnEditionNft(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
   resolvedAccounts.splTokenProgram = resolvedAccounts.splTokenProgram ?? {
     ...context.programs.getPublicKey(
       'splToken',

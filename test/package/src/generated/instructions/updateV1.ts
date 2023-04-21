@@ -19,7 +19,7 @@ import {
   some,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import {
   AuthorityType,
   AuthorityTypeArgs,
@@ -209,8 +209,8 @@ export function updateV1(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.masterEdition = resolvedAccounts.masterEdition ?? programId;
   resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {

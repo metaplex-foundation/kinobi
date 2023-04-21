@@ -80,7 +80,7 @@ export function convertMasterEditionV1ToV2(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
+  const resolvedAccounts = {};
 
   // Master Edition.
   keys.push({

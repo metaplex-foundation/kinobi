@@ -18,7 +18,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
-import { PickPartial, isWritable } from '../shared';
+import { PickPartial, addObjectProperty, isWritable } from '../shared';
 import {
   TokenStandard,
   TokenStandardArgs,
@@ -119,8 +119,8 @@ export function transfer(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.authority = resolvedAccounts.authority ?? context.identity;
   resolvedAccounts.delegateRecord =
     resolvedAccounts.delegateRecord ?? programId;

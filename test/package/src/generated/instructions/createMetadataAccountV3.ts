@@ -19,7 +19,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findMetadataPda } from '../accounts';
-import { isWritable } from '../shared';
+import { addObjectProperty, isWritable } from '../shared';
 import {
   CollectionDetails,
   CollectionDetailsArgs,
@@ -119,8 +119,8 @@ export function createMetadataAccountV3(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
+  const resolvedAccounts = {};
+  const resolvedArgs = {};
   resolvedAccounts.metadata =
     resolvedAccounts.metadata ??
     findMetadataPda(context, { mint: publicKey(resolvedAccounts.mint) });
