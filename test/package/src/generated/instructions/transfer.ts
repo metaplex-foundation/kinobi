@@ -19,6 +19,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
+import { PickPartial } from '../shared';
 import {
   TokenStandard,
   TokenStandardArgs,
@@ -93,7 +94,6 @@ export function getTransferInstructionDataSerializer(
 export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
 
 // Args.
-type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type TransferInstructionArgs = PickPartial<
   TransferInstructionDataArgs & TransferInstructionExtraArgs,
   'tokenStandard'

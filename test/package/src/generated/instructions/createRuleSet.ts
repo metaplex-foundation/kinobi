@@ -18,6 +18,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { PickPartial } from '../shared';
 import {
   TaCreateArgs,
   TaCreateArgsArgs,
@@ -71,7 +72,6 @@ export function getCreateRuleSetInstructionDataSerializer(
 }
 
 // Args.
-type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type CreateRuleSetInstructionArgs = PickPartial<
   CreateRuleSetInstructionDataArgs,
   'ruleSetBump'

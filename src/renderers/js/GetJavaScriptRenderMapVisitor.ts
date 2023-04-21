@@ -102,6 +102,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     };
 
     const map = new RenderMap();
+    if (hasAnythingToExport) {
+      map.add('shared/index.ts', this.render('sharedPage.njk', ctx));
+    }
     if (programsToExport.length > 0) {
       map
         .add('programs/index.ts', this.render('programsIndex.njk', ctx))
@@ -385,6 +388,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports.add(argDefault.dependency, camelCase(argDefault.name));
       }
     });
+    if (argDefaultKeys.length > 0) {
+      imports.add('shared', ['PickPartial']);
+    }
 
     // Bytes created on chain.
     const bytes = instruction.metadata.bytesCreatedOnChain;

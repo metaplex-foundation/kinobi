@@ -5,6 +5,7 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   core: '@metaplex-foundation/umi',
   types: '../types',
   errors: '../errors',
+  shared: '../shared',
 };
 
 export class JavaScriptImportMap {

@@ -22,6 +22,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findMetadataPda, getMetadataSize } from '../accounts';
+import { PickPartial } from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 
 // Accounts.
@@ -110,7 +111,6 @@ export function getCreateMetadataAccountInstructionDataSerializer(
 }
 
 // Args.
-type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type CreateMetadataAccountInstructionArgs = PickPartial<
   CreateMetadataAccountInstructionDataArgs,
   'metadataBump'

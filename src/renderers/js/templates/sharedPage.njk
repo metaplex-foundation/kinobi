@@ -1,0 +1,13 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as macros %}
+
+{% block main %}
+/** @internal */
+export type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+/** @internal */
+export function setObject<T extends object, U extends string, V>(obj: T, key: U, value: V): asserts obj is T & { [K in U]: V } {
+  (obj as any)[key] = value;
+};
+
+{% endblock %}
