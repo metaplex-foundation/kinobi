@@ -13,14 +13,13 @@ export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
-      args?: Record<string, string>;
-      extraArgs?: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
+      accounts?: InstructionAccountUpdates;
+      args?: InstructionArgUpdates;
     });
 
 export type InstructionMetadataUpdates = Partial<
   Omit<nodes.InstructionNodeMetadata, 'bytesCreatedOnChain'> & {
     bytesCreatedOnChain: InstructionNodeBytesCreatedOnChainInput | null;
-    accounts: InstructionAccountUpdates;
   }
 >;
 
@@ -31,6 +30,24 @@ export type InstructionAccountUpdates = Record<
       defaultsTo: InstructionNodeAccountDefaultsInput;
     }
   >
+>;
+
+export type InstructionNodeArgDefaultsInput =
+  | nodes.InstructionNodeArgDefaults
+  | {
+      kind: 'resolver';
+      name: string;
+      importFrom?: ImportFrom;
+      dependsOn?: nodes.InstructionNodeInputDependency[];
+    };
+
+export type InstructionArgUpdates = Record<
+  string,
+  {
+    name?: string;
+    type?: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
+    defaultsTo?: nodes.InstructionNodeArgDefaults | null;
+  }
 >;
 
 type InstructionNodeBytesCreatedOnChainInput =
@@ -112,17 +129,23 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   ): Partial<nodes.InstructionNodeMetadata> {
     const metadata = metadataUpdates as Partial<nodes.InstructionNodeMetadata>;
     if (metadataUpdates.bytesCreatedOnChain) {
-      metadata.bytesCreatedOnChain = {
-        includeHeader:
-          metadataUpdates.bytesCreatedOnChain.kind === 'resolver'
-            ? undefined
-            : true,
-        importFrom:
-          metadataUpdates.bytesCreatedOnChain.kind === 'account'
-            ? 'generated'
-            : undefined,
-        ...metadataUpdates.bytesCreatedOnChain,
-      } as nodes.InstructionNodeBytesCreatedOnChain;
+      if (metadataUpdates.bytesCreatedOnChain.kind === 'account') {
+        metadata.bytesCreatedOnChain = {
+          includeHeader: true,
+          importFrom: 'generated',
+          ...metadataUpdates.bytesCreatedOnChain,
+        } as nodes.InstructionNodeBytesCreatedOnChain;
+      } else if (metadataUpdates.bytesCreatedOnChain.kind === 'resolver') {
+        metadata.bytesCreatedOnChain = {
+          importFrom: 'hooked',
+          ...metadataUpdates.bytesCreatedOnChain,
+        } as nodes.InstructionNodeBytesCreatedOnChain;
+      } else {
+        metadata.bytesCreatedOnChain = {
+          includeHeader: true,
+          ...metadataUpdates.bytesCreatedOnChain,
+        } as nodes.InstructionNodeBytesCreatedOnChain;
+      }
     }
     return metadata;
   }
@@ -146,6 +169,17 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
           seeds:
             this.allAccounts.get(pdaAccount)?.instructionAccountDefaultSeeds ??
             {},
+          ...accountUpdate?.defaultsTo,
+        },
+      };
+    }
+    if (accountUpdate?.defaultsTo?.kind === 'resolver') {
+      return {
+        ...account,
+        ...accountUpdate,
+        defaultsTo: {
+          importFrom: 'hooked',
+          dependsOn: [],
           ...accountUpdate?.defaultsTo,
         },
       };

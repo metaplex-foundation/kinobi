@@ -63,9 +63,9 @@ export type InstructionNodeAccountDefaults =
       kind: 'resolver';
       name: string;
       importFrom: ImportFrom;
-      resolvedIsSigner: boolean | 'either';
-      resolvedIsOptional: boolean;
       dependsOn: InstructionNodeInputDependency[];
+      resolvedIsSigner?: boolean | 'either';
+      resolvedIsOptional?: boolean;
     };
 
 export type InstructionNodeAccountDefaultsSeed =

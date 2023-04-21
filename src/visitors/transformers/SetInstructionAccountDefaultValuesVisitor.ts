@@ -10,6 +10,14 @@ export type InstructionNodeAccountDefaultsInput =
       pdaAccount?: string;
       importFrom?: ImportFrom;
       seeds?: Record<string, nodes.InstructionNodeAccountDefaultsSeed>;
+    }
+  | {
+      kind: 'resolver';
+      name: string;
+      importFrom?: ImportFrom;
+      dependsOn?: nodes.InstructionNodeInputDependency[];
+      resolvedIsSigner?: boolean | 'either';
+      resolvedIsOptional?: boolean;
     };
 
 export type InstructionAccountDefaultRule =
@@ -242,6 +250,16 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           }
 
           return account;
+        }
+        if (rule.kind === 'resolver') {
+          return {
+            ...account,
+            defaultsTo: {
+              importFrom: 'hooked',
+              dependsOn: [],
+              ...rule,
+            },
+          };
         }
         return { ...account, defaultsTo: rule };
       }
