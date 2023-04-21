@@ -83,15 +83,15 @@ export function setCollection(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
+  const resolvingAccounts = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authority',
     input.authority ?? context.identity
   );
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenMetadataProgram',
     input.tokenMetadataProgram ?? {
       ...context.programs.getPublicKey(
@@ -102,7 +102,7 @@ export function setCollection(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -112,6 +112,7 @@ export function setCollection(
       isWritable: false,
     }
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Candy Machine.
   keys.push({

@@ -94,10 +94,10 @@ export function utilize(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -108,7 +108,7 @@ export function utilize(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'ataProgram',
     input.ataProgram ?? {
       ...context.programs.getPublicKey(
@@ -119,7 +119,7 @@ export function utilize(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -130,10 +130,12 @@ export function utilize(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'rent',
     input.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({

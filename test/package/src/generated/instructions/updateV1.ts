@@ -209,20 +209,20 @@ export function updateV1(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authority',
     input.authority ?? context.identity
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'masterEdition',
     input.masterEdition ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -233,27 +233,29 @@ export function updateV1(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'sysvarInstructions',
     input.sysvarInstructions ??
       publicKey('Sysvar1nstructions1111111111111111111111111')
   );
-  addObjectProperty(resolvedAccounts, 'token', input.token ?? programId);
+  addObjectProperty(resolvingAccounts, 'token', input.token ?? programId);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'delegateRecord',
     input.delegateRecord ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRulesProgram',
     input.authorizationRulesProgram ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRules',
     input.authorizationRules ?? programId
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Authority.
   signers.push(resolvedAccounts.authority);

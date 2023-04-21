@@ -78,27 +78,32 @@ export function dummy(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  addObjectProperty(resolvedAccounts, 'mint', input.mint ?? programId);
+  const resolvingAccounts = {};
+  addObjectProperty(resolvingAccounts, 'mint', input.mint ?? programId);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'edition',
-    input.edition ?? resolvedAccounts.mint
+    input.edition ?? resolvingAccounts.mint
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'mintAuthority',
     input.mintAuthority ?? input.updateAuthority
   );
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
-  addObjectProperty(resolvedAccounts, 'bar', input.bar ?? programId);
-  addObjectProperty(resolvedAccounts, 'foo', input.foo ?? resolvedAccounts.bar);
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(resolvingAccounts, 'bar', input.bar ?? programId);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
+    'foo',
+    input.foo ?? resolvingAccounts.bar
+  );
+  addObjectProperty(
+    resolvingAccounts,
     'delegateRecord',
     input.delegateRecord ??
       findDelegateRecordPda(context, { role: DelegateRole.Collection })
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Edition (optional).
   if (resolvedAccounts.edition) {

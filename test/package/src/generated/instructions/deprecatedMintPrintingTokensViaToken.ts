@@ -112,10 +112,10 @@ export function deprecatedMintPrintingTokensViaToken(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -126,10 +126,12 @@ export function deprecatedMintPrintingTokensViaToken(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'rent',
     input.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Destination.
   keys.push({

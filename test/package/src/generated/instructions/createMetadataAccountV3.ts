@@ -119,16 +119,16 @@ export function createMetadataAccountV3(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'metadata',
     input.metadata ?? findMetadataPda(context, { mint: publicKey(input.mint) })
   );
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -138,6 +138,8 @@ export function createMetadataAccountV3(
       isWritable: false,
     }
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({

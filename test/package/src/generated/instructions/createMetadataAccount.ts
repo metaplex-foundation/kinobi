@@ -134,16 +134,16 @@ export function createMetadataAccount(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'metadata',
     input.metadata ?? findMetadataPda(context, { mint: publicKey(input.mint) })
   );
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -154,15 +154,17 @@ export function createMetadataAccount(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'rent',
     input.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
   );
   addObjectProperty(
-    resolvedArgs,
+    resolvingArgs,
     'metadataBump',
-    input.metadataBump ?? resolvedAccounts.metadata.bump
+    input.metadataBump ?? resolvingAccounts.metadata.bump
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({

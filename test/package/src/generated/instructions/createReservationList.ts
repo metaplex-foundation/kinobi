@@ -64,11 +64,15 @@ export function createReservationList(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
-  addObjectProperty(resolvedAccounts, 'payer', accounts.payer ?? context.payer);
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
+    'payer',
+    accounts.payer ?? context.payer
+  );
+  addObjectProperty(
+    resolvingAccounts,
     'systemProgram',
     accounts.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -79,10 +83,12 @@ export function createReservationList(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'rent',
     accounts.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
   );
+  const resolvedAccounts = { ...accounts, ...resolvingAccounts };
+  const resolvedArgs = { ...args, ...resolvingArgs };
 
   // Reservation List.
   keys.push({

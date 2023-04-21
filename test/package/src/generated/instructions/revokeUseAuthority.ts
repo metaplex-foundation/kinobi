@@ -86,9 +86,9 @@ export function revokeUseAuthority(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
+  const resolvingAccounts = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -99,7 +99,7 @@ export function revokeUseAuthority(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -109,6 +109,7 @@ export function revokeUseAuthority(
       isWritable: false,
     }
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Use Authority Record.
   keys.push({

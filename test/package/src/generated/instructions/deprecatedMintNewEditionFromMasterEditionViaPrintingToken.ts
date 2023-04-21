@@ -111,10 +111,10 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  const resolvingAccounts = {};
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -125,7 +125,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -136,10 +136,11 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'rent',
     input.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Metadata.
   keys.push({

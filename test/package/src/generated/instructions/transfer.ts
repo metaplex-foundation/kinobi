@@ -119,36 +119,36 @@ export function transfer(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authority',
     input.authority ?? context.identity
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'delegateRecord',
     input.delegateRecord ?? programId
   );
   addObjectProperty(
-    resolvedArgs,
+    resolvingArgs,
     'tokenStandard',
     input.tokenStandard ?? TokenStandard.NonFungible
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'masterEdition',
     input.masterEdition ??
       resolveMasterEditionFromTokenStandard(
         context,
-        { ...input, ...resolvedAccounts },
-        { ...input, ...resolvedArgs },
+        { ...input, ...resolvingAccounts },
+        { ...input, ...resolvingArgs },
         programId
       )
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'splTokenProgram',
     input.splTokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -159,7 +159,7 @@ export function transfer(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'splAtaProgram',
     input.splAtaProgram ?? {
       ...context.programs.getPublicKey(
@@ -170,7 +170,7 @@ export function transfer(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -181,21 +181,23 @@ export function transfer(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'sysvarInstructions',
     input.sysvarInstructions ??
       publicKey('Sysvar1nstructions1111111111111111111111111')
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRulesProgram',
     input.authorizationRulesProgram ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRules',
     input.authorizationRules ?? programId
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Authority.
   signers.push(resolvedAccounts.authority);

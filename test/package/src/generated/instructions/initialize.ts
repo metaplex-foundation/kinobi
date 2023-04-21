@@ -91,16 +91,16 @@ export function initialize(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authority',
     input.authority ?? context.identity.publicKey
   );
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenMetadataProgram',
     input.tokenMetadataProgram ?? {
       ...context.programs.getPublicKey(
@@ -111,7 +111,7 @@ export function initialize(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -121,6 +121,8 @@ export function initialize(
       isWritable: false,
     }
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Candy Machine.
   keys.push({

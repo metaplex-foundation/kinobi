@@ -94,11 +94,11 @@ export function createRuleSet(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -109,10 +109,12 @@ export function createRuleSet(
     }
   );
   addObjectProperty(
-    resolvedArgs,
+    resolvingArgs,
     'ruleSetBump',
     input.ruleSetBump ?? input.ruleSetPda.bump
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Payer.
   signers.push(resolvedAccounts.payer);

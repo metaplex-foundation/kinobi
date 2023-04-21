@@ -82,19 +82,21 @@ export function verify(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRules',
     input.authorizationRules ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRulesProgram',
     input.authorizationRulesProgram ?? programId
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({

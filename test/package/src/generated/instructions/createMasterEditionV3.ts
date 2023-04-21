@@ -110,11 +110,11 @@ export function createMasterEditionV3(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -125,7 +125,7 @@ export function createMasterEditionV3(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -135,6 +135,8 @@ export function createMasterEditionV3(
       isWritable: false,
     }
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Edition.
   keys.push({

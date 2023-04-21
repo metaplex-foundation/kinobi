@@ -16,6 +16,12 @@ export type PickPartial<T, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
 
 /**
+ * Transforms nested object intersections into a flat object.
+ * @internal
+ */
+export type FlatObject<T extends object> = { [K in keyof T]: T[K] };
+
+/**
  * Helper function that dynamically updates the type of
  * an object as we add more properties to the object.
  * @internal
@@ -24,7 +30,7 @@ export function addObjectProperty<T extends object, U extends string, V>(
   obj: T,
   key: U,
   value: V
-): asserts obj is T & { [K in U]: V } {
+): asserts obj is FlatObject<T & { [K in U]: V }> {
   (obj as any)[key] = value;
 }
 

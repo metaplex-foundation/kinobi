@@ -75,9 +75,9 @@ export function burnNft(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
+  const resolvingAccounts = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'splTokenProgram',
     input.splTokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -87,6 +87,7 @@ export function burnNft(
       isWritable: false,
     }
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Metadata.
   keys.push({

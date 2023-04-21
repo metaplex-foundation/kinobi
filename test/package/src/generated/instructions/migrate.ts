@@ -97,10 +97,10 @@ export function migrate(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -111,7 +111,7 @@ export function migrate(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -122,16 +122,18 @@ export function migrate(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'sysvarInstructions',
     input.sysvarInstructions ??
       publicKey('Sysvar1nstructions1111111111111111111111111')
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRules',
     input.authorizationRules ?? programId
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({

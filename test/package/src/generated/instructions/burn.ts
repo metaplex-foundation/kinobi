@@ -87,10 +87,10 @@ export function burn(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'splTokenProgram',
     input.splTokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -101,20 +101,22 @@ export function burn(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'collectionMetadata',
     input.collectionMetadata ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRules',
     input.authorizationRules ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRulesProgram',
     input.authorizationRulesProgram ?? programId
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({

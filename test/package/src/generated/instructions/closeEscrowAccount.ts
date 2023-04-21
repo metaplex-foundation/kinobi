@@ -85,10 +85,10 @@ export function closeEscrowAccount(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  const resolvingAccounts = {};
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -99,11 +99,12 @@ export function closeEscrowAccount(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'sysvarInstructions',
     input.sysvarInstructions ??
       publicKey('Sysvar1nstructions1111111111111111111111111')
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Escrow.
   keys.push({

@@ -98,10 +98,10 @@ export function useAsset(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'splTokenProgram',
     input.splTokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -112,7 +112,7 @@ export function useAsset(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'ataProgram',
     input.ataProgram ?? {
       ...context.programs.getPublicKey(
@@ -123,7 +123,7 @@ export function useAsset(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -134,20 +134,22 @@ export function useAsset(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'useAuthorityRecord',
     input.useAuthorityRecord ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRules',
     input.authorizationRules ?? programId
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'authorizationRulesProgram',
     input.authorizationRulesProgram ?? programId
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({

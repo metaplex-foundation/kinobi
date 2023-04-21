@@ -79,9 +79,9 @@ export function freezeDelegatedAccount(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
+  const resolvingAccounts = {};
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -91,6 +91,7 @@ export function freezeDelegatedAccount(
       isWritable: false,
     }
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Delegate.
   signers.push(resolvedAccounts.delegate);

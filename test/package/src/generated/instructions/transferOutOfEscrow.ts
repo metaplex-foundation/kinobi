@@ -109,11 +109,11 @@ export function transferOutOfEscrow(
   };
 
   // Resolved inputs.
-  const resolvedAccounts = {};
-  const resolvedArgs = {};
-  addObjectProperty(resolvedAccounts, 'payer', input.payer ?? context.payer);
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'systemProgram',
     input.systemProgram ?? {
       ...context.programs.getPublicKey(
@@ -124,7 +124,7 @@ export function transferOutOfEscrow(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'ataProgram',
     input.ataProgram ?? {
       ...context.programs.getPublicKey(
@@ -135,7 +135,7 @@ export function transferOutOfEscrow(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'tokenProgram',
     input.tokenProgram ?? {
       ...context.programs.getPublicKey(
@@ -146,11 +146,13 @@ export function transferOutOfEscrow(
     }
   );
   addObjectProperty(
-    resolvedAccounts,
+    resolvingAccounts,
     'sysvarInstructions',
     input.sysvarInstructions ??
       publicKey('Sysvar1nstructions1111111111111111111111111')
   );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Escrow.
   keys.push({
