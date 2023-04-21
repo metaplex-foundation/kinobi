@@ -318,6 +318,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Resolved inputs.
     const resolvedInputs = instruction
       .accept(this.resolvedInstructionInputVisitor)
+      .filter((input) => input.kind !== 'account' || input.defaultsTo !== null)
       .map((input: ResolvedInstructionInput) => {
         if (input.kind === 'account' && input.defaultsTo?.kind === 'pda') {
           const { seeds } = input.defaultsTo;
@@ -337,6 +338,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         }
         return input;
       });
+    if (resolvedInputs.length > 0) {
+      imports.add('shared', 'addObjectProperty');
+    }
 
     // Accounts.
     const accounts = instruction.accounts.map((account) => {
