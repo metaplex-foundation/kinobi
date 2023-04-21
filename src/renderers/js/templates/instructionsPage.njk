@@ -67,7 +67,7 @@ export function {{ instruction.name | camelCase }}(
   {% elif bytes.kind === 'account' %}
     const bytesCreatedOnChain = get{{ bytes.name | pascalCase }}Size(){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif bytes.kind === 'resolver' %}
-    const bytesCreatedOnChain = {{ bytes.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId));
+    const bytesCreatedOnChain = {{ bytes.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
   {% else %}
     const bytesCreatedOnChain = 0;
   {% endif %}
