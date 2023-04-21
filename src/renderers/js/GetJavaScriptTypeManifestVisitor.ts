@@ -1,35 +1,28 @@
 import * as nodes from '../../nodes';
-import { isTypeDefinedLinkNode } from '../../nodes';
 import { camelCase, pascalCase } from '../../utils';
 import { Visitor } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
 export type JavaScriptTypeManifest = {
-  strictType: string;
-  looseType: string;
   isEnum: boolean;
+  strictType: string;
+  strictImports: JavaScriptImportMap;
+  looseType: string;
+  looseImports: JavaScriptImportMap;
   serializer: string;
-  imports: JavaScriptImportMap;
+  serializerImports: JavaScriptImportMap;
 };
 
 export class GetJavaScriptTypeManifestVisitor
   implements Visitor<JavaScriptTypeManifest>
 {
-  private importStrategy: 'all' | 'looseOnly' | 'strictOnly' = 'all';
-
   private definedName: {
     strict: string;
     loose: string;
   } | null = null;
 
   constructor(readonly serializerVariable = 's') {}
-
-  setImportStrategy(
-    strategy: GetJavaScriptTypeManifestVisitor['importStrategy']
-  ): void {
-    this.importStrategy = strategy;
-  }
 
   setDefinedName(
     definedName: GetJavaScriptTypeManifestVisitor['definedName']
@@ -54,11 +47,7 @@ export class GetJavaScriptTypeManifestVisitor
       strict: `${pascalCase(account.name)}AccountData`,
       loose: `${pascalCase(account.name)}AccountDataArgs`,
     };
-    if (isTypeDefinedLinkNode(account.type)) {
-      this.setImportStrategy('strictOnly');
-    }
     const child = account.type.accept(this);
-    this.setImportStrategy('all');
     this.definedName = null;
     return child;
   }
@@ -68,11 +57,7 @@ export class GetJavaScriptTypeManifestVisitor
       strict: `${pascalCase(instruction.name)}InstructionData`,
       loose: `${pascalCase(instruction.name)}InstructionDataArgs`,
     };
-    if (isTypeDefinedLinkNode(instruction.args)) {
-      this.setImportStrategy('looseOnly');
-    }
     const child = instruction.args.accept(this);
-    this.setImportStrategy('all');
     this.definedName = null;
     return child;
   }
@@ -93,12 +78,13 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitTypeArray(typeArray: nodes.TypeArrayNode): JavaScriptTypeManifest {
     const itemManifest = typeArray.item.accept(this);
-    const { imports } = itemManifest;
-    const sizeOption = this.getArrayLikeSizeOption(typeArray.size, imports);
+    const sizeOption = this.getArrayLikeSizeOption(
+      typeArray.size,
+      itemManifest
+    );
     const options = sizeOption ? `, { ${sizeOption} }` : '';
     return {
       ...itemManifest,
-      imports,
       strictType: `Array<${itemManifest.strictType}>`,
       looseType: `Array<${itemManifest.looseType}>`,
       serializer: `${this.s('array')}(${itemManifest.serializer + options})`,
@@ -116,17 +102,22 @@ export class GetJavaScriptTypeManifestVisitor
         : typeDefinedLink.dependency;
 
     return {
-      strictType: pascalCaseDefinedType,
-      looseType: `${pascalCaseDefinedType}Args`,
       isEnum: false,
+      strictType: pascalCaseDefinedType,
+      strictImports: new JavaScriptImportMap().add(
+        dependency,
+        pascalCaseDefinedType
+      ),
+      looseType: `${pascalCaseDefinedType}Args`,
+      looseImports: new JavaScriptImportMap().add(
+        dependency,
+        `${pascalCaseDefinedType}Args`
+      ),
       serializer: `${serializerName}(context)`,
-      imports: new JavaScriptImportMap().add(dependency, [
-        serializerName,
-        ...(this.importStrategy === 'looseOnly' ? [] : [pascalCaseDefinedType]),
-        ...(this.importStrategy === 'strictOnly'
-          ? []
-          : [`${pascalCaseDefinedType}Args`]),
-      ]),
+      serializerImports: new JavaScriptImportMap().add(
+        dependency,
+        serializerName
+      ),
     };
   }
 
@@ -146,13 +137,15 @@ export class GetJavaScriptTypeManifestVisitor
         );
       }
       return {
-        strictType: `{ ${variantNames.join(', ')} }`,
-        looseType: `{ ${variantNames.join(', ')} }`,
         isEnum: true,
+        strictType: `{ ${variantNames.join(', ')} }`,
+        strictImports: new JavaScriptImportMap(),
+        looseType: `{ ${variantNames.join(', ')} }`,
+        looseImports: new JavaScriptImportMap(),
         serializer:
           `${this.s('enum')}<${definedName.strict}>` +
           `(${definedName.strict}, { description: '${definedName.strict}' })`,
-        imports: new JavaScriptImportMap(),
+        serializerImports: new JavaScriptImportMap(),
       };
     }
 
@@ -188,7 +181,7 @@ export class GetJavaScriptTypeManifestVisitor
       serializer:
         `${this.s('dataEnum')}<${serializerTypeParams}>` +
         `([${variantSerializers}]${descriptionArgs})`,
-      imports: mergedManifest.imports.add('core', [
+      serializerImports: mergedManifest.serializerImports.add('core', [
         'GetDataEnumKindContent',
         'GetDataEnumKind',
       ]),
@@ -201,11 +194,13 @@ export class GetJavaScriptTypeManifestVisitor
     const name = pascalCase(typeEnumEmptyVariant.name);
     const kindAttribute = `__kind: "${name}"`;
     return {
-      strictType: `{ ${kindAttribute} }`,
-      looseType: `{ ${kindAttribute} }`,
       isEnum: false,
+      strictType: `{ ${kindAttribute} }`,
+      strictImports: new JavaScriptImportMap(),
+      looseType: `{ ${kindAttribute} }`,
+      looseImports: new JavaScriptImportMap(),
       serializer: `['${name}', ${this.s('unit()')}]`,
-      imports: new JavaScriptImportMap(),
+      serializerImports: new JavaScriptImportMap(),
     };
   }
 
@@ -247,12 +242,13 @@ export class GetJavaScriptTypeManifestVisitor
     const key = typeMap.key.accept(this);
     const value = typeMap.value.accept(this);
     const mergedManifest = this.mergeManifests([key, value]);
-    const { imports } = mergedManifest;
-    const sizeOption = this.getArrayLikeSizeOption(typeMap.size, imports);
+    const sizeOption = this.getArrayLikeSizeOption(
+      typeMap.size,
+      mergedManifest
+    );
     const options = sizeOption ? `, { ${sizeOption} }` : '';
     return {
       ...mergedManifest,
-      imports,
       strictType: `Map<${key.strictType}, ${value.strictType}>`,
       looseType: `Map<${key.looseType}, ${value.looseType}>`,
       serializer:
@@ -264,13 +260,13 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitTypeOption(typeOption: nodes.TypeOptionNode): JavaScriptTypeManifest {
     const itemManifest = typeOption.item.accept(this);
-    const imports = itemManifest.imports.add('core', 'Option');
+    itemManifest.strictImports.add('core', 'Option');
+    itemManifest.looseImports.add('core', 'Option');
     const options: string[] = [];
 
     // Prefix option.
     const prefixManifest = typeOption.prefix.accept(this);
     if (prefixManifest.serializer !== this.s('u8()')) {
-      imports.mergeWith(prefixManifest.imports);
       options.push(`prefix: ${prefixManifest.serializer}`);
     }
 
@@ -284,7 +280,6 @@ export class GetJavaScriptTypeManifestVisitor
 
     return {
       ...itemManifest,
-      imports,
       strictType: `Option<${itemManifest.strictType}>`,
       looseType: `Option<${itemManifest.looseType}>`,
       serializer: this.s(
@@ -295,12 +290,10 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitTypeSet(typeSet: nodes.TypeSetNode): JavaScriptTypeManifest {
     const itemManifest = typeSet.item.accept(this);
-    const { imports } = itemManifest;
-    const sizeOption = this.getArrayLikeSizeOption(typeSet.size, imports);
+    const sizeOption = this.getArrayLikeSizeOption(typeSet.size, itemManifest);
     const options = sizeOption ? `, { ${sizeOption} }` : '';
     return {
       ...itemManifest,
-      imports,
       strictType: `Set<${itemManifest.strictType}>`,
       looseType: `Set<${itemManifest.looseType}>`,
       serializer: `${this.s('set')}(${itemManifest.serializer + options})`,
@@ -343,7 +336,7 @@ export class GetJavaScriptTypeManifestVisitor
         const { render: renderedValue, imports } = renderJavaScriptValueNode(
           defaultsTo.value
         );
-        baseManifest.imports.mergeWith(imports);
+        baseManifest.serializerImports.mergeWith(imports);
         if (defaultsTo.strategy === 'omitted') {
           return `${key}: ${renderedValue}`;
         }
@@ -359,12 +352,8 @@ export class GetJavaScriptTypeManifestVisitor
       `${baseManifest.serializer}, ` +
       `(value) => ({ ...value, ${defaultValues} }${asReturnType}) ` +
       `)`;
-
-    return {
-      ...baseManifest,
-      serializer: mappedSerializer,
-      imports: baseManifest.imports.add('core', 'mapSerializer'),
-    };
+    baseManifest.serializerImports.add('core', 'mapSerializer');
+    return { ...baseManifest, serializer: mappedSerializer };
   }
 
   visitTypeStructField(
@@ -408,22 +397,20 @@ export class GetJavaScriptTypeManifestVisitor
     const sizeSerializer =
       size.serializer === this.s('u8()') ? '' : `{ size: ${size.serializer} }`;
     return {
+      ...size,
+      isEnum: false,
       strictType: 'boolean',
       looseType: 'boolean',
       serializer: this.s(`bool(${sizeSerializer})`),
-      isEnum: false,
-      imports: size.imports,
     };
   }
 
   visitTypeBytes(typeBytes: nodes.TypeBytesNode): JavaScriptTypeManifest {
-    const imports = new JavaScriptImportMap();
     const options: string[] = [];
 
     // Size option.
     if (typeBytes.size.kind === 'prefixed') {
       const prefix = typeBytes.size.prefix.accept(this);
-      imports.mergeWith(prefix.imports);
       options.push(`size: ${prefix.serializer}`);
     } else if (typeBytes.size.kind === 'fixed') {
       options.push(`size: ${typeBytes.size.bytes}`);
@@ -433,11 +420,13 @@ export class GetJavaScriptTypeManifestVisitor
       options.length > 0 ? `{ ${options.join(', ')} }` : '';
 
     return {
-      strictType: 'Uint8Array',
-      looseType: 'Uint8Array',
-      serializer: this.s(`bytes(${optionsAsString})`),
       isEnum: false,
-      imports: new JavaScriptImportMap(),
+      strictType: 'Uint8Array',
+      strictImports: new JavaScriptImportMap(),
+      looseType: 'Uint8Array',
+      looseImports: new JavaScriptImportMap(),
+      serializer: this.s(`bytes(${optionsAsString})`),
+      serializerImports: new JavaScriptImportMap(),
     };
   }
 
@@ -445,18 +434,20 @@ export class GetJavaScriptTypeManifestVisitor
     const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
       typeNumber.format
     );
-    const imports = new JavaScriptImportMap();
+    const serializerImports = new JavaScriptImportMap();
     let endianness = '';
     if (typeNumber.endian === 'be') {
-      imports.add('core', 'Endian');
+      serializerImports.add('core', 'Endian');
       endianness = '{ endian: Endian.Big }';
     }
     return {
-      strictType: isBigNumber ? 'bigint' : 'number',
-      looseType: isBigNumber ? 'number | bigint' : 'number',
-      serializer: this.s(`${typeNumber.format}(${endianness})`),
       isEnum: false,
-      imports: new JavaScriptImportMap(),
+      strictType: isBigNumber ? 'bigint' : 'number',
+      strictImports: new JavaScriptImportMap(),
+      looseType: isBigNumber ? 'number | bigint' : 'number',
+      looseImports: new JavaScriptImportMap(),
+      serializer: this.s(`${typeNumber.format}(${endianness})`),
+      serializerImports,
     };
   }
 
@@ -473,13 +464,11 @@ export class GetJavaScriptTypeManifestVisitor
               `types. Got type [${item.toString()}].`
           );
         }
+        itemManifest.strictImports.add('core', 'DateTime');
+        itemManifest.looseImports.add('core', 'DateTimeInput');
+        itemManifest.serializerImports.add('core', 'mapDateTimeSerializer');
         return {
           ...itemManifest,
-          imports: itemManifest.imports.add('core', [
-            'DateTime',
-            'DateTimeInput',
-            'mapDateTimeSerializer',
-          ]),
           strictType: `DateTime`,
           looseType: `DateTimeInput`,
           serializer: `mapDateTimeSerializer(${itemManifest.serializer})`,
@@ -500,12 +489,12 @@ export class GetJavaScriptTypeManifestVisitor
         const amountType = isSolAmount
           ? 'SolAmount'
           : `Amount<${idAndDecimals}>`;
+        const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
+        itemManifest.strictImports.add('core', amountImport);
+        itemManifest.looseImports.add('core', amountImport);
+        itemManifest.serializerImports.add('core', 'mapAmountSerializer');
         return {
           ...itemManifest,
-          imports: itemManifest.imports.add('core', [
-            isSolAmount ? 'SolAmount' : 'Amount',
-            'mapAmountSerializer',
-          ]),
           strictType: amountType,
           looseType: amountType,
           serializer: `mapAmountSerializer(${itemManifest.serializer}, ${idAndDecimals})`,
@@ -516,12 +505,15 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypePublicKey(): JavaScriptTypeManifest {
+    const imports = new JavaScriptImportMap().add('core', 'PublicKey');
     return {
-      strictType: 'PublicKey',
-      looseType: 'PublicKey',
-      serializer: this.s(`publicKey()`),
       isEnum: false,
-      imports: new JavaScriptImportMap().add('core', 'PublicKey'),
+      strictType: 'PublicKey',
+      strictImports: imports,
+      looseType: 'PublicKey',
+      looseImports: imports,
+      serializer: this.s(`publicKey()`),
+      serializerImports: new JavaScriptImportMap(),
     };
   }
 
@@ -543,7 +535,7 @@ export class GetJavaScriptTypeManifestVisitor
     } else {
       const prefix = typeString.size.prefix.accept(this);
       if (prefix.serializer !== this.s('u32()')) {
-        imports.mergeWith(prefix.imports);
+        imports.mergeWith(prefix.strictImports);
         options.push(`size: ${prefix.serializer}`);
       }
     }
@@ -552,11 +544,13 @@ export class GetJavaScriptTypeManifestVisitor
       options.length > 0 ? `{ ${options.join(', ')} }` : '';
 
     return {
-      strictType: 'string',
-      looseType: 'string',
-      serializer: this.s(`string(${optionsAsString})`),
       isEnum: false,
-      imports: new JavaScriptImportMap(),
+      strictType: 'string',
+      strictImports: imports,
+      looseType: 'string',
+      looseImports: imports,
+      serializer: this.s(`string(${optionsAsString})`),
+      serializerImports: new JavaScriptImportMap(),
     };
   }
 
@@ -566,10 +560,19 @@ export class GetJavaScriptTypeManifestVisitor
 
   protected mergeManifests(
     manifests: JavaScriptTypeManifest[]
-  ): Pick<JavaScriptTypeManifest, 'imports' | 'isEnum'> {
+  ): Pick<
+    JavaScriptTypeManifest,
+    'strictImports' | 'looseImports' | 'serializerImports' | 'isEnum'
+  > {
     return {
-      imports: new JavaScriptImportMap().mergeWith(
-        ...manifests.map((td) => td.imports)
+      strictImports: new JavaScriptImportMap().mergeWith(
+        ...manifests.map((td) => td.strictImports)
+      ),
+      looseImports: new JavaScriptImportMap().mergeWith(
+        ...manifests.map((td) => td.looseImports)
+      ),
+      serializerImports: new JavaScriptImportMap().mergeWith(
+        ...manifests.map((td) => td.serializerImports)
       ),
       isEnum: false,
     };
@@ -584,7 +587,10 @@ export class GetJavaScriptTypeManifestVisitor
 
   protected getArrayLikeSizeOption(
     size: nodes.TypeArrayNode['size'],
-    imports: JavaScriptImportMap
+    manifest: Pick<
+      JavaScriptTypeManifest,
+      'strictImports' | 'looseImports' | 'serializerImports'
+    >
   ): string | null {
     if (size.kind === 'fixed') return `size: ${size.size}`;
     if (size.kind === 'remainder') return `size: 'remainder'`;
@@ -592,7 +598,9 @@ export class GetJavaScriptTypeManifestVisitor
     const prefixManifest = size.prefix.accept(this);
     if (prefixManifest.serializer === this.s('u32()')) return null;
 
-    imports.mergeWith(prefixManifest.imports);
+    manifest.strictImports.mergeWith(prefixManifest.strictImports);
+    manifest.looseImports.mergeWith(prefixManifest.looseImports);
+    manifest.serializerImports.mergeWith(prefixManifest.serializerImports);
     return `size: ${prefixManifest.serializer}`;
   }
 }

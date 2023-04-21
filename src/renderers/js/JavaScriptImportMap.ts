@@ -1,4 +1,5 @@
 import { Dependency } from '../../visitors';
+import { JavaScriptTypeManifest } from './GetJavaScriptTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
   core: '@metaplex-foundation/umi',
@@ -45,6 +46,14 @@ export class JavaScriptImportMap {
       });
     });
     return this;
+  }
+
+  mergeWithManifest(manifest: JavaScriptTypeManifest): JavaScriptImportMap {
+    return this.mergeWith(
+      manifest.strictImports,
+      manifest.looseImports,
+      manifest.serializerImports
+    );
   }
 
   addAlias(
