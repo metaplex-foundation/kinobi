@@ -93,9 +93,12 @@ export function dummy(
   resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
   resolvedAccounts.bar = resolvedAccounts.bar ?? programId;
   addObjectProperty(resolvedAccounts, 'foo', input.foo ?? resolvedAccounts.bar);
-  resolvedAccounts.delegateRecord =
-    resolvedAccounts.delegateRecord ??
-    findDelegateRecordPda(context, { role: DelegateRole.Collection });
+  addObjectProperty(
+    resolvedAccounts,
+    'delegateRecord',
+    input.delegateRecord ??
+      findDelegateRecordPda(context, { role: DelegateRole.Collection })
+  );
 
   // Edition (optional).
   if (resolvedAccounts.edition) {
