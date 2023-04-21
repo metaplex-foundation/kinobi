@@ -318,7 +318,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Resolved inputs.
     const resolvedInputs = instruction
       .accept(this.resolvedInstructionInputVisitor)
-      .filter((input) => input.kind !== 'account' || input.defaultsTo !== null)
       .map((input: ResolvedInstructionInput) => {
         if (input.kind === 'account' && input.defaultsTo?.kind === 'pda') {
           const { seeds } = input.defaultsTo;
@@ -338,9 +337,18 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         }
         return input;
       });
-    if (resolvedInputs.length > 0) {
+    const resolvedInputsWithDefaults = resolvedInputs.filter(
+      (input) => input.kind !== 'account' || input.defaultsTo !== null
+    );
+    if (resolvedInputsWithDefaults.length > 0) {
       imports.add('shared', 'addObjectProperty');
     }
+    const accountsWithDefaults = resolvedInputsWithDefaults
+      .filter((input) => input.kind === 'account')
+      .map((input) => input.name);
+    const argsWithDefaults = resolvedInputsWithDefaults
+      .filter((input) => input.kind === 'arg')
+      .map((input) => input.name);
 
     // Accounts.
     const accounts = instruction.accounts.map((account) => {
@@ -383,14 +391,12 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Arg defaults.
-    const argDefaultKeys = Object.keys(instruction.metadata.argDefaults);
-    const argDefaults = Object.values(instruction.metadata.argDefaults);
-    argDefaults.forEach((argDefault) => {
+    Object.values(instruction.metadata.argDefaults).forEach((argDefault) => {
       if (argDefault.kind === 'resolver') {
         imports.add(argDefault.dependency, camelCase(argDefault.name));
       }
     });
-    if (argDefaultKeys.length > 0) {
+    if (argsWithDefaults.length > 0) {
       imports.add('shared', ['PickPartial']);
     }
 
@@ -450,11 +456,13 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         resolvedInputs,
+        resolvedInputsWithDefaults,
+        accountsWithDefaults,
+        argsWithDefaults,
         accounts,
         needsEddsa: hasAccountDefaultKinds(['pda', 'resolver']),
         needsIdentity: hasAccountDefaultKinds(['identity', 'resolver']),
         needsPayer: hasAccountDefaultKinds(['payer', 'resolver']),
-        argDefaultKeys,
         argManifest,
         extraArgManifest,
         canMergeAccountsAndArgs,
