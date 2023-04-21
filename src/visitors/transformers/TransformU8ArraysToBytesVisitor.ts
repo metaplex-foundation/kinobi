@@ -13,9 +13,12 @@ export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
     if (
       nodes.isTypeNumberNode(item) &&
       item.format === 'u8' &&
+      typeArray.size.kind === 'fixed' &&
       this.hasRequiredSize(typeArray.size)
     ) {
-      return new nodes.TypeBytesNode();
+      return new nodes.TypeBytesNode({
+        size: { kind: 'fixed', bytes: typeArray.size.size },
+      });
     }
 
     return typeArray;
