@@ -6,6 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { PublicKey, HasPublicKey } from '@metaplex-foundation/umi';
+
 /**
  * Transforms the given object such that the given keys are optional.
  * @internal
