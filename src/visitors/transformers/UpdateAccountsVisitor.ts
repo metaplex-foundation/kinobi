@@ -1,5 +1,4 @@
 import * as nodes from '../../nodes';
-import { AccountNodeMetadata } from '../../nodes';
 import { mainCase } from '../../shared';
 import {
   NodeTransform,
@@ -11,7 +10,9 @@ import { renameStructNode } from './_renameHelpers';
 export type AccountUpdates =
   | NodeTransformer<nodes.AccountNode>
   | { delete: true }
-  | (Partial<nodes.AccountNodeMetadata> & { data?: Record<string, string> });
+  | (Partial<Omit<nodes.AccountNodeInput, 'data'>> & {
+      data?: Record<string, string>;
+    });
 
 export class UpdateAccountsVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, AccountUpdates>) {
@@ -20,7 +21,7 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { type: 'AccountNode', stack: selectorStack, name },
+          selector: { kind: 'accountNode', stack: selectorStack, name },
           transformer: (node, stack, program) => {
             nodes.assertAccountNode(node);
             if (typeof updates === 'function') {
@@ -31,26 +32,14 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
             }
 
             const newName = mainCase(updates.name ?? node.name);
-            const data = updates.data ?? {};
-            const newGpaFields: nodes.AccountNodeGpaField[] =
-              node.metadata.gpaFields.map((f) => ({
-                ...f,
-                name: data[f.name] ?? f.name,
-              }));
-            const newMetadata: AccountNodeMetadata = {
-              ...node.metadata,
-              gpaFields: newGpaFields,
+            return nodes.accountNode({
+              ...node,
               ...updates,
-            };
-
-            if (nodes.isStructTypeNode(node.type)) {
-              return nodes.accountNode(
-                newMetadata,
-                renameStructNode(node.type, data, newName)
-              );
-            }
-
-            return nodes.accountNode(newMetadata, node.type);
+              data: nodes.accountDataNode(
+                renameStructNode(node.data.struct, updates.data ?? {}, newName),
+                node.data.link
+              ),
+            });
           },
         };
       }
