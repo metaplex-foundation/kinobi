@@ -10,7 +10,7 @@ import { renameEnumNode, renameStructNode } from './_renameHelpers';
 export type DefinedTypeUpdates =
   | NodeTransformer<nodes.DefinedTypeNode>
   | { delete: true }
-  | (Partial<nodes.DefinedTypeNodeMetadata> & {
+  | (Partial<Omit<nodes.DefinedTypeNodeInput, 'data'>> & {
       data?: Record<string, string>;
     });
 
@@ -27,7 +27,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
 
         const transforms: NodeTransform[] = [
           {
-            selector: { type: 'DefinedTypeNode', stack: selectorStack, name },
+            selector: { kind: 'definedTypeNode', stack: selectorStack, name },
             transformer: (node, stack, program) => {
               nodes.assertDefinedTypeNode(node);
               if (typeof updates === 'function') {
@@ -36,24 +36,26 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
               if ('delete' in updates) {
                 return null;
               }
-              let newType = node.type;
-              if (nodes.isStructTypeNode(node.type)) {
-                newType = renameStructNode(
-                  node.type,
-                  updates.data ?? {},
+              const { data: dataUpdates, ...otherUpdates } = updates;
+              let newData = node.data;
+              if (nodes.isStructTypeNode(node.data)) {
+                newData = renameStructNode(
+                  node.data,
+                  dataUpdates ?? {},
                   newName ?? node.name
                 );
-              } else if (nodes.isEnumTypeNode(node.type)) {
-                newType = renameEnumNode(
-                  node.type,
-                  updates.data ?? {},
+              } else if (nodes.isEnumTypeNode(node.data)) {
+                newData = renameEnumNode(
+                  node.data,
+                  dataUpdates ?? {},
                   newName ?? node.name
                 );
               }
-              return nodes.definedTypeNode(
-                { ...node.metadata, ...updates },
-                newType
-              );
+              return nodes.definedTypeNode({
+                ...node,
+                ...otherUpdates,
+                data: newData,
+              });
             },
           },
         ];
@@ -61,7 +63,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
         if (newName) {
           transforms.push({
             selector: {
-              type: 'LinkTypeNode',
+              kind: 'linkTypeNode',
               stack: selectorStack,
               name,
             },
