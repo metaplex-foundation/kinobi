@@ -5,7 +5,7 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { assertTypeStructNode, TypeStructNode } from './TypeStructNode';
 import type { InstructionNodeAccountDefaultsSeed } from './InstructionNode';
-import { isTypePublicKeyNode } from './TypePublicKeyNode';
+import { isTypePublicKeyNode } from './PublicKeyTypeNode';
 import {
   isTypeDefinedLinkNode,
   TypeDefinedLinkNode,

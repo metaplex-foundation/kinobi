@@ -9,7 +9,7 @@ import { TypeMapNode } from './TypeMapNode';
 import { TypeNumberNode } from './TypeNumberNode';
 import { TypeNumberWrapperNode } from './TypeNumberWrapperNode';
 import { TypeOptionNode } from './TypeOptionNode';
-import { TypePublicKeyNode } from './TypePublicKeyNode';
+import { TypePublicKeyNode } from './PublicKeyTypeNode';
 import { TypeSetNode } from './TypeSetNode';
 import { TypeStringNode } from './TypeStringNode';
 import { TypeStructNode } from './TypeStructNode';
