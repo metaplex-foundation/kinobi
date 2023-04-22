@@ -115,7 +115,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.arrayTypeNode(child, { ...arrayType });
   }
 
-  visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
+  visitLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
     return definedLinkType;
   }
 

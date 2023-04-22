@@ -24,7 +24,7 @@ export interface Visitor<T = void> {
 
   // Types.
   visitArrayType: (arrayType: nodes.ArrayTypeNode) => T;
-  visitDefinedLinkType: (definedLinkType: nodes.LinkTypeNode) => T;
+  visitLinkType: (definedLinkType: nodes.LinkTypeNode) => T;
   visitEnumType: (enumType: nodes.EnumTypeNode) => T;
   visitEnumEmptyVariantType: (
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
@@ -76,7 +76,7 @@ export function visit<T>(node: nodes.Node, visitor: Visitor<T>): T {
     case 'arrayTypeNode':
       return visitor.visitArrayType(node);
     case 'linkTypeNode':
-      return visitor.visitDefinedLinkType(node);
+      return visitor.visitLinkType(node);
     case 'enumTypeNode':
       return visitor.visitEnumType(node);
     case 'enumEmptyVariantTypeNode':

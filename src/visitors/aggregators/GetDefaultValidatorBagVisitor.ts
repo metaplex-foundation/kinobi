@@ -219,7 +219,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): ValidatorBag {
+  visitLinkType(definedLinkType: nodes.LinkTypeNode): ValidatorBag {
     this.pushNode(definedLinkType);
     const bag = new ValidatorBag();
     if (!definedLinkType.name) {

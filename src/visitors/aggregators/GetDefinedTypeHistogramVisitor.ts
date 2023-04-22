@@ -95,9 +95,7 @@ export class GetDefinedTypeHistogramVisitor
     return histogram;
   }
 
-  visitDefinedLinkType(
-    definedLinkType: nodes.LinkTypeNode
-  ): DefinedTypeHistogram {
+  visitLinkType(definedLinkType: nodes.LinkTypeNode): DefinedTypeHistogram {
     if (definedLinkType.importFrom !== 'generated') {
       return {};
     }

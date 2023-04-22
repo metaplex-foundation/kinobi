@@ -1,4 +1,4 @@
-import type * as nodes from '../../nodes';
+import * as nodes from '../../nodes';
 import { Visitor, visit } from '../Visitor';
 
 const ROOT_PREFIX = 'R';
@@ -17,7 +17,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitProgram(program: nodes.ProgramNode): string {
     const children = [
       ...program.accounts.map((account) => visit(account, this)),
-      ...program.instructionsWithSubs.map((ix) => visit(ix, this)),
+      ...nodes.getAllInstructionsWithSubs(program).map((ix) => visit(ix, this)),
       ...program.definedTypes.map((type) => visit(type, this)),
       ...program.errors.map((type) => visit(type, this)),
     ];
@@ -25,25 +25,58 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitAccount(account: nodes.AccountNode): string {
-    const child = visit(account.type, this);
-    return `${ACCOUNT_PREFIX}[${account.name}](${child})`;
+    const data = visit(account.data, this);
+    return `${ACCOUNT_PREFIX}[${account.name}](${data})`;
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): string {
+    const struct = visit(accountData.struct, this);
+    const link = accountData.link ? `;${visit(accountData.link, this)}` : '';
+    return struct + link;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): string {
-    const accounts = instruction.accounts.map((account) => account.name);
-    const args = visit(instruction.args, this);
-    const extraArgs = instruction.extraArgs?.accept(this);
-    const extraArgsString = extraArgs ? `,extraArgs:(${extraArgs})` : '';
+    const accounts = instruction.accounts.map((account) =>
+      visit(account, this)
+    );
+    const dataArgs = visit(instruction.dataArgs, this);
+    const extraArgs = visit(instruction.extraArgs, this);
     return (
       `${INSTRUCTION_PREFIX}[${instruction.name}](` +
-      `accounts:(${accounts.join(',')}),` +
-      `args:(${args})${extraArgsString})`
+      `accounts(${accounts.join(',')}),${dataArgs},${extraArgs}` +
+      `)`
     );
   }
 
+  visitInstructionAccount(
+    instructionAccount: nodes.InstructionAccountNode
+  ): string {
+    return instructionAccount.name;
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): string {
+    const struct = visit(instructionDataArgs.struct, this);
+    const link = instructionDataArgs.link
+      ? `;${visit(instructionDataArgs.link, this)}`
+      : '';
+    return `dataArgs(${struct + link})`;
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): string {
+    const struct = visit(instructionExtraArgs.struct, this);
+    const link = instructionExtraArgs.link
+      ? `;${visit(instructionExtraArgs.link, this)}`
+      : '';
+    return `extraArgs(${struct + link})`;
+  }
+
   visitDefinedType(definedType: nodes.DefinedTypeNode): string {
-    const child = visit(definedType.type, this);
-    return `${TYPE_PREFIX}[${definedType.name}](${child})`;
+    const data = visit(definedType.data, this);
+    return `${TYPE_PREFIX}[${definedType.name}](${data})`;
   }
 
   visitError(error: nodes.ErrorNode): string {
@@ -51,12 +84,12 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): string {
-    const item = visit(arrayType.item, this);
+    const child = visit(arrayType.child, this);
     const size = this.displayArrayLikeSize(arrayType.size);
-    return `array(${item};${size})`;
+    return `array(${child};${size})`;
   }
 
-  visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): string {
+  visitLinkType(definedLinkType: nodes.LinkTypeNode): string {
     return `link(${definedLinkType.name};${definedLinkType.importFrom})`;
   }
 
@@ -93,16 +126,16 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): string {
-    const item = visit(optionType.item, this);
+    const child = visit(optionType.child, this);
     const prefix = visit(optionType.prefix, this);
     const fixed = optionType.fixed ? ';fixed' : '';
-    return `option(${item};${prefix + fixed})`;
+    return `option(${child};${prefix + fixed})`;
   }
 
   visitSetType(setType: nodes.SetTypeNode): string {
-    const item = visit(setType.item, this);
+    const child = visit(setType.child, this);
     const size = this.displayArrayLikeSize(setType.size);
-    return `set(${item};${size})`;
+    return `set(${child};${size})`;
   }
 
   visitStructType(structType: nodes.StructTypeNode): string {
@@ -111,12 +144,12 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {
-    const child = visit(structFieldType.type, this);
+    const child = visit(structFieldType.child, this);
     return `${structFieldType.name}:${child}`;
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): string {
-    const children = tupleType.items.map((item) => visit(item, this));
+    const children = tupleType.children.map((child) => visit(child, this));
     return `tuple(${children.join(',')})`;
   }
 
@@ -135,7 +168,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): string {
-    const item = visit(numberWrapperType.item, this);
+    const item = visit(numberWrapperType.number, this);
     const { wrapper } = numberWrapperType;
     switch (wrapper.kind) {
       case 'DateTime':
@@ -158,7 +191,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   displayArrayLikeSize(size: nodes.ArrayTypeNode['size']): string {
-    if (size.kind === 'fixed') return `${size.size}`;
+    if (size.kind === 'fixed') return `${size.value}`;
     if (size.kind === 'prefixed') return visit(size.prefix, this);
     return 'remainder';
   }
