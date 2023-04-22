@@ -54,7 +54,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                 const subName = mainCase(`${node.name} ${variant.name}`);
                 const subFields = argFields.slice(0, argFieldIndex);
                 subFields.push(
-                  new nodes.StructFieldTypeNode(
+                  nodes.structFieldTypeNode(
                     {
                       name: `${subName}Discriminator`,
                       docs: [],
@@ -63,34 +63,25 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                         value: nodes.vScalar(index),
                       },
                     },
-                    new nodes.NumberTypeNode('u8')
+                    nodes.numberTypeNode('u8')
                   )
                 );
                 if (nodes.isEnumStructVariantTypeNode(variant)) {
                   subFields.push(
-                    new nodes.StructFieldTypeNode(
-                      argField.metadata,
-                      variant.struct
-                    )
+                    nodes.structFieldTypeNode(argField.metadata, variant.struct)
                   );
                 } else if (nodes.isEnumTupleVariantTypeNode(variant)) {
                   subFields.push(
-                    new nodes.StructFieldTypeNode(
-                      argField.metadata,
-                      variant.tuple
-                    )
+                    nodes.structFieldTypeNode(argField.metadata, variant.tuple)
                   );
                 }
                 subFields.push(...argFields.slice(argFieldIndex + 1));
 
-                return new nodes.InstructionNode(
+                return nodes.instructionNode(
                   { ...node.metadata, name: subName },
                   node.accounts,
                   flattenStruct(
-                    new nodes.StructTypeNode(
-                      `${subName}InstructionData`,
-                      subFields
-                    )
+                    nodes.structTypeNode(`${subName}InstructionData`, subFields)
                   ),
                   node.extraArgs,
                   []
@@ -98,7 +89,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
               }
             );
 
-            return new nodes.InstructionNode(
+            return nodes.instructionNode(
               node.metadata,
               node.accounts,
               node.args,

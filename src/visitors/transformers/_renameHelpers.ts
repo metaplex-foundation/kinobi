@@ -5,11 +5,11 @@ export function renameStructNode(
   map: Record<string, string>,
   newName?: string
 ): nodes.StructTypeNode {
-  return new nodes.StructTypeNode(
+  return nodes.structTypeNode(
     newName ?? node.name,
     node.fields.map((field) =>
       map[field.name]
-        ? new nodes.StructFieldTypeNode(
+        ? nodes.structFieldTypeNode(
             { ...field.metadata, name: map[field.name] },
             field.type
           )
@@ -23,7 +23,7 @@ export function renameEnumNode(
   map: Record<string, string>,
   newName?: string
 ): nodes.EnumTypeNode {
-  return new nodes.EnumTypeNode(
+  return nodes.enumTypeNode(
     newName ?? node.name,
     node.variants.map((variant) =>
       map[variant.name]
@@ -38,10 +38,10 @@ function renameEnumVariant(
   newName: string
 ) {
   if (nodes.isEnumStructVariantTypeNode(variant)) {
-    return new nodes.EnumStructVariantTypeNode(newName, variant.struct);
+    return nodes.enumStructVariantTypeNode(newName, variant.struct);
   }
   if (nodes.isEnumTupleVariantTypeNode(variant)) {
-    return new nodes.EnumTupleVariantTypeNode(newName, variant.tuple);
+    return nodes.enumTupleVariantTypeNode(newName, variant.tuple);
   }
-  return new nodes.EnumEmptyVariantTypeNode(newName);
+  return nodes.enumEmptyVariantTypeNode(newName);
 }

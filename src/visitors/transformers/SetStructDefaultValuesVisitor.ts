@@ -20,7 +20,7 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
               (field): nodes.StructFieldTypeNode => {
                 const defaultValue = defaultValues[field.name];
                 if (defaultValue === undefined) return field;
-                return new nodes.StructFieldTypeNode(
+                return nodes.structFieldTypeNode(
                   {
                     ...field.metadata,
                     defaultsTo: !defaultValue
@@ -34,7 +34,7 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
                 );
               }
             );
-            return new nodes.StructTypeNode(node.name, fields);
+            return nodes.structTypeNode(node.name, fields);
           },
         };
       }

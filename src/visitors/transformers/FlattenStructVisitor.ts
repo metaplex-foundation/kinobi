@@ -58,5 +58,5 @@ export const flattenStruct = (
 
   return hasConflictingNames
     ? node
-    : new nodes.StructTypeNode(node.name, inlinedFields);
+    : nodes.structTypeNode(node.name, inlinedFields);
 };

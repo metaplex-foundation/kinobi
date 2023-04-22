@@ -10,7 +10,7 @@ export class SetNumberWrappersVisitor extends TransformNodesVisitor {
         selector: { type: 'NumberTypeNode', stack: selectorStack },
         transformer: (node) => {
           nodes.assertNumberTypeNode(node);
-          return new nodes.NumberWrapperTypeNode(node, wrapper);
+          return nodes.numberWrapperTypeNode(node, wrapper);
         },
       })
     );

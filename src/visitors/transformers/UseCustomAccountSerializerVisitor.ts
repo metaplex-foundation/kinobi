@@ -35,7 +35,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
         this.map[account.name] ?? null;
       if (!options || !options.extract) return;
       if (nodes.isLinkTypeNode(account.type)) return;
-      const newType = new nodes.DefinedTypeNode(
+      const newType = nodes.definedTypeNode(
         {
           name: options.extractAs,
           idlName: account.metadata.idlName,
@@ -47,7 +47,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
       newDefinedTypes.push(newType);
     });
 
-    return new nodes.ProgramNode(
+    return nodes.programNode(
       program.metadata,
       program.accounts
         .map((account) => account.accept(this))
@@ -84,9 +84,9 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
       };
     }
 
-    return new nodes.AccountNode(
+    return nodes.accountNode(
       newMetadata,
-      new nodes.LinkTypeNode(options.name, {
+      nodes.linkTypeNode(options.name, {
         importFrom: options.importFrom,
       })
     );

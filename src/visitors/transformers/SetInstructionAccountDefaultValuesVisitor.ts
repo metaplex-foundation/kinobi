@@ -192,7 +192,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
-    return new nodes.ProgramNode(
+    return nodes.programNode(
       program.metadata,
       program.accounts,
       program.instructions
@@ -265,7 +265,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
       }
     );
 
-    return new nodes.InstructionNode(
+    return nodes.instructionNode(
       instruction.metadata,
       instructionAccounts,
       instruction.args,

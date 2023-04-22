@@ -26,14 +26,14 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
             }
 
             const fieldNode = node.type.fields[fieldIndex];
-            return new nodes.AccountNode(
+            return nodes.accountNode(
               {
                 ...node.metadata,
                 discriminator: { kind: 'field', name: field, value: null },
               },
-              new nodes.StructTypeNode(node.type.name, [
+              nodes.structTypeNode(node.type.name, [
                 ...node.type.fields.slice(0, fieldIndex),
-                new nodes.StructFieldTypeNode(
+                nodes.structFieldTypeNode(
                   {
                     ...fieldNode.metadata,
                     defaultsTo: { strategy: 'omitted', value },

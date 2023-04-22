@@ -44,13 +44,13 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
             };
 
             if (nodes.isStructTypeNode(node.type)) {
-              return new nodes.AccountNode(
+              return nodes.accountNode(
                 newMetadata,
                 renameStructNode(node.type, data, newName)
               );
             }
 
-            return new nodes.AccountNode(newMetadata, node.type);
+            return nodes.accountNode(newMetadata, node.type);
           },
         };
       }

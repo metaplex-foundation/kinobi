@@ -50,7 +50,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
                   newName ?? node.name
                 );
               }
-              return new nodes.DefinedTypeNode(
+              return nodes.definedTypeNode(
                 { ...node.metadata, ...updates },
                 newType
               );
@@ -68,7 +68,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
             transformer: (node: nodes.Node) => {
               nodes.assertLinkTypeNode(node);
               if (node.importFrom !== 'generated') return node;
-              return new nodes.LinkTypeNode(newName, { ...node });
+              return nodes.linkTypeNode(newName, { ...node });
             },
           });
         }

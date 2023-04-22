@@ -23,7 +23,7 @@ export class UpdateProgramsVisitor extends TransformNodesVisitor {
           if ('delete' in updates) {
             return null;
           }
-          return new nodes.ProgramNode(
+          return nodes.programNode(
             { ...node.metadata, ...updates },
             node.accounts,
             node.instructions,

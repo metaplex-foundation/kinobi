@@ -22,7 +22,7 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
-    return new nodes.ProgramNode(
+    return nodes.programNode(
       program.metadata,
       program.accounts
         .map((account) => account.accept(this))

@@ -24,7 +24,7 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
           transformer: (node) => {
             nodes.assertInstructionNode(node);
             if (nodes.isLinkTypeNode(node.args)) return node;
-            const discriminatorField = new nodes.StructFieldTypeNode(
+            const discriminatorField = nodes.structFieldTypeNode(
               {
                 name: discriminator.name ?? 'discriminator',
                 docs: discriminator.docs ?? [],
@@ -33,13 +33,13 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
                   value: discriminator.value,
                 },
               },
-              discriminator.type ?? new nodes.NumberTypeNode('u8')
+              discriminator.type ?? nodes.numberTypeNode('u8')
             );
 
-            return new nodes.InstructionNode(
+            return nodes.instructionNode(
               node.metadata,
               node.accounts,
-              new nodes.StructTypeNode(node.args.name, [
+              nodes.structTypeNode(node.args.name, [
                 discriminatorField,
                 ...node.args.fields,
               ]),

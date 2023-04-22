@@ -38,7 +38,7 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
           return found;
         });
         return types.length > 0
-          ? [new nodes.ProgramNode(metadata, [], [], types, [])]
+          ? [nodes.programNode(metadata, [], [], types, [])]
           : [];
       }
     );
@@ -59,7 +59,7 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
         return;
       }
       const currentProgram = newPrograms[index];
-      newPrograms[index] = new nodes.ProgramNode(
+      newPrograms[index] = nodes.programNode(
         currentProgram.metadata,
         currentProgram.accounts,
         currentProgram.instructions,
@@ -68,6 +68,6 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
       );
     });
 
-    return new nodes.RootNode(newPrograms);
+    return nodes.rootNode(newPrograms);
   }
 }

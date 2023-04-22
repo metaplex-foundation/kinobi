@@ -27,7 +27,7 @@ export class UpdateErrorsVisitor extends TransformNodesVisitor {
             return null;
           }
           const { code, message, ...metadata } = updates;
-          return new nodes.ErrorNode(
+          return nodes.errorNode(
             { ...node.metadata, ...metadata },
             code ?? node.code,
             message ?? node.message

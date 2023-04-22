@@ -16,12 +16,12 @@ export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
       typeArray.size.kind === 'fixed' &&
       this.hasRequiredSize(typeArray.size)
     ) {
-      return new nodes.BytesTypeNode({
+      return nodes.bytesTypeNode({
         size: { kind: 'fixed', bytes: typeArray.size.size },
       });
     }
 
-    return new nodes.ArrayTypeNode(item, { ...typeArray });
+    return nodes.arrayTypeNode(item, { ...typeArray });
   }
 
   protected hasRequiredSize(size: nodes.ArrayTypeNode['size']): boolean {

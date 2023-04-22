@@ -40,10 +40,7 @@ export class AutoSetAccountGpaFieldsVisitor extends TransformNodesVisitor {
             }
           );
 
-          return new nodes.AccountNode(
-            { ...node.metadata, gpaFields },
-            node.type
-          );
+          return nodes.accountNode({ ...node.metadata, gpaFields }, node.type);
         },
       },
     ]);

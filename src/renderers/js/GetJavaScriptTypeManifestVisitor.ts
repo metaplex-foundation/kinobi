@@ -223,8 +223,8 @@ export class GetJavaScriptTypeManifestVisitor
   ): JavaScriptTypeManifest {
     const name = pascalCase(typeEnumTupleVariant.name);
     const kindAttribute = `__kind: "${name}"`;
-    const struct = new nodes.StructTypeNode(name, [
-      new nodes.StructFieldTypeNode(
+    const struct = nodes.structTypeNode(name, [
+      nodes.structFieldTypeNode(
         { name: 'fields', docs: [], defaultsTo: null },
         typeEnumTupleVariant.tuple
       ),

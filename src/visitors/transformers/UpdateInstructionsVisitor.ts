@@ -97,7 +97,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               this.handleInstructionAccount(account, accountUpdates ?? {})
             );
 
-            return new nodes.InstructionNode(
+            return nodes.instructionNode(
               newMetadata,
               newAccounts,
               newArgs,
@@ -202,7 +202,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         const argUpdate = argUpdates[field.name];
         if (!argUpdate) return field;
         usedArgs.add(field.name);
-        return new nodes.StructFieldTypeNode(
+        return nodes.structFieldTypeNode(
           {
             ...field.metadata,
             name: argUpdate.name ?? field.name,
@@ -211,7 +211,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
           argUpdate.type ?? field.type
         );
       });
-      newArgs = new nodes.StructTypeNode(
+      newArgs = nodes.structTypeNode(
         `${newInstructionName}InstructionData`,
         fields
       );
@@ -224,7 +224,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         const argUpdate = argUpdates[field.name];
         if (!argUpdate) return field;
         usedArgs.add(field.name);
-        return new nodes.StructFieldTypeNode(
+        return nodes.structFieldTypeNode(
           {
             ...field.metadata,
             name: argUpdate.name ?? field.name,
@@ -239,7 +239,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         .map(([argName, argUpdate]) => {
           const type = argUpdate.type ?? null;
           nodes.assertTypeNode(type);
-          return new nodes.StructFieldTypeNode(
+          return nodes.structFieldTypeNode(
             {
               name: argUpdate.name ?? argName,
               docs: argUpdate.docs ?? [],
@@ -250,7 +250,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         });
       fields.push(...newExtraFields);
 
-      newExtraArgs = new nodes.StructTypeNode(
+      newExtraArgs = nodes.structTypeNode(
         `${newInstructionName}InstructionExtra`,
         fields
       );

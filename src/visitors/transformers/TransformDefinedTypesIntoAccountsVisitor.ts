@@ -17,7 +17,7 @@ export class TransformDefinedTypesIntoAccountsVisitor extends BaseNodeVisitor {
 
     const newAccounts = typesToExtract.map((node) => {
       nodes.assertStructTypeNode(node.type);
-      return new nodes.AccountNode(
+      return nodes.accountNode(
         {
           ...node.metadata,
           size: null,
@@ -29,7 +29,7 @@ export class TransformDefinedTypesIntoAccountsVisitor extends BaseNodeVisitor {
       );
     });
 
-    return new nodes.ProgramNode(
+    return nodes.programNode(
       program.metadata,
       [...program.accounts, ...newAccounts],
       program.instructions,

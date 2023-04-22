@@ -9,7 +9,7 @@ export class FlattenInstructionArgsStructVisitor extends TransformNodesVisitor {
         selector: { type: 'InstructionNode' },
         transformer: (instruction) => {
           nodes.assertInstructionNode(instruction);
-          return new nodes.InstructionNode(
+          return nodes.instructionNode(
             instruction.metadata,
             instruction.accounts,
             flattenStruct(instruction.args),

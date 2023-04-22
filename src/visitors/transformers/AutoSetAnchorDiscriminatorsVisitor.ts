@@ -8,7 +8,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
     this.program = program;
-    const visitedProgram = new nodes.ProgramNode(
+    const visitedProgram = nodes.programNode(
       program.metadata,
       program.accounts
         .map((account) => account.accept(this))
@@ -31,7 +31,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     const idlName = snakeCase(account.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = new nodes.StructFieldTypeNode(
+    const discriminatorField = nodes.structFieldTypeNode(
       {
         name: 'discriminator',
         docs: [],
@@ -40,17 +40,17 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
           value: getValueNodeFromBytes(hash),
         },
       },
-      new nodes.ArrayTypeNode(new nodes.NumberTypeNode('u8'), {
+      nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
         size: { kind: 'fixed', size: 8 },
       })
     );
 
-    return new nodes.AccountNode(
+    return nodes.accountNode(
       {
         ...account.metadata,
         discriminator: { kind: 'field', name: 'discriminator', value: null },
       },
-      new nodes.StructTypeNode(account.type.name, [
+      nodes.structTypeNode(account.type.name, [
         discriminatorField,
         ...account.type.fields,
       ])
@@ -65,7 +65,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     const idlName = snakeCase(instruction.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = new nodes.StructFieldTypeNode(
+    const discriminatorField = nodes.structFieldTypeNode(
       {
         name: 'discriminator',
         docs: [],
@@ -74,15 +74,15 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
           value: getValueNodeFromBytes(hash),
         },
       },
-      new nodes.ArrayTypeNode(new nodes.NumberTypeNode('u8'), {
+      nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
         size: { kind: 'fixed', size: 8 },
       })
     );
 
-    return new nodes.InstructionNode(
+    return nodes.instructionNode(
       instruction.metadata,
       instruction.accounts,
-      new nodes.StructTypeNode(instruction.args.name, [
+      nodes.structTypeNode(instruction.args.name, [
         discriminatorField,
         ...instruction.args.fields,
       ]),

@@ -35,7 +35,7 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
         this.map[instruction.name] ?? null;
       if (!options || !options.extract) return;
       if (nodes.isLinkTypeNode(instruction.args)) return;
-      const newType = new nodes.DefinedTypeNode(
+      const newType = nodes.definedTypeNode(
         {
           name: options.extractAs,
           idlName: instruction.metadata.idlName,
@@ -47,7 +47,7 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
       newDefinedTypes.push(newType);
     });
 
-    return new nodes.ProgramNode(
+    return nodes.programNode(
       program.metadata,
       program.accounts,
       program.instructions
@@ -64,10 +64,10 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
     if (!options) return instruction;
     if (nodes.isLinkTypeNode(instruction.args)) return instruction;
 
-    return new nodes.InstructionNode(
+    return nodes.instructionNode(
       instruction.metadata,
       instruction.accounts,
-      new nodes.LinkTypeNode(options.name, {
+      nodes.linkTypeNode(options.name, {
         importFrom: options.importFrom,
       }),
       instruction.extraArgs,

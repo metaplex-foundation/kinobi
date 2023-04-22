@@ -3,7 +3,7 @@ import * as nodes from '../nodes';
 
 export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitRoot(root: nodes.RootNode): nodes.Node | null {
-    return new nodes.RootNode(
+    return new nodes.rootNode(
       root.programs
         .map((program) => program.accept(this))
         .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertProgramNode))
@@ -11,7 +11,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node | null {
-    return new nodes.ProgramNode(
+    return new nodes.programNode(
       program.metadata,
       program.accounts
         .map((account) => account.accept(this))
@@ -53,7 +53,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
         return { ...gpaField, type: newType };
       })
       .filter((f): f is nodes.AccountNodeGpaField => f !== null);
-    return new nodes.AccountNode(
+    return new nodes.accountNode(
       { ...account.metadata, seeds, gpaFields },
       accountType
     );
@@ -64,7 +64,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     nodes.assertStructOrLinkTypeNode(args);
     const extraArgs = instruction.extraArgs.accept(this);
     nodes.assertStructOrLinkTypeNode(extraArgs);
-    return new nodes.InstructionNode(
+    return new nodes.instructionNode(
       instruction.metadata,
       instruction.accounts,
       args,
@@ -81,7 +81,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const type = definedType.type.accept(this);
     if (type === null) return null;
     nodes.assertTypeNode(type);
-    return new nodes.DefinedTypeNode(definedType.metadata, type);
+    return new nodes.definedTypeNode(definedType.metadata, type);
   }
 
   visitError(error: nodes.ErrorNode): nodes.Node | null {
@@ -92,7 +92,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const item = typeArray.item.accept(this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
-    return new nodes.ArrayTypeNode(item, { ...typeArray });
+    return new nodes.arrayTypeNode(item, { ...typeArray });
   }
 
   visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): nodes.Node | null {
@@ -109,7 +109,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       })
       .filter((v): v is nodes.EnumVariantTypeNode => v !== null);
 
-    return new nodes.EnumTypeNode(typeEnum.name, variants);
+    return new nodes.enumTypeNode(typeEnum.name, variants);
   }
 
   visitTypeEnumEmptyVariant(
@@ -124,7 +124,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const newStruct = typeEnumStructVariant.struct.accept(this);
     if (!newStruct) return null;
     nodes.assertStructTypeNode(newStruct);
-    return new nodes.EnumStructVariantTypeNode(
+    return new nodes.enumStructVariantTypeNode(
       typeEnumStructVariant.name,
       newStruct
     );
@@ -136,7 +136,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const newTuple = typeEnumTupleVariant.tuple.accept(this);
     if (!newTuple) return null;
     nodes.assertTupleTypeNode(newTuple);
-    return new nodes.EnumTupleVariantTypeNode(
+    return new nodes.enumTupleVariantTypeNode(
       typeEnumTupleVariant.name,
       newTuple
     );
@@ -148,21 +148,21 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     if (key === null || value === null) return null;
     nodes.assertTypeNode(key);
     nodes.assertTypeNode(value);
-    return new nodes.MapTypeNode(key, value, { ...typeMap });
+    return new nodes.mapTypeNode(key, value, { ...typeMap });
   }
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): nodes.Node | null {
     const item = typeOption.item.accept(this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
-    return new nodes.OptionTypeNode(item, { ...typeOption });
+    return new nodes.optionTypeNode(item, { ...typeOption });
   }
 
   visitTypeSet(typeSet: nodes.SetTypeNode): nodes.Node | null {
     const item = typeSet.item.accept(this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
-    return new nodes.SetTypeNode(item, { ...typeSet });
+    return new nodes.setTypeNode(item, { ...typeSet });
   }
 
   visitTypeStruct(typeStruct: nodes.StructTypeNode): nodes.Node | null {
@@ -175,7 +175,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       })
       .filter((field): field is nodes.StructFieldTypeNode => field !== null);
 
-    return new nodes.StructTypeNode(typeStruct.name, fields);
+    return new nodes.structTypeNode(typeStruct.name, fields);
   }
 
   visitTypeStructField(
@@ -184,7 +184,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const newType = typeStructField.type.accept(this);
     if (newType === null) return null;
     nodes.assertTypeNode(newType);
-    return new nodes.StructFieldTypeNode(typeStructField.metadata, newType);
+    return new nodes.structFieldTypeNode(typeStructField.metadata, newType);
   }
 
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): nodes.Node | null {
@@ -197,7 +197,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       })
       .filter((type): type is nodes.TypeNode => type !== null);
 
-    return new nodes.TupleTypeNode(items);
+    return new nodes.tupleTypeNode(items);
   }
 
   visitTypeBool(typeBool: nodes.BoolTypeNode): nodes.Node | null {
@@ -218,7 +218,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const item = typeNumberWrapper.item.accept(this);
     if (item === null) return null;
     nodes.assertNumberTypeNode(item);
-    return new nodes.NumberWrapperTypeNode(item, typeNumberWrapper.wrapper);
+    return new nodes.numberWrapperTypeNode(item, typeNumberWrapper.wrapper);
   }
 
   visitTypePublicKey(
