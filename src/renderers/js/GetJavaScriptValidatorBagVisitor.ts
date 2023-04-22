@@ -136,10 +136,10 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     return bag;
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.NumberWrapperTypeNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): ValidatorBag {
-    const bag = super.visitTypeNumberWrapper(typeNumberWrapper);
+    const bag = super.visitNumberWrapperType(typeNumberWrapper);
     this.pushNode(typeNumberWrapper);
     const { wrapper, item } = typeNumberWrapper;
     switch (wrapper.kind) {

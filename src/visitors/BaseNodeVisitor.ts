@@ -76,17 +76,17 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return error;
   }
 
-  visitTypeArray(typeArray: nodes.ArrayTypeNode): nodes.Node {
+  visitArrayType(arrayType: nodes.ArrayTypeNode): nodes.Node {
     const item = visit(typeArray.item, this);
     nodes.assertTypeNode(item);
     return nodes.arrayTypeNode(item, { ...typeArray });
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): nodes.Node {
+  visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
     return typeDefinedLink;
   }
 
-  visitTypeEnum(typeEnum: nodes.EnumTypeNode): nodes.Node {
+  visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node {
     return nodes.enumTypeNode(
       typeEnum.name,
       typeEnum.variants.map((variant) => {
@@ -97,14 +97,14 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
+  visitEnumEmptyVariantType(
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): nodes.Node {
     return typeEnumEmptyVariant;
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): nodes.Node {
     const newStruct = visit(typeEnumStructVariant.struct, this);
     nodes.assertStructTypeNode(newStruct);
@@ -114,15 +114,15 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): nodes.Node {
     const newTuple = visit(typeEnumTupleVariant.tuple, this);
     nodes.assertTupleTypeNode(newTuple);
     return nodes.enumTupleVariantTypeNode(typeEnumTupleVariant.name, newTuple);
   }
 
-  visitTypeMap(typeMap: nodes.MapTypeNode): nodes.Node {
+  visitMapType(mapType: nodes.MapTypeNode): nodes.Node {
     const key = visit(typeMap.key, this);
     nodes.assertTypeNode(key);
     const value = visit(typeMap.value, this);
@@ -130,19 +130,19 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.mapTypeNode(key, value, { ...typeMap });
   }
 
-  visitTypeOption(typeOption: nodes.OptionTypeNode): nodes.Node {
+  visitOptionType(optionType: nodes.OptionTypeNode): nodes.Node {
     const item = visit(typeOption.item, this);
     nodes.assertTypeNode(item);
     return nodes.optionTypeNode(item, { ...typeOption });
   }
 
-  visitTypeSet(typeSet: nodes.SetTypeNode): nodes.Node {
+  visitSetType(setType: nodes.SetTypeNode): nodes.Node {
     const item = visit(typeSet.item, this);
     nodes.assertTypeNode(item);
     return nodes.setTypeNode(item, { ...typeSet });
   }
 
-  visitTypeStruct(typeStruct: nodes.StructTypeNode): nodes.Node {
+  visitStructType(structType: nodes.StructTypeNode): nodes.Node {
     return nodes.structTypeNode(
       typeStruct.name,
       typeStruct.fields.map((field): nodes.StructFieldTypeNode => {
@@ -153,13 +153,13 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): nodes.Node {
+  visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): nodes.Node {
     const newType = visit(typeStructField.type, this);
     nodes.assertTypeNode(newType);
     return nodes.structFieldTypeNode(typeStructField.metadata, newType);
   }
 
-  visitTypeTuple(typeTuple: nodes.TupleTypeNode): nodes.Node {
+  visitTupleType(tupleType: nodes.TupleTypeNode): nodes.Node {
     return nodes.tupleTypeNode(
       typeTuple.items.map((item) => {
         const newItem = visit(item, this);
@@ -169,31 +169,31 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitTypeBool(typeBool: nodes.BoolTypeNode): nodes.Node {
+  visitBoolType(boolType: nodes.BoolTypeNode): nodes.Node {
     return typeBool;
   }
 
-  visitTypeBytes(typeBytes: nodes.BytesTypeNode): nodes.Node {
+  visitBytesType(bytesType: nodes.BytesTypeNode): nodes.Node {
     return typeBytes;
   }
 
-  visitTypeNumber(typeNumber: nodes.NumberTypeNode): nodes.Node {
+  visitNumberType(numberType: nodes.NumberTypeNode): nodes.Node {
     return typeNumber;
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.NumberWrapperTypeNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): nodes.Node {
     const item = visit(typeNumberWrapper.item, this);
     nodes.assertNumberTypeNode(item);
     return nodes.numberWrapperTypeNode(item, typeNumberWrapper.wrapper);
   }
 
-  visitTypePublicKey(typePublicKey: nodes.PublicKeyTypeNode): nodes.Node {
+  visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): nodes.Node {
     return typePublicKey;
   }
 
-  visitTypeString(typeString: nodes.StringTypeNode): nodes.Node {
+  visitStringType(stringType: nodes.StringTypeNode): nodes.Node {
     return typeString;
   }
 }

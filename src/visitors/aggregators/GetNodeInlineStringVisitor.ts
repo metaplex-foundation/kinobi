@@ -50,90 +50,90 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return `${ERROR_PREFIX}[${error.name}]`;
   }
 
-  visitTypeArray(typeArray: nodes.ArrayTypeNode): string {
+  visitArrayType(arrayType: nodes.ArrayTypeNode): string {
     const item = visit(typeArray.item, this);
     const size = this.displayArrayLikeSize(typeArray.size);
     return `array(${item};${size})`;
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): string {
+  visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): string {
     return `link(${typeDefinedLink.name};${typeDefinedLink.importFrom})`;
   }
 
-  visitTypeEnum(typeEnum: nodes.EnumTypeNode): string {
+  visitEnumType(enumType: nodes.EnumTypeNode): string {
     const children = typeEnum.variants.map((variant) => visit(variant, this));
     return `enum[${typeEnum.name}](${children.join(',')})`;
   }
 
-  visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
+  visitEnumEmptyVariantType(
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): string {
     return typeEnumEmptyVariant.name;
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): string {
     const child = visit(typeEnumStructVariant.struct, this);
     return `${typeEnumStructVariant.name}:${child}`;
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): string {
     const child = visit(typeEnumTupleVariant.tuple, this);
     return `${typeEnumTupleVariant.name}:${child}`;
   }
 
-  visitTypeMap(typeMap: nodes.MapTypeNode): string {
+  visitMapType(mapType: nodes.MapTypeNode): string {
     const key = visit(typeMap.key, this);
     const value = visit(typeMap.value, this);
     const size = this.displayArrayLikeSize(typeMap.size);
     return `map(${key},${value};${size})`;
   }
 
-  visitTypeOption(typeOption: nodes.OptionTypeNode): string {
+  visitOptionType(optionType: nodes.OptionTypeNode): string {
     const item = visit(typeOption.item, this);
     const prefix = visit(typeOption.prefix, this);
     const fixed = typeOption.fixed ? ';fixed' : '';
     return `option(${item};${prefix + fixed})`;
   }
 
-  visitTypeSet(typeSet: nodes.SetTypeNode): string {
+  visitSetType(setType: nodes.SetTypeNode): string {
     const item = visit(typeSet.item, this);
     const size = this.displayArrayLikeSize(typeSet.size);
     return `set(${item};${size})`;
   }
 
-  visitTypeStruct(typeStruct: nodes.StructTypeNode): string {
+  visitStructType(structType: nodes.StructTypeNode): string {
     const children = typeStruct.fields.map((field) => visit(field, this));
     return `struct[${typeStruct.name}](${children.join(',')})`;
   }
 
-  visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): string {
+  visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {
     const child = visit(typeStructField.type, this);
     return `${typeStructField.name}:${child}`;
   }
 
-  visitTypeTuple(typeTuple: nodes.TupleTypeNode): string {
+  visitTupleType(tupleType: nodes.TupleTypeNode): string {
     const children = typeTuple.items.map((item) => visit(item, this));
     return `tuple(${children.join(',')})`;
   }
 
-  visitTypeBool(typeBool: nodes.BoolTypeNode): string {
+  visitBoolType(boolType: nodes.BoolTypeNode): string {
     return typeBool.toString();
   }
 
-  visitTypeBytes(typeBytes: nodes.BytesTypeNode): string {
+  visitBytesType(bytesType: nodes.BytesTypeNode): string {
     return typeBytes.toString();
   }
 
-  visitTypeNumber(typeNumber: nodes.NumberTypeNode): string {
+  visitNumberType(numberType: nodes.NumberTypeNode): string {
     return typeNumber.toString();
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.NumberWrapperTypeNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): string {
     const item = visit(typeNumberWrapper.item, this);
     const { wrapper } = typeNumberWrapper;
@@ -149,11 +149,11 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     }
   }
 
-  visitTypePublicKey(): string {
+  visitPublicKeyType(): string {
     return 'publicKey';
   }
 
-  visitTypeString(typeString: nodes.StringTypeNode): string {
+  visitStringType(stringType: nodes.StringTypeNode): string {
     return typeString.toString();
   }
 

@@ -177,14 +177,14 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeArray(typeArray: nodes.ArrayTypeNode): ValidatorBag {
+  visitArrayType(arrayType: nodes.ArrayTypeNode): ValidatorBag {
     this.pushNode(typeArray);
     const bag = visit(typeArray.item, this);
     this.popNode();
     return bag;
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): ValidatorBag {
+  visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): ValidatorBag {
     this.pushNode(typeDefinedLink);
     const bag = new ValidatorBag();
     if (!typeDefinedLink.name) {
@@ -207,7 +207,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeEnum(typeEnum: nodes.EnumTypeNode): ValidatorBag {
+  visitEnumType(enumType: nodes.EnumTypeNode): ValidatorBag {
     this.pushNode(typeEnum);
     const bag = new ValidatorBag();
     if (!typeEnum.name) {
@@ -226,8 +226,8 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
+  visitEnumEmptyVariantType(
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): ValidatorBag {
     this.pushNode(typeEnumEmptyVariant);
     const bag = new ValidatorBag();
@@ -238,8 +238,8 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): ValidatorBag {
     this.pushNode(typeEnumStructVariant);
     const bag = new ValidatorBag();
@@ -251,8 +251,8 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): ValidatorBag {
     this.pushNode(typeEnumTupleVariant);
     const bag = new ValidatorBag();
@@ -264,7 +264,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeMap(typeMap: nodes.MapTypeNode): ValidatorBag {
+  visitMapType(mapType: nodes.MapTypeNode): ValidatorBag {
     this.pushNode(typeMap);
     const bag = new ValidatorBag();
     bag.mergeWith([visit(typeMap.key, this), visit(typeMap.value, this)]);
@@ -272,21 +272,21 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeOption(typeOption: nodes.OptionTypeNode): ValidatorBag {
+  visitOptionType(optionType: nodes.OptionTypeNode): ValidatorBag {
     this.pushNode(typeOption);
     const bag = visit(typeOption.item, this);
     this.popNode();
     return bag;
   }
 
-  visitTypeSet(typeSet: nodes.SetTypeNode): ValidatorBag {
+  visitSetType(setType: nodes.SetTypeNode): ValidatorBag {
     this.pushNode(typeSet);
     const bag = visit(typeSet.item, this);
     this.popNode();
     return bag;
   }
 
-  visitTypeStruct(typeStruct: nodes.StructTypeNode): ValidatorBag {
+  visitStructType(structType: nodes.StructTypeNode): ValidatorBag {
     this.pushNode(typeStruct);
     const bag = new ValidatorBag();
     if (!typeStruct.name) {
@@ -314,8 +314,8 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeStructField(
-    typeStructField: nodes.StructFieldTypeNode
+  visitStructFieldType(
+    structFieldType: nodes.StructFieldTypeNode
   ): ValidatorBag {
     this.pushNode(typeStructField);
     const bag = new ValidatorBag();
@@ -327,7 +327,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitTypeTuple(typeTuple: nodes.TupleTypeNode): ValidatorBag {
+  visitTupleType(tupleType: nodes.TupleTypeNode): ValidatorBag {
     this.pushNode(typeTuple);
     const bag = new ValidatorBag();
     if (typeTuple.items.length === 0) {
@@ -339,22 +339,22 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeBool(typeBool: nodes.BoolTypeNode): ValidatorBag {
+  visitBoolType(boolType: nodes.BoolTypeNode): ValidatorBag {
     return new ValidatorBag();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeBytes(typeBytes: nodes.BytesTypeNode): ValidatorBag {
+  visitBytesType(bytesType: nodes.BytesTypeNode): ValidatorBag {
     return new ValidatorBag();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeNumber(typeNumber: nodes.NumberTypeNode): ValidatorBag {
+  visitNumberType(numberType: nodes.NumberTypeNode): ValidatorBag {
     return new ValidatorBag();
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.NumberWrapperTypeNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): ValidatorBag {
     this.pushNode(typeNumberWrapper);
     const bag = visit(typeNumberWrapper.item, this);
@@ -363,12 +363,12 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypePublicKey(typePublicKey: nodes.PublicKeyTypeNode): ValidatorBag {
+  visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): ValidatorBag {
     return new ValidatorBag();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeString(typeString: nodes.StringTypeNode): ValidatorBag {
+  visitStringType(stringType: nodes.StringTypeNode): ValidatorBag {
     return new ValidatorBag();
   }
 

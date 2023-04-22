@@ -34,14 +34,14 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return child;
   }
 
-  visitTypeArray(typeArray: nodes.ArrayTypeNode): number | null {
+  visitArrayType(arrayType: nodes.ArrayTypeNode): number | null {
     if (typeArray.size.kind !== 'fixed') return null;
     const itemSize = visit(typeArray.item, this);
     const arraySize = itemSize !== null ? itemSize * typeArray.size.size : null;
     return typeArray.size.size === 0 ? 0 : arraySize;
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): number | null {
+  visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): number | null {
     if (typeDefinedLink.size !== null) return typeDefinedLink.size;
     if (typeDefinedLink.importFrom !== 'generated') return null;
 
@@ -64,7 +64,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return visit(linkedDefinedType, this);
   }
 
-  visitTypeEnum(typeEnum: nodes.EnumTypeNode): number | null {
+  visitEnumType(enumType: nodes.EnumTypeNode): number | null {
     if (typeEnum.isScalarEnum()) return 1;
     const variantSizes = typeEnum.variants.map((v) => visit(v, this));
     const allVariantHaveTheSameFixedSize = variantSizes.every(
@@ -77,75 +77,75 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
       : null;
   }
 
-  visitTypeEnumEmptyVariant(): number | null {
+  visitEnumEmptyVariantType(): number | null {
     return 0;
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): number | null {
     return visit(typeEnumStructVariant.struct, this);
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): number | null {
     return visit(typeEnumTupleVariant.tuple, this);
   }
 
-  visitTypeMap(): number | null {
+  visitMapType(): number | null {
     return null;
   }
 
-  visitTypeOption(typeOption: nodes.OptionTypeNode): number | null {
+  visitOptionType(optionType: nodes.OptionTypeNode): number | null {
     if (!typeOption.fixed) return null;
     const prefixSize = visit(typeOption.prefix, this) as number;
     const itemSize = visit(typeOption.item, this);
     return itemSize !== null ? itemSize + prefixSize : null;
   }
 
-  visitTypeSet(): number | null {
+  visitSetType(): number | null {
     return null;
   }
 
-  visitTypeStruct(typeStruct: nodes.StructTypeNode): number | null {
+  visitStructType(structType: nodes.StructTypeNode): number | null {
     return this.sumSizes(typeStruct.fields.map((f) => visit(f, this)));
   }
 
-  visitTypeStructField(
-    typeStructField: nodes.StructFieldTypeNode
+  visitStructFieldType(
+    structFieldType: nodes.StructFieldTypeNode
   ): number | null {
     return visit(typeStructField.type, this);
   }
 
-  visitTypeTuple(typeTuple: nodes.TupleTypeNode): number | null {
+  visitTupleType(tupleType: nodes.TupleTypeNode): number | null {
     return this.sumSizes(typeTuple.items.map((i) => visit(i, this)));
   }
 
-  visitTypeBool(typeBool: nodes.BoolTypeNode): number | null {
+  visitBoolType(boolType: nodes.BoolTypeNode): number | null {
     return visit(typeBool.size, this);
   }
 
-  visitTypeBytes(typeBytes: nodes.BytesTypeNode): number | null {
+  visitBytesType(bytesType: nodes.BytesTypeNode): number | null {
     if (typeBytes.size.kind !== 'fixed') return null;
     return typeBytes.size.bytes;
   }
 
-  visitTypeNumber(typeNumber: nodes.NumberTypeNode): number | null {
+  visitNumberType(numberType: nodes.NumberTypeNode): number | null {
     return parseInt(typeNumber.format.slice(1), 10) / 8;
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.NumberWrapperTypeNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): number | null {
     return visit(typeNumberWrapper.item, this);
   }
 
-  visitTypePublicKey(): number | null {
+  visitPublicKeyType(): number | null {
     return 32;
   }
 
-  visitTypeString(typeString: nodes.StringTypeNode): number | null {
+  visitStringType(stringType: nodes.StringTypeNode): number | null {
     if (typeString.size.kind !== 'fixed') return null;
     return typeString.size.bytes;
   }

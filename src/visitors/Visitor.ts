@@ -23,32 +23,32 @@ export interface Visitor<T = void> {
   visitError: (error: nodes.ErrorNode) => T;
 
   // Types.
-  visitTypeArray: (typeArray: nodes.ArrayTypeNode) => T;
-  visitTypeDefinedLink: (typeDefinedLink: nodes.LinkTypeNode) => T;
-  visitTypeEnum: (typeEnum: nodes.EnumTypeNode) => T;
-  visitTypeEnumEmptyVariant: (
-    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
+  visitArrayType: (arrayType: nodes.ArrayTypeNode) => T;
+  visitDefinedLinkType: (definedLinkType: nodes.LinkTypeNode) => T;
+  visitEnumType: (enumType: nodes.EnumTypeNode) => T;
+  visitEnumEmptyVariantType: (
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ) => T;
-  visitTypeEnumStructVariant: (
-    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
+  visitEnumStructVariantType: (
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ) => T;
-  visitTypeEnumTupleVariant: (
-    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
+  visitEnumTupleVariantType: (
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ) => T;
-  visitTypeMap: (typeMap: nodes.MapTypeNode) => T;
-  visitTypeOption: (typeOption: nodes.OptionTypeNode) => T;
-  visitTypeSet: (typeSet: nodes.SetTypeNode) => T;
-  visitTypeStruct: (typeStruct: nodes.StructTypeNode) => T;
-  visitTypeStructField: (typeStructField: nodes.StructFieldTypeNode) => T;
-  visitTypeTuple: (typeTuple: nodes.TupleTypeNode) => T;
+  visitMapType: (mapType: nodes.MapTypeNode) => T;
+  visitOptionType: (optionType: nodes.OptionTypeNode) => T;
+  visitSetType: (setType: nodes.SetTypeNode) => T;
+  visitStructType: (structType: nodes.StructTypeNode) => T;
+  visitStructFieldType: (structFieldType: nodes.StructFieldTypeNode) => T;
+  visitTupleType: (tupleType: nodes.TupleTypeNode) => T;
 
   // Type leaves.
-  visitTypeBool: (typeBool: nodes.BoolTypeNode) => T;
-  visitTypeBytes: (typeBytes: nodes.BytesTypeNode) => T;
-  visitTypeNumber: (typeNumber: nodes.NumberTypeNode) => T;
-  visitTypeNumberWrapper: (typeNumberWrapper: nodes.NumberWrapperTypeNode) => T;
-  visitTypePublicKey: (typePublicKey: nodes.PublicKeyTypeNode) => T;
-  visitTypeString: (typeString: nodes.StringTypeNode) => T;
+  visitBoolType: (boolType: nodes.BoolTypeNode) => T;
+  visitBytesType: (bytesType: nodes.BytesTypeNode) => T;
+  visitNumberType: (numberType: nodes.NumberTypeNode) => T;
+  visitNumberWrapperType: (numberWrapperType: nodes.NumberWrapperTypeNode) => T;
+  visitPublicKeyType: (publicKeyType: nodes.PublicKeyTypeNode) => T;
+  visitStringType: (stringType: nodes.StringTypeNode) => T;
 }
 
 export function visit<T>(node: nodes.Node, visitor: Visitor<T>): T {
@@ -74,41 +74,41 @@ export function visit<T>(node: nodes.Node, visitor: Visitor<T>): T {
     case 'errorNode':
       return visitor.visitError(node);
     case 'arrayTypeNode':
-      return visitor.visitTypeArray(node);
+      return visitor.visitArrayType(node);
     case 'linkTypeNode':
-      return visitor.visitTypeDefinedLink(node);
+      return visitor.visitDefinedLinkType(node);
     case 'enumTypeNode':
-      return visitor.visitTypeEnum(node);
+      return visitor.visitEnumType(node);
     case 'enumEmptyVariantTypeNode':
-      return visitor.visitTypeEnumEmptyVariant(node);
+      return visitor.visitEnumEmptyVariantType(node);
     case 'enumStructVariantTypeNode':
-      return visitor.visitTypeEnumStructVariant(node);
+      return visitor.visitEnumStructVariantType(node);
     case 'enumTupleVariantTypeNode':
-      return visitor.visitTypeEnumTupleVariant(node);
+      return visitor.visitEnumTupleVariantType(node);
     case 'mapTypeNode':
-      return visitor.visitTypeMap(node);
+      return visitor.visitMapType(node);
     case 'optionTypeNode':
-      return visitor.visitTypeOption(node);
+      return visitor.visitOptionType(node);
     case 'setTypeNode':
-      return visitor.visitTypeSet(node);
+      return visitor.visitSetType(node);
     case 'structTypeNode':
-      return visitor.visitTypeStruct(node);
+      return visitor.visitStructType(node);
     case 'structFieldTypeNode':
-      return visitor.visitTypeStructField(node);
+      return visitor.visitStructFieldType(node);
     case 'tupleTypeNode':
-      return visitor.visitTypeTuple(node);
+      return visitor.visitTupleType(node);
     case 'boolTypeNode':
-      return visitor.visitTypeBool(node);
+      return visitor.visitBoolType(node);
     case 'bytesTypeNode':
-      return visitor.visitTypeBytes(node);
+      return visitor.visitBytesType(node);
     case 'numberTypeNode':
-      return visitor.visitTypeNumber(node);
+      return visitor.visitNumberType(node);
     case 'numberWrapperTypeNode':
-      return visitor.visitTypeNumberWrapper(node);
+      return visitor.visitNumberWrapperType(node);
     case 'publicKeyTypeNode':
-      return visitor.visitTypePublicKey(node);
+      return visitor.visitPublicKeyType(node);
     case 'stringTypeNode':
-      return visitor.visitTypeString(node);
+      return visitor.visitStringType(node);
     default:
       const nodeAsNever: never = node;
       throw new KinobiError(`Unrecognized node [${(nodeAsNever as any).kind}]`);
