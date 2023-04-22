@@ -13,25 +13,22 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'StructTypeNode', stack, name },
+          selector: { kind: 'structTypeNode', stack, name },
           transformer: (node) => {
             nodes.assertStructTypeNode(node);
             const fields = node.fields.map(
               (field): nodes.StructFieldTypeNode => {
                 const defaultValue = defaultValues[field.name];
                 if (defaultValue === undefined) return field;
-                return nodes.structFieldTypeNode(
-                  {
-                    ...field.metadata,
-                    defaultsTo: !defaultValue
-                      ? null
-                      : {
-                          strategy: defaultValue.strategy ?? 'optional',
-                          value: defaultValue,
-                        },
-                  },
-                  field.type
-                );
+                return nodes.structFieldTypeNode({
+                  ...field,
+                  defaultsTo: !defaultValue
+                    ? null
+                    : {
+                        strategy: defaultValue.strategy ?? 'optional',
+                        value: defaultValue,
+                      },
+                });
               }
             );
             return nodes.structTypeNode(node.name, fields);

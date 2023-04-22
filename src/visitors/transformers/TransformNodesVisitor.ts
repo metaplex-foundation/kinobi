@@ -56,11 +56,51 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedAccount);
   }
 
+  visitAccountData(accountData: nodes.AccountDataNode): nodes.Node | null {
+    this.stack.push(accountData);
+    const visitedAccountData = super.visitAccountData(accountData);
+    this.stack.pop();
+    return this.applyTransforms(visitedAccountData);
+  }
+
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
     this.stack.push(instruction);
     const visitedInstruction = super.visitInstruction(instruction);
     this.stack.pop();
     return this.applyTransforms(visitedInstruction);
+  }
+
+  visitInstructionAccount(
+    instructionAccount: nodes.InstructionAccountNode
+  ): nodes.Node | null {
+    this.stack.push(instructionAccount);
+    const visitedInstructionAccount = super.visitInstructionAccount(
+      instructionAccount
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedInstructionAccount);
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): nodes.Node | null {
+    this.stack.push(instructionDataArgs);
+    const visitedInstructionDataArgs = super.visitInstructionDataArgs(
+      instructionDataArgs
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedInstructionDataArgs);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): nodes.Node | null {
+    this.stack.push(instructionExtraArgs);
+    const visitedInstructionExtraArgs = super.visitInstructionExtraArgs(
+      instructionExtraArgs
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedInstructionExtraArgs);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node | null {

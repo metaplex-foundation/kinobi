@@ -1,20 +1,23 @@
 import * as nodes from '../../nodes';
 import { GetDefinedTypeHistogramVisitor } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
+import { visit } from '../Visitor';
 
 export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   readonly programs: nodes.ProgramNode[] = [];
 
-  constructor(programs: nodes.ProgramInputs) {
+  constructor(programs: nodes.IdlInputs) {
     super();
-    const root = nodes.RootNode.fromProgramInputs(programs);
+    const root = nodes.rootNodeFromIdls(programs);
     this.programs = root.programs;
   }
 
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     // Get all linked defined types missing from the registered programs.
-    const histogram = root.accept(new GetDefinedTypeHistogramVisitor());
-    const availableTypes = root.allDefinedTypes.map((type) => type.name);
+    const histogram = visit(root, new GetDefinedTypeHistogramVisitor());
+    const availableTypes = nodes
+      .getAllDefinedTypes(root)
+      .map((type) => type.name);
     const missingTypes = Object.keys(histogram).filter((name) => {
       const { total } = histogram[name];
       return total > 0 && !availableTypes.includes(name);
@@ -30,15 +33,14 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
     const foundTypes = new Set<string>();
     const foundPrograms = this.programs.flatMap(
       (program): nodes.ProgramNode[] => {
-        const metadata = { ...program.metadata, internal: true };
-        const types = program.definedTypes.filter((type) => {
+        const definedTypes = program.definedTypes.filter((type) => {
           if (foundTypes.has(type.name)) return false;
           const found = missingTypes.includes(type.name);
           if (found) foundTypes.add(type.name);
           return found;
         });
-        return types.length > 0
-          ? [nodes.programNode(metadata, [], [], types, [])]
+        return definedTypes.length > 0
+          ? [nodes.programNode({ ...program, definedTypes, internal: true })]
           : [];
       }
     );
@@ -59,13 +61,13 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
         return;
       }
       const currentProgram = newPrograms[index];
-      newPrograms[index] = nodes.programNode(
-        currentProgram.metadata,
-        currentProgram.accounts,
-        currentProgram.instructions,
-        [...currentProgram.definedTypes, ...foundProgram.definedTypes],
-        currentProgram.errors
-      );
+      newPrograms[index] = nodes.programNode({
+        ...currentProgram,
+        definedTypes: [
+          ...currentProgram.definedTypes,
+          ...foundProgram.definedTypes,
+        ],
+      });
     });
 
     return nodes.rootNode(newPrograms);

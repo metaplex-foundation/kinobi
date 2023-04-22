@@ -1,6 +1,7 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
+import { visit } from '../Visitor';
 
 export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   protected availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
@@ -14,7 +15,7 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node {
-    root.allDefinedTypes.forEach((definedType) => {
+    nodes.getAllDefinedTypes(root).forEach((definedType) => {
       this.availableDefinedTypes.set(definedType.name, definedType);
     });
 
@@ -22,20 +23,19 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
-    return nodes.programNode(
-      program.metadata,
-      program.accounts
+    return nodes.programNode({
+      ...program,
+      accounts: program.accounts
         .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
-      program.instructions
+      instructions: program.instructions
         .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-      program.definedTypes
+      definedTypes: program.definedTypes
         .filter((definedType) => !this.shouldInline(definedType.name))
         .map((type) => visit(type, this))
         .filter(nodes.assertNodeFilter(nodes.assertDefinedTypeNode)),
-      program.errors
-    );
+    });
   }
 
   visitLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
@@ -55,7 +55,7 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
       );
     }
 
-    return visit(definedType.type, this);
+    return visit(definedType.data, this);
   }
 
   protected shouldInline(definedType: string): boolean {

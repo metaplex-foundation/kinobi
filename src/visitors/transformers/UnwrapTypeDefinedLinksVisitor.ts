@@ -12,7 +12,7 @@ export class UnwrapTypeDefinedLinksVisitor extends TransformNodesVisitor {
       const stack = selectorStack.split('.');
       const name = stack.pop();
       return {
-        selector: { type: 'LinkTypeNode', stack, name },
+        selector: { kind: 'linkTypeNode', stack, name },
         transformer: (node) => {
           nodes.assertLinkTypeNode(node);
           if (node.importFrom !== 'generated') return node;
@@ -23,7 +23,7 @@ export class UnwrapTypeDefinedLinksVisitor extends TransformNodesVisitor {
                 `Ensure this visitor starts from the root node to access all defined types.`
             );
           }
-          return definedType.type;
+          return definedType.data;
         },
       };
     });
@@ -32,7 +32,7 @@ export class UnwrapTypeDefinedLinksVisitor extends TransformNodesVisitor {
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node | null {
-    root.allDefinedTypes.forEach((definedType) => {
+    nodes.getAllDefinedTypes(root).forEach((definedType) => {
       this.availableDefinedTypes.set(definedType.name, definedType);
     });
 

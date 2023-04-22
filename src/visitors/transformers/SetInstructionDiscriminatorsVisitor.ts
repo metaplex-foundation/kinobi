@@ -20,32 +20,29 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'InstructionNode', stack, name },
+          selector: { kind: 'instructionNode', stack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
-            if (nodes.isLinkTypeNode(node.args)) return node;
-            const discriminatorField = nodes.structFieldTypeNode(
-              {
-                name: discriminator.name ?? 'discriminator',
-                docs: discriminator.docs ?? [],
-                defaultsTo: {
-                  strategy: discriminator.strategy ?? 'omitted',
-                  value: discriminator.value,
-                },
+            const discriminatorField = nodes.structFieldTypeNode({
+              name: discriminator.name ?? 'discriminator',
+              child: discriminator.type ?? nodes.numberTypeNode('u8'),
+              docs: discriminator.docs ?? [],
+              defaultsTo: {
+                strategy: discriminator.strategy ?? 'omitted',
+                value: discriminator.value,
               },
-              discriminator.type ?? nodes.numberTypeNode('u8')
-            );
+            });
 
-            return nodes.instructionNode(
-              node.metadata,
-              node.accounts,
-              nodes.structTypeNode(node.args.name, [
-                discriminatorField,
-                ...node.args.fields,
-              ]),
-              node.extraArgs,
-              node.subInstructions
-            );
+            return nodes.instructionNode({
+              ...node,
+              dataArgs: nodes.instructionDataArgsNode(
+                nodes.structTypeNode(node.dataArgs.struct.name, [
+                  discriminatorField,
+                  ...node.dataArgs.struct.fields,
+                ]),
+                node.dataArgs.link
+              ),
+            });
           },
         };
       }

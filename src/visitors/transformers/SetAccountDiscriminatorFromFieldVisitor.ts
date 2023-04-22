@@ -1,4 +1,4 @@
-import { fieldAccountDiscriminator } from 'src/shared';
+import { fieldAccountDiscriminator } from '../../shared';
 import * as nodes from '../../nodes';
 import { ValueNode } from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
