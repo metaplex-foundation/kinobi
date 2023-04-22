@@ -1,11 +1,11 @@
-import type { Visitor } from './Visitor';
+import { Visitor, visit } from './Visitor';
 import * as nodes from '../nodes';
 
 export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitRoot(root: nodes.RootNode): nodes.Node | null {
     return new nodes.rootNode(
       root.programs
-        .map((program) => program.accept(this))
+        .map((program) => visit(program, this))
         .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertProgramNode))
     );
   }
@@ -14,32 +14,32 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return new nodes.programNode(
       program.metadata,
       program.accounts
-        .map((account) => account.accept(this))
+        .map((account) => visit(account, this))
         .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertAccountNode)),
       program.instructions
-        .map((instruction) => instruction.accept(this))
+        .map((instruction) => visit(instruction, this))
         .filter(
           nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
         ),
       program.definedTypes
-        .map((type) => type.accept(this))
+        .map((type) => visit(type, this))
         .filter(
           nodes.removeNullAndAssertNodeFilter(nodes.assertDefinedTypeNode)
         ),
       program.errors
-        .map((error) => error.accept(this))
+        .map((error) => visit(error, this))
         .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertErrorNode))
     );
   }
 
   visitAccount(account: nodes.AccountNode): nodes.Node | null {
-    const accountType = account.type.accept(this);
+    const accountType = visit(account.type, this);
     if (accountType === null) return null;
     nodes.assertStructOrLinkTypeNode(accountType);
     const seeds = account.metadata.seeds
       .map((seed) => {
         if (seed.kind !== 'variable') return seed;
-        const newType = seed.type.accept(this);
+        const newType = visit(seed.type, this);
         if (newType === null) return null;
         nodes.assertTypeNode(newType);
         return { ...seed, type: newType };
@@ -47,7 +47,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       .filter((s): s is nodes.AccountNodeSeed => s !== null);
     const gpaFields = account.metadata.gpaFields
       .map((gpaField) => {
-        const newType = gpaField.type.accept(this);
+        const newType = visit(gpaField.type, this);
         if (newType === null) return null;
         nodes.assertTypeNode(newType);
         return { ...gpaField, type: newType };
@@ -60,9 +60,9 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
-    const args = instruction.args.accept(this);
+    const args = visit(instruction.args, this);
     nodes.assertStructOrLinkTypeNode(args);
-    const extraArgs = instruction.extraArgs.accept(this);
+    const extraArgs = visit(instruction.extraArgs, this);
     nodes.assertStructOrLinkTypeNode(extraArgs);
     return new nodes.instructionNode(
       instruction.metadata,
@@ -70,7 +70,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       args,
       extraArgs,
       instruction.subInstructions
-        .map((ix) => ix.accept(this))
+        .map((ix) => visit(ix, this))
         .filter(
           nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
         )
@@ -78,7 +78,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node | null {
-    const type = definedType.type.accept(this);
+    const type = visit(definedType.type, this);
     if (type === null) return null;
     nodes.assertTypeNode(type);
     return new nodes.definedTypeNode(definedType.metadata, type);
@@ -89,7 +89,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): nodes.Node | null {
-    const item = typeArray.item.accept(this);
+    const item = visit(typeArray.item, this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
     return new nodes.arrayTypeNode(item, { ...typeArray });
@@ -102,7 +102,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitTypeEnum(typeEnum: nodes.EnumTypeNode): nodes.Node | null {
     const variants = typeEnum.variants
       .map((variant): nodes.EnumVariantTypeNode | null => {
-        const newVariant = variant.accept(this);
+        const newVariant = visit(variant, this);
         if (newVariant === null) return null;
         nodes.assertEnumVariantTypeNode(newVariant);
         return newVariant;
@@ -121,7 +121,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitTypeEnumStructVariant(
     typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): nodes.Node | null {
-    const newStruct = typeEnumStructVariant.struct.accept(this);
+    const newStruct = visit(typeEnumStructVariant.struct, this);
     if (!newStruct) return null;
     nodes.assertStructTypeNode(newStruct);
     return new nodes.enumStructVariantTypeNode(
@@ -133,7 +133,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitTypeEnumTupleVariant(
     typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): nodes.Node | null {
-    const newTuple = typeEnumTupleVariant.tuple.accept(this);
+    const newTuple = visit(typeEnumTupleVariant.tuple, this);
     if (!newTuple) return null;
     nodes.assertTupleTypeNode(newTuple);
     return new nodes.enumTupleVariantTypeNode(
@@ -143,8 +143,8 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitTypeMap(typeMap: nodes.MapTypeNode): nodes.Node | null {
-    const key = typeMap.key.accept(this);
-    const value = typeMap.value.accept(this);
+    const key = visit(typeMap.key, this);
+    const value = visit(typeMap.value, this);
     if (key === null || value === null) return null;
     nodes.assertTypeNode(key);
     nodes.assertTypeNode(value);
@@ -152,14 +152,14 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   }
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): nodes.Node | null {
-    const item = typeOption.item.accept(this);
+    const item = visit(typeOption.item, this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
     return new nodes.optionTypeNode(item, { ...typeOption });
   }
 
   visitTypeSet(typeSet: nodes.SetTypeNode): nodes.Node | null {
-    const item = typeSet.item.accept(this);
+    const item = visit(typeSet.item, this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
     return new nodes.setTypeNode(item, { ...typeSet });
@@ -168,7 +168,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitTypeStruct(typeStruct: nodes.StructTypeNode): nodes.Node | null {
     const fields = typeStruct.fields
       .map((field): nodes.StructFieldTypeNode | null => {
-        const newField = field.accept(this);
+        const newField = visit(field, this);
         if (newField === null) return null;
         nodes.assertStructFieldTypeNode(newField);
         return newField;
@@ -181,7 +181,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitTypeStructField(
     typeStructField: nodes.StructFieldTypeNode
   ): nodes.Node | null {
-    const newType = typeStructField.type.accept(this);
+    const newType = visit(typeStructField.type, this);
     if (newType === null) return null;
     nodes.assertTypeNode(newType);
     return new nodes.structFieldTypeNode(typeStructField.metadata, newType);
@@ -190,7 +190,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): nodes.Node | null {
     const items = typeTuple.items
       .map((item) => {
-        const newItem = item.accept(this);
+        const newItem = visit(item, this);
         if (newItem === null) return null;
         nodes.assertTypeNode(newItem);
         return newItem;
@@ -215,7 +215,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitTypeNumberWrapper(
     typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): nodes.Node | null {
-    const item = typeNumberWrapper.item.accept(this);
+    const item = visit(typeNumberWrapper.item, this);
     if (item === null) return null;
     nodes.assertNumberTypeNode(item);
     return new nodes.numberWrapperTypeNode(item, typeNumberWrapper.wrapper);

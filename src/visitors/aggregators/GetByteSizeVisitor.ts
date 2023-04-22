@@ -15,11 +15,11 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   }
 
   visitAccount(account: nodes.AccountNode): number | null {
-    return account.type.accept(this);
+    return visit(account.type, this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): number | null {
-    return instruction.args.accept(this);
+    return visit(instruction.args, this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): number | null {
@@ -28,7 +28,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     }
 
     this.definedTypeStack.push(definedType.name);
-    const child = definedType.type.accept(this);
+    const child = visit(definedType.type, this);
     this.definedTypeStack.pop();
     this.visitedDefinedTypes.set(definedType.name, child);
     return child;
@@ -36,7 +36,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): number | null {
     if (typeArray.size.kind !== 'fixed') return null;
-    const itemSize = typeArray.item.accept(this);
+    const itemSize = visit(typeArray.item, this);
     const arraySize = itemSize !== null ? itemSize * typeArray.size.size : null;
     return typeArray.size.size === 0 ? 0 : arraySize;
   }
@@ -61,12 +61,12 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
       return null;
     }
 
-    return linkedDefinedType.accept(this);
+    return visit(linkedDefinedType, this);
   }
 
   visitTypeEnum(typeEnum: nodes.EnumTypeNode): number | null {
     if (typeEnum.isScalarEnum()) return 1;
-    const variantSizes = typeEnum.variants.map((v) => v.accept(this));
+    const variantSizes = typeEnum.variants.map((v) => visit(v, this));
     const allVariantHaveTheSameFixedSize = variantSizes.every(
       (one, i, all) => one === all[0]
     );
@@ -84,13 +84,13 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   visitTypeEnumStructVariant(
     typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): number | null {
-    return typeEnumStructVariant.struct.accept(this);
+    return visit(typeEnumStructVariant.struct, this);
   }
 
   visitTypeEnumTupleVariant(
     typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): number | null {
-    return typeEnumTupleVariant.tuple.accept(this);
+    return visit(typeEnumTupleVariant.tuple, this);
   }
 
   visitTypeMap(): number | null {
@@ -99,8 +99,8 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): number | null {
     if (!typeOption.fixed) return null;
-    const prefixSize = typeOption.prefix.accept(this) as number;
-    const itemSize = typeOption.item.accept(this);
+    const prefixSize = visit(typeOption.prefix, this) as number;
+    const itemSize = visit(typeOption.item, this);
     return itemSize !== null ? itemSize + prefixSize : null;
   }
 
@@ -109,21 +109,21 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   }
 
   visitTypeStruct(typeStruct: nodes.StructTypeNode): number | null {
-    return this.sumSizes(typeStruct.fields.map((f) => f.accept(this)));
+    return this.sumSizes(typeStruct.fields.map((f) => visit(f, this)));
   }
 
   visitTypeStructField(
     typeStructField: nodes.StructFieldTypeNode
   ): number | null {
-    return typeStructField.type.accept(this);
+    return visit(typeStructField.type, this);
   }
 
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): number | null {
-    return this.sumSizes(typeTuple.items.map((i) => i.accept(this)));
+    return this.sumSizes(typeTuple.items.map((i) => visit(i, this)));
   }
 
   visitTypeBool(typeBool: nodes.BoolTypeNode): number | null {
-    return typeBool.size.accept(this);
+    return visit(typeBool.size, this);
   }
 
   visitTypeBytes(typeBytes: nodes.BytesTypeNode): number | null {
@@ -138,7 +138,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   visitTypeNumberWrapper(
     typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): number | null {
-    return typeNumberWrapper.item.accept(this);
+    return visit(typeNumberWrapper.item, this);
   }
 
   visitTypePublicKey(): number | null {

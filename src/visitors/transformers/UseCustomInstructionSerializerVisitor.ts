@@ -51,7 +51,7 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
       program.metadata,
       program.accounts,
       program.instructions
-        .map((instruction) => instruction.accept(this))
+        .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
       newDefinedTypes,
       program.errors

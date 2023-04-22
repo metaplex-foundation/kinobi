@@ -11,10 +11,10 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     const visitedProgram = nodes.programNode(
       program.metadata,
       program.accounts
-        .map((account) => account.accept(this))
+        .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
       program.instructions
-        .map((instruction) => instruction.accept(this))
+        .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
       program.definedTypes,
       program.errors

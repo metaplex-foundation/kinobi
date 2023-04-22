@@ -20,22 +20,22 @@ export class GetDefinedTypeHistogramVisitor
 
   visitRoot(root: nodes.RootNode): DefinedTypeHistogram {
     return this.mergeHistograms(
-      root.programs.map((program) => program.accept(this))
+      root.programs.map((program) => visit(program, this))
     );
   }
 
   visitProgram(program: nodes.ProgramNode): DefinedTypeHistogram {
     return this.mergeHistograms([
-      ...program.accounts.map((account) => account.accept(this)),
-      ...program.instructions.map((instruction) => instruction.accept(this)),
-      ...program.definedTypes.map((type) => type.accept(this)),
+      ...program.accounts.map((account) => visit(account, this)),
+      ...program.instructions.map((instruction) => visit(instruction, this)),
+      ...program.definedTypes.map((type) => visit(type, this)),
     ]);
   }
 
   visitAccount(account: nodes.AccountNode): DefinedTypeHistogram {
     this.mode = 'account';
     this.stackLevel = 0;
-    const histogram = account.type.accept(this);
+    const histogram = visit(account.type, this);
     this.mode = null;
     return histogram;
   }
@@ -43,10 +43,10 @@ export class GetDefinedTypeHistogramVisitor
   visitInstruction(instruction: nodes.InstructionNode): DefinedTypeHistogram {
     this.mode = 'instruction';
     this.stackLevel = 0;
-    const histogram = instruction.args.accept(this);
+    const histogram = visit(instruction.args, this);
     this.mode = null;
     const subHistograms = instruction.subInstructions.map((ix) =>
-      ix.accept(this)
+      visit(ix, this)
     );
     return this.mergeHistograms([histogram, ...subHistograms]);
   }
@@ -54,7 +54,7 @@ export class GetDefinedTypeHistogramVisitor
   visitDefinedType(definedType: nodes.DefinedTypeNode): DefinedTypeHistogram {
     this.mode = 'definedType';
     this.stackLevel = 0;
-    const histogram = definedType.type.accept(this);
+    const histogram = visit(definedType.type, this);
     this.mode = null;
     return histogram;
   }
@@ -65,7 +65,7 @@ export class GetDefinedTypeHistogramVisitor
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeArray.item.accept(this);
+    const histogram = visit(typeArray.item, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -93,7 +93,7 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeEnum(typeEnum: nodes.EnumTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeEnum.variants.map((variant) => variant.accept(this))
+      typeEnum.variants.map((variant) => visit(variant, this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -107,7 +107,7 @@ export class GetDefinedTypeHistogramVisitor
     typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeEnumStructVariant.struct.accept(this);
+    const histogram = visit(typeEnumStructVariant.struct, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -116,7 +116,7 @@ export class GetDefinedTypeHistogramVisitor
     typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeEnumTupleVariant.tuple.accept(this);
+    const histogram = visit(typeEnumTupleVariant.tuple, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -124,8 +124,8 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeMap(typeMap: nodes.MapTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms([
-      typeMap.key.accept(this),
-      typeMap.value.accept(this),
+      visit(typeMap.key, this),
+      visit(typeMap.value, this),
     ]);
     this.stackLevel -= 1;
     return histogram;
@@ -133,14 +133,14 @@ export class GetDefinedTypeHistogramVisitor
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeOption.item.accept(this);
+    const histogram = visit(typeOption.item, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
   visitTypeSet(typeSet: nodes.SetTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeSet.item.accept(this);
+    const histogram = visit(typeSet.item, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -148,7 +148,7 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeStruct(typeStruct: nodes.StructTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeStruct.fields.map((field) => field.accept(this))
+      typeStruct.fields.map((field) => visit(field, this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -158,7 +158,7 @@ export class GetDefinedTypeHistogramVisitor
     typeStructField: nodes.StructFieldTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeStructField.type.accept(this);
+    const histogram = visit(typeStructField.type, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -166,7 +166,7 @@ export class GetDefinedTypeHistogramVisitor
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeTuple.items.map((item) => item.accept(this))
+      typeTuple.items.map((item) => visit(item, this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -188,7 +188,7 @@ export class GetDefinedTypeHistogramVisitor
     typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeNumberWrapper.item.accept(this);
+    const histogram = visit(typeNumberWrapper.item, this);
     this.stackLevel -= 1;
     return histogram;
   }

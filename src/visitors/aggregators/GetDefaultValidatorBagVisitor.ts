@@ -17,7 +17,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     root.allDefinedTypes.forEach((type) => this.definedTypes.add(type.name));
 
     this.pushNode(root);
-    const bags = root.programs.map((program) => program.accept(this));
+    const bags = root.programs.map((program) => visit(program, this));
     this.popNode();
     return new ValidatorBag().mergeWith(bags);
   }
@@ -38,10 +38,10 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       bag.info('Program has no origin.', program, this.stack);
     }
     bag.mergeWith([
-      ...program.accounts.map((node) => node.accept(this)),
-      ...program.instructions.map((node) => node.accept(this)),
-      ...program.definedTypes.map((node) => node.accept(this)),
-      ...program.errors.map((node) => node.accept(this)),
+      ...program.accounts.map((node) => visit(node, this)),
+      ...program.instructions.map((node) => visit(node, this)),
+      ...program.definedTypes.map((node) => visit(node, this)),
+      ...program.errors.map((node) => visit(node, this)),
     ]);
     this.popNode();
     return bag;
@@ -53,7 +53,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!account.name) {
       bag.error('Account has no name.', account, this.stack);
     }
-    bag.mergeWith([account.type.accept(this)]);
+    bag.mergeWith([visit(account.type, this)]);
     this.popNode();
     return bag;
   }
@@ -87,7 +87,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     // Check for cyclic dependencies in account defaults.
     const cyclicCheckVisitor = new GetResolvedInstructionInputsVisitor();
     try {
-      instruction.accept(cyclicCheckVisitor);
+      visit(instruction, cyclicCheckVisitor);
     } catch (error) {
       bag.error(
         cyclicCheckVisitor.getError() as string,
@@ -97,11 +97,11 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     }
 
     // Check args.
-    bag.mergeWith([instruction.args.accept(this)]);
+    bag.mergeWith([visit(instruction.args, this)]);
 
     // Check extra args.
     if (instruction.extraArgs) {
-      bag.mergeWith([instruction.extraArgs.accept(this)]);
+      bag.mergeWith([visit(instruction.extraArgs, this)]);
       if (
         nodes.isStructTypeNode(instruction.args) &&
         nodes.isStructTypeNode(instruction.extraArgs)
@@ -144,7 +144,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     );
 
     // Check sub-instructions.
-    bag.mergeWith(instruction.subInstructions.map((ix) => ix.accept(this)));
+    bag.mergeWith(instruction.subInstructions.map((ix) => visit(ix, this)));
 
     this.popNode();
     return bag;
@@ -156,7 +156,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!definedType.name) {
       bag.error('Defined type has no name.', definedType, this.stack);
     }
-    bag.mergeWith([definedType.type.accept(this)]);
+    bag.mergeWith([visit(definedType.type, this)]);
     this.popNode();
     return bag;
   }
@@ -179,7 +179,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): ValidatorBag {
     this.pushNode(typeArray);
-    const bag = typeArray.item.accept(this);
+    const bag = visit(typeArray.item, this);
     this.popNode();
     return bag;
   }
@@ -221,7 +221,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
         bag.error('Enum variant has no name.', typeEnum, this.stack);
       }
     });
-    bag.mergeWith(typeEnum.variants.map((variant) => variant.accept(this)));
+    bag.mergeWith(typeEnum.variants.map((variant) => visit(variant, this)));
     this.popNode();
     return bag;
   }
@@ -246,7 +246,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!typeEnumStructVariant.name) {
       bag.error('Enum variant has no name.', typeEnumStructVariant, this.stack);
     }
-    bag.mergeWith([typeEnumStructVariant.struct.accept(this)]);
+    bag.mergeWith([visit(typeEnumStructVariant.struct, this)]);
     this.popNode();
     return bag;
   }
@@ -259,7 +259,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!typeEnumTupleVariant.name) {
       bag.error('Enum variant has no name.', typeEnumTupleVariant, this.stack);
     }
-    bag.mergeWith([typeEnumTupleVariant.tuple.accept(this)]);
+    bag.mergeWith([visit(typeEnumTupleVariant.tuple, this)]);
     this.popNode();
     return bag;
   }
@@ -267,21 +267,21 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitTypeMap(typeMap: nodes.MapTypeNode): ValidatorBag {
     this.pushNode(typeMap);
     const bag = new ValidatorBag();
-    bag.mergeWith([typeMap.key.accept(this), typeMap.value.accept(this)]);
+    bag.mergeWith([visit(typeMap.key, this), visit(typeMap.value, this)]);
     this.popNode();
     return bag;
   }
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): ValidatorBag {
     this.pushNode(typeOption);
-    const bag = typeOption.item.accept(this);
+    const bag = visit(typeOption.item, this);
     this.popNode();
     return bag;
   }
 
   visitTypeSet(typeSet: nodes.SetTypeNode): ValidatorBag {
     this.pushNode(typeSet);
-    const bag = typeSet.item.accept(this);
+    const bag = visit(typeSet.item, this);
     this.popNode();
     return bag;
   }
@@ -309,7 +309,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       }
     });
 
-    bag.mergeWith(typeStruct.fields.map((field) => field.accept(this)));
+    bag.mergeWith(typeStruct.fields.map((field) => visit(field, this)));
     this.popNode();
     return bag;
   }
@@ -322,7 +322,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!typeStructField.name) {
       bag.error('Struct field has no name.', typeStructField, this.stack);
     }
-    bag.mergeWith([typeStructField.type.accept(this)]);
+    bag.mergeWith([visit(typeStructField.type, this)]);
     this.popNode();
     return bag;
   }
@@ -333,7 +333,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (typeTuple.items.length === 0) {
       bag.warn('Tuple has no items.', typeTuple, this.stack);
     }
-    bag.mergeWith(typeTuple.items.map((node) => node.accept(this)));
+    bag.mergeWith(typeTuple.items.map((node) => visit(node, this)));
     this.popNode();
     return bag;
   }
@@ -357,7 +357,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): ValidatorBag {
     this.pushNode(typeNumberWrapper);
-    const bag = typeNumberWrapper.item.accept(this);
+    const bag = visit(typeNumberWrapper.item, this);
     this.popNode();
     return bag;
   }

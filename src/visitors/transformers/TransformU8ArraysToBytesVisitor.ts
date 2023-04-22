@@ -7,7 +7,7 @@ export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
   }
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): nodes.Node {
-    const item = typeArray.item.accept(this);
+    const item = visit(typeArray.item, this);
     nodes.assertTypeNode(item);
 
     if (

@@ -3,30 +3,30 @@ import type { Visitor } from './Visitor';
 
 export abstract class BaseVoidVisitor implements Visitor<void> {
   visitRoot(root: nodes.RootNode): void {
-    root.programs.forEach((program) => program.accept(this));
+    root.programs.forEach((program) => visit(program, this));
   }
 
   visitProgram(program: nodes.ProgramNode): void {
-    program.accounts.forEach((account) => account.accept(this));
-    program.instructions.forEach((instruction) => instruction.accept(this));
-    program.definedTypes.forEach((type) => type.accept(this));
-    program.errors.forEach((type) => type.accept(this));
+    program.accounts.forEach((account) => visit(account, this));
+    program.instructions.forEach((instruction) => visit(instruction, this));
+    program.definedTypes.forEach((type) => visit(type, this));
+    program.errors.forEach((type) => visit(type, this));
   }
 
   visitAccount(account: nodes.AccountNode): void {
-    account.type.accept(this);
-    account.variableSeeds.forEach((seed) => seed.type.accept(this));
-    account.metadata.gpaFields.forEach((field) => field.type.accept(this));
+    visit(account.type, this);
+    account.variableSeeds.forEach((seed) => visit(seed.type, this));
+    account.metadata.gpaFields.forEach((field) => visit(field.type, this));
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    instruction.args.accept(this);
+    visit(instruction.args, this);
     instruction.extraArgs?.accept(this);
-    instruction.subInstructions.forEach((ix) => ix.accept(this));
+    instruction.subInstructions.forEach((ix) => visit(ix, this));
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
-    definedType.type.accept(this);
+    visit(definedType.type, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,7 +35,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): void {
-    typeArray.item.accept(this);
+    visit(typeArray.item, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,7 +44,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitTypeEnum(typeEnum: nodes.EnumTypeNode): void {
-    typeEnum.variants.forEach((variant) => variant.accept(this));
+    typeEnum.variants.forEach((variant) => visit(variant, this));
   }
 
   visitTypeEnumEmptyVariant(
@@ -57,38 +57,38 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   visitTypeEnumStructVariant(
     typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): void {
-    typeEnumStructVariant.struct.accept(this);
+    visit(typeEnumStructVariant.struct, this);
   }
 
   visitTypeEnumTupleVariant(
     typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): void {
-    typeEnumTupleVariant.tuple.accept(this);
+    visit(typeEnumTupleVariant.tuple, this);
   }
 
   visitTypeMap(typeMap: nodes.MapTypeNode): void {
-    typeMap.key.accept(this);
-    typeMap.value.accept(this);
+    visit(typeMap.key, this);
+    visit(typeMap.value, this);
   }
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): void {
-    typeOption.item.accept(this);
+    visit(typeOption.item, this);
   }
 
   visitTypeSet(typeSet: nodes.SetTypeNode): void {
-    typeSet.item.accept(this);
+    visit(typeSet.item, this);
   }
 
   visitTypeStruct(typeStruct: nodes.StructTypeNode): void {
-    typeStruct.fields.forEach((field) => field.accept(this));
+    typeStruct.fields.forEach((field) => visit(field, this));
   }
 
   visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): void {
-    typeStructField.type.accept(this);
+    visit(typeStructField.type, this);
   }
 
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): void {
-    typeTuple.items.forEach((item) => item.accept(this));
+    typeTuple.items.forEach((item) => visit(item, this));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,7 +107,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitTypeNumberWrapper(typeNumberWrapper: nodes.NumberWrapperTypeNode): void {
-    typeNumberWrapper.item.accept(this);
+    visit(typeNumberWrapper.item, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

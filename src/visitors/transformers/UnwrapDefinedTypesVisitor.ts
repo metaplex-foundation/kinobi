@@ -25,14 +25,14 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
     return nodes.programNode(
       program.metadata,
       program.accounts
-        .map((account) => account.accept(this))
+        .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
       program.instructions
-        .map((instruction) => instruction.accept(this))
+        .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
       program.definedTypes
         .filter((definedType) => !this.shouldInline(definedType.name))
-        .map((type) => type.accept(this))
+        .map((type) => visit(type, this))
         .filter(nodes.assertNodeFilter(nodes.assertDefinedTypeNode)),
       program.errors
     );
@@ -55,7 +55,7 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
       );
     }
 
-    return definedType.type.accept(this);
+    return visit(definedType.type, this);
   }
 
   protected shouldInline(definedType: string): boolean {

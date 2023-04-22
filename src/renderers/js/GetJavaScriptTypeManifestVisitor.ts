@@ -47,7 +47,7 @@ export class GetJavaScriptTypeManifestVisitor
       strict: `${pascalCase(account.name)}AccountData`,
       loose: `${pascalCase(account.name)}AccountDataArgs`,
     };
-    const child = account.type.accept(this);
+    const child = visit(account.type, this);
     this.definedName = null;
     return child;
   }
@@ -57,7 +57,7 @@ export class GetJavaScriptTypeManifestVisitor
       strict: `${pascalCase(instruction.name)}InstructionData`,
       loose: `${pascalCase(instruction.name)}InstructionDataArgs`,
     };
-    const child = instruction.args.accept(this);
+    const child = visit(instruction.args, this);
     this.definedName = null;
     return child;
   }
@@ -67,7 +67,7 @@ export class GetJavaScriptTypeManifestVisitor
       strict: pascalCase(definedType.name),
       loose: `${pascalCase(definedType.name)}Args`,
     };
-    const child = definedType.type.accept(this);
+    const child = visit(definedType.type, this);
     this.definedName = null;
     return child;
   }
@@ -77,7 +77,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): JavaScriptTypeManifest {
-    const itemManifest = typeArray.item.accept(this);
+    const itemManifest = visit(typeArray.item, this);
     const sizeOption = this.getArrayLikeSizeOption(
       typeArray.size,
       itemManifest
@@ -158,7 +158,7 @@ export class GetJavaScriptTypeManifestVisitor
               loose: `GetDataEnumKindContent<${definedName.loose}, '${variantName}'>`,
             }
           : null;
-        const variantManifest = variant.accept(this);
+        const variantManifest = visit(variant, this);
         this.definedName = null;
         return variantManifest;
       }
@@ -209,7 +209,7 @@ export class GetJavaScriptTypeManifestVisitor
   ): JavaScriptTypeManifest {
     const name = pascalCase(typeEnumStructVariant.name);
     const kindAttribute = `__kind: "${name}"`;
-    const type = typeEnumStructVariant.struct.accept(this);
+    const type = visit(typeEnumStructVariant.struct, this);
     return {
       ...type,
       strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
@@ -229,7 +229,7 @@ export class GetJavaScriptTypeManifestVisitor
         typeEnumTupleVariant.tuple
       ),
     ]);
-    const type = struct.accept(this);
+    const type = visit(struct, this);
     return {
       ...type,
       strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
@@ -239,8 +239,8 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeMap(typeMap: nodes.MapTypeNode): JavaScriptTypeManifest {
-    const key = typeMap.key.accept(this);
-    const value = typeMap.value.accept(this);
+    const key = visit(typeMap.key, this);
+    const value = visit(typeMap.value, this);
     const mergedManifest = this.mergeManifests([key, value]);
     const sizeOption = this.getArrayLikeSizeOption(
       typeMap.size,
@@ -259,13 +259,13 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): JavaScriptTypeManifest {
-    const itemManifest = typeOption.item.accept(this);
+    const itemManifest = visit(typeOption.item, this);
     itemManifest.strictImports.add('core', 'Option');
     itemManifest.looseImports.add('core', 'Option');
     const options: string[] = [];
 
     // Prefix option.
-    const prefixManifest = typeOption.prefix.accept(this);
+    const prefixManifest = visit(typeOption.prefix, this);
     if (prefixManifest.serializer !== this.s('u8()')) {
       options.push(`prefix: ${prefixManifest.serializer}`);
     }
@@ -289,7 +289,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeSet(typeSet: nodes.SetTypeNode): JavaScriptTypeManifest {
-    const itemManifest = typeSet.item.accept(this);
+    const itemManifest = visit(typeSet.item, this);
     const sizeOption = this.getArrayLikeSizeOption(typeSet.size, itemManifest);
     const options = sizeOption ? `, { ${sizeOption} }` : '';
     return {
@@ -304,7 +304,7 @@ export class GetJavaScriptTypeManifestVisitor
     const { definedName } = this;
     this.definedName = null;
 
-    const fields = typeStruct.fields.map((field) => field.accept(this));
+    const fields = typeStruct.fields.map((field) => visit(field, this));
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
     const structDescription = typeStruct.name
@@ -361,7 +361,7 @@ export class GetJavaScriptTypeManifestVisitor
   ): JavaScriptTypeManifest {
     const { metadata } = typeStructField;
     const name = camelCase(typeStructField.name);
-    const fieldType = typeStructField.type.accept(this);
+    const fieldType = visit(typeStructField.type, this);
     const docblock = this.createDocblock(metadata.docs);
     const baseField = {
       ...fieldType,
@@ -382,7 +382,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): JavaScriptTypeManifest {
-    const items = typeTuple.items.map((item) => item.accept(this));
+    const items = typeTuple.items.map((item) => visit(item, this));
     const itemSerializers = items.map((item) => item.serializer).join(', ');
     return {
       ...this.mergeManifests(items),
@@ -393,7 +393,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeBool(typeBool: nodes.BoolTypeNode): JavaScriptTypeManifest {
-    const size = typeBool.size.accept(this);
+    const size = visit(typeBool.size, this);
     const sizeSerializer =
       size.serializer === this.s('u8()') ? '' : `{ size: ${size.serializer} }`;
     return {
@@ -410,7 +410,7 @@ export class GetJavaScriptTypeManifestVisitor
 
     // Size option.
     if (typeBytes.size.kind === 'prefixed') {
-      const prefix = typeBytes.size.prefix.accept(this);
+      const prefix = visit(typeBytes.size.prefix, this);
       options.push(`size: ${prefix.serializer}`);
     } else if (typeBytes.size.kind === 'fixed') {
       options.push(`size: ${typeBytes.size.bytes}`);
@@ -455,7 +455,7 @@ export class GetJavaScriptTypeManifestVisitor
     typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): JavaScriptTypeManifest {
     const { item, wrapper } = typeNumberWrapper;
-    const itemManifest = item.accept(this);
+    const itemManifest = visit(item, this);
     switch (wrapper.kind) {
       case 'DateTime':
         if (!item.isInteger()) {
@@ -533,7 +533,7 @@ export class GetJavaScriptTypeManifestVisitor
     } else if (typeString.size.kind === 'fixed') {
       options.push(`size: ${typeString.size.bytes}`);
     } else {
-      const prefix = typeString.size.prefix.accept(this);
+      const prefix = visit(typeString.size.prefix, this);
       if (prefix.serializer !== this.s('u32()')) {
         imports.mergeWith(prefix.strictImports);
         options.push(`size: ${prefix.serializer}`);
@@ -595,7 +595,7 @@ export class GetJavaScriptTypeManifestVisitor
     if (size.kind === 'fixed') return `size: ${size.size}`;
     if (size.kind === 'remainder') return `size: 'remainder'`;
 
-    const prefixManifest = size.prefix.accept(this);
+    const prefixManifest = visit(size.prefix, this);
     if (prefixManifest.serializer === this.s('u32()')) return null;
 
     manifest.strictImports.mergeWith(prefixManifest.strictImports);

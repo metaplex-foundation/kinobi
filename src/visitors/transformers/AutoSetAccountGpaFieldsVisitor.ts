@@ -29,7 +29,7 @@ export class AutoSetAccountGpaFieldsVisitor extends TransformNodesVisitor {
             (field): nodes.AccountNodeGpaField => {
               const fieldOffset = offset;
               if (offset !== null) {
-                const newOffset = field.type.accept(this.sizeVisitor);
+                const newOffset = visit(field.type, this.sizeVisitor);
                 offset = newOffset !== null ? offset + newOffset : null;
               }
               return {

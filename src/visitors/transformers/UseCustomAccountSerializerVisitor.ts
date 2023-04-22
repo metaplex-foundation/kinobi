@@ -50,7 +50,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
     return nodes.programNode(
       program.metadata,
       program.accounts
-        .map((account) => account.accept(this))
+        .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
       program.instructions,
       newDefinedTypes,

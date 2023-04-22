@@ -12,7 +12,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitRoot(root: nodes.RootNode): string {
     this.indent += 1;
-    const children = root.programs.map((program) => program.accept(this));
+    const children = root.programs.map((program) => visit(program, this));
     this.indent -= 1;
     return [this.indented('[RootNode]'), ...children].join('\n');
   }
@@ -20,10 +20,10 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   visitProgram(program: nodes.ProgramNode): string {
     this.indent += 1;
     const children = [
-      ...program.accounts.map((account) => account.accept(this)),
-      ...program.instructionsWithSubs.map((ix) => ix.accept(this)),
-      ...program.definedTypes.map((type) => type.accept(this)),
-      ...program.errors.map((type) => type.accept(this)),
+      ...program.accounts.map((account) => visit(account, this)),
+      ...program.instructionsWithSubs.map((ix) => visit(ix, this)),
+      ...program.definedTypes.map((type) => visit(type, this)),
+      ...program.errors.map((type) => visit(type, this)),
     ];
     this.indent -= 1;
     const data = program.metadata;
@@ -53,7 +53,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
           if (seed.kind === 'programId') return this.indented('programId');
           if (seed.kind === 'literal') return this.indented(`"${seed.value}"`);
           this.indent += 1;
-          const type = seed.type.accept(this);
+          const type = visit(seed.type, this);
           this.indent -= 1;
           return [
             this.indented(`${seed.name} (${seed.description})`),
@@ -63,7 +63,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
       );
       this.indent -= 1;
     }
-    children.push(account.type.accept(this));
+    children.push(visit(account.type, this));
     this.indent -= 1;
     return children.join('\n');
   }
@@ -89,12 +89,12 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent -= 1;
     children.push(this.indented('arguments:'));
     this.indent += 1;
-    children.push(instruction.args.accept(this));
+    children.push(visit(instruction.args, this));
     this.indent -= 1;
     if (instruction.extraArgs) {
       children.push(this.indented('extra arguments:'));
       this.indent += 1;
-      children.push(instruction.extraArgs.accept(this));
+      children.push(visit(instruction.extraArgs, this));
       this.indent -= 1;
     }
     this.indent -= 1;
@@ -103,7 +103,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): string {
     this.indent += 1;
-    const child = definedType.type.accept(this);
+    const child = visit(definedType.type, this);
     this.indent -= 1;
     return [this.indented(`[DefinedTypeNode] ${definedType.name}`), child].join(
       '\n'
@@ -118,7 +118,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): string {
     this.indent += 1;
-    const item = typeArray.item.accept(this);
+    const item = visit(typeArray.item, this);
     this.indent -= 1;
     const size = this.displayArrayLikeSize(typeArray.size);
     return [this.indented(`[ArrayTypeNode] size: ${size}`), item].join('\n');
@@ -133,7 +133,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeEnum(typeEnum: nodes.EnumTypeNode): string {
     this.indent += 1;
-    const children = typeEnum.variants.map((variant) => variant.accept(this));
+    const children = typeEnum.variants.map((variant) => visit(variant, this));
     this.indent -= 1;
     return [
       this.indented(
@@ -155,7 +155,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): string {
     this.indent += 1;
-    const child = typeEnumStructVariant.struct.accept(this);
+    const child = visit(typeEnumStructVariant.struct, this);
     this.indent -= 1;
     return [
       this.indented(
@@ -169,7 +169,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): string {
     this.indent += 1;
-    const child = typeEnumTupleVariant.tuple.accept(this);
+    const child = visit(typeEnumTupleVariant.tuple, this);
     this.indent -= 1;
     return [
       this.indented(`[EnumTupleVariantTypeNode] ${typeEnumTupleVariant.name}`),
@@ -186,11 +186,11 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent += 1;
     result.push(this.indented('keys:'));
     this.indent += 1;
-    result.push(typeMap.key.accept(this));
+    result.push(visit(typeMap.key, this));
     this.indent -= 1;
     result.push(this.indented('values:'));
     this.indent += 1;
-    result.push(typeMap.value.accept(this));
+    result.push(visit(typeMap.value, this));
     this.indent -= 1;
     this.indent -= 1;
     return result.join('\n');
@@ -198,7 +198,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): string {
     this.indent += 1;
-    const item = typeOption.item.accept(this);
+    const item = visit(typeOption.item, this);
     this.indent -= 1;
     const prefix = typeOption.prefix.toString();
     const fixed = typeOption.fixed ? ', fixed' : '';
@@ -210,7 +210,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeSet(typeSet: nodes.SetTypeNode): string {
     this.indent += 1;
-    const item = typeSet.item.accept(this);
+    const item = visit(typeSet.item, this);
     this.indent -= 1;
     const size = this.displayArrayLikeSize(typeSet.size);
     return [this.indented(`[SetTypeNode] size: ${size}`), item].join('\n');
@@ -218,7 +218,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeStruct(typeStruct: nodes.StructTypeNode): string {
     this.indent += 1;
-    const children = typeStruct.fields.map((field) => field.accept(this));
+    const children = typeStruct.fields.map((field) => visit(field, this));
     this.indent -= 1;
     return [
       this.indented(`[StructTypeNode] ${typeStruct.name}`),
@@ -228,7 +228,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): string {
     this.indent += 1;
-    const child = typeStructField.type.accept(this);
+    const child = visit(typeStructField.type, this);
     this.indent -= 1;
     return [
       this.indented(`[StructFieldTypeNode] ${typeStructField.name}`),
@@ -238,7 +238,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): string {
     this.indent += 1;
-    const items = typeTuple.items.map((item) => item.accept(this));
+    const items = typeTuple.items.map((item) => visit(item, this));
     this.indent -= 1;
     return [this.indented('[TupleTypeNode]'), ...items].join('\n');
   }
@@ -261,7 +261,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): string {
     this.indent += 1;
-    const item = typeNumberWrapper.item.accept(this);
+    const item = visit(typeNumberWrapper.item, this);
     this.indent -= 1;
     const { wrapper } = typeNumberWrapper;
     const base = `[NumberWrapperTypeNode] ${wrapper.kind}`;

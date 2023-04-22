@@ -25,7 +25,7 @@ export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseThrowVisitor<n
     // Inline the identified defined types if any.
     if (definedTypesToInline.length > 0) {
       const inlineVisitor = new UnwrapDefinedTypesVisitor(definedTypesToInline);
-      const newRoot = root.accept(inlineVisitor);
+      const newRoot = visit(root, inlineVisitor);
       assertRootNode(newRoot);
       return newRoot;
     }

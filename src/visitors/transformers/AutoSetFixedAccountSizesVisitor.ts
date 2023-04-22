@@ -16,7 +16,7 @@ export class AutoSetFixedAccountSizesVisitor extends BaseThrowVisitor<nodes.Root
           nodes.isAccountNode(node) && node.metadata.size === null,
         transformer: (node) => {
           nodes.assertAccountNode(node);
-          const size = node.type.accept(byteSizeVisitor);
+          const size = visit(node.type, byteSizeVisitor);
           if (size === null) return node;
           return nodes.accountNode({ ...node.metadata, size }, node.type);
         },
@@ -24,7 +24,7 @@ export class AutoSetFixedAccountSizesVisitor extends BaseThrowVisitor<nodes.Root
     ]);
 
     // Execute the transform visitor on the Root node.
-    const transformedRoot = root.accept(transformVisitor);
+    const transformedRoot = visit(root, transformVisitor);
     nodes.assertRootNode(transformedRoot);
     return transformedRoot;
   }

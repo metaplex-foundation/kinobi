@@ -125,7 +125,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     return map
       .add('index.ts', this.render('rootIndex.njk', ctx))
-      .mergeWith(...root.programs.map((program) => program.accept(this)));
+      .mergeWith(...root.programs.map((program) => visit(program, this)));
   }
 
   visitProgram(program: nodes.ProgramNode): RenderMap {
@@ -133,8 +133,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const { name } = program.metadata;
     const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
-      .mergeWith(...program.accounts.map((account) => account.accept(this)))
-      .mergeWith(...program.definedTypes.map((type) => type.accept(this)));
+      .mergeWith(...program.accounts.map((account) => visit(account, this)))
+      .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
 
     // Internal programs are support programs that
     // were added to fill missing types or accounts.
@@ -145,7 +145,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     renderMap
-      .mergeWith(...program.instructionsWithSubs.map((ix) => ix.accept(this)))
+      .mergeWith(...program.instructionsWithSubs.map((ix) => visit(ix, this)))
       .add(
         `errors/${camelCase(name)}.ts`,
         this.render('errorsPage.njk', {
@@ -186,7 +186,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitAccount(account: nodes.AccountNode): RenderMap {
     const isLinked = nodes.isLinkTypeNode(account.type);
-    const typeManifest = account.accept(this.typeManifestVisitor);
+    const typeManifest = visit(account, this.typeManifestVisitor);
     const imports = new JavaScriptImportMap().mergeWith(
       typeManifest.strictImports,
       typeManifest.serializerImports
@@ -250,7 +250,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // GPA Fields.
     const gpaFields = account.metadata.gpaFields.map((gpaField) => {
-      const gpaFieldManifest = gpaField.type.accept(this.typeManifestVisitor);
+      const gpaFieldManifest = visit(gpaField.type, this.typeManifestVisitor);
       imports.mergeWith(
         gpaFieldManifest.looseImports,
         gpaFieldManifest.serializerImports
@@ -279,7 +279,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         .length > 0;
     const seeds = account.metadata.seeds.map((seed) => {
       if (seed.kind !== 'variable') return seed;
-      const seedManifest = seed.type.accept(this.typeManifestVisitor);
+      const seedManifest = visit(seed.type, this.typeManifestVisitor);
       imports.mergeWith(
         seedManifest.looseImports,
         seedManifest.serializerImports
@@ -369,7 +369,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Args.
-    const argManifest = instruction.accept(this.typeManifestVisitor);
+    const argManifest = visit(instruction, this.typeManifestVisitor);
     imports.mergeWith(argManifest.looseImports, argManifest.serializerImports);
     if (!nodes.isLinkTypeNode(instruction.args)) {
       imports.mergeWith(argManifest.strictImports);
@@ -385,7 +385,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         strict: `${pascalCase(instruction.name)}InstructionExtra`,
         loose: `${pascalCase(instruction.name)}InstructionExtraArgs`,
       });
-      extraArgManifest = instruction.extraArgs.accept(this.typeManifestVisitor);
+      extraArgManifest = visit(instruction.extraArgs, this.typeManifestVisitor);
       imports.mergeWith(extraArgManifest.looseImports);
       this.typeManifestVisitor.setDefinedName(null);
     }
@@ -471,7 +471,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
-    const typeManifest = definedType.accept(this.typeManifestVisitor);
+    const typeManifest = visit(definedType, this.typeManifestVisitor);
     const imports = new JavaScriptImportMap()
       .mergeWithManifest(typeManifest)
       .add('core', ['Context', 'Serializer'])

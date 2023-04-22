@@ -32,7 +32,7 @@ export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<no
     // Remove duplicates whose types are not equal.
     const strVisitor = new GetNodeInlineStringVisitor();
     typeMap.forEach((list, name) => {
-      const types = list.map((item) => item.type.accept(strVisitor));
+      const types = list.map((item) => visit(item.type, strVisitor));
       const typesAreEqual = types.every((type, i, arr) => type === arr[0]);
       if (!typesAreEqual) {
         typeMap.delete(name);
