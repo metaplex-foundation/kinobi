@@ -6,10 +6,7 @@ import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { assertStructTypeNode, StructTypeNode } from './StructTypeNode';
 import type { InstructionNodeAccountDefaultsSeed } from './InstructionNode';
 import { isPublicKeyTypeNode } from './PublicKeyTypeNode';
-import {
-  isDefinedLinkTypeNode,
-  DefinedLinkTypeNode,
-} from './DefinedLinkTypeNode';
+import { isLinkTypeNode, LinkTypeNode } from './LinkTypeNode';
 import { ValueNode } from './ValueNode';
 
 export type AccountNodeMetadata = {
@@ -43,7 +40,7 @@ export class AccountNode implements Visitable {
 
   readonly metadata: AccountNodeMetadata;
 
-  readonly type: StructTypeNode | DefinedLinkTypeNode;
+  readonly type: StructTypeNode | LinkTypeNode;
 
   constructor(metadata: AccountNodeMetadata, type: AccountNode['type']) {
     this.metadata = {
@@ -93,7 +90,7 @@ export class AccountNode implements Visitable {
   }
 
   get isLinked(): boolean {
-    return isDefinedLinkTypeNode(this.type);
+    return isLinkTypeNode(this.type);
   }
 
   get variableSeeds(): Extract<AccountNodeSeed, { kind: 'variable' }>[] {

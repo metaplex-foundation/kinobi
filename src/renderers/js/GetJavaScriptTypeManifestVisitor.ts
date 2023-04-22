@@ -92,7 +92,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.DefinedLinkTypeNode
+    typeDefinedLink: nodes.LinkTypeNode
   ): JavaScriptTypeManifest {
     const pascalCaseDefinedType = pascalCase(typeDefinedLink.name);
     const serializerName = `get${pascalCaseDefinedType}Serializer`;

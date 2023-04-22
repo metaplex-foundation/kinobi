@@ -185,7 +185,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
-    const isLinked = nodes.isDefinedLinkTypeNode(account.type);
+    const isLinked = nodes.isLinkTypeNode(account.type);
     const typeManifest = account.accept(this.typeManifestVisitor);
     const imports = new JavaScriptImportMap().mergeWith(
       typeManifest.strictImports,
@@ -224,7 +224,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     } else if (
       discriminator?.kind === 'field' &&
-      !nodes.isDefinedLinkTypeNode(account.type)
+      !nodes.isLinkTypeNode(account.type)
     ) {
       const discriminatorField =
         account.type.fields.find((f) => f.name === discriminator.name) ?? null;
@@ -371,10 +371,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Args.
     const argManifest = instruction.accept(this.typeManifestVisitor);
     imports.mergeWith(argManifest.looseImports, argManifest.serializerImports);
-    if (!nodes.isDefinedLinkTypeNode(instruction.args)) {
+    if (!nodes.isLinkTypeNode(instruction.args)) {
       imports.mergeWith(argManifest.strictImports);
     }
-    if (!nodes.isDefinedLinkTypeNode(instruction.args) && instruction.hasData) {
+    if (!nodes.isLinkTypeNode(instruction.args) && instruction.hasData) {
       imports.add('core', ['Serializer']);
     }
 
@@ -426,8 +426,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // canMergeAccountsAndArgs
     let canMergeAccountsAndArgs = false;
     if (
-      !nodes.isDefinedLinkTypeNode(instruction.args) &&
-      !nodes.isDefinedLinkTypeNode(instruction.extraArgs)
+      !nodes.isLinkTypeNode(instruction.args) &&
+      !nodes.isLinkTypeNode(instruction.extraArgs)
     ) {
       const accountsAndArgsConflicts =
         this.getMergeConflictsForInstructionAccountsAndArgs(instruction);

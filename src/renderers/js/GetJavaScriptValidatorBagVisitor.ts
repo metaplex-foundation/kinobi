@@ -56,7 +56,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     }
 
     const reservedAccountFields = new Set(['publicKey', 'header']);
-    if (!nodes.isDefinedLinkTypeNode(account.type)) {
+    if (!nodes.isLinkTypeNode(account.type)) {
       const invalidFields = account.type.fields
         .map((field) => field.name)
         .filter((name) => reservedAccountFields.has(name));

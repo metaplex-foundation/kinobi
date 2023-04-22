@@ -34,7 +34,7 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
     return this.map(typeArray.accept(this.visitor));
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): U {
+  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): U {
     return this.map(typeDefinedLink.accept(this.visitor));
   }
 

@@ -34,7 +34,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
       const options: CustomAccountSerializerOptions | null =
         this.map[account.name] ?? null;
       if (!options || !options.extract) return;
-      if (nodes.isDefinedLinkTypeNode(account.type)) return;
+      if (nodes.isLinkTypeNode(account.type)) return;
       const newType = new nodes.DefinedTypeNode(
         {
           name: options.extractAs,
@@ -62,7 +62,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
     const options: CustomAccountSerializerOptions | null =
       this.map[account.name] ?? null;
     if (!options) return account;
-    if (nodes.isDefinedLinkTypeNode(account.type)) return account;
+    if (nodes.isLinkTypeNode(account.type)) return account;
 
     let newMetadata = account.metadata;
 
@@ -86,7 +86,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
 
     return new nodes.AccountNode(
       newMetadata,
-      new nodes.DefinedLinkTypeNode(options.name, {
+      new nodes.LinkTypeNode(options.name, {
         importFrom: options.importFrom,
       })
     );

@@ -16,7 +16,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
           selector: { type: 'InstructionNode', stack: selectorStack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
-            if (nodes.isDefinedLinkTypeNode(node.args)) return node;
+            if (nodes.isLinkTypeNode(node.args)) return node;
 
             const argFields = node.args.fields;
             const argName = mainCase(argNameInput);
@@ -34,7 +34,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
             if (nodes.isEnumTypeNode(argField.type)) {
               argType = argField.type;
             } else if (
-              nodes.isDefinedLinkTypeNode(argField.type) &&
+              nodes.isLinkTypeNode(argField.type) &&
               this.allDefinedTypes.has(argField.type.name)
             ) {
               const linkedType =

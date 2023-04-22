@@ -56,7 +56,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return `array(${item};${size})`;
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): string {
+  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): string {
     return `link(${typeDefinedLink.name};${typeDefinedLink.importFrom})`;
   }
 

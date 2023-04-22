@@ -41,9 +41,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return typeArray.size.size === 0 ? 0 : arraySize;
   }
 
-  visitTypeDefinedLink(
-    typeDefinedLink: nodes.DefinedLinkTypeNode
-  ): number | null {
+  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): number | null {
     if (typeDefinedLink.size !== null) return typeDefinedLink.size;
     if (typeDefinedLink.importFrom !== 'generated') return null;
 

@@ -124,9 +124,9 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     return [this.indented(`[ArrayTypeNode] size: ${size}`), item].join('\n');
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): string {
+  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): string {
     return this.indented(
-      `[DefinedLinkTypeNode] ${typeDefinedLink.name}, ` +
+      `[LinkTypeNode] ${typeDefinedLink.name}, ` +
         `importFrom: ${typeDefinedLink.importFrom}`
     );
   }

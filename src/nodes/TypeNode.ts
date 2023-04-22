@@ -3,7 +3,7 @@ import type { Node } from './Node';
 import { ArrayTypeNode } from './ArrayTypeNode';
 import { BoolTypeNode } from './BoolTypeNode';
 import { BytesTypeNode } from './BytesTypeNode';
-import { DefinedLinkTypeNode } from './DefinedLinkTypeNode';
+import { LinkTypeNode } from './LinkTypeNode';
 import { EnumTypeNode } from './EnumTypeNode';
 import { MapTypeNode } from './MapTypeNode';
 import { NumberTypeNode } from './NumberTypeNode';
@@ -19,7 +19,7 @@ export type TypeNode =
   | ArrayTypeNode
   | BoolTypeNode
   | BytesTypeNode
-  | DefinedLinkTypeNode
+  | LinkTypeNode
   | EnumTypeNode
   | MapTypeNode
   | NumberTypeNode
@@ -35,7 +35,7 @@ const TYPE_NODE_CLASSES = [
   'ArrayTypeNode',
   'BoolTypeNode',
   'BytesTypeNode',
-  'DefinedLinkTypeNode',
+  'LinkTypeNode',
   'EnumTypeNode',
   'MapTypeNode',
   'NumberTypeNode',
@@ -79,7 +79,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 
   // Defined link.
   if ('defined' in idlType && typeof idlType.defined === 'string') {
-    return new DefinedLinkTypeNode(idlType.defined);
+    return new LinkTypeNode(idlType.defined);
   }
 
   // Enum.
@@ -129,22 +129,21 @@ export function assertTypeNode(node: Node | null): asserts node is TypeNode {
   }
 }
 
-export function isStructOrDefinedLinkTypeNode(
+export function isStructOrLinkTypeNode(
   node: Node | null
-): node is StructTypeNode | DefinedLinkTypeNode {
+): node is StructTypeNode | LinkTypeNode {
   return (
     !!node &&
-    (node.nodeClass === 'StructTypeNode' ||
-      node.nodeClass === 'DefinedLinkTypeNode')
+    (node.nodeClass === 'StructTypeNode' || node.nodeClass === 'LinkTypeNode')
   );
 }
 
-export function assertStructOrDefinedLinkTypeNode(
+export function assertStructOrLinkTypeNode(
   node: Node | null
-): asserts node is StructTypeNode | DefinedLinkTypeNode {
-  if (!isStructOrDefinedLinkTypeNode(node)) {
+): asserts node is StructTypeNode | LinkTypeNode {
+  if (!isStructOrLinkTypeNode(node)) {
     throw new Error(
-      `Expected StructTypeNode | DefinedLinkTypeNode, got ${
+      `Expected StructTypeNode | LinkTypeNode, got ${
         node?.nodeClass ?? 'null'
       }.`
     );

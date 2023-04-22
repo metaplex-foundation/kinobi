@@ -2,8 +2,8 @@ import { mainCase } from '../utils';
 import type { ImportFrom, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
-export class DefinedLinkTypeNode implements Visitable {
-  readonly nodeClass = 'DefinedLinkTypeNode' as const;
+export class LinkTypeNode implements Visitable {
+  readonly nodeClass = 'LinkTypeNode' as const;
 
   readonly name: string;
 
@@ -28,18 +28,14 @@ export class DefinedLinkTypeNode implements Visitable {
   }
 }
 
-export function isDefinedLinkTypeNode(
-  node: Node | null
-): node is DefinedLinkTypeNode {
-  return !!node && node.nodeClass === 'DefinedLinkTypeNode';
+export function isLinkTypeNode(node: Node | null): node is LinkTypeNode {
+  return !!node && node.nodeClass === 'LinkTypeNode';
 }
 
-export function assertDefinedLinkTypeNode(
+export function assertLinkTypeNode(
   node: Node | null
-): asserts node is DefinedLinkTypeNode {
-  if (!isDefinedLinkTypeNode(node)) {
-    throw new Error(
-      `Expected DefinedLinkTypeNode, got ${node?.nodeClass ?? 'null'}.`
-    );
+): asserts node is LinkTypeNode {
+  if (!isLinkTypeNode(node)) {
+    throw new Error(`Expected LinkTypeNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

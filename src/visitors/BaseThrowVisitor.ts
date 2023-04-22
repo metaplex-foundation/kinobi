@@ -31,7 +31,7 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     throw new Error('This visitor does not support TypeArray nodes.');
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): T {
+  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): T {
     throw new Error('This visitor does not support TypeDefinedLink nodes.');
   }
 

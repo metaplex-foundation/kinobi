@@ -14,7 +14,7 @@ const {
   UpdateInstructionsVisitor,
   UpdateProgramsVisitor,
   UpdateDefinedTypesVisitor,
-  DefinedLinkTypeNode,
+  LinkTypeNode,
   StructTypeNode,
   StructFieldTypeNode,
   vScalar,
@@ -54,7 +54,7 @@ kinobi.update(
           kind: 'variable',
           name: 'delegateRole',
           description: 'The role of the delegate',
-          type: new DefinedLinkTypeNode('delegateRole'),
+          type: new LinkTypeNode('delegateRole'),
         },
       ],
     },
@@ -81,7 +81,7 @@ kinobi.update(
           kind: 'variable',
           name: 'role',
           description: 'The delegate role',
-          type: new DefinedLinkTypeNode('delegateRole'),
+          type: new LinkTypeNode('delegateRole'),
         },
       ],
     },
@@ -173,7 +173,7 @@ kinobi.update(
       },
       args: {
         tokenStandard: {
-          type: new DefinedLinkTypeNode('tokenStandard'),
+          type: new LinkTypeNode('tokenStandard'),
           defaultsTo: {
             kind: 'value',
             value: vEnum('tokenStandard', 'NonFungible'),

@@ -71,7 +71,7 @@ export class GetDefinedTypeHistogramVisitor
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.DefinedLinkTypeNode
+    typeDefinedLink: nodes.LinkTypeNode
   ): DefinedTypeHistogram {
     if (typeDefinedLink.importFrom !== 'generated') {
       return {};

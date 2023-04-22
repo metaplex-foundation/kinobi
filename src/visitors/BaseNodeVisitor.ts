@@ -30,7 +30,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const accountType = account.type.accept(this);
-    nodes.assertStructOrDefinedLinkTypeNode(accountType);
+    nodes.assertStructOrLinkTypeNode(accountType);
     const seeds = account.metadata.seeds.map((seed) => {
       if (seed.kind !== 'variable') return seed;
       const newType = seed.type.accept(this);
@@ -50,9 +50,9 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const args = instruction.args.accept(this);
-    nodes.assertStructOrDefinedLinkTypeNode(args);
+    nodes.assertStructOrLinkTypeNode(args);
     const extraArgs = instruction.extraArgs.accept(this);
-    nodes.assertStructOrDefinedLinkTypeNode(extraArgs);
+    nodes.assertStructOrLinkTypeNode(extraArgs);
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
@@ -82,7 +82,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return new nodes.ArrayTypeNode(item, { ...typeArray });
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): nodes.Node {
+  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): nodes.Node {
     return typeDefinedLink;
   }
 

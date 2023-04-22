@@ -190,14 +190,14 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     newInstructionName: string,
     argUpdates: InstructionArgUpdates
   ): {
-    newArgs: nodes.StructTypeNode | nodes.DefinedLinkTypeNode;
-    newExtraArgs: nodes.StructTypeNode | nodes.DefinedLinkTypeNode;
+    newArgs: nodes.StructTypeNode | nodes.LinkTypeNode;
+    newExtraArgs: nodes.StructTypeNode | nodes.LinkTypeNode;
     newArgDefaults: Record<string, nodes.InstructionNodeArgDefaults>;
   } {
     const usedArgs = new Set<string>();
 
     let newArgs = instruction.args;
-    if (!nodes.isDefinedLinkTypeNode(instruction.args)) {
+    if (!nodes.isLinkTypeNode(instruction.args)) {
       const fields = instruction.args.fields.map((field) => {
         const argUpdate = argUpdates[field.name];
         if (!argUpdate) return field;
@@ -218,7 +218,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     }
 
     let newExtraArgs = instruction.extraArgs;
-    if (!nodes.isDefinedLinkTypeNode(instruction.extraArgs)) {
+    if (!nodes.isLinkTypeNode(instruction.extraArgs)) {
       const fields = instruction.extraArgs.fields.map((field) => {
         if (usedArgs.has(field.name)) return field;
         const argUpdate = argUpdates[field.name];

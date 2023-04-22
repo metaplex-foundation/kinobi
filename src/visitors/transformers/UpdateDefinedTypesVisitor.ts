@@ -61,14 +61,14 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
         if (newName) {
           transforms.push({
             selector: {
-              type: 'DefinedLinkTypeNode',
+              type: 'LinkTypeNode',
               stack: selectorStack,
               name,
             },
             transformer: (node: nodes.Node) => {
-              nodes.assertDefinedLinkTypeNode(node);
+              nodes.assertLinkTypeNode(node);
               if (node.importFrom !== 'generated') return node;
-              return new nodes.DefinedLinkTypeNode(newName, { ...node });
+              return new nodes.LinkTypeNode(newName, { ...node });
             },
           });
         }

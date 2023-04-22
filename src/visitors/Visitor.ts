@@ -13,7 +13,7 @@ export interface Visitor<T = void> {
 
   // Types.
   visitTypeArray: (typeArray: nodes.ArrayTypeNode) => T;
-  visitTypeDefinedLink: (typeDefinedLink: nodes.DefinedLinkTypeNode) => T;
+  visitTypeDefinedLink: (typeDefinedLink: nodes.LinkTypeNode) => T;
   visitTypeEnum: (typeEnum: nodes.EnumTypeNode) => T;
   visitTypeEnumEmptyVariant: (
     typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode

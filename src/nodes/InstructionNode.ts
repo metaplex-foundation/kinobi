@@ -6,10 +6,7 @@ import { createTypeNodeFromIdl } from './TypeNode';
 import { StructTypeNode } from './StructTypeNode';
 import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { ValueNode, vScalar } from './ValueNode';
-import {
-  isDefinedLinkTypeNode,
-  DefinedLinkTypeNode,
-} from './DefinedLinkTypeNode';
+import { isLinkTypeNode, LinkTypeNode } from './LinkTypeNode';
 
 export type InstructionNodeMetadata = {
   name: string;
@@ -91,9 +88,9 @@ export class InstructionNode implements Visitable {
 
   readonly accounts: InstructionNodeAccount[];
 
-  readonly args: StructTypeNode | DefinedLinkTypeNode;
+  readonly args: StructTypeNode | LinkTypeNode;
 
-  readonly extraArgs: StructTypeNode | DefinedLinkTypeNode;
+  readonly extraArgs: StructTypeNode | LinkTypeNode;
 
   readonly subInstructions: InstructionNode[];
 
@@ -244,11 +241,11 @@ export class InstructionNode implements Visitable {
   }
 
   get hasLinkedArgs(): boolean {
-    return isDefinedLinkTypeNode(this.args);
+    return isLinkTypeNode(this.args);
   }
 
   get hasLinkedExtraArgs(): boolean {
-    return isDefinedLinkTypeNode(this.extraArgs);
+    return isLinkTypeNode(this.extraArgs);
   }
 
   get hasAccounts(): boolean {
@@ -256,12 +253,12 @@ export class InstructionNode implements Visitable {
   }
 
   get hasData(): boolean {
-    if (isDefinedLinkTypeNode(this.args)) return true;
+    if (isLinkTypeNode(this.args)) return true;
     return this.args.fields.length > 0;
   }
 
   get hasArgs(): boolean {
-    if (isDefinedLinkTypeNode(this.args)) return true;
+    if (isLinkTypeNode(this.args)) return true;
     const nonOmittedFields = this.args.fields.filter(
       (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
     );
@@ -269,7 +266,7 @@ export class InstructionNode implements Visitable {
   }
 
   get hasExtraArgs(): boolean {
-    if (isDefinedLinkTypeNode(this.extraArgs)) return true;
+    if (isLinkTypeNode(this.extraArgs)) return true;
     const nonOmittedFields = this.extraArgs.fields.filter(
       (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
     );

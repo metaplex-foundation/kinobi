@@ -35,7 +35,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitAccount(account: nodes.AccountNode): nodes.Node | null {
     const accountType = account.type.accept(this);
     if (accountType === null) return null;
-    nodes.assertStructOrDefinedLinkTypeNode(accountType);
+    nodes.assertStructOrLinkTypeNode(accountType);
     const seeds = account.metadata.seeds
       .map((seed) => {
         if (seed.kind !== 'variable') return seed;
@@ -61,9 +61,9 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
     const args = instruction.args.accept(this);
-    nodes.assertStructOrDefinedLinkTypeNode(args);
+    nodes.assertStructOrLinkTypeNode(args);
     const extraArgs = instruction.extraArgs.accept(this);
-    nodes.assertStructOrDefinedLinkTypeNode(extraArgs);
+    nodes.assertStructOrLinkTypeNode(extraArgs);
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
@@ -95,9 +95,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return new nodes.ArrayTypeNode(item, { ...typeArray });
   }
 
-  visitTypeDefinedLink(
-    typeDefinedLink: nodes.DefinedLinkTypeNode
-  ): nodes.Node | null {
+  visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): nodes.Node | null {
     return typeDefinedLink;
   }
 

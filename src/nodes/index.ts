@@ -2,7 +2,7 @@ export * from './AccountNode';
 export * from './ArrayTypeNode';
 export * from './BoolTypeNode';
 export * from './BytesTypeNode';
-export * from './DefinedLinkTypeNode';
+export * from './LinkTypeNode';
 export * from './DefinedTypeNode';
 export * from './EnumEmptyVariantTypeNode';
 export * from './EnumStructVariantTypeNode';
