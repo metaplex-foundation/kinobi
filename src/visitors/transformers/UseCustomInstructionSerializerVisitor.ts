@@ -1,11 +1,11 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { Dependency } from '../Dependency';
+import { ImportFrom } from '../ImportFrom';
 
 export type CustomInstructionSerializerOptions = {
   name: string;
-  dependency: Dependency;
+  importFrom: ImportFrom;
   extract: boolean;
   extractAs: string;
   extractedTypeShouldBeInternal: boolean;
@@ -68,7 +68,7 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
       instruction.metadata,
       instruction.accounts,
       new nodes.TypeDefinedLinkNode(options.name, {
-        dependency: options.dependency,
+        importFrom: options.importFrom,
       }),
       instruction.extraArgs,
       instruction.subInstructions
@@ -82,7 +82,7 @@ function parseLink(
 ): CustomInstructionSerializerOptions {
   const defaultOptions = {
     name: `${name}InstructionData`,
-    dependency: 'hooked',
+    importFrom: 'hooked',
     extract: false,
     extractAs: `${name}InstructionData`,
     extractedTypeShouldBeInternal: true,

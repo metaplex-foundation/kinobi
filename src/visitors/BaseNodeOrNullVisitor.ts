@@ -61,17 +61,14 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
     const args = instruction.args.accept(this);
-    if (args === null) return null;
     nodes.assertTypeStructOrDefinedLinkNode(args);
-    const extraArgs = instruction.extraArgs?.accept(this) ?? null;
-    if (extraArgs !== null) {
-      nodes.assertTypeStructOrDefinedLinkNode(args);
-    }
+    const extraArgs = instruction.extraArgs.accept(this);
+    nodes.assertTypeStructOrDefinedLinkNode(extraArgs);
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
       args,
-      extraArgs as nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null,
+      extraArgs,
       instruction.subInstructions
         .map((ix) => ix.accept(this))
         .filter(

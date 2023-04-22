@@ -14,10 +14,10 @@ import {
   Serializer,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { PickPartial, addObjectProperty, isWritable } from '../shared';
 import {
   TaCreateArgs,
   TaCreateArgsArgs,
@@ -71,7 +71,6 @@ export function getCreateRuleSetInstructionDataSerializer(
 }
 
 // Args.
-type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type CreateRuleSetInstructionArgs = PickPartial<
   CreateRuleSetInstructionDataArgs,
   'ruleSetBump'
@@ -95,18 +94,27 @@ export function createRuleSet(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  const resolvedArgs: any = { ...input };
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
-    ...context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
-    isWritable: false,
-  };
-  resolvedArgs.ruleSetBump =
-    resolvedArgs.ruleSetBump ?? resolvedAccounts.ruleSetPda.bump;
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(
+    resolvingAccounts,
+    'systemProgram',
+    input.systemProgram ?? {
+      ...context.programs.getPublicKey(
+        'splSystem',
+        '11111111111111111111111111111111'
+      ),
+      isWritable: false,
+    }
+  );
+  addObjectProperty(
+    resolvingArgs,
+    'ruleSetBump',
+    input.ruleSetBump ?? input.ruleSetPda.bump
+  );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Payer.
   signers.push(resolvedAccounts.payer);

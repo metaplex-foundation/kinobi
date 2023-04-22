@@ -12,7 +12,6 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
@@ -20,6 +19,7 @@ import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
 } from '../../hooked';
+import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type CreateReservationListInstructionAccounts = {
@@ -64,19 +64,31 @@ export function createReservationList(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...accounts };
-  const resolvedArgs: any = { ...args };
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.systemProgram = resolvedAccounts.systemProgram ?? {
-    ...context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    ),
-    isWritable: false,
-  };
-  resolvedAccounts.rent =
-    resolvedAccounts.rent ??
-    publicKey('SysvarRent111111111111111111111111111111111');
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
+  addObjectProperty(
+    resolvingAccounts,
+    'payer',
+    accounts.payer ?? context.payer
+  );
+  addObjectProperty(
+    resolvingAccounts,
+    'systemProgram',
+    accounts.systemProgram ?? {
+      ...context.programs.getPublicKey(
+        'splSystem',
+        '11111111111111111111111111111111'
+      ),
+      isWritable: false,
+    }
+  );
+  addObjectProperty(
+    resolvingAccounts,
+    'rent',
+    accounts.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
+  );
+  const resolvedAccounts = { ...accounts, ...resolvingAccounts };
+  const resolvedArgs = { ...args, ...resolvingArgs };
 
   // Reservation List.
   keys.push({

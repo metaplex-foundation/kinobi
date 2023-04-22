@@ -1,15 +1,23 @@
 import { mainCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { Dependency } from '../Dependency';
+import { ImportFrom } from '../ImportFrom';
 
 export type InstructionNodeAccountDefaultsInput =
   | nodes.InstructionNodeAccountDefaults
   | {
       kind: 'pda';
       pdaAccount?: string;
-      dependency?: Dependency;
+      importFrom?: ImportFrom;
       seeds?: Record<string, nodes.InstructionNodeAccountDefaultsSeed>;
+    }
+  | {
+      kind: 'resolver';
+      name: string;
+      importFrom?: ImportFrom;
+      dependsOn?: nodes.InstructionNodeInputDependency[];
+      resolvedIsSigner?: boolean | 'either';
+      resolvedIsOptional?: boolean;
     };
 
 export type InstructionAccountDefaultRule =
@@ -211,7 +219,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
             (typeof rule.account === 'string' ? rule.account : '');
           const defaultsTo = {
             pdaAccount,
-            dependency: 'generated',
+            importFrom: 'generated',
             seeds:
               this.allAccounts.get(mainCase(pdaAccount))
                 ?.instructionAccountDefaultSeeds ?? {},
@@ -242,6 +250,16 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           }
 
           return account;
+        }
+        if (rule.kind === 'resolver') {
+          return {
+            ...account,
+            defaultsTo: {
+              importFrom: 'hooked',
+              dependsOn: [],
+              ...rule,
+            },
+          };
         }
         return { ...account, defaultsTo: rule };
       }

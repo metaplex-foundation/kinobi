@@ -41,7 +41,7 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
     if (
       !this.shouldInline(typeDefinedLink.name) ||
-      typeDefinedLink.dependency !== 'generated'
+      typeDefinedLink.importFrom !== 'generated'
     ) {
       return typeDefinedLink;
     }

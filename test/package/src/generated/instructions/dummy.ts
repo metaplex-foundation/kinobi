@@ -13,13 +13,13 @@ import {
   Serializer,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   isSigner,
   mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';
+import { addObjectProperty, isWritable } from '../shared';
 import { DelegateRole } from '../types';
 
 // Accounts.
@@ -78,17 +78,32 @@ export function dummy(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...input };
-  resolvedAccounts.mint = resolvedAccounts.mint ?? programId;
-  resolvedAccounts.edition = resolvedAccounts.edition ?? resolvedAccounts.mint;
-  resolvedAccounts.mintAuthority =
-    resolvedAccounts.mintAuthority ?? resolvedAccounts.updateAuthority;
-  resolvedAccounts.payer = resolvedAccounts.payer ?? context.payer;
-  resolvedAccounts.bar = resolvedAccounts.bar ?? programId;
-  resolvedAccounts.foo = resolvedAccounts.foo ?? resolvedAccounts.bar;
-  resolvedAccounts.delegateRecord =
-    resolvedAccounts.delegateRecord ??
-    findDelegateRecordPda(context, { role: DelegateRole.Collection });
+  const resolvingAccounts = {};
+  addObjectProperty(resolvingAccounts, 'mint', input.mint ?? programId);
+  addObjectProperty(
+    resolvingAccounts,
+    'edition',
+    input.edition ?? resolvingAccounts.mint
+  );
+  addObjectProperty(
+    resolvingAccounts,
+    'mintAuthority',
+    input.mintAuthority ?? input.updateAuthority
+  );
+  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
+  addObjectProperty(resolvingAccounts, 'bar', input.bar ?? programId);
+  addObjectProperty(
+    resolvingAccounts,
+    'foo',
+    input.foo ?? resolvingAccounts.bar
+  );
+  addObjectProperty(
+    resolvingAccounts,
+    'delegateRecord',
+    input.delegateRecord ??
+      findDelegateRecordPda(context, { role: DelegateRole.Collection })
+  );
+  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Edition (optional).
   if (resolvedAccounts.edition) {

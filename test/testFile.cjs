@@ -102,8 +102,10 @@ kinobi.update(
   new UpdateInstructionsVisitor({
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
-      argDefaults: {
-        ruleSetBump: { kind: 'accountBump', name: 'ruleSetPda' },
+      args: {
+        ruleSetBump: {
+          defaultsTo: { kind: 'accountBump', name: 'ruleSetPda' },
+        },
       },
     },
     'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
@@ -112,8 +114,8 @@ kinobi.update(
       accounts: {
         metadata: { defaultsTo: { kind: 'pda' } },
       },
-      argDefaults: {
-        metadataBump: { kind: 'accountBump', name: 'metadata' },
+      args: {
+        metadataBump: { defaultsTo: { kind: 'accountBump', name: 'metadata' } },
       },
     },
     CreateMetadataAccountV3: {
@@ -154,30 +156,27 @@ kinobi.update(
     },
     DeprecatedCreateReservationList: { name: 'CreateReservationList' },
     Transfer: {
-      extraArgs: new TypeStructNode('TransferExtraArgs', [
-        new TypeStructFieldNode(
-          { name: 'tokenStandard', docs: [], defaultsTo: null },
-          new TypeDefinedLinkNode('tokenStandard')
-        ),
-      ]),
-      argDefaults: {
-        tokenStandard: {
-          kind: 'value',
-          value: vEnum('tokenStandard', 'NonFungible'),
-        },
-      },
       accounts: {
         masterEdition: {
           defaultsTo: {
             kind: 'resolver',
             name: 'resolveMasterEditionFromTokenStandard',
-            dependency: 'hooked',
+            importFrom: 'hooked',
             resolvedIsSigner: false,
             resolvedIsOptional: false,
             dependsOn: [
               { kind: 'account', name: 'mint' },
               { kind: 'arg', name: 'tokenStandard' },
             ],
+          },
+        },
+      },
+      args: {
+        tokenStandard: {
+          type: new TypeDefinedLinkNode('tokenStandard'),
+          defaultsTo: {
+            kind: 'value',
+            value: vEnum('tokenStandard', 'NonFungible'),
           },
         },
       },

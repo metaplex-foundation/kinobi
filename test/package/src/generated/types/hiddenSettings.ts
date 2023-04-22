@@ -28,7 +28,7 @@ export function getHiddenSettingsSerializer(
     [
       ['name', s.string()],
       ['uri', s.string()],
-      ['hash', s.bytes()],
+      ['hash', s.bytes({ size: 32 })],
     ],
     { description: 'HiddenSettings' }
   ) as Serializer<HiddenSettingsArgs, HiddenSettings>;

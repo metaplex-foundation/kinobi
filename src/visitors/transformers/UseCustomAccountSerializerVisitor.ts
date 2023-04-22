@@ -1,11 +1,11 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { Dependency } from '../Dependency';
+import { ImportFrom } from '../ImportFrom';
 
 export type CustomAccountSerializerOptions = {
   name: string;
-  dependency: Dependency;
+  importFrom: ImportFrom;
   extract: boolean;
   extractAs: string;
   extractedTypeShouldBeInternal: boolean;
@@ -87,7 +87,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
     return new nodes.AccountNode(
       newMetadata,
       new nodes.TypeDefinedLinkNode(options.name, {
-        dependency: options.dependency,
+        importFrom: options.importFrom,
       })
     );
   }
@@ -99,7 +99,7 @@ function parseLink(
 ): CustomAccountSerializerOptions {
   const defaultOptions = {
     name: `${name}AccountData`,
-    dependency: 'hooked',
+    importFrom: 'hooked',
     extract: false,
     extractAs: `${name}AccountData`,
     extractedTypeShouldBeInternal: true,

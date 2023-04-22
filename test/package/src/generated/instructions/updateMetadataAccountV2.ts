@@ -14,10 +14,10 @@ import {
   Serializer,
   Signer,
   TransactionBuilder,
-  checkForIsWritableOverride as isWritable,
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { isWritable } from '../shared';
 import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
 
 // Accounts.
@@ -100,8 +100,10 @@ export function updateMetadataAccountV2(
   };
 
   // Resolved inputs.
-  const resolvedAccounts: any = { ...accounts };
-  const resolvedArgs: any = { ...args };
+  const resolvingAccounts = {};
+  const resolvingArgs = {};
+  const resolvedAccounts = { ...accounts, ...resolvingAccounts };
+  const resolvedArgs = { ...args, ...resolvingArgs };
 
   // Metadata.
   keys.push({

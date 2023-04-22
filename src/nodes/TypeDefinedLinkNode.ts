@@ -1,5 +1,5 @@
 import { mainCase } from '../utils';
-import type { Dependency, Visitable, Visitor } from '../visitors';
+import type { ImportFrom, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
 export class TypeDefinedLinkNode implements Visitable {
@@ -7,19 +7,19 @@ export class TypeDefinedLinkNode implements Visitable {
 
   readonly name: string;
 
-  readonly dependency: Dependency;
+  readonly importFrom: ImportFrom;
 
   readonly size: number | null;
 
   constructor(
     name: string,
     options: {
-      dependency?: Dependency;
+      importFrom?: ImportFrom;
       size?: number | null;
     } = {}
   ) {
     this.name = mainCase(name);
-    this.dependency = options.dependency ?? 'generated';
+    this.importFrom = options.importFrom ?? 'generated';
     this.size = options.size ?? null;
   }
 

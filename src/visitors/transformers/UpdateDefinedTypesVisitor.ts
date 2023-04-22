@@ -67,7 +67,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
             },
             transformer: (node: nodes.Node) => {
               nodes.assertTypeDefinedLinkNode(node);
-              if (node.dependency !== 'generated') return node;
+              if (node.importFrom !== 'generated') return node;
               return new nodes.TypeDefinedLinkNode(newName, { ...node });
             },
           });

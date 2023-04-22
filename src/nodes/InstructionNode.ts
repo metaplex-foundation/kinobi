@@ -1,6 +1,6 @@
 import { camelCase, mainCase } from '../utils';
 import type { IdlInstruction } from '../idl';
-import type { Dependency, Visitable, Visitor } from '../visitors';
+import type { ImportFrom, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { TypeStructNode } from './TypeStructNode';
@@ -42,7 +42,7 @@ export type InstructionNodeArgDefaults =
   | {
       kind: 'resolver';
       name: string;
-      dependency: Dependency;
+      importFrom: ImportFrom;
       dependsOn: InstructionNodeInputDependency[];
     };
 
@@ -56,16 +56,16 @@ export type InstructionNodeAccountDefaults =
   | {
       kind: 'pda';
       pdaAccount: string;
-      dependency: Dependency;
+      importFrom: ImportFrom;
       seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
     }
   | {
       kind: 'resolver';
       name: string;
-      dependency: Dependency;
-      resolvedIsSigner: boolean | 'either';
-      resolvedIsOptional: boolean;
+      importFrom: ImportFrom;
       dependsOn: InstructionNodeInputDependency[];
+      resolvedIsSigner?: boolean | 'either';
+      resolvedIsOptional?: boolean;
     };
 
 export type InstructionNodeAccountDefaultsSeed =
@@ -79,10 +79,10 @@ export type InstructionNodeBytesCreatedOnChain =
   | {
       kind: 'account';
       name: string;
-      dependency: Dependency;
+      importFrom: ImportFrom;
       includeHeader: boolean;
     }
-  | { kind: 'resolver'; name: string; dependency: Dependency };
+  | { kind: 'resolver'; name: string; importFrom: ImportFrom };
 
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
@@ -93,7 +93,7 @@ export class InstructionNode implements Visitable {
 
   readonly args: TypeStructNode | TypeDefinedLinkNode;
 
-  readonly extraArgs: TypeStructNode | TypeDefinedLinkNode | null;
+  readonly extraArgs: TypeStructNode | TypeDefinedLinkNode;
 
   readonly subInstructions: InstructionNode[];
 
@@ -215,7 +215,13 @@ export class InstructionNode implements Visitable {
       ]);
     }
 
-    return new InstructionNode(metadata, accounts, args, null, []);
+    const extraArgs = TypeStructNode.fromIdl({
+      kind: 'struct',
+      name: name ? `${name}InstructionExtra` : '',
+      fields: [],
+    });
+
+    return new InstructionNode(metadata, accounts, args, extraArgs, []);
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -264,10 +270,9 @@ export class InstructionNode implements Visitable {
 
   get hasExtraArgs(): boolean {
     if (isTypeDefinedLinkNode(this.extraArgs)) return true;
-    const nonOmittedFields =
-      this.extraArgs?.fields.filter(
-        (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
-      ) ?? [];
+    const nonOmittedFields = this.extraArgs.fields.filter(
+      (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
+    );
     return nonOmittedFields.length > 0;
   }
 
