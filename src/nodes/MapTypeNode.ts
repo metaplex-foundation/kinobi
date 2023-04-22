@@ -1,78 +1,54 @@
 import type { IdlTypeMap } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import {
+  SizeStrategy,
+  fixedSize,
+  prefixedSize,
+  remainderSize,
+} from '../shared';
 import type { Node } from './Node';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
-import { NumberTypeNode } from './NumberTypeNode';
+import { numberTypeNode } from './NumberTypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type MapTypeNode = {
   readonly __mapTypeNode: unique symbol;
   readonly nodeClass: 'MapTypeNode';
+  readonly keyNode: TypeNode;
+  readonly valueNode: TypeNode;
+  readonly size: SizeStrategy;
+  readonly idlMap: 'hashMap' | 'bTreeMap';
 };
 
-export type MapTypeNodeInput = {
-  // ...
-};
-
-export function mapTypeNode(input: MapTypeNodeInput): MapTypeNode {
-  return { ...input, nodeClass: 'MapTypeNode' } as MapTypeNode;
+export function mapTypeNode(
+  keyNode: TypeNode,
+  valueNode: TypeNode,
+  options: {
+    readonly size?: SizeStrategy;
+    readonly idlMap?: MapTypeNode['idlMap'];
+  } = {}
+): MapTypeNode {
+  return {
+    nodeClass: 'MapTypeNode',
+    keyNode,
+    valueNode,
+    size: options.size ?? prefixedSize(),
+    idlMap: options.idlMap ?? 'hashMap',
+  } as MapTypeNode;
 }
 
-export function mapTypeNodeFromIdl(idl: MapTypeNodeIdl): MapTypeNode {
-  return mapTypeNode(idl);
-}
-
-export class MapTypeNode implements Visitable {
-  readonly nodeClass = 'MapTypeNode' as const;
-
-  readonly key: TypeNode;
-
-  readonly value: TypeNode;
-
-  readonly size:
-    | { kind: 'fixed'; size: number }
-    | { kind: 'prefixed'; prefix: NumberTypeNode }
-    | { kind: 'remainder' };
-
-  readonly idlType: 'hashMap' | 'bTreeMap';
-
-  constructor(
-    key: TypeNode,
-    value: TypeNode,
-    options: {
-      size?: MapTypeNode['size'];
-      idlType?: 'hashMap' | 'bTreeMap';
-    } = {}
-  ) {
-    this.key = key;
-    this.value = value;
-    this.size = options.size ?? {
-      kind: 'prefixed',
-      prefix: new NumberTypeNode('u32'),
-    };
-    this.idlType = options.idlType ?? 'hashMap';
+export function mapTypeNodeFromIdl(idl: IdlTypeMap): MapTypeNode {
+  const [key, value] = 'hashMap' in idl ? idl.hashMap : idl.bTreeMap;
+  let size: SizeStrategy | undefined;
+  if (idl.size === 'remainder') {
+    size = remainderSize();
+  } else if (typeof idl.size === 'number') {
+    size = fixedSize(idl.size);
+  } else if (idl.size) {
+    size = prefixedSize(numberTypeNode(idl.size));
   }
-
-  static fromIdl(idl: IdlTypeMap): MapTypeNode {
-    const idlType = 'hashMap' in idl ? 'hashMap' : 'bTreeMap';
-    const [key, value] = 'hashMap' in idl ? idl.hashMap : idl.bTreeMap;
-    let size: MapTypeNode['size'] | undefined;
-    if (idl.size === 'remainder') {
-      size = { kind: 'remainder' };
-    } else if (typeof idl.size === 'number') {
-      size = { kind: 'fixed', size: idl.size };
-    } else if (idl.size) {
-      size = { kind: 'prefixed', prefix: new NumberTypeNode(idl.size) };
-    }
-    return new MapTypeNode(
-      createTypeNodeFromIdl(key),
-      createTypeNodeFromIdl(value),
-      { idlType, size }
-    );
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeMap(this);
-  }
+  return mapTypeNode(createTypeNodeFromIdl(key), createTypeNodeFromIdl(value), {
+    size,
+    idlMap: 'hashMap' in idl ? 'hashMap' : 'bTreeMap',
+  });
 }
 
 export function isMapTypeNode(node: Node | null): node is MapTypeNode {

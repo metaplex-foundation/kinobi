@@ -1,70 +1,51 @@
 import type { IdlTypeSet } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import {
+  SizeStrategy,
+  fixedSize,
+  prefixedSize,
+  remainderSize,
+} from '../shared';
 import type { Node } from './Node';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
-import { NumberTypeNode } from './NumberTypeNode';
+import { numberTypeNode } from './NumberTypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type SetTypeNode = {
   readonly __setTypeNode: unique symbol;
   readonly nodeClass: 'SetTypeNode';
+  readonly childNode: TypeNode;
+  readonly size: SizeStrategy;
+  readonly idlSet: 'hashSet' | 'bTreeSet';
 };
 
-export type SetTypeNodeInput = {
-  // ...
-};
-
-export function setTypeNode(input: SetTypeNodeInput): SetTypeNode {
-  return { ...input, nodeClass: 'SetTypeNode' } as SetTypeNode;
+export function setTypeNode(
+  childNode: TypeNode,
+  options: {
+    readonly size?: SizeStrategy;
+    readonly idlSet?: SetTypeNode['idlSet'];
+  } = {}
+): SetTypeNode {
+  return {
+    nodeClass: 'SetTypeNode',
+    childNode,
+    size: options.size ?? prefixedSize(),
+    idlSet: options.idlSet ?? 'hashSet',
+  } as SetTypeNode;
 }
 
-export function setTypeNodeFromIdl(idl: SetTypeNodeIdl): SetTypeNode {
-  return setTypeNode(idl);
-}
-
-export class SetTypeNode implements Visitable {
-  readonly nodeClass = 'SetTypeNode' as const;
-
-  readonly item: TypeNode;
-
-  readonly size:
-    | { kind: 'fixed'; size: number }
-    | { kind: 'prefixed'; prefix: NumberTypeNode }
-    | { kind: 'remainder' };
-
-  readonly idlType: 'hashSet' | 'bTreeSet';
-
-  constructor(
-    item: TypeNode,
-    options: {
-      size?: SetTypeNode['size'];
-      idlType?: SetTypeNode['idlType'];
-    } = {}
-  ) {
-    this.item = item;
-    this.size = options.size ?? {
-      kind: 'prefixed',
-      prefix: new NumberTypeNode('u32'),
-    };
-    this.idlType = options.idlType ?? 'hashSet';
+export function setTypeNodeFromIdl(idl: IdlTypeSet): SetTypeNode {
+  const childNode = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
+  let size: SetTypeNode['size'] | undefined;
+  if (idl.size === 'remainder') {
+    size = remainderSize();
+  } else if (typeof idl.size === 'number') {
+    size = fixedSize(idl.size);
+  } else if (idl.size) {
+    size = prefixedSize(numberTypeNode(idl.size));
   }
-
-  static fromIdl(idl: IdlTypeSet): SetTypeNode {
-    const idlType = 'hashSet' in idl ? 'hashSet' : 'bTreeSet';
-    const item = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
-    let size: SetTypeNode['size'] | undefined;
-    if (idl.size === 'remainder') {
-      size = { kind: 'remainder' };
-    } else if (typeof idl.size === 'number') {
-      size = { kind: 'fixed', size: idl.size };
-    } else if (idl.size) {
-      size = { kind: 'prefixed', prefix: new NumberTypeNode(idl.size) };
-    }
-    return new SetTypeNode(createTypeNodeFromIdl(item), { idlType, size });
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeSet(this);
-  }
+  return setTypeNode(createTypeNodeFromIdl(childNode), {
+    size,
+    idlSet: 'hashSet' in idl ? 'hashSet' : 'bTreeSet',
+  });
 }
 
 export function isSetTypeNode(node: Node | null): node is SetTypeNode {
