@@ -1,5 +1,6 @@
 export * from './AccountDiscriminator';
 export * from './AccountSeed';
+export * from './BytesCreatedOnChain';
 export * from './ImportFrom';
 export * from './errors';
 export * from './InstructionDefault';
