@@ -39,33 +39,37 @@ export class NodeStack {
   public toStringArray(): string[] {
     return this.stack.map((node): string => {
       switch (node.kind) {
-        case 'RootNode':
+        case 'rootNode':
           return 'Root';
-        case 'ProgramNode':
+        case 'programNode':
           return node.name ? `Program: ${node.name}` : 'Unnamed Program';
-        case 'AccountNode':
+        case 'accountNode':
           return node.name ? `Account: ${node.name}` : 'Unnamed Account';
-        case 'InstructionNode':
+        case 'instructionNode':
           return node.name
             ? `Instruction: ${node.name}`
             : 'Unnamed Instruction';
-        case 'DefinedTypeNode':
+        case 'instructionAccountNode':
+          return node.name
+            ? `Instruction Account: ${node.name}`
+            : 'Unnamed Instruction Account';
+        case 'definedTypeNode':
           return node.name
             ? `Defined Type: ${node.name}`
             : 'Unnamed Defined Type';
-        case 'ErrorNode':
+        case 'errorNode':
           return node.name ? `Error: ${node.name}` : 'Unnamed Error';
-        case 'EnumTypeNode':
+        case 'enumTypeNode':
           return node.name ? `Enum: ${node.name}` : 'Enum';
-        case 'EnumEmptyVariantTypeNode':
-        case 'EnumStructVariantTypeNode':
-        case 'EnumTupleVariantTypeNode':
+        case 'enumEmptyVariantTypeNode':
+        case 'enumStructVariantTypeNode':
+        case 'enumTupleVariantTypeNode':
           return node.name ? `Variant: ${node.name}` : 'Variant';
-        case 'NumberWrapperTypeNode':
+        case 'numberWrapperTypeNode':
           return `Number Wrapper: ${node.wrapper.kind}`;
-        case 'StructTypeNode':
+        case 'structTypeNode':
           return node.name ? `Struct: ${node.name}` : 'Struct';
-        case 'StructFieldTypeNode':
+        case 'structFieldTypeNode':
           return node.name ? `Field: ${node.name}` : 'Field';
         default:
           return titleCase(node.kind.replace(/Node$/, '').replace(/^Type/, ''));

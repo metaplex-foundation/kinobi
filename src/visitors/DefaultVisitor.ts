@@ -11,7 +11,7 @@ import {
   UnwrapInstructionArgsDefinedTypesVisitor,
   FlattenInstructionArgsStructVisitor,
 } from './transformers';
-import { Visitor } from './Visitor';
+import { visit, Visitor } from './Visitor';
 
 export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {

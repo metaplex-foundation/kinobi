@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import type { Visitor } from './Visitor';
+import { Visitor, visit } from './Visitor';
 
 export abstract class BaseVoidVisitor implements Visitor<void> {
   visitRoot(root: nodes.RootNode): void {
@@ -14,19 +14,48 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitAccount(account: nodes.AccountNode): void {
-    visit(account.type, this);
-    account.variableSeeds.forEach((seed) => visit(seed.type, this));
-    account.metadata.gpaFields.forEach((field) => visit(field.type, this));
+    visit(account.data, this);
+    account.seeds.forEach((seed) => {
+      if (seed.kind !== 'variable') return;
+      visit(seed.type, this);
+    });
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): void {
+    visit(accountData.struct, this);
+    if (accountData.link) visit(accountData.link, this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    visit(instruction.args, this);
-    instruction.extraArgs?.accept(this);
+    visit(instruction.dataArgs, this);
+    visit(instruction.extraArgs, this);
+    instruction.accounts.forEach((account) => visit(account, this));
     instruction.subInstructions.forEach((ix) => visit(ix, this));
   }
 
+  visitInstructionAccount(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    instructionAccount: nodes.InstructionAccountNode
+  ): void {
+    //
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): void {
+    visit(instructionDataArgs.struct, this);
+    if (instructionDataArgs.link) visit(instructionDataArgs.link, this);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): void {
+    visit(instructionExtraArgs.struct, this);
+    if (instructionExtraArgs.link) visit(instructionExtraArgs.link, this);
+  }
+
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
-    visit(definedType.type, this);
+    visit(definedType.data, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,7 +64,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): void {
-    visit(arrayType.item, this);
+    visit(arrayType.child, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,11 +101,11 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): void {
-    visit(optionType.item, this);
+    visit(optionType.child, this);
   }
 
   visitSetType(setType: nodes.SetTypeNode): void {
-    visit(setType.item, this);
+    visit(setType.child, this);
   }
 
   visitStructType(structType: nodes.StructTypeNode): void {
@@ -84,11 +113,11 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): void {
-    visit(structFieldType.type, this);
+    visit(structFieldType.child, this);
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): void {
-    tupleType.items.forEach((item) => visit(item, this));
+    tupleType.children.forEach((child) => visit(child, this));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,7 +136,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitNumberWrapperType(numberWrapperType: nodes.NumberWrapperTypeNode): void {
-    visit(numberWrapperType.item, this);
+    visit(numberWrapperType.number, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
