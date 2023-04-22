@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../utils';
+import { camelCase, pascalCase } from '../../shared';
 import { Visitor } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';

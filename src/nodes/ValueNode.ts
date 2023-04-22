@@ -1,4 +1,4 @@
-import { ImportFrom } from '../visitors';
+import { ImportFrom } from '../shared';
 
 export type ValueNode =
   | ScalarValueNode

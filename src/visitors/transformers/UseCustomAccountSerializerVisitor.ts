@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { ImportFrom } from '../ImportFrom';
+import { ImportFrom } from '../../shared/ImportFrom';
 
 export type CustomAccountSerializerOptions = {
   name: string;

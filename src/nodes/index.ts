@@ -10,6 +10,7 @@ export * from './EnumTupleVariantTypeNode';
 export * from './EnumTypeNode';
 export * from './EnumVariantTypeNode';
 export * from './ErrorNode';
+export * from './InstructionAccountNode';
 export * from './InstructionDataArgsNode';
 export * from './InstructionExtraArgsNode';
 export * from './InstructionNode';

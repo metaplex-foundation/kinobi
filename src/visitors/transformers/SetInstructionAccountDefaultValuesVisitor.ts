@@ -1,7 +1,7 @@
 import { mainCase } from '../../utils';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { ImportFrom } from '../ImportFrom';
+import { ImportFrom } from '../../shared/ImportFrom';
 
 export type InstructionNodeAccountDefaultsInput =
   | nodes.InstructionNodeAccountDefaults

@@ -9,13 +9,7 @@ import {
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import type { Node } from './Node';
 import { assertStructTypeNode } from './StructTypeNode';
-import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
-
-export type AccountGpaField = {
-  name: string;
-  offset: number | null;
-  type: TypeNode;
-};
+import { createTypeNodeFromIdl } from './TypeNode';
 
 export type AccountNode = {
   readonly __accountNode: unique symbol;
@@ -28,7 +22,6 @@ export type AccountNode = {
   readonly size: number | null;
   readonly seeds: AccountSeed[];
   readonly discriminator: AccountDiscriminator | null;
-  readonly gpaFields: AccountGpaField[];
 };
 
 export type AccountNodeInput = Omit<
@@ -50,7 +43,6 @@ export function accountNode(input: AccountNodeInput): AccountNode {
     size: input.size ?? null,
     seeds: input.seeds ?? [],
     discriminator: input.discriminator ?? null,
-    gpaFields: input.gpaFields ?? [],
   } as AccountNode;
 }
 

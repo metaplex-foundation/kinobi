@@ -1,18 +1,12 @@
-import type { ValueNode } from '../nodes';
 import { mainCase } from './utils';
 
 export type AccountDiscriminator =
-  | { kind: 'field'; name: string; value: ValueNode | null }
+  | { kind: 'field'; name: string }
   | { kind: 'size' };
 
 export const fieldAccountDiscriminator = (
-  name: string,
-  value?: ValueNode
-): AccountDiscriminator => ({
-  kind: 'field',
-  name: mainCase(name),
-  value: value ?? null,
-});
+  name: string
+): AccountDiscriminator => ({ kind: 'field', name: mainCase(name) });
 
 export const sizeAccountDiscriminator = (): AccountDiscriminator => ({
   kind: 'size',

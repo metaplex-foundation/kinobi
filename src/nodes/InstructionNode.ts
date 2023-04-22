@@ -1,65 +1,16 @@
 import { camelCase, mainCase } from '../shared';
 import type { IdlInstruction } from '../idl';
-import type { ImportFrom, Visitable, Visitor } from '../visitors';
+import type { Visitable, Visitor } from '../visitors';
+import type { ImportFrom } from '../shared';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
 import { StructTypeNode } from './StructTypeNode';
 import { StructFieldTypeNode } from './StructFieldTypeNode';
-import { ValueNode, vScalar } from './ValueNode';
+import { vScalar } from './ValueNode';
 import { isLinkTypeNode, LinkTypeNode } from './LinkTypeNode';
-
-export type InstructionNodeAccount = {
-  name: string;
-  isWritable: boolean;
-  isSigner: boolean | 'either';
-  isOptional: boolean;
-  description: string;
-  defaultsTo: InstructionNodeAccountDefaults | null;
-};
-
-export type InstructionNodeInputDependency = {
-  kind: 'account' | 'arg';
-  name: string;
-};
-
-export type InstructionNodeArgDefaults =
-  | { kind: 'arg'; name: string }
-  | { kind: 'account'; name: string }
-  | { kind: 'accountBump'; name: string }
-  | { kind: 'value'; value: ValueNode }
-  | {
-      kind: 'resolver';
-      name: string;
-      importFrom: ImportFrom;
-      dependsOn: InstructionNodeInputDependency[];
-    };
-
-export type InstructionNodeAccountDefaults =
-  | { kind: 'programId' }
-  | { kind: 'program'; program: { name: string; publicKey: string } }
-  | { kind: 'publicKey'; publicKey: string }
-  | { kind: 'account'; name: string }
-  | { kind: 'identity' }
-  | { kind: 'payer' }
-  | {
-      kind: 'pda';
-      pdaAccount: string;
-      importFrom: ImportFrom;
-      seeds: Record<string, InstructionNodeAccountDefaultsSeed>;
-    }
-  | {
-      kind: 'resolver';
-      name: string;
-      importFrom: ImportFrom;
-      dependsOn: InstructionNodeInputDependency[];
-      resolvedIsSigner?: boolean | 'either';
-      resolvedIsOptional?: boolean;
-    };
-
-export type InstructionNodeAccountDefaultsSeed =
-  | { kind: 'account'; name: string }
-  | { kind: 'arg'; name: string }
-  | { kind: 'value'; value: ValueNode };
+import { InstructionDataArgsNode } from './InstructionDataArgsNode';
+import { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
+import { InstructionAccountNode } from './InstructionAccountNode';
 
 export type InstructionNodeBytesCreatedOnChain =
   | { kind: 'number'; value: number; includeHeader: boolean }
@@ -76,9 +27,9 @@ export type InstructionNode = {
   readonly __instructionNode: unique symbol;
   readonly nodeClass: 'InstructionNode';
   readonly name: string;
-  readonly accounts: InstructionNodeAccount[];
-  readonly dataArgsNode: StructTypeNode | LinkTypeNode;
-  readonly extraArgsNode: StructTypeNode | LinkTypeNode;
+  readonly accountNodes: InstructionAccountNode[];
+  readonly dataArgsNode: InstructionDataArgsNode;
+  readonly extraArgsNode: InstructionExtraArgsNode;
   readonly subInstructionNodes: InstructionNode[];
   readonly idlName: string;
   readonly docs: string[];
@@ -145,34 +96,6 @@ export class InstructionNode implements Visitable {
         })
       ),
     };
-    this.accounts = accounts.map((account) => {
-      const { defaultsTo } = account;
-      if (defaultsTo?.kind === 'account') {
-        defaultsTo.name = mainCase(defaultsTo.name);
-      } else if (defaultsTo?.kind === 'program') {
-        defaultsTo.program.name = mainCase(defaultsTo.program.name);
-      } else if (defaultsTo?.kind === 'pda') {
-        defaultsTo.pdaAccount = mainCase(defaultsTo.pdaAccount);
-        defaultsTo.seeds = Object.fromEntries(
-          Object.entries(defaultsTo.seeds).map(([key, seed]) => [
-            mainCase(key),
-            seed.kind === 'value'
-              ? seed
-              : { ...seed, name: mainCase(seed.name) },
-          ])
-        );
-      } else if (defaultsTo?.kind === 'resolver') {
-        defaultsTo.name = mainCase(defaultsTo.name);
-        defaultsTo.dependsOn = defaultsTo.dependsOn.map((dep) => ({
-          ...dep,
-          name: mainCase(dep.name),
-        }));
-      }
-      return { ...account, name: mainCase(account.name), defaultsTo };
-    });
-    this.args = args;
-    this.extraArgs = extraArgs;
-    this.subInstructions = subInstructions;
   }
 
   static fromIdl(idl: Partial<IdlInstruction>): InstructionNode {
@@ -189,24 +112,7 @@ export class InstructionNode implements Visitable {
       argDefaults: {},
     };
 
-    const accounts = (idl.accounts ?? []).map(
-      (account): InstructionNodeAccount => {
-        const isOptional = account.optional ?? account.isOptional ?? false;
-        return {
-          name: camelCase(account.name ?? ''),
-          isWritable: account.isMut ?? false,
-          isSigner: account.isOptionalSigner
-            ? 'either'
-            : account.isSigner ?? false,
-          isOptional,
-          description: account.desc ?? '',
-          defaultsTo:
-            isOptional && useProgramIdForOptionalAccounts
-              ? { kind: 'programId' }
-              : null,
-        };
-      }
-    );
+    const accounts = idl.accounts ?? [];
 
     let args = StructTypeNode.fromIdl({
       kind: 'struct',

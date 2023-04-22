@@ -1,4 +1,4 @@
-import type { ImportFrom } from '../visitors';
+import type { ImportFrom } from '../shared';
 import type { Node } from './Node';
 
 export type LinkTypeNode = {

@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../utils';
-import { ImportFrom } from '../ImportFrom';
+import { ImportFrom } from '../../shared/ImportFrom';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
   NodeTransform,

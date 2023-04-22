@@ -3,6 +3,7 @@ import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
 import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
 import type { ErrorNode } from './ErrorNode';
+import type { InstructionAccountNode } from './InstructionAccountNode';
 import type { InstructionDataArgsNode } from './InstructionDataArgsNode';
 import type { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
 import type { InstructionNode } from './InstructionNode';
@@ -17,6 +18,7 @@ export type Node =
   | AccountNode
   | AccountDataNode
   | InstructionNode
+  | InstructionAccountNode
   | InstructionDataArgsNode
   | InstructionExtraArgsNode
   | ErrorNode
