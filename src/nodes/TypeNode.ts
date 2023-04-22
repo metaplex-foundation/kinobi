@@ -1,19 +1,19 @@
-import { IdlType, IDL_TYPE_LEAVES } from '../idl';
+import { IDL_TYPE_LEAVES, IdlType } from '../idl';
+import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
+import { BoolTypeNode, boolTypeNode } from './BoolTypeNode';
+import { BytesTypeNode, bytesTypeNode } from './BytesTypeNode';
+import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
+import { LinkTypeNode, linkTypeNode } from './LinkTypeNode';
+import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import type { Node } from './Node';
-import { ArrayTypeNode } from './ArrayTypeNode';
-import { BoolTypeNode } from './BoolTypeNode';
-import { BytesTypeNode } from './BytesTypeNode';
-import { LinkTypeNode } from './LinkTypeNode';
-import { EnumTypeNode } from './EnumTypeNode';
-import { MapTypeNode } from './MapTypeNode';
-import { NumberTypeNode } from './NumberTypeNode';
+import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { NumberWrapperTypeNode } from './NumberWrapperTypeNode';
-import { OptionTypeNode } from './OptionTypeNode';
-import { PublicKeyTypeNode } from './PublicKeyTypeNode';
-import { SetTypeNode } from './SetTypeNode';
-import { StringTypeNode } from './StringTypeNode';
-import { StructTypeNode } from './StructTypeNode';
-import { TupleTypeNode } from './TupleTypeNode';
+import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
+import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
+import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
+import { StringTypeNode, stringTypeNode } from './StringTypeNode';
+import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
+import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type TypeNode =
   | ArrayTypeNode
@@ -55,11 +55,11 @@ function isArrayOfSize(array: any, size: number): boolean {
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
   if (typeof idlType === 'string' && IDL_TYPE_LEAVES.includes(idlType)) {
-    if (idlType === 'bool') return new BoolTypeNode();
-    if (idlType === 'string') return new StringTypeNode();
-    if (idlType === 'publicKey') return new PublicKeyTypeNode();
-    if (idlType === 'bytes') return new BytesTypeNode();
-    return new NumberTypeNode(idlType);
+    if (idlType === 'bool') return boolTypeNode();
+    if (idlType === 'string') return stringTypeNode();
+    if (idlType === 'publicKey') return publicKeyTypeNode();
+    if (idlType === 'bytes') return bytesTypeNode();
+    return numberTypeNode(idlType);
   }
 
   // Ensure eveything else is an object.
@@ -69,22 +69,22 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 
   // Array.
   if ('array' in idlType && isArrayOfSize(idlType.array, 2)) {
-    return ArrayTypeNode.fromIdl(idlType);
+    return arrayTypeNodeFromIdl(idlType);
   }
 
   // Vec.
   if ('vec' in idlType) {
-    return ArrayTypeNode.fromIdl(idlType);
+    return arrayTypeNodeFromIdl(idlType);
   }
 
   // Defined link.
   if ('defined' in idlType && typeof idlType.defined === 'string') {
-    return new LinkTypeNode(idlType.defined);
+    return linkTypeNode(idlType.defined);
   }
 
   // Enum.
   if ('kind' in idlType && idlType.kind === 'enum' && 'variants' in idlType) {
-    return EnumTypeNode.fromIdl(idlType);
+    return enumTypeNodeFromIdl(idlType);
   }
 
   // Map.
@@ -92,27 +92,27 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     ('hashMap' in idlType && isArrayOfSize(idlType.hashMap, 2)) ||
     ('bTreeMap' in idlType && isArrayOfSize(idlType.bTreeMap, 2))
   ) {
-    return MapTypeNode.fromIdl(idlType);
+    return mapTypeNodeFromIdl(idlType);
   }
 
   // Option.
   if ('option' in idlType || 'coption' in idlType) {
-    return OptionTypeNode.fromIdl(idlType);
+    return optionTypeNodeFromIdl(idlType);
   }
 
   // Set.
   if ('hashSet' in idlType || 'bTreeSet' in idlType) {
-    return SetTypeNode.fromIdl(idlType);
+    return setTypeNodeFromIdl(idlType);
   }
 
   // Struct.
   if ('kind' in idlType && idlType.kind === 'struct') {
-    return StructTypeNode.fromIdl(idlType);
+    return structTypeNodeFromIdl(idlType);
   }
 
   // Tuple.
   if ('tuple' in idlType && Array.isArray(idlType.tuple)) {
-    return TupleTypeNode.fromIdl(idlType);
+    return tupleTypeNodeFromIdl(idlType);
   }
 
   // Throw an error for unsupported types.

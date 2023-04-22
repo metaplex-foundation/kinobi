@@ -1,33 +1,26 @@
-import { mainCase } from '../shared';
 import type { IdlAccount } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
-import type { Node } from './Node';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
-import { assertStructTypeNode, StructTypeNode } from './StructTypeNode';
+import { InvalidKinobiTreeError, PartialExcept, mainCase } from '../shared';
 import type { InstructionNodeAccountDefaultsSeed } from './InstructionNode';
+import { LinkTypeNode, isLinkTypeNode } from './LinkTypeNode';
+import type { Node } from './Node';
 import { isPublicKeyTypeNode } from './PublicKeyTypeNode';
-import { isLinkTypeNode, LinkTypeNode } from './LinkTypeNode';
+import { StructTypeNode, assertStructTypeNode } from './StructTypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 import { ValueNode } from './ValueNode';
 
-export type AccountNodeMetadata = {
-  readonly name: string;
-  readonly idlName: string;
-  readonly docs: string[];
-  readonly internal: boolean;
-  readonly size: number | null;
-  readonly seeds: AccountNodeSeed[];
-  readonly discriminator: AccountNodeDiscriminator | null;
-  readonly gpaFields: AccountNodeGpaField[];
-};
-
 export type AccountNodeSeed =
-  | { kind: 'programId' }
-  | { kind: 'literal'; value: string }
-  | { kind: 'variable'; name: string; description: string; type: TypeNode };
+  | { type: 'programId' }
+  | { type: 'literal'; value: string }
+  | {
+      type: 'variable';
+      name: string;
+      description: string;
+      variableNode: TypeNode;
+    };
 
 export type AccountNodeDiscriminator =
-  | { kind: 'field'; name: string; value: ValueNode | null }
-  | { kind: 'size' };
+  | { type: 'field'; name: string; value: ValueNode | null }
+  | { type: 'size' };
 
 export type AccountNodeGpaField = {
   name: string;
@@ -38,82 +31,68 @@ export type AccountNodeGpaField = {
 export type AccountNode = {
   readonly __accountNode: unique symbol;
   readonly nodeClass: 'AccountNode';
+  readonly name: string;
+  readonly dataNode: StructTypeNode | LinkTypeNode;
+  readonly idlName: string;
+  readonly docs: string[];
+  readonly internal: boolean;
+  readonly size: number | null;
+  readonly seeds: AccountNodeSeed[];
+  readonly discriminator: AccountNodeDiscriminator | null;
+  readonly gpaFields: AccountNodeGpaField[];
 };
 
-export type AccountNodeInput = {
-  // ...
-};
+export type AccountNodeInput = Omit<
+  PartialExcept<AccountNode, 'name' | 'dataNode'>,
+  '__accountNode' | 'nodeClass'
+>;
 
 export function accountNode(input: AccountNodeInput): AccountNode {
-  return { ...input, nodeClass: 'AccountNode' } as AccountNode;
+  if (!input.name) {
+    throw new InvalidKinobiTreeError('DefinedTypeNodeInput must have a name.');
+  }
+  return {
+    nodeClass: 'AccountNode',
+    name: mainCase(input.name),
+    seeds: input.seeds.map((seed) =>
+      'name' in seed ? { ...seed, name: mainCase(seed.name) } : seed
+    ),
+  } as AccountNode;
 }
 
-export function accountNodeFromIdl(idl: AccountNodeIdl): AccountNode {
-  return accountNode(idl);
+export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
+  const name = idl.name ?? '';
+  const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
+  const type = createTypeNodeFromIdl({ name, ...idlStruct });
+  assertStructTypeNode(type);
+  const seeds = (idl.seeds ?? []).map((seed) => {
+    if (seed.type === 'variable') {
+      return { ...seed, type: createTypeNodeFromIdl(seed.type) };
+    }
+    return seed;
+  });
+  const metadata = {
+    name,
+    idlName: name,
+    docs: idl.docs ?? [],
+    internal: false,
+    size: idl.size ?? null,
+    seeds,
+    discriminator: null,
+    gpaFields: [],
+  };
+  return accountNode(metadata, type);
 }
 
-export class AccountNode implements Visitable {
-  readonly nodeClass = 'AccountNode' as const;
-
-  readonly metadata: AccountNodeMetadata;
-
-  readonly type: StructTypeNode | LinkTypeNode;
-
-  constructor(metadata: AccountNodeMetadata, type: AccountNode['type']) {
-    this.metadata = {
-      ...metadata,
-      name: mainCase(metadata.name),
-      seeds: metadata.seeds.map((seed) =>
-        'name' in seed ? { ...seed, name: mainCase(seed.name) } : seed
-      ),
-    };
-    this.type = type;
-  }
-
-  static fromIdl(idl: Partial<IdlAccount>): AccountNode {
-    const name = idl.name ?? '';
-    const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
-    const type = createTypeNodeFromIdl({ name, ...idlStruct });
-    assertStructTypeNode(type);
-    const seeds = (idl.seeds ?? []).map((seed) => {
-      if (seed.kind === 'variable') {
-        return { ...seed, type: createTypeNodeFromIdl(seed.type) };
-      }
-      return seed;
-    });
-    const metadata = {
-      name,
-      idlName: name,
-      docs: idl.docs ?? [],
-      internal: false,
-      size: idl.size ?? null,
-      seeds,
-      discriminator: null,
-      gpaFields: [],
-    };
-    return new AccountNode(metadata, type);
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitAccount(this);
-  }
-
-  get name(): string {
-    return this.metadata.name;
-  }
-
-  get docs(): string[] {
-    return this.metadata.docs;
-  }
-
+export class OldAccountNode {
   get isLinked(): boolean {
     return isLinkTypeNode(this.type);
   }
 
-  get variableSeeds(): Extract<AccountNodeSeed, { kind: 'variable' }>[] {
+  get variableSeeds(): Extract<AccountNodeSeed, { type: 'variable' }>[] {
     return this.metadata.seeds.filter(
-      (seed): seed is Extract<AccountNodeSeed, { kind: 'variable' }> =>
-        seed.kind === 'variable'
+      (seed): seed is Extract<AccountNodeSeed, { type: 'variable' }> =>
+        seed.type === 'variable'
     );
   }
 
@@ -126,11 +105,11 @@ export class AccountNode implements Visitable {
     InstructionNodeAccountDefaultsSeed
   > {
     return this.metadata.seeds.reduce((acc, seed) => {
-      if (seed.kind !== 'variable') return acc;
+      if (seed.type !== 'variable') return acc;
       if (isPublicKeyTypeNode(seed.type)) {
-        acc[seed.name] = { kind: 'account', name: seed.name };
+        acc[seed.name] = { type: 'account', name: seed.name };
       } else {
-        acc[seed.name] = { kind: 'arg', name: seed.name };
+        acc[seed.name] = { type: 'arg', name: seed.name };
       }
       return acc;
     }, {} as Record<string, InstructionNodeAccountDefaultsSeed>);
