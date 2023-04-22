@@ -81,6 +81,25 @@ export type InstructionNodeBytesCreatedOnChain =
     }
   | { kind: 'resolver'; name: string; importFrom: ImportFrom };
 
+export type InstructionNode = {
+  readonly __instructionNode: unique symbol;
+  readonly nodeClass: 'InstructionNode';
+};
+
+export type InstructionNodeInput = {
+  // ...
+};
+
+export function instructionNode(input: InstructionNodeInput): InstructionNode {
+  return { ...input, nodeClass: 'InstructionNode' } as InstructionNode;
+}
+
+export function instructionNodeFromIdl(
+  idl: InstructionNodeIdl
+): InstructionNode {
+  return instructionNode(idl);
+}
+
 export class InstructionNode implements Visitable {
   readonly nodeClass = 'InstructionNode' as const;
 

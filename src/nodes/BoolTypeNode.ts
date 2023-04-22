@@ -2,6 +2,23 @@ import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { NumberTypeNode } from './NumberTypeNode';
 
+export type BoolTypeNode = {
+  readonly __boolTypeNode: unique symbol;
+  readonly nodeClass: 'BoolTypeNode';
+};
+
+export type BoolTypeNodeInput = {
+  // ...
+};
+
+export function boolTypeNode(input: BoolTypeNodeInput): BoolTypeNode {
+  return { ...input, nodeClass: 'BoolTypeNode' } as BoolTypeNode;
+}
+
+export function boolTypeNodeFromIdl(idl: BoolTypeNodeIdl): BoolTypeNode {
+  return boolTypeNode(idl);
+}
+
 export class BoolTypeNode implements Visitable {
   readonly nodeClass = 'BoolTypeNode' as const;
 

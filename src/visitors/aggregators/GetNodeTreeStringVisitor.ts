@@ -1,6 +1,23 @@
 import type * as nodes from '../../nodes';
 import { Visitor } from '../Visitor';
 
+export type GetNode = {
+  readonly __getNode: unique symbol;
+  readonly nodeClass: 'GetNode';
+};
+
+export type GetNodeInput = {
+  // ...
+};
+
+export function getNode(input: GetNodeInput): GetNode {
+  return { ...input, nodeClass: 'GetNode' } as GetNode;
+}
+
+export function getNodeFromIdl(idl: GetNodeIdl): GetNode {
+  return getNode(idl);
+}
+
 export class GetNodeTreeStringVisitor implements Visitor<string> {
   indent = 0;
 

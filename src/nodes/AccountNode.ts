@@ -35,6 +35,23 @@ export type AccountNodeGpaField = {
   type: TypeNode;
 };
 
+export type AccountNode = {
+  readonly __accountNode: unique symbol;
+  readonly nodeClass: 'AccountNode';
+};
+
+export type AccountNodeInput = {
+  // ...
+};
+
+export function accountNode(input: AccountNodeInput): AccountNode {
+  return { ...input, nodeClass: 'AccountNode' } as AccountNode;
+}
+
+export function accountNodeFromIdl(idl: AccountNodeIdl): AccountNode {
+  return accountNode(idl);
+}
+
 export class AccountNode implements Visitable {
   readonly nodeClass = 'AccountNode' as const;
 

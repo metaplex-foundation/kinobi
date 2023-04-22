@@ -10,6 +10,23 @@ import { ProgramNode } from './ProgramNode';
 export type ProgramInput = string | Partial<Idl>;
 export type ProgramInputs = ProgramInput | ProgramInput[];
 
+export type RootNode = {
+  readonly __rootNode: unique symbol;
+  readonly nodeClass: 'RootNode';
+};
+
+export type RootNodeInput = {
+  // ...
+};
+
+export function rootNode(input: RootNodeInput): RootNode {
+  return { ...input, nodeClass: 'RootNode' } as RootNode;
+}
+
+export function rootNodeFromIdl(idl: RootNodeIdl): RootNode {
+  return rootNode(idl);
+}
+
 export class RootNode implements Visitable {
   readonly nodeClass = 'RootNode' as const;
 

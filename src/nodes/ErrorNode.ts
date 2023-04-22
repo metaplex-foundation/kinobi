@@ -9,6 +9,23 @@ export type ErrorNodeMetadata = {
   docs: string[];
 };
 
+export type ErrorNode = {
+  readonly __errorNode: unique symbol;
+  readonly nodeClass: 'ErrorNode';
+};
+
+export type ErrorNodeInput = {
+  // ...
+};
+
+export function errorNode(input: ErrorNodeInput): ErrorNode {
+  return { ...input, nodeClass: 'ErrorNode' } as ErrorNode;
+}
+
+export function errorNodeFromIdl(idl: ErrorNodeIdl): ErrorNode {
+  return errorNode(idl);
+}
+
 export class ErrorNode implements Visitable {
   readonly nodeClass = 'ErrorNode' as const;
 

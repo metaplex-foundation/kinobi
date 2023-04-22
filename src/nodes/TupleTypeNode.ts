@@ -3,6 +3,23 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
+export type TupleTypeNode = {
+  readonly __tupleTypeNode: unique symbol;
+  readonly nodeClass: 'TupleTypeNode';
+};
+
+export type TupleTypeNodeInput = {
+  // ...
+};
+
+export function tupleTypeNode(input: TupleTypeNodeInput): TupleTypeNode {
+  return { ...input, nodeClass: 'TupleTypeNode' } as TupleTypeNode;
+}
+
+export function tupleTypeNodeFromIdl(idl: TupleTypeNodeIdl): TupleTypeNode {
+  return tupleTypeNode(idl);
+}
+
 export class TupleTypeNode implements Visitable {
   readonly nodeClass = 'TupleTypeNode' as const;
 

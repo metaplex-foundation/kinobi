@@ -7,6 +7,23 @@ import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
 
+export type EnumTypeNode = {
+  readonly __enumTypeNode: unique symbol;
+  readonly nodeClass: 'EnumTypeNode';
+};
+
+export type EnumTypeNodeInput = {
+  // ...
+};
+
+export function enumTypeNode(input: EnumTypeNodeInput): EnumTypeNode {
+  return { ...input, nodeClass: 'EnumTypeNode' } as EnumTypeNode;
+}
+
+export function enumTypeNodeFromIdl(idl: EnumTypeNodeIdl): EnumTypeNode {
+  return enumTypeNode(idl);
+}
+
 export class EnumTypeNode implements Visitable {
   readonly nodeClass = 'EnumTypeNode' as const;
 

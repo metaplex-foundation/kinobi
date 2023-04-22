@@ -1,32 +1,29 @@
-import type { Visitable, Visitor } from '../visitors';
+import {
+  SizeStrategy,
+  displaySizeStrategy,
+  remainderSize,
+} from '../shared/SizeStrategy';
 import type { Node } from './Node';
-import { NumberTypeNode } from './NumberTypeNode';
 
-export class BytesTypeNode implements Visitable {
-  readonly nodeClass = 'BytesTypeNode' as const;
+export type BytesTypeNode = {
+  readonly __bytesTypeNode: unique symbol;
+  readonly nodeClass: 'BytesTypeNode';
+  readonly size: SizeStrategy;
+};
 
-  readonly size:
-    | { kind: 'fixed'; bytes: number }
-    | { kind: 'prefixed'; prefix: NumberTypeNode }
-    | { kind: 'variable' };
+export type BytesTypeNodeInput = {
+  readonly size?: SizeStrategy;
+};
 
-  constructor(options: { size?: BytesTypeNode['size'] } = {}) {
-    this.size = options.size ?? { kind: 'variable' };
-  }
+export function bytesTypeNode(size?: SizeStrategy): BytesTypeNode {
+  return {
+    nodeClass: 'BytesTypeNode',
+    size: size ?? remainderSize(),
+  } as BytesTypeNode;
+}
 
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeBytes(this);
-  }
-
-  getSizeAsString(): string {
-    if (this.size.kind === 'fixed') return `${this.size.bytes}`;
-    if (this.size.kind === 'prefixed') return `${this.size.prefix.toString()}`;
-    return 'variable';
-  }
-
-  toString(): string {
-    return `bytes(${this.getSizeAsString()})`;
-  }
+export function displayBytesTypeNode(node: BytesTypeNode): string {
+  return `bytes(${displaySizeStrategy(node.size)})`;
 }
 
 export function isBytesTypeNode(node: Node | null): node is BytesTypeNode {

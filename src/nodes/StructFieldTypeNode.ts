@@ -11,6 +11,27 @@ export type StructFieldTypeNodeMetadata = {
   defaultsTo: { strategy: 'optional' | 'omitted'; value: ValueNode } | null;
 };
 
+export type StructFieldTypeNode = {
+  readonly __structFieldTypeNode: unique symbol;
+  readonly nodeClass: 'StructFieldTypeNode';
+};
+
+export type StructFieldTypeNodeInput = {
+  // ...
+};
+
+export function structFieldTypeNode(
+  input: StructFieldTypeNodeInput
+): StructFieldTypeNode {
+  return { ...input, nodeClass: 'StructFieldTypeNode' } as StructFieldTypeNode;
+}
+
+export function structFieldTypeNodeFromIdl(
+  idl: StructFieldTypeNodeIdl
+): StructFieldTypeNode {
+  return structFieldTypeNode(idl);
+}
+
 export class StructFieldTypeNode implements Visitable {
   readonly nodeClass = 'StructFieldTypeNode' as const;
 

@@ -1,4 +1,3 @@
-import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
 export type NumberFormat =
@@ -15,41 +14,38 @@ export type NumberFormat =
   | 'f32'
   | 'f64';
 
-export class NumberTypeNode implements Visitable {
-  readonly nodeClass = 'NumberTypeNode' as const;
-
+export type NumberTypeNode = {
+  readonly __numberTypeNode: unique symbol;
+  readonly nodeClass: 'NumberTypeNode';
   readonly format: NumberFormat;
-
   readonly endian: 'le' | 'be';
+};
 
-  constructor(format: NumberFormat, options: { endian?: 'le' | 'be' } = {}) {
-    this.format = format;
-    this.endian = options.endian ?? 'le';
-  }
+export function numberTypeNode(
+  format: NumberFormat,
+  endian: 'le' | 'be' = 'le'
+): NumberTypeNode {
+  return { nodeClass: 'NumberTypeNode', format, endian } as NumberTypeNode;
+}
 
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeNumber(this);
-  }
+export function isSignedInteger(node: NumberTypeNode): boolean {
+  return node.format.startsWith('i');
+}
 
-  isSignedInteger(): boolean {
-    return this.format.startsWith('i');
-  }
+export function isUnsignedInteger(node: NumberTypeNode): boolean {
+  return node.format.startsWith('u');
+}
 
-  isUnsignedInteger(): boolean {
-    return this.format.startsWith('u');
-  }
+export function isInteger(node: NumberTypeNode): boolean {
+  return !node.format.startsWith('f');
+}
 
-  isInteger(): boolean {
-    return !this.format.startsWith('f');
-  }
+export function isDecimal(node: NumberTypeNode): boolean {
+  return node.format.startsWith('f');
+}
 
-  isDecimal(): boolean {
-    return this.format.startsWith('f');
-  }
-
-  toString(): string {
-    return `${this.format}(${this.endian})`;
-  }
+export function displayNumberTypeNode(node: NumberTypeNode): string {
+  return `${node.format}(${node.endian})`;
 }
 
 export function isNumberTypeNode(node: Node | null): node is NumberTypeNode {

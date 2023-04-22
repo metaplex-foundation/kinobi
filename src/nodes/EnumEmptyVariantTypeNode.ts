@@ -3,6 +3,30 @@ import type { IdlTypeEnumVariant } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
+export type EnumEmptyVariantTypeNode = {
+  readonly __enumEmptyVariantTypeNode: unique symbol;
+  readonly nodeClass: 'EnumEmptyVariantTypeNode';
+};
+
+export type EnumEmptyVariantTypeNodeInput = {
+  // ...
+};
+
+export function enumEmptyVariantTypeNode(
+  input: EnumEmptyVariantTypeNodeInput
+): EnumEmptyVariantTypeNode {
+  return {
+    ...input,
+    nodeClass: 'EnumEmptyVariantTypeNode',
+  } as EnumEmptyVariantTypeNode;
+}
+
+export function enumEmptyVariantTypeNodeFromIdl(
+  idl: EnumEmptyVariantTypeNodeIdl
+): EnumEmptyVariantTypeNode {
+  return enumEmptyVariantTypeNode(idl);
+}
+
 export class EnumEmptyVariantTypeNode implements Visitable {
   readonly nodeClass = 'EnumEmptyVariantTypeNode' as const;
 

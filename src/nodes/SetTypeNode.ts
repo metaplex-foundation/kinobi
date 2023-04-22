@@ -4,6 +4,23 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { NumberTypeNode } from './NumberTypeNode';
 
+export type SetTypeNode = {
+  readonly __setTypeNode: unique symbol;
+  readonly nodeClass: 'SetTypeNode';
+};
+
+export type SetTypeNodeInput = {
+  // ...
+};
+
+export function setTypeNode(input: SetTypeNodeInput): SetTypeNode {
+  return { ...input, nodeClass: 'SetTypeNode' } as SetTypeNode;
+}
+
+export function setTypeNodeFromIdl(idl: SetTypeNodeIdl): SetTypeNode {
+  return setTypeNode(idl);
+}
+
 export class SetTypeNode implements Visitable {
   readonly nodeClass = 'SetTypeNode' as const;
 

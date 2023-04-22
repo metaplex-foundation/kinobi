@@ -17,6 +17,23 @@ export type ProgramNodeMetadata = {
   internal: boolean;
 };
 
+export type ProgramNode = {
+  readonly __programNode: unique symbol;
+  readonly nodeClass: 'ProgramNode';
+};
+
+export type ProgramNodeInput = {
+  // ...
+};
+
+export function programNode(input: ProgramNodeInput): ProgramNode {
+  return { ...input, nodeClass: 'ProgramNode' } as ProgramNode;
+}
+
+export function programNodeFromIdl(idl: ProgramNodeIdl): ProgramNode {
+  return programNode(idl);
+}
+
 export class ProgramNode implements Visitable {
   readonly nodeClass = 'ProgramNode' as const;
 

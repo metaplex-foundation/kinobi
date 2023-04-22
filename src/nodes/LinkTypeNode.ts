@@ -2,6 +2,23 @@ import { mainCase } from '../utils';
 import type { ImportFrom, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
+export type LinkTypeNode = {
+  readonly __linkTypeNode: unique symbol;
+  readonly nodeClass: 'LinkTypeNode';
+};
+
+export type LinkTypeNodeInput = {
+  // ...
+};
+
+export function linkTypeNode(input: LinkTypeNodeInput): LinkTypeNode {
+  return { ...input, nodeClass: 'LinkTypeNode' } as LinkTypeNode;
+}
+
+export function linkTypeNodeFromIdl(idl: LinkTypeNodeIdl): LinkTypeNode {
+  return linkTypeNode(idl);
+}
+
 export class LinkTypeNode implements Visitable {
   readonly nodeClass = 'LinkTypeNode' as const;
 

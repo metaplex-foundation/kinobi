@@ -8,6 +8,23 @@ const INSTRUCTION_PREFIX = 'I';
 const TYPE_PREFIX = 'T';
 const ERROR_PREFIX = 'E';
 
+export type GetNode = {
+  readonly __getNode: unique symbol;
+  readonly nodeClass: 'GetNode';
+};
+
+export type GetNodeInput = {
+  // ...
+};
+
+export function getNode(input: GetNodeInput): GetNode {
+  return { ...input, nodeClass: 'GetNode' } as GetNode;
+}
+
+export function getNodeFromIdl(idl: GetNodeIdl): GetNode {
+  return getNode(idl);
+}
+
 export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitRoot(root: nodes.RootNode): string {
     const children = root.programs.map((program) => program.accept(this));

@@ -4,6 +4,30 @@ import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { StructTypeNode } from './StructTypeNode';
 
+export type EnumStructVariantTypeNode = {
+  readonly __enumStructVariantTypeNode: unique symbol;
+  readonly nodeClass: 'EnumStructVariantTypeNode';
+};
+
+export type EnumStructVariantTypeNodeInput = {
+  // ...
+};
+
+export function enumStructVariantTypeNode(
+  input: EnumStructVariantTypeNodeInput
+): EnumStructVariantTypeNode {
+  return {
+    ...input,
+    nodeClass: 'EnumStructVariantTypeNode',
+  } as EnumStructVariantTypeNode;
+}
+
+export function enumStructVariantTypeNodeFromIdl(
+  idl: EnumStructVariantTypeNodeIdl
+): EnumStructVariantTypeNode {
+  return enumStructVariantTypeNode(idl);
+}
+
 export class EnumStructVariantTypeNode implements Visitable {
   readonly nodeClass = 'EnumStructVariantTypeNode' as const;
 

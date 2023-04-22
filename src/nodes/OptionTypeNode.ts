@@ -4,6 +4,23 @@ import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 import { NumberTypeNode } from './NumberTypeNode';
 
+export type OptionTypeNode = {
+  readonly __optionTypeNode: unique symbol;
+  readonly nodeClass: 'OptionTypeNode';
+};
+
+export type OptionTypeNodeInput = {
+  // ...
+};
+
+export function optionTypeNode(input: OptionTypeNodeInput): OptionTypeNode {
+  return { ...input, nodeClass: 'OptionTypeNode' } as OptionTypeNode;
+}
+
+export function optionTypeNodeFromIdl(idl: OptionTypeNodeIdl): OptionTypeNode {
+  return optionTypeNode(idl);
+}
+
 export class OptionTypeNode implements Visitable {
   readonly nodeClass = 'OptionTypeNode' as const;
 

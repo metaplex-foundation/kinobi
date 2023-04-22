@@ -11,6 +11,25 @@ export type DefinedTypeNodeMetadata = {
   internal: boolean;
 };
 
+export type DefinedTypeNode = {
+  readonly __definedTypeNode: unique symbol;
+  readonly nodeClass: 'DefinedTypeNode';
+};
+
+export type DefinedTypeNodeInput = {
+  // ...
+};
+
+export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
+  return { ...input, nodeClass: 'DefinedTypeNode' } as DefinedTypeNode;
+}
+
+export function definedTypeNodeFromIdl(
+  idl: DefinedTypeNodeIdl
+): DefinedTypeNode {
+  return definedTypeNode(idl);
+}
+
 export class DefinedTypeNode implements Visitable {
   readonly nodeClass = 'DefinedTypeNode' as const;
 

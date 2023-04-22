@@ -2,6 +2,23 @@ import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { NumberTypeNode } from './NumberTypeNode';
 
+export type StringTypeNode = {
+  readonly __stringTypeNode: unique symbol;
+  readonly nodeClass: 'StringTypeNode';
+};
+
+export type StringTypeNodeInput = {
+  // ...
+};
+
+export function stringTypeNode(input: StringTypeNodeInput): StringTypeNode {
+  return { ...input, nodeClass: 'StringTypeNode' } as StringTypeNode;
+}
+
+export function stringTypeNodeFromIdl(idl: StringTypeNodeIdl): StringTypeNode {
+  return stringTypeNode(idl);
+}
+
 export class StringTypeNode implements Visitable {
   readonly nodeClass = 'StringTypeNode' as const;
 

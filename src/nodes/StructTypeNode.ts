@@ -4,6 +4,23 @@ import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { StructFieldTypeNode } from './StructFieldTypeNode';
 
+export type StructTypeNode = {
+  readonly __structTypeNode: unique symbol;
+  readonly nodeClass: 'StructTypeNode';
+};
+
+export type StructTypeNodeInput = {
+  // ...
+};
+
+export function structTypeNode(input: StructTypeNodeInput): StructTypeNode {
+  return { ...input, nodeClass: 'StructTypeNode' } as StructTypeNode;
+}
+
+export function structTypeNodeFromIdl(idl: StructTypeNodeIdl): StructTypeNode {
+  return structTypeNode(idl);
+}
+
 export class StructTypeNode implements Visitable {
   readonly nodeClass = 'StructTypeNode' as const;
 

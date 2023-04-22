@@ -4,6 +4,23 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { NumberTypeNode } from './NumberTypeNode';
 
+export type MapTypeNode = {
+  readonly __mapTypeNode: unique symbol;
+  readonly nodeClass: 'MapTypeNode';
+};
+
+export type MapTypeNodeInput = {
+  // ...
+};
+
+export function mapTypeNode(input: MapTypeNodeInput): MapTypeNode {
+  return { ...input, nodeClass: 'MapTypeNode' } as MapTypeNode;
+}
+
+export function mapTypeNodeFromIdl(idl: MapTypeNodeIdl): MapTypeNode {
+  return mapTypeNode(idl);
+}
+
 export class MapTypeNode implements Visitable {
   readonly nodeClass = 'MapTypeNode' as const;
 

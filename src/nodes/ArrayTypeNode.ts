@@ -4,6 +4,23 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { NumberTypeNode } from './NumberTypeNode';
 
+export type ArrayTypeNode = {
+  readonly __arrayTypeNode: unique symbol;
+  readonly nodeClass: 'ArrayTypeNode';
+};
+
+export type ArrayTypeNodeInput = {
+  // ...
+};
+
+export function arrayTypeNode(input: ArrayTypeNodeInput): ArrayTypeNode {
+  return { ...input, nodeClass: 'ArrayTypeNode' } as ArrayTypeNode;
+}
+
+export function arrayTypeNodeFromIdl(idl: ArrayTypeNodeIdl): ArrayTypeNode {
+  return arrayTypeNode(idl);
+}
+
 export class ArrayTypeNode implements Visitable {
   readonly nodeClass = 'ArrayTypeNode' as const;
 
