@@ -1,4 +1,5 @@
-import type { Visitor } from './Visitor';
+import { AccountSeed } from '../shared';
+import { Visitor, visit } from './Visitor';
 import * as nodes from '../nodes';
 
 export class BaseNodeVisitor implements Visitor<nodes.Node> {
@@ -11,65 +12,97 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
-    return nodes.programNode(
-      program.metadata,
-      program.accounts
+    return nodes.programNode({
+      ...program,
+      accounts: program.accounts
         .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
-      program.instructions
+      instructions: program.instructions
         .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-      program.definedTypes
+      definedTypes: program.definedTypes
         .map((type) => visit(type, this))
         .filter(nodes.assertNodeFilter(nodes.assertDefinedTypeNode)),
-      program.errors
+      errors: program.errors
         .map((error) => visit(error, this))
-        .filter(nodes.assertNodeFilter(nodes.assertErrorNode))
-    );
+        .filter(nodes.assertNodeFilter(nodes.assertErrorNode)),
+    });
   }
 
   visitAccount(account: nodes.AccountNode): nodes.Node {
-    const accountType = visit(account.type, this);
-    nodes.assertStructOrLinkTypeNode(accountType);
-    const seeds = account.metadata.seeds.map((seed) => {
-      if (seed.kind !== 'variable') return seed;
-      const newType = visit(seed.type, this);
-      nodes.assertTypeNode(newType);
-      return { ...seed, type: newType };
-    });
-    const gpaFields = account.metadata.gpaFields.map((gpaField) => {
-      const newType = visit(gpaField.type, this);
-      nodes.assertTypeNode(newType);
-      return { ...gpaField, type: newType };
-    });
-    return nodes.accountNode(
-      { ...account.metadata, seeds, gpaFields },
-      accountType
-    );
+    const data = visit(account.data, this);
+    nodes.assertAccountDataNode(data);
+    const seeds = account.seeds
+      .map((seed) => {
+        if (seed.kind !== 'variable') return seed;
+        const newType = visit(seed.type, this);
+        nodes.assertTypeNode(newType);
+        return { ...seed, type: newType };
+      })
+      .filter((s): s is AccountSeed => s !== null);
+    return nodes.accountNode({ ...account, data, seeds });
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): nodes.Node {
+    const struct = visit(accountData.struct, this);
+    nodes.assertStructTypeNode(struct);
+    const link = accountData.link ? visit(accountData.link, this) : null;
+    if (link !== null) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode(struct, link ?? undefined);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
-    const args = visit(instruction.args, this);
-    nodes.assertStructOrLinkTypeNode(args);
+    const dataArgs = visit(instruction.dataArgs, this);
+    nodes.assertInstructionDataArgsNode(dataArgs);
     const extraArgs = visit(instruction.extraArgs, this);
-    nodes.assertStructOrLinkTypeNode(extraArgs);
-    return nodes.instructionNode(
-      instruction.metadata,
-      instruction.accounts,
-      args,
+    nodes.assertInstructionExtraArgsNode(extraArgs);
+    return nodes.instructionNode({
+      ...instruction,
+      dataArgs,
       extraArgs,
-      instruction.subInstructions
+      accounts: instruction.accounts
+        .map((account) => visit(account, this))
+        .filter(nodes.assertNodeFilter(nodes.assertInstructionAccountNode)),
+      subInstructions: instruction.subInstructions
         .map((ix) => visit(ix, this))
-        .filter(
-          nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
-        )
-    );
+        .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
+    });
+  }
+
+  visitInstructionAccount(
+    instructionAccount: nodes.InstructionAccountNode
+  ): nodes.Node {
+    return instructionAccount;
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): nodes.Node {
+    const struct = visit(instructionDataArgs.struct, this);
+    nodes.assertStructTypeNode(struct);
+    const link = instructionDataArgs.link
+      ? visit(instructionDataArgs.link, this)
+      : null;
+    if (link !== null) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode(struct, link ?? undefined);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): nodes.Node {
+    const struct = visit(instructionExtraArgs.struct, this);
+    nodes.assertStructTypeNode(struct);
+    const link = instructionExtraArgs.link
+      ? visit(instructionExtraArgs.link, this)
+      : null;
+    if (link !== null) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode(struct, link ?? undefined);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node {
-    const type = visit(definedType.type, this);
-    nodes.assertTypeNode(type);
-    return nodes.definedTypeNode(definedType.metadata, type);
+    const data = visit(definedType.data, this);
+    nodes.assertTypeNode(data);
+    return nodes.definedTypeNode({ ...definedType, data });
   }
 
   visitError(error: nodes.ErrorNode): nodes.Node {
@@ -77,39 +110,37 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): nodes.Node {
-    const item = visit(typeArray.item, this);
-    nodes.assertTypeNode(item);
-    return nodes.arrayTypeNode(item, { ...typeArray });
+    const child = visit(arrayType.child, this);
+    nodes.assertTypeNode(child);
+    return nodes.arrayTypeNode(child, { ...arrayType });
   }
 
   visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
-    return typeDefinedLink;
+    return definedLinkType;
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node {
     return nodes.enumTypeNode(
-      typeEnum.name,
-      typeEnum.variants.map((variant) => {
-        const newVariant = visit(variant, this);
-        nodes.assertEnumVariantTypeNode(newVariant);
-        return newVariant;
-      })
+      enumType.name,
+      enumType.variants
+        .map((variant) => visit(variant, this))
+        .filter(nodes.assertNodeFilter(nodes.assertEnumVariantTypeNode))
     );
   }
 
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): nodes.Node {
-    return typeEnumEmptyVariant;
+    return enumEmptyVariantType;
   }
 
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): nodes.Node {
-    const newStruct = visit(typeEnumStructVariant.struct, this);
+    const newStruct = visit(enumStructVariantType.struct, this);
     nodes.assertStructTypeNode(newStruct);
     return nodes.enumStructVariantTypeNode(
-      typeEnumStructVariant.name,
+      enumStructVariantType.name,
       newStruct
     );
   }
@@ -117,83 +148,79 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): nodes.Node {
-    const newTuple = visit(typeEnumTupleVariant.tuple, this);
+    const newTuple = visit(enumTupleVariantType.tuple, this);
     nodes.assertTupleTypeNode(newTuple);
-    return nodes.enumTupleVariantTypeNode(typeEnumTupleVariant.name, newTuple);
+    return nodes.enumTupleVariantTypeNode(enumTupleVariantType.name, newTuple);
   }
 
   visitMapType(mapType: nodes.MapTypeNode): nodes.Node {
-    const key = visit(typeMap.key, this);
+    const key = visit(mapType.key, this);
+    const value = visit(mapType.value, this);
     nodes.assertTypeNode(key);
-    const value = visit(typeMap.value, this);
     nodes.assertTypeNode(value);
-    return nodes.mapTypeNode(key, value, { ...typeMap });
+    return nodes.mapTypeNode(key, value, { ...mapType });
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): nodes.Node {
-    const item = visit(typeOption.item, this);
-    nodes.assertTypeNode(item);
-    return nodes.optionTypeNode(item, { ...typeOption });
+    const child = visit(optionType.child, this);
+    nodes.assertTypeNode(child);
+    return nodes.optionTypeNode(child, { ...optionType });
   }
 
   visitSetType(setType: nodes.SetTypeNode): nodes.Node {
-    const item = visit(typeSet.item, this);
-    nodes.assertTypeNode(item);
-    return nodes.setTypeNode(item, { ...typeSet });
+    const child = visit(setType.child, this);
+    nodes.assertTypeNode(child);
+    return nodes.setTypeNode(child, { ...setType });
   }
 
   visitStructType(structType: nodes.StructTypeNode): nodes.Node {
     return nodes.structTypeNode(
-      typeStruct.name,
-      typeStruct.fields.map((field): nodes.StructFieldTypeNode => {
-        const newField = visit(field, this);
-        nodes.assertStructFieldTypeNode(newField);
-        return newField;
-      })
+      structType.name,
+      structType.fields
+        .map((field) => visit(field, this))
+        .filter(nodes.assertNodeFilter(nodes.assertStructFieldTypeNode))
     );
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): nodes.Node {
-    const newType = visit(typeStructField.type, this);
-    nodes.assertTypeNode(newType);
-    return nodes.structFieldTypeNode(typeStructField.metadata, newType);
+    const child = visit(structFieldType.child, this);
+    nodes.assertTypeNode(child);
+    return nodes.structFieldTypeNode({ ...structFieldType, child });
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): nodes.Node {
     return nodes.tupleTypeNode(
-      typeTuple.items.map((item) => {
-        const newItem = visit(item, this);
-        nodes.assertTypeNode(newItem);
-        return newItem;
-      })
+      tupleType.children
+        .map((child) => visit(child, this))
+        .filter(nodes.assertNodeFilter(nodes.assertTypeNode))
     );
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): nodes.Node {
-    return typeBool;
+    return boolType;
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): nodes.Node {
-    return typeBytes;
+    return bytesType;
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): nodes.Node {
-    return typeNumber;
+    return numberType;
   }
 
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): nodes.Node {
-    const item = visit(typeNumberWrapper.item, this);
-    nodes.assertNumberTypeNode(item);
-    return nodes.numberWrapperTypeNode(item, typeNumberWrapper.wrapper);
+    const number = visit(numberWrapperType.number, this);
+    nodes.assertNumberTypeNode(number);
+    return nodes.numberWrapperTypeNode(number, numberWrapperType.wrapper);
   }
 
   visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): nodes.Node {
-    return typePublicKey;
+    return publicKeyType;
   }
 
   visitStringType(stringType: nodes.StringTypeNode): nodes.Node {
-    return typeString;
+    return stringType;
   }
 }
