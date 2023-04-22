@@ -93,7 +93,7 @@ export class InstructionNode implements Visitable {
 
   readonly args: TypeStructNode | TypeDefinedLinkNode;
 
-  readonly extraArgs: TypeStructNode | TypeDefinedLinkNode | null;
+  readonly extraArgs: TypeStructNode | TypeDefinedLinkNode;
 
   readonly subInstructions: InstructionNode[];
 
@@ -215,7 +215,13 @@ export class InstructionNode implements Visitable {
       ]);
     }
 
-    return new InstructionNode(metadata, accounts, args, null, []);
+    const extraArgs = TypeStructNode.fromIdl({
+      kind: 'struct',
+      name: name ? `${name}InstructionExtra` : '',
+      fields: [],
+    });
+
+    return new InstructionNode(metadata, accounts, args, extraArgs, []);
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -264,10 +270,9 @@ export class InstructionNode implements Visitable {
 
   get hasExtraArgs(): boolean {
     if (isTypeDefinedLinkNode(this.extraArgs)) return true;
-    const nonOmittedFields =
-      this.extraArgs?.fields.filter(
-        (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
-      ) ?? [];
+    const nonOmittedFields = this.extraArgs.fields.filter(
+      (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
+    );
     return nonOmittedFields.length > 0;
   }
 

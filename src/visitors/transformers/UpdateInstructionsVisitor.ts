@@ -44,7 +44,8 @@ export type InstructionArgUpdates = Record<
   string,
   {
     name?: string;
-    type?: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
+    docs?: string[];
+    type?: nodes.TypeNode;
     defaultsTo?: nodes.InstructionNodeArgDefaults | null;
   }
 >;
@@ -190,12 +191,26 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     argUpdates: InstructionArgUpdates
   ): {
     newArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode;
-    newExtraArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode | null;
+    newExtraArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode;
     newArgDefaults: Record<string, nodes.InstructionNodeArgDefaults>;
   } {
+    const usedArgs = new Set<string>();
+
     let newArgs = instruction.args;
     if (!nodes.isTypeDefinedLinkNode(instruction.args)) {
-      const fields = [] as any[]; // TODO: handle args
+      const fields = instruction.args.fields.map((field) => {
+        const argUpdate = argUpdates[field.name];
+        if (!argUpdate) return field;
+        usedArgs.add(field.name);
+        return new nodes.TypeStructFieldNode(
+          {
+            ...field.metadata,
+            name: argUpdate.name ?? field.name,
+            docs: argUpdate.docs ?? field.metadata.docs,
+          },
+          argUpdate.type ?? field.type
+        );
+      });
       newArgs = new nodes.TypeStructNode(
         `${newInstructionName}InstructionData`,
         fields
@@ -204,19 +219,62 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
 
     let newExtraArgs = instruction.extraArgs;
     if (!nodes.isTypeDefinedLinkNode(instruction.extraArgs)) {
-      const fields = [] as any[]; // TODO: handle extra args
-      newExtraArgs =
-        fields.length > 0
-          ? new nodes.TypeStructNode(
-              `${newInstructionName}InstructionExtra`,
-              fields
-            )
-          : null;
+      const fields = instruction.extraArgs.fields.map((field) => {
+        if (usedArgs.has(field.name)) return field;
+        const argUpdate = argUpdates[field.name];
+        if (!argUpdate) return field;
+        usedArgs.add(field.name);
+        return new nodes.TypeStructFieldNode(
+          {
+            ...field.metadata,
+            name: argUpdate.name ?? field.name,
+            docs: argUpdate.docs ?? field.metadata.docs,
+          },
+          argUpdate.type ?? field.type
+        );
+      });
+
+      const newExtraFields = Object.entries(argUpdates)
+        .filter(([argName]) => !usedArgs.has(argName))
+        .map(([argName, argUpdate]) => {
+          const type = argUpdate.type ?? null;
+          nodes.assertTypeNode(type);
+          return new nodes.TypeStructFieldNode(
+            {
+              name: argUpdate.name ?? argName,
+              docs: argUpdate.docs ?? [],
+              defaultsTo: null,
+            },
+            type
+          );
+        });
+      fields.push(...newExtraFields);
+
+      newExtraArgs = new nodes.TypeStructNode(
+        `${newInstructionName}InstructionExtra`,
+        fields
+      );
     }
 
     const newArgDefaults = instruction.metadata.argDefaults;
-    // TODO: handle arg defaults
+    Object.entries(argUpdates).forEach(([argName, argUpdate]) => {
+      if (argUpdate?.defaultsTo === undefined) return;
+      if (argUpdate.defaultsTo === null) {
+        delete newArgDefaults[argName];
+      } else {
+        newArgDefaults[argName] = this.parseDefaultArg(argUpdate.defaultsTo);
+      }
+    });
 
     return { newArgs, newExtraArgs, newArgDefaults };
+  }
+
+  parseDefaultArg(
+    argDefault: InstructionNodeArgDefaultsInput
+  ): nodes.InstructionNodeArgDefaults {
+    if (argDefault?.kind === 'resolver') {
+      return { importFrom: 'hooked', dependsOn: [], ...argDefault };
+    }
+    return argDefault;
   }
 }
