@@ -1,7 +1,9 @@
 import * as nodes from '../../nodes';
-import { getDefaultSeedsFromAccount, mainCase } from '../../shared';
-import { ImportFrom } from '../../shared/ImportFrom';
-import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
+import {
+  InstructionArgDefault,
+  getDefaultSeedsFromAccount,
+  mainCase,
+} from '../../shared';
 import {
   NodeTransform,
   NodeTransformer,
@@ -17,28 +19,16 @@ export type InstructionUpdates =
     });
 
 export type InstructionMetadataUpdates = Partial<
-  Omit<nodes.InstructionNodeMetadata, 'bytesCreatedOnChain'> & {
-    bytesCreatedOnChain: InstructionNodeBytesCreatedOnChainInput | null;
-  }
+  Omit<
+    nodes.InstructionNodeInput,
+    'accounts' | 'dataArgs' | 'extraArgs' | 'subInstructions' | 'argDefaults'
+  >
 >;
 
 export type InstructionAccountUpdates = Record<
   string,
-  Partial<
-    Omit<nodes.InstructionNodeAccount, 'defaultsTo'> & {
-      defaultsTo: InstructionNodeAccountDefaultsInput;
-    }
-  >
+  Partial<nodes.InstructionAccountNodeInput>
 >;
-
-export type InstructionNodeArgDefaultsInput =
-  | nodes.InstructionNodeArgDefaults
-  | {
-      kind: 'resolver';
-      name: string;
-      importFrom?: ImportFrom;
-      dependsOn?: nodes.InstructionNodeInputDependency[];
-    };
 
 export type InstructionArgUpdates = Record<
   string,
@@ -46,20 +36,9 @@ export type InstructionArgUpdates = Record<
     name?: string;
     docs?: string[];
     type?: nodes.TypeNode;
-    defaultsTo?: nodes.InstructionNodeArgDefaults | null;
+    defaultsTo?: InstructionArgDefault | null;
   }
 >;
-
-type InstructionNodeBytesCreatedOnChainInput =
-  | { kind: 'number'; value: number; includeHeader?: boolean }
-  | { kind: 'arg'; name: string; includeHeader?: boolean }
-  | {
-      kind: 'account';
-      name: string;
-      importFrom?: ImportFrom;
-      includeHeader?: boolean;
-    }
-  | { kind: 'resolver'; name: string; importFrom?: ImportFrom };
 
 export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   protected allAccounts = new Map<string, nodes.AccountNode>();
@@ -70,7 +49,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { type: 'InstructionNode', stack: selectorStack, name },
+          selector: { kind: 'instructionNode', stack: selectorStack, name },
           transformer: (node, stack, program) => {
             nodes.assertInstructionNode(node);
             if (typeof updates === 'function') {
@@ -86,24 +65,20 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
               ...metadataUpdates
             } = updates;
             const newName = mainCase(updates.name ?? node.name);
-            const { newArgs, newExtraArgs, newArgDefaults } =
+            const { newDataArgs, newExtraArgs, newArgDefaults } =
               this.handleInstructionArgs(node, newName, argsUpdates ?? {});
-            const newMetadata = {
-              ...node.metadata,
-              ...this.handleMetadata(metadataUpdates),
-              argDefaults: newArgDefaults,
-            };
             const newAccounts = node.accounts.map((account) =>
               this.handleInstructionAccount(account, accountUpdates ?? {})
             );
 
-            return nodes.instructionNode(
-              newMetadata,
-              newAccounts,
-              newArgs,
-              newExtraArgs,
-              node.subInstructions
-            );
+            return nodes.instructionNode({
+              ...node,
+              ...metadataUpdates,
+              argDefaults: newArgDefaults,
+              accounts: newAccounts,
+              dataArgs: newDataArgs,
+              extraArgs: newExtraArgs,
+            });
           },
         };
       }
@@ -113,75 +88,35 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node | null {
-    root.allAccounts.forEach((account) => {
+    nodes.getAllAccounts(root).forEach((account) => {
       this.allAccounts.set(account.name, account);
     });
     return super.visitRoot(root);
   }
 
-  handleMetadata(
-    metadataUpdates: InstructionMetadataUpdates
-  ): Partial<nodes.InstructionNodeMetadata> {
-    const metadata = metadataUpdates as Partial<nodes.InstructionNodeMetadata>;
-    if (metadataUpdates.bytesCreatedOnChain) {
-      if (metadataUpdates.bytesCreatedOnChain.kind === 'account') {
-        metadata.bytesCreatedOnChain = {
-          includeHeader: true,
-          importFrom: 'generated',
-          ...metadataUpdates.bytesCreatedOnChain,
-        } as nodes.InstructionNodeBytesCreatedOnChain;
-      } else if (metadataUpdates.bytesCreatedOnChain.kind === 'resolver') {
-        metadata.bytesCreatedOnChain = {
-          importFrom: 'hooked',
-          ...metadataUpdates.bytesCreatedOnChain,
-        } as nodes.InstructionNodeBytesCreatedOnChain;
-      } else {
-        metadata.bytesCreatedOnChain = {
-          includeHeader: true,
-          ...metadataUpdates.bytesCreatedOnChain,
-        } as nodes.InstructionNodeBytesCreatedOnChain;
-      }
-    }
-    return metadata;
-  }
-
   handleInstructionAccount(
-    account: nodes.InstructionNodeAccount,
+    account: nodes.InstructionAccountNode,
     accountUpdates: InstructionAccountUpdates
-  ): nodes.InstructionNodeAccount {
+  ): nodes.InstructionAccountNode {
     const accountUpdate = accountUpdates?.[account.name];
 
     if (accountUpdate?.defaultsTo?.kind === 'pda') {
-      const pdaAccount = mainCase(
-        accountUpdate?.defaultsTo?.pdaAccount ?? account.name
-      );
+      const pdaAccount = mainCase(accountUpdate.defaultsTo.pdaAccount);
       const foundAccount = this.allAccounts.get(pdaAccount);
       return {
         ...account,
         ...accountUpdate,
         defaultsTo: {
-          pdaAccount,
-          importFrom: 'generated',
-          seeds: foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {},
-          ...accountUpdate?.defaultsTo,
-        },
-      };
-    }
-    if (accountUpdate?.defaultsTo?.kind === 'resolver') {
-      return {
-        ...account,
-        ...accountUpdate,
-        defaultsTo: {
-          importFrom: 'hooked',
-          dependsOn: [],
-          ...accountUpdate?.defaultsTo,
+          ...accountUpdate.defaultsTo,
+          seeds: {
+            ...(foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {}),
+            ...accountUpdate.defaultsTo.seeds,
+          },
         },
       };
     }
 
-    return accountUpdate
-      ? ({ ...account, ...accountUpdate } as nodes.InstructionNodeAccount)
-      : account;
+    return accountUpdate ? { ...account, ...accountUpdate } : account;
   }
 
   handleInstructionArgs(
@@ -189,13 +124,13 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     newInstructionName: string,
     argUpdates: InstructionArgUpdates
   ): {
-    newArgs: nodes.StructTypeNode | nodes.LinkTypeNode;
-    newExtraArgs: nodes.StructTypeNode | nodes.LinkTypeNode;
-    newArgDefaults: Record<string, nodes.InstructionNodeArgDefaults>;
+    newDataArgs: nodes.InstructionDataArgsNode;
+    newExtraArgs: nodes.InstructionExtraArgsNode;
+    newArgDefaults: Record<string, InstructionArgDefault>;
   } {
     const usedArgs = new Set<string>();
 
-    let newArgs = instruction.args;
+    let newDataArgs = instruction.args;
     if (!nodes.isLinkTypeNode(instruction.args)) {
       const fields = instruction.args.fields.map((field) => {
         const argUpdate = argUpdates[field.name];
@@ -210,7 +145,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
           argUpdate.type ?? field.type
         );
       });
-      newArgs = nodes.structTypeNode(
+      newDataArgs = nodes.structTypeNode(
         `${newInstructionName}InstructionData`,
         fields
       );
@@ -265,7 +200,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
       }
     });
 
-    return { newArgs, newExtraArgs, newArgDefaults };
+    return { newDataArgs, newExtraArgs, newArgDefaults };
   }
 
   parseDefaultArg(
