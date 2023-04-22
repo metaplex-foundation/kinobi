@@ -1,60 +1,34 @@
-import type { Visitable, Visitor } from '../visitors';
+import {
+  SizeStrategy,
+  displaySizeStrategy,
+  prefixedSize,
+} from '../shared/SizeStrategy';
 import type { Node } from './Node';
-import { NumberTypeNode } from './NumberTypeNode';
+
+export type StringEncoding = 'utf8' | 'base16' | 'base58' | 'base64';
 
 export type StringTypeNode = {
   readonly __stringTypeNode: unique symbol;
   readonly nodeClass: 'StringTypeNode';
+  readonly encoding: StringEncoding;
+  readonly size: SizeStrategy;
 };
 
-export type StringTypeNodeInput = {
-  // ...
-};
-
-export function stringTypeNode(input: StringTypeNodeInput): StringTypeNode {
-  return { ...input, nodeClass: 'StringTypeNode' } as StringTypeNode;
+export function stringTypeNode(
+  options: {
+    readonly encoding?: StringEncoding;
+    readonly size?: SizeStrategy;
+  } = {}
+): StringTypeNode {
+  return {
+    nodeClass: 'StringTypeNode',
+    encoding: options.encoding ?? 'utf8',
+    size: options.size ?? prefixedSize(),
+  } as StringTypeNode;
 }
 
-export function stringTypeNodeFromIdl(idl: StringTypeNodeIdl): StringTypeNode {
-  return stringTypeNode(idl);
-}
-
-export class StringTypeNode implements Visitable {
-  readonly nodeClass = 'StringTypeNode' as const;
-
-  readonly size:
-    | { kind: 'fixed'; bytes: number }
-    | { kind: 'prefixed'; prefix: NumberTypeNode }
-    | { kind: 'variable' };
-
-  readonly encoding: 'utf8' | 'base16' | 'base58' | 'base64';
-
-  constructor(
-    options: {
-      size?: StringTypeNode['size'];
-      encoding?: StringTypeNode['encoding'];
-    } = {}
-  ) {
-    this.size = options.size ?? {
-      kind: 'prefixed',
-      prefix: new NumberTypeNode('u32'),
-    };
-    this.encoding = options.encoding ?? 'utf8';
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeString(this);
-  }
-
-  getSizeAsString(): string {
-    if (this.size.kind === 'fixed') return `${this.size.bytes}`;
-    if (this.size.kind === 'prefixed') return `${this.size.prefix.toString()}`;
-    return 'variable';
-  }
-
-  toString(): string {
-    return `string(${this.encoding};${this.getSizeAsString()})`;
-  }
+export function displayStringTypeNode(node: StringTypeNode): string {
+  return `string(${node.encoding};${displaySizeStrategy(node.size)})`;
 }
 
 export function isStringTypeNode(node: Node | null): node is StringTypeNode {

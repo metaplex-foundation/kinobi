@@ -11,10 +11,6 @@ export type BytesTypeNode = {
   readonly size: SizeStrategy;
 };
 
-export type BytesTypeNodeInput = {
-  readonly size?: SizeStrategy;
-};
-
 export function bytesTypeNode(size?: SizeStrategy): BytesTypeNode {
   return {
     nodeClass: 'BytesTypeNode',
