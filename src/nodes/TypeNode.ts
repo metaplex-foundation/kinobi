@@ -1,51 +1,51 @@
 import { IdlType, IDL_TYPE_LEAVES } from '../idl';
 import type { Node } from './Node';
-import { TypeArrayNode } from './TypeArrayNode';
-import { TypeBoolNode } from './TypeBoolNode';
-import { TypeBytesNode } from './TypeBytesNode';
-import { TypeDefinedLinkNode } from './TypeDefinedLinkNode';
-import { TypeEnumNode } from './TypeEnumNode';
-import { TypeMapNode } from './TypeMapNode';
-import { TypeNumberNode } from './TypeNumberNode';
-import { TypeNumberWrapperNode } from './TypeNumberWrapperNode';
-import { TypeOptionNode } from './TypeOptionNode';
-import { TypePublicKeyNode } from './PublicKeyTypeNode';
-import { TypeSetNode } from './TypeSetNode';
-import { TypeStringNode } from './TypeStringNode';
-import { TypeStructNode } from './TypeStructNode';
-import { TypeTupleNode } from './TypeTupleNode';
+import { ArrayTypeNode } from './ArrayTypeNode';
+import { BoolTypeNode } from './BoolTypeNode';
+import { BytesTypeNode } from './BytesTypeNode';
+import { DefinedLinkTypeNode } from './DefinedLinkTypeNode';
+import { EnumTypeNode } from './EnumTypeNode';
+import { MapTypeNode } from './MapTypeNode';
+import { NumberTypeNode } from './NumberTypeNode';
+import { NumberWrapperTypeNode } from './NumberWrapperTypeNode';
+import { OptionTypeNode } from './OptionTypeNode';
+import { PublicKeyTypeNode } from './PublicKeyTypeNode';
+import { SetTypeNode } from './SetTypeNode';
+import { StringTypeNode } from './StringTypeNode';
+import { StructTypeNode } from './StructTypeNode';
+import { TupleTypeNode } from './TupleTypeNode';
 
 export type TypeNode =
-  | TypeArrayNode
-  | TypeBoolNode
-  | TypeBytesNode
-  | TypeDefinedLinkNode
-  | TypeEnumNode
-  | TypeMapNode
-  | TypeNumberNode
-  | TypeNumberWrapperNode
-  | TypeOptionNode
-  | TypePublicKeyNode
-  | TypeSetNode
-  | TypeStringNode
-  | TypeStructNode
-  | TypeTupleNode;
+  | ArrayTypeNode
+  | BoolTypeNode
+  | BytesTypeNode
+  | DefinedLinkTypeNode
+  | EnumTypeNode
+  | MapTypeNode
+  | NumberTypeNode
+  | NumberWrapperTypeNode
+  | OptionTypeNode
+  | PublicKeyTypeNode
+  | SetTypeNode
+  | StringTypeNode
+  | StructTypeNode
+  | TupleTypeNode;
 
 const TYPE_NODE_CLASSES = [
-  'TypeArrayNode',
-  'TypeBoolNode',
-  'TypeBytesNode',
-  'TypeDefinedLinkNode',
-  'TypeEnumNode',
-  'TypeMapNode',
-  'TypeNumberNode',
-  'TypeNumberWrapperNode',
-  'TypeOptionNode',
-  'TypePublicKeyNode',
-  'TypeSetNode',
-  'TypeStringNode',
-  'TypeStructNode',
-  'TypeTupleNode',
+  'ArrayTypeNode',
+  'BoolTypeNode',
+  'BytesTypeNode',
+  'DefinedLinkTypeNode',
+  'EnumTypeNode',
+  'MapTypeNode',
+  'NumberTypeNode',
+  'NumberWrapperTypeNode',
+  'OptionTypeNode',
+  'PublicKeyTypeNode',
+  'SetTypeNode',
+  'StringTypeNode',
+  'StructTypeNode',
+  'TupleTypeNode',
 ];
 
 function isArrayOfSize(array: any, size: number): boolean {
@@ -55,11 +55,11 @@ function isArrayOfSize(array: any, size: number): boolean {
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
   if (typeof idlType === 'string' && IDL_TYPE_LEAVES.includes(idlType)) {
-    if (idlType === 'bool') return new TypeBoolNode();
-    if (idlType === 'string') return new TypeStringNode();
-    if (idlType === 'publicKey') return new TypePublicKeyNode();
-    if (idlType === 'bytes') return new TypeBytesNode();
-    return new TypeNumberNode(idlType);
+    if (idlType === 'bool') return new BoolTypeNode();
+    if (idlType === 'string') return new StringTypeNode();
+    if (idlType === 'publicKey') return new PublicKeyTypeNode();
+    if (idlType === 'bytes') return new BytesTypeNode();
+    return new NumberTypeNode(idlType);
   }
 
   // Ensure eveything else is an object.
@@ -69,22 +69,22 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 
   // Array.
   if ('array' in idlType && isArrayOfSize(idlType.array, 2)) {
-    return TypeArrayNode.fromIdl(idlType);
+    return ArrayTypeNode.fromIdl(idlType);
   }
 
   // Vec.
   if ('vec' in idlType) {
-    return TypeArrayNode.fromIdl(idlType);
+    return ArrayTypeNode.fromIdl(idlType);
   }
 
   // Defined link.
   if ('defined' in idlType && typeof idlType.defined === 'string') {
-    return new TypeDefinedLinkNode(idlType.defined);
+    return new DefinedLinkTypeNode(idlType.defined);
   }
 
   // Enum.
   if ('kind' in idlType && idlType.kind === 'enum' && 'variants' in idlType) {
-    return TypeEnumNode.fromIdl(idlType);
+    return EnumTypeNode.fromIdl(idlType);
   }
 
   // Map.
@@ -92,27 +92,27 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     ('hashMap' in idlType && isArrayOfSize(idlType.hashMap, 2)) ||
     ('bTreeMap' in idlType && isArrayOfSize(idlType.bTreeMap, 2))
   ) {
-    return TypeMapNode.fromIdl(idlType);
+    return MapTypeNode.fromIdl(idlType);
   }
 
   // Option.
   if ('option' in idlType || 'coption' in idlType) {
-    return TypeOptionNode.fromIdl(idlType);
+    return OptionTypeNode.fromIdl(idlType);
   }
 
   // Set.
   if ('hashSet' in idlType || 'bTreeSet' in idlType) {
-    return TypeSetNode.fromIdl(idlType);
+    return SetTypeNode.fromIdl(idlType);
   }
 
   // Struct.
   if ('kind' in idlType && idlType.kind === 'struct') {
-    return TypeStructNode.fromIdl(idlType);
+    return StructTypeNode.fromIdl(idlType);
   }
 
   // Tuple.
   if ('tuple' in idlType && Array.isArray(idlType.tuple)) {
-    return TypeTupleNode.fromIdl(idlType);
+    return TupleTypeNode.fromIdl(idlType);
   }
 
   // Throw an error for unsupported types.
@@ -129,22 +129,22 @@ export function assertTypeNode(node: Node | null): asserts node is TypeNode {
   }
 }
 
-export function isTypeStructOrDefinedLinkNode(
+export function isStructOrDefinedLinkTypeNode(
   node: Node | null
-): node is TypeStructNode | TypeDefinedLinkNode {
+): node is StructTypeNode | DefinedLinkTypeNode {
   return (
     !!node &&
-    (node.nodeClass === 'TypeStructNode' ||
-      node.nodeClass === 'TypeDefinedLinkNode')
+    (node.nodeClass === 'StructTypeNode' ||
+      node.nodeClass === 'DefinedLinkTypeNode')
   );
 }
 
-export function assertTypeStructOrDefinedLinkNode(
+export function assertStructOrDefinedLinkTypeNode(
   node: Node | null
-): asserts node is TypeStructNode | TypeDefinedLinkNode {
-  if (!isTypeStructOrDefinedLinkNode(node)) {
+): asserts node is StructTypeNode | DefinedLinkTypeNode {
+  if (!isStructOrDefinedLinkTypeNode(node)) {
     throw new Error(
-      `Expected TypeStructNode | TypeDefinedLinkNode, got ${
+      `Expected StructTypeNode | DefinedLinkTypeNode, got ${
         node?.nodeClass ?? 'null'
       }.`
     );

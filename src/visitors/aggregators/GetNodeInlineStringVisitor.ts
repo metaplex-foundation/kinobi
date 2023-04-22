@@ -50,90 +50,90 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return `${ERROR_PREFIX}[${error.name}]`;
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): string {
+  visitTypeArray(typeArray: nodes.ArrayTypeNode): string {
     const item = typeArray.item.accept(this);
     const size = this.displayArrayLikeSize(typeArray.size);
     return `array(${item};${size})`;
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): string {
+  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): string {
     return `link(${typeDefinedLink.name};${typeDefinedLink.importFrom})`;
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {
+  visitTypeEnum(typeEnum: nodes.EnumTypeNode): string {
     const children = typeEnum.variants.map((variant) => variant.accept(this));
     return `enum[${typeEnum.name}](${children.join(',')})`;
   }
 
   visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ): string {
     return typeEnumEmptyVariant.name;
   }
 
   visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): string {
     const child = typeEnumStructVariant.struct.accept(this);
     return `${typeEnumStructVariant.name}:${child}`;
   }
 
   visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): string {
     const child = typeEnumTupleVariant.tuple.accept(this);
     return `${typeEnumTupleVariant.name}:${child}`;
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): string {
+  visitTypeMap(typeMap: nodes.MapTypeNode): string {
     const key = typeMap.key.accept(this);
     const value = typeMap.value.accept(this);
     const size = this.displayArrayLikeSize(typeMap.size);
     return `map(${key},${value};${size})`;
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): string {
+  visitTypeOption(typeOption: nodes.OptionTypeNode): string {
     const item = typeOption.item.accept(this);
     const prefix = typeOption.prefix.accept(this);
     const fixed = typeOption.fixed ? ';fixed' : '';
     return `option(${item};${prefix + fixed})`;
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): string {
+  visitTypeSet(typeSet: nodes.SetTypeNode): string {
     const item = typeSet.item.accept(this);
     const size = this.displayArrayLikeSize(typeSet.size);
     return `set(${item};${size})`;
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): string {
+  visitTypeStruct(typeStruct: nodes.StructTypeNode): string {
     const children = typeStruct.fields.map((field) => field.accept(this));
     return `struct[${typeStruct.name}](${children.join(',')})`;
   }
 
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): string {
+  visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): string {
     const child = typeStructField.type.accept(this);
     return `${typeStructField.name}:${child}`;
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {
+  visitTypeTuple(typeTuple: nodes.TupleTypeNode): string {
     const children = typeTuple.items.map((item) => item.accept(this));
     return `tuple(${children.join(',')})`;
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): string {
+  visitTypeBool(typeBool: nodes.BoolTypeNode): string {
     return typeBool.toString();
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): string {
+  visitTypeBytes(typeBytes: nodes.BytesTypeNode): string {
     return typeBytes.toString();
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): string {
+  visitTypeNumber(typeNumber: nodes.NumberTypeNode): string {
     return typeNumber.toString();
   }
 
   visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+    typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): string {
     const item = typeNumberWrapper.item.accept(this);
     const { wrapper } = typeNumberWrapper;
@@ -153,11 +153,11 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return 'publicKey';
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): string {
+  visitTypeString(typeString: nodes.StringTypeNode): string {
     return typeString.toString();
   }
 
-  displayArrayLikeSize(size: nodes.TypeArrayNode['size']): string {
+  displayArrayLikeSize(size: nodes.ArrayTypeNode['size']): string {
     if (size.kind === 'fixed') return `${size.size}`;
     if (size.kind === 'prefixed') return size.prefix.accept(this);
     return 'remainder';

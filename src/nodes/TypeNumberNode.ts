@@ -15,8 +15,8 @@ export type NumberFormat =
   | 'f32'
   | 'f64';
 
-export class TypeNumberNode implements Visitable {
-  readonly nodeClass = 'TypeNumberNode' as const;
+export class NumberTypeNode implements Visitable {
+  readonly nodeClass = 'NumberTypeNode' as const;
 
   readonly format: NumberFormat;
 
@@ -52,16 +52,16 @@ export class TypeNumberNode implements Visitable {
   }
 }
 
-export function isTypeNumberNode(node: Node | null): node is TypeNumberNode {
-  return !!node && node.nodeClass === 'TypeNumberNode';
+export function isNumberTypeNode(node: Node | null): node is NumberTypeNode {
+  return !!node && node.nodeClass === 'NumberTypeNode';
 }
 
-export function assertTypeNumberNode(
+export function assertNumberTypeNode(
   node: Node | null
-): asserts node is TypeNumberNode {
-  if (!isTypeNumberNode(node)) {
+): asserts node is NumberTypeNode {
+  if (!isNumberTypeNode(node)) {
     throw new Error(
-      `Expected TypeNumberNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected NumberTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

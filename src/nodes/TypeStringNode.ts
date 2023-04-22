@@ -1,26 +1,26 @@
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeNumberNode } from './TypeNumberNode';
+import { NumberTypeNode } from './NumberTypeNode';
 
-export class TypeStringNode implements Visitable {
-  readonly nodeClass = 'TypeStringNode' as const;
+export class StringTypeNode implements Visitable {
+  readonly nodeClass = 'StringTypeNode' as const;
 
   readonly size:
     | { kind: 'fixed'; bytes: number }
-    | { kind: 'prefixed'; prefix: TypeNumberNode }
+    | { kind: 'prefixed'; prefix: NumberTypeNode }
     | { kind: 'variable' };
 
   readonly encoding: 'utf8' | 'base16' | 'base58' | 'base64';
 
   constructor(
     options: {
-      size?: TypeStringNode['size'];
-      encoding?: TypeStringNode['encoding'];
+      size?: StringTypeNode['size'];
+      encoding?: StringTypeNode['encoding'];
     } = {}
   ) {
     this.size = options.size ?? {
       kind: 'prefixed',
-      prefix: new TypeNumberNode('u32'),
+      prefix: new NumberTypeNode('u32'),
     };
     this.encoding = options.encoding ?? 'utf8';
   }
@@ -40,16 +40,16 @@ export class TypeStringNode implements Visitable {
   }
 }
 
-export function isTypeStringNode(node: Node | null): node is TypeStringNode {
-  return !!node && node.nodeClass === 'TypeStringNode';
+export function isStringTypeNode(node: Node | null): node is StringTypeNode {
+  return !!node && node.nodeClass === 'StringTypeNode';
 }
 
-export function assertTypeStringNode(
+export function assertStringTypeNode(
   node: Node | null
-): asserts node is TypeStringNode {
-  if (!isTypeStringNode(node)) {
+): asserts node is StringTypeNode {
+  if (!isStringTypeNode(node)) {
     throw new Error(
-      `Expected TypeStringNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected StringTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

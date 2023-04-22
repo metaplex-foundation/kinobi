@@ -1,15 +1,15 @@
 import * as nodes from '../../nodes';
 
 export function renameStructNode(
-  node: nodes.TypeStructNode,
+  node: nodes.StructTypeNode,
   map: Record<string, string>,
   newName?: string
-): nodes.TypeStructNode {
-  return new nodes.TypeStructNode(
+): nodes.StructTypeNode {
+  return new nodes.StructTypeNode(
     newName ?? node.name,
     node.fields.map((field) =>
       map[field.name]
-        ? new nodes.TypeStructFieldNode(
+        ? new nodes.StructFieldTypeNode(
             { ...field.metadata, name: map[field.name] },
             field.type
           )
@@ -19,11 +19,11 @@ export function renameStructNode(
 }
 
 export function renameEnumNode(
-  node: nodes.TypeEnumNode,
+  node: nodes.EnumTypeNode,
   map: Record<string, string>,
   newName?: string
-): nodes.TypeEnumNode {
-  return new nodes.TypeEnumNode(
+): nodes.EnumTypeNode {
+  return new nodes.EnumTypeNode(
     newName ?? node.name,
     node.variants.map((variant) =>
       map[variant.name]
@@ -34,14 +34,14 @@ export function renameEnumNode(
 }
 
 function renameEnumVariant(
-  variant: nodes.TypeEnumVariantNode,
+  variant: nodes.EnumVariantTypeNode,
   newName: string
 ) {
-  if (nodes.isTypeEnumStructVariantNode(variant)) {
-    return new nodes.TypeEnumStructVariantNode(newName, variant.struct);
+  if (nodes.isEnumStructVariantTypeNode(variant)) {
+    return new nodes.EnumStructVariantTypeNode(newName, variant.struct);
   }
-  if (nodes.isTypeEnumTupleVariantNode(variant)) {
-    return new nodes.TypeEnumTupleVariantNode(newName, variant.tuple);
+  if (nodes.isEnumTupleVariantTypeNode(variant)) {
+    return new nodes.EnumTupleVariantTypeNode(newName, variant.tuple);
   }
-  return new nodes.TypeEnumEmptyVariantNode(newName);
+  return new nodes.EnumEmptyVariantTypeNode(newName);
 }

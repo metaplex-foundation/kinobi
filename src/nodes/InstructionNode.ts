@@ -3,13 +3,13 @@ import type { IdlInstruction } from '../idl';
 import type { ImportFrom, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl } from './TypeNode';
-import { TypeStructNode } from './TypeStructNode';
-import { TypeStructFieldNode } from './TypeStructFieldNode';
+import { StructTypeNode } from './StructTypeNode';
+import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { ValueNode, vScalar } from './ValueNode';
 import {
-  isTypeDefinedLinkNode,
-  TypeDefinedLinkNode,
-} from './TypeDefinedLinkNode';
+  isDefinedLinkTypeNode,
+  DefinedLinkTypeNode,
+} from './DefinedLinkTypeNode';
 
 export type InstructionNodeMetadata = {
   name: string;
@@ -91,9 +91,9 @@ export class InstructionNode implements Visitable {
 
   readonly accounts: InstructionNodeAccount[];
 
-  readonly args: TypeStructNode | TypeDefinedLinkNode;
+  readonly args: StructTypeNode | DefinedLinkTypeNode;
 
-  readonly extraArgs: TypeStructNode | TypeDefinedLinkNode;
+  readonly extraArgs: StructTypeNode | DefinedLinkTypeNode;
 
   readonly subInstructions: InstructionNode[];
 
@@ -191,14 +191,14 @@ export class InstructionNode implements Visitable {
       }
     );
 
-    let args = TypeStructNode.fromIdl({
+    let args = StructTypeNode.fromIdl({
       kind: 'struct',
       name: name ? `${name}InstructionData` : '',
       fields: idl.args ?? [],
     });
 
     if (idl.discriminant) {
-      const discriminatorField = new TypeStructFieldNode(
+      const discriminatorField = new StructFieldTypeNode(
         {
           name: 'discriminator',
           docs: [],
@@ -209,13 +209,13 @@ export class InstructionNode implements Visitable {
         },
         createTypeNodeFromIdl(idl.discriminant.type)
       );
-      args = new TypeStructNode(args.name, [
+      args = new StructTypeNode(args.name, [
         discriminatorField,
         ...args.fields,
       ]);
     }
 
-    const extraArgs = TypeStructNode.fromIdl({
+    const extraArgs = StructTypeNode.fromIdl({
       kind: 'struct',
       name: name ? `${name}InstructionExtra` : '',
       fields: [],
@@ -244,11 +244,11 @@ export class InstructionNode implements Visitable {
   }
 
   get hasLinkedArgs(): boolean {
-    return isTypeDefinedLinkNode(this.args);
+    return isDefinedLinkTypeNode(this.args);
   }
 
   get hasLinkedExtraArgs(): boolean {
-    return isTypeDefinedLinkNode(this.extraArgs);
+    return isDefinedLinkTypeNode(this.extraArgs);
   }
 
   get hasAccounts(): boolean {
@@ -256,12 +256,12 @@ export class InstructionNode implements Visitable {
   }
 
   get hasData(): boolean {
-    if (isTypeDefinedLinkNode(this.args)) return true;
+    if (isDefinedLinkTypeNode(this.args)) return true;
     return this.args.fields.length > 0;
   }
 
   get hasArgs(): boolean {
-    if (isTypeDefinedLinkNode(this.args)) return true;
+    if (isDefinedLinkTypeNode(this.args)) return true;
     const nonOmittedFields = this.args.fields.filter(
       (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
     );
@@ -269,7 +269,7 @@ export class InstructionNode implements Visitable {
   }
 
   get hasExtraArgs(): boolean {
-    if (isTypeDefinedLinkNode(this.extraArgs)) return true;
+    if (isDefinedLinkTypeNode(this.extraArgs)) return true;
     const nonOmittedFields = this.extraArgs.fields.filter(
       (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
     );

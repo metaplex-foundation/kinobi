@@ -76,7 +76,7 @@ export class GetJavaScriptTypeManifestVisitor
     throw new Error('Cannot get type manifest for error node.');
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): JavaScriptTypeManifest {
+  visitTypeArray(typeArray: nodes.ArrayTypeNode): JavaScriptTypeManifest {
     const itemManifest = typeArray.item.accept(this);
     const sizeOption = this.getArrayLikeSizeOption(
       typeArray.size,
@@ -92,7 +92,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode
+    typeDefinedLink: nodes.DefinedLinkTypeNode
   ): JavaScriptTypeManifest {
     const pascalCaseDefinedType = pascalCase(typeDefinedLink.name);
     const serializerName = `get${pascalCaseDefinedType}Serializer`;
@@ -121,7 +121,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): JavaScriptTypeManifest {
+  visitTypeEnum(typeEnum: nodes.EnumTypeNode): JavaScriptTypeManifest {
     const variantNames = typeEnum.variants.map((variant) =>
       pascalCase(variant.name)
     );
@@ -189,7 +189,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ): JavaScriptTypeManifest {
     const name = pascalCase(typeEnumEmptyVariant.name);
     const kindAttribute = `__kind: "${name}"`;
@@ -205,7 +205,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): JavaScriptTypeManifest {
     const name = pascalCase(typeEnumStructVariant.name);
     const kindAttribute = `__kind: "${name}"`;
@@ -219,12 +219,12 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): JavaScriptTypeManifest {
     const name = pascalCase(typeEnumTupleVariant.name);
     const kindAttribute = `__kind: "${name}"`;
-    const struct = new nodes.TypeStructNode(name, [
-      new nodes.TypeStructFieldNode(
+    const struct = new nodes.StructTypeNode(name, [
+      new nodes.StructFieldTypeNode(
         { name: 'fields', docs: [], defaultsTo: null },
         typeEnumTupleVariant.tuple
       ),
@@ -238,7 +238,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): JavaScriptTypeManifest {
+  visitTypeMap(typeMap: nodes.MapTypeNode): JavaScriptTypeManifest {
     const key = typeMap.key.accept(this);
     const value = typeMap.value.accept(this);
     const mergedManifest = this.mergeManifests([key, value]);
@@ -258,7 +258,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): JavaScriptTypeManifest {
+  visitTypeOption(typeOption: nodes.OptionTypeNode): JavaScriptTypeManifest {
     const itemManifest = typeOption.item.accept(this);
     itemManifest.strictImports.add('core', 'Option');
     itemManifest.looseImports.add('core', 'Option');
@@ -288,7 +288,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): JavaScriptTypeManifest {
+  visitTypeSet(typeSet: nodes.SetTypeNode): JavaScriptTypeManifest {
     const itemManifest = typeSet.item.accept(this);
     const sizeOption = this.getArrayLikeSizeOption(typeSet.size, itemManifest);
     const options = sizeOption ? `, { ${sizeOption} }` : '';
@@ -300,7 +300,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): JavaScriptTypeManifest {
+  visitTypeStruct(typeStruct: nodes.StructTypeNode): JavaScriptTypeManifest {
     const { definedName } = this;
     this.definedName = null;
 
@@ -357,7 +357,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeStructField(
-    typeStructField: nodes.TypeStructFieldNode
+    typeStructField: nodes.StructFieldTypeNode
   ): JavaScriptTypeManifest {
     const { metadata } = typeStructField;
     const name = camelCase(typeStructField.name);
@@ -381,7 +381,7 @@ export class GetJavaScriptTypeManifestVisitor
     return { ...baseField, looseType: '' };
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): JavaScriptTypeManifest {
+  visitTypeTuple(typeTuple: nodes.TupleTypeNode): JavaScriptTypeManifest {
     const items = typeTuple.items.map((item) => item.accept(this));
     const itemSerializers = items.map((item) => item.serializer).join(', ');
     return {
@@ -392,7 +392,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): JavaScriptTypeManifest {
+  visitTypeBool(typeBool: nodes.BoolTypeNode): JavaScriptTypeManifest {
     const size = typeBool.size.accept(this);
     const sizeSerializer =
       size.serializer === this.s('u8()') ? '' : `{ size: ${size.serializer} }`;
@@ -405,7 +405,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): JavaScriptTypeManifest {
+  visitTypeBytes(typeBytes: nodes.BytesTypeNode): JavaScriptTypeManifest {
     const options: string[] = [];
 
     // Size option.
@@ -430,7 +430,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): JavaScriptTypeManifest {
+  visitTypeNumber(typeNumber: nodes.NumberTypeNode): JavaScriptTypeManifest {
     const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
       typeNumber.format
     );
@@ -452,7 +452,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+    typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): JavaScriptTypeManifest {
     const { item, wrapper } = typeNumberWrapper;
     const itemManifest = item.accept(this);
@@ -517,7 +517,7 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): JavaScriptTypeManifest {
+  visitTypeString(typeString: nodes.StringTypeNode): JavaScriptTypeManifest {
     const imports = new JavaScriptImportMap();
     const options: string[] = [];
 
@@ -586,7 +586,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   protected getArrayLikeSizeOption(
-    size: nodes.TypeArrayNode['size'],
+    size: nodes.ArrayTypeNode['size'],
     manifest: Pick<
       JavaScriptTypeManifest,
       'strictImports' | 'looseImports' | 'serializerImports'

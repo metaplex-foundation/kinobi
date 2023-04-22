@@ -56,7 +56,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     }
 
     const reservedAccountFields = new Set(['publicKey', 'header']);
-    if (!nodes.isTypeDefinedLinkNode(account.type)) {
+    if (!nodes.isDefinedLinkTypeNode(account.type)) {
       const invalidFields = account.type.fields
         .map((field) => field.name)
         .filter((name) => reservedAccountFields.has(name));
@@ -99,7 +99,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const bag = super.visitDefinedType(definedType);
     this.pushNode(definedType);
     const isDataEnum =
-      nodes.isTypeEnumNode(definedType.type) && definedType.type.isDataEnum();
+      nodes.isEnumTypeNode(definedType.type) && definedType.type.isDataEnum();
     const camelCaseName = camelCase(definedType.name);
     const pascalCaseName = pascalCase(definedType.name);
     if (!definedType.metadata.internal) {
@@ -137,7 +137,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   }
 
   visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+    typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): ValidatorBag {
     const bag = super.visitTypeNumberWrapper(typeNumberWrapper);
     this.pushNode(typeNumberWrapper);

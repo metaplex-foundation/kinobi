@@ -22,7 +22,7 @@ export class AutoSetAccountGpaFieldsVisitor extends TransformNodesVisitor {
         transformer: (node) => {
           nodes.assertAccountNode(node);
           if (!this.override && node.metadata.gpaFields.length > 0) return node;
-          if (nodes.isTypeDefinedLinkNode(node.type)) return node;
+          if (nodes.isDefinedLinkTypeNode(node.type)) return node;
 
           let offset: number | null = 0;
           const gpaFields = node.type.fields.map(

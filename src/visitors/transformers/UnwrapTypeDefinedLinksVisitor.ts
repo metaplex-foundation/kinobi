@@ -12,9 +12,9 @@ export class UnwrapTypeDefinedLinksVisitor extends TransformNodesVisitor {
       const stack = selectorStack.split('.');
       const name = stack.pop();
       return {
-        selector: { type: 'TypeDefinedLinkNode', stack, name },
+        selector: { type: 'DefinedLinkTypeNode', stack, name },
         transformer: (node) => {
-          nodes.assertTypeDefinedLinkNode(node);
+          nodes.assertDefinedLinkTypeNode(node);
           if (node.importFrom !== 'generated') return node;
           const definedType = this.availableDefinedTypes.get(node.name);
           if (definedType === undefined) {

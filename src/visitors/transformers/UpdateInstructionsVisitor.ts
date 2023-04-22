@@ -190,19 +190,19 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     newInstructionName: string,
     argUpdates: InstructionArgUpdates
   ): {
-    newArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode;
-    newExtraArgs: nodes.TypeStructNode | nodes.TypeDefinedLinkNode;
+    newArgs: nodes.StructTypeNode | nodes.DefinedLinkTypeNode;
+    newExtraArgs: nodes.StructTypeNode | nodes.DefinedLinkTypeNode;
     newArgDefaults: Record<string, nodes.InstructionNodeArgDefaults>;
   } {
     const usedArgs = new Set<string>();
 
     let newArgs = instruction.args;
-    if (!nodes.isTypeDefinedLinkNode(instruction.args)) {
+    if (!nodes.isDefinedLinkTypeNode(instruction.args)) {
       const fields = instruction.args.fields.map((field) => {
         const argUpdate = argUpdates[field.name];
         if (!argUpdate) return field;
         usedArgs.add(field.name);
-        return new nodes.TypeStructFieldNode(
+        return new nodes.StructFieldTypeNode(
           {
             ...field.metadata,
             name: argUpdate.name ?? field.name,
@@ -211,20 +211,20 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
           argUpdate.type ?? field.type
         );
       });
-      newArgs = new nodes.TypeStructNode(
+      newArgs = new nodes.StructTypeNode(
         `${newInstructionName}InstructionData`,
         fields
       );
     }
 
     let newExtraArgs = instruction.extraArgs;
-    if (!nodes.isTypeDefinedLinkNode(instruction.extraArgs)) {
+    if (!nodes.isDefinedLinkTypeNode(instruction.extraArgs)) {
       const fields = instruction.extraArgs.fields.map((field) => {
         if (usedArgs.has(field.name)) return field;
         const argUpdate = argUpdates[field.name];
         if (!argUpdate) return field;
         usedArgs.add(field.name);
-        return new nodes.TypeStructFieldNode(
+        return new nodes.StructFieldTypeNode(
           {
             ...field.metadata,
             name: argUpdate.name ?? field.name,
@@ -239,7 +239,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         .map(([argName, argUpdate]) => {
           const type = argUpdate.type ?? null;
           nodes.assertTypeNode(type);
-          return new nodes.TypeStructFieldNode(
+          return new nodes.StructFieldTypeNode(
             {
               name: argUpdate.name ?? argName,
               docs: argUpdate.docs ?? [],
@@ -250,7 +250,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         });
       fields.push(...newExtraFields);
 
-      newExtraArgs = new nodes.TypeStructNode(
+      newExtraArgs = new nodes.StructTypeNode(
         `${newInstructionName}InstructionExtra`,
         fields
       );

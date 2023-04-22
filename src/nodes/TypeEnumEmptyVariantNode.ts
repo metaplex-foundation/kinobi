@@ -3,8 +3,8 @@ import type { IdlTypeEnumVariant } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 
-export class TypeEnumEmptyVariantNode implements Visitable {
-  readonly nodeClass = 'TypeEnumEmptyVariantNode' as const;
+export class EnumEmptyVariantTypeNode implements Visitable {
+  readonly nodeClass = 'EnumEmptyVariantTypeNode' as const;
 
   readonly name: string;
 
@@ -12,8 +12,8 @@ export class TypeEnumEmptyVariantNode implements Visitable {
     this.name = mainCase(name);
   }
 
-  static fromIdl(idl: IdlTypeEnumVariant): TypeEnumEmptyVariantNode {
-    return new TypeEnumEmptyVariantNode(idl.name ?? '');
+  static fromIdl(idl: IdlTypeEnumVariant): EnumEmptyVariantTypeNode {
+    return new EnumEmptyVariantTypeNode(idl.name ?? '');
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -21,18 +21,18 @@ export class TypeEnumEmptyVariantNode implements Visitable {
   }
 }
 
-export function isTypeEnumEmptyVariantNode(
+export function isEnumEmptyVariantTypeNode(
   node: Node | null
-): node is TypeEnumEmptyVariantNode {
-  return !!node && node.nodeClass === 'TypeEnumEmptyVariantNode';
+): node is EnumEmptyVariantTypeNode {
+  return !!node && node.nodeClass === 'EnumEmptyVariantTypeNode';
 }
 
-export function assertTypeEnumEmptyVariantNode(
+export function assertEnumEmptyVariantTypeNode(
   node: Node | null
-): asserts node is TypeEnumEmptyVariantNode {
-  if (!isTypeEnumEmptyVariantNode(node)) {
+): asserts node is EnumEmptyVariantTypeNode {
+  if (!isEnumEmptyVariantTypeNode(node)) {
     throw new Error(
-      `Expected TypeEnumEmptyVariantNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumEmptyVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

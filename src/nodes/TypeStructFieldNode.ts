@@ -5,26 +5,26 @@ import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import { ValueNode, vScalar } from './ValueNode';
 
-export type TypeStructFieldNodeMetadata = {
+export type StructFieldTypeNodeMetadata = {
   name: string;
   docs: string[];
   defaultsTo: { strategy: 'optional' | 'omitted'; value: ValueNode } | null;
 };
 
-export class TypeStructFieldNode implements Visitable {
-  readonly nodeClass = 'TypeStructFieldNode' as const;
+export class StructFieldTypeNode implements Visitable {
+  readonly nodeClass = 'StructFieldTypeNode' as const;
 
-  readonly metadata: TypeStructFieldNodeMetadata;
+  readonly metadata: StructFieldTypeNodeMetadata;
 
   readonly type: TypeNode;
 
-  constructor(metadata: TypeStructFieldNodeMetadata, type: TypeNode) {
+  constructor(metadata: StructFieldTypeNodeMetadata, type: TypeNode) {
     this.metadata = { ...metadata, name: mainCase(metadata.name) };
     this.type = type;
   }
 
-  static fromIdl(idl: IdlTypeStructField): TypeStructFieldNode {
-    return new TypeStructFieldNode(
+  static fromIdl(idl: IdlTypeStructField): StructFieldTypeNode {
+    return new StructFieldTypeNode(
       {
         name: idl.name ?? '',
         docs: idl.docs ?? [],
@@ -46,18 +46,18 @@ export class TypeStructFieldNode implements Visitable {
   }
 }
 
-export function isTypeStructFieldNode(
+export function isStructFieldTypeNode(
   node: Node | null
-): node is TypeStructFieldNode {
-  return !!node && node.nodeClass === 'TypeStructFieldNode';
+): node is StructFieldTypeNode {
+  return !!node && node.nodeClass === 'StructFieldTypeNode';
 }
 
-export function assertTypeStructFieldNode(
+export function assertStructFieldTypeNode(
   node: Node | null
-): asserts node is TypeStructFieldNode {
-  if (!isTypeStructFieldNode(node)) {
+): asserts node is StructFieldTypeNode {
+  if (!isStructFieldTypeNode(node)) {
     throw new Error(
-      `Expected TypeStructFieldNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected StructFieldTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

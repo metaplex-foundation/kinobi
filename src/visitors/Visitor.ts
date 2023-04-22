@@ -12,30 +12,30 @@ export interface Visitor<T = void> {
   visitError: (error: nodes.ErrorNode) => T;
 
   // Types.
-  visitTypeArray: (typeArray: nodes.TypeArrayNode) => T;
-  visitTypeDefinedLink: (typeDefinedLink: nodes.TypeDefinedLinkNode) => T;
-  visitTypeEnum: (typeEnum: nodes.TypeEnumNode) => T;
+  visitTypeArray: (typeArray: nodes.ArrayTypeNode) => T;
+  visitTypeDefinedLink: (typeDefinedLink: nodes.DefinedLinkTypeNode) => T;
+  visitTypeEnum: (typeEnum: nodes.EnumTypeNode) => T;
   visitTypeEnumEmptyVariant: (
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ) => T;
   visitTypeEnumStructVariant: (
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ) => T;
   visitTypeEnumTupleVariant: (
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ) => T;
-  visitTypeMap: (typeMap: nodes.TypeMapNode) => T;
-  visitTypeOption: (typeOption: nodes.TypeOptionNode) => T;
-  visitTypeSet: (typeSet: nodes.TypeSetNode) => T;
-  visitTypeStruct: (typeStruct: nodes.TypeStructNode) => T;
-  visitTypeStructField: (typeStructField: nodes.TypeStructFieldNode) => T;
-  visitTypeTuple: (typeTuple: nodes.TypeTupleNode) => T;
+  visitTypeMap: (typeMap: nodes.MapTypeNode) => T;
+  visitTypeOption: (typeOption: nodes.OptionTypeNode) => T;
+  visitTypeSet: (typeSet: nodes.SetTypeNode) => T;
+  visitTypeStruct: (typeStruct: nodes.StructTypeNode) => T;
+  visitTypeStructField: (typeStructField: nodes.StructFieldTypeNode) => T;
+  visitTypeTuple: (typeTuple: nodes.TupleTypeNode) => T;
 
   // Type leaves.
-  visitTypeBool: (typeBool: nodes.TypeBoolNode) => T;
-  visitTypeBytes: (typeBytes: nodes.TypeBytesNode) => T;
-  visitTypeNumber: (typeNumber: nodes.TypeNumberNode) => T;
-  visitTypeNumberWrapper: (typeNumberWrapper: nodes.TypeNumberWrapperNode) => T;
-  visitTypePublicKey: (typePublicKey: nodes.TypePublicKeyNode) => T;
-  visitTypeString: (typeString: nodes.TypeStringNode) => T;
+  visitTypeBool: (typeBool: nodes.BoolTypeNode) => T;
+  visitTypeBytes: (typeBytes: nodes.BytesTypeNode) => T;
+  visitTypeNumber: (typeNumber: nodes.NumberTypeNode) => T;
+  visitTypeNumberWrapper: (typeNumberWrapper: nodes.NumberWrapperTypeNode) => T;
+  visitTypePublicKey: (typePublicKey: nodes.PublicKeyTypeNode) => T;
+  visitTypeString: (typeString: nodes.StringTypeNode) => T;
 }

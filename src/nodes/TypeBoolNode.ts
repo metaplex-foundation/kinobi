@@ -1,14 +1,14 @@
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeNumberNode } from './TypeNumberNode';
+import { NumberTypeNode } from './NumberTypeNode';
 
-export class TypeBoolNode implements Visitable {
-  readonly nodeClass = 'TypeBoolNode' as const;
+export class BoolTypeNode implements Visitable {
+  readonly nodeClass = 'BoolTypeNode' as const;
 
-  readonly size: TypeNumberNode;
+  readonly size: NumberTypeNode;
 
-  constructor(options: { size?: TypeNumberNode } = {}) {
-    this.size = options.size ?? new TypeNumberNode('u8');
+  constructor(options: { size?: NumberTypeNode } = {}) {
+    this.size = options.size ?? new NumberTypeNode('u8');
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -20,14 +20,14 @@ export class TypeBoolNode implements Visitable {
   }
 }
 
-export function isTypeBoolNode(node: Node | null): node is TypeBoolNode {
-  return !!node && node.nodeClass === 'TypeBoolNode';
+export function isBoolTypeNode(node: Node | null): node is BoolTypeNode {
+  return !!node && node.nodeClass === 'BoolTypeNode';
 }
 
-export function assertTypeBoolNode(
+export function assertBoolTypeNode(
   node: Node | null
-): asserts node is TypeBoolNode {
-  if (!isTypeBoolNode(node)) {
-    throw new Error(`Expected TypeBoolNode, got ${node?.nodeClass ?? 'null'}.`);
+): asserts node is BoolTypeNode {
+  if (!isBoolTypeNode(node)) {
+    throw new Error(`Expected BoolTypeNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

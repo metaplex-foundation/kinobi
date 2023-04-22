@@ -1,20 +1,20 @@
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeNumberNode } from './TypeNumberNode';
+import { NumberTypeNode } from './NumberTypeNode';
 
 export type NumberWrapper =
   | { kind: 'DateTime' }
   | { kind: 'SolAmount' }
   | { kind: 'Amount'; identifier: string; decimals: number };
 
-export class TypeNumberWrapperNode implements Visitable {
-  readonly nodeClass = 'TypeNumberWrapperNode' as const;
+export class NumberWrapperTypeNode implements Visitable {
+  readonly nodeClass = 'NumberWrapperTypeNode' as const;
 
-  readonly item: TypeNumberNode;
+  readonly item: NumberTypeNode;
 
   readonly wrapper: NumberWrapper;
 
-  constructor(item: TypeNumberNode, wrapper: NumberWrapper) {
+  constructor(item: NumberTypeNode, wrapper: NumberWrapper) {
     this.item = item;
     this.wrapper = wrapper;
   }
@@ -24,18 +24,18 @@ export class TypeNumberWrapperNode implements Visitable {
   }
 }
 
-export function isTypeNumberWrapperNode(
+export function isNumberWrapperTypeNode(
   node: Node | null
-): node is TypeNumberWrapperNode {
-  return !!node && node.nodeClass === 'TypeNumberWrapperNode';
+): node is NumberWrapperTypeNode {
+  return !!node && node.nodeClass === 'NumberWrapperTypeNode';
 }
 
-export function assertTypeNumberWrapperNode(
+export function assertNumberWrapperTypeNode(
   node: Node | null
-): asserts node is TypeNumberWrapperNode {
-  if (!isTypeNumberWrapperNode(node)) {
+): asserts node is NumberWrapperTypeNode {
+  if (!isNumberWrapperTypeNode(node)) {
     throw new Error(
-      `Expected TypeNumberWrapperNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected NumberWrapperTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

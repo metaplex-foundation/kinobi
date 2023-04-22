@@ -13,14 +13,14 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'TypeStructNode', stack, name },
+          selector: { type: 'StructTypeNode', stack, name },
           transformer: (node) => {
-            nodes.assertTypeStructNode(node);
+            nodes.assertStructTypeNode(node);
             const fields = node.fields.map(
-              (field): nodes.TypeStructFieldNode => {
+              (field): nodes.StructFieldTypeNode => {
                 const defaultValue = defaultValues[field.name];
                 if (defaultValue === undefined) return field;
-                return new nodes.TypeStructFieldNode(
+                return new nodes.StructFieldTypeNode(
                   {
                     ...field.metadata,
                     defaultsTo: !defaultValue
@@ -34,7 +34,7 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
                 );
               }
             );
-            return new nodes.TypeStructNode(node.name, fields);
+            return new nodes.StructTypeNode(node.name, fields);
           },
         };
       }

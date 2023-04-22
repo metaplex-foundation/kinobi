@@ -16,7 +16,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
           selector: { type: 'InstructionNode', stack: selectorStack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
-            if (nodes.isTypeDefinedLinkNode(node.args)) return node;
+            if (nodes.isDefinedLinkTypeNode(node.args)) return node;
 
             const argFields = node.args.fields;
             const argName = mainCase(argNameInput);
@@ -30,16 +30,16 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
               return node;
             }
 
-            let argType: nodes.TypeEnumNode;
-            if (nodes.isTypeEnumNode(argField.type)) {
+            let argType: nodes.EnumTypeNode;
+            if (nodes.isEnumTypeNode(argField.type)) {
               argType = argField.type;
             } else if (
-              nodes.isTypeDefinedLinkNode(argField.type) &&
+              nodes.isDefinedLinkTypeNode(argField.type) &&
               this.allDefinedTypes.has(argField.type.name)
             ) {
               const linkedType =
                 this.allDefinedTypes.get(argField.type.name)?.type ?? null;
-              nodes.assertTypeEnumNode(linkedType);
+              nodes.assertEnumTypeNode(linkedType);
               argType = linkedType;
             } else {
               logWarn(
@@ -54,7 +54,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                 const subName = mainCase(`${node.name} ${variant.name}`);
                 const subFields = argFields.slice(0, argFieldIndex);
                 subFields.push(
-                  new nodes.TypeStructFieldNode(
+                  new nodes.StructFieldTypeNode(
                     {
                       name: `${subName}Discriminator`,
                       docs: [],
@@ -63,19 +63,19 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                         value: nodes.vScalar(index),
                       },
                     },
-                    new nodes.TypeNumberNode('u8')
+                    new nodes.NumberTypeNode('u8')
                   )
                 );
-                if (nodes.isTypeEnumStructVariantNode(variant)) {
+                if (nodes.isEnumStructVariantTypeNode(variant)) {
                   subFields.push(
-                    new nodes.TypeStructFieldNode(
+                    new nodes.StructFieldTypeNode(
                       argField.metadata,
                       variant.struct
                     )
                   );
-                } else if (nodes.isTypeEnumTupleVariantNode(variant)) {
+                } else if (nodes.isEnumTupleVariantTypeNode(variant)) {
                   subFields.push(
-                    new nodes.TypeStructFieldNode(
+                    new nodes.StructFieldTypeNode(
                       argField.metadata,
                       variant.tuple
                     )
@@ -87,7 +87,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                   { ...node.metadata, name: subName },
                   node.accounts,
                   flattenStruct(
-                    new nodes.TypeStructNode(
+                    new nodes.StructTypeNode(
                       `${subName}InstructionData`,
                       subFields
                     )

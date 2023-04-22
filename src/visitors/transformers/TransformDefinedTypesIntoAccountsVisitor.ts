@@ -16,7 +16,7 @@ export class TransformDefinedTypesIntoAccountsVisitor extends BaseNodeVisitor {
     );
 
     const newAccounts = typesToExtract.map((node) => {
-      nodes.assertTypeStructNode(node.type);
+      nodes.assertStructTypeNode(node.type);
       return new nodes.AccountNode(
         {
           ...node.metadata,

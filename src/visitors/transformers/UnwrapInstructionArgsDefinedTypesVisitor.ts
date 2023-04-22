@@ -19,7 +19,7 @@ export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseThrowVisitor<n
       // Filter out enums which are better defined as external types.
       .filter((name) => {
         const found = allDefinedTypes.find((type) => type.name === name);
-        return found && !nodes.isTypeEnumNode(found.type);
+        return found && !nodes.isEnumTypeNode(found.type);
       });
 
     // Inline the identified defined types if any.

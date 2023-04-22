@@ -3,8 +3,8 @@ import type { Visitable, Visitor } from '../visitors';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
 
-export class TypeTupleNode implements Visitable {
-  readonly nodeClass = 'TypeTupleNode' as const;
+export class TupleTypeNode implements Visitable {
+  readonly nodeClass = 'TupleTypeNode' as const;
 
   readonly items: TypeNode[];
 
@@ -12,8 +12,8 @@ export class TypeTupleNode implements Visitable {
     this.items = items;
   }
 
-  static fromIdl(idl: IdlTypeTuple): TypeTupleNode {
-    return new TypeTupleNode(idl.tuple.map(createTypeNodeFromIdl));
+  static fromIdl(idl: IdlTypeTuple): TupleTypeNode {
+    return new TupleTypeNode(idl.tuple.map(createTypeNodeFromIdl));
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -21,16 +21,16 @@ export class TypeTupleNode implements Visitable {
   }
 }
 
-export function isTypeTupleNode(node: Node | null): node is TypeTupleNode {
-  return !!node && node.nodeClass === 'TypeTupleNode';
+export function isTupleTypeNode(node: Node | null): node is TupleTypeNode {
+  return !!node && node.nodeClass === 'TupleTypeNode';
 }
 
-export function assertTypeTupleNode(
+export function assertTupleTypeNode(
   node: Node | null
-): asserts node is TypeTupleNode {
-  if (!isTypeTupleNode(node)) {
+): asserts node is TupleTypeNode {
+  if (!isTupleTypeNode(node)) {
     throw new Error(
-      `Expected TypeTupleNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected TupleTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

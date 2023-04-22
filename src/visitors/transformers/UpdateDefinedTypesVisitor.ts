@@ -37,13 +37,13 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
                 return null;
               }
               let newType = node.type;
-              if (nodes.isTypeStructNode(node.type)) {
+              if (nodes.isStructTypeNode(node.type)) {
                 newType = renameStructNode(
                   node.type,
                   updates.data ?? {},
                   newName ?? node.name
                 );
-              } else if (nodes.isTypeEnumNode(node.type)) {
+              } else if (nodes.isEnumTypeNode(node.type)) {
                 newType = renameEnumNode(
                   node.type,
                   updates.data ?? {},
@@ -61,14 +61,14 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
         if (newName) {
           transforms.push({
             selector: {
-              type: 'TypeDefinedLinkNode',
+              type: 'DefinedLinkTypeNode',
               stack: selectorStack,
               name,
             },
             transformer: (node: nodes.Node) => {
-              nodes.assertTypeDefinedLinkNode(node);
+              nodes.assertDefinedLinkTypeNode(node);
               if (node.importFrom !== 'generated') return node;
-              return new nodes.TypeDefinedLinkNode(newName, { ...node });
+              return new nodes.DefinedLinkTypeNode(newName, { ...node });
             },
           });
         }

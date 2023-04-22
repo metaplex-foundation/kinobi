@@ -2,24 +2,24 @@ import { mainCase } from '../utils';
 import type { IdlTypeStruct } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeStructFieldNode } from './TypeStructFieldNode';
+import { StructFieldTypeNode } from './StructFieldTypeNode';
 
-export class TypeStructNode implements Visitable {
-  readonly nodeClass = 'TypeStructNode' as const;
+export class StructTypeNode implements Visitable {
+  readonly nodeClass = 'StructTypeNode' as const;
 
   readonly name: string;
 
-  readonly fields: TypeStructFieldNode[];
+  readonly fields: StructFieldTypeNode[];
 
-  constructor(name: string, fields: TypeStructFieldNode[]) {
+  constructor(name: string, fields: StructFieldTypeNode[]) {
     this.name = mainCase(name);
     this.fields = fields;
   }
 
-  static fromIdl(idl: IdlTypeStruct): TypeStructNode {
-    return new TypeStructNode(
+  static fromIdl(idl: IdlTypeStruct): StructTypeNode {
+    return new StructTypeNode(
       idl.name ?? '',
-      (idl.fields ?? []).map(TypeStructFieldNode.fromIdl)
+      (idl.fields ?? []).map(StructFieldTypeNode.fromIdl)
     );
   }
 
@@ -28,16 +28,16 @@ export class TypeStructNode implements Visitable {
   }
 }
 
-export function isTypeStructNode(node: Node | null): node is TypeStructNode {
-  return !!node && node.nodeClass === 'TypeStructNode';
+export function isStructTypeNode(node: Node | null): node is StructTypeNode {
+  return !!node && node.nodeClass === 'StructTypeNode';
 }
 
-export function assertTypeStructNode(
+export function assertStructTypeNode(
   node: Node | null
-): asserts node is TypeStructNode {
-  if (!isTypeStructNode(node)) {
+): asserts node is StructTypeNode {
+  if (!isStructTypeNode(node)) {
     throw new Error(
-      `Expected TypeStructNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected StructTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

@@ -34,7 +34,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return child;
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): number | null {
+  visitTypeArray(typeArray: nodes.ArrayTypeNode): number | null {
     if (typeArray.size.kind !== 'fixed') return null;
     const itemSize = typeArray.item.accept(this);
     const arraySize = itemSize !== null ? itemSize * typeArray.size.size : null;
@@ -42,7 +42,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode
+    typeDefinedLink: nodes.DefinedLinkTypeNode
   ): number | null {
     if (typeDefinedLink.size !== null) return typeDefinedLink.size;
     if (typeDefinedLink.importFrom !== 'generated') return null;
@@ -66,7 +66,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return linkedDefinedType.accept(this);
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): number | null {
+  visitTypeEnum(typeEnum: nodes.EnumTypeNode): number | null {
     if (typeEnum.isScalarEnum()) return 1;
     const variantSizes = typeEnum.variants.map((v) => v.accept(this));
     const allVariantHaveTheSameFixedSize = variantSizes.every(
@@ -84,13 +84,13 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   }
 
   visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): number | null {
     return typeEnumStructVariant.struct.accept(this);
   }
 
   visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): number | null {
     return typeEnumTupleVariant.tuple.accept(this);
   }
@@ -99,7 +99,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return null;
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): number | null {
+  visitTypeOption(typeOption: nodes.OptionTypeNode): number | null {
     if (!typeOption.fixed) return null;
     const prefixSize = typeOption.prefix.accept(this) as number;
     const itemSize = typeOption.item.accept(this);
@@ -110,35 +110,35 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return null;
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): number | null {
+  visitTypeStruct(typeStruct: nodes.StructTypeNode): number | null {
     return this.sumSizes(typeStruct.fields.map((f) => f.accept(this)));
   }
 
   visitTypeStructField(
-    typeStructField: nodes.TypeStructFieldNode
+    typeStructField: nodes.StructFieldTypeNode
   ): number | null {
     return typeStructField.type.accept(this);
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): number | null {
+  visitTypeTuple(typeTuple: nodes.TupleTypeNode): number | null {
     return this.sumSizes(typeTuple.items.map((i) => i.accept(this)));
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): number | null {
+  visitTypeBool(typeBool: nodes.BoolTypeNode): number | null {
     return typeBool.size.accept(this);
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): number | null {
+  visitTypeBytes(typeBytes: nodes.BytesTypeNode): number | null {
     if (typeBytes.size.kind !== 'fixed') return null;
     return typeBytes.size.bytes;
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): number | null {
+  visitTypeNumber(typeNumber: nodes.NumberTypeNode): number | null {
     return parseInt(typeNumber.format.slice(1), 10) / 8;
   }
 
   visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+    typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): number | null {
     return typeNumberWrapper.item.accept(this);
   }
@@ -147,7 +147,7 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return 32;
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): number | null {
+  visitTypeString(typeString: nodes.StringTypeNode): number | null {
     if (typeString.size.kind !== 'fixed') return null;
     return typeString.size.bytes;
   }

@@ -1,32 +1,32 @@
 import type { Node } from './Node';
-import type { TypeEnumEmptyVariantNode } from './TypeEnumEmptyVariantNode';
-import type { TypeEnumStructVariantNode } from './TypeEnumStructVariantNode';
-import type { TypeEnumTupleVariantNode } from './TypeEnumTupleVariantNode';
+import type { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
+import type { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
+import type { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 
-export type TypeEnumVariantNode =
-  | TypeEnumEmptyVariantNode
-  | TypeEnumStructVariantNode
-  | TypeEnumTupleVariantNode;
+export type EnumVariantTypeNode =
+  | EnumEmptyVariantTypeNode
+  | EnumStructVariantTypeNode
+  | EnumTupleVariantTypeNode;
 
-export function isTypeEnumVariantNode(
+export function isEnumVariantTypeNode(
   node: Node | null
-): node is TypeEnumVariantNode {
+): node is EnumVariantTypeNode {
   return (
     !!node &&
     [
-      'TypeEnumEmptyVariantNode',
-      'TypeEnumStructVariantNode',
-      'TypeEnumTupleVariantNode',
+      'EnumEmptyVariantTypeNode',
+      'EnumStructVariantTypeNode',
+      'EnumTupleVariantTypeNode',
     ].includes(node.nodeClass)
   );
 }
 
-export function assertTypeEnumVariantNode(
+export function assertEnumVariantTypeNode(
   node: Node | null
-): asserts node is TypeEnumVariantNode {
-  if (!isTypeEnumVariantNode(node)) {
+): asserts node is EnumVariantTypeNode {
+  if (!isEnumVariantTypeNode(node)) {
     throw new Error(
-      `Expected TypeEnumVariantNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

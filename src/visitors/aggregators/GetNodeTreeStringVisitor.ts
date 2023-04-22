@@ -116,72 +116,72 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     );
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): string {
+  visitTypeArray(typeArray: nodes.ArrayTypeNode): string {
     this.indent += 1;
     const item = typeArray.item.accept(this);
     this.indent -= 1;
     const size = this.displayArrayLikeSize(typeArray.size);
-    return [this.indented(`[TypeArrayNode] size: ${size}`), item].join('\n');
+    return [this.indented(`[ArrayTypeNode] size: ${size}`), item].join('\n');
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): string {
+  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): string {
     return this.indented(
-      `[TypeDefinedLinkNode] ${typeDefinedLink.name}, ` +
+      `[DefinedLinkTypeNode] ${typeDefinedLink.name}, ` +
         `importFrom: ${typeDefinedLink.importFrom}`
     );
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {
+  visitTypeEnum(typeEnum: nodes.EnumTypeNode): string {
     this.indent += 1;
     const children = typeEnum.variants.map((variant) => variant.accept(this));
     this.indent -= 1;
     return [
       this.indented(
-        `[TypeEnumNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`
+        `[EnumTypeNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`
       ),
       ...children,
     ].join('\n');
   }
 
   visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ): string {
     return this.indented(
-      `[TypeEnumEmptyVariantNode] ${typeEnumEmptyVariant.name}`
+      `[EnumEmptyVariantTypeNode] ${typeEnumEmptyVariant.name}`
     );
   }
 
   visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): string {
     this.indent += 1;
     const child = typeEnumStructVariant.struct.accept(this);
     this.indent -= 1;
     return [
       this.indented(
-        `[TypeEnumStructVariantNode] ${typeEnumStructVariant.name}`
+        `[EnumStructVariantTypeNode] ${typeEnumStructVariant.name}`
       ),
       child,
     ].join('\n');
   }
 
   visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): string {
     this.indent += 1;
     const child = typeEnumTupleVariant.tuple.accept(this);
     this.indent -= 1;
     return [
-      this.indented(`[TypeEnumTupleVariantNode] ${typeEnumTupleVariant.name}`),
+      this.indented(`[EnumTupleVariantTypeNode] ${typeEnumTupleVariant.name}`),
       child,
     ].join('\n');
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): string {
+  visitTypeMap(typeMap: nodes.MapTypeNode): string {
     const result: string[] = [];
     const size = this.displayArrayLikeSize(typeMap.size);
     result.push(
-      this.indented(`[TypeMapNode] size: ${size}, ${typeMap.idlType}`)
+      this.indented(`[MapTypeNode] size: ${size}, ${typeMap.idlType}`)
     );
     this.indent += 1;
     result.push(this.indented('keys:'));
@@ -196,75 +196,75 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     return result.join('\n');
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): string {
+  visitTypeOption(typeOption: nodes.OptionTypeNode): string {
     this.indent += 1;
     const item = typeOption.item.accept(this);
     this.indent -= 1;
     const prefix = typeOption.prefix.toString();
     const fixed = typeOption.fixed ? ', fixed' : '';
     return [
-      this.indented(`[TypeOptionNode] prefix: ${prefix}${fixed}`),
+      this.indented(`[OptionTypeNode] prefix: ${prefix}${fixed}`),
       item,
     ].join('\n');
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): string {
+  visitTypeSet(typeSet: nodes.SetTypeNode): string {
     this.indent += 1;
     const item = typeSet.item.accept(this);
     this.indent -= 1;
     const size = this.displayArrayLikeSize(typeSet.size);
-    return [this.indented(`[TypeSetNode] size: ${size}`), item].join('\n');
+    return [this.indented(`[SetTypeNode] size: ${size}`), item].join('\n');
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): string {
+  visitTypeStruct(typeStruct: nodes.StructTypeNode): string {
     this.indent += 1;
     const children = typeStruct.fields.map((field) => field.accept(this));
     this.indent -= 1;
     return [
-      this.indented(`[TypeStructNode] ${typeStruct.name}`),
+      this.indented(`[StructTypeNode] ${typeStruct.name}`),
       ...children,
     ].join('\n');
   }
 
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): string {
+  visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): string {
     this.indent += 1;
     const child = typeStructField.type.accept(this);
     this.indent -= 1;
     return [
-      this.indented(`[TypeStructFieldNode] ${typeStructField.name}`),
+      this.indented(`[StructFieldTypeNode] ${typeStructField.name}`),
       child,
     ].join('\n');
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {
+  visitTypeTuple(typeTuple: nodes.TupleTypeNode): string {
     this.indent += 1;
     const items = typeTuple.items.map((item) => item.accept(this));
     this.indent -= 1;
-    return [this.indented('[TypeTupleNode]'), ...items].join('\n');
+    return [this.indented('[TupleTypeNode]'), ...items].join('\n');
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): string {
-    return this.indented(`[TypeBoolNode] ${typeBool.size.toString()}`);
+  visitTypeBool(typeBool: nodes.BoolTypeNode): string {
+    return this.indented(`[BoolTypeNode] ${typeBool.size.toString()}`);
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): string {
+  visitTypeBytes(typeBytes: nodes.BytesTypeNode): string {
     return this.indented(
-      `[TypeBytesNode] size: ${typeBytes.getSizeAsString()}`
+      `[BytesTypeNode] size: ${typeBytes.getSizeAsString()}`
     );
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): string {
-    return this.indented(`[TypeNumberNode] ${typeNumber.toString()}`);
+  visitTypeNumber(typeNumber: nodes.NumberTypeNode): string {
+    return this.indented(`[NumberTypeNode] ${typeNumber.toString()}`);
   }
 
   visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+    typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): string {
     this.indent += 1;
     const item = typeNumberWrapper.item.accept(this);
     this.indent -= 1;
     const { wrapper } = typeNumberWrapper;
-    const base = `[TypeNumberWrapperNode] ${wrapper.kind}`;
+    const base = `[NumberWrapperTypeNode] ${wrapper.kind}`;
     switch (wrapper.kind) {
       case 'Amount':
         return [
@@ -281,12 +281,12 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   }
 
   visitTypePublicKey(): string {
-    return this.indented('[TypePublicKeyNode]');
+    return this.indented('[PublicKeyTypeNode]');
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): string {
+  visitTypeString(typeString: nodes.StringTypeNode): string {
     return this.indented(
-      `[TypeStringNode] ` +
+      `[StringTypeNode] ` +
         `encoding: ${typeString.encoding}, ` +
         `size: ${typeString.getSizeAsString()}`
     );
@@ -296,7 +296,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     return this.separator.repeat(this.indent) + text;
   }
 
-  displayArrayLikeSize(size: nodes.TypeArrayNode['size']): string {
+  displayArrayLikeSize(size: nodes.ArrayTypeNode['size']): string {
     if (size.kind === 'fixed') return `${size.size}`;
     if (size.kind === 'prefixed') return size.prefix.toString();
     return 'remainder';

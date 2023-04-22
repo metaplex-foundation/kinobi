@@ -35,7 +35,7 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
   visitAccount(account: nodes.AccountNode): nodes.Node | null {
     const accountType = account.type.accept(this);
     if (accountType === null) return null;
-    nodes.assertTypeStructOrDefinedLinkNode(accountType);
+    nodes.assertStructOrDefinedLinkTypeNode(accountType);
     const seeds = account.metadata.seeds
       .map((seed) => {
         if (seed.kind !== 'variable') return seed;
@@ -61,9 +61,9 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
     const args = instruction.args.accept(this);
-    nodes.assertTypeStructOrDefinedLinkNode(args);
+    nodes.assertStructOrDefinedLinkTypeNode(args);
     const extraArgs = instruction.extraArgs.accept(this);
-    nodes.assertTypeStructOrDefinedLinkNode(extraArgs);
+    nodes.assertStructOrDefinedLinkTypeNode(extraArgs);
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
@@ -88,108 +88,108 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return error;
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node | null {
+  visitTypeArray(typeArray: nodes.ArrayTypeNode): nodes.Node | null {
     const item = typeArray.item.accept(this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
-    return new nodes.TypeArrayNode(item, { ...typeArray });
+    return new nodes.ArrayTypeNode(item, { ...typeArray });
   }
 
   visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode
+    typeDefinedLink: nodes.DefinedLinkTypeNode
   ): nodes.Node | null {
     return typeDefinedLink;
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): nodes.Node | null {
+  visitTypeEnum(typeEnum: nodes.EnumTypeNode): nodes.Node | null {
     const variants = typeEnum.variants
-      .map((variant): nodes.TypeEnumVariantNode | null => {
+      .map((variant): nodes.EnumVariantTypeNode | null => {
         const newVariant = variant.accept(this);
         if (newVariant === null) return null;
-        nodes.assertTypeEnumVariantNode(newVariant);
+        nodes.assertEnumVariantTypeNode(newVariant);
         return newVariant;
       })
-      .filter((v): v is nodes.TypeEnumVariantNode => v !== null);
+      .filter((v): v is nodes.EnumVariantTypeNode => v !== null);
 
-    return new nodes.TypeEnumNode(typeEnum.name, variants);
+    return new nodes.EnumTypeNode(typeEnum.name, variants);
   }
 
   visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ): nodes.Node | null {
     return typeEnumEmptyVariant;
   }
 
   visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): nodes.Node | null {
     const newStruct = typeEnumStructVariant.struct.accept(this);
     if (!newStruct) return null;
-    nodes.assertTypeStructNode(newStruct);
-    return new nodes.TypeEnumStructVariantNode(
+    nodes.assertStructTypeNode(newStruct);
+    return new nodes.EnumStructVariantTypeNode(
       typeEnumStructVariant.name,
       newStruct
     );
   }
 
   visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): nodes.Node | null {
     const newTuple = typeEnumTupleVariant.tuple.accept(this);
     if (!newTuple) return null;
-    nodes.assertTypeTupleNode(newTuple);
-    return new nodes.TypeEnumTupleVariantNode(
+    nodes.assertTupleTypeNode(newTuple);
+    return new nodes.EnumTupleVariantTypeNode(
       typeEnumTupleVariant.name,
       newTuple
     );
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node | null {
+  visitTypeMap(typeMap: nodes.MapTypeNode): nodes.Node | null {
     const key = typeMap.key.accept(this);
     const value = typeMap.value.accept(this);
     if (key === null || value === null) return null;
     nodes.assertTypeNode(key);
     nodes.assertTypeNode(value);
-    return new nodes.TypeMapNode(key, value, { ...typeMap });
+    return new nodes.MapTypeNode(key, value, { ...typeMap });
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): nodes.Node | null {
+  visitTypeOption(typeOption: nodes.OptionTypeNode): nodes.Node | null {
     const item = typeOption.item.accept(this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
-    return new nodes.TypeOptionNode(item, { ...typeOption });
+    return new nodes.OptionTypeNode(item, { ...typeOption });
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): nodes.Node | null {
+  visitTypeSet(typeSet: nodes.SetTypeNode): nodes.Node | null {
     const item = typeSet.item.accept(this);
     if (item === null) return null;
     nodes.assertTypeNode(item);
-    return new nodes.TypeSetNode(item, { ...typeSet });
+    return new nodes.SetTypeNode(item, { ...typeSet });
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node | null {
+  visitTypeStruct(typeStruct: nodes.StructTypeNode): nodes.Node | null {
     const fields = typeStruct.fields
-      .map((field): nodes.TypeStructFieldNode | null => {
+      .map((field): nodes.StructFieldTypeNode | null => {
         const newField = field.accept(this);
         if (newField === null) return null;
-        nodes.assertTypeStructFieldNode(newField);
+        nodes.assertStructFieldTypeNode(newField);
         return newField;
       })
-      .filter((field): field is nodes.TypeStructFieldNode => field !== null);
+      .filter((field): field is nodes.StructFieldTypeNode => field !== null);
 
-    return new nodes.TypeStructNode(typeStruct.name, fields);
+    return new nodes.StructTypeNode(typeStruct.name, fields);
   }
 
   visitTypeStructField(
-    typeStructField: nodes.TypeStructFieldNode
+    typeStructField: nodes.StructFieldTypeNode
   ): nodes.Node | null {
     const newType = typeStructField.type.accept(this);
     if (newType === null) return null;
     nodes.assertTypeNode(newType);
-    return new nodes.TypeStructFieldNode(typeStructField.metadata, newType);
+    return new nodes.StructFieldTypeNode(typeStructField.metadata, newType);
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node | null {
+  visitTypeTuple(typeTuple: nodes.TupleTypeNode): nodes.Node | null {
     const items = typeTuple.items
       .map((item) => {
         const newItem = item.accept(this);
@@ -199,37 +199,37 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       })
       .filter((type): type is nodes.TypeNode => type !== null);
 
-    return new nodes.TypeTupleNode(items);
+    return new nodes.TupleTypeNode(items);
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): nodes.Node | null {
+  visitTypeBool(typeBool: nodes.BoolTypeNode): nodes.Node | null {
     return typeBool;
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): nodes.Node | null {
+  visitTypeBytes(typeBytes: nodes.BytesTypeNode): nodes.Node | null {
     return typeBytes;
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): nodes.Node | null {
+  visitTypeNumber(typeNumber: nodes.NumberTypeNode): nodes.Node | null {
     return typeNumber;
   }
 
   visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+    typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): nodes.Node | null {
     const item = typeNumberWrapper.item.accept(this);
     if (item === null) return null;
-    nodes.assertTypeNumberNode(item);
-    return new nodes.TypeNumberWrapperNode(item, typeNumberWrapper.wrapper);
+    nodes.assertNumberTypeNode(item);
+    return new nodes.NumberWrapperTypeNode(item, typeNumberWrapper.wrapper);
   }
 
   visitTypePublicKey(
-    typePublicKey: nodes.TypePublicKeyNode
+    typePublicKey: nodes.PublicKeyTypeNode
   ): nodes.Node | null {
     return typePublicKey;
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): nodes.Node | null {
+  visitTypeString(typeString: nodes.StringTypeNode): nodes.Node | null {
     return typeString;
   }
 }

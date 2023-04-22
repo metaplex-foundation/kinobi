@@ -2,41 +2,41 @@ import type { IdlTypeArray, IdlTypeVec } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
-import { TypeNumberNode } from './TypeNumberNode';
+import { NumberTypeNode } from './NumberTypeNode';
 
-export class TypeArrayNode implements Visitable {
-  readonly nodeClass = 'TypeArrayNode' as const;
+export class ArrayTypeNode implements Visitable {
+  readonly nodeClass = 'ArrayTypeNode' as const;
 
   readonly item: TypeNode;
 
   readonly size:
     | { kind: 'fixed'; size: number }
-    | { kind: 'prefixed'; prefix: TypeNumberNode }
+    | { kind: 'prefixed'; prefix: NumberTypeNode }
     | { kind: 'remainder' };
 
-  constructor(item: TypeNode, options: { size?: TypeArrayNode['size'] } = {}) {
+  constructor(item: TypeNode, options: { size?: ArrayTypeNode['size'] } = {}) {
     this.item = item;
     this.size = options.size ?? {
       kind: 'prefixed',
-      prefix: new TypeNumberNode('u32'),
+      prefix: new NumberTypeNode('u32'),
     };
   }
 
-  static fromIdl(idl: IdlTypeArray | IdlTypeVec): TypeArrayNode {
+  static fromIdl(idl: IdlTypeArray | IdlTypeVec): ArrayTypeNode {
     if ('array' in idl) {
       const item = createTypeNodeFromIdl(idl.array[0]);
-      return new TypeArrayNode(item, {
+      return new ArrayTypeNode(item, {
         size: { kind: 'fixed', size: idl.array[1] },
       });
     }
 
     const item = createTypeNodeFromIdl(idl.vec);
-    if (!idl.size) return new TypeArrayNode(item);
+    if (!idl.size) return new ArrayTypeNode(item);
     if (idl.size === 'remainder') {
-      return new TypeArrayNode(item, { size: { kind: 'remainder' } });
+      return new ArrayTypeNode(item, { size: { kind: 'remainder' } });
     }
-    return new TypeArrayNode(item, {
-      size: { kind: 'prefixed', prefix: new TypeNumberNode(idl.size) },
+    return new ArrayTypeNode(item, {
+      size: { kind: 'prefixed', prefix: new NumberTypeNode(idl.size) },
     });
   }
 
@@ -45,16 +45,16 @@ export class TypeArrayNode implements Visitable {
   }
 }
 
-export function isTypeArrayNode(node: Node | null): node is TypeArrayNode {
-  return !!node && node.nodeClass === 'TypeArrayNode';
+export function isArrayTypeNode(node: Node | null): node is ArrayTypeNode {
+  return !!node && node.nodeClass === 'ArrayTypeNode';
 }
 
-export function assertTypeArrayNode(
+export function assertArrayTypeNode(
   node: Node | null
-): asserts node is TypeArrayNode {
-  if (!isTypeArrayNode(node)) {
+): asserts node is ArrayTypeNode {
+  if (!isArrayTypeNode(node)) {
     throw new Error(
-      `Expected TypeArrayNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected ArrayTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

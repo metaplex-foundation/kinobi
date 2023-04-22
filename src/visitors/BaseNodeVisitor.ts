@@ -30,7 +30,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const accountType = account.type.accept(this);
-    nodes.assertTypeStructOrDefinedLinkNode(accountType);
+    nodes.assertStructOrDefinedLinkTypeNode(accountType);
     const seeds = account.metadata.seeds.map((seed) => {
       if (seed.kind !== 'variable') return seed;
       const newType = seed.type.accept(this);
@@ -50,9 +50,9 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const args = instruction.args.accept(this);
-    nodes.assertTypeStructOrDefinedLinkNode(args);
+    nodes.assertStructOrDefinedLinkTypeNode(args);
     const extraArgs = instruction.extraArgs.accept(this);
-    nodes.assertTypeStructOrDefinedLinkNode(extraArgs);
+    nodes.assertStructOrDefinedLinkTypeNode(extraArgs);
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
@@ -76,94 +76,94 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return error;
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node {
+  visitTypeArray(typeArray: nodes.ArrayTypeNode): nodes.Node {
     const item = typeArray.item.accept(this);
     nodes.assertTypeNode(item);
-    return new nodes.TypeArrayNode(item, { ...typeArray });
+    return new nodes.ArrayTypeNode(item, { ...typeArray });
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
+  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): nodes.Node {
     return typeDefinedLink;
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): nodes.Node {
-    return new nodes.TypeEnumNode(
+  visitTypeEnum(typeEnum: nodes.EnumTypeNode): nodes.Node {
+    return new nodes.EnumTypeNode(
       typeEnum.name,
       typeEnum.variants.map((variant) => {
         const newVariant = variant.accept(this);
-        nodes.assertTypeEnumVariantNode(newVariant);
+        nodes.assertEnumVariantTypeNode(newVariant);
         return newVariant;
       })
     );
   }
 
   visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ): nodes.Node {
     return typeEnumEmptyVariant;
   }
 
   visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): nodes.Node {
     const newStruct = typeEnumStructVariant.struct.accept(this);
-    nodes.assertTypeStructNode(newStruct);
-    return new nodes.TypeEnumStructVariantNode(
+    nodes.assertStructTypeNode(newStruct);
+    return new nodes.EnumStructVariantTypeNode(
       typeEnumStructVariant.name,
       newStruct
     );
   }
 
   visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): nodes.Node {
     const newTuple = typeEnumTupleVariant.tuple.accept(this);
-    nodes.assertTypeTupleNode(newTuple);
-    return new nodes.TypeEnumTupleVariantNode(
+    nodes.assertTupleTypeNode(newTuple);
+    return new nodes.EnumTupleVariantTypeNode(
       typeEnumTupleVariant.name,
       newTuple
     );
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node {
+  visitTypeMap(typeMap: nodes.MapTypeNode): nodes.Node {
     const key = typeMap.key.accept(this);
     nodes.assertTypeNode(key);
     const value = typeMap.value.accept(this);
     nodes.assertTypeNode(value);
-    return new nodes.TypeMapNode(key, value, { ...typeMap });
+    return new nodes.MapTypeNode(key, value, { ...typeMap });
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): nodes.Node {
+  visitTypeOption(typeOption: nodes.OptionTypeNode): nodes.Node {
     const item = typeOption.item.accept(this);
     nodes.assertTypeNode(item);
-    return new nodes.TypeOptionNode(item, { ...typeOption });
+    return new nodes.OptionTypeNode(item, { ...typeOption });
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): nodes.Node {
+  visitTypeSet(typeSet: nodes.SetTypeNode): nodes.Node {
     const item = typeSet.item.accept(this);
     nodes.assertTypeNode(item);
-    return new nodes.TypeSetNode(item, { ...typeSet });
+    return new nodes.SetTypeNode(item, { ...typeSet });
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node {
-    return new nodes.TypeStructNode(
+  visitTypeStruct(typeStruct: nodes.StructTypeNode): nodes.Node {
+    return new nodes.StructTypeNode(
       typeStruct.name,
-      typeStruct.fields.map((field): nodes.TypeStructFieldNode => {
+      typeStruct.fields.map((field): nodes.StructFieldTypeNode => {
         const newField = field.accept(this);
-        nodes.assertTypeStructFieldNode(newField);
+        nodes.assertStructFieldTypeNode(newField);
         return newField;
       })
     );
   }
 
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): nodes.Node {
+  visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): nodes.Node {
     const newType = typeStructField.type.accept(this);
     nodes.assertTypeNode(newType);
-    return new nodes.TypeStructFieldNode(typeStructField.metadata, newType);
+    return new nodes.StructFieldTypeNode(typeStructField.metadata, newType);
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node {
-    return new nodes.TypeTupleNode(
+  visitTypeTuple(typeTuple: nodes.TupleTypeNode): nodes.Node {
+    return new nodes.TupleTypeNode(
       typeTuple.items.map((item) => {
         const newItem = item.accept(this);
         nodes.assertTypeNode(newItem);
@@ -172,31 +172,31 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): nodes.Node {
+  visitTypeBool(typeBool: nodes.BoolTypeNode): nodes.Node {
     return typeBool;
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): nodes.Node {
+  visitTypeBytes(typeBytes: nodes.BytesTypeNode): nodes.Node {
     return typeBytes;
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): nodes.Node {
+  visitTypeNumber(typeNumber: nodes.NumberTypeNode): nodes.Node {
     return typeNumber;
   }
 
   visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+    typeNumberWrapper: nodes.NumberWrapperTypeNode
   ): nodes.Node {
     const item = typeNumberWrapper.item.accept(this);
-    nodes.assertTypeNumberNode(item);
-    return new nodes.TypeNumberWrapperNode(item, typeNumberWrapper.wrapper);
+    nodes.assertNumberTypeNode(item);
+    return new nodes.NumberWrapperTypeNode(item, typeNumberWrapper.wrapper);
   }
 
-  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): nodes.Node {
+  visitTypePublicKey(typePublicKey: nodes.PublicKeyTypeNode): nodes.Node {
     return typePublicKey;
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): nodes.Node {
+  visitTypeString(typeString: nodes.StringTypeNode): nodes.Node {
     return typeString;
   }
 }

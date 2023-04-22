@@ -27,20 +27,20 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     throw new Error('This visitor does not support Error nodes.');
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): T {
+  visitTypeArray(typeArray: nodes.ArrayTypeNode): T {
     throw new Error('This visitor does not support TypeArray nodes.');
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): T {
+  visitTypeDefinedLink(typeDefinedLink: nodes.DefinedLinkTypeNode): T {
     throw new Error('This visitor does not support TypeDefinedLink nodes.');
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): T {
+  visitTypeEnum(typeEnum: nodes.EnumTypeNode): T {
     throw new Error('This visitor does not support TypeEnum nodes.');
   }
 
   visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ): T {
     throw new Error(
       'This visitor does not support TypeEnumEmptyVariant nodes.'
@@ -48,7 +48,7 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
   }
 
   visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+    typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): T {
     throw new Error(
       'This visitor does not support TypeEnumStructVariant nodes.'
@@ -56,58 +56,58 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
   }
 
   visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+    typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): T {
     throw new Error(
       'This visitor does not support TypeEnumTupleVariant nodes.'
     );
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): T {
+  visitTypeMap(typeMap: nodes.MapTypeNode): T {
     throw new Error('This visitor does not support TypeMap nodes.');
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): T {
+  visitTypeOption(typeOption: nodes.OptionTypeNode): T {
     throw new Error('This visitor does not support TypeOption nodes.');
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): T {
+  visitTypeSet(typeSet: nodes.SetTypeNode): T {
     throw new Error('This visitor does not support TypeSet nodes.');
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): T {
+  visitTypeStruct(typeStruct: nodes.StructTypeNode): T {
     throw new Error('This visitor does not support TypeStruct nodes.');
   }
 
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): T {
+  visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): T {
     throw new Error('This visitor does not support TypeStructField nodes.');
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): T {
+  visitTypeTuple(typeTuple: nodes.TupleTypeNode): T {
     throw new Error('This visitor does not support TypeTuple nodes.');
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): T {
+  visitTypeBool(typeBool: nodes.BoolTypeNode): T {
     throw new Error('This visitor does not support TypeBool nodes.');
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): T {
+  visitTypeBytes(typeBytes: nodes.BytesTypeNode): T {
     throw new Error('This visitor does not support TypeBytes nodes.');
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): T {
+  visitTypeNumber(typeNumber: nodes.NumberTypeNode): T {
     throw new Error('This visitor does not support TypeNumber nodes.');
   }
 
-  visitTypeNumberWrapper(typeNumberWrapper: nodes.TypeNumberWrapperNode): T {
+  visitTypeNumberWrapper(typeNumberWrapper: nodes.NumberWrapperTypeNode): T {
     throw new Error('This visitor does not support TypeNumberWrapper nodes.');
   }
 
-  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): T {
+  visitTypePublicKey(typePublicKey: nodes.PublicKeyTypeNode): T {
     throw new Error('This visitor does not support TypePublicKey nodes.');
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): T {
+  visitTypeString(typeString: nodes.StringTypeNode): T {
     throw new Error('This visitor does not support TypeString nodes.');
   }
 }

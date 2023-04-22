@@ -185,7 +185,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
-    const isLinked = nodes.isTypeDefinedLinkNode(account.type);
+    const isLinked = nodes.isDefinedLinkTypeNode(account.type);
     const typeManifest = account.accept(this.typeManifestVisitor);
     const imports = new JavaScriptImportMap().mergeWith(
       typeManifest.strictImports,
@@ -224,7 +224,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     } else if (
       discriminator?.kind === 'field' &&
-      !nodes.isTypeDefinedLinkNode(account.type)
+      !nodes.isDefinedLinkTypeNode(account.type)
     ) {
       const discriminatorField =
         account.type.fields.find((f) => f.name === discriminator.name) ?? null;
@@ -371,10 +371,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Args.
     const argManifest = instruction.accept(this.typeManifestVisitor);
     imports.mergeWith(argManifest.looseImports, argManifest.serializerImports);
-    if (!nodes.isTypeDefinedLinkNode(instruction.args)) {
+    if (!nodes.isDefinedLinkTypeNode(instruction.args)) {
       imports.mergeWith(argManifest.strictImports);
     }
-    if (!nodes.isTypeDefinedLinkNode(instruction.args) && instruction.hasData) {
+    if (!nodes.isDefinedLinkTypeNode(instruction.args) && instruction.hasData) {
       imports.add('core', ['Serializer']);
     }
 
@@ -426,8 +426,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // canMergeAccountsAndArgs
     let canMergeAccountsAndArgs = false;
     if (
-      !nodes.isTypeDefinedLinkNode(instruction.args) &&
-      !nodes.isTypeDefinedLinkNode(instruction.extraArgs)
+      !nodes.isDefinedLinkTypeNode(instruction.args) &&
+      !nodes.isDefinedLinkTypeNode(instruction.extraArgs)
     ) {
       const accountsAndArgsConflicts =
         this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
@@ -544,9 +544,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   protected getMergeConflictsForInstructionAccountsAndArgs(
     instruction: nodes.InstructionNode
   ): string[] {
-    nodes.assertTypeStructNode(instruction.args);
-    let extraArgsFields: nodes.TypeStructFieldNode[] = [];
-    if (nodes.isTypeStructNode(instruction.extraArgs)) {
+    nodes.assertStructTypeNode(instruction.args);
+    let extraArgsFields: nodes.StructFieldTypeNode[] = [];
+    if (nodes.isStructTypeNode(instruction.extraArgs)) {
       extraArgsFields = instruction.extraArgs.fields;
     }
     const allNames = [

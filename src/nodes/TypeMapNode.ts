@@ -2,10 +2,10 @@ import type { IdlTypeMap } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
-import { TypeNumberNode } from './TypeNumberNode';
+import { NumberTypeNode } from './NumberTypeNode';
 
-export class TypeMapNode implements Visitable {
-  readonly nodeClass = 'TypeMapNode' as const;
+export class MapTypeNode implements Visitable {
+  readonly nodeClass = 'MapTypeNode' as const;
 
   readonly key: TypeNode;
 
@@ -13,7 +13,7 @@ export class TypeMapNode implements Visitable {
 
   readonly size:
     | { kind: 'fixed'; size: number }
-    | { kind: 'prefixed'; prefix: TypeNumberNode }
+    | { kind: 'prefixed'; prefix: NumberTypeNode }
     | { kind: 'remainder' };
 
   readonly idlType: 'hashMap' | 'bTreeMap';
@@ -22,7 +22,7 @@ export class TypeMapNode implements Visitable {
     key: TypeNode,
     value: TypeNode,
     options: {
-      size?: TypeMapNode['size'];
+      size?: MapTypeNode['size'];
       idlType?: 'hashMap' | 'bTreeMap';
     } = {}
   ) {
@@ -30,23 +30,23 @@ export class TypeMapNode implements Visitable {
     this.value = value;
     this.size = options.size ?? {
       kind: 'prefixed',
-      prefix: new TypeNumberNode('u32'),
+      prefix: new NumberTypeNode('u32'),
     };
     this.idlType = options.idlType ?? 'hashMap';
   }
 
-  static fromIdl(idl: IdlTypeMap): TypeMapNode {
+  static fromIdl(idl: IdlTypeMap): MapTypeNode {
     const idlType = 'hashMap' in idl ? 'hashMap' : 'bTreeMap';
     const [key, value] = 'hashMap' in idl ? idl.hashMap : idl.bTreeMap;
-    let size: TypeMapNode['size'] | undefined;
+    let size: MapTypeNode['size'] | undefined;
     if (idl.size === 'remainder') {
       size = { kind: 'remainder' };
     } else if (typeof idl.size === 'number') {
       size = { kind: 'fixed', size: idl.size };
     } else if (idl.size) {
-      size = { kind: 'prefixed', prefix: new TypeNumberNode(idl.size) };
+      size = { kind: 'prefixed', prefix: new NumberTypeNode(idl.size) };
     }
-    return new TypeMapNode(
+    return new MapTypeNode(
       createTypeNodeFromIdl(key),
       createTypeNodeFromIdl(value),
       { idlType, size }
@@ -58,14 +58,14 @@ export class TypeMapNode implements Visitable {
   }
 }
 
-export function isTypeMapNode(node: Node | null): node is TypeMapNode {
-  return !!node && node.nodeClass === 'TypeMapNode';
+export function isMapTypeNode(node: Node | null): node is MapTypeNode {
+  return !!node && node.nodeClass === 'MapTypeNode';
 }
 
-export function assertTypeMapNode(
+export function assertMapTypeNode(
   node: Node | null
-): asserts node is TypeMapNode {
-  if (!isTypeMapNode(node)) {
-    throw new Error(`Expected TypeMapNode, got ${node?.nodeClass ?? 'null'}.`);
+): asserts node is MapTypeNode {
+  if (!isMapTypeNode(node)) {
+    throw new Error(`Expected MapTypeNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }

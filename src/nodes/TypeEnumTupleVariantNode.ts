@@ -2,25 +2,25 @@ import { mainCase } from '../utils';
 import type { IdlType, IdlTypeEnumVariant } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeTupleNode } from './TypeTupleNode';
+import { TupleTypeNode } from './TupleTypeNode';
 
-export class TypeEnumTupleVariantNode implements Visitable {
-  readonly nodeClass = 'TypeEnumTupleVariantNode' as const;
+export class EnumTupleVariantTypeNode implements Visitable {
+  readonly nodeClass = 'EnumTupleVariantTypeNode' as const;
 
   readonly name: string;
 
-  readonly tuple: TypeTupleNode;
+  readonly tuple: TupleTypeNode;
 
-  constructor(name: string, tuple: TypeTupleNode) {
+  constructor(name: string, tuple: TupleTypeNode) {
     this.name = mainCase(name);
     this.tuple = tuple;
   }
 
-  static fromIdl(idl: IdlTypeEnumVariant): TypeEnumTupleVariantNode {
+  static fromIdl(idl: IdlTypeEnumVariant): EnumTupleVariantTypeNode {
     const name = idl.name ?? '';
-    return new TypeEnumTupleVariantNode(
+    return new EnumTupleVariantTypeNode(
       name,
-      TypeTupleNode.fromIdl({ tuple: idl.fields as IdlType[] })
+      TupleTypeNode.fromIdl({ tuple: idl.fields as IdlType[] })
     );
   }
 
@@ -29,18 +29,18 @@ export class TypeEnumTupleVariantNode implements Visitable {
   }
 }
 
-export function isTypeEnumTupleVariantNode(
+export function isEnumTupleVariantTypeNode(
   node: Node | null
-): node is TypeEnumTupleVariantNode {
-  return !!node && node.nodeClass === 'TypeEnumTupleVariantNode';
+): node is EnumTupleVariantTypeNode {
+  return !!node && node.nodeClass === 'EnumTupleVariantTypeNode';
 }
 
-export function assertTypeEnumTupleVariantNode(
+export function assertEnumTupleVariantTypeNode(
   node: Node | null
-): asserts node is TypeEnumTupleVariantNode {
-  if (!isTypeEnumTupleVariantNode(node)) {
+): asserts node is EnumTupleVariantTypeNode {
+  if (!isEnumTupleVariantTypeNode(node)) {
     throw new Error(
-      `Expected TypeEnumTupleVariantNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumTupleVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

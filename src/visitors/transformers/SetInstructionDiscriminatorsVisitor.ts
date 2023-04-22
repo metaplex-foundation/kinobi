@@ -3,7 +3,7 @@ import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 type Discriminator = {
   value: nodes.ValueNode;
-  /** @defaultValue `new TypeNumberNode('u8')` */
+  /** @defaultValue `new NumberTypeNode('u8')` */
   type?: nodes.TypeNode;
   /** @defaultValue `"discriminator"` */
   name?: string;
@@ -23,8 +23,8 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
           selector: { type: 'InstructionNode', stack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
-            if (nodes.isTypeDefinedLinkNode(node.args)) return node;
-            const discriminatorField = new nodes.TypeStructFieldNode(
+            if (nodes.isDefinedLinkTypeNode(node.args)) return node;
+            const discriminatorField = new nodes.StructFieldTypeNode(
               {
                 name: discriminator.name ?? 'discriminator',
                 docs: discriminator.docs ?? [],
@@ -33,13 +33,13 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
                   value: discriminator.value,
                 },
               },
-              discriminator.type ?? new nodes.TypeNumberNode('u8')
+              discriminator.type ?? new nodes.NumberTypeNode('u8')
             );
 
             return new nodes.InstructionNode(
               node.metadata,
               node.accounts,
-              new nodes.TypeStructNode(node.args.name, [
+              new nodes.StructTypeNode(node.args.name, [
                 discriminatorField,
                 ...node.args.fields,
               ]),

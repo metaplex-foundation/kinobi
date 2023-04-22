@@ -2,37 +2,37 @@ import { mainCase } from '../utils';
 import type { IdlTypeEnum } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeEnumEmptyVariantNode } from './TypeEnumEmptyVariantNode';
-import { TypeEnumStructVariantNode } from './TypeEnumStructVariantNode';
-import { TypeEnumTupleVariantNode } from './TypeEnumTupleVariantNode';
-import type { TypeEnumVariantNode } from './TypeEnumVariantNode';
+import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
+import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
+import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
+import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
 
-export class TypeEnumNode implements Visitable {
-  readonly nodeClass = 'TypeEnumNode' as const;
+export class EnumTypeNode implements Visitable {
+  readonly nodeClass = 'EnumTypeNode' as const;
 
   readonly name: string;
 
-  readonly variants: TypeEnumVariantNode[];
+  readonly variants: EnumVariantTypeNode[];
 
-  constructor(name: string, variants: TypeEnumVariantNode[]) {
+  constructor(name: string, variants: EnumVariantTypeNode[]) {
     this.name = mainCase(name);
     this.variants = variants;
   }
 
-  static fromIdl(idl: IdlTypeEnum): TypeEnumNode {
-    const variants = idl.variants.map((variant): TypeEnumVariantNode => {
+  static fromIdl(idl: IdlTypeEnum): EnumTypeNode {
+    const variants = idl.variants.map((variant): EnumVariantTypeNode => {
       if (!variant.fields || variant.fields.length <= 0) {
-        return TypeEnumEmptyVariantNode.fromIdl(variant);
+        return EnumEmptyVariantTypeNode.fromIdl(variant);
       }
 
       if (isStructField(variant.fields[0])) {
-        return TypeEnumStructVariantNode.fromIdl(variant);
+        return EnumStructVariantTypeNode.fromIdl(variant);
       }
 
-      return TypeEnumTupleVariantNode.fromIdl(variant);
+      return EnumTupleVariantTypeNode.fromIdl(variant);
     });
 
-    return new TypeEnumNode(idl.name ?? '', variants);
+    return new EnumTypeNode(idl.name ?? '', variants);
   }
 
   accept<T>(visitor: Visitor<T>): T {
@@ -41,7 +41,7 @@ export class TypeEnumNode implements Visitable {
 
   isScalarEnum(): boolean {
     return this.variants.every(
-      (variant) => variant.nodeClass === 'TypeEnumEmptyVariantNode'
+      (variant) => variant.nodeClass === 'EnumEmptyVariantTypeNode'
     );
   }
 
@@ -50,15 +50,15 @@ export class TypeEnumNode implements Visitable {
   }
 }
 
-export function isTypeEnumNode(node: Node | null): node is TypeEnumNode {
-  return !!node && node.nodeClass === 'TypeEnumNode';
+export function isEnumTypeNode(node: Node | null): node is EnumTypeNode {
+  return !!node && node.nodeClass === 'EnumTypeNode';
 }
 
-export function assertTypeEnumNode(
+export function assertEnumTypeNode(
   node: Node | null
-): asserts node is TypeEnumNode {
-  if (!isTypeEnumNode(node)) {
-    throw new Error(`Expected TypeEnumNode, got ${node?.nodeClass ?? 'null'}.`);
+): asserts node is EnumTypeNode {
+  if (!isEnumTypeNode(node)) {
+    throw new Error(`Expected EnumTypeNode, got ${node?.nodeClass ?? 'null'}.`);
   }
 }
 

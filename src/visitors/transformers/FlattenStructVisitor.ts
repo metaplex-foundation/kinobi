@@ -12,7 +12,7 @@ export class FlattenStructVisitor extends TransformNodesVisitor {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'TypeStructNode', stack, name },
+          selector: { type: 'StructTypeNode', stack, name },
           transformer: (node) => flattenStruct(node, options),
         };
       }
@@ -25,14 +25,14 @@ export class FlattenStructVisitor extends TransformNodesVisitor {
 export const flattenStruct = (
   node: nodes.Node,
   options: FlattenStructOptions = '*'
-): nodes.TypeStructNode => {
-  nodes.assertTypeStructNode(node);
+): nodes.StructTypeNode => {
+  nodes.assertStructTypeNode(node);
   const camelCaseOptions = options === '*' ? options : options.map(camelCase);
-  const shouldInline = (field: nodes.TypeStructFieldNode): boolean =>
+  const shouldInline = (field: nodes.StructFieldTypeNode): boolean =>
     options === '*' || camelCaseOptions.includes(camelCase(field.name));
-  const inlinedFields = node.fields.reduce<nodes.TypeStructFieldNode[]>(
+  const inlinedFields = node.fields.reduce<nodes.StructFieldTypeNode[]>(
     (all, one) => {
-      if (nodes.isTypeStructNode(one.type) && shouldInline(one)) {
+      if (nodes.isStructTypeNode(one.type) && shouldInline(one)) {
         all.push(...one.type.fields);
       } else {
         all.push(one);
@@ -58,5 +58,5 @@ export const flattenStruct = (
 
   return hasConflictingNames
     ? node
-    : new nodes.TypeStructNode(node.name, inlinedFields);
+    : new nodes.StructTypeNode(node.name, inlinedFields);
 };

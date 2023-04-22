@@ -2,25 +2,25 @@ import { mainCase } from '../utils';
 import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeStructNode } from './TypeStructNode';
+import { StructTypeNode } from './StructTypeNode';
 
-export class TypeEnumStructVariantNode implements Visitable {
-  readonly nodeClass = 'TypeEnumStructVariantNode' as const;
+export class EnumStructVariantTypeNode implements Visitable {
+  readonly nodeClass = 'EnumStructVariantTypeNode' as const;
 
   readonly name: string;
 
-  readonly struct: TypeStructNode;
+  readonly struct: StructTypeNode;
 
-  constructor(name: string, struct: TypeStructNode) {
+  constructor(name: string, struct: StructTypeNode) {
     this.name = mainCase(name);
     this.struct = struct;
   }
 
-  static fromIdl(idl: IdlTypeEnumVariant): TypeEnumStructVariantNode {
+  static fromIdl(idl: IdlTypeEnumVariant): EnumStructVariantTypeNode {
     const name = idl.name ?? '';
-    return new TypeEnumStructVariantNode(
+    return new EnumStructVariantTypeNode(
       name,
-      TypeStructNode.fromIdl({
+      StructTypeNode.fromIdl({
         kind: 'struct',
         name,
         fields: idl.fields as IdlTypeEnumField[],
@@ -33,18 +33,18 @@ export class TypeEnumStructVariantNode implements Visitable {
   }
 }
 
-export function isTypeEnumStructVariantNode(
+export function isEnumStructVariantTypeNode(
   node: Node | null
-): node is TypeEnumStructVariantNode {
-  return !!node && node.nodeClass === 'TypeEnumStructVariantNode';
+): node is EnumStructVariantTypeNode {
+  return !!node && node.nodeClass === 'EnumStructVariantTypeNode';
 }
 
-export function assertTypeEnumStructVariantNode(
+export function assertEnumStructVariantTypeNode(
   node: Node | null
-): asserts node is TypeEnumStructVariantNode {
-  if (!isTypeEnumStructVariantNode(node)) {
+): asserts node is EnumStructVariantTypeNode {
+  if (!isEnumStructVariantTypeNode(node)) {
     throw new Error(
-      `Expected TypeEnumStructVariantNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumStructVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

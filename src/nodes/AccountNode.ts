@@ -3,13 +3,13 @@ import type { IdlAccount } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
-import { assertTypeStructNode, TypeStructNode } from './TypeStructNode';
+import { assertStructTypeNode, StructTypeNode } from './StructTypeNode';
 import type { InstructionNodeAccountDefaultsSeed } from './InstructionNode';
-import { isTypePublicKeyNode } from './PublicKeyTypeNode';
+import { isPublicKeyTypeNode } from './PublicKeyTypeNode';
 import {
-  isTypeDefinedLinkNode,
-  TypeDefinedLinkNode,
-} from './TypeDefinedLinkNode';
+  isDefinedLinkTypeNode,
+  DefinedLinkTypeNode,
+} from './DefinedLinkTypeNode';
 import { ValueNode } from './ValueNode';
 
 export type AccountNodeMetadata = {
@@ -43,7 +43,7 @@ export class AccountNode implements Visitable {
 
   readonly metadata: AccountNodeMetadata;
 
-  readonly type: TypeStructNode | TypeDefinedLinkNode;
+  readonly type: StructTypeNode | DefinedLinkTypeNode;
 
   constructor(metadata: AccountNodeMetadata, type: AccountNode['type']) {
     this.metadata = {
@@ -60,7 +60,7 @@ export class AccountNode implements Visitable {
     const name = idl.name ?? '';
     const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
     const type = createTypeNodeFromIdl({ name, ...idlStruct });
-    assertTypeStructNode(type);
+    assertStructTypeNode(type);
     const seeds = (idl.seeds ?? []).map((seed) => {
       if (seed.kind === 'variable') {
         return { ...seed, type: createTypeNodeFromIdl(seed.type) };
@@ -93,7 +93,7 @@ export class AccountNode implements Visitable {
   }
 
   get isLinked(): boolean {
-    return isTypeDefinedLinkNode(this.type);
+    return isDefinedLinkTypeNode(this.type);
   }
 
   get variableSeeds(): Extract<AccountNodeSeed, { kind: 'variable' }>[] {
@@ -113,7 +113,7 @@ export class AccountNode implements Visitable {
   > {
     return this.metadata.seeds.reduce((acc, seed) => {
       if (seed.kind !== 'variable') return acc;
-      if (isTypePublicKeyNode(seed.type)) {
+      if (isPublicKeyTypeNode(seed.type)) {
         acc[seed.name] = { kind: 'account', name: seed.name };
       } else {
         acc[seed.name] = { kind: 'arg', name: seed.name };

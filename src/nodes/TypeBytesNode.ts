@@ -1,16 +1,16 @@
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
-import { TypeNumberNode } from './TypeNumberNode';
+import { NumberTypeNode } from './NumberTypeNode';
 
-export class TypeBytesNode implements Visitable {
-  readonly nodeClass = 'TypeBytesNode' as const;
+export class BytesTypeNode implements Visitable {
+  readonly nodeClass = 'BytesTypeNode' as const;
 
   readonly size:
     | { kind: 'fixed'; bytes: number }
-    | { kind: 'prefixed'; prefix: TypeNumberNode }
+    | { kind: 'prefixed'; prefix: NumberTypeNode }
     | { kind: 'variable' };
 
-  constructor(options: { size?: TypeBytesNode['size'] } = {}) {
+  constructor(options: { size?: BytesTypeNode['size'] } = {}) {
     this.size = options.size ?? { kind: 'variable' };
   }
 
@@ -29,16 +29,16 @@ export class TypeBytesNode implements Visitable {
   }
 }
 
-export function isTypeBytesNode(node: Node | null): node is TypeBytesNode {
-  return !!node && node.nodeClass === 'TypeBytesNode';
+export function isBytesTypeNode(node: Node | null): node is BytesTypeNode {
+  return !!node && node.nodeClass === 'BytesTypeNode';
 }
 
-export function assertTypeBytesNode(
+export function assertBytesTypeNode(
   node: Node | null
-): asserts node is TypeBytesNode {
-  if (!isTypeBytesNode(node)) {
+): asserts node is BytesTypeNode {
+  if (!isBytesTypeNode(node)) {
     throw new Error(
-      `Expected TypeBytesNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected BytesTypeNode, got ${node?.nodeClass ?? 'null'}.`
     );
   }
 }

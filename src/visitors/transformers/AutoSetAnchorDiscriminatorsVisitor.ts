@@ -26,12 +26,12 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
     if (!shouldAddDiscriminator) return account;
-    if (nodes.isTypeDefinedLinkNode(account.type)) return account;
+    if (nodes.isDefinedLinkTypeNode(account.type)) return account;
 
     const idlName = snakeCase(account.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = new nodes.TypeStructFieldNode(
+    const discriminatorField = new nodes.StructFieldTypeNode(
       {
         name: 'discriminator',
         docs: [],
@@ -40,7 +40,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
           value: getValueNodeFromBytes(hash),
         },
       },
-      new nodes.TypeArrayNode(new nodes.TypeNumberNode('u8'), {
+      new nodes.ArrayTypeNode(new nodes.NumberTypeNode('u8'), {
         size: { kind: 'fixed', size: 8 },
       })
     );
@@ -50,7 +50,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
         ...account.metadata,
         discriminator: { kind: 'field', name: 'discriminator', value: null },
       },
-      new nodes.TypeStructNode(account.type.name, [
+      new nodes.StructTypeNode(account.type.name, [
         discriminatorField,
         ...account.type.fields,
       ])
@@ -60,12 +60,12 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
     if (!shouldAddDiscriminator) return instruction;
-    if (nodes.isTypeDefinedLinkNode(instruction.args)) return instruction;
+    if (nodes.isDefinedLinkTypeNode(instruction.args)) return instruction;
 
     const idlName = snakeCase(instruction.metadata.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = new nodes.TypeStructFieldNode(
+    const discriminatorField = new nodes.StructFieldTypeNode(
       {
         name: 'discriminator',
         docs: [],
@@ -74,7 +74,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
           value: getValueNodeFromBytes(hash),
         },
       },
-      new nodes.TypeArrayNode(new nodes.TypeNumberNode('u8'), {
+      new nodes.ArrayTypeNode(new nodes.NumberTypeNode('u8'), {
         size: { kind: 'fixed', size: 8 },
       })
     );
@@ -82,7 +82,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     return new nodes.InstructionNode(
       instruction.metadata,
       instruction.accounts,
-      new nodes.TypeStructNode(instruction.args.name, [
+      new nodes.StructTypeNode(instruction.args.name, [
         discriminatorField,
         ...instruction.args.fields,
       ]),

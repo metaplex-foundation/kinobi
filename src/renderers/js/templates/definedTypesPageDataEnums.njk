@@ -1,11 +1,11 @@
-{% if definedType.type.nodeClass === 'TypeEnumNode' and definedType.type.isDataEnum() %}
+{% if definedType.type.nodeClass === 'EnumTypeNode' and definedType.type.isDataEnum() %}
   {% set strictName = definedType.name | pascalCase %}
   {% set looseName = definedType.name | pascalCase + 'Args' %}
   // Data Enum Helpers.
   {% for variant in definedType.type.variants %}
-    {% if variant.nodeClass === 'TypeEnumStructVariantNode' %}
+    {% if variant.nodeClass === 'EnumStructVariantTypeNode' %}
       export function {{ definedType.name | camelCase }}(kind: '{{ variant.name | pascalCase }}', data: GetDataEnumKindContent<{{ looseName }}, '{{ variant.name | pascalCase }}'>): GetDataEnumKind<{{ looseName }}, '{{ variant.name | pascalCase }}'>;
-    {% elif variant.nodeClass === 'TypeEnumTupleVariantNode' %}
+    {% elif variant.nodeClass === 'EnumTupleVariantTypeNode' %}
       export function {{ definedType.name | camelCase }}(kind: '{{ variant.name | pascalCase }}', data: GetDataEnumKindContent<{{ looseName }}, '{{ variant.name | pascalCase }}'>['fields']): GetDataEnumKind<{{ looseName }}, '{{ variant.name | pascalCase }}'>;
     {% else %}
       export function {{ definedType.name | camelCase }}(kind: '{{ variant.name | pascalCase }}'): GetDataEnumKind<{{ looseName }}, '{{ variant.name | pascalCase }}'>;

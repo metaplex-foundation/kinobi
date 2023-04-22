@@ -43,7 +43,7 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
               ...updates,
             };
 
-            if (nodes.isTypeStructNode(node.type)) {
+            if (nodes.isStructTypeNode(node.type)) {
               return new nodes.AccountNode(
                 newMetadata,
                 renameStructNode(node.type, data, newName)

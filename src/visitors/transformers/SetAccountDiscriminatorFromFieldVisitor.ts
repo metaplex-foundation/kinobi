@@ -14,7 +14,7 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
           selector: { type: 'AccountNode', stack, name },
           transformer: (node) => {
             nodes.assertAccountNode(node);
-            if (nodes.isTypeDefinedLinkNode(node.type)) return node;
+            if (nodes.isDefinedLinkTypeNode(node.type)) return node;
 
             const fieldIndex = node.type.fields.findIndex(
               (f) => f.name === field
@@ -31,9 +31,9 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
                 ...node.metadata,
                 discriminator: { kind: 'field', name: field, value: null },
               },
-              new nodes.TypeStructNode(node.type.name, [
+              new nodes.StructTypeNode(node.type.name, [
                 ...node.type.fields.slice(0, fieldIndex),
-                new nodes.TypeStructFieldNode(
+                new nodes.StructFieldTypeNode(
                   {
                     ...fieldNode.metadata,
                     defaultsTo: { strategy: 'omitted', value },
