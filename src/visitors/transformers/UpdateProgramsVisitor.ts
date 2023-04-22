@@ -8,13 +8,18 @@ import {
 export type ProgramUpdates =
   | NodeTransformer<nodes.ProgramNode>
   | { delete: true }
-  | Partial<nodes.ProgramNodeMetadata>;
+  | Partial<
+      Omit<
+        nodes.ProgramNodeInput,
+        'accounts' | 'instructions' | 'definedTypes' | 'errors'
+      >
+    >;
 
 export class UpdateProgramsVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, ProgramUpdates>) {
     const transforms = Object.entries(map).map(
       ([name, updates]): NodeTransform => ({
-        selector: { type: 'ProgramNode', name },
+        selector: { kind: 'programNode', name },
         transformer: (node, stack, program) => {
           nodes.assertProgramNode(node);
           if (typeof updates === 'function') {
@@ -23,13 +28,7 @@ export class UpdateProgramsVisitor extends TransformNodesVisitor {
           if ('delete' in updates) {
             return null;
           }
-          return nodes.programNode(
-            { ...node.metadata, ...updates },
-            node.accounts,
-            node.instructions,
-            node.definedTypes,
-            node.errors
-          );
+          return nodes.programNode({ ...node, ...updates });
         },
       })
     );
