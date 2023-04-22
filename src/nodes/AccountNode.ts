@@ -55,7 +55,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
     if (seed.kind === 'variable') {
       return {
         ...seed,
-        variableNode: createTypeNodeFromIdl(seed.type),
+        type: createTypeNodeFromIdl(seed.type),
         docs: seed.description ? [seed.description] : [],
       };
     }

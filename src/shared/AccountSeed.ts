@@ -4,7 +4,7 @@ import { mainCase } from './utils';
 export type AccountSeed =
   | { kind: 'programId' }
   | { kind: 'literal'; value: string }
-  | { kind: 'variable'; name: string; variableNode: TypeNode; docs: string[] };
+  | { kind: 'variable'; name: string; type: TypeNode; docs: string[] };
 
 export const programSeed = (): AccountSeed => ({ kind: 'programId' });
 
@@ -15,11 +15,11 @@ export const literalSeed = (value: string): AccountSeed => ({
 
 export const variableSeed = (
   name: string,
-  variableNode: TypeNode,
+  type: TypeNode,
   docs?: string[]
 ): AccountSeed => ({
   kind: 'variable',
   name: mainCase(name),
-  variableNode,
+  type,
   docs: docs ?? [],
 });
