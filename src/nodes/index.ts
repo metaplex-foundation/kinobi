@@ -1,3 +1,4 @@
+export * from './AccountDataNode';
 export * from './AccountNode';
 export * from './ArrayTypeNode';
 export * from './BoolTypeNode';
@@ -9,6 +10,8 @@ export * from './EnumTupleVariantTypeNode';
 export * from './EnumTypeNode';
 export * from './EnumVariantTypeNode';
 export * from './ErrorNode';
+export * from './InstructionDataArgsNode';
+export * from './InstructionExtraArgsNode';
 export * from './InstructionNode';
 export * from './LinkTypeNode';
 export * from './MapTypeNode';

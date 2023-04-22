@@ -5,25 +5,25 @@ import {
 } from '../nodes/NumberTypeNode';
 
 export type SizeStrategy =
-  | { type: 'fixed'; bytes: number }
-  | { type: 'prefixed'; prefixNode: NumberTypeNode }
-  | { type: 'remainder' };
+  | { kind: 'fixed'; bytes: number }
+  | { kind: 'prefixed'; prefixNode: NumberTypeNode }
+  | { kind: 'remainder' };
 
 export const fixedSize = (bytes: number): SizeStrategy => ({
-  type: 'fixed',
+  kind: 'fixed',
   bytes,
 });
 
 export const prefixedSize = (prefixNode?: NumberTypeNode): SizeStrategy => ({
-  type: 'prefixed',
+  kind: 'prefixed',
   prefixNode: prefixNode ?? numberTypeNode('u32'),
 });
 
-export const remainderSize = (): SizeStrategy => ({ type: 'remainder' });
+export const remainderSize = (): SizeStrategy => ({ kind: 'remainder' });
 
 export const displaySizeStrategy = (size: SizeStrategy): string => {
-  if (size.type === 'fixed') return `${size.bytes}`;
-  if (size.type === 'prefixed')
+  if (size.kind === 'fixed') return `${size.bytes}`;
+  if (size.kind === 'prefixed')
     return `${displayNumberTypeNode(size.prefixNode)}`;
   return 'remainder';
 };

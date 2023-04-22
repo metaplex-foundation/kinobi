@@ -2,9 +2,9 @@ import type { Node } from './Node';
 import { NumberTypeNode } from './NumberTypeNode';
 
 export type NumberWrapper =
-  | { type: 'DateTime' }
-  | { type: 'SolAmount' }
-  | { type: 'Amount'; identifier: string; decimals: number };
+  | { kind: 'DateTime' }
+  | { kind: 'SolAmount' }
+  | { kind: 'Amount'; identifier: string; decimals: number };
 
 export type NumberWrapperTypeNode = {
   readonly __numberWrapperTypeNode: unique symbol;

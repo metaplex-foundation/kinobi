@@ -8,15 +8,6 @@ import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { ValueNode, vScalar } from './ValueNode';
 import { isLinkTypeNode, LinkTypeNode } from './LinkTypeNode';
 
-export type InstructionNodeMetadata = {
-  name: string;
-  idlName: string;
-  docs: string[];
-  internal: boolean;
-  bytesCreatedOnChain: InstructionNodeBytesCreatedOnChain | null;
-  argDefaults: Record<string, InstructionNodeArgDefaults>;
-};
-
 export type InstructionNodeAccount = {
   name: string;
   isWritable: boolean;
@@ -84,6 +75,16 @@ export type InstructionNodeBytesCreatedOnChain =
 export type InstructionNode = {
   readonly __instructionNode: unique symbol;
   readonly nodeClass: 'InstructionNode';
+  readonly name: string;
+  readonly accounts: InstructionNodeAccount[];
+  readonly dataArgsNode: StructTypeNode | LinkTypeNode;
+  readonly extraArgsNode: StructTypeNode | LinkTypeNode;
+  readonly subInstructionNodes: InstructionNode[];
+  readonly idlName: string;
+  readonly docs: string[];
+  readonly internal: boolean;
+  readonly bytesCreatedOnChain: InstructionNodeBytesCreatedOnChain | null;
+  readonly argDefaults: Record<string, InstructionNodeArgDefaults>;
 };
 
 export type InstructionNodeInput = {
