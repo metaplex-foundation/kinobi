@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
 import { AccountNodeMetadata } from '../../nodes';
-import { mainCase } from '../../utils';
+import { mainCase } from '../../shared';
 import {
   NodeTransform,
   NodeTransformer,

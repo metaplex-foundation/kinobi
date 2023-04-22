@@ -1,4 +1,4 @@
-import { mainCase } from '../../utils';
+import { mainCase } from '../../shared';
 import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';

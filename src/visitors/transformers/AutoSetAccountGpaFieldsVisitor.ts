@@ -3,6 +3,7 @@ import { GetByteSizeVisitor } from '../aggregators';
 import { Visitor } from '../Visitor';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 
+// TODO: Use in JS visitor instead.
 export class AutoSetAccountGpaFieldsVisitor extends TransformNodesVisitor {
   readonly override: boolean;
 
@@ -18,10 +19,10 @@ export class AutoSetAccountGpaFieldsVisitor extends TransformNodesVisitor {
   ) {
     super([
       {
-        selector: { type: 'AccountNode' },
+        selector: { kind: 'accountNode' },
         transformer: (node) => {
           nodes.assertAccountNode(node);
-          if (!this.override && node.metadata.gpaFields.length > 0) return node;
+          if (!this.override && node.gpaFields.length > 0) return node;
           if (nodes.isLinkTypeNode(node.type)) return node;
 
           let offset: number | null = 0;

@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../utils';
+import { camelCase, pascalCase } from '../../shared';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
 export function renderJavaScriptValueNode(value: nodes.ValueNode): {

@@ -9,10 +9,7 @@ export function renameStructNode(
     newName ?? node.name,
     node.fields.map((field) =>
       map[field.name]
-        ? nodes.structFieldTypeNode(
-            { ...field.metadata, name: map[field.name] },
-            field.type
-          )
+        ? nodes.structFieldTypeNode({ ...field, name: map[field.name] })
         : field
     )
   );

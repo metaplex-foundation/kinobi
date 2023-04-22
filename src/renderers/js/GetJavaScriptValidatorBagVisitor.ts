@@ -1,4 +1,4 @@
-import { camelCase, pascalCase, titleCase } from '../../utils';
+import { camelCase, pascalCase, titleCase } from '../../shared';
 import * as nodes from '../../nodes';
 import {
   GetDefaultValidatorBagVisitor,

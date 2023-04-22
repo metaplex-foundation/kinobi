@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../utils';
+import { mainCase } from '../../shared';
 import { ImportFrom } from '../../shared/ImportFrom';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {

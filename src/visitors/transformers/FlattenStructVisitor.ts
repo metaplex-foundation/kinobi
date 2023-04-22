@@ -1,6 +1,6 @@
 import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
-import { camelCase } from '../../utils';
+import { camelCase } from '../../shared';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export type FlattenStructOptions = string[] | '*';

@@ -6,7 +6,7 @@ export class FlattenInstructionArgsStructVisitor extends TransformNodesVisitor {
   constructor() {
     super([
       {
-        selector: { type: 'InstructionNode' },
+        selector: { kind: 'instructionNode' },
         transformer: (instruction) => {
           nodes.assertInstructionNode(instruction);
           return nodes.instructionNode(

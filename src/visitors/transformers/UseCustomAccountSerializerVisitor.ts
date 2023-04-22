@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../utils';
+import { mainCase } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 import { ImportFrom } from '../../shared/ImportFrom';
 

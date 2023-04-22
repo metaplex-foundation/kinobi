@@ -2,7 +2,7 @@ import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../utils';
+import { camelCase, pascalCase } from '../../shared';
 import {
   Visitor,
   BaseThrowVisitor,

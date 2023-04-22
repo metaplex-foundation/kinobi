@@ -1,94 +1,86 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { snakeCase } from '../../utils';
 import * as nodes from '../../nodes';
+import { fieldAccountDiscriminator, fixedSize, snakeCase } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
+import { visit } from '../Visitor';
 
 export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
   protected program: nodes.ProgramNode | null = null;
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
     this.program = program;
-    const visitedProgram = nodes.programNode(
-      program.metadata,
-      program.accounts
+    const visitedProgram = nodes.programNode({
+      ...program,
+      accounts: program.accounts
         .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
-      program.instructions
+      instructions: program.instructions
         .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-      program.definedTypes,
-      program.errors
-    );
+    });
     this.program = null;
     return visitedProgram;
   }
 
   visitAccount(account: nodes.AccountNode): nodes.Node {
-    const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
+    const shouldAddDiscriminator = this.program?.origin === 'anchor';
     if (!shouldAddDiscriminator) return account;
-    if (nodes.isLinkTypeNode(account.type)) return account;
 
-    const idlName = snakeCase(account.metadata.idlName);
+    const idlName = snakeCase(account.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = nodes.structFieldTypeNode(
-      {
-        name: 'discriminator',
-        docs: [],
-        defaultsTo: {
-          strategy: 'omitted',
-          value: getValueNodeFromBytes(hash),
-        },
+    const discriminatorField = nodes.structFieldTypeNode({
+      name: 'discriminator',
+      child: nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
+        size: fixedSize(8),
+      }),
+      defaultsTo: {
+        strategy: 'omitted',
+        value: getValueNodeFromBytes(hash),
       },
-      nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
-        size: { kind: 'fixed', size: 8 },
-      })
-    );
+    });
 
-    return nodes.accountNode(
-      {
-        ...account.metadata,
-        discriminator: { kind: 'field', name: 'discriminator', value: null },
-      },
-      nodes.structTypeNode(account.type.name, [
-        discriminatorField,
-        ...account.type.fields,
-      ])
-    );
+    return nodes.accountNode({
+      ...account,
+      discriminator: fieldAccountDiscriminator('discriminator'),
+      data: nodes.accountDataNode(
+        nodes.structTypeNode(account.data.struct.name, [
+          discriminatorField,
+          ...account.data.struct.fields,
+        ]),
+        account.data.link
+      ),
+    });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
-    const shouldAddDiscriminator = this.program?.metadata.origin === 'anchor';
+    const shouldAddDiscriminator = this.program?.origin === 'anchor';
     if (!shouldAddDiscriminator) return instruction;
-    if (nodes.isLinkTypeNode(instruction.args)) return instruction;
 
-    const idlName = snakeCase(instruction.metadata.idlName);
+    const idlName = snakeCase(instruction.idlName);
     const hash = sha256(`global:${idlName}`).slice(0, 8);
 
-    const discriminatorField = nodes.structFieldTypeNode(
-      {
-        name: 'discriminator',
-        docs: [],
-        defaultsTo: {
-          strategy: 'omitted',
-          value: getValueNodeFromBytes(hash),
-        },
+    const discriminatorField = nodes.structFieldTypeNode({
+      name: 'discriminator',
+      child: nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
+        size: fixedSize(8),
+      }),
+      defaultsTo: {
+        strategy: 'omitted',
+        value: getValueNodeFromBytes(hash),
       },
-      nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
-        size: { kind: 'fixed', size: 8 },
-      })
-    );
+    });
 
-    return nodes.instructionNode(
-      instruction.metadata,
-      instruction.accounts,
-      nodes.structTypeNode(instruction.args.name, [
-        discriminatorField,
-        ...instruction.args.fields,
-      ]),
-      instruction.extraArgs,
-      instruction.subInstructions
-    );
+    return nodes.instructionNode({
+      ...instruction,
+      dataArgs: nodes.instructionDataArgsNode(
+        nodes.structTypeNode(instruction.dataArgs.struct.name, [
+          discriminatorField,
+          ...instruction.dataArgs.struct.fields,
+        ]),
+        instruction.dataArgs.link
+      ),
+    });
   }
 }
 
