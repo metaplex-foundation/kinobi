@@ -2,27 +2,27 @@ import { assertRootNode, Node, ProgramInputs, RootNode } from './nodes';
 import { DefaultVisitor, Visitable, Visitor } from './visitors';
 
 export class Kinobi implements Visitable {
-  public rootNode: RootNode;
+  public root: RootNode;
 
   constructor(idls: ProgramInputs, useDefaultVisitor = true) {
-    this.rootNode = RootNode.fromProgramInputs(idls);
+    this.root = root.fromProgramInputs(idls);
     if (useDefaultVisitor) this.update(new DefaultVisitor());
   }
 
   accept<T>(visitor: Visitor<T>): T {
-    return this.rootNode.accept(visitor);
+    return this.root.accept(visitor);
   }
 
   update(visitor: Visitor<Node | null>): void {
-    const newRoot = this.rootNode.accept(visitor);
+    const newRoot = this.root.accept(visitor);
     assertRootNode(newRoot);
-    this.rootNode = newRoot;
+    this.root = newRoot;
   }
 
   clone(): Kinobi {
-    const newRoot = new RootNode(this.rootNode.programs);
+    const newRoot = new RootNode(this.root.programs);
     const kinobi = new Kinobi([]);
-    kinobi.rootNode = newRoot;
+    kinobi.root = newRoot;
     return kinobi;
   }
 }
