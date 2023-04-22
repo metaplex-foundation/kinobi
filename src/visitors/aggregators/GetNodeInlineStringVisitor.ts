@@ -1,3 +1,4 @@
+import { displaySizeStrategy } from '../../shared';
 import * as nodes from '../../nodes';
 import { Visitor, visit } from '../Visitor';
 
@@ -85,7 +86,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): string {
     const child = visit(arrayType.child, this);
-    const size = this.displayArrayLikeSize(arrayType.size);
+    const size = displaySizeStrategy(arrayType.size);
     return `array(${child};${size})`;
   }
 
@@ -121,7 +122,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitMapType(mapType: nodes.MapTypeNode): string {
     const key = visit(mapType.key, this);
     const value = visit(mapType.value, this);
-    const size = this.displayArrayLikeSize(mapType.size);
+    const size = displaySizeStrategy(mapType.size);
     return `map(${key},${value};${size})`;
   }
 
@@ -134,7 +135,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
 
   visitSetType(setType: nodes.SetTypeNode): string {
     const child = visit(setType.child, this);
-    const size = this.displayArrayLikeSize(setType.size);
+    const size = displaySizeStrategy(setType.size);
     return `set(${child};${size})`;
   }
 
