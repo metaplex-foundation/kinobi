@@ -58,7 +58,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
       input.extraArgsNode ??
       instructionExtraArgsNode(structTypeNode(`${name}InstructionExtra`, [])),
     subInstructionNodes: input.subInstructionNodes ?? [],
-    idlName: input.idlName ?? name,
+    idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
     bytesCreatedOnChain: input.bytesCreatedOnChain ?? null,
@@ -98,12 +98,12 @@ export function instructionNodeFromIdl(
   }
   return instructionNode({
     name,
+    idlName,
+    docs: idl.docs ?? [],
     accountNodes: (idl.accounts ?? []).map((account) =>
       instructionAccountNodeFromIdl(account, useProgramIdForOptionalAccounts)
     ),
     dataArgsNode: instructionDataArgsNode(dataArgsNode),
-    idlName,
-    docs: idl.docs ?? [],
   });
 }
 

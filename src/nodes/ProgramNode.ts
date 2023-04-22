@@ -1,117 +1,88 @@
-import { mainCase } from '../shared';
 import type { Idl } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
-import { AccountNode } from './AccountNode';
-import { DefinedTypeNode } from './DefinedTypeNode';
-import { ErrorNode } from './ErrorNode';
-import { InstructionNode } from './InstructionNode';
+import { PartialExcept, mainCase } from '../shared';
+import { AccountNode, accountNodeFromIdl } from './AccountNode';
+import { DefinedTypeNode, definedTypeNodeFromIdl } from './DefinedTypeNode';
+import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
+import {
+  InstructionNode,
+  getAllSubInstructions,
+  instructionNodeFromIdl,
+} from './InstructionNode';
 import type { Node } from './Node';
-
-export type ProgramNodeMetadata = {
-  name: string;
-  prefix: string;
-  publicKey: string;
-  version: string;
-  origin: 'shank' | 'anchor' | null;
-  idl: Partial<Idl>;
-  internal: boolean;
-};
 
 export type ProgramNode = {
   readonly __programNode: unique symbol;
   readonly nodeClass: 'ProgramNode';
+  readonly accountNodes: AccountNode[];
+  readonly instructionNodes: InstructionNode[];
+  readonly definedTypeNodes: DefinedTypeNode[];
+  readonly errorNodes: ErrorNode[];
+  readonly name: string;
+  readonly prefix: string;
+  readonly publicKey: string;
+  readonly version: string;
+  readonly origin: 'shank' | 'anchor' | null;
+  readonly internal: boolean;
 };
 
-export type ProgramNodeInput = {
-  // ...
-};
+export type ProgramNodeInput = Omit<
+  PartialExcept<
+    ProgramNode,
+    | 'accountNodes'
+    | 'instructionNodes'
+    | 'definedTypeNodes'
+    | 'errorNodes'
+    | 'name'
+    | 'publicKey'
+    | 'version'
+  >,
+  '__programNode' | 'nodeClass'
+>;
 
 export function programNode(input: ProgramNodeInput): ProgramNode {
-  return { ...input, nodeClass: 'ProgramNode' } as ProgramNode;
+  return {
+    nodeClass: 'ProgramNode',
+    accountNodes: input.accountNodes,
+    instructionNodes: input.instructionNodes,
+    definedTypeNodes: input.definedTypeNodes,
+    errorNodes: input.errorNodes,
+    name: mainCase(input.name),
+    prefix: mainCase(input.prefix ?? ''),
+    publicKey: input.publicKey,
+    version: input.version,
+    origin: input.origin ?? null,
+    internal: input.internal ?? false,
+  } as ProgramNode;
 }
 
-export function programNodeFromIdl(idl: ProgramNodeIdl): ProgramNode {
-  return programNode(idl);
-}
-
-export class ProgramNode implements Visitable {
-  readonly nodeClass = 'ProgramNode' as const;
-
-  readonly metadata: ProgramNodeMetadata;
-
-  readonly accounts: AccountNode[];
-
-  readonly instructions: InstructionNode[];
-
-  readonly definedTypes: DefinedTypeNode[];
-
-  readonly errors: ErrorNode[];
-
-  constructor(
-    metadata: ProgramNodeMetadata,
-    accounts: AccountNode[],
-    instructions: InstructionNode[],
-    definedTypes: DefinedTypeNode[],
-    errors: ErrorNode[]
-  ) {
-    this.metadata = {
-      ...metadata,
-      name: mainCase(metadata.name),
-      prefix: mainCase(metadata.prefix),
-    };
-    this.accounts = accounts;
-    this.instructions = instructions;
-    this.definedTypes = definedTypes;
-    this.errors = errors;
-  }
-
-  static fromIdl(idl: Partial<Idl>): ProgramNode {
-    const origin = idl.metadata?.origin ?? null;
-    const accounts = (idl.accounts ?? []).map(AccountNode.fromIdl);
-    const instructions = (idl.instructions ?? []).map((ix) => {
-      if (origin === 'anchor') {
-        return InstructionNode.fromIdl({
+export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
+  const origin = idl.metadata?.origin ?? null;
+  const accountNodes = (idl.accounts ?? []).map(accountNodeFromIdl);
+  const instructionNodes = (idl.instructions ?? []).map((ix) =>
+    origin === 'anchor'
+      ? instructionNodeFromIdl({
           ...ix,
           defaultOptionalAccounts: ix.defaultOptionalAccounts ?? true,
-        });
-      }
-      return InstructionNode.fromIdl(ix);
-    });
-    const definedTypes = (idl.types ?? []).map(DefinedTypeNode.fromIdl);
-    const errors = (idl.errors ?? []).map(ErrorNode.fromIdl);
-    const metadata = {
-      name: idl.name ?? '',
-      prefix: '',
-      publicKey: idl.metadata?.address ?? '',
-      version: idl.version ?? '',
-      origin,
-      idl,
-      internal: false,
-    };
+        })
+      : instructionNodeFromIdl(ix)
+  );
+  return programNode({
+    accountNodes,
+    instructionNodes,
+    definedTypeNodes: (idl.types ?? []).map(definedTypeNodeFromIdl),
+    errorNodes: (idl.errors ?? []).map(errorNodeFromIdl),
+    name: idl.name ?? '',
+    publicKey: idl.metadata?.address ?? '',
+    version: idl.version ?? '',
+    origin,
+  });
+}
 
-    return new ProgramNode(
-      metadata,
-      accounts,
-      instructions,
-      definedTypes,
-      errors
-    );
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitProgram(this);
-  }
-
-  get name(): string {
-    return this.metadata.name;
-  }
-
-  get instructionsWithSubs(): InstructionNode[] {
-    return this.instructions.flatMap((instruction) => [
-      instruction,
-      ...instruction.getAllSubInstructions(),
-    ]);
-  }
+export function getInstructionsWithSubs(node: ProgramNode): InstructionNode[] {
+  return node.instructionNodes.flatMap((instruction) => [
+    instruction,
+    ...getAllSubInstructions(instruction),
+  ]);
 }
 
 export function isProgramNode(node: Node | null): node is ProgramNode {

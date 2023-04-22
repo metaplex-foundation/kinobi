@@ -1,66 +1,48 @@
 import type { IdlError } from '../idl';
-import { mainCase } from '../shared';
-import type { Visitable, Visitor } from '../visitors';
+import { InvalidKinobiTreeError, PartialExcept, mainCase } from '../shared';
 import type { Node } from './Node';
-
-export type ErrorNodeMetadata = {
-  name: string;
-  idlName: string;
-  docs: string[];
-};
 
 export type ErrorNode = {
   readonly __errorNode: unique symbol;
   readonly nodeClass: 'ErrorNode';
+  readonly name: string;
+  readonly idlName: string;
+  readonly code: number;
+  readonly message: string;
+  readonly docs: string[];
 };
 
-export type ErrorNodeInput = {
-  // ...
-};
+export type ErrorNodeInput = Omit<
+  PartialExcept<ErrorNode, 'name' | 'code' | 'message'>,
+  '__errorNode' | 'nodeClass'
+>;
 
 export function errorNode(input: ErrorNodeInput): ErrorNode {
-  return { ...input, nodeClass: 'ErrorNode' } as ErrorNode;
+  if (!input.name) {
+    throw new InvalidKinobiTreeError('ErrorNode must have a name.');
+  }
+  if (input.code < 0) {
+    throw new InvalidKinobiTreeError('ErrorNode must have a code number.');
+  }
+  return {
+    nodeClass: 'ErrorNode',
+    name: mainCase(input.name),
+    idlName: input.idlName ?? input.name,
+    code: input.code,
+    message: input.message,
+    docs: input.docs ?? [],
+  } as ErrorNode;
 }
 
-export function errorNodeFromIdl(idl: ErrorNodeIdl): ErrorNode {
-  return errorNode(idl);
-}
-
-export class ErrorNode implements Visitable {
-  readonly nodeClass = 'ErrorNode' as const;
-
-  readonly metadata: ErrorNodeMetadata;
-
-  readonly code: number;
-
-  readonly message: string;
-
-  constructor(metadata: ErrorNodeMetadata, code: number, message: string) {
-    this.metadata = { ...metadata, name: mainCase(metadata.name) };
-    this.code = code;
-    this.message = message;
-  }
-
-  static fromIdl(idl: Partial<IdlError>): ErrorNode {
-    const name = idl.name ?? '';
-    const code = idl.code ?? -1;
-    const message = idl.msg ?? '';
-    const defaultDocs = [`${name}: '${message}'`];
-    const docs = idl.docs ?? defaultDocs;
-    return new ErrorNode({ name, idlName: name, docs }, code, message);
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitError(this);
-  }
-
-  get name(): string {
-    return this.metadata.name;
-  }
-
-  get docs(): string[] {
-    return this.metadata.docs;
-  }
+export function errorNodeFromIdl(idl: Partial<IdlError>): ErrorNode {
+  const name = idl.name ?? '';
+  return errorNode({
+    name,
+    idlName: name,
+    code: idl.code ?? -1,
+    message: idl.msg ?? '',
+    docs: idl.docs ?? [`${name}: '${idl.msg}'`],
+  });
 }
 
 export function isErrorNode(node: Node | null): node is ErrorNode {
