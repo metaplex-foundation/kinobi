@@ -197,12 +197,8 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           return account;
         }
         if (rule.kind === 'pda') {
-          const pdaAccount =
-            rule.pdaAccount ??
-            (typeof rule.account === 'string' ? rule.account : '');
-          const foundAccount = this.allAccounts.get(mainCase(pdaAccount));
+          const foundAccount = this.allAccounts.get(mainCase(rule.pdaAccount));
           const defaultsTo = {
-            pdaAccount,
             ...rule,
             seeds: {
               ...(foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {}),
@@ -222,8 +218,8 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
                   (a) => a.name === mainCase(seed.name)
                 );
               }
-              if (nodes.isLinkTypeNode(instruction.args)) return true;
-              return instruction.args.fields.some(
+              if (instruction.dataArgs.link) return true;
+              return instruction.dataArgs.struct.fields.some(
                 (f) => f.name === mainCase(seed.name)
               );
             }
@@ -235,32 +231,19 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
 
           return account;
         }
-        if (rule.kind === 'resolver') {
-          return {
-            ...account,
-            defaultsTo: {
-              importFrom: 'hooked',
-              dependsOn: [],
-              ...rule,
-            },
-          };
-        }
         return { ...account, defaultsTo: rule };
       }
     );
 
-    return nodes.instructionNode(
-      instruction.metadata,
-      instructionAccounts,
-      instruction.args,
-      instruction.extraArgs,
-      instruction.subInstructions
-    );
+    return nodes.instructionNode({
+      ...instruction,
+      accounts: instructionAccounts,
+    });
   }
 
   protected matchRule(
     instruction: nodes.InstructionNode,
-    account: nodes.InstructionNodeAccount
+    account: nodes.InstructionAccountNode
   ): InstructionAccountDefaultRule | undefined {
     return this.rules.find((rule) => {
       if (
