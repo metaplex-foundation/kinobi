@@ -15,7 +15,7 @@ export type AccountNode = {
   readonly __accountNode: unique symbol;
   readonly nodeClass: 'AccountNode';
   readonly name: string;
-  readonly dataNode: AccountDataNode;
+  readonly data: AccountDataNode;
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
@@ -25,7 +25,7 @@ export type AccountNode = {
 };
 
 export type AccountNodeInput = Omit<
-  PartialExcept<AccountNode, 'name' | 'dataNode'>,
+  PartialExcept<AccountNode, 'name' | 'data'>,
   '__accountNode' | 'nodeClass'
 >;
 
@@ -36,7 +36,7 @@ export function accountNode(input: AccountNodeInput): AccountNode {
   return {
     nodeClass: 'AccountNode',
     name: mainCase(input.name),
-    dataNode: input.dataNode,
+    data: input.data,
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
@@ -49,8 +49,8 @@ export function accountNode(input: AccountNodeInput): AccountNode {
 export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const name = idl.name ?? '';
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
-  const dataNode = createTypeNodeFromIdl({ name, ...idlStruct });
-  assertStructTypeNode(dataNode);
+  const data = createTypeNodeFromIdl({ name, ...idlStruct });
+  assertStructTypeNode(data);
   const seeds = (idl.seeds ?? []).map((seed) => {
     if (seed.kind === 'variable') {
       return {
@@ -63,7 +63,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   });
   return accountNode({
     name,
-    dataNode: accountDataNode(dataNode),
+    data: accountDataNode(data),
     idlName: name,
     docs: idl.docs ?? [],
     size: idl.size ?? null,

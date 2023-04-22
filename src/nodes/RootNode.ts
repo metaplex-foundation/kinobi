@@ -9,11 +9,11 @@ export type ProgramInputs = ProgramInput | ProgramInput[];
 export type RootNode = {
   readonly __rootNode: unique symbol;
   readonly nodeClass: 'RootNode';
-  readonly programNodes: ProgramNode[];
+  readonly programs: ProgramNode[];
 };
 
-export function rootNode(programNodes: ProgramNode[]): RootNode {
-  return { nodeClass: 'RootNode', programNodes } as RootNode;
+export function rootNode(programs: ProgramNode[]): RootNode {
+  return { nodeClass: 'RootNode', programs } as RootNode;
 }
 
 export function rootNodeFromIdls(idls: Partial<Idl>[]): RootNode {

@@ -7,7 +7,7 @@ export type DefinedTypeNode = {
   readonly __definedTypeNode: unique symbol;
   readonly nodeClass: 'DefinedTypeNode';
   readonly name: string;
-  readonly dataNode: TypeNode;
+  readonly data: TypeNode;
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
@@ -15,7 +15,7 @@ export type DefinedTypeNode = {
 
 export type DefinedTypeNodeInput = {
   readonly name: string;
-  readonly dataNode: TypeNode;
+  readonly data: TypeNode;
   readonly idlName?: string;
   readonly docs?: string[];
   readonly internal?: boolean;
@@ -28,7 +28,7 @@ export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
   return {
     nodeClass: 'DefinedTypeNode',
     name: mainCase(input.name),
-    dataNode: input.dataNode,
+    data: input.data,
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
@@ -40,8 +40,8 @@ export function definedTypeNodeFromIdl(
 ): DefinedTypeNode {
   const name = idl.name ?? '';
   const idlType = idl.type ?? { kind: 'struct', fields: [] };
-  const dataNode = createTypeNodeFromIdl({ name, ...idlType });
-  return definedTypeNode({ name, dataNode, idlName: name, docs: idl.docs });
+  const data = createTypeNodeFromIdl({ name, ...idlType });
+  return definedTypeNode({ name, data, idlName: name, docs: idl.docs });
 }
 
 export function isDefinedTypeNode(node: Node | null): node is DefinedTypeNode {

@@ -9,10 +9,10 @@ import type { Node } from './Node';
 export type ProgramNode = {
   readonly __programNode: unique symbol;
   readonly nodeClass: 'ProgramNode';
-  readonly accountNodes: AccountNode[];
-  readonly instructionNodes: InstructionNode[];
-  readonly definedTypeNodes: DefinedTypeNode[];
-  readonly errorNodes: ErrorNode[];
+  readonly accounts: AccountNode[];
+  readonly instructions: InstructionNode[];
+  readonly definedTypes: DefinedTypeNode[];
+  readonly errors: ErrorNode[];
   readonly name: string;
   readonly prefix: string;
   readonly publicKey: string;
@@ -24,10 +24,10 @@ export type ProgramNode = {
 export type ProgramNodeInput = Omit<
   PartialExcept<
     ProgramNode,
-    | 'accountNodes'
-    | 'instructionNodes'
-    | 'definedTypeNodes'
-    | 'errorNodes'
+    | 'accounts'
+    | 'instructions'
+    | 'definedTypes'
+    | 'errors'
     | 'name'
     | 'publicKey'
     | 'version'
@@ -38,10 +38,10 @@ export type ProgramNodeInput = Omit<
 export function programNode(input: ProgramNodeInput): ProgramNode {
   return {
     nodeClass: 'ProgramNode',
-    accountNodes: input.accountNodes,
-    instructionNodes: input.instructionNodes,
-    definedTypeNodes: input.definedTypeNodes,
-    errorNodes: input.errorNodes,
+    accounts: input.accounts,
+    instructions: input.instructions,
+    definedTypes: input.definedTypes,
+    errors: input.errors,
     name: mainCase(input.name),
     prefix: mainCase(input.prefix ?? ''),
     publicKey: input.publicKey,
@@ -53,8 +53,8 @@ export function programNode(input: ProgramNodeInput): ProgramNode {
 
 export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
   const origin = idl.metadata?.origin ?? null;
-  const accountNodes = (idl.accounts ?? []).map(accountNodeFromIdl);
-  const instructionNodes = (idl.instructions ?? []).map((ix) =>
+  const accounts = (idl.accounts ?? []).map(accountNodeFromIdl);
+  const instructions = (idl.instructions ?? []).map((ix) =>
     origin === 'anchor'
       ? instructionNodeFromIdl({
           ...ix,
@@ -63,10 +63,10 @@ export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
       : instructionNodeFromIdl(ix)
   );
   return programNode({
-    accountNodes,
-    instructionNodes,
-    definedTypeNodes: (idl.types ?? []).map(definedTypeNodeFromIdl),
-    errorNodes: (idl.errors ?? []).map(errorNodeFromIdl),
+    accounts,
+    instructions,
+    definedTypes: (idl.types ?? []).map(definedTypeNodeFromIdl),
+    errors: (idl.errors ?? []).map(errorNodeFromIdl),
     name: idl.name ?? '',
     publicKey: idl.metadata?.address ?? '',
     version: idl.version ?? '',

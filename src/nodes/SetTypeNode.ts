@@ -12,13 +12,13 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 export type SetTypeNode = {
   readonly __setTypeNode: unique symbol;
   readonly nodeClass: 'SetTypeNode';
-  readonly childNode: TypeNode;
+  readonly child: TypeNode;
   readonly size: SizeStrategy;
   readonly idlSet: 'hashSet' | 'bTreeSet';
 };
 
 export function setTypeNode(
-  childNode: TypeNode,
+  child: TypeNode,
   options: {
     readonly size?: SizeStrategy;
     readonly idlSet?: SetTypeNode['idlSet'];
@@ -26,14 +26,14 @@ export function setTypeNode(
 ): SetTypeNode {
   return {
     nodeClass: 'SetTypeNode',
-    childNode,
+    child,
     size: options.size ?? prefixedSize(),
     idlSet: options.idlSet ?? 'hashSet',
   } as SetTypeNode;
 }
 
 export function setTypeNodeFromIdl(idl: IdlTypeSet): SetTypeNode {
-  const childNode = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
+  const child = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
   let size: SetTypeNode['size'] | undefined;
   if (idl.size === 'remainder') {
     size = remainderSize();
@@ -42,7 +42,7 @@ export function setTypeNodeFromIdl(idl: IdlTypeSet): SetTypeNode {
   } else if (idl.size) {
     size = prefixedSize(numberTypeNode(idl.size));
   }
-  return setTypeNode(createTypeNodeFromIdl(childNode), {
+  return setTypeNode(createTypeNodeFromIdl(child), {
     size,
     idlSet: 'hashSet' in idl ? 'hashSet' : 'bTreeSet',
   });

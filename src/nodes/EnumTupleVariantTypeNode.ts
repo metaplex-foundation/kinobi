@@ -7,12 +7,12 @@ export type EnumTupleVariantTypeNode = {
   readonly __enumTupleVariantTypeNode: unique symbol;
   readonly nodeClass: 'EnumTupleVariantTypeNode';
   readonly name: string;
-  readonly tupleNode: TupleTypeNode;
+  readonly tuple: TupleTypeNode;
 };
 
 export function enumTupleVariantTypeNode(
   name: string,
-  tupleNode: TupleTypeNode
+  tuple: TupleTypeNode
 ): EnumTupleVariantTypeNode {
   if (!name) {
     throw new InvalidKinobiTreeError(
@@ -22,7 +22,7 @@ export function enumTupleVariantTypeNode(
   return {
     nodeClass: 'EnumTupleVariantTypeNode',
     name: mainCase(name),
-    tupleNode,
+    tuple,
   } as EnumTupleVariantTypeNode;
 }
 

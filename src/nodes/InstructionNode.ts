@@ -30,10 +30,10 @@ export type InstructionNode = {
   readonly __instructionNode: unique symbol;
   readonly nodeClass: 'InstructionNode';
   readonly name: string;
-  readonly accountNodes: InstructionAccountNode[];
-  readonly dataArgsNode: InstructionDataArgsNode;
-  readonly extraArgsNode: InstructionExtraArgsNode;
-  readonly subInstructionNodes: InstructionNode[];
+  readonly accounts: InstructionAccountNode[];
+  readonly dataArgs: InstructionDataArgsNode;
+  readonly extraArgs: InstructionExtraArgsNode;
+  readonly subInstructions: InstructionNode[];
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
@@ -42,7 +42,7 @@ export type InstructionNode = {
 };
 
 export type InstructionNodeInput = Omit<
-  PartialExcept<InstructionNode, 'name' | 'accountNodes' | 'dataArgsNode'>,
+  PartialExcept<InstructionNode, 'name' | 'accounts' | 'dataArgs'>,
   '__instructionNode' | 'nodeClass'
 >;
 
@@ -54,12 +54,12 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
   return {
     nodeClass: 'InstructionNode',
     name,
-    accountNodes: input.accountNodes,
-    dataArgsNode: input.dataArgsNode,
-    extraArgsNode:
-      input.extraArgsNode ??
+    accounts: input.accounts,
+    dataArgs: input.dataArgs,
+    extraArgs:
+      input.extraArgs ??
       instructionExtraArgsNode(structTypeNode(`${name}InstructionExtra`, [])),
-    subInstructionNodes: input.subInstructionNodes ?? [],
+    subInstructions: input.subInstructions ?? [],
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
@@ -79,7 +79,7 @@ export function instructionNodeFromIdl(
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
   const useProgramIdForOptionalAccounts = idl.defaultOptionalAccounts ?? false;
-  let dataArgsNode = structTypeNodeFromIdl({
+  let dataArgs = structTypeNodeFromIdl({
     kind: 'struct',
     name: name ? `${name}InstructionData` : '',
     fields: idl.args ?? [],
@@ -87,32 +87,32 @@ export function instructionNodeFromIdl(
   if (idl.discriminant) {
     const discriminatorField = structFieldTypeNode({
       name: 'discriminator',
-      childNode: createTypeNodeFromIdl(idl.discriminant.type),
+      child: createTypeNodeFromIdl(idl.discriminant.type),
       defaultsTo: {
         strategy: 'omitted',
         value: vScalar(idl.discriminant.value),
       },
     });
-    dataArgsNode = structTypeNode(dataArgsNode.name, [
+    dataArgs = structTypeNode(dataArgs.name, [
       discriminatorField,
-      ...dataArgsNode.fieldNodes,
+      ...dataArgs.fields,
     ]);
   }
   return instructionNode({
     name,
     idlName,
     docs: idl.docs ?? [],
-    accountNodes: (idl.accounts ?? []).map((account) =>
+    accounts: (idl.accounts ?? []).map((account) =>
       instructionAccountNodeFromIdl(account, useProgramIdForOptionalAccounts)
     ),
-    dataArgsNode: instructionDataArgsNode(dataArgsNode),
+    dataArgs: instructionDataArgsNode(dataArgs),
   });
 }
 
 export function getAllSubInstructions(
   node: InstructionNode
 ): InstructionNode[] {
-  return node.subInstructionNodes.flatMap((subInstruction) => [
+  return node.subInstructions.flatMap((subInstruction) => [
     subInstruction,
     ...getAllSubInstructions(subInstruction),
   ]);
@@ -122,8 +122,8 @@ export function getAllInstructionsWithSubs(
   node: ProgramNode | RootNode
 ): InstructionNode[] {
   const instructions = isProgramNode(node)
-    ? node.instructionNodes
-    : node.programNodes.flatMap((program) => program.instructionNodes);
+    ? node.instructions
+    : node.programs.flatMap((program) => program.instructions);
 
   return instructions.flatMap((instruction) => [
     instruction,

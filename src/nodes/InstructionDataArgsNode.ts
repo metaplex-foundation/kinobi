@@ -5,18 +5,18 @@ import { StructTypeNode } from './StructTypeNode';
 export type InstructionDataArgsNode = {
   readonly __instructionDataArgsNode: unique symbol;
   readonly nodeClass: 'InstructionDataArgsNode';
-  readonly structNode: StructTypeNode;
-  readonly linkNode: LinkTypeNode | null;
+  readonly struct: StructTypeNode;
+  readonly link: LinkTypeNode | null;
 };
 
 export function instructionDataArgsNode(
-  structNode: StructTypeNode,
-  linkNode?: LinkTypeNode | null
+  struct: StructTypeNode,
+  link?: LinkTypeNode | null
 ): InstructionDataArgsNode {
   return {
     nodeClass: 'InstructionDataArgsNode',
-    structNode,
-    linkNode: linkNode ?? null,
+    struct,
+    link: link ?? null,
   } as InstructionDataArgsNode;
 }
 

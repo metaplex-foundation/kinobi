@@ -5,11 +5,11 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 export type TupleTypeNode = {
   readonly __tupleTypeNode: unique symbol;
   readonly nodeClass: 'TupleTypeNode';
-  readonly childrenNodes: TypeNode[];
+  readonly children: TypeNode[];
 };
 
-export function tupleTypeNode(childrenNodes: TypeNode[]): TupleTypeNode {
-  return { nodeClass: 'TupleTypeNode', childrenNodes } as TupleTypeNode;
+export function tupleTypeNode(children: TypeNode[]): TupleTypeNode {
+  return { nodeClass: 'TupleTypeNode', children } as TupleTypeNode;
 }
 
 export function tupleTypeNodeFromIdl(idl: IdlTypeTuple): TupleTypeNode {

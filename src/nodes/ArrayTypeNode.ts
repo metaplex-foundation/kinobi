@@ -12,19 +12,19 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 export type ArrayTypeNode = {
   readonly __arrayTypeNode: unique symbol;
   readonly nodeClass: 'ArrayTypeNode';
-  readonly childNode: TypeNode;
+  readonly child: TypeNode;
   readonly size: SizeStrategy;
 };
 
 export function arrayTypeNode(
-  childNode: TypeNode,
+  child: TypeNode,
   options: {
     readonly size?: ArrayTypeNode['size'];
   } = {}
 ): ArrayTypeNode {
   return {
     nodeClass: 'ArrayTypeNode',
-    childNode,
+    child,
     size: options.size ?? prefixedSize(),
   } as ArrayTypeNode;
 }
@@ -33,16 +33,16 @@ export function arrayTypeNodeFromIdl(
   idl: IdlTypeArray | IdlTypeVec
 ): ArrayTypeNode {
   if ('array' in idl) {
-    const childNode = createTypeNodeFromIdl(idl.array[0]);
-    return arrayTypeNode(childNode, { size: fixedSize(idl.array[1]) });
+    const child = createTypeNodeFromIdl(idl.array[0]);
+    return arrayTypeNode(child, { size: fixedSize(idl.array[1]) });
   }
 
-  const childNode = createTypeNodeFromIdl(idl.vec);
-  if (!idl.size) return arrayTypeNode(childNode);
+  const child = createTypeNodeFromIdl(idl.vec);
+  if (!idl.size) return arrayTypeNode(child);
   if (idl.size === 'remainder') {
-    return arrayTypeNode(childNode, { size: remainderSize() });
+    return arrayTypeNode(child, { size: remainderSize() });
   }
-  return arrayTypeNode(childNode, {
+  return arrayTypeNode(child, {
     size: prefixedSize(numberTypeNode(idl.size)),
   });
 }

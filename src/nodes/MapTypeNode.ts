@@ -12,15 +12,15 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 export type MapTypeNode = {
   readonly __mapTypeNode: unique symbol;
   readonly nodeClass: 'MapTypeNode';
-  readonly keyNode: TypeNode;
-  readonly valueNode: TypeNode;
+  readonly key: TypeNode;
+  readonly value: TypeNode;
   readonly size: SizeStrategy;
   readonly idlMap: 'hashMap' | 'bTreeMap';
 };
 
 export function mapTypeNode(
-  keyNode: TypeNode,
-  valueNode: TypeNode,
+  key: TypeNode,
+  value: TypeNode,
   options: {
     readonly size?: SizeStrategy;
     readonly idlMap?: MapTypeNode['idlMap'];
@@ -28,8 +28,8 @@ export function mapTypeNode(
 ): MapTypeNode {
   return {
     nodeClass: 'MapTypeNode',
-    keyNode,
-    valueNode,
+    key,
+    value,
     size: options.size ?? prefixedSize(),
     idlMap: options.idlMap ?? 'hashMap',
   } as MapTypeNode;

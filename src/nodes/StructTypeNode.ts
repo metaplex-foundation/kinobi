@@ -10,12 +10,12 @@ export type StructTypeNode = {
   readonly __structTypeNode: unique symbol;
   readonly nodeClass: 'StructTypeNode';
   readonly name: string;
-  readonly fieldNodes: StructFieldTypeNode[];
+  readonly fields: StructFieldTypeNode[];
 };
 
 export function structTypeNode(
   name: string,
-  fieldNodes: StructFieldTypeNode[]
+  fields: StructFieldTypeNode[]
 ): StructTypeNode {
   if (!name) {
     throw new InvalidKinobiTreeError('StructTypeNode must have a name.');
@@ -23,7 +23,7 @@ export function structTypeNode(
   return {
     nodeClass: 'StructTypeNode',
     name: mainCase(name),
-    fieldNodes,
+    fields,
   } as StructTypeNode;
 }
 

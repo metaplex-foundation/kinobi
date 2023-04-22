@@ -7,12 +7,12 @@ export type EnumStructVariantTypeNode = {
   readonly __enumStructVariantTypeNode: unique symbol;
   readonly nodeClass: 'EnumStructVariantTypeNode';
   readonly name: string;
-  readonly structNode: StructTypeNode;
+  readonly struct: StructTypeNode;
 };
 
 export function enumStructVariantTypeNode(
   name: string,
-  structNode: StructTypeNode
+  struct: StructTypeNode
 ): EnumStructVariantTypeNode {
   if (!name) {
     throw new InvalidKinobiTreeError(
@@ -22,7 +22,7 @@ export function enumStructVariantTypeNode(
   return {
     nodeClass: 'EnumStructVariantTypeNode',
     name: mainCase(name),
-    structNode,
+    struct,
   } as EnumStructVariantTypeNode;
 }
 

@@ -9,17 +9,17 @@ export type NumberWrapper =
 export type NumberWrapperTypeNode = {
   readonly __numberWrapperTypeNode: unique symbol;
   readonly nodeClass: 'NumberWrapperTypeNode';
-  readonly numberNode: NumberTypeNode;
+  readonly number: NumberTypeNode;
   readonly wrapper: NumberWrapper;
 };
 
 export function numberWrapperTypeNode(
-  numberNode: NumberTypeNode,
+  number: NumberTypeNode,
   wrapper: NumberWrapper
 ): NumberWrapperTypeNode {
   return {
     nodeClass: 'NumberWrapperTypeNode',
-    numberNode,
+    number,
     wrapper,
   } as NumberWrapperTypeNode;
 }

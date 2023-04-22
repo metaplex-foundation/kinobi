@@ -10,12 +10,12 @@ export type EnumTypeNode = {
   readonly __enumTypeNode: unique symbol;
   readonly nodeClass: 'EnumTypeNode';
   readonly name: string;
-  readonly variantNodes: EnumVariantTypeNode[];
+  readonly variants: EnumVariantTypeNode[];
 };
 
 export function enumTypeNode(
   name: string,
-  variantNodes: EnumVariantTypeNode[]
+  variants: EnumVariantTypeNode[]
 ): EnumTypeNode {
   if (!name) {
     throw new InvalidKinobiTreeError('EnumTypeNode must have a name.');
@@ -23,7 +23,7 @@ export function enumTypeNode(
   return {
     nodeClass: 'EnumTypeNode',
     name: mainCase(name),
-    variantNodes,
+    variants,
   } as EnumTypeNode;
 }
 
@@ -41,7 +41,7 @@ export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {
 }
 
 export function isScalarEnum(node: EnumTypeNode): boolean {
-  return node.variantNodes.every(
+  return node.variants.every(
     (variant) => variant.nodeClass === 'EnumEmptyVariantTypeNode'
   );
 }

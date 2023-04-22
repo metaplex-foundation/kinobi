@@ -5,18 +5,18 @@ import { StructTypeNode } from './StructTypeNode';
 export type AccountDataNode = {
   readonly __accountDataNode: unique symbol;
   readonly nodeClass: 'AccountDataNode';
-  readonly structNode: StructTypeNode;
-  readonly linkNode: LinkTypeNode | null;
+  readonly struct: StructTypeNode;
+  readonly link: LinkTypeNode | null;
 };
 
 export function accountDataNode(
-  structNode: StructTypeNode,
-  linkNode?: LinkTypeNode | null
+  struct: StructTypeNode,
+  link?: LinkTypeNode | null
 ): AccountDataNode {
   return {
     nodeClass: 'AccountDataNode',
-    structNode,
-    linkNode: linkNode ?? null,
+    struct,
+    link: link ?? null,
   } as AccountDataNode;
 }
 
