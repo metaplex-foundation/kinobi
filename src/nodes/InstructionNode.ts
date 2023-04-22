@@ -19,6 +19,8 @@ import {
   instructionExtraArgsNode,
 } from './InstructionExtraArgsNode';
 import type { Node } from './Node';
+import { ProgramNode, isProgramNode } from './ProgramNode';
+import { RootNode } from './RootNode';
 import { structFieldTypeNode } from './StructFieldTypeNode';
 import { structTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { createTypeNodeFromIdl } from './TypeNode';
@@ -113,6 +115,19 @@ export function getAllSubInstructions(
   return node.subInstructionNodes.flatMap((subInstruction) => [
     subInstruction,
     ...getAllSubInstructions(subInstruction),
+  ]);
+}
+
+export function getAllInstructionsWithSubs(
+  node: ProgramNode | RootNode
+): InstructionNode[] {
+  const instructions = isProgramNode(node)
+    ? node.instructionNodes
+    : node.programNodes.flatMap((program) => program.instructionNodes);
+
+  return instructions.flatMap((instruction) => [
+    instruction,
+    ...getAllSubInstructions(instruction),
   ]);
 }
 

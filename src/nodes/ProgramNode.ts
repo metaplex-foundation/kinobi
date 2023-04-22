@@ -3,11 +3,7 @@ import { PartialExcept, mainCase } from '../shared';
 import { AccountNode, accountNodeFromIdl } from './AccountNode';
 import { DefinedTypeNode, definedTypeNodeFromIdl } from './DefinedTypeNode';
 import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
-import {
-  InstructionNode,
-  getAllSubInstructions,
-  instructionNodeFromIdl,
-} from './InstructionNode';
+import { InstructionNode, instructionNodeFromIdl } from './InstructionNode';
 import type { Node } from './Node';
 
 export type ProgramNode = {
@@ -76,13 +72,6 @@ export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
     version: idl.version ?? '',
     origin,
   });
-}
-
-export function getInstructionsWithSubs(node: ProgramNode): InstructionNode[] {
-  return node.instructionNodes.flatMap((instruction) => [
-    instruction,
-    ...getAllSubInstructions(instruction),
-  ]);
 }
 
 export function isProgramNode(node: Node | null): node is ProgramNode {
