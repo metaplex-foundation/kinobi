@@ -65,7 +65,7 @@ export class GetDefinedTypeHistogramVisitor
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(typeArray.item, this);
+    const histogram = visit(arrayType.item, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -73,12 +73,12 @@ export class GetDefinedTypeHistogramVisitor
   visitDefinedLinkType(
     definedLinkType: nodes.LinkTypeNode
   ): DefinedTypeHistogram {
-    if (typeDefinedLink.importFrom !== 'generated') {
+    if (definedLinkType.importFrom !== 'generated') {
       return {};
     }
 
     return {
-      [typeDefinedLink.name]: {
+      [definedLinkType.name]: {
         total: 1,
         inAccounts: Number(this.mode === 'account'),
         inDefinedTypes: Number(this.mode === 'definedType'),
@@ -93,7 +93,7 @@ export class GetDefinedTypeHistogramVisitor
   visitEnumType(enumType: nodes.EnumTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeEnum.variants.map((variant) => visit(variant, this))
+      enumType.variants.map((variant) => visit(variant, this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -107,7 +107,7 @@ export class GetDefinedTypeHistogramVisitor
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(typeEnumStructVariant.struct, this);
+    const histogram = visit(enumStructVariantType.struct, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -116,7 +116,7 @@ export class GetDefinedTypeHistogramVisitor
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(typeEnumTupleVariant.tuple, this);
+    const histogram = visit(enumTupleVariantType.tuple, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -124,8 +124,8 @@ export class GetDefinedTypeHistogramVisitor
   visitMapType(mapType: nodes.MapTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms([
-      visit(typeMap.key, this),
-      visit(typeMap.value, this),
+      visit(mapType.key, this),
+      visit(mapType.value, this),
     ]);
     this.stackLevel -= 1;
     return histogram;
@@ -133,14 +133,14 @@ export class GetDefinedTypeHistogramVisitor
 
   visitOptionType(optionType: nodes.OptionTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(typeOption.item, this);
+    const histogram = visit(optionType.item, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
   visitSetType(setType: nodes.SetTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(typeSet.item, this);
+    const histogram = visit(setType.item, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -148,7 +148,7 @@ export class GetDefinedTypeHistogramVisitor
   visitStructType(structType: nodes.StructTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeStruct.fields.map((field) => visit(field, this))
+      structType.fields.map((field) => visit(field, this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -158,7 +158,7 @@ export class GetDefinedTypeHistogramVisitor
     structFieldType: nodes.StructFieldTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(typeStructField.type, this);
+    const histogram = visit(structFieldType.type, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -166,7 +166,7 @@ export class GetDefinedTypeHistogramVisitor
   visitTupleType(tupleType: nodes.TupleTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeTuple.items.map((item) => visit(item, this))
+      tupleType.items.map((item) => visit(item, this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -188,7 +188,7 @@ export class GetDefinedTypeHistogramVisitor
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(typeNumberWrapper.item, this);
+    const histogram = visit(numberWrapperType.item, this);
     this.stackLevel -= 1;
     return histogram;
   }

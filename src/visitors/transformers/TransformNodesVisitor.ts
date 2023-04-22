@@ -78,22 +78,22 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): nodes.Node | null {
-    this.stack.push(typeArray);
-    const visitedTypeArray = super.visitArrayType(typeArray);
+    this.stack.push(arrayType);
+    const visitedTypeArray = super.visitArrayType(arrayType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeArray);
   }
 
   visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node | null {
-    this.stack.push(typeDefinedLink);
-    const visitedTypeDefinedLink = super.visitDefinedLinkType(typeDefinedLink);
+    this.stack.push(definedLinkType);
+    const visitedTypeDefinedLink = super.visitDefinedLinkType(definedLinkType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeDefinedLink);
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node | null {
-    this.stack.push(typeEnum);
-    const visitedTypeEnum = super.visitEnumType(typeEnum);
+    this.stack.push(enumType);
+    const visitedTypeEnum = super.visitEnumType(enumType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnum);
   }
@@ -101,9 +101,9 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeEnumEmptyVariant);
+    this.stack.push(enumEmptyVariantType);
     const visitedTypeEnumEmptyVariant = super.visitEnumEmptyVariantType(
-      typeEnumEmptyVariant
+      enumEmptyVariantType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnumEmptyVariant);
@@ -112,9 +112,9 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeEnumStructVariant);
+    this.stack.push(enumStructVariantType);
     const visitedTypeEnumStructVariant = super.visitEnumStructVariantType(
-      typeEnumStructVariant
+      enumStructVariantType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnumStructVariant);
@@ -123,38 +123,38 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeEnumTupleVariant);
+    this.stack.push(enumTupleVariantType);
     const visitedTypeEnumTupleVariant = super.visitEnumTupleVariantType(
-      typeEnumTupleVariant
+      enumTupleVariantType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnumTupleVariant);
   }
 
   visitMapType(mapType: nodes.MapTypeNode): nodes.Node | null {
-    this.stack.push(typeMap);
-    const visitedTypeMap = super.visitMapType(typeMap);
+    this.stack.push(mapType);
+    const visitedTypeMap = super.visitMapType(mapType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeMap);
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): nodes.Node | null {
-    this.stack.push(typeOption);
-    const visitedTypeOption = super.visitOptionType(typeOption);
+    this.stack.push(optionType);
+    const visitedTypeOption = super.visitOptionType(optionType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeOption);
   }
 
   visitSetType(setType: nodes.SetTypeNode): nodes.Node | null {
-    this.stack.push(typeSet);
-    const visitedTypeSet = super.visitSetType(typeSet);
+    this.stack.push(setType);
+    const visitedTypeSet = super.visitSetType(setType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeSet);
   }
 
   visitStructType(structType: nodes.StructTypeNode): nodes.Node | null {
-    this.stack.push(typeStruct);
-    const visitedTypeStruct = super.visitStructType(typeStruct);
+    this.stack.push(structType);
+    const visitedTypeStruct = super.visitStructType(structType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeStruct);
   }
@@ -162,36 +162,36 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   visitStructFieldType(
     structFieldType: nodes.StructFieldTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeStructField);
-    const visitedTypeStructField = super.visitStructFieldType(typeStructField);
+    this.stack.push(structFieldType);
+    const visitedTypeStructField = super.visitStructFieldType(structFieldType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeStructField);
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): nodes.Node | null {
-    this.stack.push(typeTuple);
-    const visitedTypeTuple = super.visitTupleType(typeTuple);
+    this.stack.push(tupleType);
+    const visitedTypeTuple = super.visitTupleType(tupleType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeTuple);
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): nodes.Node | null {
-    this.stack.push(typeBool);
-    const visitedTypeBool = super.visitBoolType(typeBool);
+    this.stack.push(boolType);
+    const visitedTypeBool = super.visitBoolType(boolType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeBool);
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): nodes.Node | null {
-    this.stack.push(typeBytes);
-    const visitedTypeBytes = super.visitBytesType(typeBytes);
+    this.stack.push(bytesType);
+    const visitedTypeBytes = super.visitBytesType(bytesType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeBytes);
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): nodes.Node | null {
-    this.stack.push(typeNumber);
-    const visitedTypeNumber = super.visitNumberType(typeNumber);
+    this.stack.push(numberType);
+    const visitedTypeNumber = super.visitNumberType(numberType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeNumber);
   }
@@ -199,9 +199,9 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeNumberWrapper);
+    this.stack.push(numberWrapperType);
     const visitedTypeNumberWrapper = super.visitNumberWrapperType(
-      typeNumberWrapper
+      numberWrapperType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeNumberWrapper);
@@ -210,15 +210,15 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   visitPublicKeyType(
     publicKeyType: nodes.PublicKeyTypeNode
   ): nodes.Node | null {
-    this.stack.push(typePublicKey);
-    const visitedTypePublicKey = super.visitPublicKeyType(typePublicKey);
+    this.stack.push(publicKeyType);
+    const visitedTypePublicKey = super.visitPublicKeyType(publicKeyType);
     this.stack.pop();
     return this.applyTransforms(visitedTypePublicKey);
   }
 
   visitStringType(stringType: nodes.StringTypeNode): nodes.Node | null {
-    this.stack.push(typeString);
-    const visitedTypeString = super.visitStringType(typeString);
+    this.stack.push(stringType);
+    const visitedTypeString = super.visitStringType(stringType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeString);
   }

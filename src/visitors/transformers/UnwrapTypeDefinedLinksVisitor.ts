@@ -7,8 +7,8 @@ export class UnwrapTypeDefinedLinksVisitor extends TransformNodesVisitor {
     nodes.DefinedTypeNode
   >();
 
-  constructor(readonly typeDefinedLinks: string[]) {
-    const transforms = typeDefinedLinks.map((selectorStack): NodeTransform => {
+  constructor(readonly definedLinksType: string[]) {
+    const transforms = definedLinksType.map((selectorStack): NodeTransform => {
       const stack = selectorStack.split('.');
       const name = stack.pop();
       return {

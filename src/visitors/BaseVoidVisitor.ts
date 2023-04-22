@@ -35,7 +35,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): void {
-    visit(typeArray.item, this);
+    visit(arrayType.item, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,7 +44,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): void {
-    typeEnum.variants.forEach((variant) => visit(variant, this));
+    enumType.variants.forEach((variant) => visit(variant, this));
   }
 
   visitEnumEmptyVariantType(
@@ -57,38 +57,38 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): void {
-    visit(typeEnumStructVariant.struct, this);
+    visit(enumStructVariantType.struct, this);
   }
 
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): void {
-    visit(typeEnumTupleVariant.tuple, this);
+    visit(enumTupleVariantType.tuple, this);
   }
 
   visitMapType(mapType: nodes.MapTypeNode): void {
-    visit(typeMap.key, this);
-    visit(typeMap.value, this);
+    visit(mapType.key, this);
+    visit(mapType.value, this);
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): void {
-    visit(typeOption.item, this);
+    visit(optionType.item, this);
   }
 
   visitSetType(setType: nodes.SetTypeNode): void {
-    visit(typeSet.item, this);
+    visit(setType.item, this);
   }
 
   visitStructType(structType: nodes.StructTypeNode): void {
-    typeStruct.fields.forEach((field) => visit(field, this));
+    structType.fields.forEach((field) => visit(field, this));
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): void {
-    visit(typeStructField.type, this);
+    visit(structFieldType.type, this);
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): void {
-    typeTuple.items.forEach((item) => visit(item, this));
+    tupleType.items.forEach((item) => visit(item, this));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,7 +107,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   visitNumberWrapperType(numberWrapperType: nodes.NumberWrapperTypeNode): void {
-    visit(typeNumberWrapper.item, this);
+    visit(numberWrapperType.item, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

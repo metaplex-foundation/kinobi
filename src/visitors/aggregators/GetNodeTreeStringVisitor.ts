@@ -118,26 +118,26 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): string {
     this.indent += 1;
-    const item = visit(typeArray.item, this);
+    const item = visit(arrayType.item, this);
     this.indent -= 1;
-    const size = this.displayArrayLikeSize(typeArray.size);
+    const size = this.displayArrayLikeSize(arrayType.size);
     return [this.indented(`[ArrayTypeNode] size: ${size}`), item].join('\n');
   }
 
   visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): string {
     return this.indented(
-      `[LinkTypeNode] ${typeDefinedLink.name}, ` +
-        `importFrom: ${typeDefinedLink.importFrom}`
+      `[LinkTypeNode] ${definedLinkType.name}, ` +
+        `importFrom: ${definedLinkType.importFrom}`
     );
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): string {
     this.indent += 1;
-    const children = typeEnum.variants.map((variant) => visit(variant, this));
+    const children = enumType.variants.map((variant) => visit(variant, this));
     this.indent -= 1;
     return [
       this.indented(
-        `[EnumTypeNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`
+        `[EnumTypeNode]${enumType.name ? ` ${enumType.name}` : ''}`
       ),
       ...children,
     ].join('\n');
@@ -147,7 +147,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): string {
     return this.indented(
-      `[EnumEmptyVariantTypeNode] ${typeEnumEmptyVariant.name}`
+      `[EnumEmptyVariantTypeNode] ${enumEmptyVariantType.name}`
     );
   }
 
@@ -155,11 +155,11 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): string {
     this.indent += 1;
-    const child = visit(typeEnumStructVariant.struct, this);
+    const child = visit(enumStructVariantType.struct, this);
     this.indent -= 1;
     return [
       this.indented(
-        `[EnumStructVariantTypeNode] ${typeEnumStructVariant.name}`
+        `[EnumStructVariantTypeNode] ${enumStructVariantType.name}`
       ),
       child,
     ].join('\n');
@@ -169,28 +169,28 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): string {
     this.indent += 1;
-    const child = visit(typeEnumTupleVariant.tuple, this);
+    const child = visit(enumTupleVariantType.tuple, this);
     this.indent -= 1;
     return [
-      this.indented(`[EnumTupleVariantTypeNode] ${typeEnumTupleVariant.name}`),
+      this.indented(`[EnumTupleVariantTypeNode] ${enumTupleVariantType.name}`),
       child,
     ].join('\n');
   }
 
   visitMapType(mapType: nodes.MapTypeNode): string {
     const result: string[] = [];
-    const size = this.displayArrayLikeSize(typeMap.size);
+    const size = this.displayArrayLikeSize(mapType.size);
     result.push(
-      this.indented(`[MapTypeNode] size: ${size}, ${typeMap.idlType}`)
+      this.indented(`[MapTypeNode] size: ${size}, ${mapType.idlType}`)
     );
     this.indent += 1;
     result.push(this.indented('keys:'));
     this.indent += 1;
-    result.push(visit(typeMap.key, this));
+    result.push(visit(mapType.key, this));
     this.indent -= 1;
     result.push(this.indented('values:'));
     this.indent += 1;
-    result.push(visit(typeMap.value, this));
+    result.push(visit(mapType.value, this));
     this.indent -= 1;
     this.indent -= 1;
     return result.join('\n');
@@ -198,10 +198,10 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitOptionType(optionType: nodes.OptionTypeNode): string {
     this.indent += 1;
-    const item = visit(typeOption.item, this);
+    const item = visit(optionType.item, this);
     this.indent -= 1;
-    const prefix = typeOption.prefix.toString();
-    const fixed = typeOption.fixed ? ', fixed' : '';
+    const prefix = optionType.prefix.toString();
+    const fixed = optionType.fixed ? ', fixed' : '';
     return [
       this.indented(`[OptionTypeNode] prefix: ${prefix}${fixed}`),
       item,
@@ -210,60 +210,60 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitSetType(setType: nodes.SetTypeNode): string {
     this.indent += 1;
-    const item = visit(typeSet.item, this);
+    const item = visit(setType.item, this);
     this.indent -= 1;
-    const size = this.displayArrayLikeSize(typeSet.size);
+    const size = this.displayArrayLikeSize(setType.size);
     return [this.indented(`[SetTypeNode] size: ${size}`), item].join('\n');
   }
 
   visitStructType(structType: nodes.StructTypeNode): string {
     this.indent += 1;
-    const children = typeStruct.fields.map((field) => visit(field, this));
+    const children = structType.fields.map((field) => visit(field, this));
     this.indent -= 1;
     return [
-      this.indented(`[StructTypeNode] ${typeStruct.name}`),
+      this.indented(`[StructTypeNode] ${structType.name}`),
       ...children,
     ].join('\n');
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {
     this.indent += 1;
-    const child = visit(typeStructField.type, this);
+    const child = visit(structFieldType.type, this);
     this.indent -= 1;
     return [
-      this.indented(`[StructFieldTypeNode] ${typeStructField.name}`),
+      this.indented(`[StructFieldTypeNode] ${structFieldType.name}`),
       child,
     ].join('\n');
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): string {
     this.indent += 1;
-    const items = typeTuple.items.map((item) => visit(item, this));
+    const items = tupleType.items.map((item) => visit(item, this));
     this.indent -= 1;
     return [this.indented('[TupleTypeNode]'), ...items].join('\n');
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): string {
-    return this.indented(`[BoolTypeNode] ${typeBool.size.toString()}`);
+    return this.indented(`[BoolTypeNode] ${boolType.size.toString()}`);
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): string {
     return this.indented(
-      `[BytesTypeNode] size: ${typeBytes.getSizeAsString()}`
+      `[BytesTypeNode] size: ${bytesType.getSizeAsString()}`
     );
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): string {
-    return this.indented(`[NumberTypeNode] ${typeNumber.toString()}`);
+    return this.indented(`[NumberTypeNode] ${numberType.toString()}`);
   }
 
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): string {
     this.indent += 1;
-    const item = visit(typeNumberWrapper.item, this);
+    const item = visit(numberWrapperType.item, this);
     this.indent -= 1;
-    const { wrapper } = typeNumberWrapper;
+    const { wrapper } = numberWrapperType;
     const base = `[NumberWrapperTypeNode] ${wrapper.kind}`;
     switch (wrapper.kind) {
       case 'Amount':
@@ -287,8 +287,8 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   visitStringType(stringType: nodes.StringTypeNode): string {
     return this.indented(
       `[StringTypeNode] ` +
-        `encoding: ${typeString.encoding}, ` +
-        `size: ${typeString.getSizeAsString()}`
+        `encoding: ${stringType.encoding}, ` +
+        `size: ${stringType.getSizeAsString()}`
     );
   }
 

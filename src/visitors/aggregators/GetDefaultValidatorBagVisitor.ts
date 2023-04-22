@@ -178,28 +178,28 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): ValidatorBag {
-    this.pushNode(typeArray);
-    const bag = visit(typeArray.item, this);
+    this.pushNode(arrayType);
+    const bag = visit(arrayType.item, this);
     this.popNode();
     return bag;
   }
 
   visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): ValidatorBag {
-    this.pushNode(typeDefinedLink);
+    this.pushNode(definedLinkType);
     const bag = new ValidatorBag();
-    if (!typeDefinedLink.name) {
+    if (!definedLinkType.name) {
       bag.error(
         'Pointing to a defined type with no name.',
-        typeDefinedLink,
+        definedLinkType,
         this.stack
       );
     } else if (
-      typeDefinedLink.importFrom === 'generated' &&
-      !this.definedTypes.has(typeDefinedLink.name)
+      definedLinkType.importFrom === 'generated' &&
+      !this.definedTypes.has(definedLinkType.name)
     ) {
       bag.error(
-        `Pointing to a missing defined type named "${typeDefinedLink.name}"`,
-        typeDefinedLink,
+        `Pointing to a missing defined type named "${definedLinkType.name}"`,
+        definedLinkType,
         this.stack
       );
     }
@@ -208,20 +208,20 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): ValidatorBag {
-    this.pushNode(typeEnum);
+    this.pushNode(enumType);
     const bag = new ValidatorBag();
-    if (!typeEnum.name) {
-      bag.info('Enum has no name.', typeEnum, this.stack);
+    if (!enumType.name) {
+      bag.info('Enum has no name.', enumType, this.stack);
     }
-    if (typeEnum.variants.length === 0) {
-      bag.warn('Enum has no variants.', typeEnum, this.stack);
+    if (enumType.variants.length === 0) {
+      bag.warn('Enum has no variants.', enumType, this.stack);
     }
-    typeEnum.variants.forEach((variant) => {
+    enumType.variants.forEach((variant) => {
       if (!variant.name) {
-        bag.error('Enum variant has no name.', typeEnum, this.stack);
+        bag.error('Enum variant has no name.', enumType, this.stack);
       }
     });
-    bag.mergeWith(typeEnum.variants.map((variant) => visit(variant, this)));
+    bag.mergeWith(enumType.variants.map((variant) => visit(variant, this)));
     this.popNode();
     return bag;
   }
@@ -229,10 +229,10 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): ValidatorBag {
-    this.pushNode(typeEnumEmptyVariant);
+    this.pushNode(enumEmptyVariantType);
     const bag = new ValidatorBag();
-    if (!typeEnumEmptyVariant.name) {
-      bag.error('Enum variant has no name.', typeEnumEmptyVariant, this.stack);
+    if (!enumEmptyVariantType.name) {
+      bag.error('Enum variant has no name.', enumEmptyVariantType, this.stack);
     }
     this.popNode();
     return bag;
@@ -241,12 +241,12 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): ValidatorBag {
-    this.pushNode(typeEnumStructVariant);
+    this.pushNode(enumStructVariantType);
     const bag = new ValidatorBag();
-    if (!typeEnumStructVariant.name) {
-      bag.error('Enum variant has no name.', typeEnumStructVariant, this.stack);
+    if (!enumStructVariantType.name) {
+      bag.error('Enum variant has no name.', enumStructVariantType, this.stack);
     }
-    bag.mergeWith([visit(typeEnumStructVariant.struct, this)]);
+    bag.mergeWith([visit(enumStructVariantType.struct, this)]);
     this.popNode();
     return bag;
   }
@@ -254,48 +254,48 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): ValidatorBag {
-    this.pushNode(typeEnumTupleVariant);
+    this.pushNode(enumTupleVariantType);
     const bag = new ValidatorBag();
-    if (!typeEnumTupleVariant.name) {
-      bag.error('Enum variant has no name.', typeEnumTupleVariant, this.stack);
+    if (!enumTupleVariantType.name) {
+      bag.error('Enum variant has no name.', enumTupleVariantType, this.stack);
     }
-    bag.mergeWith([visit(typeEnumTupleVariant.tuple, this)]);
+    bag.mergeWith([visit(enumTupleVariantType.tuple, this)]);
     this.popNode();
     return bag;
   }
 
   visitMapType(mapType: nodes.MapTypeNode): ValidatorBag {
-    this.pushNode(typeMap);
+    this.pushNode(mapType);
     const bag = new ValidatorBag();
-    bag.mergeWith([visit(typeMap.key, this), visit(typeMap.value, this)]);
+    bag.mergeWith([visit(mapType.key, this), visit(mapType.value, this)]);
     this.popNode();
     return bag;
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): ValidatorBag {
-    this.pushNode(typeOption);
-    const bag = visit(typeOption.item, this);
+    this.pushNode(optionType);
+    const bag = visit(optionType.item, this);
     this.popNode();
     return bag;
   }
 
   visitSetType(setType: nodes.SetTypeNode): ValidatorBag {
-    this.pushNode(typeSet);
-    const bag = visit(typeSet.item, this);
+    this.pushNode(setType);
+    const bag = visit(setType.item, this);
     this.popNode();
     return bag;
   }
 
   visitStructType(structType: nodes.StructTypeNode): ValidatorBag {
-    this.pushNode(typeStruct);
+    this.pushNode(structType);
     const bag = new ValidatorBag();
-    if (!typeStruct.name) {
-      bag.info('Struct has no name.', typeStruct, this.stack);
+    if (!structType.name) {
+      bag.info('Struct has no name.', structType, this.stack);
     }
 
     // Check for duplicate field names.
     const fieldNameHistogram = new Map<string, number>();
-    typeStruct.fields.forEach((field) => {
+    structType.fields.forEach((field) => {
       if (!field.name) return; // Handled by TypeStructField
       const count = (fieldNameHistogram.get(field.name) ?? 0) + 1;
       fieldNameHistogram.set(field.name, count);
@@ -309,7 +309,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       }
     });
 
-    bag.mergeWith(typeStruct.fields.map((field) => visit(field, this)));
+    bag.mergeWith(structType.fields.map((field) => visit(field, this)));
     this.popNode();
     return bag;
   }
@@ -317,23 +317,23 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitStructFieldType(
     structFieldType: nodes.StructFieldTypeNode
   ): ValidatorBag {
-    this.pushNode(typeStructField);
+    this.pushNode(structFieldType);
     const bag = new ValidatorBag();
-    if (!typeStructField.name) {
-      bag.error('Struct field has no name.', typeStructField, this.stack);
+    if (!structFieldType.name) {
+      bag.error('Struct field has no name.', structFieldType, this.stack);
     }
-    bag.mergeWith([visit(typeStructField.type, this)]);
+    bag.mergeWith([visit(structFieldType.type, this)]);
     this.popNode();
     return bag;
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): ValidatorBag {
-    this.pushNode(typeTuple);
+    this.pushNode(tupleType);
     const bag = new ValidatorBag();
-    if (typeTuple.items.length === 0) {
-      bag.warn('Tuple has no items.', typeTuple, this.stack);
+    if (tupleType.items.length === 0) {
+      bag.warn('Tuple has no items.', tupleType, this.stack);
     }
-    bag.mergeWith(typeTuple.items.map((node) => visit(node, this)));
+    bag.mergeWith(tupleType.items.map((node) => visit(node, this)));
     this.popNode();
     return bag;
   }
@@ -356,8 +356,8 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): ValidatorBag {
-    this.pushNode(typeNumberWrapper);
-    const bag = visit(typeNumberWrapper.item, this);
+    this.pushNode(numberWrapperType);
+    const bag = visit(numberWrapperType.item, this);
     this.popNode();
     return bag;
   }

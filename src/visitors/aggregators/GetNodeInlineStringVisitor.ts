@@ -51,92 +51,92 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): string {
-    const item = visit(typeArray.item, this);
-    const size = this.displayArrayLikeSize(typeArray.size);
+    const item = visit(arrayType.item, this);
+    const size = this.displayArrayLikeSize(arrayType.size);
     return `array(${item};${size})`;
   }
 
   visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): string {
-    return `link(${typeDefinedLink.name};${typeDefinedLink.importFrom})`;
+    return `link(${definedLinkType.name};${definedLinkType.importFrom})`;
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): string {
-    const children = typeEnum.variants.map((variant) => visit(variant, this));
-    return `enum[${typeEnum.name}](${children.join(',')})`;
+    const children = enumType.variants.map((variant) => visit(variant, this));
+    return `enum[${enumType.name}](${children.join(',')})`;
   }
 
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): string {
-    return typeEnumEmptyVariant.name;
+    return enumEmptyVariantType.name;
   }
 
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): string {
-    const child = visit(typeEnumStructVariant.struct, this);
-    return `${typeEnumStructVariant.name}:${child}`;
+    const child = visit(enumStructVariantType.struct, this);
+    return `${enumStructVariantType.name}:${child}`;
   }
 
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): string {
-    const child = visit(typeEnumTupleVariant.tuple, this);
-    return `${typeEnumTupleVariant.name}:${child}`;
+    const child = visit(enumTupleVariantType.tuple, this);
+    return `${enumTupleVariantType.name}:${child}`;
   }
 
   visitMapType(mapType: nodes.MapTypeNode): string {
-    const key = visit(typeMap.key, this);
-    const value = visit(typeMap.value, this);
-    const size = this.displayArrayLikeSize(typeMap.size);
+    const key = visit(mapType.key, this);
+    const value = visit(mapType.value, this);
+    const size = this.displayArrayLikeSize(mapType.size);
     return `map(${key},${value};${size})`;
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): string {
-    const item = visit(typeOption.item, this);
-    const prefix = visit(typeOption.prefix, this);
-    const fixed = typeOption.fixed ? ';fixed' : '';
+    const item = visit(optionType.item, this);
+    const prefix = visit(optionType.prefix, this);
+    const fixed = optionType.fixed ? ';fixed' : '';
     return `option(${item};${prefix + fixed})`;
   }
 
   visitSetType(setType: nodes.SetTypeNode): string {
-    const item = visit(typeSet.item, this);
-    const size = this.displayArrayLikeSize(typeSet.size);
+    const item = visit(setType.item, this);
+    const size = this.displayArrayLikeSize(setType.size);
     return `set(${item};${size})`;
   }
 
   visitStructType(structType: nodes.StructTypeNode): string {
-    const children = typeStruct.fields.map((field) => visit(field, this));
-    return `struct[${typeStruct.name}](${children.join(',')})`;
+    const children = structType.fields.map((field) => visit(field, this));
+    return `struct[${structType.name}](${children.join(',')})`;
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {
-    const child = visit(typeStructField.type, this);
-    return `${typeStructField.name}:${child}`;
+    const child = visit(structFieldType.type, this);
+    return `${structFieldType.name}:${child}`;
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): string {
-    const children = typeTuple.items.map((item) => visit(item, this));
+    const children = tupleType.items.map((item) => visit(item, this));
     return `tuple(${children.join(',')})`;
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): string {
-    return typeBool.toString();
+    return boolType.toString();
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): string {
-    return typeBytes.toString();
+    return bytesType.toString();
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): string {
-    return typeNumber.toString();
+    return numberType.toString();
   }
 
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): string {
-    const item = visit(typeNumberWrapper.item, this);
-    const { wrapper } = typeNumberWrapper;
+    const item = visit(numberWrapperType.item, this);
+    const { wrapper } = numberWrapperType;
     switch (wrapper.kind) {
       case 'DateTime':
         return `DateTime(${item})`;
@@ -154,7 +154,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
   }
 
   visitStringType(stringType: nodes.StringTypeNode): string {
-    return typeString.toString();
+    return stringType.toString();
   }
 
   displayArrayLikeSize(size: nodes.ArrayTypeNode['size']): string {

@@ -40,17 +40,17 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
 
   visitDefinedLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
     if (
-      !this.shouldInline(typeDefinedLink.name) ||
-      typeDefinedLink.importFrom !== 'generated'
+      !this.shouldInline(definedLinkType.name) ||
+      definedLinkType.importFrom !== 'generated'
     ) {
-      return typeDefinedLink;
+      return definedLinkType;
     }
 
-    const definedType = this.availableDefinedTypes.get(typeDefinedLink.name);
+    const definedType = this.availableDefinedTypes.get(definedLinkType.name);
 
     if (definedType === undefined) {
       throw new Error(
-        `Trying to inline missing defined type [${typeDefinedLink.name}]. ` +
+        `Trying to inline missing defined type [${definedLinkType.name}]. ` +
           `Ensure this visitor starts from the root node to access all defined types.`
       );
     }
