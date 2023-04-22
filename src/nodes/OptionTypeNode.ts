@@ -7,7 +7,7 @@ export type OptionTypeNode = {
   readonly __optionTypeNode: unique symbol;
   readonly kind: 'optionTypeNode';
   readonly child: TypeNode;
-  readonly prefixNode: NumberTypeNode;
+  readonly prefix: NumberTypeNode;
   readonly fixed: boolean;
   readonly idlOption: 'option' | 'coption';
 };
@@ -15,7 +15,7 @@ export type OptionTypeNode = {
 export function optionTypeNode(
   child: TypeNode,
   options: {
-    readonly prefixNode?: NumberTypeNode;
+    readonly prefix?: NumberTypeNode;
     readonly fixed?: boolean;
     readonly idlOption?: OptionTypeNode['idlOption'];
   } = {}
@@ -23,7 +23,7 @@ export function optionTypeNode(
   return {
     kind: 'optionTypeNode',
     child,
-    prefixNode: options.prefixNode ?? numberTypeNode('u8'),
+    prefix: options.prefix ?? numberTypeNode('u8'),
     fixed: options.fixed ?? false,
     idlOption: options.idlOption ?? 'option',
   } as OptionTypeNode;
@@ -34,7 +34,7 @@ export function optionTypeNodeFromIdl(idl: IdlTypeOption): OptionTypeNode {
   const defaultPrefix = numberTypeNode('option' in idl ? 'u8' : 'u32');
   const defaultFixed = !('option' in idl);
   return optionTypeNode(createTypeNodeFromIdl(child), {
-    prefixNode: idl.prefix ? numberTypeNode(idl.prefix) : defaultPrefix,
+    prefix: idl.prefix ? numberTypeNode(idl.prefix) : defaultPrefix,
     fixed: idl.fixed !== undefined ? idl.fixed : defaultFixed,
     idlOption: 'option' in idl ? 'option' : 'coption',
   });

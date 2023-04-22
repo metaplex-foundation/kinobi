@@ -1,5 +1,5 @@
 import type * as nodes from '../../nodes';
-import { Visitor } from '../Visitor';
+import { Visitor, visit } from '../Visitor';
 
 const ROOT_PREFIX = 'R';
 const PROGRAM_PREFIX = 'P';

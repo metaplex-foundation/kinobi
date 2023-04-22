@@ -5,13 +5,13 @@ import {
 } from '../nodes/NumberTypeNode';
 
 export type SizeStrategy =
-  | { kind: 'fixed'; bytes: number }
+  | { kind: 'fixed'; value: number }
   | { kind: 'prefixed'; prefixNode: NumberTypeNode }
   | { kind: 'remainder' };
 
-export const fixedSize = (bytes: number): SizeStrategy => ({
+export const fixedSize = (value: number): SizeStrategy => ({
   kind: 'fixed',
-  bytes,
+  value,
 });
 
 export const prefixedSize = (prefixNode?: NumberTypeNode): SizeStrategy => ({
@@ -22,7 +22,7 @@ export const prefixedSize = (prefixNode?: NumberTypeNode): SizeStrategy => ({
 export const remainderSize = (): SizeStrategy => ({ kind: 'remainder' });
 
 export const displaySizeStrategy = (size: SizeStrategy): string => {
-  if (size.kind === 'fixed') return `${size.bytes}`;
+  if (size.kind === 'fixed') return `${size.value}`;
   if (size.kind === 'prefixed')
     return `${displayNumberTypeNode(size.prefixNode)}`;
   return 'remainder';

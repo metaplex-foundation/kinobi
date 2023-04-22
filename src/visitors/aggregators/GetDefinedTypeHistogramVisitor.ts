@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { Visitor } from '../Visitor';
+import { Visitor, visit } from '../Visitor';
 
 export type DefinedTypeHistogram = {
   [key: string]: {
@@ -35,26 +35,51 @@ export class GetDefinedTypeHistogramVisitor
   visitAccount(account: nodes.AccountNode): DefinedTypeHistogram {
     this.mode = 'account';
     this.stackLevel = 0;
-    const histogram = visit(account.type, this);
+    const histogram = visit(account.data, this);
     this.mode = null;
     return histogram;
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): DefinedTypeHistogram {
+    return visit(accountData.struct, this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): DefinedTypeHistogram {
     this.mode = 'instruction';
     this.stackLevel = 0;
-    const histogram = visit(instruction.args, this);
+    const dataHistogram = visit(instruction.dataArgs, this);
+    const extraHistogram = visit(instruction.extraArgs, this);
     this.mode = null;
     const subHistograms = instruction.subInstructions.map((ix) =>
       visit(ix, this)
     );
-    return this.mergeHistograms([histogram, ...subHistograms]);
+    return this.mergeHistograms([
+      dataHistogram,
+      extraHistogram,
+      ...subHistograms,
+    ]);
+  }
+
+  visitInstructionAccount(): DefinedTypeHistogram {
+    return {};
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): DefinedTypeHistogram {
+    return visit(instructionDataArgs.struct, this);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): DefinedTypeHistogram {
+    return visit(instructionExtraArgs.struct, this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): DefinedTypeHistogram {
     this.mode = 'definedType';
     this.stackLevel = 0;
-    const histogram = visit(definedType.type, this);
+    const histogram = visit(definedType.data, this);
     this.mode = null;
     return histogram;
   }
@@ -65,7 +90,7 @@ export class GetDefinedTypeHistogramVisitor
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(arrayType.item, this);
+    const histogram = visit(arrayType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -133,14 +158,14 @@ export class GetDefinedTypeHistogramVisitor
 
   visitOptionType(optionType: nodes.OptionTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(optionType.item, this);
+    const histogram = visit(optionType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
   visitSetType(setType: nodes.SetTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(setType.item, this);
+    const histogram = visit(setType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -158,7 +183,7 @@ export class GetDefinedTypeHistogramVisitor
     structFieldType: nodes.StructFieldTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(structFieldType.type, this);
+    const histogram = visit(structFieldType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
@@ -166,7 +191,7 @@ export class GetDefinedTypeHistogramVisitor
   visitTupleType(tupleType: nodes.TupleTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      tupleType.items.map((item) => visit(item, this))
+      tupleType.children.map((child) => visit(child, this))
     );
     this.stackLevel -= 1;
     return histogram;
@@ -188,7 +213,7 @@ export class GetDefinedTypeHistogramVisitor
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(numberWrapperType.item, this);
+    const histogram = visit(numberWrapperType.number, this);
     this.stackLevel -= 1;
     return histogram;
   }

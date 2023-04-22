@@ -1,8 +1,8 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../utils';
+import { mainCase } from '../../shared';
 import { NodeStack } from '../NodeStack';
 import { ValidatorBag } from '../ValidatorBag';
-import { Visitor } from '../Visitor';
+import { Visitor, visit } from '../Visitor';
 import { GetResolvedInstructionInputsVisitor } from './GetResolvedInstructionInputsVisitor';
 
 export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
@@ -14,7 +14,9 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitRoot(root: nodes.RootNode): ValidatorBag {
     // Register defined types to make sure links are valid.
-    root.allDefinedTypes.forEach((type) => this.definedTypes.add(type.name));
+    nodes
+      .getAllDefinedTypes(root)
+      .forEach((type) => this.definedTypes.add(type.name));
 
     this.pushNode(root);
     const bags = root.programs.map((program) => visit(program, this));
@@ -25,16 +27,16 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitProgram(program: nodes.ProgramNode): ValidatorBag {
     this.pushNode(program);
     const bag = new ValidatorBag();
-    if (!program.metadata.name) {
+    if (!program.name) {
       bag.error('Program has no name.', program, this.stack);
     }
-    if (!program.metadata.publicKey) {
+    if (!program.publicKey) {
       bag.error('Program has no public key.', program, this.stack);
     }
-    if (!program.metadata.version) {
+    if (!program.version) {
       bag.warn('Program has no version.', program, this.stack);
     }
-    if (!program.metadata.origin) {
+    if (!program.origin) {
       bag.info('Program has no origin.', program, this.stack);
     }
     bag.mergeWith([
@@ -53,7 +55,16 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!account.name) {
       bag.error('Account has no name.', account, this.stack);
     }
-    bag.mergeWith([visit(account.type, this)]);
+    bag.mergeWith([visit(account.data, this)]);
+    this.popNode();
+    return bag;
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): ValidatorBag {
+    this.pushNode(accountData);
+    const bag = new ValidatorBag();
+    bag.mergeWith([visit(accountData.struct, this)]);
+    if (accountData.link) bag.mergeWith([visit(accountData.link, this)]);
     this.popNode();
     return bag;
   }
@@ -97,55 +108,79 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     }
 
     // Check args.
-    bag.mergeWith([visit(instruction.args, this)]);
+    bag.mergeWith([visit(instruction.dataArgs, this)]);
 
     // Check extra args.
-    if (instruction.extraArgs) {
-      bag.mergeWith([visit(instruction.extraArgs, this)]);
-      if (
-        nodes.isStructTypeNode(instruction.args) &&
-        nodes.isStructTypeNode(instruction.extraArgs)
-      ) {
-        const names = [
-          ...instruction.args.fields.map(({ name }) => mainCase(name)),
-          ...instruction.extraArgs.fields.map(({ name }) => mainCase(name)),
-        ];
-        const duplicates = names.filter((e, i, a) => a.indexOf(e) !== i);
-        const uniqueDuplicates = [...new Set(duplicates)];
-        const hasConflictingNames = uniqueDuplicates.length > 0;
-        if (hasConflictingNames) {
+    bag.mergeWith([visit(instruction.extraArgs, this)]);
+    const names = [
+      ...instruction.dataArgs.struct.fields.map(({ name }) => mainCase(name)),
+      ...instruction.extraArgs.struct.fields.map(({ name }) => mainCase(name)),
+    ];
+    const duplicates = names.filter((e, i, a) => a.indexOf(e) !== i);
+    const uniqueDuplicates = [...new Set(duplicates)];
+    const hasConflictingNames = uniqueDuplicates.length > 0;
+    if (hasConflictingNames) {
+      bag.error(
+        `The names of the following instruction arguments are conflicting: ` +
+          `[${uniqueDuplicates.join(', ')}].`,
+        instruction,
+        this.stack
+      );
+    }
+
+    // Check arg defaults.
+    Object.entries(instruction.argDefaults).forEach(([name, defaultsTo]) => {
+      if (defaultsTo.kind === 'accountBump') {
+        const defaultAccount = instruction.accounts.find(
+          (account) => account.name === defaultsTo.name
+        );
+        if (defaultAccount && defaultAccount.isSigner !== false) {
           bag.error(
-            `The names of the following instruction arguments are conflicting: ` +
-              `[${uniqueDuplicates.join(', ')}].`,
+            `Argument ${name} cannot default to the bump attribute of ` +
+              `the [${defaultsTo.name}] account as it may be a Signer.`,
             instruction,
             this.stack
           );
         }
       }
-    }
-
-    // Check arg defaults.
-    Object.entries(instruction.metadata.argDefaults).forEach(
-      ([name, defaultsTo]) => {
-        if (defaultsTo.kind === 'accountBump') {
-          const defaultAccount = instruction.accounts.find(
-            (account) => account.name === defaultsTo.name
-          );
-          if (defaultAccount && defaultAccount.isSigner !== false) {
-            bag.error(
-              `Argument ${name} cannot default to the bump attribute of ` +
-                `the [${defaultsTo.name}] account as it may be a Signer.`,
-              instruction,
-              this.stack
-            );
-          }
-        }
-      }
-    );
+    });
 
     // Check sub-instructions.
     bag.mergeWith(instruction.subInstructions.map((ix) => visit(ix, this)));
 
+    this.popNode();
+    return bag;
+  }
+
+  visitInstructionAccount(
+    instructionAccount: nodes.InstructionAccountNode
+  ): ValidatorBag {
+    this.pushNode(instructionAccount);
+    const bag = new ValidatorBag();
+    this.popNode();
+    return bag;
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): ValidatorBag {
+    this.pushNode(instructionDataArgs);
+    const bag = new ValidatorBag();
+    bag.mergeWith([visit(instructionDataArgs.struct, this)]);
+    if (instructionDataArgs.link)
+      bag.mergeWith([visit(instructionDataArgs.link, this)]);
+    this.popNode();
+    return bag;
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): ValidatorBag {
+    this.pushNode(instructionExtraArgs);
+    const bag = new ValidatorBag();
+    bag.mergeWith([visit(instructionExtraArgs.struct, this)]);
+    if (instructionExtraArgs.link)
+      bag.mergeWith([visit(instructionExtraArgs.link, this)]);
     this.popNode();
     return bag;
   }
@@ -156,7 +191,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!definedType.name) {
       bag.error('Defined type has no name.', definedType, this.stack);
     }
-    bag.mergeWith([visit(definedType.type, this)]);
+    bag.mergeWith([visit(definedType.data, this)]);
     this.popNode();
     return bag;
   }
@@ -179,7 +214,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): ValidatorBag {
     this.pushNode(arrayType);
-    const bag = visit(arrayType.item, this);
+    const bag = visit(arrayType.child, this);
     this.popNode();
     return bag;
   }
@@ -274,14 +309,14 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitOptionType(optionType: nodes.OptionTypeNode): ValidatorBag {
     this.pushNode(optionType);
-    const bag = visit(optionType.item, this);
+    const bag = visit(optionType.child, this);
     this.popNode();
     return bag;
   }
 
   visitSetType(setType: nodes.SetTypeNode): ValidatorBag {
     this.pushNode(setType);
-    const bag = visit(setType.item, this);
+    const bag = visit(setType.child, this);
     this.popNode();
     return bag;
   }
@@ -322,7 +357,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     if (!structFieldType.name) {
       bag.error('Struct field has no name.', structFieldType, this.stack);
     }
-    bag.mergeWith([visit(structFieldType.type, this)]);
+    bag.mergeWith([visit(structFieldType.child, this)]);
     this.popNode();
     return bag;
   }
@@ -330,10 +365,10 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitTupleType(tupleType: nodes.TupleTypeNode): ValidatorBag {
     this.pushNode(tupleType);
     const bag = new ValidatorBag();
-    if (tupleType.items.length === 0) {
+    if (tupleType.children.length === 0) {
       bag.warn('Tuple has no items.', tupleType, this.stack);
     }
-    bag.mergeWith(tupleType.items.map((node) => visit(node, this)));
+    bag.mergeWith(tupleType.children.map((node) => visit(node, this)));
     this.popNode();
     return bag;
   }
@@ -357,7 +392,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): ValidatorBag {
     this.pushNode(numberWrapperType);
-    const bag = visit(numberWrapperType.item, this);
+    const bag = visit(numberWrapperType.number, this);
     this.popNode();
     return bag;
   }
