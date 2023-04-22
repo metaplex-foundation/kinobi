@@ -130,85 +130,69 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   } {
     const usedArgs = new Set<string>();
 
-    let newDataArgs = instruction.args;
-    if (!nodes.isLinkTypeNode(instruction.args)) {
-      const fields = instruction.args.fields.map((field) => {
-        const argUpdate = argUpdates[field.name];
-        if (!argUpdate) return field;
-        usedArgs.add(field.name);
-        return nodes.structFieldTypeNode(
-          {
-            ...field.metadata,
-            name: argUpdate.name ?? field.name,
-            docs: argUpdate.docs ?? field.metadata.docs,
-          },
-          argUpdate.type ?? field.type
-        );
-      });
-      newDataArgs = nodes.structTypeNode(
+    const newDataArgs = nodes.instructionDataArgsNode(
+      nodes.structTypeNode(
         `${newInstructionName}InstructionData`,
-        fields
-      );
-    }
+        instruction.dataArgs.struct.fields.map((field) => {
+          const argUpdate = argUpdates[field.name];
+          if (!argUpdate) return field;
+          usedArgs.add(field.name);
+          return nodes.structFieldTypeNode({
+            ...field,
+            child: argUpdate.type ?? field.child,
+            name: argUpdate.name ?? field.name,
+            docs: argUpdate.docs ?? field.docs,
+          });
+        })
+      ),
+      instruction.dataArgs.link
+    );
 
-    let newExtraArgs = instruction.extraArgs;
-    if (!nodes.isLinkTypeNode(instruction.extraArgs)) {
-      const fields = instruction.extraArgs.fields.map((field) => {
+    const updatedExtraFields = instruction.extraArgs.struct.fields.map(
+      (field) => {
         if (usedArgs.has(field.name)) return field;
         const argUpdate = argUpdates[field.name];
         if (!argUpdate) return field;
         usedArgs.add(field.name);
-        return nodes.structFieldTypeNode(
-          {
-            ...field.metadata,
-            name: argUpdate.name ?? field.name,
-            docs: argUpdate.docs ?? field.metadata.docs,
-          },
-          argUpdate.type ?? field.type
-        );
+        return nodes.structFieldTypeNode({
+          ...field,
+          child: argUpdate.type ?? field.child,
+          name: argUpdate.name ?? field.name,
+          docs: argUpdate.docs ?? field.docs,
+        });
+      }
+    );
+
+    const newExtraFields = Object.entries(argUpdates)
+      .filter(([argName]) => !usedArgs.has(argName))
+      .map(([argName, argUpdate]) => {
+        const child = argUpdate.type ?? null;
+        nodes.assertTypeNode(child);
+        return nodes.structFieldTypeNode({
+          name: argUpdate.name ?? argName,
+          child,
+          docs: argUpdate.docs ?? [],
+        });
       });
 
-      const newExtraFields = Object.entries(argUpdates)
-        .filter(([argName]) => !usedArgs.has(argName))
-        .map(([argName, argUpdate]) => {
-          const type = argUpdate.type ?? null;
-          nodes.assertTypeNode(type);
-          return nodes.structFieldTypeNode(
-            {
-              name: argUpdate.name ?? argName,
-              docs: argUpdate.docs ?? [],
-              defaultsTo: null,
-            },
-            type
-          );
-        });
-      fields.push(...newExtraFields);
+    const newExtraArgs = nodes.instructionExtraArgsNode(
+      nodes.structTypeNode(`${newInstructionName}InstructionExtra`, [
+        ...updatedExtraFields,
+        ...newExtraFields,
+      ]),
+      instruction.extraArgs.link
+    );
 
-      newExtraArgs = nodes.structTypeNode(
-        `${newInstructionName}InstructionExtra`,
-        fields
-      );
-    }
-
-    const newArgDefaults = instruction.metadata.argDefaults;
+    const newArgDefaults = instruction.argDefaults;
     Object.entries(argUpdates).forEach(([argName, argUpdate]) => {
       if (argUpdate?.defaultsTo === undefined) return;
       if (argUpdate.defaultsTo === null) {
         delete newArgDefaults[argName];
       } else {
-        newArgDefaults[argName] = this.parseDefaultArg(argUpdate.defaultsTo);
+        newArgDefaults[argName] = argUpdate.defaultsTo;
       }
     });
 
     return { newDataArgs, newExtraArgs, newArgDefaults };
-  }
-
-  parseDefaultArg(
-    argDefault: InstructionNodeArgDefaultsInput
-  ): nodes.InstructionNodeArgDefaults {
-    if (argDefault?.kind === 'resolver') {
-      return { importFrom: 'hooked', dependsOn: [], ...argDefault };
-    }
-    return argDefault;
   }
 }
