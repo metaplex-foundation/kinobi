@@ -1,48 +1,37 @@
-import { mainCase } from '../utils';
 import type { IdlTypeStruct } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import type { Node } from './Node';
-import { StructFieldTypeNode } from './StructFieldTypeNode';
+import {
+  StructFieldTypeNode,
+  structFieldTypeNodeFromIdl,
+} from './StructFieldTypeNode';
 
 export type StructTypeNode = {
   readonly __structTypeNode: unique symbol;
   readonly nodeClass: 'StructTypeNode';
-};
-
-export type StructTypeNodeInput = {
-  // ...
-};
-
-export function structTypeNode(input: StructTypeNodeInput): StructTypeNode {
-  return { ...input, nodeClass: 'StructTypeNode' } as StructTypeNode;
-}
-
-export function structTypeNodeFromIdl(idl: StructTypeNodeIdl): StructTypeNode {
-  return structTypeNode(idl);
-}
-
-export class StructTypeNode implements Visitable {
-  readonly nodeClass = 'StructTypeNode' as const;
-
   readonly name: string;
+  readonly fieldNodes: StructFieldTypeNode[];
+};
 
-  readonly fields: StructFieldTypeNode[];
-
-  constructor(name: string, fields: StructFieldTypeNode[]) {
-    this.name = mainCase(name);
-    this.fields = fields;
+export function structTypeNode(
+  name: string,
+  fieldNodes: StructFieldTypeNode[]
+): StructTypeNode {
+  if (!name) {
+    throw new InvalidKinobiTreeError('StructTypeNode must have a name.');
   }
+  return {
+    nodeClass: 'StructTypeNode',
+    name: mainCase(name),
+    fieldNodes,
+  } as StructTypeNode;
+}
 
-  static fromIdl(idl: IdlTypeStruct): StructTypeNode {
-    return new StructTypeNode(
-      idl.name ?? '',
-      (idl.fields ?? []).map(StructFieldTypeNode.fromIdl)
-    );
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeStruct(this);
-  }
+export function structTypeNodeFromIdl(idl: IdlTypeStruct): StructTypeNode {
+  return structTypeNode(
+    idl.name ?? '',
+    (idl.fields ?? []).map(structFieldTypeNodeFromIdl)
+  );
 }
 
 export function isStructTypeNode(node: Node | null): node is StructTypeNode {

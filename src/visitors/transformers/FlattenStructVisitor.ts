@@ -1,4 +1,4 @@
-import { logWarn } from '../../logs';
+import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
 import { camelCase } from '../../utils';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';

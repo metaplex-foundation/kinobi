@@ -1,5 +1,5 @@
 import type { Idl } from '../idl';
-import { readJson } from '../utils';
+import { readJson } from '../shared';
 import type { Visitable, Visitor } from '../visitors';
 import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';

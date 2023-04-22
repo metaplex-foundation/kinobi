@@ -1,5 +1,5 @@
 import { mainCase } from '../../utils';
-import { logWarn } from '../../logs';
+import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 import { flattenStruct } from './FlattenStructVisitor';

@@ -1,6 +1,6 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
-import { logWarn } from '../../logs';
+import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
 import { camelCase, pascalCase } from '../../utils';
 import {
@@ -12,7 +12,7 @@ import {
   ResolvedInstructionAccount,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
-import { resolveTemplate } from '../utils';
+import { resolveTemplate } from '../shared';
 import {
   GetJavaScriptTypeManifestVisitor,
   JavaScriptTypeManifest,

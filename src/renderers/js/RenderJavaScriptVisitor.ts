@@ -1,7 +1,7 @@
-import { LogLevel } from '../../logs';
+import { LogLevel } from '../../shared/logs';
 import * as nodes from '../../nodes';
 import { BaseThrowVisitor, ThrowValidatorItemsVisitor } from '../../visitors';
-import { deleteFolder } from '../utils';
+import { deleteFolder } from '../shared';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
 import {
   GetJavaScriptRenderMapOptions,

@@ -1,5 +1,5 @@
 import type { IdlDefinedType } from '../idl';
-import { mainCase } from '../utils';
+import { mainCase } from '../shared';
 import type { Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';
 import { createTypeNodeFromIdl, TypeNode } from './TypeNode';

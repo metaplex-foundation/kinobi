@@ -1,4 +1,4 @@
-import { mainCase } from '../utils';
+import { mainCase } from '../shared';
 import type { Idl } from '../idl';
 import type { Visitable, Visitor } from '../visitors';
 import { AccountNode } from './AccountNode';

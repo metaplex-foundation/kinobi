@@ -1,4 +1,4 @@
-import { camelCase, mainCase } from '../utils';
+import { camelCase, mainCase } from '../shared';
 import type { IdlInstruction } from '../idl';
 import type { ImportFrom, Visitable, Visitor } from '../visitors';
 import type { Node } from './Node';

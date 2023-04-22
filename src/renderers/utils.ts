@@ -6,7 +6,7 @@ import {
   pascalCase,
   snakeCase,
   titleCase,
-} from '../utils';
+} from '../shared';
 
 export const createDirectory = (path: string): void => {
   mkdirSync(path, { recursive: true });

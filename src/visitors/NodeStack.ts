@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import { mainCase, titleCase } from '../utils';
+import { mainCase, titleCase } from '../shared';
 
 export class NodeStack {
   private readonly stack: nodes.Node[];

@@ -1,70 +1,57 @@
 import type { IdlTypeStructField } from '../idl';
-import { mainCase } from '../utils';
-import type { Visitable, Visitor } from '../visitors';
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import type { Node } from './Node';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 import { ValueNode, vScalar } from './ValueNode';
-
-export type StructFieldTypeNodeMetadata = {
-  name: string;
-  docs: string[];
-  defaultsTo: { strategy: 'optional' | 'omitted'; value: ValueNode } | null;
-};
 
 export type StructFieldTypeNode = {
   readonly __structFieldTypeNode: unique symbol;
   readonly nodeClass: 'StructFieldTypeNode';
+  readonly name: string;
+  readonly childNode: TypeNode;
+  readonly docs: string[];
+  readonly defaultsTo: {
+    strategy: 'optional' | 'omitted';
+    value: ValueNode;
+  } | null;
 };
 
 export type StructFieldTypeNodeInput = {
-  // ...
+  readonly name: string;
+  readonly childNode: TypeNode;
+  readonly docs?: string[];
+  readonly defaultsTo?: StructFieldTypeNode['defaultsTo'];
 };
 
 export function structFieldTypeNode(
   input: StructFieldTypeNodeInput
 ): StructFieldTypeNode {
-  return { ...input, nodeClass: 'StructFieldTypeNode' } as StructFieldTypeNode;
+  if (!input.name) {
+    throw new InvalidKinobiTreeError(
+      'StructFieldTypeNodeInput must have a name.'
+    );
+  }
+  return {
+    nodeClass: 'StructFieldTypeNode',
+    name: mainCase(input.name),
+    childNode: input.childNode,
+    docs: input.docs ?? [],
+    defaultsTo: input.defaultsTo ?? null,
+  } as StructFieldTypeNode;
 }
 
 export function structFieldTypeNodeFromIdl(
-  idl: StructFieldTypeNodeIdl
+  idl: IdlTypeStructField
 ): StructFieldTypeNode {
-  return structFieldTypeNode(idl);
-}
-
-export class StructFieldTypeNode implements Visitable {
-  readonly nodeClass = 'StructFieldTypeNode' as const;
-
-  readonly metadata: StructFieldTypeNodeMetadata;
-
-  readonly type: TypeNode;
-
-  constructor(metadata: StructFieldTypeNodeMetadata, type: TypeNode) {
-    this.metadata = { ...metadata, name: mainCase(metadata.name) };
-    this.type = type;
-  }
-
-  static fromIdl(idl: IdlTypeStructField): StructFieldTypeNode {
-    return new StructFieldTypeNode(
-      {
-        name: idl.name ?? '',
-        docs: idl.docs ?? [],
-        defaultsTo:
-          idl.defaultsValue !== undefined
-            ? { strategy: 'optional', value: vScalar(idl.defaultsValue) }
-            : null,
-      },
-      createTypeNodeFromIdl(idl.type)
-    );
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeStructField(this);
-  }
-
-  get name(): string {
-    return this.metadata.name;
-  }
+  return structFieldTypeNode({
+    name: idl.name ?? '',
+    childNode: createTypeNodeFromIdl(idl.type),
+    docs: idl.docs ?? [],
+    defaultsTo:
+      idl.defaultsValue !== undefined
+        ? { strategy: 'optional', value: vScalar(idl.defaultsValue) }
+        : null,
+  });
 }
 
 export function isStructFieldTypeNode(

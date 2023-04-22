@@ -1,41 +1,19 @@
 import type { IdlTypeTuple } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
 import type { Node } from './Node';
+import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type TupleTypeNode = {
   readonly __tupleTypeNode: unique symbol;
   readonly nodeClass: 'TupleTypeNode';
+  readonly childrenNodes: TypeNode[];
 };
 
-export type TupleTypeNodeInput = {
-  // ...
-};
-
-export function tupleTypeNode(input: TupleTypeNodeInput): TupleTypeNode {
-  return { ...input, nodeClass: 'TupleTypeNode' } as TupleTypeNode;
+export function tupleTypeNode(childrenNodes: TypeNode[]): TupleTypeNode {
+  return { nodeClass: 'TupleTypeNode', childrenNodes } as TupleTypeNode;
 }
 
-export function tupleTypeNodeFromIdl(idl: TupleTypeNodeIdl): TupleTypeNode {
-  return tupleTypeNode(idl);
-}
-
-export class TupleTypeNode implements Visitable {
-  readonly nodeClass = 'TupleTypeNode' as const;
-
-  readonly items: TypeNode[];
-
-  constructor(items: TypeNode[]) {
-    this.items = items;
-  }
-
-  static fromIdl(idl: IdlTypeTuple): TupleTypeNode {
-    return new TupleTypeNode(idl.tuple.map(createTypeNodeFromIdl));
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeTuple(this);
-  }
+export function tupleTypeNodeFromIdl(idl: IdlTypeTuple): TupleTypeNode {
+  return tupleTypeNode(idl.tuple.map(createTypeNodeFromIdl));
 }
 
 export function isTupleTypeNode(node: Node | null): node is TupleTypeNode {
