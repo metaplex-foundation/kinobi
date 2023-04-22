@@ -1,65 +1,50 @@
 import type { IdlTypeArray, IdlTypeVec } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import {
+  SizeStrategy,
+  fixedSize,
+  prefixedSize,
+  remainderSize,
+} from '../shared/SizeStrategy';
 import type { Node } from './Node';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
-import { NumberTypeNode } from './NumberTypeNode';
+import { numberTypeNode } from './NumberTypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type ArrayTypeNode = {
   readonly __arrayTypeNode: unique symbol;
   readonly nodeClass: 'ArrayTypeNode';
+  readonly childNode: TypeNode;
+  readonly size: SizeStrategy;
 };
 
-export type ArrayTypeNodeInput = {
-  // ...
-};
-
-export function arrayTypeNode(input: ArrayTypeNodeInput): ArrayTypeNode {
-  return { ...input, nodeClass: 'ArrayTypeNode' } as ArrayTypeNode;
+export function arrayTypeNode(
+  childNode: TypeNode,
+  options: {
+    readonly size?: ArrayTypeNode['size'];
+  } = {}
+): ArrayTypeNode {
+  return {
+    nodeClass: 'ArrayTypeNode',
+    childNode,
+    size: options.size ?? prefixedSize(),
+  } as ArrayTypeNode;
 }
 
-export function arrayTypeNodeFromIdl(idl: ArrayTypeNodeIdl): ArrayTypeNode {
-  return arrayTypeNode(idl);
-}
-
-export class ArrayTypeNode implements Visitable {
-  readonly nodeClass = 'ArrayTypeNode' as const;
-
-  readonly item: TypeNode;
-
-  readonly size:
-    | { kind: 'fixed'; size: number }
-    | { kind: 'prefixed'; prefix: NumberTypeNode }
-    | { kind: 'remainder' };
-
-  constructor(item: TypeNode, options: { size?: ArrayTypeNode['size'] } = {}) {
-    this.item = item;
-    this.size = options.size ?? {
-      kind: 'prefixed',
-      prefix: new NumberTypeNode('u32'),
-    };
+export function arrayTypeNodeFromIdl(
+  idl: IdlTypeArray | IdlTypeVec
+): ArrayTypeNode {
+  if ('array' in idl) {
+    const childNode = createTypeNodeFromIdl(idl.array[0]);
+    return arrayTypeNode(childNode, { size: fixedSize(idl.array[1]) });
   }
 
-  static fromIdl(idl: IdlTypeArray | IdlTypeVec): ArrayTypeNode {
-    if ('array' in idl) {
-      const item = createTypeNodeFromIdl(idl.array[0]);
-      return new ArrayTypeNode(item, {
-        size: { kind: 'fixed', size: idl.array[1] },
-      });
-    }
-
-    const item = createTypeNodeFromIdl(idl.vec);
-    if (!idl.size) return new ArrayTypeNode(item);
-    if (idl.size === 'remainder') {
-      return new ArrayTypeNode(item, { size: { kind: 'remainder' } });
-    }
-    return new ArrayTypeNode(item, {
-      size: { kind: 'prefixed', prefix: new NumberTypeNode(idl.size) },
-    });
+  const childNode = createTypeNodeFromIdl(idl.vec);
+  if (!idl.size) return arrayTypeNode(childNode);
+  if (idl.size === 'remainder') {
+    return arrayTypeNode(childNode, { size: remainderSize() });
   }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeArray(this);
-  }
+  return arrayTypeNode(childNode, {
+    size: prefixedSize(numberTypeNode(idl.size)),
+  });
 }
 
 export function isArrayTypeNode(node: Node | null): node is ArrayTypeNode {
