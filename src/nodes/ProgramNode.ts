@@ -8,7 +8,7 @@ import type { Node } from './Node';
 
 export type ProgramNode = {
   readonly __programNode: unique symbol;
-  readonly nodeClass: 'ProgramNode';
+  readonly nodeClass: 'programNode';
   readonly accounts: AccountNode[];
   readonly instructions: InstructionNode[];
   readonly definedTypes: DefinedTypeNode[];
@@ -37,7 +37,7 @@ export type ProgramNodeInput = Omit<
 
 export function programNode(input: ProgramNodeInput): ProgramNode {
   return {
-    nodeClass: 'ProgramNode',
+    nodeClass: 'programNode',
     accounts: input.accounts,
     instructions: input.instructions,
     definedTypes: input.definedTypes,
@@ -75,7 +75,7 @@ export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
 }
 
 export function isProgramNode(node: Node | null): node is ProgramNode {
-  return !!node && node.nodeClass === 'ProgramNode';
+  return !!node && node.nodeClass === 'programNode';
 }
 
 export function assertProgramNode(

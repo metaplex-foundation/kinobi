@@ -9,7 +9,7 @@ import type { Node } from './Node';
 
 export type InstructionAccountNode = {
   readonly __instructionAccountNode: unique symbol;
-  readonly nodeClass: 'InstructionAccountNode';
+  readonly nodeClass: 'instructionAccountNode';
   readonly name: string;
   readonly isWritable: boolean;
   readonly isSigner: boolean | 'either';
@@ -27,7 +27,7 @@ export function instructionAccountNode(
   input: InstructionAccountNodeInput
 ): InstructionAccountNode {
   return {
-    nodeClass: 'InstructionAccountNode',
+    nodeClass: 'instructionAccountNode',
     name: mainCase(input.name),
     isWritable: input.isWritable,
     isSigner: input.isSigner,
@@ -58,7 +58,7 @@ export function instructionAccountNodeFromIdl(
 export function isInstructionAccountNode(
   node: Node | null
 ): node is InstructionAccountNode {
-  return !!node && node.nodeClass === 'InstructionAccountNode';
+  return !!node && node.nodeClass === 'instructionAccountNode';
 }
 
 export function assertInstructionAccountNode(

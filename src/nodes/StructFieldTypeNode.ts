@@ -6,7 +6,7 @@ import { ValueNode, vScalar } from './ValueNode';
 
 export type StructFieldTypeNode = {
   readonly __structFieldTypeNode: unique symbol;
-  readonly nodeClass: 'StructFieldTypeNode';
+  readonly nodeClass: 'structFieldTypeNode';
   readonly name: string;
   readonly child: TypeNode;
   readonly docs: string[];
@@ -32,7 +32,7 @@ export function structFieldTypeNode(
     );
   }
   return {
-    nodeClass: 'StructFieldTypeNode',
+    nodeClass: 'structFieldTypeNode',
     name: mainCase(input.name),
     child: input.child,
     docs: input.docs ?? [],
@@ -57,7 +57,7 @@ export function structFieldTypeNodeFromIdl(
 export function isStructFieldTypeNode(
   node: Node | null
 ): node is StructFieldTypeNode {
-  return !!node && node.nodeClass === 'StructFieldTypeNode';
+  return !!node && node.nodeClass === 'structFieldTypeNode';
 }
 
 export function assertStructFieldTypeNode(

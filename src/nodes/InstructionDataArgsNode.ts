@@ -4,7 +4,7 @@ import { StructTypeNode } from './StructTypeNode';
 
 export type InstructionDataArgsNode = {
   readonly __instructionDataArgsNode: unique symbol;
-  readonly nodeClass: 'InstructionDataArgsNode';
+  readonly nodeClass: 'instructionDataArgsNode';
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
@@ -14,7 +14,7 @@ export function instructionDataArgsNode(
   link?: LinkTypeNode | null
 ): InstructionDataArgsNode {
   return {
-    nodeClass: 'InstructionDataArgsNode',
+    nodeClass: 'instructionDataArgsNode',
     struct,
     link,
   } as InstructionDataArgsNode;
@@ -23,7 +23,7 @@ export function instructionDataArgsNode(
 export function isInstructionDataArgsNode(
   node: Node | null
 ): node is InstructionDataArgsNode {
-  return !!node && node.nodeClass === 'InstructionDataArgsNode';
+  return !!node && node.nodeClass === 'instructionDataArgsNode';
 }
 
 export function assertInstructionDataArgsNode(

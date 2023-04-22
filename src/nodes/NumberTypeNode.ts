@@ -16,7 +16,7 @@ export type NumberFormat =
 
 export type NumberTypeNode = {
   readonly __numberTypeNode: unique symbol;
-  readonly nodeClass: 'NumberTypeNode';
+  readonly nodeClass: 'numberTypeNode';
   readonly format: NumberFormat;
   readonly endian: 'le' | 'be';
 };
@@ -25,7 +25,7 @@ export function numberTypeNode(
   format: NumberFormat,
   endian: 'le' | 'be' = 'le'
 ): NumberTypeNode {
-  return { nodeClass: 'NumberTypeNode', format, endian } as NumberTypeNode;
+  return { nodeClass: 'numberTypeNode', format, endian } as NumberTypeNode;
 }
 
 export function isSignedInteger(node: NumberTypeNode): boolean {
@@ -49,7 +49,7 @@ export function displayNumberTypeNode(node: NumberTypeNode): string {
 }
 
 export function isNumberTypeNode(node: Node | null): node is NumberTypeNode {
-  return !!node && node.nodeClass === 'NumberTypeNode';
+  return !!node && node.nodeClass === 'numberTypeNode';
 }
 
 export function assertNumberTypeNode(

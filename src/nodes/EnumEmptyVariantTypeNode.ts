@@ -4,7 +4,7 @@ import type { Node } from './Node';
 
 export type EnumEmptyVariantTypeNode = {
   readonly __enumEmptyVariantTypeNode: unique symbol;
-  readonly nodeClass: 'EnumEmptyVariantTypeNode';
+  readonly nodeClass: 'enumEmptyVariantTypeNode';
   readonly name: string;
 };
 
@@ -17,7 +17,7 @@ export function enumEmptyVariantTypeNode(
     );
   }
   return {
-    nodeClass: 'EnumEmptyVariantTypeNode',
+    nodeClass: 'enumEmptyVariantTypeNode',
     name: mainCase(name),
   } as EnumEmptyVariantTypeNode;
 }
@@ -31,7 +31,7 @@ export function enumEmptyVariantTypeNodeFromIdl(
 export function isEnumEmptyVariantTypeNode(
   node: Node | null
 ): node is EnumEmptyVariantTypeNode {
-  return !!node && node.nodeClass === 'EnumEmptyVariantTypeNode';
+  return !!node && node.nodeClass === 'enumEmptyVariantTypeNode';
 }
 
 export function assertEnumEmptyVariantTypeNode(

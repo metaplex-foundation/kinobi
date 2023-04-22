@@ -11,7 +11,7 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type ArrayTypeNode = {
   readonly __arrayTypeNode: unique symbol;
-  readonly nodeClass: 'ArrayTypeNode';
+  readonly nodeClass: 'arrayTypeNode';
   readonly child: TypeNode;
   readonly size: SizeStrategy;
 };
@@ -23,7 +23,7 @@ export function arrayTypeNode(
   } = {}
 ): ArrayTypeNode {
   return {
-    nodeClass: 'ArrayTypeNode',
+    nodeClass: 'arrayTypeNode',
     child,
     size: options.size ?? prefixedSize(),
   } as ArrayTypeNode;
@@ -48,7 +48,7 @@ export function arrayTypeNodeFromIdl(
 }
 
 export function isArrayTypeNode(node: Node | null): node is ArrayTypeNode {
-  return !!node && node.nodeClass === 'ArrayTypeNode';
+  return !!node && node.nodeClass === 'arrayTypeNode';
 }
 
 export function assertArrayTypeNode(

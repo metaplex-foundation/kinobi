@@ -7,13 +7,13 @@ import type { Node } from './Node';
 
 export type BytesTypeNode = {
   readonly __bytesTypeNode: unique symbol;
-  readonly nodeClass: 'BytesTypeNode';
+  readonly nodeClass: 'bytesTypeNode';
   readonly size: SizeStrategy;
 };
 
 export function bytesTypeNode(size?: SizeStrategy): BytesTypeNode {
   return {
-    nodeClass: 'BytesTypeNode',
+    nodeClass: 'bytesTypeNode',
     size: size ?? remainderSize(),
   } as BytesTypeNode;
 }
@@ -23,7 +23,7 @@ export function displayBytesTypeNode(node: BytesTypeNode): string {
 }
 
 export function isBytesTypeNode(node: Node | null): node is BytesTypeNode {
-  return !!node && node.nodeClass === 'BytesTypeNode';
+  return !!node && node.nodeClass === 'bytesTypeNode';
 }
 
 export function assertBytesTypeNode(

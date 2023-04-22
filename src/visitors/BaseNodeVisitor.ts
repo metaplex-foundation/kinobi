@@ -1,23 +1,6 @@
 import type { Visitor } from './Visitor';
 import * as nodes from '../nodes';
 
-export type BaseNode = {
-  readonly __baseNode: unique symbol;
-  readonly nodeClass: 'BaseNode';
-};
-
-export type BaseNodeInput = {
-  // ...
-};
-
-export function baseNode(input: BaseNodeInput): BaseNode {
-  return { ...input, nodeClass: 'BaseNode' } as BaseNode;
-}
-
-export function baseNodeFromIdl(idl: BaseNodeIdl): BaseNode {
-  return baseNode(idl);
-}
-
 export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitRoot(root: nodes.RootNode): nodes.Node {
     return new nodes.RootNode(

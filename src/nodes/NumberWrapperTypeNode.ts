@@ -8,7 +8,7 @@ export type NumberWrapper =
 
 export type NumberWrapperTypeNode = {
   readonly __numberWrapperTypeNode: unique symbol;
-  readonly nodeClass: 'NumberWrapperTypeNode';
+  readonly nodeClass: 'numberWrapperTypeNode';
   readonly number: NumberTypeNode;
   readonly wrapper: NumberWrapper;
 };
@@ -18,7 +18,7 @@ export function numberWrapperTypeNode(
   wrapper: NumberWrapper
 ): NumberWrapperTypeNode {
   return {
-    nodeClass: 'NumberWrapperTypeNode',
+    nodeClass: 'numberWrapperTypeNode',
     number,
     wrapper,
   } as NumberWrapperTypeNode;
@@ -27,7 +27,7 @@ export function numberWrapperTypeNode(
 export function isNumberWrapperTypeNode(
   node: Node | null
 ): node is NumberWrapperTypeNode {
-  return !!node && node.nodeClass === 'NumberWrapperTypeNode';
+  return !!node && node.nodeClass === 'numberWrapperTypeNode';
 }
 
 export function assertNumberWrapperTypeNode(

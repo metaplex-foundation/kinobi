@@ -134,7 +134,7 @@ export function isStructOrLinkTypeNode(
 ): node is StructTypeNode | LinkTypeNode {
   return (
     !!node &&
-    (node.nodeClass === 'StructTypeNode' || node.nodeClass === 'LinkTypeNode')
+    (node.nodeClass === 'structTypeNode' || node.nodeClass === 'linkTypeNode')
   );
 }
 

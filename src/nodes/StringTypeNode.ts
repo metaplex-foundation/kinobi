@@ -9,7 +9,7 @@ export type StringEncoding = 'utf8' | 'base16' | 'base58' | 'base64';
 
 export type StringTypeNode = {
   readonly __stringTypeNode: unique symbol;
-  readonly nodeClass: 'StringTypeNode';
+  readonly nodeClass: 'stringTypeNode';
   readonly encoding: StringEncoding;
   readonly size: SizeStrategy;
 };
@@ -21,7 +21,7 @@ export function stringTypeNode(
   } = {}
 ): StringTypeNode {
   return {
-    nodeClass: 'StringTypeNode',
+    nodeClass: 'stringTypeNode',
     encoding: options.encoding ?? 'utf8',
     size: options.size ?? prefixedSize(),
   } as StringTypeNode;
@@ -32,7 +32,7 @@ export function displayStringTypeNode(node: StringTypeNode): string {
 }
 
 export function isStringTypeNode(node: Node | null): node is StringTypeNode {
-  return !!node && node.nodeClass === 'StringTypeNode';
+  return !!node && node.nodeClass === 'stringTypeNode';
 }
 
 export function assertStringTypeNode(

@@ -5,7 +5,7 @@ import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type EnumTupleVariantTypeNode = {
   readonly __enumTupleVariantTypeNode: unique symbol;
-  readonly nodeClass: 'EnumTupleVariantTypeNode';
+  readonly nodeClass: 'enumTupleVariantTypeNode';
   readonly name: string;
   readonly tuple: TupleTypeNode;
 };
@@ -20,7 +20,7 @@ export function enumTupleVariantTypeNode(
     );
   }
   return {
-    nodeClass: 'EnumTupleVariantTypeNode',
+    nodeClass: 'enumTupleVariantTypeNode',
     name: mainCase(name),
     tuple,
   } as EnumTupleVariantTypeNode;
@@ -39,7 +39,7 @@ export function enumTupleVariantTypeNodeFromIdl(
 export function isEnumTupleVariantTypeNode(
   node: Node | null
 ): node is EnumTupleVariantTypeNode {
-  return !!node && node.nodeClass === 'EnumTupleVariantTypeNode';
+  return !!node && node.nodeClass === 'enumTupleVariantTypeNode';
 }
 
 export function assertEnumTupleVariantTypeNode(

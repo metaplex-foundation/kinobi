@@ -4,7 +4,7 @@ import { StructTypeNode } from './StructTypeNode';
 
 export type AccountDataNode = {
   readonly __accountDataNode: unique symbol;
-  readonly nodeClass: 'AccountDataNode';
+  readonly nodeClass: 'accountDataNode';
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
@@ -13,11 +13,11 @@ export function accountDataNode(
   struct: StructTypeNode,
   link?: LinkTypeNode
 ): AccountDataNode {
-  return { nodeClass: 'AccountDataNode', struct, link } as AccountDataNode;
+  return { nodeClass: 'accountDataNode', struct, link } as AccountDataNode;
 }
 
 export function isAccountDataNode(node: Node | null): node is AccountDataNode {
-  return !!node && node.nodeClass === 'AccountDataNode';
+  return !!node && node.nodeClass === 'accountDataNode';
 }
 
 export function assertAccountDataNode(

@@ -7,13 +7,13 @@ import {
 
 export type BoolTypeNode = {
   readonly __boolTypeNode: unique symbol;
-  readonly nodeClass: 'BoolTypeNode';
+  readonly nodeClass: 'boolTypeNode';
   readonly size: NumberTypeNode;
 };
 
 export function boolTypeNode(size?: NumberTypeNode): BoolTypeNode {
   return {
-    nodeClass: 'BoolTypeNode',
+    nodeClass: 'boolTypeNode',
     size: size ?? numberTypeNode('u8'),
   } as BoolTypeNode;
 }
@@ -23,7 +23,7 @@ export function displayBoolTypeNode(node: BoolTypeNode): string {
 }
 
 export function isBoolTypeNode(node: Node | null): node is BoolTypeNode {
-  return !!node && node.nodeClass === 'BoolTypeNode';
+  return !!node && node.nodeClass === 'boolTypeNode';
 }
 
 export function assertBoolTypeNode(

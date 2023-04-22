@@ -18,23 +18,6 @@ export type NodeTransform<T extends NodeSelector = NodeSelector> = {
   transformer: NodeTransformer;
 };
 
-export type TransformNode = {
-  readonly __transformNode: unique symbol;
-  readonly nodeClass: 'TransformNode';
-};
-
-export type TransformNodeInput = {
-  // ...
-};
-
-export function transformNode(input: TransformNodeInput): TransformNode {
-  return { ...input, nodeClass: 'TransformNode' } as TransformNode;
-}
-
-export function transformNodeFromIdl(idl: TransformNodeIdl): TransformNode {
-  return transformNode(idl);
-}
-
 export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   readonly transforms: NodeTransform<NodeSelectorFunction>[];
 

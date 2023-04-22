@@ -4,7 +4,7 @@ import type { Node } from './Node';
 
 export type ErrorNode = {
   readonly __errorNode: unique symbol;
-  readonly nodeClass: 'ErrorNode';
+  readonly nodeClass: 'errorNode';
   readonly name: string;
   readonly idlName: string;
   readonly code: number;
@@ -25,7 +25,7 @@ export function errorNode(input: ErrorNodeInput): ErrorNode {
     throw new InvalidKinobiTreeError('ErrorNode must have a code number.');
   }
   return {
-    nodeClass: 'ErrorNode',
+    nodeClass: 'errorNode',
     name: mainCase(input.name),
     idlName: input.idlName ?? input.name,
     code: input.code,
@@ -46,7 +46,7 @@ export function errorNodeFromIdl(idl: Partial<IdlError>): ErrorNode {
 }
 
 export function isErrorNode(node: Node | null): node is ErrorNode {
-  return !!node && node.nodeClass === 'ErrorNode';
+  return !!node && node.nodeClass === 'errorNode';
 }
 
 export function assertErrorNode(node: Node | null): asserts node is ErrorNode {

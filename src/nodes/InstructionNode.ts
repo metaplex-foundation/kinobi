@@ -28,7 +28,7 @@ import { vScalar } from './ValueNode';
 
 export type InstructionNode = {
   readonly __instructionNode: unique symbol;
-  readonly nodeClass: 'InstructionNode';
+  readonly nodeClass: 'instructionNode';
   readonly name: string;
   readonly accounts: InstructionAccountNode[];
   readonly dataArgs: InstructionDataArgsNode;
@@ -52,7 +52,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
   }
   const name = mainCase(input.name);
   return {
-    nodeClass: 'InstructionNode',
+    nodeClass: 'instructionNode',
     name,
     accounts: input.accounts,
     dataArgs: input.dataArgs,
@@ -195,7 +195,7 @@ export function getAllInstructionsWithSubs(
 // }
 
 export function isInstructionNode(node: Node | null): node is InstructionNode {
-  return !!node && node.nodeClass === 'InstructionNode';
+  return !!node && node.nodeClass === 'instructionNode';
 }
 
 export function assertInstructionNode(

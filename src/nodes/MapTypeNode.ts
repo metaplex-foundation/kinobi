@@ -11,7 +11,7 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type MapTypeNode = {
   readonly __mapTypeNode: unique symbol;
-  readonly nodeClass: 'MapTypeNode';
+  readonly nodeClass: 'mapTypeNode';
   readonly key: TypeNode;
   readonly value: TypeNode;
   readonly size: SizeStrategy;
@@ -27,7 +27,7 @@ export function mapTypeNode(
   } = {}
 ): MapTypeNode {
   return {
-    nodeClass: 'MapTypeNode',
+    nodeClass: 'mapTypeNode',
     key,
     value,
     size: options.size ?? prefixedSize(),
@@ -52,7 +52,7 @@ export function mapTypeNodeFromIdl(idl: IdlTypeMap): MapTypeNode {
 }
 
 export function isMapTypeNode(node: Node | null): node is MapTypeNode {
-  return !!node && node.nodeClass === 'MapTypeNode';
+  return !!node && node.nodeClass === 'mapTypeNode';
 }
 
 export function assertMapTypeNode(

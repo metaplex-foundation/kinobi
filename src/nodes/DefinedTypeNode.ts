@@ -5,7 +5,7 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type DefinedTypeNode = {
   readonly __definedTypeNode: unique symbol;
-  readonly nodeClass: 'DefinedTypeNode';
+  readonly nodeClass: 'definedTypeNode';
   readonly name: string;
   readonly data: TypeNode;
   readonly idlName: string;
@@ -26,7 +26,7 @@ export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
     throw new InvalidKinobiTreeError('DefinedTypeNodeInput must have a name.');
   }
   return {
-    nodeClass: 'DefinedTypeNode',
+    nodeClass: 'definedTypeNode',
     name: mainCase(input.name),
     data: input.data,
     idlName: input.idlName ?? input.name,
@@ -45,7 +45,7 @@ export function definedTypeNodeFromIdl(
 }
 
 export function isDefinedTypeNode(node: Node | null): node is DefinedTypeNode {
-  return !!node && node.nodeClass === 'DefinedTypeNode';
+  return !!node && node.nodeClass === 'definedTypeNode';
 }
 
 export function assertDefinedTypeNode(

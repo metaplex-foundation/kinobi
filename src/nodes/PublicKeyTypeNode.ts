@@ -2,17 +2,17 @@ import type { Node } from './Node';
 
 export type PublicKeyTypeNode = {
   readonly __publicKeyTypeNode: unique symbol;
-  readonly nodeClass: 'PublicKeyTypeNode';
+  readonly nodeClass: 'publicKeyTypeNode';
 };
 
 export function publicKeyTypeNode(): PublicKeyTypeNode {
-  return { nodeClass: 'PublicKeyTypeNode' } as PublicKeyTypeNode;
+  return { nodeClass: 'publicKeyTypeNode' } as PublicKeyTypeNode;
 }
 
 export function isPublicKeyTypeNode(
   node: Node | null
 ): node is PublicKeyTypeNode {
-  return !!node && node.nodeClass === 'PublicKeyTypeNode';
+  return !!node && node.nodeClass === 'publicKeyTypeNode';
 }
 
 export function assertPublicKeyTypeNode(

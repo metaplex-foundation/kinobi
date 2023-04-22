@@ -13,7 +13,7 @@ import { createTypeNodeFromIdl } from './TypeNode';
 
 export type AccountNode = {
   readonly __accountNode: unique symbol;
-  readonly nodeClass: 'AccountNode';
+  readonly nodeClass: 'accountNode';
   readonly name: string;
   readonly data: AccountDataNode;
   readonly idlName: string;
@@ -34,7 +34,7 @@ export function accountNode(input: AccountNodeInput): AccountNode {
     throw new InvalidKinobiTreeError('DefinedTypeNodeInput must have a name.');
   }
   return {
-    nodeClass: 'AccountNode',
+    nodeClass: 'accountNode',
     name: mainCase(input.name),
     data: input.data,
     idlName: input.idlName ?? input.name,
@@ -105,7 +105,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
 // }
 
 export function isAccountNode(node: Node | null): node is AccountNode {
-  return !!node && node.nodeClass === 'AccountNode';
+  return !!node && node.nodeClass === 'accountNode';
 }
 
 export function assertAccountNode(
