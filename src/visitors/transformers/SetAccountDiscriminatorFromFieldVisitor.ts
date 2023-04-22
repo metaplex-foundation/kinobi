@@ -1,3 +1,4 @@
+import { fieldAccountDiscriminator } from 'src/shared';
 import * as nodes from '../../nodes';
 import { ValueNode } from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
@@ -11,12 +12,11 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'AccountNode', stack, name },
+          selector: { kind: 'accountNode', stack, name },
           transformer: (node) => {
             nodes.assertAccountNode(node);
-            if (nodes.isLinkTypeNode(node.type)) return node;
 
-            const fieldIndex = node.type.fields.findIndex(
+            const fieldIndex = node.data.struct.fields.findIndex(
               (f) => f.name === field
             );
             if (fieldIndex < 0) {
@@ -25,24 +25,22 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
               );
             }
 
-            const fieldNode = node.type.fields[fieldIndex];
-            return nodes.accountNode(
-              {
-                ...node.metadata,
-                discriminator: { kind: 'field', name: field, value: null },
-              },
-              nodes.structTypeNode(node.type.name, [
-                ...node.type.fields.slice(0, fieldIndex),
-                nodes.structFieldTypeNode(
-                  {
-                    ...fieldNode.metadata,
+            const fieldNode = node.data.struct.fields[fieldIndex];
+            return nodes.accountNode({
+              ...node,
+              discriminator: fieldAccountDiscriminator(field),
+              data: nodes.accountDataNode(
+                nodes.structTypeNode(node.data.struct.name, [
+                  ...node.data.struct.fields.slice(0, fieldIndex),
+                  nodes.structFieldTypeNode({
+                    ...fieldNode,
                     defaultsTo: { strategy: 'omitted', value },
-                  },
-                  fieldNode.type
-                ),
-                ...node.type.fields.slice(fieldIndex + 1),
-              ])
-            );
+                  }),
+                  ...node.data.struct.fields.slice(fieldIndex + 1),
+                ]),
+                node.data.link
+              ),
+            });
           },
         };
       }

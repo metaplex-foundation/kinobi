@@ -13,12 +13,11 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { type: 'InstructionNode', stack: selectorStack, name },
+          selector: { kind: 'instructionNode', stack: selectorStack, name },
           transformer: (node) => {
             nodes.assertInstructionNode(node);
-            if (nodes.isLinkTypeNode(node.args)) return node;
 
-            const argFields = node.args.fields;
+            const argFields = node.dataArgs.struct.fields;
             const argName = mainCase(argNameInput);
             const argFieldIndex = argFields.findIndex(
               (field) => field.name === argName
@@ -31,14 +30,14 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
             }
 
             let argType: nodes.EnumTypeNode;
-            if (nodes.isEnumTypeNode(argField.type)) {
-              argType = argField.type;
+            if (nodes.isEnumTypeNode(argField.child)) {
+              argType = argField.child;
             } else if (
-              nodes.isLinkTypeNode(argField.type) &&
-              this.allDefinedTypes.has(argField.type.name)
+              nodes.isLinkTypeNode(argField.child) &&
+              this.allDefinedTypes.has(argField.child.name)
             ) {
               const linkedType =
-                this.allDefinedTypes.get(argField.type.name)?.type ?? null;
+                this.allDefinedTypes.get(argField.child.name)?.data ?? null;
               nodes.assertEnumTypeNode(linkedType);
               argType = linkedType;
             } else {
@@ -54,48 +53,52 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                 const subName = mainCase(`${node.name} ${variant.name}`);
                 const subFields = argFields.slice(0, argFieldIndex);
                 subFields.push(
-                  nodes.structFieldTypeNode(
-                    {
-                      name: `${subName}Discriminator`,
-                      docs: [],
-                      defaultsTo: {
-                        strategy: 'omitted',
-                        value: nodes.vScalar(index),
-                      },
+                  nodes.structFieldTypeNode({
+                    name: `${subName}Discriminator`,
+                    child: nodes.numberTypeNode('u8'),
+                    defaultsTo: {
+                      strategy: 'omitted',
+                      value: nodes.vScalar(index),
                     },
-                    nodes.numberTypeNode('u8')
-                  )
+                  })
                 );
                 if (nodes.isEnumStructVariantTypeNode(variant)) {
                   subFields.push(
-                    nodes.structFieldTypeNode(argField.metadata, variant.struct)
+                    nodes.structFieldTypeNode({
+                      ...argField,
+                      child: variant.struct,
+                    })
                   );
                 } else if (nodes.isEnumTupleVariantTypeNode(variant)) {
                   subFields.push(
-                    nodes.structFieldTypeNode(argField.metadata, variant.tuple)
+                    nodes.structFieldTypeNode({
+                      ...argField,
+                      child: variant.tuple,
+                    })
                   );
                 }
                 subFields.push(...argFields.slice(argFieldIndex + 1));
 
-                return nodes.instructionNode(
-                  { ...node.metadata, name: subName },
-                  node.accounts,
-                  flattenStruct(
-                    nodes.structTypeNode(`${subName}InstructionData`, subFields)
+                return nodes.instructionNode({
+                  ...node,
+                  name: subName,
+                  dataArgs: nodes.instructionDataArgsNode(
+                    flattenStruct(
+                      nodes.structTypeNode(
+                        `${subName}InstructionData`,
+                        subFields
+                      )
+                    ),
+                    node.dataArgs.link
                   ),
-                  node.extraArgs,
-                  []
-                );
+                });
               }
             );
 
-            return nodes.instructionNode(
-              node.metadata,
-              node.accounts,
-              node.args,
-              node.extraArgs,
-              [...node.subInstructions, ...subInstructions]
-            );
+            return nodes.instructionNode({
+              ...node,
+              subInstructions: [...node.subInstructions, ...subInstructions],
+            });
           },
         };
       }
@@ -105,7 +108,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node | null {
-    root.allDefinedTypes.forEach((type) => {
+    nodes.getAllDefinedTypes(root).forEach((type) => {
       this.allDefinedTypes.set(type.name, type);
     });
     return super.visitRoot(root);

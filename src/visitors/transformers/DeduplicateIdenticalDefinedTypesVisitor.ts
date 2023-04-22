@@ -2,6 +2,7 @@ import * as nodes from '../../nodes';
 import { GetNodeInlineStringVisitor } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { NodeSelector } from '../NodeSelector';
+import { visit } from '../Visitor';
 import { DeleteNodesVisitor } from './DeleteNodesVisitor';
 
 type DefinedTypeWithProgram = {
@@ -54,7 +55,7 @@ export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<no
       // Get selectors from the defined types and their programs.
       .map(
         ({ program, type }): NodeSelector => ({
-          type: 'DefinedTypeNode',
+          kind: 'definedTypeNode',
           name: type.name,
           program: program.name,
         })
@@ -62,7 +63,7 @@ export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<no
 
     // Delete the identified nodes if any.
     if (deleteSelectors.length > 0) {
-      const newRoot = root.accept(new DeleteNodesVisitor(deleteSelectors));
+      const newRoot = visit(root, new DeleteNodesVisitor(deleteSelectors));
       nodes.assertRootNode(newRoot);
       return newRoot;
     }

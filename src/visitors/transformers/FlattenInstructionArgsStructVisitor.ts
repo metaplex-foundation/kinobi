@@ -9,13 +9,13 @@ export class FlattenInstructionArgsStructVisitor extends TransformNodesVisitor {
         selector: { kind: 'instructionNode' },
         transformer: (instruction) => {
           nodes.assertInstructionNode(instruction);
-          return nodes.instructionNode(
-            instruction.metadata,
-            instruction.accounts,
-            flattenStruct(instruction.args),
-            instruction.extraArgs,
-            instruction.subInstructions
-          );
+          return nodes.instructionNode({
+            ...instruction,
+            dataArgs: nodes.instructionDataArgsNode(
+              flattenStruct(instruction.dataArgs),
+              instruction.dataArgs.link
+            ),
+          });
         },
       },
     ]);

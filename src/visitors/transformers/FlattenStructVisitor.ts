@@ -12,7 +12,7 @@ export class FlattenStructVisitor extends TransformNodesVisitor {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { type: 'StructTypeNode', stack, name },
+          selector: { kind: 'structTypeNode', stack, name },
           transformer: (node) => flattenStruct(node, options),
         };
       }
@@ -32,8 +32,8 @@ export const flattenStruct = (
     options === '*' || camelCaseOptions.includes(camelCase(field.name));
   const inlinedFields = node.fields.reduce<nodes.StructFieldTypeNode[]>(
     (all, one) => {
-      if (nodes.isStructTypeNode(one.type) && shouldInline(one)) {
-        all.push(...one.type.fields);
+      if (nodes.isStructTypeNode(one.child) && shouldInline(one)) {
+        all.push(...one.child.fields);
       } else {
         all.push(one);
       }
