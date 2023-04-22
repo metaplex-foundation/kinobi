@@ -7,13 +7,13 @@ import {
 
 export type BoolTypeNode = {
   readonly __boolTypeNode: unique symbol;
-  readonly nodeClass: 'boolTypeNode';
+  readonly kind: 'boolTypeNode';
   readonly size: NumberTypeNode;
 };
 
 export function boolTypeNode(size?: NumberTypeNode): BoolTypeNode {
   return {
-    nodeClass: 'boolTypeNode',
+    kind: 'boolTypeNode',
     size: size ?? numberTypeNode('u8'),
   } as BoolTypeNode;
 }
@@ -23,13 +23,13 @@ export function displayBoolTypeNode(node: BoolTypeNode): string {
 }
 
 export function isBoolTypeNode(node: Node | null): node is BoolTypeNode {
-  return !!node && node.nodeClass === 'boolTypeNode';
+  return !!node && node.kind === 'boolTypeNode';
 }
 
 export function assertBoolTypeNode(
   node: Node | null
 ): asserts node is BoolTypeNode {
   if (!isBoolTypeNode(node)) {
-    throw new Error(`Expected BoolTypeNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected BoolTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

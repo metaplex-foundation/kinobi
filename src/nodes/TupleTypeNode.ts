@@ -4,12 +4,12 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type TupleTypeNode = {
   readonly __tupleTypeNode: unique symbol;
-  readonly nodeClass: 'tupleTypeNode';
+  readonly kind: 'tupleTypeNode';
   readonly children: TypeNode[];
 };
 
 export function tupleTypeNode(children: TypeNode[]): TupleTypeNode {
-  return { nodeClass: 'tupleTypeNode', children } as TupleTypeNode;
+  return { kind: 'tupleTypeNode', children } as TupleTypeNode;
 }
 
 export function tupleTypeNodeFromIdl(idl: IdlTypeTuple): TupleTypeNode {
@@ -17,15 +17,13 @@ export function tupleTypeNodeFromIdl(idl: IdlTypeTuple): TupleTypeNode {
 }
 
 export function isTupleTypeNode(node: Node | null): node is TupleTypeNode {
-  return !!node && node.nodeClass === 'tupleTypeNode';
+  return !!node && node.kind === 'tupleTypeNode';
 }
 
 export function assertTupleTypeNode(
   node: Node | null
 ): asserts node is TupleTypeNode {
   if (!isTupleTypeNode(node)) {
-    throw new Error(
-      `Expected TupleTypeNode, got ${node?.nodeClass ?? 'null'}.`
-    );
+    throw new Error(`Expected TupleTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

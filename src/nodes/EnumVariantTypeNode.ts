@@ -17,7 +17,7 @@ export function isEnumVariantTypeNode(
       'EnumEmptyVariantTypeNode',
       'EnumStructVariantTypeNode',
       'EnumTupleVariantTypeNode',
-    ].includes(node.nodeClass)
+    ].includes(node.kind)
   );
 }
 
@@ -26,7 +26,7 @@ export function assertEnumVariantTypeNode(
 ): asserts node is EnumVariantTypeNode {
   if (!isEnumVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

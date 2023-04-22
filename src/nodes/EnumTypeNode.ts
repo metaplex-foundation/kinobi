@@ -8,7 +8,7 @@ import type { Node } from './Node';
 
 export type EnumTypeNode = {
   readonly __enumTypeNode: unique symbol;
-  readonly nodeClass: 'enumTypeNode';
+  readonly kind: 'enumTypeNode';
   readonly name: string;
   readonly variants: EnumVariantTypeNode[];
 };
@@ -21,7 +21,7 @@ export function enumTypeNode(
     throw new InvalidKinobiTreeError('EnumTypeNode must have a name.');
   }
   return {
-    nodeClass: 'enumTypeNode',
+    kind: 'enumTypeNode',
     name: mainCase(name),
     variants,
   } as EnumTypeNode;
@@ -42,7 +42,7 @@ export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {
 
 export function isScalarEnum(node: EnumTypeNode): boolean {
   return node.variants.every(
-    (variant) => variant.nodeClass === 'enumEmptyVariantTypeNode'
+    (variant) => variant.kind === 'enumEmptyVariantTypeNode'
   );
 }
 
@@ -51,14 +51,14 @@ export function isDataEnum(node: EnumTypeNode): boolean {
 }
 
 export function isEnumTypeNode(node: Node | null): node is EnumTypeNode {
-  return !!node && node.nodeClass === 'enumTypeNode';
+  return !!node && node.kind === 'enumTypeNode';
 }
 
 export function assertEnumTypeNode(
   node: Node | null
 ): asserts node is EnumTypeNode {
   if (!isEnumTypeNode(node)) {
-    throw new Error(`Expected EnumTypeNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected EnumTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }
 

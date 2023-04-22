@@ -215,7 +215,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
 
   protected getNodeTitle(node: nodes.Node): string {
     const name = 'name' in node ? node.name : '';
-    const type = titleCase(node.nodeClass.slice(0, -4)).toLowerCase();
+    const type = titleCase(node.kind.slice(0, -4)).toLowerCase();
     return `"${name}" ${type}`;
   }
 }

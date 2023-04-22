@@ -4,7 +4,7 @@ import type { Node } from './Node';
 
 export type EnumEmptyVariantTypeNode = {
   readonly __enumEmptyVariantTypeNode: unique symbol;
-  readonly nodeClass: 'enumEmptyVariantTypeNode';
+  readonly kind: 'enumEmptyVariantTypeNode';
   readonly name: string;
 };
 
@@ -17,7 +17,7 @@ export function enumEmptyVariantTypeNode(
     );
   }
   return {
-    nodeClass: 'enumEmptyVariantTypeNode',
+    kind: 'enumEmptyVariantTypeNode',
     name: mainCase(name),
   } as EnumEmptyVariantTypeNode;
 }
@@ -31,7 +31,7 @@ export function enumEmptyVariantTypeNodeFromIdl(
 export function isEnumEmptyVariantTypeNode(
   node: Node | null
 ): node is EnumEmptyVariantTypeNode {
-  return !!node && node.nodeClass === 'enumEmptyVariantTypeNode';
+  return !!node && node.kind === 'enumEmptyVariantTypeNode';
 }
 
 export function assertEnumEmptyVariantTypeNode(
@@ -39,7 +39,7 @@ export function assertEnumEmptyVariantTypeNode(
 ): asserts node is EnumEmptyVariantTypeNode {
   if (!isEnumEmptyVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumEmptyVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumEmptyVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

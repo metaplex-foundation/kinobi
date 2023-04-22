@@ -9,7 +9,7 @@ import type { Node } from './Node';
 
 export type InstructionAccountNode = {
   readonly __instructionAccountNode: unique symbol;
-  readonly nodeClass: 'instructionAccountNode';
+  readonly kind: 'instructionAccountNode';
   readonly name: string;
   readonly isWritable: boolean;
   readonly isSigner: boolean | 'either';
@@ -20,14 +20,14 @@ export type InstructionAccountNode = {
 
 export type InstructionAccountNodeInput = Omit<
   PartialExcept<InstructionAccountNode, 'name' | 'isWritable' | 'isSigner'>,
-  '__instructionAccountNode' | 'nodeClass'
+  '__instructionAccountNode' | 'kind'
 >;
 
 export function instructionAccountNode(
   input: InstructionAccountNodeInput
 ): InstructionAccountNode {
   return {
-    nodeClass: 'instructionAccountNode',
+    kind: 'instructionAccountNode',
     name: mainCase(input.name),
     isWritable: input.isWritable,
     isSigner: input.isSigner,
@@ -58,7 +58,7 @@ export function instructionAccountNodeFromIdl(
 export function isInstructionAccountNode(
   node: Node | null
 ): node is InstructionAccountNode {
-  return !!node && node.nodeClass === 'instructionAccountNode';
+  return !!node && node.kind === 'instructionAccountNode';
 }
 
 export function assertInstructionAccountNode(
@@ -66,7 +66,7 @@ export function assertInstructionAccountNode(
 ): asserts node is InstructionAccountNode {
   if (!isInstructionAccountNode(node)) {
     throw new Error(
-      `Expected InstructionAccountNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected InstructionAccountNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

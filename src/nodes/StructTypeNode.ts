@@ -8,7 +8,7 @@ import {
 
 export type StructTypeNode = {
   readonly __structTypeNode: unique symbol;
-  readonly nodeClass: 'structTypeNode';
+  readonly kind: 'structTypeNode';
   readonly name: string;
   readonly fields: StructFieldTypeNode[];
 };
@@ -21,7 +21,7 @@ export function structTypeNode(
     throw new InvalidKinobiTreeError('StructTypeNode must have a name.');
   }
   return {
-    nodeClass: 'structTypeNode',
+    kind: 'structTypeNode',
     name: mainCase(name),
     fields,
   } as StructTypeNode;
@@ -35,15 +35,13 @@ export function structTypeNodeFromIdl(idl: IdlTypeStruct): StructTypeNode {
 }
 
 export function isStructTypeNode(node: Node | null): node is StructTypeNode {
-  return !!node && node.nodeClass === 'structTypeNode';
+  return !!node && node.kind === 'structTypeNode';
 }
 
 export function assertStructTypeNode(
   node: Node | null
 ): asserts node is StructTypeNode {
   if (!isStructTypeNode(node)) {
-    throw new Error(
-      `Expected StructTypeNode, got ${node?.nodeClass ?? 'null'}.`
-    );
+    throw new Error(`Expected StructTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

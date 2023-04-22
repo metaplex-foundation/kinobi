@@ -8,12 +8,12 @@ export type ProgramInputs = ProgramInput | ProgramInput[];
 
 export type RootNode = {
   readonly __rootNode: unique symbol;
-  readonly nodeClass: 'rootNode';
+  readonly kind: 'rootNode';
   readonly programs: ProgramNode[];
 };
 
 export function rootNode(programs: ProgramNode[]): RootNode {
-  return { nodeClass: 'rootNode', programs } as RootNode;
+  return { kind: 'rootNode', programs } as RootNode;
 }
 
 export function rootNodeFromIdls(idls: Partial<Idl>[]): RootNode {
@@ -30,11 +30,11 @@ export function rootNodeFromProgramInputs(inputs: ProgramInputs): RootNode {
 }
 
 export function isRootNode(node: Node | null): node is RootNode {
-  return !!node && node.nodeClass === 'rootNode';
+  return !!node && node.kind === 'rootNode';
 }
 
 export function assertRootNode(node: Node | null): asserts node is RootNode {
   if (!isRootNode(node)) {
-    throw new Error(`Expected RootNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected RootNode, got ${node?.kind ?? 'null'}.`);
   }
 }

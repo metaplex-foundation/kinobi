@@ -11,7 +11,7 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type SetTypeNode = {
   readonly __setTypeNode: unique symbol;
-  readonly nodeClass: 'setTypeNode';
+  readonly kind: 'setTypeNode';
   readonly child: TypeNode;
   readonly size: SizeStrategy;
   readonly idlSet: 'hashSet' | 'bTreeSet';
@@ -25,7 +25,7 @@ export function setTypeNode(
   } = {}
 ): SetTypeNode {
   return {
-    nodeClass: 'setTypeNode',
+    kind: 'setTypeNode',
     child,
     size: options.size ?? prefixedSize(),
     idlSet: options.idlSet ?? 'hashSet',
@@ -49,13 +49,13 @@ export function setTypeNodeFromIdl(idl: IdlTypeSet): SetTypeNode {
 }
 
 export function isSetTypeNode(node: Node | null): node is SetTypeNode {
-  return !!node && node.nodeClass === 'setTypeNode';
+  return !!node && node.kind === 'setTypeNode';
 }
 
 export function assertSetTypeNode(
   node: Node | null
 ): asserts node is SetTypeNode {
   if (!isSetTypeNode(node)) {
-    throw new Error(`Expected SetTypeNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected SetTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

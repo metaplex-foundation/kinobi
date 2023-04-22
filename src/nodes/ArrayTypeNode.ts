@@ -11,7 +11,7 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type ArrayTypeNode = {
   readonly __arrayTypeNode: unique symbol;
-  readonly nodeClass: 'arrayTypeNode';
+  readonly kind: 'arrayTypeNode';
   readonly child: TypeNode;
   readonly size: SizeStrategy;
 };
@@ -23,7 +23,7 @@ export function arrayTypeNode(
   } = {}
 ): ArrayTypeNode {
   return {
-    nodeClass: 'arrayTypeNode',
+    kind: 'arrayTypeNode',
     child,
     size: options.size ?? prefixedSize(),
   } as ArrayTypeNode;
@@ -48,15 +48,13 @@ export function arrayTypeNodeFromIdl(
 }
 
 export function isArrayTypeNode(node: Node | null): node is ArrayTypeNode {
-  return !!node && node.nodeClass === 'arrayTypeNode';
+  return !!node && node.kind === 'arrayTypeNode';
 }
 
 export function assertArrayTypeNode(
   node: Node | null
 ): asserts node is ArrayTypeNode {
   if (!isArrayTypeNode(node)) {
-    throw new Error(
-      `Expected ArrayTypeNode, got ${node?.nodeClass ?? 'null'}.`
-    );
+    throw new Error(`Expected ArrayTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

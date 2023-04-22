@@ -28,7 +28,7 @@ import { vScalar } from './ValueNode';
 
 export type InstructionNode = {
   readonly __instructionNode: unique symbol;
-  readonly nodeClass: 'instructionNode';
+  readonly kind: 'instructionNode';
   readonly name: string;
   readonly accounts: InstructionAccountNode[];
   readonly dataArgs: InstructionDataArgsNode;
@@ -43,7 +43,7 @@ export type InstructionNode = {
 
 export type InstructionNodeInput = Omit<
   PartialExcept<InstructionNode, 'name' | 'accounts' | 'dataArgs'>,
-  '__instructionNode' | 'nodeClass'
+  '__instructionNode' | 'kind'
 >;
 
 export function instructionNode(input: InstructionNodeInput): InstructionNode {
@@ -52,7 +52,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
   }
   const name = mainCase(input.name);
   return {
-    nodeClass: 'instructionNode',
+    kind: 'instructionNode',
     name,
     accounts: input.accounts,
     dataArgs: input.dataArgs,
@@ -195,15 +195,13 @@ export function getAllInstructionsWithSubs(
 // }
 
 export function isInstructionNode(node: Node | null): node is InstructionNode {
-  return !!node && node.nodeClass === 'instructionNode';
+  return !!node && node.kind === 'instructionNode';
 }
 
 export function assertInstructionNode(
   node: Node | null
 ): asserts node is InstructionNode {
   if (!isInstructionNode(node)) {
-    throw new Error(
-      `Expected InstructionNode, got ${node?.nodeClass ?? 'null'}.`
-    );
+    throw new Error(`Expected InstructionNode, got ${node?.kind ?? 'null'}.`);
   }
 }

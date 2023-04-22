@@ -120,12 +120,12 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 };
 
 export function isTypeNode(node: Node | null): node is TypeNode {
-  return !!node && TYPE_NODE_CLASSES.includes(node.nodeClass);
+  return !!node && TYPE_NODE_CLASSES.includes(node.kind);
 }
 
 export function assertTypeNode(node: Node | null): asserts node is TypeNode {
   if (!isTypeNode(node)) {
-    throw new Error(`Expected TypeNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected TypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }
 
@@ -133,8 +133,7 @@ export function isStructOrLinkTypeNode(
   node: Node | null
 ): node is StructTypeNode | LinkTypeNode {
   return (
-    !!node &&
-    (node.nodeClass === 'structTypeNode' || node.nodeClass === 'linkTypeNode')
+    !!node && (node.kind === 'structTypeNode' || node.kind === 'linkTypeNode')
   );
 }
 
@@ -143,9 +142,7 @@ export function assertStructOrLinkTypeNode(
 ): asserts node is StructTypeNode | LinkTypeNode {
   if (!isStructOrLinkTypeNode(node)) {
     throw new Error(
-      `Expected StructTypeNode | LinkTypeNode, got ${
-        node?.nodeClass ?? 'null'
-      }.`
+      `Expected StructTypeNode | LinkTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

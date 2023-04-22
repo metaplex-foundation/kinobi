@@ -5,7 +5,7 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type OptionTypeNode = {
   readonly __optionTypeNode: unique symbol;
-  readonly nodeClass: 'optionTypeNode';
+  readonly kind: 'optionTypeNode';
   readonly child: TypeNode;
   readonly prefixNode: NumberTypeNode;
   readonly fixed: boolean;
@@ -21,7 +21,7 @@ export function optionTypeNode(
   } = {}
 ): OptionTypeNode {
   return {
-    nodeClass: 'optionTypeNode',
+    kind: 'optionTypeNode',
     child,
     prefixNode: options.prefixNode ?? numberTypeNode('u8'),
     fixed: options.fixed ?? false,
@@ -41,15 +41,13 @@ export function optionTypeNodeFromIdl(idl: IdlTypeOption): OptionTypeNode {
 }
 
 export function isOptionTypeNode(node: Node | null): node is OptionTypeNode {
-  return !!node && node.nodeClass === 'optionTypeNode';
+  return !!node && node.kind === 'optionTypeNode';
 }
 
 export function assertOptionTypeNode(
   node: Node | null
 ): asserts node is OptionTypeNode {
   if (!isOptionTypeNode(node)) {
-    throw new Error(
-      `Expected OptionTypeNode, got ${node?.nodeClass ?? 'null'}.`
-    );
+    throw new Error(`Expected OptionTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

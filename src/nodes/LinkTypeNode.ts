@@ -3,7 +3,7 @@ import type { Node } from './Node';
 
 export type LinkTypeNode = {
   readonly __linkTypeNode: unique symbol;
-  readonly nodeClass: 'linkTypeNode';
+  readonly kind: 'linkTypeNode';
   readonly name: string;
   readonly importFrom: ImportFrom;
   readonly size?: number;
@@ -17,7 +17,7 @@ export function linkTypeNode(
   } = {}
 ): LinkTypeNode {
   return {
-    nodeClass: 'linkTypeNode',
+    kind: 'linkTypeNode',
     name,
     importFrom: options.importFrom ?? 'generated',
     size: options.size,
@@ -25,13 +25,13 @@ export function linkTypeNode(
 }
 
 export function isLinkTypeNode(node: Node | null): node is LinkTypeNode {
-  return !!node && node.nodeClass === 'linkTypeNode';
+  return !!node && node.kind === 'linkTypeNode';
 }
 
 export function assertLinkTypeNode(
   node: Node | null
 ): asserts node is LinkTypeNode {
   if (!isLinkTypeNode(node)) {
-    throw new Error(`Expected LinkTypeNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected LinkTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

@@ -4,7 +4,7 @@ import { StructTypeNode } from './StructTypeNode';
 
 export type InstructionDataArgsNode = {
   readonly __instructionDataArgsNode: unique symbol;
-  readonly nodeClass: 'instructionDataArgsNode';
+  readonly kind: 'instructionDataArgsNode';
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
@@ -14,7 +14,7 @@ export function instructionDataArgsNode(
   link?: LinkTypeNode | null
 ): InstructionDataArgsNode {
   return {
-    nodeClass: 'instructionDataArgsNode',
+    kind: 'instructionDataArgsNode',
     struct,
     link,
   } as InstructionDataArgsNode;
@@ -23,7 +23,7 @@ export function instructionDataArgsNode(
 export function isInstructionDataArgsNode(
   node: Node | null
 ): node is InstructionDataArgsNode {
-  return !!node && node.nodeClass === 'instructionDataArgsNode';
+  return !!node && node.kind === 'instructionDataArgsNode';
 }
 
 export function assertInstructionDataArgsNode(
@@ -31,7 +31,7 @@ export function assertInstructionDataArgsNode(
 ): asserts node is InstructionDataArgsNode {
   if (!isInstructionDataArgsNode(node)) {
     throw new Error(
-      `Expected InstructionDataArgsNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected InstructionDataArgsNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

@@ -38,7 +38,7 @@ export class NodeStack {
 
   public toStringArray(): string[] {
     return this.stack.map((node): string => {
-      switch (node.nodeClass) {
+      switch (node.kind) {
         case 'RootNode':
           return 'Root';
         case 'ProgramNode':
@@ -68,9 +68,7 @@ export class NodeStack {
         case 'StructFieldTypeNode':
           return node.name ? `Field: ${node.name}` : 'Field';
         default:
-          return titleCase(
-            node.nodeClass.replace(/Node$/, '').replace(/^Type/, '')
-          );
+          return titleCase(node.kind.replace(/Node$/, '').replace(/^Type/, ''));
       }
     });
   }

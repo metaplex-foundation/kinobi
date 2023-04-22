@@ -8,7 +8,7 @@ import type { Node } from './Node';
 
 export type ProgramNode = {
   readonly __programNode: unique symbol;
-  readonly nodeClass: 'programNode';
+  readonly kind: 'programNode';
   readonly accounts: AccountNode[];
   readonly instructions: InstructionNode[];
   readonly definedTypes: DefinedTypeNode[];
@@ -32,12 +32,12 @@ export type ProgramNodeInput = Omit<
     | 'publicKey'
     | 'version'
   >,
-  '__programNode' | 'nodeClass'
+  '__programNode' | 'kind'
 >;
 
 export function programNode(input: ProgramNodeInput): ProgramNode {
   return {
-    nodeClass: 'programNode',
+    kind: 'programNode',
     accounts: input.accounts,
     instructions: input.instructions,
     definedTypes: input.definedTypes,
@@ -75,13 +75,13 @@ export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
 }
 
 export function isProgramNode(node: Node | null): node is ProgramNode {
-  return !!node && node.nodeClass === 'programNode';
+  return !!node && node.kind === 'programNode';
 }
 
 export function assertProgramNode(
   node: Node | null
 ): asserts node is ProgramNode {
   if (!isProgramNode(node)) {
-    throw new Error(`Expected ProgramNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected ProgramNode, got ${node?.kind ?? 'null'}.`);
   }
 }

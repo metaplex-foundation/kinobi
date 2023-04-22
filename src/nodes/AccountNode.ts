@@ -13,7 +13,7 @@ import { createTypeNodeFromIdl } from './TypeNode';
 
 export type AccountNode = {
   readonly __accountNode: unique symbol;
-  readonly nodeClass: 'accountNode';
+  readonly kind: 'accountNode';
   readonly name: string;
   readonly data: AccountDataNode;
   readonly idlName: string;
@@ -26,7 +26,7 @@ export type AccountNode = {
 
 export type AccountNodeInput = Omit<
   PartialExcept<AccountNode, 'name' | 'data'>,
-  '__accountNode' | 'nodeClass'
+  '__accountNode' | 'kind'
 >;
 
 export function accountNode(input: AccountNodeInput): AccountNode {
@@ -34,7 +34,7 @@ export function accountNode(input: AccountNodeInput): AccountNode {
     throw new InvalidKinobiTreeError('DefinedTypeNodeInput must have a name.');
   }
   return {
-    nodeClass: 'accountNode',
+    kind: 'accountNode',
     name: mainCase(input.name),
     data: input.data,
     idlName: input.idlName ?? input.name,
@@ -105,13 +105,13 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
 // }
 
 export function isAccountNode(node: Node | null): node is AccountNode {
-  return !!node && node.nodeClass === 'accountNode';
+  return !!node && node.kind === 'accountNode';
 }
 
 export function assertAccountNode(
   node: Node | null
 ): asserts node is AccountNode {
   if (!isAccountNode(node)) {
-    throw new Error(`Expected AccountNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected AccountNode, got ${node?.kind ?? 'null'}.`);
   }
 }

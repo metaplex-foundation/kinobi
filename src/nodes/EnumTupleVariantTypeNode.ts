@@ -5,7 +5,7 @@ import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type EnumTupleVariantTypeNode = {
   readonly __enumTupleVariantTypeNode: unique symbol;
-  readonly nodeClass: 'enumTupleVariantTypeNode';
+  readonly kind: 'enumTupleVariantTypeNode';
   readonly name: string;
   readonly tuple: TupleTypeNode;
 };
@@ -20,7 +20,7 @@ export function enumTupleVariantTypeNode(
     );
   }
   return {
-    nodeClass: 'enumTupleVariantTypeNode',
+    kind: 'enumTupleVariantTypeNode',
     name: mainCase(name),
     tuple,
   } as EnumTupleVariantTypeNode;
@@ -39,7 +39,7 @@ export function enumTupleVariantTypeNodeFromIdl(
 export function isEnumTupleVariantTypeNode(
   node: Node | null
 ): node is EnumTupleVariantTypeNode {
-  return !!node && node.nodeClass === 'enumTupleVariantTypeNode';
+  return !!node && node.kind === 'enumTupleVariantTypeNode';
 }
 
 export function assertEnumTupleVariantTypeNode(
@@ -47,7 +47,7 @@ export function assertEnumTupleVariantTypeNode(
 ): asserts node is EnumTupleVariantTypeNode {
   if (!isEnumTupleVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumTupleVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumTupleVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

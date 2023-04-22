@@ -4,7 +4,7 @@ import type { NodeStack } from './NodeStack';
 
 export type NodeSelector =
   | {
-      type: nodes.Node['nodeClass'] | '*';
+      type: nodes.Node['kind'] | '*';
       name?: string;
       stack?: string | string[];
       program?: string;
@@ -24,7 +24,7 @@ export const toNodeSelectorFunction = (
 
   const checkType: NodeSelectorFunction = (node) => {
     if (!selector.type || selector.type === '*') return true;
-    return selector.type === node.nodeClass;
+    return selector.type === node.kind;
   };
 
   const checkName: NodeSelectorFunction = (node) => {

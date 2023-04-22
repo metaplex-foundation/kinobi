@@ -5,7 +5,7 @@ import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export type EnumStructVariantTypeNode = {
   readonly __enumStructVariantTypeNode: unique symbol;
-  readonly nodeClass: 'enumStructVariantTypeNode';
+  readonly kind: 'enumStructVariantTypeNode';
   readonly name: string;
   readonly struct: StructTypeNode;
 };
@@ -20,7 +20,7 @@ export function enumStructVariantTypeNode(
     );
   }
   return {
-    nodeClass: 'enumStructVariantTypeNode',
+    kind: 'enumStructVariantTypeNode',
     name: mainCase(name),
     struct,
   } as EnumStructVariantTypeNode;
@@ -43,7 +43,7 @@ export function enumStructVariantTypeNodeFromIdl(
 export function isEnumStructVariantTypeNode(
   node: Node | null
 ): node is EnumStructVariantTypeNode {
-  return !!node && node.nodeClass === 'enumStructVariantTypeNode';
+  return !!node && node.kind === 'enumStructVariantTypeNode';
 }
 
 export function assertEnumStructVariantTypeNode(
@@ -51,7 +51,7 @@ export function assertEnumStructVariantTypeNode(
 ): asserts node is EnumStructVariantTypeNode {
   if (!isEnumStructVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumStructVariantTypeNode, got ${node?.nodeClass ?? 'null'}.`
+      `Expected EnumStructVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }
