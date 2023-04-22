@@ -6,7 +6,7 @@ export type InstructionDataArgsNode = {
   readonly __instructionDataArgsNode: unique symbol;
   readonly nodeClass: 'InstructionDataArgsNode';
   readonly struct: StructTypeNode;
-  readonly link: LinkTypeNode | null;
+  readonly link?: LinkTypeNode;
 };
 
 export function instructionDataArgsNode(
@@ -16,7 +16,7 @@ export function instructionDataArgsNode(
   return {
     nodeClass: 'InstructionDataArgsNode',
     struct,
-    link: link ?? null,
+    link,
   } as InstructionDataArgsNode;
 }
 

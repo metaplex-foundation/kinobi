@@ -15,7 +15,7 @@ export type InstructionAccountNode = {
   readonly isSigner: boolean | 'either';
   readonly isOptional: boolean;
   readonly docs: string[];
-  readonly defaultsTo: InstructionAccountDefault | null;
+  readonly defaultsTo?: InstructionAccountDefault;
 };
 
 export type InstructionAccountNodeInput = Omit<
@@ -33,7 +33,7 @@ export function instructionAccountNode(
     isSigner: input.isSigner,
     isOptional: input.isOptional ?? false,
     docs: input.docs ?? [],
-    defaultsTo: input.defaultsTo ?? null,
+    defaultsTo: input.defaultsTo,
   } as InstructionAccountNode;
 }
 
@@ -49,7 +49,9 @@ export function instructionAccountNodeFromIdl(
     isOptional,
     docs: idl.desc ? [idl.desc] : [],
     defaultsTo:
-      isOptional && useProgramIdForOptionalAccounts ? programIdDefault() : null,
+      isOptional && useProgramIdForOptionalAccounts
+        ? programIdDefault()
+        : undefined,
   });
 }
 

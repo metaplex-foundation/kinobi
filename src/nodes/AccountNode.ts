@@ -19,9 +19,9 @@ export type AccountNode = {
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
-  readonly size: number | null;
+  readonly size?: number;
   readonly seeds: AccountSeed[];
-  readonly discriminator: AccountDiscriminator | null;
+  readonly discriminator?: AccountDiscriminator;
 };
 
 export type AccountNodeInput = Omit<
@@ -40,9 +40,9 @@ export function accountNode(input: AccountNodeInput): AccountNode {
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
-    size: input.size ?? null,
+    size: input.size,
     seeds: input.seeds ?? [],
-    discriminator: input.discriminator ?? null,
+    discriminator: input.discriminator,
   } as AccountNode;
 }
 
@@ -66,7 +66,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
     data: accountDataNode(data),
     idlName: name,
     docs: idl.docs ?? [],
-    size: idl.size ?? null,
+    size: idl.size,
     seeds,
   });
 }

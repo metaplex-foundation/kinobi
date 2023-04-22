@@ -6,18 +6,14 @@ export type AccountDataNode = {
   readonly __accountDataNode: unique symbol;
   readonly nodeClass: 'AccountDataNode';
   readonly struct: StructTypeNode;
-  readonly link: LinkTypeNode | null;
+  readonly link?: LinkTypeNode;
 };
 
 export function accountDataNode(
   struct: StructTypeNode,
-  link?: LinkTypeNode | null
+  link?: LinkTypeNode
 ): AccountDataNode {
-  return {
-    nodeClass: 'AccountDataNode',
-    struct,
-    link: link ?? null,
-  } as AccountDataNode;
+  return { nodeClass: 'AccountDataNode', struct, link } as AccountDataNode;
 }
 
 export function isAccountDataNode(node: Node | null): node is AccountDataNode {

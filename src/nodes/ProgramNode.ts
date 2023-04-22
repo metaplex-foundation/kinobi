@@ -17,7 +17,7 @@ export type ProgramNode = {
   readonly prefix: string;
   readonly publicKey: string;
   readonly version: string;
-  readonly origin: 'shank' | 'anchor' | null;
+  readonly origin?: 'shank' | 'anchor';
   readonly internal: boolean;
 };
 
@@ -46,13 +46,13 @@ export function programNode(input: ProgramNodeInput): ProgramNode {
     prefix: mainCase(input.prefix ?? ''),
     publicKey: input.publicKey,
     version: input.version,
-    origin: input.origin ?? null,
+    origin: input.origin,
     internal: input.internal ?? false,
   } as ProgramNode;
 }
 
 export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
-  const origin = idl.metadata?.origin ?? null;
+  const origin = idl.metadata?.origin;
   const accounts = (idl.accounts ?? []).map(accountNodeFromIdl);
   const instructions = (idl.instructions ?? []).map((ix) =>
     origin === 'anchor'

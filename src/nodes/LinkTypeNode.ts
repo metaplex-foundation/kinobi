@@ -6,21 +6,21 @@ export type LinkTypeNode = {
   readonly nodeClass: 'LinkTypeNode';
   readonly name: string;
   readonly importFrom: ImportFrom;
-  readonly size: number | null;
+  readonly size?: number;
 };
 
 export function linkTypeNode(
   name: string,
   options: {
     readonly importFrom?: ImportFrom;
-    readonly size?: number | null;
+    readonly size?: number;
   } = {}
 ): LinkTypeNode {
   return {
     nodeClass: 'LinkTypeNode',
     name,
     importFrom: options.importFrom ?? 'generated',
-    size: options.size ?? null,
+    size: options.size,
   } as LinkTypeNode;
 }
 

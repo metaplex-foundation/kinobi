@@ -37,7 +37,7 @@ export type InstructionNode = {
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
-  readonly bytesCreatedOnChain: BytesCreatedOnChain | null;
+  readonly bytesCreatedOnChain?: BytesCreatedOnChain;
   readonly argDefaults: Record<string, InstructionArgDefault>;
 };
 
@@ -63,7 +63,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
-    bytesCreatedOnChain: input.bytesCreatedOnChain ?? null,
+    bytesCreatedOnChain: input.bytesCreatedOnChain,
     argDefaults: Object.fromEntries(
       Object.entries(input.argDefaults ?? {}).map(([key, value]) => [
         mainCase(key),
