@@ -1,48 +1,31 @@
-import { mainCase } from '../shared';
 import type { IdlTypeEnumVariant } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import type { Node } from './Node';
 
 export type EnumEmptyVariantTypeNode = {
   readonly __enumEmptyVariantTypeNode: unique symbol;
   readonly nodeClass: 'EnumEmptyVariantTypeNode';
-};
-
-export type EnumEmptyVariantTypeNodeInput = {
-  // ...
+  readonly name: string;
 };
 
 export function enumEmptyVariantTypeNode(
-  input: EnumEmptyVariantTypeNodeInput
+  name: string
 ): EnumEmptyVariantTypeNode {
+  if (!name) {
+    throw new InvalidKinobiTreeError(
+      'EnumEmptyVariantTypeNode must have a name.'
+    );
+  }
   return {
-    ...input,
     nodeClass: 'EnumEmptyVariantTypeNode',
+    name: mainCase(name),
   } as EnumEmptyVariantTypeNode;
 }
 
 export function enumEmptyVariantTypeNodeFromIdl(
-  idl: EnumEmptyVariantTypeNodeIdl
+  idl: IdlTypeEnumVariant
 ): EnumEmptyVariantTypeNode {
-  return enumEmptyVariantTypeNode(idl);
-}
-
-export class EnumEmptyVariantTypeNode implements Visitable {
-  readonly nodeClass = 'EnumEmptyVariantTypeNode' as const;
-
-  readonly name: string;
-
-  constructor(name: string) {
-    this.name = mainCase(name);
-  }
-
-  static fromIdl(idl: IdlTypeEnumVariant): EnumEmptyVariantTypeNode {
-    return new EnumEmptyVariantTypeNode(idl.name ?? '');
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeEnumEmptyVariant(this);
-  }
+  return enumEmptyVariantTypeNode(idl.name ?? '');
 }
 
 export function isEnumEmptyVariantTypeNode(

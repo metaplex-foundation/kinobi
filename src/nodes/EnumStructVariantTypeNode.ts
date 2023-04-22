@@ -1,60 +1,43 @@
-import { mainCase } from '../shared';
 import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import type { Node } from './Node';
-import { StructTypeNode } from './StructTypeNode';
+import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export type EnumStructVariantTypeNode = {
   readonly __enumStructVariantTypeNode: unique symbol;
   readonly nodeClass: 'EnumStructVariantTypeNode';
-};
-
-export type EnumStructVariantTypeNodeInput = {
-  // ...
+  readonly name: string;
+  readonly structNode: StructTypeNode;
 };
 
 export function enumStructVariantTypeNode(
-  input: EnumStructVariantTypeNodeInput
+  name: string,
+  structNode: StructTypeNode
 ): EnumStructVariantTypeNode {
+  if (!name) {
+    throw new InvalidKinobiTreeError(
+      'EnumStructVariantTypeNode must have a name.'
+    );
+  }
   return {
-    ...input,
     nodeClass: 'EnumStructVariantTypeNode',
+    name: mainCase(name),
+    structNode,
   } as EnumStructVariantTypeNode;
 }
 
 export function enumStructVariantTypeNodeFromIdl(
-  idl: EnumStructVariantTypeNodeIdl
+  idl: IdlTypeEnumVariant
 ): EnumStructVariantTypeNode {
-  return enumStructVariantTypeNode(idl);
-}
-
-export class EnumStructVariantTypeNode implements Visitable {
-  readonly nodeClass = 'EnumStructVariantTypeNode' as const;
-
-  readonly name: string;
-
-  readonly struct: StructTypeNode;
-
-  constructor(name: string, struct: StructTypeNode) {
-    this.name = mainCase(name);
-    this.struct = struct;
-  }
-
-  static fromIdl(idl: IdlTypeEnumVariant): EnumStructVariantTypeNode {
-    const name = idl.name ?? '';
-    return new EnumStructVariantTypeNode(
+  const name = idl.name ?? '';
+  return enumStructVariantTypeNode(
+    name,
+    structTypeNodeFromIdl({
+      kind: 'struct',
       name,
-      StructTypeNode.fromIdl({
-        kind: 'struct',
-        name,
-        fields: idl.fields as IdlTypeEnumField[],
-      })
-    );
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeEnumStructVariant(this);
-  }
+      fields: idl.fields as IdlTypeEnumField[],
+    })
+  );
 }
 
 export function isEnumStructVariantTypeNode(

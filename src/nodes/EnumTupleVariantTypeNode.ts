@@ -1,56 +1,39 @@
-import { mainCase } from '../shared';
 import type { IdlType, IdlTypeEnumVariant } from '../idl';
-import type { Visitable, Visitor } from '../visitors';
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import type { Node } from './Node';
-import { TupleTypeNode } from './TupleTypeNode';
+import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type EnumTupleVariantTypeNode = {
   readonly __enumTupleVariantTypeNode: unique symbol;
   readonly nodeClass: 'EnumTupleVariantTypeNode';
-};
-
-export type EnumTupleVariantTypeNodeInput = {
-  // ...
+  readonly name: string;
+  readonly tupleNode: TupleTypeNode;
 };
 
 export function enumTupleVariantTypeNode(
-  input: EnumTupleVariantTypeNodeInput
+  name: string,
+  tupleNode: TupleTypeNode
 ): EnumTupleVariantTypeNode {
+  if (!name) {
+    throw new InvalidKinobiTreeError(
+      'EnumTupleVariantTypeNode must have a name.'
+    );
+  }
   return {
-    ...input,
     nodeClass: 'EnumTupleVariantTypeNode',
+    name: mainCase(name),
+    tupleNode,
   } as EnumTupleVariantTypeNode;
 }
 
 export function enumTupleVariantTypeNodeFromIdl(
-  idl: EnumTupleVariantTypeNodeIdl
+  idl: IdlTypeEnumVariant
 ): EnumTupleVariantTypeNode {
-  return enumTupleVariantTypeNode(idl);
-}
-
-export class EnumTupleVariantTypeNode implements Visitable {
-  readonly nodeClass = 'EnumTupleVariantTypeNode' as const;
-
-  readonly name: string;
-
-  readonly tuple: TupleTypeNode;
-
-  constructor(name: string, tuple: TupleTypeNode) {
-    this.name = mainCase(name);
-    this.tuple = tuple;
-  }
-
-  static fromIdl(idl: IdlTypeEnumVariant): EnumTupleVariantTypeNode {
-    const name = idl.name ?? '';
-    return new EnumTupleVariantTypeNode(
-      name,
-      TupleTypeNode.fromIdl({ tuple: idl.fields as IdlType[] })
-    );
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitTypeEnumTupleVariant(this);
-  }
+  const name = idl.name ?? '';
+  return enumTupleVariantTypeNode(
+    name,
+    tupleTypeNodeFromIdl({ tuple: idl.fields as IdlType[] })
+  );
 }
 
 export function isEnumTupleVariantTypeNode(
