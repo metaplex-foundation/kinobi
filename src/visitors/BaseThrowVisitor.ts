@@ -1,113 +1,149 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { KinobiError } from '../shared';
 import * as nodes from '../nodes';
 import type { Visitor } from './Visitor';
 
-export class BaseThrowVisitor<T> implements Visitor<T> {
+// TODO: check if we can remove the unused vars now.
+export const baseThrowVisitor = <T>(): Visitor<T> => ({
   visitRoot(root: nodes.RootNode): T {
-    throw new Error('This visitor does not support Root nodes.');
-  }
+    throw new KinobiError('This visitor does not support Root nodes.');
+  },
 
   visitProgram(program: nodes.ProgramNode): T {
-    throw new Error('This visitor does not support Program nodes.');
-  }
+    throw new KinobiError('This visitor does not support Program nodes.');
+  },
 
   visitAccount(account: nodes.AccountNode): T {
-    throw new Error('This visitor does not support Account nodes.');
-  }
+    throw new KinobiError('This visitor does not support Account nodes.');
+  },
+
+  visitAccountData(accountData: nodes.AccountDataNode): T {
+    throw new KinobiError(
+      'This visitor does not support AccountDataNode nodes.'
+    );
+  },
 
   visitInstruction(instruction: nodes.InstructionNode): T {
-    throw new Error('This visitor does not support Instruction nodes.');
-  }
+    throw new KinobiError('This visitor does not support Instruction nodes.');
+  },
+
+  visitInstructionAccount(instructionAccount: nodes.InstructionAccountNode): T {
+    throw new KinobiError(
+      'This visitor does not support InstructionAccountNode nodes.'
+    );
+  },
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): T {
+    throw new KinobiError(
+      'This visitor does not support InstructionDataArgsNode nodes.'
+    );
+  },
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): T {
+    throw new KinobiError(
+      'This visitor does not support InstructionExtraArgsNode nodes.'
+    );
+  },
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): T {
-    throw new Error('This visitor does not support DefinedType nodes.');
-  }
+    throw new KinobiError('This visitor does not support DefinedType nodes.');
+  },
 
   visitError(error: nodes.ErrorNode): T {
-    throw new Error('This visitor does not support Error nodes.');
-  }
+    throw new KinobiError('This visitor does not support Error nodes.');
+  },
 
   visitTypeArray(typeArray: nodes.ArrayTypeNode): T {
-    throw new Error('This visitor does not support TypeArray nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeArray nodes.');
+  },
 
   visitTypeDefinedLink(typeDefinedLink: nodes.LinkTypeNode): T {
-    throw new Error('This visitor does not support TypeDefinedLink nodes.');
-  }
+    throw new KinobiError(
+      'This visitor does not support TypeDefinedLink nodes.'
+    );
+  },
 
   visitTypeEnum(typeEnum: nodes.EnumTypeNode): T {
-    throw new Error('This visitor does not support TypeEnum nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeEnum nodes.');
+  },
 
   visitTypeEnumEmptyVariant(
     typeEnumEmptyVariant: nodes.EnumEmptyVariantTypeNode
   ): T {
-    throw new Error(
+    throw new KinobiError(
       'This visitor does not support TypeEnumEmptyVariant nodes.'
     );
-  }
+  },
 
   visitTypeEnumStructVariant(
     typeEnumStructVariant: nodes.EnumStructVariantTypeNode
   ): T {
-    throw new Error(
+    throw new KinobiError(
       'This visitor does not support TypeEnumStructVariant nodes.'
     );
-  }
+  },
 
   visitTypeEnumTupleVariant(
     typeEnumTupleVariant: nodes.EnumTupleVariantTypeNode
   ): T {
-    throw new Error(
+    throw new KinobiError(
       'This visitor does not support TypeEnumTupleVariant nodes.'
     );
-  }
+  },
 
   visitTypeMap(typeMap: nodes.MapTypeNode): T {
-    throw new Error('This visitor does not support TypeMap nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeMap nodes.');
+  },
 
   visitTypeOption(typeOption: nodes.OptionTypeNode): T {
-    throw new Error('This visitor does not support TypeOption nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeOption nodes.');
+  },
 
   visitTypeSet(typeSet: nodes.SetTypeNode): T {
-    throw new Error('This visitor does not support TypeSet nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeSet nodes.');
+  },
 
   visitTypeStruct(typeStruct: nodes.StructTypeNode): T {
-    throw new Error('This visitor does not support TypeStruct nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeStruct nodes.');
+  },
 
   visitTypeStructField(typeStructField: nodes.StructFieldTypeNode): T {
-    throw new Error('This visitor does not support TypeStructField nodes.');
-  }
+    throw new KinobiError(
+      'This visitor does not support TypeStructField nodes.'
+    );
+  },
 
   visitTypeTuple(typeTuple: nodes.TupleTypeNode): T {
-    throw new Error('This visitor does not support TypeTuple nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeTuple nodes.');
+  },
 
   visitTypeBool(typeBool: nodes.BoolTypeNode): T {
-    throw new Error('This visitor does not support TypeBool nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeBool nodes.');
+  },
 
   visitTypeBytes(typeBytes: nodes.BytesTypeNode): T {
-    throw new Error('This visitor does not support TypeBytes nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeBytes nodes.');
+  },
 
   visitTypeNumber(typeNumber: nodes.NumberTypeNode): T {
-    throw new Error('This visitor does not support TypeNumber nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypeNumber nodes.');
+  },
 
   visitTypeNumberWrapper(typeNumberWrapper: nodes.NumberWrapperTypeNode): T {
-    throw new Error('This visitor does not support TypeNumberWrapper nodes.');
-  }
+    throw new KinobiError(
+      'This visitor does not support TypeNumberWrapper nodes.'
+    );
+  },
 
   visitTypePublicKey(typePublicKey: nodes.PublicKeyTypeNode): T {
-    throw new Error('This visitor does not support TypePublicKey nodes.');
-  }
+    throw new KinobiError('This visitor does not support TypePublicKey nodes.');
+  },
 
   visitTypeString(typeString: nodes.StringTypeNode): T {
-    throw new Error('This visitor does not support TypeString nodes.');
-  }
-}
+    throw new KinobiError('This visitor does not support TypeString nodes.');
+  },
+});
