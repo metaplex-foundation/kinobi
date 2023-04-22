@@ -11,5 +11,4 @@ export * from './DefaultVisitor';
 export * from './NodeSelector';
 export * from './ValidatorBag';
 export * from './NodeStack';
-export * from './Visitable';
 export * from './Visitor';

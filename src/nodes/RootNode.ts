@@ -3,8 +3,7 @@ import { readJson } from '../shared';
 import type { Node } from './Node';
 import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
-export type ProgramInput = string | Partial<Idl>;
-export type ProgramInputs = ProgramInput | ProgramInput[];
+export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
 
 export type RootNode = {
   readonly __rootNode: unique symbol;
@@ -16,17 +15,12 @@ export function rootNode(programs: ProgramNode[]): RootNode {
   return { kind: 'rootNode', programs } as RootNode;
 }
 
-export function rootNodeFromIdls(idls: Partial<Idl>[]): RootNode {
-  const programs = idls.map((idl) => programNodeFromIdl(idl));
+export function rootNodeFromIdls(idls: IdlInputs): RootNode {
+  const idlArray = Array.isArray(idls) ? idls : [idls];
+  const programs = idlArray
+    .map((idl) => (typeof idl === 'string' ? readJson<Partial<Idl>>(idl) : idl))
+    .map((idl) => programNodeFromIdl(idl));
   return rootNode(programs);
-}
-
-export function rootNodeFromProgramInputs(inputs: ProgramInputs): RootNode {
-  const inputArray = Array.isArray(inputs) ? inputs : [inputs];
-  const idlArray = inputArray.map((program) =>
-    typeof program === 'string' ? readJson<Partial<Idl>>(program) : program
-  );
-  return rootNodeFromIdls(idlArray);
 }
 
 export function isRootNode(node: Node | null): node is RootNode {

@@ -1,28 +1,54 @@
-import { assertRootNode, Node, ProgramInputs, RootNode } from './nodes';
-import { DefaultVisitor, Visitable, Visitor } from './visitors';
+import {
+  assertRootNode,
+  IdlInputs,
+  Node,
+  rootNode,
+  RootNode,
+  rootNodeFromIdls,
+} from './nodes';
+import { DefaultVisitor, visit, Visitor } from './visitors';
 
-export class Kinobi implements Visitable {
-  public root: RootNode;
+export interface Kinobi {
+  getRoot(): RootNode;
+  getJson(): string;
+  accept<T>(visitor: Visitor<T>): T;
+  update(visitor: Visitor<Node | null>): void;
+  clone(): Kinobi;
+}
 
-  constructor(idls: ProgramInputs, useDefaultVisitor = true) {
-    this.root = root.fromProgramInputs(idls);
-    if (useDefaultVisitor) this.update(new DefaultVisitor());
+export function createFromRoot(
+  root: RootNode,
+  useDefaultVisitor = true
+): Kinobi {
+  let currentRoot = root;
+  if (useDefaultVisitor) {
+    currentRoot = visit(currentRoot, new DefaultVisitor());
   }
+  return {
+    getRoot(): RootNode {
+      return currentRoot;
+    },
+    getJson(): string {
+      return JSON.stringify(currentRoot);
+    },
+    accept<T>(visitor: Visitor<T>): T {
+      return visit(currentRoot, visitor);
+    },
+    update(visitor: Visitor<Node | null>): void {
+      const newRoot = visit(currentRoot, visitor);
+      assertRootNode(newRoot);
+      currentRoot = newRoot;
+    },
+    clone(): Kinobi {
+      return createFromRoot(rootNode(currentRoot.programs));
+    },
+  };
+}
 
-  accept<T>(visitor: Visitor<T>): T {
-    return this.root.accept(visitor);
-  }
+export function createFromIdls(idls: IdlInputs): Kinobi {
+  return createFromRoot(rootNodeFromIdls(idls));
+}
 
-  update(visitor: Visitor<Node | null>): void {
-    const newRoot = this.root.accept(visitor);
-    assertRootNode(newRoot);
-    this.root = newRoot;
-  }
-
-  clone(): Kinobi {
-    const newRoot = new RootNode(this.root.programs);
-    const kinobi = new Kinobi([]);
-    kinobi.root = newRoot;
-    return kinobi;
-  }
+export function createFromJson(json: string): Kinobi {
+  return createFromRoot(JSON.parse(json) as RootNode);
 }
