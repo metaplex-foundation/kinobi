@@ -1,4 +1,4 @@
-import type { TypeNode } from '../nodes';
+import { TypeNode } from '../nodes';
 import { mainCase } from './utils';
 
 export type AccountSeed =

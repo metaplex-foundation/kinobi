@@ -89,21 +89,6 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
 //   return this.variableSeeds.length > 0;
 // }
 
-// export function instructionAccountDefaultSeeds(): Record<
-//   string,
-//   InstructionNodeAccountDefaultsSeed
-// > {
-//   return this.metadata.seeds.reduce((acc, seed) => {
-//     if (seed.type !== 'variable') return acc;
-//     if (isPublicKeyTypeNode(seed.type)) {
-//       acc[seed.name] = { type: 'account', name: seed.name };
-//     } else {
-//       acc[seed.name] = { type: 'arg', name: seed.name };
-//     }
-//     return acc;
-//   }, {} as Record<string, InstructionNodeAccountDefaultsSeed>);
-// }
-
 export function isAccountNode(node: Node | null): node is AccountNode {
   return !!node && node.kind === 'accountNode';
 }

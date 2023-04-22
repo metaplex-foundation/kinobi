@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../shared';
+import { getDefaultSeedsFromAccount, mainCase } from '../../shared';
 import { ImportFrom } from '../../shared/ImportFrom';
 import { InstructionNodeAccountDefaultsInput } from './SetInstructionAccountDefaultValuesVisitor';
 import {
@@ -155,15 +155,14 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
       const pdaAccount = mainCase(
         accountUpdate?.defaultsTo?.pdaAccount ?? account.name
       );
+      const foundAccount = this.allAccounts.get(pdaAccount);
       return {
         ...account,
         ...accountUpdate,
         defaultsTo: {
           pdaAccount,
           importFrom: 'generated',
-          seeds:
-            this.allAccounts.get(pdaAccount)?.instructionAccountDefaultSeeds ??
-            {},
+          seeds: foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {},
           ...accountUpdate?.defaultsTo,
         },
       };

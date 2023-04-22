@@ -1,34 +1,20 @@
-import { mainCase } from '../../shared';
 import * as nodes from '../../nodes';
+import {
+  InstructionAccountDefault,
+  getDefaultSeedsFromAccount,
+  mainCase,
+} from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { ImportFrom } from '../../shared/ImportFrom';
+import { visit } from '../Visitor';
 
-export type InstructionNodeAccountDefaultsInput =
-  | nodes.InstructionNodeAccountDefaults
-  | {
-      kind: 'pda';
-      pdaAccount?: string;
-      importFrom?: ImportFrom;
-      seeds?: Record<string, nodes.InstructionNodeAccountDefaultsSeed>;
-    }
-  | {
-      kind: 'resolver';
-      name: string;
-      importFrom?: ImportFrom;
-      dependsOn?: nodes.InstructionNodeInputDependency[];
-      resolvedIsSigner?: boolean | 'either';
-      resolvedIsOptional?: boolean;
-    };
-
-export type InstructionAccountDefaultRule =
-  InstructionNodeAccountDefaultsInput & {
-    /** The name of the instruction account or a pattern to match on it. */
-    account: string | RegExp;
-    /** @defaultValue Defaults to searching accounts on all instructions. */
-    instruction?: string;
-    /** @defaultValue `false`. */
-    ignoreIfOptional?: boolean;
-  };
+export type InstructionAccountDefaultRule = InstructionAccountDefault & {
+  /** The name of the instruction account or a pattern to match on it. */
+  account: string | RegExp;
+  /** @defaultValue Defaults to searching accounts on all instructions. */
+  instruction?: string;
+  /** @defaultValue `false`. */
+  ignoreIfOptional?: boolean;
+};
 
 export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaultRule[] =
   [
@@ -185,27 +171,24 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node {
-    root.allAccounts.forEach((account) => {
+    nodes.getAllAccounts(root).forEach((account) => {
       this.allAccounts.set(account.name, account);
     });
     return super.visitRoot(root);
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
-    return nodes.programNode(
-      program.metadata,
-      program.accounts,
-      program.instructions
+    return nodes.programNode({
+      ...program,
+      instructions: program.instructions
         .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-      program.definedTypes,
-      program.errors
-    );
+    });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const instructionAccounts = instruction.accounts.map(
-      (account): nodes.InstructionNodeAccount => {
+      (account): nodes.InstructionAccountNode => {
         const rule = this.matchRule(instruction, account);
         if (!rule) {
           return account;
@@ -217,13 +200,14 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           const pdaAccount =
             rule.pdaAccount ??
             (typeof rule.account === 'string' ? rule.account : '');
+          const foundAccount = this.allAccounts.get(mainCase(pdaAccount));
           const defaultsTo = {
             pdaAccount,
-            importFrom: 'generated',
-            seeds:
-              this.allAccounts.get(mainCase(pdaAccount))
-                ?.instructionAccountDefaultSeeds ?? {},
             ...rule,
+            seeds: {
+              ...(foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {}),
+              ...rule.seeds,
+            },
           };
 
           if (rule.instruction) {

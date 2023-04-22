@@ -1,4 +1,4 @@
-import { ValueNode } from '../nodes';
+import { AccountNode, ValueNode, isPublicKeyTypeNode } from '../nodes';
 import { ImportFrom } from './ImportFrom';
 import { mainCase } from './utils';
 
@@ -141,3 +141,16 @@ export const dependsOnArg = (arg: string): InstructionDependency => ({
   kind: 'arg',
   name: mainCase(arg),
 });
+
+export const getDefaultSeedsFromAccount = (
+  node: AccountNode
+): Record<string, InstructionSeedDefault> =>
+  node.seeds.reduce((acc, seed) => {
+    if (seed.kind !== 'variable') return acc;
+    if (isPublicKeyTypeNode(seed.type)) {
+      acc[seed.name] = { kind: 'account', name: seed.name };
+    } else {
+      acc[seed.name] = { kind: 'arg', name: seed.name };
+    }
+    return acc;
+  }, {} as Record<string, InstructionSeedDefault>);
