@@ -133,75 +133,81 @@ kinobi.update(
   })
 );
 
-// const tmKey = (name) => ({ field: 'key', value: k.vEnum('TmKey', name) });
-// const taKey = (name) => ({ field: 'key', value: k.vEnum('TaKey', name) });
-// kinobi.update(
-//   new k.SetAccountDiscriminatorFromFieldVisitor({
-//     'mplTokenMetadata.Edition': tmKey('EditionV1'),
-//     'mplTokenMetadata.MasterEditionV1': tmKey('MasterEditionV1'),
-//     'mplTokenMetadata.ReservationListV1': tmKey('ReservationListV1'),
-//     'mplTokenMetadata.Metadata': tmKey('MetadataV1'),
-//     'mplTokenMetadata.ReservationListV2': tmKey('ReservationListV2'),
-//     'mplTokenMetadata.MasterEditionV2': tmKey('MasterEditionV2'),
-//     'mplTokenMetadata.EditionMarker': tmKey('EditionMarker'),
-//     'mplTokenMetadata.UseAuthorityRecord': tmKey('UseAuthorityRecord'),
-//     'mplTokenMetadata.CollectionAuthorityRecord': tmKey(
-//       'CollectionAuthorityRecord'
-//     ),
-//     'mplTokenMetadata.TokenOwnedEscrow': tmKey('TokenOwnedEscrow'),
-//     'mplTokenMetadata.DelegateRecord': tmKey('Delegate'),
-//     'mplTokenAuthRules.FrequencyAccount': taKey('Frequency'),
-//   })
-// );
+const tmKey = (name) => ({ field: 'key', value: k.vEnum('TmKey', name) });
+const taKey = (name) => ({ field: 'key', value: k.vEnum('TaKey', name) });
+kinobi.update(
+  new k.SetAccountDiscriminatorFromFieldVisitor({
+    'mplTokenMetadata.Edition': tmKey('EditionV1'),
+    'mplTokenMetadata.MasterEditionV1': tmKey('MasterEditionV1'),
+    'mplTokenMetadata.ReservationListV1': tmKey('ReservationListV1'),
+    'mplTokenMetadata.Metadata': tmKey('MetadataV1'),
+    'mplTokenMetadata.ReservationListV2': tmKey('ReservationListV2'),
+    'mplTokenMetadata.MasterEditionV2': tmKey('MasterEditionV2'),
+    'mplTokenMetadata.EditionMarker': tmKey('EditionMarker'),
+    'mplTokenMetadata.UseAuthorityRecord': tmKey('UseAuthorityRecord'),
+    'mplTokenMetadata.CollectionAuthorityRecord': tmKey(
+      'CollectionAuthorityRecord'
+    ),
+    'mplTokenMetadata.TokenOwnedEscrow': tmKey('TokenOwnedEscrow'),
+    'mplTokenMetadata.DelegateRecord': tmKey('Delegate'),
+    'mplTokenAuthRules.FrequencyAccount': taKey('Frequency'),
+  })
+);
 
-// // Custom serializers.
-// kinobi.update(
-//   new k.UseCustomAccountSerializerVisitor({
-//     ReservationListV1: { extract: true },
-//   })
-// );
-// kinobi.update(
-//   new k.UseCustomInstructionSerializerVisitor({
-//     CreateReservationList: true,
-//   })
-// );
+// Custom serializers.
+kinobi.update(
+  new k.UseCustomAccountSerializerVisitor({
+    ReservationListV1: { extract: true },
+  })
+);
+kinobi.update(
+  new k.UseCustomInstructionSerializerVisitor({
+    CreateReservationList: true,
+  })
+);
 
-// kinobi.update(
-//   new k.SetStructDefaultValuesVisitor({
-//     'mplTokenMetadata.Collection': { verified: vScalar(false) },
-//     'mplTokenMetadata.UpdateArgs.V1': {
-//       tokenStandard: vSome(k.vEnum('TokenStandard', 'NonFungible')),
-//       collection: vSome(
-//         k.vEnum('PayloadType', 'Pubkey', vTuple([vPublicKey('1'.repeat(32))]))
-//       ),
-//     },
-//   })
-// );
+kinobi.update(
+  new k.SetStructDefaultValuesVisitor({
+    'mplTokenMetadata.Collection': {
+      verified: k.vScalar(false),
+    },
+    'mplTokenMetadata.UpdateArgs.V1': {
+      tokenStandard: k.vSome(k.vEnum('TokenStandard', 'NonFungible')),
+      collection: k.vSome(
+        k.vEnum(
+          'PayloadType',
+          'Pubkey',
+          k.vTuple([k.vPublicKey('1'.repeat(32))])
+        )
+      ),
+    },
+  })
+);
 
-// kinobi.update(
-//   new k.SetNumberWrappersVisitor({
-//     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
-//     'CandyMachineData.sellerFeeBasisPoints': {
-//       kind: 'Amount',
-//       identifier: '%',
-//       decimals: 2,
-//     },
-//   })
-// );
+kinobi.update(
+  new k.SetNumberWrappersVisitor({
+    'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
+    'CandyMachineData.sellerFeeBasisPoints': {
+      kind: 'Amount',
+      identifier: '%',
+      decimals: 2,
+    },
+  })
+);
 
-// kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
-// kinobi.update(
-//   new k.FlattenStructVisitor({
-//     'mplTokenMetadata.Metadata': ['Data'],
-//   })
-// );
+kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
+kinobi.update(
+  new k.FlattenStructVisitor({
+    'mplTokenMetadata.Metadata': ['Data'],
+  })
+);
 
-// kinobi.update(
-//   new k.CreateSubInstructionsFromEnumArgsVisitor({
-//     'mplTokenMetadata.Create': 'createArgs',
-//     'mplTokenMetadata.Update': 'updateArgs',
-//   })
-// );
+kinobi.update(
+  new k.CreateSubInstructionsFromEnumArgsVisitor({
+    'mplTokenMetadata.Create': 'createArgs',
+    'mplTokenMetadata.Update': 'updateArgs',
+  })
+);
 
 // kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
 kinobi.accept(new k.RenderJavaScriptVisitor('./test/package/src/generated'));
