@@ -83,7 +83,7 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
   }
 {% endif %}
 
-{% if account.size !== null %}
+{% if account.size !== undefined %}
 export function get{{ account.name | pascalCase }}Size(): number {
   return {{ account.size }};
 }
