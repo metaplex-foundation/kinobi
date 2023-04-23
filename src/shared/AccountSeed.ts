@@ -16,10 +16,10 @@ export const literalSeed = (value: string): AccountSeed => ({
 export const variableSeed = (
   name: string,
   type: TypeNode,
-  docs?: string[]
+  docs: string | string[] = []
 ): AccountSeed => ({
   kind: 'variable',
   name: mainCase(name),
   type,
-  docs: docs ?? [],
+  docs: Array.isArray(docs) ? docs : [docs],
 });

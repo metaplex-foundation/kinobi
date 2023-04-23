@@ -69,11 +69,14 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   }
 
   visitAccountData(accountData: nodes.AccountDataNode): string {
+    const children: string[] = [];
     this.indent += 1;
-    const struct = visit(accountData.struct, this);
-    const link = accountData.link ? visit(accountData.link, this) : '';
+    children.push(visit(accountData.struct, this));
+    if (accountData.link) {
+      children.push(visit(accountData.link, this));
+    }
     this.indent -= 1;
-    return [this.indented('[AccountDataNode]'), struct, link].join('\n');
+    return [this.indented('[AccountDataNode]'), ...children].join('\n');
   }
 
   visitInstruction(instruction: nodes.InstructionNode): string {
@@ -108,27 +111,27 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   visitInstructionDataArgs(
     instructionDataArgs: nodes.InstructionDataArgsNode
   ): string {
+    const children: string[] = [];
     this.indent += 1;
-    const struct = visit(instructionDataArgs.struct, this);
-    const link = instructionDataArgs.link
-      ? visit(instructionDataArgs.link, this)
-      : '';
+    children.push(visit(instructionDataArgs.struct, this));
+    if (instructionDataArgs.link) {
+      children.push(visit(instructionDataArgs.link, this));
+    }
     this.indent -= 1;
-    return [this.indented('[InstructionDataArgsNode]'), struct, link].join(
-      '\n'
-    );
+    return [this.indented('[InstructionDataArgsNode]'), ...children].join('\n');
   }
 
   visitInstructionExtraArgs(
     instructionExtraArgs: nodes.InstructionExtraArgsNode
   ): string {
+    const children: string[] = [];
     this.indent += 1;
-    const struct = visit(instructionExtraArgs.struct, this);
-    const link = instructionExtraArgs.link
-      ? visit(instructionExtraArgs.link, this)
-      : '';
+    children.push(visit(instructionExtraArgs.struct, this));
+    if (instructionExtraArgs.link) {
+      children.push(visit(instructionExtraArgs.link, this));
+    }
     this.indent -= 1;
-    return [this.indented('[InstructionExtraArgsNode]'), struct, link].join(
+    return [this.indented('[InstructionExtraArgsNode]'), ...children].join(
       '\n'
     );
   }
