@@ -1,4 +1,4 @@
-import { TypeNode } from '../nodes';
+import { TypeNode, publicKeyTypeNode } from '../nodes';
 import { mainCase } from './utils';
 
 export type AccountSeed =
@@ -23,3 +23,8 @@ export const variableSeed = (
   type,
   docs: Array.isArray(docs) ? docs : [docs],
 });
+
+export const publicKeySeed = (
+  name: string,
+  docs: string | string[] = []
+): AccountSeed => variableSeed(name, publicKeyTypeNode(), docs);

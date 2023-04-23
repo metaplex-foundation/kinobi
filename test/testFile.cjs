@@ -33,11 +33,7 @@ kinobi.update(
       seeds: [
         k.literalSeed('metadata'),
         k.programSeed(),
-        k.variableSeed(
-          'mint',
-          k.publicKeyTypeNode(),
-          'The address of the mint account'
-        ),
+        k.publicKeySeed('mint', 'The address of the mint account'),
         k.literalSeed('edition'),
       ],
     },
