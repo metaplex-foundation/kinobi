@@ -19,41 +19,38 @@ kinobi.update(
     Metadata: { size: 679 },
     MasterEditionV1: {
       seeds: [
-        { kind: 'literal', value: 'metadata' },
-        { kind: 'programId' },
-        {
-          kind: 'variable',
-          name: 'delegateRole',
-          description: 'The role of the delegate',
-          type: k.linkTypeNode('delegateRole'),
-        },
+        k.literalSeed('metadata'),
+        k.programSeed(),
+        k.variableSeed(
+          'delegateRole',
+          k.linkTypeNode('delegateRole'),
+          'The role of the delegate'
+        ),
       ],
     },
     MasterEditionV2: {
       size: 282,
       seeds: [
-        { kind: 'literal', value: 'metadata' },
-        { kind: 'programId' },
-        {
-          kind: 'variable',
-          name: 'mint',
-          description: 'The address of the mint account',
-          type: new k.PublicKeyTypeNode(),
-        },
-        { kind: 'literal', value: 'edition' },
+        k.literalSeed('metadata'),
+        k.programSeed(),
+        k.variableSeed(
+          'mint',
+          k.publicKeyTypeNode(),
+          'The address of the mint account'
+        ),
+        k.literalSeed('edition'),
       ],
     },
     delegateRecord: {
       size: 282,
       seeds: [
-        { kind: 'literal', value: 'delegate_record' },
-        { kind: 'programId' },
-        {
-          kind: 'variable',
-          name: 'role',
-          description: 'The delegate role',
-          type: new k.LinkTypeNode('delegateRole'),
-        },
+        k.literalSeed('delegate_record'),
+        k.programSeed(),
+        k.variableSeed(
+          'role',
+          k.linkTypeNode('delegateRole'),
+          'The delegate role'
+        ),
       ],
     },
   })
@@ -74,54 +71,45 @@ kinobi.update(
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
       args: {
-        ruleSetBump: {
-          defaultsTo: { kind: 'accountBump', name: 'ruleSetPda' },
-        },
+        ruleSetBump: { defaultsTo: k.accountBumpDefault('ruleSetPda') },
       },
     },
     'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
     CreateMetadataAccount: {
-      bytesCreatedOnChain: { kind: 'account', name: 'Metadata' },
+      bytesCreatedOnChain: k.bytesFromAccount('Metadata'),
       accounts: {
-        metadata: { defaultsTo: { kind: 'pda' } },
+        metadata: { defaultsTo: k.pdaDefault('metadata') },
       },
       args: {
-        metadataBump: { defaultsTo: { kind: 'accountBump', name: 'metadata' } },
+        metadataBump: { defaultsTo: k.accountBumpDefault('metadata') },
       },
     },
     CreateMetadataAccountV3: {
       accounts: {
-        metadata: { defaultsTo: { kind: 'pda' } },
+        metadata: { defaultsTo: k.pdaDefault('metadata') },
       },
     },
     CreateMasterEditionV3: {
-      bytesCreatedOnChain: { kind: 'account', name: 'MasterEditionV2' },
+      bytesCreatedOnChain: k.bytesFromAccount('MasterEditionV2'),
     },
     'mplCandyMachineCore.Mint': {
       name: 'MintFromCandyMachine',
       accounts: {
-        nftMintAuthority: { defaultsTo: { kind: 'identity' } },
+        nftMintAuthority: { defaultsTo: k.identityDefault() },
       },
     },
     Dummy: {
       accounts: {
-        mintAuthority: {
-          defaultsTo: { kind: 'account', name: 'updateAuthority' },
-        },
-        edition: { defaultsTo: { kind: 'account', name: 'mint' } },
-        foo: { defaultsTo: { kind: 'account', name: 'bar' } },
-        bar: { defaultsTo: { kind: 'programId' } },
+        mintAuthority: { defaultsTo: k.accountDefault('updateAuthority') },
+        edition: { defaultsTo: k.accountDefault('mint') },
+        foo: { defaultsTo: k.accountDefault('bar') },
+        bar: { defaultsTo: k.programIdDefault() },
         delegateRecord: {
-          defaultsTo: {
-            kind: 'pda',
-            name: 'delegateRecord',
+          defaultsTo: k.pdaDefault('delegateRecord', {
             seeds: {
-              role: {
-                kind: 'value',
-                value: vEnum('delegateRole', 'Collection'),
-              },
+              role: k.valueDefault(vEnum('delegateRole', 'Collection')),
             },
-          },
+          }),
         },
       },
     },
@@ -129,102 +117,91 @@ kinobi.update(
     Transfer: {
       accounts: {
         masterEdition: {
-          defaultsTo: {
-            kind: 'resolver',
-            name: 'resolveMasterEditionFromTokenStandard',
-            importFrom: 'hooked',
-            resolvedIsSigner: false,
-            resolvedIsOptional: false,
-            dependsOn: [
-              { kind: 'account', name: 'mint' },
-              { kind: 'arg', name: 'tokenStandard' },
-            ],
-          },
+          defaultsTo: k.resolverDefault(
+            'resolveMasterEditionFromTokenStandard',
+            [k.dependsOnAccount('mint'), k.dependsOnArg('tokenStandard')]
+          ),
         },
       },
       args: {
         tokenStandard: {
-          type: new k.LinkTypeNode('tokenStandard'),
-          defaultsTo: {
-            kind: 'value',
-            value: vEnum('tokenStandard', 'NonFungible'),
-          },
+          type: k.linkTypeNode('tokenStandard'),
+          defaultsTo: k.valueDefault(vEnum('tokenStandard', 'NonFungible')),
         },
       },
     },
   })
 );
 
-const tmKey = (name) => ({ field: 'key', value: vEnum('TmKey', name) });
-const taKey = (name) => ({ field: 'key', value: vEnum('TaKey', name) });
-kinobi.update(
-  new k.SetAccountDiscriminatorFromFieldVisitor({
-    'mplTokenMetadata.Edition': tmKey('EditionV1'),
-    'mplTokenMetadata.MasterEditionV1': tmKey('MasterEditionV1'),
-    'mplTokenMetadata.ReservationListV1': tmKey('ReservationListV1'),
-    'mplTokenMetadata.Metadata': tmKey('MetadataV1'),
-    'mplTokenMetadata.ReservationListV2': tmKey('ReservationListV2'),
-    'mplTokenMetadata.MasterEditionV2': tmKey('MasterEditionV2'),
-    'mplTokenMetadata.EditionMarker': tmKey('EditionMarker'),
-    'mplTokenMetadata.UseAuthorityRecord': tmKey('UseAuthorityRecord'),
-    'mplTokenMetadata.CollectionAuthorityRecord': tmKey(
-      'CollectionAuthorityRecord'
-    ),
-    'mplTokenMetadata.TokenOwnedEscrow': tmKey('TokenOwnedEscrow'),
-    'mplTokenMetadata.DelegateRecord': tmKey('Delegate'),
-    'mplTokenAuthRules.FrequencyAccount': taKey('Frequency'),
-  })
-);
+// const tmKey = (name) => ({ field: 'key', value: vEnum('TmKey', name) });
+// const taKey = (name) => ({ field: 'key', value: vEnum('TaKey', name) });
+// kinobi.update(
+//   new k.SetAccountDiscriminatorFromFieldVisitor({
+//     'mplTokenMetadata.Edition': tmKey('EditionV1'),
+//     'mplTokenMetadata.MasterEditionV1': tmKey('MasterEditionV1'),
+//     'mplTokenMetadata.ReservationListV1': tmKey('ReservationListV1'),
+//     'mplTokenMetadata.Metadata': tmKey('MetadataV1'),
+//     'mplTokenMetadata.ReservationListV2': tmKey('ReservationListV2'),
+//     'mplTokenMetadata.MasterEditionV2': tmKey('MasterEditionV2'),
+//     'mplTokenMetadata.EditionMarker': tmKey('EditionMarker'),
+//     'mplTokenMetadata.UseAuthorityRecord': tmKey('UseAuthorityRecord'),
+//     'mplTokenMetadata.CollectionAuthorityRecord': tmKey(
+//       'CollectionAuthorityRecord'
+//     ),
+//     'mplTokenMetadata.TokenOwnedEscrow': tmKey('TokenOwnedEscrow'),
+//     'mplTokenMetadata.DelegateRecord': tmKey('Delegate'),
+//     'mplTokenAuthRules.FrequencyAccount': taKey('Frequency'),
+//   })
+// );
 
-// Custom serializers.
-kinobi.update(
-  new k.UseCustomAccountSerializerVisitor({
-    ReservationListV1: { extract: true },
-  })
-);
-kinobi.update(
-  new k.UseCustomInstructionSerializerVisitor({
-    CreateReservationList: true,
-  })
-);
+// // Custom serializers.
+// kinobi.update(
+//   new k.UseCustomAccountSerializerVisitor({
+//     ReservationListV1: { extract: true },
+//   })
+// );
+// kinobi.update(
+//   new k.UseCustomInstructionSerializerVisitor({
+//     CreateReservationList: true,
+//   })
+// );
 
-kinobi.update(
-  new k.SetStructDefaultValuesVisitor({
-    'mplTokenMetadata.Collection': { verified: vScalar(false) },
-    'mplTokenMetadata.UpdateArgs.V1': {
-      tokenStandard: vSome(vEnum('TokenStandard', 'NonFungible')),
-      collection: vSome(
-        vEnum('PayloadType', 'Pubkey', vTuple([vPublicKey('1'.repeat(32))]))
-      ),
-    },
-  })
-);
+// kinobi.update(
+//   new k.SetStructDefaultValuesVisitor({
+//     'mplTokenMetadata.Collection': { verified: vScalar(false) },
+//     'mplTokenMetadata.UpdateArgs.V1': {
+//       tokenStandard: vSome(vEnum('TokenStandard', 'NonFungible')),
+//       collection: vSome(
+//         vEnum('PayloadType', 'Pubkey', vTuple([vPublicKey('1'.repeat(32))]))
+//       ),
+//     },
+//   })
+// );
 
-kinobi.update(
-  new k.SetNumberWrappersVisitor({
-    'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
-    'CandyMachineData.sellerFeeBasisPoints': {
-      kind: 'Amount',
-      identifier: '%',
-      decimals: 2,
-    },
-  })
-);
+// kinobi.update(
+//   new k.SetNumberWrappersVisitor({
+//     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
+//     'CandyMachineData.sellerFeeBasisPoints': {
+//       kind: 'Amount',
+//       identifier: '%',
+//       decimals: 2,
+//     },
+//   })
+// );
 
-kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
-kinobi.update(
-  new k.FlattenStructVisitor({
-    'mplTokenMetadata.Metadata': ['Data'],
-  })
-);
+// kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
+// kinobi.update(
+//   new k.FlattenStructVisitor({
+//     'mplTokenMetadata.Metadata': ['Data'],
+//   })
+// );
 
-kinobi.update(
-  new k.CreateSubInstructionsFromEnumArgsVisitor({
-    'mplTokenMetadata.Create': 'createArgs',
-    'mplTokenMetadata.Update': 'updateArgs',
-  })
-);
+// kinobi.update(
+//   new k.CreateSubInstructionsFromEnumArgsVisitor({
+//     'mplTokenMetadata.Create': 'createArgs',
+//     'mplTokenMetadata.Update': 'updateArgs',
+//   })
+// );
 
-kinobi.update(new k.AutoSetAccountGpaFieldsVisitor({ override: true }));
 // kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
 kinobi.accept(new k.RenderJavaScriptVisitor('./test/package/src/generated'));
