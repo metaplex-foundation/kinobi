@@ -8,14 +8,10 @@ export type FlattenStructOptions = string[] | '*';
 export class FlattenStructVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, FlattenStructOptions>) {
     const transforms = Object.entries(map).map(
-      ([selectorStack, options]): NodeTransform => {
-        const stack = selectorStack.split('.');
-        const name = stack.pop();
-        return {
-          selector: { kind: 'structTypeNode', stack, name },
-          transformer: (node) => flattenStruct(node, options),
-        };
-      }
+      ([stack, options]): NodeTransform => ({
+        selector: { kind: 'structTypeNode', stack },
+        transformer: (node) => flattenStruct(node, options),
+      })
     );
 
     super(transforms);
