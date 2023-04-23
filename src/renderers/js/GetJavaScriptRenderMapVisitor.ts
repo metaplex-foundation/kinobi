@@ -370,7 +370,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // Data Args.
     const linkedDataArgs = !!instruction.dataArgs.link;
-    const dataArgManifest = visit(instruction, this.typeManifestVisitor);
+    const dataArgManifest = visit(
+      instruction.dataArgs,
+      this.typeManifestVisitor
+    );
     imports.mergeWith(
       dataArgManifest.looseImports,
       dataArgManifest.serializerImports
@@ -384,16 +387,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // Extra args.
     const linkedExtraArgs = !!instruction.extraArgs.link;
-    let extraArgManifest: JavaScriptTypeManifest | null = null;
-    if (instruction.extraArgs) {
-      this.typeManifestVisitor.setDefinedName({
-        strict: `${pascalCase(instruction.name)}InstructionExtra`,
-        loose: `${pascalCase(instruction.name)}InstructionExtraArgs`,
-      });
-      extraArgManifest = visit(instruction.extraArgs, this.typeManifestVisitor);
-      imports.mergeWith(extraArgManifest.looseImports);
-      this.typeManifestVisitor.setDefinedName(null);
-    }
+    const extraArgManifest = visit(
+      instruction.extraArgs,
+      this.typeManifestVisitor
+    );
+    imports.mergeWith(extraArgManifest.looseImports);
 
     // Arg defaults.
     Object.values(instruction.argDefaults).forEach((argDefault) => {

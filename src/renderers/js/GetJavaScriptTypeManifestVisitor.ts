@@ -17,10 +17,7 @@ export type JavaScriptTypeManifest = {
 export class GetJavaScriptTypeManifestVisitor
   implements Visitor<JavaScriptTypeManifest>
 {
-  private definedName: {
-    strict: string;
-    loose: string;
-  } | null = null;
+  private parentName: { strict: string; loose: string } | null = null;
 
   constructor(readonly serializerVariable = 's') {}
 
@@ -37,28 +34,23 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitAccount(account: nodes.AccountNode): JavaScriptTypeManifest {
-    this.definedName = {
-      strict: `${pascalCase(account.name)}AccountData`,
-      loose: `${pascalCase(account.name)}AccountDataArgs`,
-    };
-    const data = visit(account.data, this);
-    this.definedName = null;
-    return data;
+    return visit(account.data, this);
   }
 
   visitAccountData(accountData: nodes.AccountDataNode): JavaScriptTypeManifest {
-    if (accountData.link) return visit(accountData.link, this);
-    return visit(accountData.struct, this);
+    this.parentName = {
+      strict: pascalCase(accountData.name),
+      loose: `${pascalCase(accountData.name)}Args`,
+    };
+    const manifest = accountData.link
+      ? visit(accountData.link, this)
+      : visit(accountData.struct, this);
+    this.parentName = null;
+    return manifest;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): JavaScriptTypeManifest {
-    this.definedName = {
-      strict: `${pascalCase(instruction.name)}InstructionData`,
-      loose: `${pascalCase(instruction.name)}InstructionDataArgs`,
-    };
-    const dataArgs = visit(instruction.dataArgs, this);
-    this.definedName = null;
-    return dataArgs;
+    return visit(instruction.dataArgs, this);
   }
 
   visitInstructionAccount(): JavaScriptTypeManifest {
@@ -70,26 +62,39 @@ export class GetJavaScriptTypeManifestVisitor
   visitInstructionDataArgs(
     instructionDataArgs: nodes.InstructionDataArgsNode
   ): JavaScriptTypeManifest {
-    if (instructionDataArgs.link) return visit(instructionDataArgs.link, this);
-    return visit(instructionDataArgs.struct, this);
+    this.parentName = {
+      strict: pascalCase(instructionDataArgs.name),
+      loose: `${pascalCase(instructionDataArgs.name)}Args`,
+    };
+    const manifest = instructionDataArgs.link
+      ? visit(instructionDataArgs.link, this)
+      : visit(instructionDataArgs.struct, this);
+    this.parentName = null;
+    return manifest;
   }
 
   visitInstructionExtraArgs(
     instructionExtraArgs: nodes.InstructionExtraArgsNode
   ): JavaScriptTypeManifest {
-    if (instructionExtraArgs.link)
-      return visit(instructionExtraArgs.link, this);
-    return visit(instructionExtraArgs.struct, this);
+    this.parentName = {
+      strict: pascalCase(instructionExtraArgs.name),
+      loose: `${pascalCase(instructionExtraArgs.name)}Args`,
+    };
+    const manifest = instructionExtraArgs.link
+      ? visit(instructionExtraArgs.link, this)
+      : visit(instructionExtraArgs.struct, this);
+    this.parentName = null;
+    return manifest;
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): JavaScriptTypeManifest {
-    this.definedName = {
+    this.parentName = {
       strict: pascalCase(definedType.name),
       loose: `${pascalCase(definedType.name)}Args`,
     };
-    const data = visit(definedType.data, this);
-    this.definedName = null;
-    return data;
+    const manifest = visit(definedType.data, this);
+    this.parentName = null;
+    return manifest;
   }
 
   visitError(): JavaScriptTypeManifest {
@@ -143,11 +148,11 @@ export class GetJavaScriptTypeManifestVisitor
     const variantNames = enumType.variants.map((variant) =>
       pascalCase(variant.name)
     );
-    const { definedName } = this;
-    this.definedName = null;
+    const { parentName } = this;
+    this.parentName = null;
 
     if (nodes.isScalarEnum(enumType)) {
-      if (definedName === null) {
+      if (parentName === null) {
         throw new Error(
           'Scalar enums cannot be inlined and must be introduced ' +
             'via a defined type. Ensure you are not inlining a ' +
@@ -161,8 +166,8 @@ export class GetJavaScriptTypeManifestVisitor
         looseType: `{ ${variantNames.join(', ')} }`,
         looseImports: new JavaScriptImportMap(),
         serializer:
-          `${this.s('enum')}<${definedName.strict}>` +
-          `(${definedName.strict}, { description: '${definedName.strict}' })`,
+          `${this.s('enum')}<${parentName.strict}>` +
+          `(${parentName.strict}, { description: '${parentName.strict}' })`,
         serializerImports: new JavaScriptImportMap(),
       };
     }
@@ -170,14 +175,14 @@ export class GetJavaScriptTypeManifestVisitor
     const variants = enumType.variants.map(
       (variant): JavaScriptTypeManifest => {
         const variantName = pascalCase(variant.name);
-        this.definedName = definedName
+        this.parentName = parentName
           ? {
-              strict: `GetDataEnumKindContent<${definedName.strict}, '${variantName}'>`,
-              loose: `GetDataEnumKindContent<${definedName.loose}, '${variantName}'>`,
+              strict: `GetDataEnumKindContent<${parentName.strict}, '${variantName}'>`,
+              loose: `GetDataEnumKindContent<${parentName.loose}, '${variantName}'>`,
             }
           : null;
         const variantManifest = visit(variant, this);
-        this.definedName = null;
+        this.parentName = null;
         return variantManifest;
       }
     );
@@ -186,11 +191,10 @@ export class GetJavaScriptTypeManifestVisitor
     const variantSerializers = variants
       .map((variant) => variant.serializer)
       .join(', ');
-    const description = enumType.name || definedName?.strict;
-    const descriptionArgs = description
-      ? `, { description: '${pascalCase(description)}' }`
+    const descriptionArgs = parentName?.strict
+      ? `, { description: '${pascalCase(parentName.strict)}' }`
       : '';
-    const serializerTypeParams = definedName ? definedName.strict : 'any';
+    const serializerTypeParams = parentName ? parentName.strict : 'any';
 
     return {
       ...mergedManifest,
@@ -241,7 +245,7 @@ export class GetJavaScriptTypeManifestVisitor
   ): JavaScriptTypeManifest {
     const name = pascalCase(enumTupleVariantType.name);
     const kindAttribute = `__kind: "${name}"`;
-    const struct = nodes.structTypeNode(name, [
+    const struct = nodes.structTypeNode([
       nodes.structFieldTypeNode({
         name: 'fields',
         child: enumTupleVariantType.tuple,
@@ -319,16 +323,16 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitStructType(structType: nodes.StructTypeNode): JavaScriptTypeManifest {
-    const { definedName } = this;
-    this.definedName = null;
+    const { parentName } = this;
+    this.parentName = null;
 
     const fields = structType.fields.map((field) => visit(field, this));
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
-    const structDescription = structType.name
-      ? `, { description: '${pascalCase(structType.name)}' }`
+    const structDescription = parentName?.strict
+      ? `, { description: '${pascalCase(parentName.strict)}' }`
       : '';
-    const serializerTypeParams = definedName ? definedName.strict : 'any';
+    const serializerTypeParams = parentName ? parentName.strict : 'any';
     const baseManifest = {
       ...mergedManifest,
       strictType: `{ ${fields.map((field) => field.strictType).join('')} }`,
@@ -359,10 +363,10 @@ export class GetJavaScriptTypeManifestVisitor
         return `${key}: value.${key} ?? ${renderedValue}`;
       })
       .join(', ');
-    const mapSerializerTypeParams = definedName
-      ? `${definedName.loose}, ${definedName.strict}, ${definedName.strict}`
+    const mapSerializerTypeParams = parentName
+      ? `${parentName.loose}, ${parentName.strict}, ${parentName.strict}`
       : 'any, any, any';
-    const asReturnType = definedName ? ` as ${definedName.strict}` : '';
+    const asReturnType = parentName ? ` as ${parentName.strict}` : '';
     const mappedSerializer =
       `mapSerializer<${mapSerializerTypeParams}>(` +
       `${baseManifest.serializer}, ` +
