@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.7.0
+
+### Minor Changes
+
+- [#30](https://github.com/metaplex-foundation/kinobi/pull/30) [`822eb4d`](https://github.com/metaplex-foundation/kinobi/commit/822eb4dc71b9ee8d21734c7c26fe9ec25842dfe0) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add extra args, arg defaults and custom resolvers
+
 ## 0.6.0
 
 ### Minor Changes
