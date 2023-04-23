@@ -50,5 +50,5 @@ export function createFromIdls(idls: IdlInputs): Kinobi {
 }
 
 export function createFromJson(json: string): Kinobi {
-  return createFromRoot(JSON.parse(json) as RootNode);
+  return createFromRoot(JSON.parse(json) as RootNode, false);
 }
