@@ -242,7 +242,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       }
     } else if (discriminator?.kind === 'size') {
       resolvedDiscriminator =
-        account.size !== null
+        account.size !== undefined
           ? { kind: 'size', value: `${account.size}` }
           : null;
     }
@@ -371,7 +371,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       return input;
     });
     const resolvedInputsWithDefaults = resolvedInputs.filter(
-      (input) => input.kind !== 'account' || input.defaultsTo !== null
+      (input) => input.kind !== 'account' || input.defaultsTo !== undefined
     );
     if (resolvedInputsWithDefaults.length > 0) {
       imports.add('shared', 'addObjectProperty');
