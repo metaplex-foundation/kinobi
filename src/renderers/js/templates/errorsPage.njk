@@ -9,9 +9,9 @@ const codeToErrorMap: Map<number, ProgramErrorConstructor> = new Map();
 const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
 {% for error in errors | sort(false, false, 'code') %}
-{{ macros.docblock(error.metadata.docs) }}
+{{ macros.docblock(error.docs) }}
 export class {{ error.prefixedName }}Error extends ProgramError {
-  readonly name: string = '{{ error.metadata.name | pascalCase }}';
+  readonly name: string = '{{ error.name | pascalCase }}';
 
   readonly code: number = 0x{{ error.code.toString(16) }}; // {{ error.code }}
   
@@ -20,7 +20,7 @@ export class {{ error.prefixedName }}Error extends ProgramError {
   }
 }
 codeToErrorMap.set(0x{{ error.code.toString(16) }}, {{ error.prefixedName }}Error);
-nameToErrorMap.set('{{ error.metadata.name | pascalCase }}', {{ error.prefixedName }}Error);
+nameToErrorMap.set('{{ error.name | pascalCase }}', {{ error.prefixedName }}Error);
 
 {% endfor %}
 /**

@@ -70,7 +70,7 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
 {% if gpaFields !== null %}
   export function get{{ account.name | pascalCase }}GpaBuilder(context: Pick<Context, 'rpc' | 'serializer' | 'programs'>) {
     const s = context.serializer;
-    const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.metadata.publicKey }}');
+    const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
     return gpaBuilder(context, programId)
       .registerFields<{{ gpaFields.type }}>({{ gpaFields.argument }})
       .deserializeUsing<{{ account.name | pascalCase }}>((account) => deserialize{{ account.name | pascalCase }}(context, account))
@@ -83,9 +83,9 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
   }
 {% endif %}
 
-{% if account.metadata.size !== null %}
+{% if account.size !== null %}
 export function get{{ account.name | pascalCase }}Size(): number {
-  return {{ account.metadata.size }};
+  return {{ account.size }};
 }
 {% endif %}
 
@@ -106,7 +106,7 @@ export function find{{ account.name | pascalCase }}Pda(
   {% if pdaHelperNeedsSerializer %}
     const s = context.serializer;
   {% endif %}
-  const programId = context.programs.getPublicKey('{{ program.metadata.name | camelCase }}', '{{ program.metadata.publicKey }}');
+  const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}

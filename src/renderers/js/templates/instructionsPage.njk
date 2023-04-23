@@ -43,7 +43,7 @@ export function {{ instruction.name | camelCase }}(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = { ...context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.metadata.publicKey }}'), isWritable: false };
+  const programId = { ...context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}'), isWritable: false };
 
   {% include "instructionsPageResolvedInputs.njk" %}
 
@@ -59,7 +59,7 @@ export function {{ instruction.name | camelCase }}(
   {% endif %}
 
   // Bytes Created On Chain.
-  {% set bytes = instruction.metadata.bytesCreatedOnChain %}
+  {% set bytes = instruction.bytesCreatedOnChain %}
   {% if bytes.kind === 'number' %}
     const bytesCreatedOnChain = {{ bytes.value }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif bytes.kind === 'arg' %}

@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block main %}
-{% for account in accountsToExport | sort(false, false, 'metadata.name') %}
+{% for account in accountsToExport | sort(false, false, 'name') %}
 export * from './{{ account.name | camelCase }}';
 {% else %}
 export default {};
