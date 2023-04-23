@@ -37,7 +37,7 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
               ...updates,
               data: nodes.accountDataNode({
                 ...node.data,
-                name: newName,
+                name: `${newName}AccountData`,
                 struct: renameStructNode(node.data.struct, updates.data ?? {}),
               }),
             });
