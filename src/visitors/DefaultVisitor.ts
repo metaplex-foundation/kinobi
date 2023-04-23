@@ -1,7 +1,6 @@
 import * as nodes from '../nodes';
 import { BaseThrowVisitor } from './BaseThrowVisitor';
 import {
-  AutoSetAccountGpaFieldsVisitor,
   AutoSetAnchorDiscriminatorsVisitor,
   AutoSetFixedAccountSizesVisitor,
   DeduplicateIdenticalDefinedTypesVisitor,
@@ -28,7 +27,6 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
     // Accounts.
     updateRoot(new AutoSetAnchorDiscriminatorsVisitor());
     updateRoot(new AutoSetFixedAccountSizesVisitor());
-    updateRoot(new AutoSetAccountGpaFieldsVisitor());
 
     // Instructions.
     updateRoot(
