@@ -119,8 +119,7 @@ kinobi.update(
         masterEdition: {
           defaultsTo: k.resolverDefault(
             'resolveMasterEditionFromTokenStandard',
-            [k.dependsOnAccount('mint'), k.dependsOnArg('tokenStandard')],
-            { resolvedIsOptional: false }
+            [k.dependsOnAccount('mint'), k.dependsOnArg('tokenStandard')]
           ),
         },
       },

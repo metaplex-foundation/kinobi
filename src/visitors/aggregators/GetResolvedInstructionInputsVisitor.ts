@@ -205,7 +205,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
         break;
       case 'resolver':
         resolved.resolvedIsOptional =
-          resolved.defaultsTo.resolvedIsOptional ?? resolved.resolvedIsOptional;
+          resolved.defaultsTo.resolvedIsOptional ?? false;
         resolved.resolvedIsSigner =
           resolved.defaultsTo.resolvedIsSigner ?? resolved.resolvedIsSigner;
         break;
