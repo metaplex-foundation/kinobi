@@ -1,5 +1,6 @@
 import * as nodes from '../../nodes';
 import {
+  InstructionAccountDefault,
   InstructionArgDefault,
   getDefaultSeedsFromAccount,
   mainCase,
@@ -27,7 +28,9 @@ export type InstructionMetadataUpdates = Partial<
 
 export type InstructionAccountUpdates = Record<
   string,
-  Partial<nodes.InstructionAccountNodeInput>
+  Partial<Omit<nodes.InstructionAccountNodeInput, 'defaultsTo'>> & {
+    defaultsTo?: InstructionAccountDefault | null;
+  }
 >;
 
 export type InstructionArgUpdates = Record<
@@ -99,24 +102,35 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     accountUpdates: InstructionAccountUpdates
   ): nodes.InstructionAccountNode {
     const accountUpdate = accountUpdates?.[account.name];
+    if (!accountUpdate) return account;
+    const { defaultsTo, ...acountWithoutDefault } = {
+      ...account,
+      ...accountUpdate,
+    };
 
-    if (accountUpdate?.defaultsTo?.kind === 'pda') {
-      const pdaAccount = mainCase(accountUpdate.defaultsTo.pdaAccount);
+    if (defaultsTo === null) {
+      return nodes.instructionAccountNode(acountWithoutDefault);
+    }
+
+    if (defaultsTo?.kind === 'pda') {
+      const pdaAccount = mainCase(defaultsTo.pdaAccount);
       const foundAccount = this.allAccounts.get(pdaAccount);
       return {
-        ...account,
-        ...accountUpdate,
+        ...acountWithoutDefault,
         defaultsTo: {
-          ...accountUpdate.defaultsTo,
+          ...defaultsTo,
           seeds: {
             ...(foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {}),
-            ...accountUpdate.defaultsTo.seeds,
+            ...defaultsTo.seeds,
           },
         },
       };
     }
 
-    return accountUpdate ? { ...account, ...accountUpdate } : account;
+    return nodes.instructionAccountNode({
+      ...acountWithoutDefault,
+      defaultsTo,
+    });
   }
 
   handleInstructionArgs(
