@@ -98,7 +98,11 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       ? visit(instructionDataArgs.link, this)
       : undefined;
     if (link !== undefined) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode({ ...instructionDataArgs, struct, link });
+    return nodes.instructionDataArgsNode({
+      ...instructionDataArgs,
+      struct,
+      link,
+    });
   }
 
   visitInstructionExtraArgs(
@@ -111,7 +115,11 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
       ? visit(instructionExtraArgs.link, this)
       : undefined;
     if (link !== undefined) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode({ ...instructionExtraArgs, struct, link });
+    return nodes.instructionExtraArgsNode({
+      ...instructionExtraArgs,
+      struct,
+      link,
+    });
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node | null {
