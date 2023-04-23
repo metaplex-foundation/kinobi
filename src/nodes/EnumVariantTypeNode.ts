@@ -14,9 +14,9 @@ export function isEnumVariantTypeNode(
   return (
     !!node &&
     [
-      'EnumEmptyVariantTypeNode',
-      'EnumStructVariantTypeNode',
-      'EnumTupleVariantTypeNode',
+      'enumEmptyVariantTypeNode',
+      'enumStructVariantTypeNode',
+      'enumTupleVariantTypeNode',
     ].includes(node.kind)
   );
 }
