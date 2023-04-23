@@ -1,5 +1,6 @@
-import type * as nodes from '../../nodes';
-import { Visitor } from '../Visitor';
+import { displaySizeStrategy } from '../../shared';
+import * as nodes from '../../nodes';
+import { Visitor, visit } from '../Visitor';
 
 export class GetNodeTreeStringVisitor implements Visitor<string> {
   indent = 0;
@@ -12,7 +13,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
 
   visitRoot(root: nodes.RootNode): string {
     this.indent += 1;
-    const children = root.programs.map((program) => program.accept(this));
+    const children = root.programs.map((program) => visit(program, this));
     this.indent -= 1;
     return [this.indented('[RootNode]'), ...children].join('\n');
   }
@@ -20,20 +21,19 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
   visitProgram(program: nodes.ProgramNode): string {
     this.indent += 1;
     const children = [
-      ...program.accounts.map((account) => account.accept(this)),
-      ...program.instructionsWithSubs.map((ix) => ix.accept(this)),
-      ...program.definedTypes.map((type) => type.accept(this)),
-      ...program.errors.map((type) => type.accept(this)),
+      ...program.accounts.map((account) => visit(account, this)),
+      ...nodes.getAllInstructionsWithSubs(program).map((ix) => visit(ix, this)),
+      ...program.definedTypes.map((type) => visit(type, this)),
+      ...program.errors.map((type) => visit(type, this)),
     ];
     this.indent -= 1;
-    const data = program.metadata;
     const tags = [];
-    if (data.publicKey) tags.push(`publicKey: ${data.publicKey}`);
-    if (data.version) tags.push(`version: ${data.version}`);
-    if (data.origin) tags.push(`origin: ${data.origin}`);
+    if (program.publicKey) tags.push(`publicKey: ${program.publicKey}`);
+    if (program.version) tags.push(`version: ${program.version}`);
+    if (program.origin) tags.push(`origin: ${program.origin}`);
     const tagsStr = tags.length > 0 ? ` (${tags.join(', ')})` : '';
     return [
-      this.indented(`[ProgramNode] ${data.name}${tagsStr}`),
+      this.indented(`[ProgramNode] ${program.name}${tagsStr}`),
       ...children,
     ].join('\n');
   }
@@ -42,30 +42,41 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     const children: string[] = [];
     children.push(this.indented(`[AccountNode] ${account.name}`));
     this.indent += 1;
-    if (account.metadata.size !== null) {
-      children.push(this.indented(`size: ${account.metadata.size}`));
+    if (account.size !== undefined) {
+      children.push(this.indented(`size: ${account.size}`));
     }
-    if (account.metadata.seeds.length > 0) {
+    if (account.seeds.length > 0) {
       children.push(this.indented('seeds:'));
       this.indent += 1;
       children.push(
-        ...account.metadata.seeds.map((seed) => {
+        ...account.seeds.map((seed) => {
           if (seed.kind === 'programId') return this.indented('programId');
           if (seed.kind === 'literal') return this.indented(`"${seed.value}"`);
           this.indent += 1;
-          const type = seed.type.accept(this);
+          const type = visit(seed.type, this);
           this.indent -= 1;
           return [
-            this.indented(`${seed.name} (${seed.description})`),
+            this.indented(`${seed.name} (${seed.docs.join(' ')})`),
             type,
           ].join('\n');
         })
       );
       this.indent -= 1;
     }
-    children.push(account.type.accept(this));
+    children.push(visit(account.data, this));
     this.indent -= 1;
     return children.join('\n');
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): string {
+    const children: string[] = [];
+    this.indent += 1;
+    children.push(visit(accountData.struct, this));
+    if (accountData.link) {
+      children.push(visit(accountData.link, this));
+    }
+    this.indent -= 1;
+    return [this.indented('[AccountDataNode]'), ...children].join('\n');
   }
 
   visitInstruction(instruction: nodes.InstructionNode): string {
@@ -75,37 +86,61 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     children.push(this.indented('accounts:'));
     this.indent += 1;
     children.push(
-      ...instruction.accounts.map((account) => {
-        const tags = [];
-        if (account.isWritable) tags.push('writable');
-        if (account.isSigner) tags.push('signer');
-        if (account.isOptional) tags.push('optional');
-        if (account.defaultsTo)
-          tags.push(`defaults to ${account.defaultsTo.kind}`);
-        const tagsAsString = tags.length > 0 ? ` (${tags.join(', ')})` : '';
-        return this.indented(account.name + tagsAsString);
-      })
+      ...instruction.accounts.map((account) => visit(account, this))
     );
     this.indent -= 1;
-    children.push(this.indented('arguments:'));
-    this.indent += 1;
-    children.push(instruction.args.accept(this));
-    this.indent -= 1;
-    if (instruction.extraArgs) {
-      children.push(this.indented('extra arguments:'));
-      this.indent += 1;
-      children.push(instruction.extraArgs.accept(this));
-      this.indent -= 1;
-    }
+    children.push(visit(instruction.dataArgs, this));
+    children.push(visit(instruction.extraArgs, this));
     this.indent -= 1;
     return children.join('\n');
   }
 
+  visitInstructionAccount(
+    instructionAccount: nodes.InstructionAccountNode
+  ): string {
+    const tags = [];
+    if (instructionAccount.isWritable) tags.push('writable');
+    if (instructionAccount.isSigner) tags.push('signer');
+    if (instructionAccount.isOptional) tags.push('optional');
+    if (instructionAccount.defaultsTo)
+      tags.push(`defaults to ${instructionAccount.defaultsTo.kind}`);
+    const tagsAsString = tags.length > 0 ? ` (${tags.join(', ')})` : '';
+    return this.indented(instructionAccount.name + tagsAsString);
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): string {
+    const children: string[] = [];
+    this.indent += 1;
+    children.push(visit(instructionDataArgs.struct, this));
+    if (instructionDataArgs.link) {
+      children.push(visit(instructionDataArgs.link, this));
+    }
+    this.indent -= 1;
+    return [this.indented('[InstructionDataArgsNode]'), ...children].join('\n');
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): string {
+    const children: string[] = [];
+    this.indent += 1;
+    children.push(visit(instructionExtraArgs.struct, this));
+    if (instructionExtraArgs.link) {
+      children.push(visit(instructionExtraArgs.link, this));
+    }
+    this.indent -= 1;
+    return [this.indented('[InstructionExtraArgsNode]'), ...children].join(
+      '\n'
+    );
+  }
+
   visitDefinedType(definedType: nodes.DefinedTypeNode): string {
     this.indent += 1;
-    const child = definedType.type.accept(this);
+    const data = visit(definedType.data, this);
     this.indent -= 1;
-    return [this.indented(`[DefinedTypeNode] ${definedType.name}`), child].join(
+    return [this.indented(`[DefinedTypeNode] ${definedType.name}`), data].join(
       '\n'
     );
   }
@@ -116,155 +151,146 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     );
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): string {
+  visitArrayType(arrayType: nodes.ArrayTypeNode): string {
     this.indent += 1;
-    const item = typeArray.item.accept(this);
+    const child = visit(arrayType.child, this);
     this.indent -= 1;
-    const size = this.displayArrayLikeSize(typeArray.size);
-    return [this.indented(`[TypeArrayNode] size: ${size}`), item].join('\n');
+    const size = displaySizeStrategy(arrayType.size);
+    return [this.indented(`[ArrayTypeNode] size: ${size}`), child].join('\n');
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): string {
+  visitLinkType(linkType: nodes.LinkTypeNode): string {
     return this.indented(
-      `[TypeDefinedLinkNode] ${typeDefinedLink.name}, ` +
-        `importFrom: ${typeDefinedLink.importFrom}`
+      `[LinkTypeNode] ${linkType.name}, importFrom: ${linkType.importFrom}`
     );
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {
+  visitEnumType(enumType: nodes.EnumTypeNode): string {
     this.indent += 1;
-    const children = typeEnum.variants.map((variant) => variant.accept(this));
+    const children = enumType.variants.map((variant) => visit(variant, this));
     this.indent -= 1;
-    return [
-      this.indented(
-        `[TypeEnumNode]${typeEnum.name ? ` ${typeEnum.name}` : ''}`
-      ),
-      ...children,
-    ].join('\n');
+    return [this.indented('[EnumTypeNode]'), ...children].join('\n');
   }
 
-  visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  visitEnumEmptyVariantType(
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): string {
     return this.indented(
-      `[TypeEnumEmptyVariantNode] ${typeEnumEmptyVariant.name}`
+      `[EnumEmptyVariantTypeNode] ${enumEmptyVariantType.name}`
     );
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): string {
     this.indent += 1;
-    const child = typeEnumStructVariant.struct.accept(this);
+    const child = visit(enumStructVariantType.struct, this);
     this.indent -= 1;
     return [
       this.indented(
-        `[TypeEnumStructVariantNode] ${typeEnumStructVariant.name}`
+        `[EnumStructVariantTypeNode] ${enumStructVariantType.name}`
       ),
       child,
     ].join('\n');
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): string {
     this.indent += 1;
-    const child = typeEnumTupleVariant.tuple.accept(this);
+    const child = visit(enumTupleVariantType.tuple, this);
     this.indent -= 1;
     return [
-      this.indented(`[TypeEnumTupleVariantNode] ${typeEnumTupleVariant.name}`),
+      this.indented(`[EnumTupleVariantTypeNode] ${enumTupleVariantType.name}`),
       child,
     ].join('\n');
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): string {
+  visitMapType(mapType: nodes.MapTypeNode): string {
     const result: string[] = [];
-    const size = this.displayArrayLikeSize(typeMap.size);
+    const size = displaySizeStrategy(mapType.size);
     result.push(
-      this.indented(`[TypeMapNode] size: ${size}, ${typeMap.idlType}`)
+      this.indented(`[MapTypeNode] size: ${size}, ${mapType.idlMap}`)
     );
     this.indent += 1;
     result.push(this.indented('keys:'));
     this.indent += 1;
-    result.push(typeMap.key.accept(this));
+    result.push(visit(mapType.key, this));
     this.indent -= 1;
     result.push(this.indented('values:'));
     this.indent += 1;
-    result.push(typeMap.value.accept(this));
+    result.push(visit(mapType.value, this));
     this.indent -= 1;
     this.indent -= 1;
     return result.join('\n');
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): string {
+  visitOptionType(optionType: nodes.OptionTypeNode): string {
     this.indent += 1;
-    const item = typeOption.item.accept(this);
+    const child = visit(optionType.child, this);
     this.indent -= 1;
-    const prefix = typeOption.prefix.toString();
-    const fixed = typeOption.fixed ? ', fixed' : '';
+    const prefix = optionType.prefix.toString();
+    const fixed = optionType.fixed ? ', fixed' : '';
     return [
-      this.indented(`[TypeOptionNode] prefix: ${prefix}${fixed}`),
-      item,
-    ].join('\n');
-  }
-
-  visitTypeSet(typeSet: nodes.TypeSetNode): string {
-    this.indent += 1;
-    const item = typeSet.item.accept(this);
-    this.indent -= 1;
-    const size = this.displayArrayLikeSize(typeSet.size);
-    return [this.indented(`[TypeSetNode] size: ${size}`), item].join('\n');
-  }
-
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): string {
-    this.indent += 1;
-    const children = typeStruct.fields.map((field) => field.accept(this));
-    this.indent -= 1;
-    return [
-      this.indented(`[TypeStructNode] ${typeStruct.name}`),
-      ...children,
-    ].join('\n');
-  }
-
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): string {
-    this.indent += 1;
-    const child = typeStructField.type.accept(this);
-    this.indent -= 1;
-    return [
-      this.indented(`[TypeStructFieldNode] ${typeStructField.name}`),
+      this.indented(`[OptionTypeNode] prefix: ${prefix}${fixed}`),
       child,
     ].join('\n');
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {
+  visitSetType(setType: nodes.SetTypeNode): string {
     this.indent += 1;
-    const items = typeTuple.items.map((item) => item.accept(this));
+    const child = visit(setType.child, this);
     this.indent -= 1;
-    return [this.indented('[TypeTupleNode]'), ...items].join('\n');
+    const size = displaySizeStrategy(setType.size);
+    return [this.indented(`[SetTypeNode] size: ${size}`), child].join('\n');
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): string {
-    return this.indented(`[TypeBoolNode] ${typeBool.size.toString()}`);
+  visitStructType(structType: nodes.StructTypeNode): string {
+    this.indent += 1;
+    const children = structType.fields.map((field) => visit(field, this));
+    this.indent -= 1;
+    return [this.indented('[StructTypeNode]'), ...children].join('\n');
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): string {
+  visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {
+    this.indent += 1;
+    const child = visit(structFieldType.child, this);
+    this.indent -= 1;
+    return [
+      this.indented(`[StructFieldTypeNode] ${structFieldType.name}`),
+      child,
+    ].join('\n');
+  }
+
+  visitTupleType(tupleType: nodes.TupleTypeNode): string {
+    this.indent += 1;
+    const children = tupleType.children.map((child) => visit(child, this));
+    this.indent -= 1;
+    return [this.indented('[TupleTypeNode]'), ...children].join('\n');
+  }
+
+  visitBoolType(boolType: nodes.BoolTypeNode): string {
+    return this.indented(`[BoolTypeNode] ${boolType.size.toString()}`);
+  }
+
+  visitBytesType(bytesType: nodes.BytesTypeNode): string {
     return this.indented(
-      `[TypeBytesNode] size: ${typeBytes.getSizeAsString()}`
+      `[BytesTypeNode] size: ${displaySizeStrategy(bytesType.size)}`
     );
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): string {
-    return this.indented(`[TypeNumberNode] ${typeNumber.toString()}`);
+  visitNumberType(numberType: nodes.NumberTypeNode): string {
+    return this.indented(`[NumberTypeNode] ${numberType.toString()}`);
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): string {
     this.indent += 1;
-    const item = typeNumberWrapper.item.accept(this);
+    const item = visit(numberWrapperType.number, this);
     this.indent -= 1;
-    const { wrapper } = typeNumberWrapper;
-    const base = `[TypeNumberWrapperNode] ${wrapper.kind}`;
+    const { wrapper } = numberWrapperType;
+    const base = `[NumberWrapperTypeNode] ${wrapper.kind}`;
     switch (wrapper.kind) {
       case 'Amount':
         return [
@@ -280,25 +306,19 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     }
   }
 
-  visitTypePublicKey(): string {
-    return this.indented('[TypePublicKeyNode]');
+  visitPublicKeyType(): string {
+    return this.indented('[PublicKeyTypeNode]');
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): string {
+  visitStringType(stringType: nodes.StringTypeNode): string {
     return this.indented(
-      `[TypeStringNode] ` +
-        `encoding: ${typeString.encoding}, ` +
-        `size: ${typeString.getSizeAsString()}`
+      `[StringTypeNode] ` +
+        `encoding: ${stringType.encoding}, ` +
+        `size: ${displaySizeStrategy(stringType.size)}`
     );
   }
 
   indented(text: string) {
     return this.separator.repeat(this.indent) + text;
-  }
-
-  displayArrayLikeSize(size: nodes.TypeArrayNode['size']): string {
-    if (size.kind === 'fixed') return `${size.size}`;
-    if (size.kind === 'prefixed') return size.prefix.toString();
-    return 'remainder';
   }
 }

@@ -1,6 +1,6 @@
-import { logWarn } from '../../logs';
+import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
-import { camelCase } from '../../utils';
+import { camelCase } from '../../shared';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export type FlattenStructOptions = string[] | '*';
@@ -8,14 +8,10 @@ export type FlattenStructOptions = string[] | '*';
 export class FlattenStructVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, FlattenStructOptions>) {
     const transforms = Object.entries(map).map(
-      ([selectorStack, options]): NodeTransform => {
-        const stack = selectorStack.split('.');
-        const name = stack.pop();
-        return {
-          selector: { type: 'TypeStructNode', stack, name },
-          transformer: (node) => flattenStruct(node, options),
-        };
-      }
+      ([stack, options]): NodeTransform => ({
+        selector: { kind: 'structTypeNode', stack },
+        transformer: (node) => flattenStruct(node, options),
+      })
     );
 
     super(transforms);
@@ -25,15 +21,15 @@ export class FlattenStructVisitor extends TransformNodesVisitor {
 export const flattenStruct = (
   node: nodes.Node,
   options: FlattenStructOptions = '*'
-): nodes.TypeStructNode => {
-  nodes.assertTypeStructNode(node);
+): nodes.StructTypeNode => {
+  nodes.assertStructTypeNode(node);
   const camelCaseOptions = options === '*' ? options : options.map(camelCase);
-  const shouldInline = (field: nodes.TypeStructFieldNode): boolean =>
+  const shouldInline = (field: nodes.StructFieldTypeNode): boolean =>
     options === '*' || camelCaseOptions.includes(camelCase(field.name));
-  const inlinedFields = node.fields.reduce<nodes.TypeStructFieldNode[]>(
+  const inlinedFields = node.fields.reduce<nodes.StructFieldTypeNode[]>(
     (all, one) => {
-      if (nodes.isTypeStructNode(one.type) && shouldInline(one)) {
-        all.push(...one.type.fields);
+      if (nodes.isStructTypeNode(one.child) && shouldInline(one)) {
+        all.push(...one.child.fields);
       } else {
         all.push(one);
       }
@@ -49,14 +45,12 @@ export const flattenStruct = (
 
   if (hasConflictingNames) {
     logWarn(
-      `Cound not flatten the attributes of struct [${node.name}] ` +
+      `Cound not flatten the attributes of a struct ` +
         `since this would cause the following attributes ` +
         `to conflict [${uniqueDuplicates.join(', ')}].` +
         'You may want to rename the conflicting attributes.'
     );
   }
 
-  return hasConflictingNames
-    ? node
-    : new nodes.TypeStructNode(node.name, inlinedFields);
+  return hasConflictingNames ? node : nodes.structTypeNode(inlinedFields);
 };

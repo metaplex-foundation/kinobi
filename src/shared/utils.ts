@@ -1,5 +1,11 @@
 import { readFileSync } from 'fs';
 
+export type PickPartial<T, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>>;
+
+export type PartialExcept<T, K extends keyof T> = Pick<T, K> &
+  Partial<Omit<T, K>>;
+
 export function readJson<T extends object>(value: string): T {
   return JSON.parse(readFileSync(value, 'utf-8')) as T;
 }

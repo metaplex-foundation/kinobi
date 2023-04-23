@@ -9,35 +9,26 @@ type StructDefaultValue =
 export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
   constructor(readonly map: StructDefaultValueMap) {
     const transforms = Object.entries(map).map(
-      ([selectorStack, defaultValues]): NodeTransform => {
-        const stack = selectorStack.split('.');
-        const name = stack.pop();
-        return {
-          selector: { type: 'TypeStructNode', stack, name },
-          transformer: (node) => {
-            nodes.assertTypeStructNode(node);
-            const fields = node.fields.map(
-              (field): nodes.TypeStructFieldNode => {
-                const defaultValue = defaultValues[field.name];
-                if (defaultValue === undefined) return field;
-                return new nodes.TypeStructFieldNode(
-                  {
-                    ...field.metadata,
-                    defaultsTo: !defaultValue
-                      ? null
-                      : {
-                          strategy: defaultValue.strategy ?? 'optional',
-                          value: defaultValue,
-                        },
+      ([stack, defaultValues]): NodeTransform => ({
+        selector: { kind: 'structTypeNode', stack },
+        transformer: (node) => {
+          nodes.assertStructTypeNode(node);
+          const fields = node.fields.map((field): nodes.StructFieldTypeNode => {
+            const defaultValue = defaultValues[field.name];
+            if (defaultValue === undefined) return field;
+            return nodes.structFieldTypeNode({
+              ...field,
+              defaultsTo: !defaultValue
+                ? null
+                : {
+                    strategy: defaultValue.strategy ?? 'optional',
+                    value: defaultValue,
                   },
-                  field.type
-                );
-              }
-            );
-            return new nodes.TypeStructNode(node.name, fields);
-          },
-        };
-      }
+            });
+          });
+          return nodes.structTypeNode(fields);
+        },
+      })
     );
 
     super(transforms);

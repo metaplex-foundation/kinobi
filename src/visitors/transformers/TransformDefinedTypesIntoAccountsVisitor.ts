@@ -16,25 +16,23 @@ export class TransformDefinedTypesIntoAccountsVisitor extends BaseNodeVisitor {
     );
 
     const newAccounts = typesToExtract.map((node) => {
-      nodes.assertTypeStructNode(node.type);
-      return new nodes.AccountNode(
-        {
-          ...node.metadata,
-          size: null,
-          discriminator: null,
-          seeds: [],
-          gpaFields: [],
-        },
-        node.type
-      );
+      nodes.assertStructTypeNode(node.data);
+      return nodes.accountNode({
+        ...node,
+        data: nodes.accountDataNode({
+          name: `${node.name}AccountData`,
+          struct: node.data,
+        }),
+        size: undefined,
+        discriminator: undefined,
+        seeds: [],
+      });
     });
 
-    return new nodes.ProgramNode(
-      program.metadata,
-      [...program.accounts, ...newAccounts],
-      program.instructions,
-      newDefinedTypes,
-      program.errors
-    );
+    return nodes.programNode({
+      ...program,
+      accounts: [...program.accounts, ...newAccounts],
+      definedTypes: newDefinedTypes,
+    });
   }
 }

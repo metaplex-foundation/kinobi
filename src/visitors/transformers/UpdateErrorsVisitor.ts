@@ -8,16 +8,13 @@ import {
 export type ErrorUpdates =
   | NodeTransformer<nodes.ErrorNode>
   | { delete: true }
-  | (Partial<nodes.ErrorNodeMetadata> & {
-      code?: nodes.ErrorNode['code'];
-      message?: nodes.ErrorNode['message'];
-    });
+  | Partial<nodes.ErrorNodeInput>;
 
 export class UpdateErrorsVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, ErrorUpdates>) {
     const transforms = Object.entries(map).map(
       ([name, updates]): NodeTransform => ({
-        selector: { type: 'ErrorNode', name },
+        selector: { kind: 'errorNode', name },
         transformer: (node, stack, program) => {
           nodes.assertErrorNode(node);
           if (typeof updates === 'function') {
@@ -26,12 +23,7 @@ export class UpdateErrorsVisitor extends TransformNodesVisitor {
           if ('delete' in updates) {
             return null;
           }
-          const { code, message, ...metadata } = updates;
-          return new nodes.ErrorNode(
-            { ...node.metadata, ...metadata },
-            code ?? node.code,
-            message ?? node.message
-          );
+          return nodes.errorNode({ ...node, ...updates });
         },
       })
     );

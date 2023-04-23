@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import { mainCase, titleCase } from '../utils';
+import { mainCase, titleCase } from '../shared';
 
 export class NodeStack {
   private readonly stack: nodes.Node[];
@@ -38,39 +38,37 @@ export class NodeStack {
 
   public toStringArray(): string[] {
     return this.stack.map((node): string => {
-      switch (node.nodeClass) {
-        case 'RootNode':
+      switch (node.kind) {
+        case 'rootNode':
           return 'Root';
-        case 'ProgramNode':
+        case 'programNode':
           return node.name ? `Program: ${node.name}` : 'Unnamed Program';
-        case 'AccountNode':
+        case 'accountNode':
           return node.name ? `Account: ${node.name}` : 'Unnamed Account';
-        case 'InstructionNode':
+        case 'instructionNode':
           return node.name
             ? `Instruction: ${node.name}`
             : 'Unnamed Instruction';
-        case 'DefinedTypeNode':
+        case 'instructionAccountNode':
+          return node.name
+            ? `Instruction Account: ${node.name}`
+            : 'Unnamed Instruction Account';
+        case 'definedTypeNode':
           return node.name
             ? `Defined Type: ${node.name}`
             : 'Unnamed Defined Type';
-        case 'ErrorNode':
+        case 'errorNode':
           return node.name ? `Error: ${node.name}` : 'Unnamed Error';
-        case 'TypeEnumNode':
-          return node.name ? `Enum: ${node.name}` : 'Enum';
-        case 'TypeEnumEmptyVariantNode':
-        case 'TypeEnumStructVariantNode':
-        case 'TypeEnumTupleVariantNode':
+        case 'enumEmptyVariantTypeNode':
+        case 'enumStructVariantTypeNode':
+        case 'enumTupleVariantTypeNode':
           return node.name ? `Variant: ${node.name}` : 'Variant';
-        case 'TypeNumberWrapperNode':
+        case 'numberWrapperTypeNode':
           return `Number Wrapper: ${node.wrapper.kind}`;
-        case 'TypeStructNode':
-          return node.name ? `Struct: ${node.name}` : 'Struct';
-        case 'TypeStructFieldNode':
+        case 'structFieldTypeNode':
           return node.name ? `Field: ${node.name}` : 'Field';
         default:
-          return titleCase(
-            node.nodeClass.replace(/Node$/, '').replace(/^Type/, '')
-          );
+          return titleCase(node.kind.replace(/(Type)?Node$/, ''));
       }
     });
   }

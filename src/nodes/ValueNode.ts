@@ -1,4 +1,4 @@
-import { ImportFrom } from '../visitors';
+import { ImportFrom } from '../shared';
 
 export type ValueNode =
   | ScalarValueNode
@@ -12,67 +12,67 @@ export type ValueNode =
   | EnumValueNode;
 
 export type ScalarValueNode =
-  | { __kind: 'number'; value: number }
-  | { __kind: 'boolean'; value: boolean }
-  | { __kind: 'string'; value: string };
+  | { kind: 'number'; value: number }
+  | { kind: 'boolean'; value: boolean }
+  | { kind: 'string'; value: string };
 export const vScalar = (scalar: number | boolean | string): ScalarValueNode => {
-  if (typeof scalar === 'number') return { __kind: 'number', value: scalar };
-  if (typeof scalar === 'boolean') return { __kind: 'boolean', value: scalar };
-  return { __kind: 'string', value: scalar };
+  if (typeof scalar === 'number') return { kind: 'number', value: scalar };
+  if (typeof scalar === 'boolean') return { kind: 'boolean', value: scalar };
+  return { kind: 'string', value: scalar };
 };
 
-export type PublicKeyValueNode = { __kind: 'publicKey'; value: string };
+export type PublicKeyValueNode = { kind: 'publicKey'; value: string };
 export const vPublicKey = (value: string): PublicKeyValueNode => ({
-  __kind: 'publicKey',
+  kind: 'publicKey',
   value,
 });
 
-export type ListValueNode = { __kind: 'list'; values: ValueNode[] };
+export type ListValueNode = { kind: 'list'; values: ValueNode[] };
 export const vList = (values: ValueNode[]): ListValueNode => ({
-  __kind: 'list',
+  kind: 'list',
   values,
 });
 
-export type TupleValueNode = { __kind: 'tuple'; values: ValueNode[] };
+export type TupleValueNode = { kind: 'tuple'; values: ValueNode[] };
 export const vTuple = (values: ValueNode[]): TupleValueNode => ({
-  __kind: 'tuple',
+  kind: 'tuple',
   values,
 });
 
-export type SetValueNode = { __kind: 'set'; values: ValueNode[] };
+export type SetValueNode = { kind: 'set'; values: ValueNode[] };
 export const vSet = (values: ValueNode[]): SetValueNode => ({
-  __kind: 'set',
+  kind: 'set',
   values,
 });
 
-export type MapValueNode = { __kind: 'map'; values: [ValueNode, ValueNode][] };
+export type MapValueNode = { kind: 'map'; values: [ValueNode, ValueNode][] };
 export const vMap = (values: [ValueNode, ValueNode][]): MapValueNode => ({
-  __kind: 'map',
+  kind: 'map',
   values,
 });
 
 export type OptionValueNode =
-  | { __kind: 'optionNone' }
-  | { __kind: 'optionSome'; value: ValueNode };
-export const vNone = (): OptionValueNode => ({ __kind: 'optionNone' });
+  | { kind: 'optionNone' }
+  | { kind: 'optionSome'; value: ValueNode };
+export const vNone = (): OptionValueNode => ({ kind: 'optionNone' });
 export const vSome = (value: ValueNode): OptionValueNode => ({
-  __kind: 'optionSome',
+  kind: 'optionSome',
   value,
 });
 
 export type StructValueNode = {
-  __kind: 'struct';
+  kind: 'struct';
   values: Record<string, ValueNode>;
 };
 export const vStruct = (
   values: Record<string, ValueNode>
 ): StructValueNode => ({
-  __kind: 'struct',
+  kind: 'struct',
   values,
 });
 
 export type EnumValueNode = {
-  __kind: 'enum';
+  kind: 'enum';
   enumType: string;
   variant: string;
   value: StructValueNode | TupleValueNode | 'empty' | 'scalar';
@@ -84,7 +84,7 @@ export const vEnum = (
   value?: StructValueNode | TupleValueNode | 'empty' | 'scalar',
   importFrom?: ImportFrom | null
 ): EnumValueNode => ({
-  __kind: 'enum',
+  kind: 'enum',
   enumType,
   variant,
   value: value ?? 'scalar',

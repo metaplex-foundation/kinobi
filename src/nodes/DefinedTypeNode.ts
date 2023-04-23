@@ -1,62 +1,57 @@
 import type { IdlDefinedType } from '../idl';
-import { mainCase } from '../utils';
-import type { Visitable, Visitor } from '../visitors';
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import type { Node } from './Node';
-import { createTypeNodeFromIdl, TypeNode } from './TypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type DefinedTypeNodeMetadata = {
-  name: string;
-  idlName: string;
-  docs: string[];
-  internal: boolean;
+export type DefinedTypeNode = {
+  readonly __definedTypeNode: unique symbol;
+  readonly kind: 'definedTypeNode';
+  readonly name: string;
+  readonly data: TypeNode;
+  readonly idlName: string;
+  readonly docs: string[];
+  readonly internal: boolean;
 };
 
-export class DefinedTypeNode implements Visitable {
-  readonly nodeClass = 'DefinedTypeNode' as const;
+export type DefinedTypeNodeInput = {
+  readonly name: string;
+  readonly data: TypeNode;
+  readonly idlName?: string;
+  readonly docs?: string[];
+  readonly internal?: boolean;
+};
 
-  readonly metadata: DefinedTypeNodeMetadata;
-
-  readonly type: TypeNode;
-
-  constructor(metadata: DefinedTypeNodeMetadata, type: TypeNode) {
-    this.metadata = { ...metadata, name: mainCase(metadata.name) };
-    this.type = type;
+export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
+  if (!input.name) {
+    throw new InvalidKinobiTreeError('DefinedTypeNode must have a name.');
   }
+  return {
+    kind: 'definedTypeNode',
+    name: mainCase(input.name),
+    data: input.data,
+    idlName: input.idlName ?? input.name,
+    docs: input.docs ?? [],
+    internal: input.internal ?? false,
+  } as DefinedTypeNode;
+}
 
-  static fromIdl(idl: Partial<IdlDefinedType>): DefinedTypeNode {
-    const name = idl.name ?? '';
-    const docs = idl.docs ?? [];
-    const idlType = idl.type ?? { kind: 'struct', fields: [] };
-    const type = createTypeNodeFromIdl({ name, ...idlType });
-    return new DefinedTypeNode(
-      { name, idlName: name, docs, internal: false },
-      type
-    );
-  }
-
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitDefinedType(this);
-  }
-
-  get name(): string {
-    return this.metadata.name;
-  }
-
-  get docs(): string[] {
-    return this.metadata.docs;
-  }
+export function definedTypeNodeFromIdl(
+  idl: Partial<IdlDefinedType>
+): DefinedTypeNode {
+  const name = idl.name ?? '';
+  const idlType = idl.type ?? { kind: 'struct', fields: [] };
+  const data = createTypeNodeFromIdl(idlType);
+  return definedTypeNode({ name, data, idlName: name, docs: idl.docs });
 }
 
 export function isDefinedTypeNode(node: Node | null): node is DefinedTypeNode {
-  return !!node && node.nodeClass === 'DefinedTypeNode';
+  return !!node && node.kind === 'definedTypeNode';
 }
 
 export function assertDefinedTypeNode(
   node: Node | null
 ): asserts node is DefinedTypeNode {
   if (!isDefinedTypeNode(node)) {
-    throw new Error(
-      `Expected DefinedTypeNode, got ${node?.nodeClass ?? 'null'}.`
-    );
+    throw new Error(`Expected definedTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

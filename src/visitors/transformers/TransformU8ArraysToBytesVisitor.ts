@@ -1,31 +1,31 @@
+import { fixedSize } from '../../shared';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
+import { visit } from '../Visitor';
 
 export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
   constructor(readonly sizes: number[] | '*' = [32, 64]) {
     super();
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node {
-    const item = typeArray.item.accept(this);
-    nodes.assertTypeNode(item);
+  visitArrayType(arrayType: nodes.ArrayTypeNode): nodes.Node {
+    const child = visit(arrayType.child, this);
+    nodes.assertTypeNode(child);
 
     if (
-      nodes.isTypeNumberNode(item) &&
-      item.format === 'u8' &&
-      typeArray.size.kind === 'fixed' &&
-      this.hasRequiredSize(typeArray.size)
+      nodes.isNumberTypeNode(child) &&
+      child.format === 'u8' &&
+      arrayType.size.kind === 'fixed' &&
+      this.hasRequiredSize(arrayType.size)
     ) {
-      return new nodes.TypeBytesNode({
-        size: { kind: 'fixed', bytes: typeArray.size.size },
-      });
+      return nodes.bytesTypeNode(fixedSize(arrayType.size.value));
     }
 
-    return new nodes.TypeArrayNode(item, { ...typeArray });
+    return nodes.arrayTypeNode(child, { ...arrayType });
   }
 
-  protected hasRequiredSize(size: nodes.TypeArrayNode['size']): boolean {
+  protected hasRequiredSize(size: nodes.ArrayTypeNode['size']): boolean {
     if (size.kind !== 'fixed') return false;
-    return this.sizes === '*' || this.sizes.includes(size.size);
+    return this.sizes === '*' || this.sizes.includes(size.value);
   }
 }

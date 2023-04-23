@@ -56,11 +56,51 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedAccount);
   }
 
+  visitAccountData(accountData: nodes.AccountDataNode): nodes.Node | null {
+    this.stack.push(accountData);
+    const visitedAccountData = super.visitAccountData(accountData);
+    this.stack.pop();
+    return this.applyTransforms(visitedAccountData);
+  }
+
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
     this.stack.push(instruction);
     const visitedInstruction = super.visitInstruction(instruction);
     this.stack.pop();
     return this.applyTransforms(visitedInstruction);
+  }
+
+  visitInstructionAccount(
+    instructionAccount: nodes.InstructionAccountNode
+  ): nodes.Node | null {
+    this.stack.push(instructionAccount);
+    const visitedInstructionAccount = super.visitInstructionAccount(
+      instructionAccount
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedInstructionAccount);
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): nodes.Node | null {
+    this.stack.push(instructionDataArgs);
+    const visitedInstructionDataArgs = super.visitInstructionDataArgs(
+      instructionDataArgs
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedInstructionDataArgs);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): nodes.Node | null {
+    this.stack.push(instructionExtraArgs);
+    const visitedInstructionExtraArgs = super.visitInstructionExtraArgs(
+      instructionExtraArgs
+    );
+    this.stack.pop();
+    return this.applyTransforms(visitedInstructionExtraArgs);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node | null {
@@ -77,150 +117,148 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedError);
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): nodes.Node | null {
-    this.stack.push(typeArray);
-    const visitedTypeArray = super.visitTypeArray(typeArray);
+  visitArrayType(arrayType: nodes.ArrayTypeNode): nodes.Node | null {
+    this.stack.push(arrayType);
+    const visitedTypeArray = super.visitArrayType(arrayType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeArray);
   }
 
-  visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode
-  ): nodes.Node | null {
-    this.stack.push(typeDefinedLink);
-    const visitedTypeDefinedLink = super.visitTypeDefinedLink(typeDefinedLink);
+  visitLinkType(linkType: nodes.LinkTypeNode): nodes.Node | null {
+    this.stack.push(linkType);
+    const visitedTypeDefinedLink = super.visitLinkType(linkType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeDefinedLink);
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): nodes.Node | null {
-    this.stack.push(typeEnum);
-    const visitedTypeEnum = super.visitTypeEnum(typeEnum);
+  visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node | null {
+    this.stack.push(enumType);
+    const visitedTypeEnum = super.visitEnumType(enumType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnum);
   }
 
-  visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  visitEnumEmptyVariantType(
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeEnumEmptyVariant);
-    const visitedTypeEnumEmptyVariant = super.visitTypeEnumEmptyVariant(
-      typeEnumEmptyVariant
+    this.stack.push(enumEmptyVariantType);
+    const visitedTypeEnumEmptyVariant = super.visitEnumEmptyVariantType(
+      enumEmptyVariantType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnumEmptyVariant);
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeEnumStructVariant);
-    const visitedTypeEnumStructVariant = super.visitTypeEnumStructVariant(
-      typeEnumStructVariant
+    this.stack.push(enumStructVariantType);
+    const visitedTypeEnumStructVariant = super.visitEnumStructVariantType(
+      enumStructVariantType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnumStructVariant);
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeEnumTupleVariant);
-    const visitedTypeEnumTupleVariant = super.visitTypeEnumTupleVariant(
-      typeEnumTupleVariant
+    this.stack.push(enumTupleVariantType);
+    const visitedTypeEnumTupleVariant = super.visitEnumTupleVariantType(
+      enumTupleVariantType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeEnumTupleVariant);
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): nodes.Node | null {
-    this.stack.push(typeMap);
-    const visitedTypeMap = super.visitTypeMap(typeMap);
+  visitMapType(mapType: nodes.MapTypeNode): nodes.Node | null {
+    this.stack.push(mapType);
+    const visitedTypeMap = super.visitMapType(mapType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeMap);
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): nodes.Node | null {
-    this.stack.push(typeOption);
-    const visitedTypeOption = super.visitTypeOption(typeOption);
+  visitOptionType(optionType: nodes.OptionTypeNode): nodes.Node | null {
+    this.stack.push(optionType);
+    const visitedTypeOption = super.visitOptionType(optionType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeOption);
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): nodes.Node | null {
-    this.stack.push(typeSet);
-    const visitedTypeSet = super.visitTypeSet(typeSet);
+  visitSetType(setType: nodes.SetTypeNode): nodes.Node | null {
+    this.stack.push(setType);
+    const visitedTypeSet = super.visitSetType(setType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeSet);
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): nodes.Node | null {
-    this.stack.push(typeStruct);
-    const visitedTypeStruct = super.visitTypeStruct(typeStruct);
+  visitStructType(structType: nodes.StructTypeNode): nodes.Node | null {
+    this.stack.push(structType);
+    const visitedTypeStruct = super.visitStructType(structType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeStruct);
   }
 
-  visitTypeStructField(
-    typeStructField: nodes.TypeStructFieldNode
+  visitStructFieldType(
+    structFieldType: nodes.StructFieldTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeStructField);
-    const visitedTypeStructField = super.visitTypeStructField(typeStructField);
+    this.stack.push(structFieldType);
+    const visitedTypeStructField = super.visitStructFieldType(structFieldType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeStructField);
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): nodes.Node | null {
-    this.stack.push(typeTuple);
-    const visitedTypeTuple = super.visitTypeTuple(typeTuple);
+  visitTupleType(tupleType: nodes.TupleTypeNode): nodes.Node | null {
+    this.stack.push(tupleType);
+    const visitedTypeTuple = super.visitTupleType(tupleType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeTuple);
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): nodes.Node | null {
-    this.stack.push(typeBool);
-    const visitedTypeBool = super.visitTypeBool(typeBool);
+  visitBoolType(boolType: nodes.BoolTypeNode): nodes.Node | null {
+    this.stack.push(boolType);
+    const visitedTypeBool = super.visitBoolType(boolType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeBool);
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): nodes.Node | null {
-    this.stack.push(typeBytes);
-    const visitedTypeBytes = super.visitTypeBytes(typeBytes);
+  visitBytesType(bytesType: nodes.BytesTypeNode): nodes.Node | null {
+    this.stack.push(bytesType);
+    const visitedTypeBytes = super.visitBytesType(bytesType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeBytes);
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): nodes.Node | null {
-    this.stack.push(typeNumber);
-    const visitedTypeNumber = super.visitTypeNumber(typeNumber);
+  visitNumberType(numberType: nodes.NumberTypeNode): nodes.Node | null {
+    this.stack.push(numberType);
+    const visitedTypeNumber = super.visitNumberType(numberType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeNumber);
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): nodes.Node | null {
-    this.stack.push(typeNumberWrapper);
-    const visitedTypeNumberWrapper = super.visitTypeNumberWrapper(
-      typeNumberWrapper
+    this.stack.push(numberWrapperType);
+    const visitedTypeNumberWrapper = super.visitNumberWrapperType(
+      numberWrapperType
     );
     this.stack.pop();
     return this.applyTransforms(visitedTypeNumberWrapper);
   }
 
-  visitTypePublicKey(
-    typePublicKey: nodes.TypePublicKeyNode
+  visitPublicKeyType(
+    publicKeyType: nodes.PublicKeyTypeNode
   ): nodes.Node | null {
-    this.stack.push(typePublicKey);
-    const visitedTypePublicKey = super.visitTypePublicKey(typePublicKey);
+    this.stack.push(publicKeyType);
+    const visitedTypePublicKey = super.visitPublicKeyType(publicKeyType);
     this.stack.pop();
     return this.applyTransforms(visitedTypePublicKey);
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): nodes.Node | null {
-    this.stack.push(typeString);
-    const visitedTypeString = super.visitTypeString(typeString);
+  visitStringType(stringType: nodes.StringTypeNode): nodes.Node | null {
+    this.stack.push(stringType);
+    const visitedTypeString = super.visitStringType(stringType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeString);
   }

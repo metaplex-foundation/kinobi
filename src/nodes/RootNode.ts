@@ -1,64 +1,54 @@
 import type { Idl } from '../idl';
-import { readJson } from '../utils';
-import type { Visitable, Visitor } from '../visitors';
+import { readJson } from '../shared';
 import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
+import type { ErrorNode } from './ErrorNode';
 import type { InstructionNode } from './InstructionNode';
 import type { Node } from './Node';
-import { ProgramNode } from './ProgramNode';
+import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
-export type ProgramInput = string | Partial<Idl>;
-export type ProgramInputs = ProgramInput | ProgramInput[];
+export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
 
-export class RootNode implements Visitable {
-  readonly nodeClass = 'RootNode' as const;
-
+export type RootNode = {
+  readonly __rootNode: unique symbol;
+  readonly kind: 'rootNode';
   readonly programs: ProgramNode[];
+};
 
-  constructor(programs: ProgramNode[]) {
-    this.programs = programs;
-  }
+export function rootNode(programs: ProgramNode[]): RootNode {
+  return { kind: 'rootNode', programs } as RootNode;
+}
 
-  static fromIdls(idls: Partial<Idl>[]): RootNode {
-    const programs = idls.map((idl) => ProgramNode.fromIdl(idl));
-    return new RootNode(programs);
-  }
+export function rootNodeFromIdls(idls: IdlInputs): RootNode {
+  const idlArray = Array.isArray(idls) ? idls : [idls];
+  const programs = idlArray
+    .map((idl) => (typeof idl === 'string' ? readJson<Partial<Idl>>(idl) : idl))
+    .map((idl) => programNodeFromIdl(idl));
+  return rootNode(programs);
+}
 
-  static fromProgramInputs(inputs: ProgramInputs): RootNode {
-    const inputArray = Array.isArray(inputs) ? inputs : [inputs];
-    const idlArray = inputArray.map((program) =>
-      typeof program === 'string' ? readJson<Partial<Idl>>(program) : program
-    );
-    return RootNode.fromIdls(idlArray);
-  }
+export function getAllAccounts(node: RootNode): AccountNode[] {
+  return node.programs.flatMap((program) => program.accounts);
+}
 
-  accept<T>(visitor: Visitor<T>): T {
-    return visitor.visitRoot(this);
-  }
+export function getAllDefinedTypes(node: RootNode): DefinedTypeNode[] {
+  return node.programs.flatMap((program) => program.definedTypes);
+}
 
-  get allAccounts(): AccountNode[] {
-    return this.programs.flatMap((program) => program.accounts);
-  }
+export function getAllInstructions(node: RootNode): InstructionNode[] {
+  return node.programs.flatMap((program) => program.instructions);
+}
 
-  get allInstructions(): InstructionNode[] {
-    return this.programs.flatMap((program) => program.instructions);
-  }
-
-  get allInstructionsWithSubs(): InstructionNode[] {
-    return this.programs.flatMap((program) => program.instructionsWithSubs);
-  }
-
-  get allDefinedTypes(): DefinedTypeNode[] {
-    return this.programs.flatMap((program) => program.definedTypes);
-  }
+export function getAllErrors(node: RootNode): ErrorNode[] {
+  return node.programs.flatMap((program) => program.errors);
 }
 
 export function isRootNode(node: Node | null): node is RootNode {
-  return !!node && node.nodeClass === 'RootNode';
+  return !!node && node.kind === 'rootNode';
 }
 
 export function assertRootNode(node: Node | null): asserts node is RootNode {
   if (!isRootNode(node)) {
-    throw new Error(`Expected RootNode, got ${node?.nodeClass ?? 'null'}.`);
+    throw new Error(`Expected rootNode, got ${node?.kind ?? 'null'}.`);
   }
 }

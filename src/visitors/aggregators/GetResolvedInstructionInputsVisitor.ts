@@ -1,31 +1,30 @@
+import { InstructionArgDefault, InstructionDependency } from '../../shared';
 import type * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
-type InstructionNodeInput =
-  | ({ kind: 'arg' } & InstructionNodeArg)
-  | ({ kind: 'account' } & nodes.InstructionNodeAccount);
-
-type InstructionNodeArg = {
-  name: string;
-  defaultsTo: nodes.InstructionNodeArgDefaults;
-};
-
-export type ResolvedInstructionAccount = nodes.InstructionNodeAccount & {
-  kind: 'account';
-  isPda: boolean;
-  dependsOn: nodes.InstructionNodeInputDependency[];
-  resolvedIsSigner: boolean | 'either';
-  resolvedIsOptional: boolean;
-};
-
-export type ResolvedInstructionArg = InstructionNodeArg & {
+type InstructionNodeInput = InstructionArg | InstructionAccount;
+type InstructionArg = {
   kind: 'arg';
-  dependsOn: nodes.InstructionNodeInputDependency[];
+  name: string;
+  defaultsTo: InstructionArgDefault;
 };
+type InstructionAccount = { kind: 'account' } & Omit<
+  nodes.InstructionAccountNode,
+  'kind'
+>;
 
 export type ResolvedInstructionInput =
   | ResolvedInstructionAccount
   | ResolvedInstructionArg;
+export type ResolvedInstructionAccount = InstructionAccount & {
+  isPda: boolean;
+  dependsOn: InstructionDependency[];
+  resolvedIsSigner: boolean | 'either';
+  resolvedIsOptional: boolean;
+};
+export type ResolvedInstructionArg = InstructionArg & {
+  dependsOn: InstructionDependency[];
+};
 
 export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
   ResolvedInstructionInput[]
@@ -56,10 +55,10 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
     const inputs: InstructionNodeInput[] = [
       ...instruction.accounts.map((account) => ({
-        kind: 'account' as const,
         ...account,
+        kind: 'account' as const,
       })),
-      ...Object.entries(instruction.metadata.argDefaults).map(
+      ...Object.entries(instruction.argDefaults).map(
         ([argName, argDefault]) => ({
           kind: 'arg' as const,
           name: argName,
@@ -122,10 +121,10 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
   resolveInstructionAccount(
     instruction: nodes.InstructionNode,
-    account: nodes.InstructionNodeAccount & { kind: 'account' }
+    account: InstructionAccount
   ): ResolvedInstructionAccount {
     // Get account dependencies.
-    const dependsOn: nodes.InstructionNodeInputDependency[] = [];
+    const dependsOn: InstructionDependency[] = [];
     if (account.defaultsTo?.kind === 'account') {
       dependsOn.push({ kind: 'account', name: account.defaultsTo.name });
     } else if (account.defaultsTo?.kind === 'pda') {
@@ -151,7 +150,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
     const resolved: ResolvedInstructionAccount = {
       ...account,
-      isPda: Object.values(instruction.metadata.argDefaults).some(
+      isPda: Object.values(instruction.argDefaults).some(
         (argDefault) =>
           argDefault.kind === 'accountBump' && argDefault.name === account.name
       ),
@@ -206,7 +205,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
         break;
       case 'resolver':
         resolved.resolvedIsOptional =
-          resolved.defaultsTo.resolvedIsOptional ?? resolved.resolvedIsOptional;
+          resolved.defaultsTo.resolvedIsOptional ?? false;
         resolved.resolvedIsSigner =
           resolved.defaultsTo.resolvedIsSigner ?? resolved.resolvedIsSigner;
         break;
@@ -219,10 +218,10 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
   resolveInstructionArg(
     instruction: nodes.InstructionNode,
-    arg: InstructionNodeArg & { kind: 'arg' }
+    arg: InstructionArg & { kind: 'arg' }
   ): ResolvedInstructionArg {
     // Get account dependencies.
-    const dependsOn: nodes.InstructionNodeInputDependency[] = [];
+    const dependsOn: InstructionDependency[] = [];
     if (
       arg.defaultsTo.kind === 'account' ||
       arg.defaultsTo.kind === 'accountBump'
@@ -243,7 +242,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
   resolveInstructionDependencies(
     instruction: nodes.InstructionNode,
     parent: InstructionNodeInput,
-    dependencies: nodes.InstructionNodeInputDependency[]
+    dependencies: InstructionDependency[]
   ): void {
     dependencies.forEach((dependency) => {
       let input: InstructionNodeInput | null = null;
@@ -257,10 +256,9 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
             `"${parent.name}" in the "${instruction.name}" instruction.`;
           throw new Error(this.error);
         }
-        input = { kind: 'account', ...dependencyAccount };
+        input = { ...dependencyAccount, kind: 'account' };
       } else if (dependency.kind === 'arg') {
-        const dependencyArg =
-          instruction.metadata.argDefaults[dependency.name] ?? null;
+        const dependencyArg = instruction.argDefaults[dependency.name] ?? null;
         if (dependencyArg) {
           input = {
             kind: 'arg',

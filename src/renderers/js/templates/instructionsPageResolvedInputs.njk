@@ -1,10 +1,10 @@
-{% set hasResolvedAccounts = accounts.length > 0 or instruction.hasResolvers %}
-{% set hasResolvedArgs = instruction.hasArgs or instruction.hasArgDefaults or instruction.hasResolvers %}
-{% macro getAccountObject(name, accountsObj) -%}
-  {{ 'resolvingAccounts' if accountsWithDefaults.includes(name) else accountsObj }}
+{% set hasResolvedAccounts = accounts.length > 0 or hasResolvers %}
+{% set hasResolvedArgs = hasDataArgs or hasArgDefaults or hasResolvers %}
+{% macro getAccountVar(name, accountsObj) -%}
+  {{ 'resolvingAccounts' if accountsWithDefaults.includes(name) else accountsObj }}.{{ name | camelCase }}
 {%- endmacro %}
-{% macro getArgObject(name, argsObj) -%}
-  {{ 'resolvingArgs' if argsWithDefaults.includes(name) else argsObj }}
+{% macro getArgVar(name, argsObj) -%}
+  {{ 'resolvingArgs' if argsWithDefaults.includes(name) else argsObj }}.{{ name | camelCase }}
 {%- endmacro %}
 
 {% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
@@ -19,7 +19,7 @@
     {% if input.kind === 'account' %}
       {% set accountPrefix %}resolvingAccounts, '{{ input.name | camelCase }}', {{ accountsObj }}.{{ input.name | camelCase }} ??{% endset %}
       {% if input.defaultsTo.kind === 'account' %}
-        addObjectProperty({{ accountPrefix }} {{ getAccountObject(input.defaultsTo.name, accountsObj) }}.{{ input.defaultsTo.name | camelCase }});
+        addObjectProperty({{ accountPrefix }} {{ getAccountVar(input.defaultsTo.name, accountsObj) }});
       {% elif input.defaultsTo.kind === 'pda' %}
         addObjectProperty({{ accountPrefix }} find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
         {%- if (input.defaultsTo.seeds | length) > 0 -%}
@@ -28,9 +28,9 @@
               {%- if seedValue.kind === 'value' -%}
                 {{ seedKey }}: {{ seedValue.render }},
               {%- elif seedValue.kind === 'account' -%}
-                {{ seedKey }}: publicKey({{ getAccountObject(seedValue.name, accountsObj) }}.{{ seedValue.name | camelCase }}),
+                {{ seedKey }}: publicKey({{ getAccountVar(seedValue.name, accountsObj) }}),
               {%- else -%}
-                {{ seedKey }}: {{ getArgObject(seedValue.name, accountsObj) }}.{{ seedValue.name | camelCase }},
+                {{ seedKey }}: {{ getArgVar(seedValue.name, argsObj) }},
               {%- endif -%}
             {%- endfor -%}
           }
@@ -56,11 +56,11 @@
     {% elif input.kind === 'arg' %}
       {% set argPrefix %}resolvingArgs, '{{ input.name | camelCase }}', {{ argsObj }}.{{ input.name | camelCase }} ??{% endset %}
       {% if input.defaultsTo.kind === 'arg' %}
-        addObjectProperty({{ argPrefix }} {{ getArgObject(input.defaultsTo.name, argsObj) }}.{{ input.defaultsTo.name | camelCase }});
+        addObjectProperty({{ argPrefix }} {{ getArgVar(input.defaultsTo.name, argsObj) }});
       {% elif input.defaultsTo.kind === 'account' %}
-        addObjectProperty({{ argPrefix }} {{ getAccountObject(input.defaultsTo.name, accountsObj) }}.{{ input.defaultsTo.name | camelCase }});
+        addObjectProperty({{ argPrefix }} {{ getAccountVar(input.defaultsTo.name, accountsObj) }});
       {% elif input.defaultsTo.kind === 'accountBump' %}
-        addObjectProperty({{ argPrefix }} {{ getAccountObject(input.defaultsTo.name, accountsObj) }}.{{ input.defaultsTo.name | camelCase }}.bump);
+        addObjectProperty({{ argPrefix }} {{ getAccountVar(input.defaultsTo.name, accountsObj) }}.bump);
       {% elif input.defaultsTo.kind === 'value' %}
         addObjectProperty({{ argPrefix }} {{ input.defaultsTo.render }});
       {% elif input.defaultsTo.kind === 'resolver' %}

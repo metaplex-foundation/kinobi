@@ -1,32 +1,61 @@
 import * as nodes from '../nodes';
-import type { Visitor } from './Visitor';
+import { Visitor, visit } from './Visitor';
 
 export abstract class BaseVoidVisitor implements Visitor<void> {
   visitRoot(root: nodes.RootNode): void {
-    root.programs.forEach((program) => program.accept(this));
+    root.programs.forEach((program) => visit(program, this));
   }
 
   visitProgram(program: nodes.ProgramNode): void {
-    program.accounts.forEach((account) => account.accept(this));
-    program.instructions.forEach((instruction) => instruction.accept(this));
-    program.definedTypes.forEach((type) => type.accept(this));
-    program.errors.forEach((type) => type.accept(this));
+    program.accounts.forEach((account) => visit(account, this));
+    program.instructions.forEach((instruction) => visit(instruction, this));
+    program.definedTypes.forEach((type) => visit(type, this));
+    program.errors.forEach((type) => visit(type, this));
   }
 
   visitAccount(account: nodes.AccountNode): void {
-    account.type.accept(this);
-    account.variableSeeds.forEach((seed) => seed.type.accept(this));
-    account.metadata.gpaFields.forEach((field) => field.type.accept(this));
+    visit(account.data, this);
+    account.seeds.forEach((seed) => {
+      if (seed.kind !== 'variable') return;
+      visit(seed.type, this);
+    });
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): void {
+    visit(accountData.struct, this);
+    if (accountData.link) visit(accountData.link, this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): void {
-    instruction.args.accept(this);
-    instruction.extraArgs?.accept(this);
-    instruction.subInstructions.forEach((ix) => ix.accept(this));
+    visit(instruction.dataArgs, this);
+    visit(instruction.extraArgs, this);
+    instruction.accounts.forEach((account) => visit(account, this));
+    instruction.subInstructions.forEach((ix) => visit(ix, this));
+  }
+
+  visitInstructionAccount(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    instructionAccount: nodes.InstructionAccountNode
+  ): void {
+    //
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): void {
+    visit(instructionDataArgs.struct, this);
+    if (instructionDataArgs.link) visit(instructionDataArgs.link, this);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): void {
+    visit(instructionExtraArgs.struct, this);
+    if (instructionExtraArgs.link) visit(instructionExtraArgs.link, this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): void {
-    definedType.type.accept(this);
+    visit(definedType.data, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,89 +63,89 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     //
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): void {
-    typeArray.item.accept(this);
+  visitArrayType(arrayType: nodes.ArrayTypeNode): void {
+    visit(arrayType.child, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): void {
+  visitLinkType(linkType: nodes.LinkTypeNode): void {
     //
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): void {
-    typeEnum.variants.forEach((variant) => variant.accept(this));
+  visitEnumType(enumType: nodes.EnumTypeNode): void {
+    enumType.variants.forEach((variant) => visit(variant, this));
   }
 
-  visitTypeEnumEmptyVariant(
+  visitEnumEmptyVariantType(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): void {
     //
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): void {
-    typeEnumStructVariant.struct.accept(this);
+    visit(enumStructVariantType.struct, this);
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): void {
-    typeEnumTupleVariant.tuple.accept(this);
+    visit(enumTupleVariantType.tuple, this);
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): void {
-    typeMap.key.accept(this);
-    typeMap.value.accept(this);
+  visitMapType(mapType: nodes.MapTypeNode): void {
+    visit(mapType.key, this);
+    visit(mapType.value, this);
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): void {
-    typeOption.item.accept(this);
+  visitOptionType(optionType: nodes.OptionTypeNode): void {
+    visit(optionType.child, this);
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): void {
-    typeSet.item.accept(this);
+  visitSetType(setType: nodes.SetTypeNode): void {
+    visit(setType.child, this);
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): void {
-    typeStruct.fields.forEach((field) => field.accept(this));
+  visitStructType(structType: nodes.StructTypeNode): void {
+    structType.fields.forEach((field) => visit(field, this));
   }
 
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): void {
-    typeStructField.type.accept(this);
+  visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): void {
+    visit(structFieldType.child, this);
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): void {
-    typeTuple.items.forEach((item) => item.accept(this));
+  visitTupleType(tupleType: nodes.TupleTypeNode): void {
+    tupleType.children.forEach((child) => visit(child, this));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeBool(typeBool: nodes.TypeBoolNode): void {
+  visitBoolType(boolType: nodes.BoolTypeNode): void {
     //
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): void {
+  visitBytesType(bytesType: nodes.BytesTypeNode): void {
     //
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): void {
+  visitNumberType(numberType: nodes.NumberTypeNode): void {
     //
   }
 
-  visitTypeNumberWrapper(typeNumberWrapper: nodes.TypeNumberWrapperNode): void {
-    typeNumberWrapper.item.accept(this);
+  visitNumberWrapperType(numberWrapperType: nodes.NumberWrapperTypeNode): void {
+    visit(numberWrapperType.number, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): void {
+  visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): void {
     //
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitTypeString(typeString: nodes.TypeStringNode): void {
+  visitStringType(stringType: nodes.StringTypeNode): void {
     //
   }
 }

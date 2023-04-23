@@ -57,7 +57,7 @@ export function getDelegateRecordAccountDataSerializer(
         ['role', getDelegateRoleSerializer(context)],
         ['bump', s.u8()],
       ],
-      { description: 'DelegateRecord' }
+      { description: 'DelegateRecordAccountData' }
     ),
     (value) => ({ ...value, key: TmKey.Delegate } as DelegateRecordAccountData)
   ) as Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;

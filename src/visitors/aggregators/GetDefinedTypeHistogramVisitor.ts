@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { Visitor } from '../Visitor';
+import { Visitor, visit } from '../Visitor';
 
 export type DefinedTypeHistogram = {
   [key: string]: {
@@ -20,41 +20,66 @@ export class GetDefinedTypeHistogramVisitor
 
   visitRoot(root: nodes.RootNode): DefinedTypeHistogram {
     return this.mergeHistograms(
-      root.programs.map((program) => program.accept(this))
+      root.programs.map((program) => visit(program, this))
     );
   }
 
   visitProgram(program: nodes.ProgramNode): DefinedTypeHistogram {
     return this.mergeHistograms([
-      ...program.accounts.map((account) => account.accept(this)),
-      ...program.instructions.map((instruction) => instruction.accept(this)),
-      ...program.definedTypes.map((type) => type.accept(this)),
+      ...program.accounts.map((account) => visit(account, this)),
+      ...program.instructions.map((instruction) => visit(instruction, this)),
+      ...program.definedTypes.map((type) => visit(type, this)),
     ]);
   }
 
   visitAccount(account: nodes.AccountNode): DefinedTypeHistogram {
     this.mode = 'account';
     this.stackLevel = 0;
-    const histogram = account.type.accept(this);
+    const histogram = visit(account.data, this);
     this.mode = null;
     return histogram;
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): DefinedTypeHistogram {
+    return visit(accountData.struct, this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): DefinedTypeHistogram {
     this.mode = 'instruction';
     this.stackLevel = 0;
-    const histogram = instruction.args.accept(this);
+    const dataHistogram = visit(instruction.dataArgs, this);
+    const extraHistogram = visit(instruction.extraArgs, this);
     this.mode = null;
     const subHistograms = instruction.subInstructions.map((ix) =>
-      ix.accept(this)
+      visit(ix, this)
     );
-    return this.mergeHistograms([histogram, ...subHistograms]);
+    return this.mergeHistograms([
+      dataHistogram,
+      extraHistogram,
+      ...subHistograms,
+    ]);
+  }
+
+  visitInstructionAccount(): DefinedTypeHistogram {
+    return {};
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): DefinedTypeHistogram {
+    return visit(instructionDataArgs.struct, this);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): DefinedTypeHistogram {
+    return visit(instructionExtraArgs.struct, this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): DefinedTypeHistogram {
     this.mode = 'definedType';
     this.stackLevel = 0;
-    const histogram = definedType.type.accept(this);
+    const histogram = visit(definedType.data, this);
     this.mode = null;
     return histogram;
   }
@@ -63,22 +88,20 @@ export class GetDefinedTypeHistogramVisitor
     return {};
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): DefinedTypeHistogram {
+  visitArrayType(arrayType: nodes.ArrayTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeArray.item.accept(this);
+    const histogram = visit(arrayType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode
-  ): DefinedTypeHistogram {
-    if (typeDefinedLink.importFrom !== 'generated') {
+  visitLinkType(linkType: nodes.LinkTypeNode): DefinedTypeHistogram {
+    if (linkType.importFrom !== 'generated') {
       return {};
     }
 
     return {
-      [typeDefinedLink.name]: {
+      [linkType.name]: {
         total: 1,
         inAccounts: Number(this.mode === 'account'),
         inDefinedTypes: Number(this.mode === 'definedType'),
@@ -90,114 +113,114 @@ export class GetDefinedTypeHistogramVisitor
     };
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): DefinedTypeHistogram {
+  visitEnumType(enumType: nodes.EnumTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeEnum.variants.map((variant) => variant.accept(this))
+      enumType.variants.map((variant) => visit(variant, this))
     );
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeEnumEmptyVariant(): DefinedTypeHistogram {
+  visitEnumEmptyVariantType(): DefinedTypeHistogram {
     return {};
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeEnumStructVariant.struct.accept(this);
+    const histogram = visit(enumStructVariantType.struct, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeEnumTupleVariant.tuple.accept(this);
+    const histogram = visit(enumTupleVariantType.tuple, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): DefinedTypeHistogram {
+  visitMapType(mapType: nodes.MapTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms([
-      typeMap.key.accept(this),
-      typeMap.value.accept(this),
+      visit(mapType.key, this),
+      visit(mapType.value, this),
     ]);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): DefinedTypeHistogram {
+  visitOptionType(optionType: nodes.OptionTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeOption.item.accept(this);
+    const histogram = visit(optionType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): DefinedTypeHistogram {
+  visitSetType(setType: nodes.SetTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeSet.item.accept(this);
+    const histogram = visit(setType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): DefinedTypeHistogram {
+  visitStructType(structType: nodes.StructTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeStruct.fields.map((field) => field.accept(this))
+      structType.fields.map((field) => visit(field, this))
     );
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeStructField(
-    typeStructField: nodes.TypeStructFieldNode
+  visitStructFieldType(
+    structFieldType: nodes.StructFieldTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeStructField.type.accept(this);
+    const histogram = visit(structFieldType.child, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): DefinedTypeHistogram {
+  visitTupleType(tupleType: nodes.TupleTypeNode): DefinedTypeHistogram {
     this.stackLevel += 1;
     const histogram = this.mergeHistograms(
-      typeTuple.items.map((item) => item.accept(this))
+      tupleType.children.map((child) => visit(child, this))
     );
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypeBool(): DefinedTypeHistogram {
+  visitBoolType(): DefinedTypeHistogram {
     return {};
   }
 
-  visitTypeBytes(): DefinedTypeHistogram {
+  visitBytesType(): DefinedTypeHistogram {
     return {};
   }
 
-  visitTypeNumber(): DefinedTypeHistogram {
+  visitNumberType(): DefinedTypeHistogram {
     return {};
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = typeNumberWrapper.item.accept(this);
+    const histogram = visit(numberWrapperType.number, this);
     this.stackLevel -= 1;
     return histogram;
   }
 
-  visitTypePublicKey(): DefinedTypeHistogram {
+  visitPublicKeyType(): DefinedTypeHistogram {
     return {};
   }
 
-  visitTypeString(): DefinedTypeHistogram {
+  visitStringType(): DefinedTypeHistogram {
     return {};
   }
 

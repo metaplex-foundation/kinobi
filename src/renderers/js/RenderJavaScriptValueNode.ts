@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../utils';
+import { camelCase, pascalCase } from '../../shared';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
 export function renderJavaScriptValueNode(value: nodes.ValueNode): {
@@ -7,7 +7,7 @@ export function renderJavaScriptValueNode(value: nodes.ValueNode): {
   render: string;
 } {
   const imports = new JavaScriptImportMap();
-  switch (value.__kind) {
+  switch (value.kind) {
     case 'list':
     case 'tuple':
       const list = value.values.map((v) => renderJavaScriptValueNode(v));
@@ -97,6 +97,6 @@ export function renderJavaScriptValueNode(value: nodes.ValueNode): {
       return { imports, render: JSON.stringify(value.value) };
     default:
       const neverDefault: never = value;
-      throw new Error(`Unexpected value type ${(neverDefault as any).__kind}`);
+      throw new Error(`Unexpected value type ${(neverDefault as any).kind}`);
   }
 }

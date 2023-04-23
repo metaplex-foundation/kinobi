@@ -1,7 +1,6 @@
 import * as nodes from '../nodes';
 import { BaseThrowVisitor } from './BaseThrowVisitor';
 import {
-  AutoSetAccountGpaFieldsVisitor,
   AutoSetAnchorDiscriminatorsVisitor,
   AutoSetFixedAccountSizesVisitor,
   DeduplicateIdenticalDefinedTypesVisitor,
@@ -11,13 +10,13 @@ import {
   UnwrapInstructionArgsDefinedTypesVisitor,
   FlattenInstructionArgsStructVisitor,
 } from './transformers';
-import { Visitor } from './Visitor';
+import { visit, Visitor } from './Visitor';
 
 export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {
     let root: nodes.Node = currentRoot;
     const updateRoot = (visitor: Visitor<nodes.Node | null>) => {
-      const newRoot = root.accept(visitor);
+      const newRoot = visit(root, visitor);
       nodes.assertRootNode(newRoot);
       root = newRoot;
     };
@@ -28,7 +27,6 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
     // Accounts.
     updateRoot(new AutoSetAnchorDiscriminatorsVisitor());
     updateRoot(new AutoSetFixedAccountSizesVisitor());
-    updateRoot(new AutoSetAccountGpaFieldsVisitor());
 
     // Instructions.
     updateRoot(

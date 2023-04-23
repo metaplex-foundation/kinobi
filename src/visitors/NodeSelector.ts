@@ -1,10 +1,10 @@
 import * as nodes from '../nodes';
-import { mainCase } from '../utils';
+import { mainCase } from '../shared';
 import type { NodeStack } from './NodeStack';
 
 export type NodeSelector =
   | {
-      type: nodes.Node['nodeClass'] | '*';
+      kind: nodes.Node['kind'] | '*';
       name?: string;
       stack?: string | string[];
       program?: string;
@@ -22,9 +22,9 @@ export const toNodeSelectorFunction = (
 ): NodeSelectorFunction => {
   if (typeof selector === 'function') return selector;
 
-  const checkType: NodeSelectorFunction = (node) => {
-    if (!selector.type || selector.type === '*') return true;
-    return selector.type === node.nodeClass;
+  const checkKind: NodeSelectorFunction = (node) => {
+    if (!selector.kind || selector.kind === '*') return true;
+    return selector.kind === node.kind;
   };
 
   const checkName: NodeSelectorFunction = (node) => {
@@ -46,7 +46,7 @@ export const toNodeSelectorFunction = (
   };
 
   return (node, stack, program) =>
-    checkType(node, stack, program) &&
+    checkKind(node, stack, program) &&
     checkName(node, stack, program) &&
     checkStack(node, stack, program) &&
     checkProgram(node, stack, program);

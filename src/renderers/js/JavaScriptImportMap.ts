@@ -1,4 +1,4 @@
-import { ImportFrom } from '../../visitors';
+import type { ImportFrom } from '../../shared';
 import { JavaScriptTypeManifest } from './GetJavaScriptTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {

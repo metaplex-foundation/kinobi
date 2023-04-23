@@ -39,16 +39,13 @@ export function getTransferArgsSerializer(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<TransferArgs, 'V1'>>(
+        s.struct<GetDataEnumKindContent<TransferArgs, 'V1'>>([
           [
-            [
-              'authorizationData',
-              s.option(getAuthorizationDataSerializer(context)),
-            ],
-            ['amount', s.u64()],
+            'authorizationData',
+            s.option(getAuthorizationDataSerializer(context)),
           ],
-          { description: 'V1' }
-        ),
+          ['amount', s.u64()],
+        ]),
       ],
     ],
     { description: 'TransferArgs' }

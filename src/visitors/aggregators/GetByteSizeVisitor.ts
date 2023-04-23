@@ -1,5 +1,6 @@
 import * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
+import { visit } from '../Visitor';
 
 export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   private availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
@@ -15,11 +16,27 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
   }
 
   visitAccount(account: nodes.AccountNode): number | null {
-    return account.type.accept(this);
+    return visit(account.data, this);
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): number | null {
+    return visit(accountData.struct, this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): number | null {
-    return instruction.args.accept(this);
+    return visit(instruction.dataArgs, this);
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): number | null {
+    return visit(instructionDataArgs.struct, this);
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): number | null {
+    return visit(instructionExtraArgs.struct, this);
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): number | null {
@@ -28,33 +45,28 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     }
 
     this.definedTypeStack.push(definedType.name);
-    const child = definedType.type.accept(this);
+    const child = visit(definedType.data, this);
     this.definedTypeStack.pop();
     this.visitedDefinedTypes.set(definedType.name, child);
     return child;
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): number | null {
-    if (typeArray.size.kind !== 'fixed') return null;
-    const itemSize = typeArray.item.accept(this);
-    const arraySize = itemSize !== null ? itemSize * typeArray.size.size : null;
-    return typeArray.size.size === 0 ? 0 : arraySize;
+  visitArrayType(arrayType: nodes.ArrayTypeNode): number | null {
+    if (arrayType.size.kind !== 'fixed') return null;
+    const fixedSize = arrayType.size.value;
+    const childSize = visit(arrayType.child, this);
+    const arraySize = childSize !== null ? childSize * fixedSize : null;
+    return fixedSize === 0 ? 0 : arraySize;
   }
 
-  visitTypeDefinedLink(
-    typeDefinedLink: nodes.TypeDefinedLinkNode
-  ): number | null {
-    if (typeDefinedLink.size !== null) return typeDefinedLink.size;
-    if (typeDefinedLink.importFrom !== 'generated') return null;
+  visitLinkType(linkType: nodes.LinkTypeNode): number | null {
+    if (linkType.size !== undefined) return linkType.size;
+    if (linkType.importFrom !== 'generated') return null;
 
-    const linkedDefinedType = this.availableDefinedTypes.get(
-      typeDefinedLink.name
-    );
+    const linkedDefinedType = this.availableDefinedTypes.get(linkType.name);
 
     if (!linkedDefinedType) {
-      throw new Error(
-        `Cannot find linked defined type ${typeDefinedLink.name}.`
-      );
+      throw new Error(`Cannot find linked defined type ${linkType.name}.`);
     }
 
     // This prevents infinite recursion by using assuming
@@ -63,12 +75,12 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
       return null;
     }
 
-    return linkedDefinedType.accept(this);
+    return visit(linkedDefinedType, this);
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): number | null {
-    if (typeEnum.isScalarEnum()) return 1;
-    const variantSizes = typeEnum.variants.map((v) => v.accept(this));
+  visitEnumType(enumType: nodes.EnumTypeNode): number | null {
+    if (nodes.isScalarEnum(enumType)) return 1;
+    const variantSizes = enumType.variants.map((v) => visit(v, this));
     const allVariantHaveTheSameFixedSize = variantSizes.every(
       (one, i, all) => one === all[0]
     );
@@ -79,77 +91,77 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
       : null;
   }
 
-  visitTypeEnumEmptyVariant(): number | null {
+  visitEnumEmptyVariantType(): number | null {
     return 0;
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): number | null {
-    return typeEnumStructVariant.struct.accept(this);
+    return visit(enumStructVariantType.struct, this);
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): number | null {
-    return typeEnumTupleVariant.tuple.accept(this);
+    return visit(enumTupleVariantType.tuple, this);
   }
 
-  visitTypeMap(): number | null {
+  visitMapType(): number | null {
     return null;
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): number | null {
-    if (!typeOption.fixed) return null;
-    const prefixSize = typeOption.prefix.accept(this) as number;
-    const itemSize = typeOption.item.accept(this);
-    return itemSize !== null ? itemSize + prefixSize : null;
+  visitOptionType(optionType: nodes.OptionTypeNode): number | null {
+    if (!optionType.fixed) return null;
+    const prefixSize = visit(optionType.prefix, this) as number;
+    const childSize = visit(optionType.child, this);
+    return childSize !== null ? childSize + prefixSize : null;
   }
 
-  visitTypeSet(): number | null {
+  visitSetType(): number | null {
     return null;
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): number | null {
-    return this.sumSizes(typeStruct.fields.map((f) => f.accept(this)));
+  visitStructType(structType: nodes.StructTypeNode): number | null {
+    return this.sumSizes(structType.fields.map((f) => visit(f, this)));
   }
 
-  visitTypeStructField(
-    typeStructField: nodes.TypeStructFieldNode
+  visitStructFieldType(
+    structFieldType: nodes.StructFieldTypeNode
   ): number | null {
-    return typeStructField.type.accept(this);
+    return visit(structFieldType.child, this);
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): number | null {
-    return this.sumSizes(typeTuple.items.map((i) => i.accept(this)));
+  visitTupleType(tupleType: nodes.TupleTypeNode): number | null {
+    return this.sumSizes(tupleType.children.map((child) => visit(child, this)));
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): number | null {
-    return typeBool.size.accept(this);
+  visitBoolType(boolType: nodes.BoolTypeNode): number | null {
+    return visit(boolType.size, this);
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): number | null {
-    if (typeBytes.size.kind !== 'fixed') return null;
-    return typeBytes.size.bytes;
+  visitBytesType(bytesType: nodes.BytesTypeNode): number | null {
+    if (bytesType.size.kind !== 'fixed') return null;
+    return bytesType.size.value;
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): number | null {
-    return parseInt(typeNumber.format.slice(1), 10) / 8;
+  visitNumberType(numberType: nodes.NumberTypeNode): number | null {
+    return parseInt(numberType.format.slice(1), 10) / 8;
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): number | null {
-    return typeNumberWrapper.item.accept(this);
+    return visit(numberWrapperType.number, this);
   }
 
-  visitTypePublicKey(): number | null {
+  visitPublicKeyType(): number | null {
     return 32;
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): number | null {
-    if (typeString.size.kind !== 'fixed') return null;
-    return typeString.size.bytes;
+  visitStringType(stringType: nodes.StringTypeNode): number | null {
+    if (stringType.size.kind !== 'fixed') return null;
+    return stringType.size.value;
   }
 
   protected sumSizes(sizes: (number | null)[]): number | null {

@@ -105,49 +105,43 @@ export function getUpdateArgsSerializer(
           GetDataEnumKindContent<UpdateArgs, 'V1'>,
           GetDataEnumKindContent<UpdateArgs, 'V1'>
         >(
-          s.struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>(
+          s.struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
             [
-              [
-                'authorizationData',
-                s.option(getAuthorizationDataSerializer(context)),
-              ],
-              ['newUpdateAuthority', s.option(s.publicKey())],
-              [
-                'data',
-                s.option(
-                  s.struct<any>(
-                    [
-                      ['name', s.string()],
-                      ['symbol', s.string()],
-                      ['uri', s.string()],
-                      ['sellerFeeBasisPoints', s.u16()],
-                      [
-                        'creators',
-                        s.option(s.array(getCreatorSerializer(context))),
-                      ],
-                    ],
-                    { description: 'Data' }
-                  )
-                ),
-              ],
-              ['primarySaleHappened', s.option(s.bool())],
-              ['isMutable', s.option(s.bool())],
-              ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-              ['collection', s.option(getCollectionSerializer(context))],
-              ['uses', s.option(getUsesSerializer(context))],
-              [
-                'collectionDetails',
-                s.option(getCollectionDetailsSerializer(context)),
-              ],
-              [
-                'programmableConfig',
-                s.option(getProgrammableConfigSerializer(context)),
-              ],
-              ['delegateState', s.option(getDelegateStateSerializer(context))],
-              ['authorityType', getAuthorityTypeSerializer(context)],
+              'authorizationData',
+              s.option(getAuthorizationDataSerializer(context)),
             ],
-            { description: 'V1' }
-          ),
+            ['newUpdateAuthority', s.option(s.publicKey())],
+            [
+              'data',
+              s.option(
+                s.struct<any>([
+                  ['name', s.string()],
+                  ['symbol', s.string()],
+                  ['uri', s.string()],
+                  ['sellerFeeBasisPoints', s.u16()],
+                  [
+                    'creators',
+                    s.option(s.array(getCreatorSerializer(context))),
+                  ],
+                ])
+              ),
+            ],
+            ['primarySaleHappened', s.option(s.bool())],
+            ['isMutable', s.option(s.bool())],
+            ['tokenStandard', s.option(getTokenStandardSerializer(context))],
+            ['collection', s.option(getCollectionSerializer(context))],
+            ['uses', s.option(getUsesSerializer(context))],
+            [
+              'collectionDetails',
+              s.option(getCollectionDetailsSerializer(context)),
+            ],
+            [
+              'programmableConfig',
+              s.option(getProgrammableConfigSerializer(context)),
+            ],
+            ['delegateState', s.option(getDelegateStateSerializer(context))],
+            ['authorityType', getAuthorityTypeSerializer(context)],
+          ]),
           (value) =>
             ({
               ...value,

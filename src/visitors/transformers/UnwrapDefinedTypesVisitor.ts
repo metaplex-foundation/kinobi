@@ -1,6 +1,7 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../utils';
+import { mainCase } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
+import { visit } from '../Visitor';
 
 export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   protected availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
@@ -14,7 +15,7 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitRoot(root: nodes.RootNode): nodes.Node {
-    root.allDefinedTypes.forEach((definedType) => {
+    nodes.getAllDefinedTypes(root).forEach((definedType) => {
       this.availableDefinedTypes.set(definedType.name, definedType);
     });
 
@@ -22,40 +23,39 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   }
 
   visitProgram(program: nodes.ProgramNode): nodes.Node {
-    return new nodes.ProgramNode(
-      program.metadata,
-      program.accounts
-        .map((account) => account.accept(this))
+    return nodes.programNode({
+      ...program,
+      accounts: program.accounts
+        .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
-      program.instructions
-        .map((instruction) => instruction.accept(this))
+      instructions: program.instructions
+        .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-      program.definedTypes
+      definedTypes: program.definedTypes
         .filter((definedType) => !this.shouldInline(definedType.name))
-        .map((type) => type.accept(this))
+        .map((type) => visit(type, this))
         .filter(nodes.assertNodeFilter(nodes.assertDefinedTypeNode)),
-      program.errors
-    );
+    });
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): nodes.Node {
+  visitLinkType(linkType: nodes.LinkTypeNode): nodes.Node {
     if (
-      !this.shouldInline(typeDefinedLink.name) ||
-      typeDefinedLink.importFrom !== 'generated'
+      !this.shouldInline(linkType.name) ||
+      linkType.importFrom !== 'generated'
     ) {
-      return typeDefinedLink;
+      return linkType;
     }
 
-    const definedType = this.availableDefinedTypes.get(typeDefinedLink.name);
+    const definedType = this.availableDefinedTypes.get(linkType.name);
 
     if (definedType === undefined) {
       throw new Error(
-        `Trying to inline missing defined type [${typeDefinedLink.name}]. ` +
+        `Trying to inline missing defined type [${linkType.name}]. ` +
           `Ensure this visitor starts from the root node to access all defined types.`
       );
     }
 
-    return definedType.type.accept(this);
+    return visit(definedType.data, this);
   }
 
   protected shouldInline(definedType: string): boolean {

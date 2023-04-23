@@ -1,5 +1,5 @@
 import type * as nodes from '../nodes';
-import { Visitor } from './Visitor';
+import { Visitor, visit } from './Visitor';
 
 export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
   constructor(readonly visitor: Visitor<T>) {}
@@ -7,104 +7,124 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
   abstract map(value: T): U;
 
   visitRoot(root: nodes.RootNode): U {
-    return this.map(root.accept(this.visitor));
+    return this.map(visit(root, this.visitor));
   }
 
   visitProgram(program: nodes.ProgramNode): U {
-    return this.map(program.accept(this.visitor));
+    return this.map(visit(program, this.visitor));
   }
 
   visitAccount(account: nodes.AccountNode): U {
-    return this.map(account.accept(this.visitor));
+    return this.map(visit(account, this.visitor));
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): U {
+    return this.map(visit(accountData, this.visitor));
   }
 
   visitInstruction(instruction: nodes.InstructionNode): U {
-    return this.map(instruction.accept(this.visitor));
+    return this.map(visit(instruction, this.visitor));
+  }
+
+  visitInstructionAccount(instructionAccount: nodes.InstructionAccountNode): U {
+    return this.map(visit(instructionAccount, this.visitor));
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): U {
+    return this.map(visit(instructionDataArgs, this.visitor));
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): U {
+    return this.map(visit(instructionExtraArgs, this.visitor));
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): U {
-    return this.map(definedType.accept(this.visitor));
+    return this.map(visit(definedType, this.visitor));
   }
 
   visitError(error: nodes.ErrorNode): U {
-    return this.map(error.accept(this.visitor));
+    return this.map(visit(error, this.visitor));
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): U {
-    return this.map(typeArray.accept(this.visitor));
+  visitArrayType(arrayType: nodes.ArrayTypeNode): U {
+    return this.map(visit(arrayType, this.visitor));
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): U {
-    return this.map(typeDefinedLink.accept(this.visitor));
+  visitLinkType(linkType: nodes.LinkTypeNode): U {
+    return this.map(visit(linkType, this.visitor));
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): U {
-    return this.map(typeEnum.accept(this.visitor));
+  visitEnumType(enumType: nodes.EnumTypeNode): U {
+    return this.map(visit(enumType, this.visitor));
   }
 
-  visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  visitEnumEmptyVariantType(
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): U {
-    return this.map(typeEnumEmptyVariant.accept(this.visitor));
+    return this.map(visit(enumEmptyVariantType, this.visitor));
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): U {
-    return this.map(typeEnumStructVariant.accept(this.visitor));
+    return this.map(visit(enumStructVariantType, this.visitor));
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): U {
-    return this.map(typeEnumTupleVariant.accept(this.visitor));
+    return this.map(visit(enumTupleVariantType, this.visitor));
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): U {
-    return this.map(typeMap.accept(this.visitor));
+  visitMapType(mapType: nodes.MapTypeNode): U {
+    return this.map(visit(mapType, this.visitor));
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): U {
-    return this.map(typeOption.accept(this.visitor));
+  visitOptionType(optionType: nodes.OptionTypeNode): U {
+    return this.map(visit(optionType, this.visitor));
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): U {
-    return this.map(typeSet.accept(this.visitor));
+  visitSetType(setType: nodes.SetTypeNode): U {
+    return this.map(visit(setType, this.visitor));
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): U {
-    return this.map(typeStruct.accept(this.visitor));
+  visitStructType(structType: nodes.StructTypeNode): U {
+    return this.map(visit(structType, this.visitor));
   }
 
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): U {
-    return this.map(typeStructField.accept(this.visitor));
+  visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): U {
+    return this.map(visit(structFieldType, this.visitor));
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): U {
-    return this.map(typeTuple.accept(this.visitor));
+  visitTupleType(tupleType: nodes.TupleTypeNode): U {
+    return this.map(visit(tupleType, this.visitor));
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): U {
-    return this.map(typeBool.accept(this.visitor));
+  visitBoolType(boolType: nodes.BoolTypeNode): U {
+    return this.map(visit(boolType, this.visitor));
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): U {
-    return this.map(typeBytes.accept(this.visitor));
+  visitBytesType(bytesType: nodes.BytesTypeNode): U {
+    return this.map(visit(bytesType, this.visitor));
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): U {
-    return this.map(typeNumber.accept(this.visitor));
+  visitNumberType(numberType: nodes.NumberTypeNode): U {
+    return this.map(visit(numberType, this.visitor));
   }
 
-  visitTypeNumberWrapper(typeNumberWrapper: nodes.TypeNumberWrapperNode): U {
-    return this.map(typeNumberWrapper.accept(this.visitor));
+  visitNumberWrapperType(numberWrapperType: nodes.NumberWrapperTypeNode): U {
+    return this.map(visit(numberWrapperType, this.visitor));
   }
 
-  visitTypePublicKey(typePublicKey: nodes.TypePublicKeyNode): U {
-    return this.map(typePublicKey.accept(this.visitor));
+  visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): U {
+    return this.map(visit(publicKeyType, this.visitor));
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): U {
-    return this.map(typeString.accept(this.visitor));
+  visitStringType(stringType: nodes.StringTypeNode): U {
+    return this.map(visit(stringType, this.visitor));
   }
 }

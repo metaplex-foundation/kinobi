@@ -51,7 +51,7 @@ export function getMasterEditionV2AccountDataSerializer(
         ['supply', s.u64()],
         ['maxSupply', s.option(s.u64())],
       ],
-      { description: 'MasterEditionV2' }
+      { description: 'MasterEditionV2AccountData' }
     ),
     (value) =>
       ({ ...value, key: TmKey.MasterEditionV2 } as MasterEditionV2AccountData)

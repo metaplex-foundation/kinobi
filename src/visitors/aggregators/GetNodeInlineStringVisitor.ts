@@ -1,5 +1,6 @@
-import type * as nodes from '../../nodes';
-import { Visitor } from '../Visitor';
+import { displaySizeStrategy } from '../../shared';
+import * as nodes from '../../nodes';
+import { Visitor, visit } from '../Visitor';
 
 const ROOT_PREFIX = 'R';
 const PROGRAM_PREFIX = 'P';
@@ -10,133 +11,166 @@ const ERROR_PREFIX = 'E';
 
 export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitRoot(root: nodes.RootNode): string {
-    const children = root.programs.map((program) => program.accept(this));
+    const children = root.programs.map((program) => visit(program, this));
     return `${ROOT_PREFIX}(${children.join(',')})`;
   }
 
   visitProgram(program: nodes.ProgramNode): string {
     const children = [
-      ...program.accounts.map((account) => account.accept(this)),
-      ...program.instructionsWithSubs.map((ix) => ix.accept(this)),
-      ...program.definedTypes.map((type) => type.accept(this)),
-      ...program.errors.map((type) => type.accept(this)),
+      ...program.accounts.map((account) => visit(account, this)),
+      ...nodes.getAllInstructionsWithSubs(program).map((ix) => visit(ix, this)),
+      ...program.definedTypes.map((type) => visit(type, this)),
+      ...program.errors.map((type) => visit(type, this)),
     ];
     return `${PROGRAM_PREFIX}[${program.name}](${children.join(',')})`;
   }
 
   visitAccount(account: nodes.AccountNode): string {
-    const child = account.type.accept(this);
-    return `${ACCOUNT_PREFIX}[${account.name}](${child})`;
+    const data = visit(account.data, this);
+    return `${ACCOUNT_PREFIX}[${account.name}](${data})`;
+  }
+
+  visitAccountData(accountData: nodes.AccountDataNode): string {
+    const struct = visit(accountData.struct, this);
+    const link = accountData.link ? `;${visit(accountData.link, this)}` : '';
+    return struct + link;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): string {
-    const accounts = instruction.accounts.map((account) => account.name);
-    const args = instruction.args.accept(this);
-    const extraArgs = instruction.extraArgs?.accept(this);
-    const extraArgsString = extraArgs ? `,extraArgs:(${extraArgs})` : '';
+    const accounts = instruction.accounts.map((account) =>
+      visit(account, this)
+    );
+    const dataArgs = visit(instruction.dataArgs, this);
+    const extraArgs = visit(instruction.extraArgs, this);
     return (
       `${INSTRUCTION_PREFIX}[${instruction.name}](` +
-      `accounts:(${accounts.join(',')}),` +
-      `args:(${args})${extraArgsString})`
+      `accounts(${accounts.join(',')}),${dataArgs},${extraArgs}` +
+      `)`
     );
   }
 
+  visitInstructionAccount(
+    instructionAccount: nodes.InstructionAccountNode
+  ): string {
+    return instructionAccount.name;
+  }
+
+  visitInstructionDataArgs(
+    instructionDataArgs: nodes.InstructionDataArgsNode
+  ): string {
+    const struct = visit(instructionDataArgs.struct, this);
+    const link = instructionDataArgs.link
+      ? `;${visit(instructionDataArgs.link, this)}`
+      : '';
+    return `dataArgs(${struct + link})`;
+  }
+
+  visitInstructionExtraArgs(
+    instructionExtraArgs: nodes.InstructionExtraArgsNode
+  ): string {
+    const struct = visit(instructionExtraArgs.struct, this);
+    const link = instructionExtraArgs.link
+      ? `;${visit(instructionExtraArgs.link, this)}`
+      : '';
+    return `extraArgs(${struct + link})`;
+  }
+
   visitDefinedType(definedType: nodes.DefinedTypeNode): string {
-    const child = definedType.type.accept(this);
-    return `${TYPE_PREFIX}[${definedType.name}](${child})`;
+    const data = visit(definedType.data, this);
+    return `${TYPE_PREFIX}[${definedType.name}](${data})`;
   }
 
   visitError(error: nodes.ErrorNode): string {
     return `${ERROR_PREFIX}[${error.name}]`;
   }
 
-  visitTypeArray(typeArray: nodes.TypeArrayNode): string {
-    const item = typeArray.item.accept(this);
-    const size = this.displayArrayLikeSize(typeArray.size);
-    return `array(${item};${size})`;
+  visitArrayType(arrayType: nodes.ArrayTypeNode): string {
+    const child = visit(arrayType.child, this);
+    const size = displaySizeStrategy(arrayType.size);
+    return `array(${child};${size})`;
   }
 
-  visitTypeDefinedLink(typeDefinedLink: nodes.TypeDefinedLinkNode): string {
-    return `link(${typeDefinedLink.name};${typeDefinedLink.importFrom})`;
+  visitLinkType(linkType: nodes.LinkTypeNode): string {
+    return `link(${linkType.name};${linkType.importFrom})`;
   }
 
-  visitTypeEnum(typeEnum: nodes.TypeEnumNode): string {
-    const children = typeEnum.variants.map((variant) => variant.accept(this));
-    return `enum[${typeEnum.name}](${children.join(',')})`;
+  visitEnumType(enumType: nodes.EnumTypeNode): string {
+    const children = enumType.variants.map((variant) => visit(variant, this));
+    return `enum(${children.join(',')})`;
   }
 
-  visitTypeEnumEmptyVariant(
-    typeEnumEmptyVariant: nodes.TypeEnumEmptyVariantNode
+  visitEnumEmptyVariantType(
+    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): string {
-    return typeEnumEmptyVariant.name;
+    return enumEmptyVariantType.name;
   }
 
-  visitTypeEnumStructVariant(
-    typeEnumStructVariant: nodes.TypeEnumStructVariantNode
+  visitEnumStructVariantType(
+    enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): string {
-    const child = typeEnumStructVariant.struct.accept(this);
-    return `${typeEnumStructVariant.name}:${child}`;
+    const child = visit(enumStructVariantType.struct, this);
+    return `${enumStructVariantType.name}:${child}`;
   }
 
-  visitTypeEnumTupleVariant(
-    typeEnumTupleVariant: nodes.TypeEnumTupleVariantNode
+  visitEnumTupleVariantType(
+    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): string {
-    const child = typeEnumTupleVariant.tuple.accept(this);
-    return `${typeEnumTupleVariant.name}:${child}`;
+    const child = visit(enumTupleVariantType.tuple, this);
+    return `${enumTupleVariantType.name}:${child}`;
   }
 
-  visitTypeMap(typeMap: nodes.TypeMapNode): string {
-    const key = typeMap.key.accept(this);
-    const value = typeMap.value.accept(this);
-    const size = this.displayArrayLikeSize(typeMap.size);
+  visitMapType(mapType: nodes.MapTypeNode): string {
+    const key = visit(mapType.key, this);
+    const value = visit(mapType.value, this);
+    const size = displaySizeStrategy(mapType.size);
     return `map(${key},${value};${size})`;
   }
 
-  visitTypeOption(typeOption: nodes.TypeOptionNode): string {
-    const item = typeOption.item.accept(this);
-    const prefix = typeOption.prefix.accept(this);
-    const fixed = typeOption.fixed ? ';fixed' : '';
-    return `option(${item};${prefix + fixed})`;
+  visitOptionType(optionType: nodes.OptionTypeNode): string {
+    const child = visit(optionType.child, this);
+    const prefix = visit(optionType.prefix, this);
+    const fixed = optionType.fixed ? ';fixed' : '';
+    return `option(${child};${prefix + fixed})`;
   }
 
-  visitTypeSet(typeSet: nodes.TypeSetNode): string {
-    const item = typeSet.item.accept(this);
-    const size = this.displayArrayLikeSize(typeSet.size);
-    return `set(${item};${size})`;
+  visitSetType(setType: nodes.SetTypeNode): string {
+    const child = visit(setType.child, this);
+    const size = displaySizeStrategy(setType.size);
+    return `set(${child};${size})`;
   }
 
-  visitTypeStruct(typeStruct: nodes.TypeStructNode): string {
-    const children = typeStruct.fields.map((field) => field.accept(this));
-    return `struct[${typeStruct.name}](${children.join(',')})`;
+  visitStructType(structType: nodes.StructTypeNode): string {
+    const children = structType.fields.map((field) => visit(field, this));
+    return `struct(${children.join(',')})`;
   }
 
-  visitTypeStructField(typeStructField: nodes.TypeStructFieldNode): string {
-    const child = typeStructField.type.accept(this);
-    return `${typeStructField.name}:${child}`;
+  visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {
+    const child = visit(structFieldType.child, this);
+    return `${structFieldType.name}:${child}`;
   }
 
-  visitTypeTuple(typeTuple: nodes.TypeTupleNode): string {
-    const children = typeTuple.items.map((item) => item.accept(this));
+  visitTupleType(tupleType: nodes.TupleTypeNode): string {
+    const children = tupleType.children.map((child) => visit(child, this));
     return `tuple(${children.join(',')})`;
   }
 
-  visitTypeBool(typeBool: nodes.TypeBoolNode): string {
-    return typeBool.toString();
+  visitBoolType(boolType: nodes.BoolTypeNode): string {
+    return boolType.toString();
   }
 
-  visitTypeBytes(typeBytes: nodes.TypeBytesNode): string {
-    return typeBytes.toString();
+  visitBytesType(bytesType: nodes.BytesTypeNode): string {
+    return bytesType.toString();
   }
 
-  visitTypeNumber(typeNumber: nodes.TypeNumberNode): string {
-    return typeNumber.toString();
+  visitNumberType(numberType: nodes.NumberTypeNode): string {
+    return numberType.toString();
   }
 
-  visitTypeNumberWrapper(
-    typeNumberWrapper: nodes.TypeNumberWrapperNode
+  visitNumberWrapperType(
+    numberWrapperType: nodes.NumberWrapperTypeNode
   ): string {
-    const item = typeNumberWrapper.item.accept(this);
-    const { wrapper } = typeNumberWrapper;
+    const item = visit(numberWrapperType.number, this);
+    const { wrapper } = numberWrapperType;
     switch (wrapper.kind) {
       case 'DateTime':
         return `DateTime(${item})`;
@@ -149,17 +183,17 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     }
   }
 
-  visitTypePublicKey(): string {
+  visitPublicKeyType(): string {
     return 'publicKey';
   }
 
-  visitTypeString(typeString: nodes.TypeStringNode): string {
-    return typeString.toString();
+  visitStringType(stringType: nodes.StringTypeNode): string {
+    return stringType.toString();
   }
 
-  displayArrayLikeSize(size: nodes.TypeArrayNode['size']): string {
-    if (size.kind === 'fixed') return `${size.size}`;
-    if (size.kind === 'prefixed') return size.prefix.accept(this);
+  displayArrayLikeSize(size: nodes.ArrayTypeNode['size']): string {
+    if (size.kind === 'fixed') return `${size.value}`;
+    if (size.kind === 'prefixed') return visit(size.prefix, this);
     return 'remainder';
   }
 }

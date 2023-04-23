@@ -1,7 +1,8 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../utils';
+import { mainCase } from '../../shared';
+import { ImportFrom } from '../../shared/ImportFrom';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { ImportFrom } from '../ImportFrom';
+import { visit } from '../Visitor';
 
 export type CustomInstructionSerializerOptions = {
   name: string;
@@ -34,45 +35,38 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
       const options: CustomInstructionSerializerOptions | null =
         this.map[instruction.name] ?? null;
       if (!options || !options.extract) return;
-      if (nodes.isTypeDefinedLinkNode(instruction.args)) return;
-      const newType = new nodes.DefinedTypeNode(
-        {
-          name: options.extractAs,
-          idlName: instruction.metadata.idlName,
-          docs: instruction.metadata.docs,
-          internal: options.extractedTypeShouldBeInternal,
-        },
-        instruction.args
-      );
+      const newType = nodes.definedTypeNode({
+        name: options.extractAs,
+        data: instruction.dataArgs.struct,
+        idlName: instruction.idlName,
+        docs: instruction.docs,
+        internal: options.extractedTypeShouldBeInternal,
+      });
       newDefinedTypes.push(newType);
     });
 
-    return new nodes.ProgramNode(
-      program.metadata,
-      program.accounts,
-      program.instructions
-        .map((instruction) => instruction.accept(this))
+    return nodes.programNode({
+      ...program,
+      definedTypes: newDefinedTypes,
+      instructions: program.instructions
+        .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-      newDefinedTypes,
-      program.errors
-    );
+    });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const options: CustomInstructionSerializerOptions | null =
       this.map[instruction.name] ?? null;
     if (!options) return instruction;
-    if (nodes.isTypeDefinedLinkNode(instruction.args)) return instruction;
-
-    return new nodes.InstructionNode(
-      instruction.metadata,
-      instruction.accounts,
-      new nodes.TypeDefinedLinkNode(options.name, {
-        importFrom: options.importFrom,
+    return nodes.instructionNode({
+      ...instruction,
+      dataArgs: nodes.instructionDataArgsNode({
+        ...instruction.dataArgs,
+        link: nodes.linkTypeNode(options.name, {
+          importFrom: options.importFrom,
+        }),
       }),
-      instruction.extraArgs,
-      instruction.subInstructions
-    );
+    });
   }
 }
 
