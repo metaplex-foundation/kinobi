@@ -32,20 +32,20 @@ export type TypeNode =
   | TupleTypeNode;
 
 const TYPE_NODE_CLASSES = [
-  'ArrayTypeNode',
-  'BoolTypeNode',
-  'BytesTypeNode',
-  'LinkTypeNode',
-  'EnumTypeNode',
-  'MapTypeNode',
-  'NumberTypeNode',
-  'NumberWrapperTypeNode',
-  'OptionTypeNode',
-  'PublicKeyTypeNode',
-  'SetTypeNode',
-  'StringTypeNode',
-  'StructTypeNode',
-  'TupleTypeNode',
+  'arrayTypeNode',
+  'boolTypeNode',
+  'bytesTypeNode',
+  'linkTypeNode',
+  'enumTypeNode',
+  'mapTypeNode',
+  'numberTypeNode',
+  'numberWrapperTypeNode',
+  'optionTypeNode',
+  'publicKeyTypeNode',
+  'setTypeNode',
+  'stringTypeNode',
+  'structTypeNode',
+  'tupleTypeNode',
 ];
 
 function isArrayOfSize(array: any, size: number): boolean {

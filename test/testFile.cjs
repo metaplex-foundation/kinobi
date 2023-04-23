@@ -1,40 +1,13 @@
-const {
-  Kinobi,
-  ConsoleLogVisitor,
-  CreateSubInstructionsFromEnumArgsVisitor,
-  GetNodeTreeStringVisitor,
-  RenderJavaScriptVisitor,
-  SetAccountDiscriminatorFromFieldVisitor,
-  SetStructDefaultValuesVisitor,
-  SetNumberWrappersVisitor,
-  PublicKeyTypeNode,
-  UnwrapDefinedTypesVisitor,
-  FlattenStructVisitor,
-  UpdateAccountsVisitor,
-  UpdateInstructionsVisitor,
-  UpdateProgramsVisitor,
-  UpdateDefinedTypesVisitor,
-  LinkTypeNode,
-  StructTypeNode,
-  StructFieldTypeNode,
-  vScalar,
-  vSome,
-  vEnum,
-  vTuple,
-  vPublicKey,
-  AutoSetAccountGpaFieldsVisitor,
-  UseCustomAccountSerializerVisitor,
-  UseCustomInstructionSerializerVisitor,
-} = require('../dist/cjs/index.js');
+const k = require('../dist/cjs/index.js');
 
-const kinobi = new Kinobi([
+const kinobi = k.createFromIdls([
   __dirname + '/mpl_candy_machine_core.json',
   __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
 ]);
 
 kinobi.update(
-  new UpdateProgramsVisitor({
+  new k.UpdateProgramsVisitor({
     candyMachineCore: { name: 'mplCandyMachineCore', prefix: 'Cm' },
     mplTokenAuthRules: { prefix: 'Ta' },
     mplTokenMetadata: { prefix: 'Tm' },
@@ -42,10 +15,8 @@ kinobi.update(
 );
 
 kinobi.update(
-  new UpdateAccountsVisitor({
-    Metadata: {
-      size: 679,
-    },
+  new k.UpdateAccountsVisitor({
+    Metadata: { size: 679 },
     MasterEditionV1: {
       seeds: [
         { kind: 'literal', value: 'metadata' },
@@ -54,7 +25,7 @@ kinobi.update(
           kind: 'variable',
           name: 'delegateRole',
           description: 'The role of the delegate',
-          type: new LinkTypeNode('delegateRole'),
+          type: k.linkTypeNode('delegateRole'),
         },
       ],
     },
@@ -67,7 +38,7 @@ kinobi.update(
           kind: 'variable',
           name: 'mint',
           description: 'The address of the mint account',
-          type: new PublicKeyTypeNode(),
+          type: new k.PublicKeyTypeNode(),
         },
         { kind: 'literal', value: 'edition' },
       ],
@@ -81,7 +52,7 @@ kinobi.update(
           kind: 'variable',
           name: 'role',
           description: 'The delegate role',
-          type: new LinkTypeNode('delegateRole'),
+          type: new k.LinkTypeNode('delegateRole'),
         },
       ],
     },
@@ -89,7 +60,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new UpdateDefinedTypesVisitor({
+  new k.UpdateDefinedTypesVisitor({
     'mplCandyMachineCore.Creator': { name: 'CmCreator' },
     'mplTokenAuthRules.Key': { name: 'TaKey' },
     'mplTokenMetadata.Key': { name: 'TmKey' },
@@ -99,7 +70,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new UpdateInstructionsVisitor({
+  new k.UpdateInstructionsVisitor({
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
       args: {
@@ -173,7 +144,7 @@ kinobi.update(
       },
       args: {
         tokenStandard: {
-          type: new LinkTypeNode('tokenStandard'),
+          type: new k.LinkTypeNode('tokenStandard'),
           defaultsTo: {
             kind: 'value',
             value: vEnum('tokenStandard', 'NonFungible'),
@@ -187,7 +158,7 @@ kinobi.update(
 const tmKey = (name) => ({ field: 'key', value: vEnum('TmKey', name) });
 const taKey = (name) => ({ field: 'key', value: vEnum('TaKey', name) });
 kinobi.update(
-  new SetAccountDiscriminatorFromFieldVisitor({
+  new k.SetAccountDiscriminatorFromFieldVisitor({
     'mplTokenMetadata.Edition': tmKey('EditionV1'),
     'mplTokenMetadata.MasterEditionV1': tmKey('MasterEditionV1'),
     'mplTokenMetadata.ReservationListV1': tmKey('ReservationListV1'),
@@ -207,18 +178,18 @@ kinobi.update(
 
 // Custom serializers.
 kinobi.update(
-  new UseCustomAccountSerializerVisitor({
+  new k.UseCustomAccountSerializerVisitor({
     ReservationListV1: { extract: true },
   })
 );
 kinobi.update(
-  new UseCustomInstructionSerializerVisitor({
+  new k.UseCustomInstructionSerializerVisitor({
     CreateReservationList: true,
   })
 );
 
 kinobi.update(
-  new SetStructDefaultValuesVisitor({
+  new k.SetStructDefaultValuesVisitor({
     'mplTokenMetadata.Collection': { verified: vScalar(false) },
     'mplTokenMetadata.UpdateArgs.V1': {
       tokenStandard: vSome(vEnum('TokenStandard', 'NonFungible')),
@@ -230,7 +201,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new SetNumberWrappersVisitor({
+  new k.SetNumberWrappersVisitor({
     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
     'CandyMachineData.sellerFeeBasisPoints': {
       kind: 'Amount',
@@ -240,20 +211,20 @@ kinobi.update(
   })
 );
 
-kinobi.update(new UnwrapDefinedTypesVisitor(['Data']));
+kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
-  new FlattenStructVisitor({
+  new k.FlattenStructVisitor({
     'mplTokenMetadata.Metadata': ['Data'],
   })
 );
 
 kinobi.update(
-  new CreateSubInstructionsFromEnumArgsVisitor({
+  new k.CreateSubInstructionsFromEnumArgsVisitor({
     'mplTokenMetadata.Create': 'createArgs',
     'mplTokenMetadata.Update': 'updateArgs',
   })
 );
 
-kinobi.update(new AutoSetAccountGpaFieldsVisitor({ override: true }));
-// kinobi.accept(new ConsoleLogVisitor(new GetNodeTreeStringVisitor()));
-kinobi.accept(new RenderJavaScriptVisitor('./test/package/src/generated'));
+kinobi.update(new k.AutoSetAccountGpaFieldsVisitor({ override: true }));
+// kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
+kinobi.accept(new k.RenderJavaScriptVisitor('./test/package/src/generated'));
