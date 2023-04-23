@@ -4,11 +4,11 @@
 {% block main %}
 {{ imports }}
 
-{% if account.isLinked %}
-  {{ macros.docblock(definedType.docs) }}
-  export type {{ account.name | pascalCase }} = Account<{{ account.type.name | pascalCase }}>;
+{% if account.data.link %}
+  {{ macros.docblock(account.docs) }}
+  export type {{ account.name | pascalCase }} = Account<{{ account.data.link.name | pascalCase }}>;
 {% else %}
-  {{ macros.docblock(definedType.docs) }}
+  {{ macros.docblock(account.docs) }}
   export type {{ account.name | pascalCase }} = Account<{{ account.name | pascalCase }}AccountData>;
 
   {{ macros.exportType(account.name | pascalCase + 'AccountData', typeManifest) }}
