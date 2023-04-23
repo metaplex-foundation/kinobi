@@ -314,6 +314,34 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       'transactionBuilder',
     ]);
 
+    // Instruction helpers.
+    const hasAccounts = instruction.accounts.length > 0;
+    const hasData =
+      !!instruction.dataArgs.link ||
+      instruction.dataArgs.struct.fields.length > 0;
+    const hasDataArgs =
+      !!instruction.dataArgs.link ||
+      instruction.dataArgs.struct.fields.filter(
+        (field) => field.defaultsTo?.strategy !== 'omitted'
+      ).length > 0;
+    const hasExtraArgs =
+      !!instruction.extraArgs.link ||
+      instruction.extraArgs.struct.fields.filter(
+        (field) => field.defaultsTo?.strategy !== 'omitted'
+      ).length > 0;
+    const hasAnyArgs = hasDataArgs || hasExtraArgs;
+    const hasArgDefaults = Object.keys(instruction.argDefaults).length > 0;
+    const hasArgResolvers = Object.values(instruction.argDefaults).some(
+      ({ kind }) => kind === 'resolver'
+    );
+    const hasAccountResolvers = instruction.accounts.some(
+      ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
+    );
+    const hasByteResolver =
+      instruction.bytesCreatedOnChain?.kind === 'resolver';
+    const hasResolvers =
+      hasArgResolvers || hasAccountResolvers || hasByteResolver;
+
     // Resolved inputs.
     const resolvedInputs = visit(
       instruction,
@@ -381,7 +409,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     if (!linkedDataArgs) {
       imports.mergeWith(dataArgManifest.strictImports);
     }
-    if (!linkedDataArgs && instruction.hasData) {
+    if (!linkedDataArgs && hasData) {
       imports.add('core', ['Serializer']);
     }
 
@@ -466,6 +494,16 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         dataArgManifest,
         extraArgManifest,
         canMergeAccountsAndArgs,
+        hasAccounts,
+        hasData,
+        hasDataArgs,
+        hasExtraArgs,
+        hasAnyArgs,
+        hasArgDefaults,
+        hasArgResolvers,
+        hasAccountResolvers,
+        hasByteResolver,
+        hasResolvers,
       })
     );
   }

@@ -1,4 +1,4 @@
-{% if instruction.hasAccounts %}
+{% if hasAccounts %}
 // Accounts.
 export type {{ instruction.name | pascalCase }}InstructionAccounts = {
 {% for account in accounts %}

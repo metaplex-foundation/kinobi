@@ -133,61 +133,6 @@ export function getAllInstructionsWithSubs(
   ]);
 }
 
-// export function hasAccounts(): boolean {
-//   return this.accounts.length > 0;
-// }
-
-// export function hasData(): boolean {
-//   if (isLinkTypeNode(this.args)) return true;
-//   return this.args.fields.length > 0;
-// }
-
-// export function hasArgs(): boolean {
-//   if (isLinkTypeNode(this.args)) return true;
-//   const nonOmittedFields = this.args.fields.filter(
-//     (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
-//   );
-//   return nonOmittedFields.length > 0;
-// }
-
-// export function hasExtraArgs(): boolean {
-//   if (isLinkTypeNode(this.extraArgs)) return true;
-//   const nonOmittedFields = this.extraArgs.fields.filter(
-//     (field) => field.metadata.defaultsTo?.strategy !== 'omitted'
-//   );
-//   return nonOmittedFields.length > 0;
-// }
-
-// export function hasAnyArgs(): boolean {
-//   return this.hasArgs || this.hasExtraArgs;
-// }
-
-// export function hasArgDefaults(): boolean {
-//   return Object.keys(this.metadata.argDefaults).length > 0;
-// }
-
-// export function hasArgResolvers(): boolean {
-//   return Object.values(this.metadata.argDefaults).some(
-//     ({ kind }) => kind === 'resolver'
-//   );
-// }
-
-// export function hasAccountResolvers(): boolean {
-//   return this.accounts.some(
-//     ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
-//   );
-// }
-
-// export function hasByteResolver(): boolean {
-//   return this.metadata.bytesCreatedOnChain?.kind === 'resolver';
-// }
-
-// export function hasResolvers(): boolean {
-//   return (
-//     this.hasArgResolvers || this.hasAccountResolvers || this.hasByteResolver
-//   );
-// }
-
 export function isInstructionNode(node: Node | null): node is InstructionNode {
   return !!node && node.kind === 'instructionNode';
 }

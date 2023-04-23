@@ -1,5 +1,5 @@
-{% set hasResolvedAccounts = accounts.length > 0 or instruction.hasResolvers %}
-{% set hasResolvedArgs = instruction.hasArgs or instruction.hasArgDefaults or instruction.hasResolvers %}
+{% set hasResolvedAccounts = accounts.length > 0 or hasResolvers %}
+{% set hasResolvedArgs = hasDataArgs or hasArgDefaults or hasResolvers %}
 {% macro getAccountObject(name, accountsObj) -%}
   {{ 'resolvingAccounts' if accountsWithDefaults.includes(name) else accountsObj }}
 {%- endmacro %}

@@ -21,20 +21,20 @@ export function {{ instruction.name | camelCase }}(
   {% if canMergeAccountsAndArgs %}
     {% set accountsObj = 'input' %}
     {% set argsObj = 'input' %}
-    {% if instruction.hasAccounts and instruction.hasAnyArgs %}
+    {% if hasAccounts and hasAnyArgs %}
       input: {{ accountsType }} & {{ argsType }},
-    {% elif instruction.hasAccounts %}
+    {% elif hasAccounts %}
       input: {{ accountsType }},
-    {% elif instruction.hasAnyArgs %}
+    {% elif hasAnyArgs %}
       input: {{ argsType }},
     {% endif %}
   {% else %}
     {% set accountsObj = 'accounts' %}
     {% set argsObj = 'args' %}
-    {% if instruction.hasAccounts %}
+    {% if hasAccounts %}
       accounts: {{ accountsType }},
     {% endif %}
-    {% if instruction.hasAnyArgs %}
+    {% if hasAnyArgs %}
       args: {{ argsType }},
     {% endif %}
   {% endif %}
@@ -50,9 +50,9 @@ export function {{ instruction.name | camelCase }}(
   {% include "instructionsPageAccountMetas.njk" -%}
 
   // Data.
-  {% if instruction.hasArgs %}
+  {% if hasDataArgs %}
     const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize(resolvedArgs);
-  {% elif instruction.hasData %}
+  {% elif hasData %}
     const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({});
   {% else %}
     const data = new Uint8Array();
