@@ -59,18 +59,14 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return fixedSize === 0 ? 0 : arraySize;
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): number | null {
-    if (definedLinkType.size !== undefined) return definedLinkType.size;
-    if (definedLinkType.importFrom !== 'generated') return null;
+  visitLinkType(linkType: nodes.LinkTypeNode): number | null {
+    if (linkType.size !== undefined) return linkType.size;
+    if (linkType.importFrom !== 'generated') return null;
 
-    const linkedDefinedType = this.availableDefinedTypes.get(
-      definedLinkType.name
-    );
+    const linkedDefinedType = this.availableDefinedTypes.get(linkType.name);
 
     if (!linkedDefinedType) {
-      throw new Error(
-        `Cannot find linked defined type ${definedLinkType.name}.`
-      );
+      throw new Error(`Cannot find linked defined type ${linkType.name}.`);
     }
 
     // This prevents infinite recursion by using assuming

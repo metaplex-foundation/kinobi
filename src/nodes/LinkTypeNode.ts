@@ -1,4 +1,4 @@
-import type { ImportFrom } from '../shared';
+import { ImportFrom, mainCase } from '../shared';
 import type { Node } from './Node';
 
 export type LinkTypeNode = {
@@ -18,7 +18,7 @@ export function linkTypeNode(
 ): LinkTypeNode {
   return {
     kind: 'linkTypeNode',
-    name,
+    name: mainCase(name),
     importFrom: options.importFrom ?? 'generated',
     size: options.size,
   } as LinkTypeNode;

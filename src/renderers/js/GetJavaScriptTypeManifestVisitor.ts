@@ -116,13 +116,13 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): JavaScriptTypeManifest {
-    const pascalCaseDefinedType = pascalCase(definedLinkType.name);
+  visitLinkType(linkType: nodes.LinkTypeNode): JavaScriptTypeManifest {
+    const pascalCaseDefinedType = pascalCase(linkType.name);
     const serializerName = `get${pascalCaseDefinedType}Serializer`;
     const importFrom =
-      definedLinkType.importFrom === 'generated'
+      linkType.importFrom === 'generated'
         ? 'generatedTypes'
-        : definedLinkType.importFrom;
+        : linkType.importFrom;
 
     return {
       isEnum: false,

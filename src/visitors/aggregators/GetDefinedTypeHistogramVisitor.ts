@@ -95,13 +95,13 @@ export class GetDefinedTypeHistogramVisitor
     return histogram;
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): DefinedTypeHistogram {
-    if (definedLinkType.importFrom !== 'generated') {
+  visitLinkType(linkType: nodes.LinkTypeNode): DefinedTypeHistogram {
+    if (linkType.importFrom !== 'generated') {
       return {};
     }
 
     return {
-      [definedLinkType.name]: {
+      [linkType.name]: {
         total: 1,
         inAccounts: Number(this.mode === 'account'),
         inDefinedTypes: Number(this.mode === 'definedType'),

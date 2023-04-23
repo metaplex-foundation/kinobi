@@ -24,7 +24,7 @@ export interface Visitor<T = void> {
 
   // Types.
   visitArrayType: (arrayType: nodes.ArrayTypeNode) => T;
-  visitLinkType: (definedLinkType: nodes.LinkTypeNode) => T;
+  visitLinkType: (linkType: nodes.LinkTypeNode) => T;
   visitEnumType: (enumType: nodes.EnumTypeNode) => T;
   visitEnumEmptyVariantType: (
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode

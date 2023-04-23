@@ -68,7 +68,7 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): void {
+  visitLinkType(linkType: nodes.LinkTypeNode): void {
     //
   }
 

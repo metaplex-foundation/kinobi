@@ -219,22 +219,22 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return bag;
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): ValidatorBag {
-    this.pushNode(definedLinkType);
+  visitLinkType(linkType: nodes.LinkTypeNode): ValidatorBag {
+    this.pushNode(linkType);
     const bag = new ValidatorBag();
-    if (!definedLinkType.name) {
+    if (!linkType.name) {
       bag.error(
         'Pointing to a defined type with no name.',
-        definedLinkType,
+        linkType,
         this.stack
       );
     } else if (
-      definedLinkType.importFrom === 'generated' &&
-      !this.definedTypes.has(definedLinkType.name)
+      linkType.importFrom === 'generated' &&
+      !this.definedTypes.has(linkType.name)
     ) {
       bag.error(
-        `Pointing to a missing defined type named "${definedLinkType.name}"`,
-        definedLinkType,
+        `Pointing to a missing defined type named "${linkType.name}"`,
+        linkType,
         this.stack
       );
     }

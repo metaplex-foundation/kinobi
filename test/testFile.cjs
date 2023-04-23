@@ -80,9 +80,9 @@ kinobi.update(
       accounts: {
         metadata: { defaultsTo: k.pdaDefault('metadata') },
       },
-      args: {
-        metadataBump: { defaultsTo: k.accountBumpDefault('metadata') },
-      },
+      // args: {
+      //   metadataBump: { defaultsTo: k.accountBumpDefault('metadata') },
+      // },
     },
     CreateMetadataAccountV3: {
       accounts: {
@@ -107,7 +107,7 @@ kinobi.update(
         delegateRecord: {
           defaultsTo: k.pdaDefault('delegateRecord', {
             seeds: {
-              role: k.valueDefault(vEnum('delegateRole', 'Collection')),
+              role: k.valueDefault(k.vEnum('delegateRole', 'Collection')),
             },
           }),
         },
@@ -126,15 +126,15 @@ kinobi.update(
       args: {
         tokenStandard: {
           type: k.linkTypeNode('tokenStandard'),
-          defaultsTo: k.valueDefault(vEnum('tokenStandard', 'NonFungible')),
+          defaultsTo: k.valueDefault(k.vEnum('tokenStandard', 'NonFungible')),
         },
       },
     },
   })
 );
 
-// const tmKey = (name) => ({ field: 'key', value: vEnum('TmKey', name) });
-// const taKey = (name) => ({ field: 'key', value: vEnum('TaKey', name) });
+// const tmKey = (name) => ({ field: 'key', value: k.vEnum('TmKey', name) });
+// const taKey = (name) => ({ field: 'key', value: k.vEnum('TaKey', name) });
 // kinobi.update(
 //   new k.SetAccountDiscriminatorFromFieldVisitor({
 //     'mplTokenMetadata.Edition': tmKey('EditionV1'),
@@ -170,9 +170,9 @@ kinobi.update(
 //   new k.SetStructDefaultValuesVisitor({
 //     'mplTokenMetadata.Collection': { verified: vScalar(false) },
 //     'mplTokenMetadata.UpdateArgs.V1': {
-//       tokenStandard: vSome(vEnum('TokenStandard', 'NonFungible')),
+//       tokenStandard: vSome(k.vEnum('TokenStandard', 'NonFungible')),
 //       collection: vSome(
-//         vEnum('PayloadType', 'Pubkey', vTuple([vPublicKey('1'.repeat(32))]))
+//         k.vEnum('PayloadType', 'Pubkey', vTuple([vPublicKey('1'.repeat(32))]))
 //       ),
 //     },
 //   })

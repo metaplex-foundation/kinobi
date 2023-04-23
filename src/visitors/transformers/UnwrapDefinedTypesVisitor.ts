@@ -38,19 +38,19 @@ export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
     });
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
+  visitLinkType(linkType: nodes.LinkTypeNode): nodes.Node {
     if (
-      !this.shouldInline(definedLinkType.name) ||
-      definedLinkType.importFrom !== 'generated'
+      !this.shouldInline(linkType.name) ||
+      linkType.importFrom !== 'generated'
     ) {
-      return definedLinkType;
+      return linkType;
     }
 
-    const definedType = this.availableDefinedTypes.get(definedLinkType.name);
+    const definedType = this.availableDefinedTypes.get(linkType.name);
 
     if (definedType === undefined) {
       throw new Error(
-        `Trying to inline missing defined type [${definedLinkType.name}]. ` +
+        `Trying to inline missing defined type [${linkType.name}]. ` +
           `Ensure this visitor starts from the root node to access all defined types.`
       );
     }

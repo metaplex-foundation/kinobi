@@ -140,8 +140,8 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return nodes.arrayTypeNode(child, { ...arrayType });
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node | null {
-    return definedLinkType;
+  visitLinkType(linkType: nodes.LinkTypeNode): nodes.Node | null {
+    return linkType;
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node | null {

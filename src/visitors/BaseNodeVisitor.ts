@@ -123,8 +123,8 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.arrayTypeNode(child, { ...arrayType });
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node {
-    return definedLinkType;
+  visitLinkType(linkType: nodes.LinkTypeNode): nodes.Node {
+    return linkType;
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node {

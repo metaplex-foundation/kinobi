@@ -54,8 +54,8 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
     return this.map(visit(arrayType, this.visitor));
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): U {
-    return this.map(visit(definedLinkType, this.visitor));
+  visitLinkType(linkType: nodes.LinkTypeNode): U {
+    return this.map(visit(linkType, this.visitor));
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): U {

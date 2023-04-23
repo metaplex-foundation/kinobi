@@ -90,8 +90,8 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return `array(${child};${size})`;
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): string {
-    return `link(${definedLinkType.name};${definedLinkType.importFrom})`;
+  visitLinkType(linkType: nodes.LinkTypeNode): string {
+    return `link(${linkType.name};${linkType.importFrom})`;
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): string {

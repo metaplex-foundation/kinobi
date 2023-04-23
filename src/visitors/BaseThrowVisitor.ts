@@ -60,7 +60,7 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     throw new KinobiError('This visitor does not support TypeArray nodes.');
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): T {
+  visitLinkType(linkType: nodes.LinkTypeNode): T {
     throw new KinobiError(
       'This visitor does not support TypeDefinedLink nodes.'
     );

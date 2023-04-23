@@ -124,9 +124,9 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedTypeArray);
   }
 
-  visitLinkType(definedLinkType: nodes.LinkTypeNode): nodes.Node | null {
-    this.stack.push(definedLinkType);
-    const visitedTypeDefinedLink = super.visitLinkType(definedLinkType);
+  visitLinkType(linkType: nodes.LinkTypeNode): nodes.Node | null {
+    this.stack.push(linkType);
+    const visitedTypeDefinedLink = super.visitLinkType(linkType);
     this.stack.pop();
     return this.applyTransforms(visitedTypeDefinedLink);
   }
