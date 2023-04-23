@@ -2,8 +2,8 @@
 // Accounts.
 export type {{ instruction.name | pascalCase }}InstructionAccounts = {
 {% for account in accounts %}
-  {% if account.description.length > 0 %}
-    {{ macros.docblock([account.description]) }}
+  {% if account.docs.length > 0 %}
+    {{ macros.docblock(account.docs) }}
   {% endif %}
   {{ account.name | camelCase }}{{ account.optionalSign }}: {{ account.type }};
 {% endfor %}

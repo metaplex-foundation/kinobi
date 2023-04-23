@@ -96,7 +96,7 @@ export function find{{ account.name | pascalCase }}Pda(
     seeds: {
       {% for seed in seeds %}
         {% if seed.kind === 'variable' %}
-          /** {{ seed.description }} */
+          {{ macros.docblock(seed.docs) }}
           {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType }};
         {% endif %}
       {% endfor %}
