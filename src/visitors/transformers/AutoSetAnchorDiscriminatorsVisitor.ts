@@ -43,13 +43,13 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     return nodes.accountNode({
       ...account,
       discriminator: fieldAccountDiscriminator('discriminator'),
-      data: nodes.accountDataNode(
-        nodes.structTypeNode(account.data.struct.name, [
+      data: nodes.accountDataNode({
+        ...account.data,
+        struct: nodes.structTypeNode([
           discriminatorField,
           ...account.data.struct.fields,
         ]),
-        account.data.link
-      ),
+      }),
     });
   }
 
@@ -73,13 +73,13 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
 
     return nodes.instructionNode({
       ...instruction,
-      dataArgs: nodes.instructionDataArgsNode(
-        nodes.structTypeNode(instruction.dataArgs.struct.name, [
+      dataArgs: nodes.instructionDataArgsNode({
+        ...instruction.dataArgs,
+        struct: nodes.structTypeNode([
           discriminatorField,
           ...instruction.dataArgs.struct.fields,
         ]),
-        instruction.dataArgs.link
-      ),
+      }),
     });
   }
 }

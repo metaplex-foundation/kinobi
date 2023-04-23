@@ -35,13 +35,13 @@ export class SetInstructionDiscriminatorsVisitor extends TransformNodesVisitor {
 
             return nodes.instructionNode({
               ...node,
-              dataArgs: nodes.instructionDataArgsNode(
-                nodes.structTypeNode(node.dataArgs.struct.name, [
+              dataArgs: nodes.instructionDataArgsNode({
+                ...node.dataArgs,
+                struct: nodes.structTypeNode([
                   discriminatorField,
                   ...node.dataArgs.struct.fields,
                 ]),
-                node.dataArgs.link
-              ),
+              }),
             });
           },
         };

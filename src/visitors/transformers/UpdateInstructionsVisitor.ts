@@ -130,9 +130,10 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
   } {
     const usedArgs = new Set<string>();
 
-    const newDataArgs = nodes.instructionDataArgsNode(
-      nodes.structTypeNode(
-        `${newInstructionName}InstructionData`,
+    const newDataArgs = nodes.instructionDataArgsNode({
+      ...instruction.dataArgs,
+      name: `${newInstructionName}InstructionData`,
+      struct: nodes.structTypeNode(
         instruction.dataArgs.struct.fields.map((field) => {
           const argUpdate = argUpdates[field.name];
           if (!argUpdate) return field;
@@ -145,8 +146,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
           });
         })
       ),
-      instruction.dataArgs.link
-    );
+    });
 
     const updatedExtraFields = instruction.extraArgs.struct.fields.map(
       (field) => {
@@ -175,13 +175,11 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         });
       });
 
-    const newExtraArgs = nodes.instructionExtraArgsNode(
-      nodes.structTypeNode(`${newInstructionName}InstructionExtra`, [
-        ...updatedExtraFields,
-        ...newExtraFields,
-      ]),
-      instruction.extraArgs.link
-    );
+    const newExtraArgs = nodes.instructionExtraArgsNode({
+      ...instruction.extraArgs,
+      name: `${newInstructionName}InstructionExtra`,
+      struct: nodes.structTypeNode([...updatedExtraFields, ...newExtraFields]),
+    });
 
     const newArgDefaults = instruction.argDefaults;
     Object.entries(argUpdates).forEach(([argName, argUpdate]) => {

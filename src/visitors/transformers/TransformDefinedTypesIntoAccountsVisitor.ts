@@ -19,7 +19,10 @@ export class TransformDefinedTypesIntoAccountsVisitor extends BaseNodeVisitor {
       nodes.assertStructTypeNode(node.data);
       return nodes.accountNode({
         ...node,
-        data: nodes.accountDataNode(node.data),
+        data: nodes.accountDataNode({
+          name: `${node.name}AccountData`,
+          struct: node.data,
+        }),
         size: undefined,
         discriminator: undefined,
         seeds: [],

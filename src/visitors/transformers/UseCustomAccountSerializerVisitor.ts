@@ -60,12 +60,12 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
     if (!options) return account;
     return nodes.accountNode({
       ...account,
-      data: nodes.accountDataNode(
-        account.data.struct,
-        nodes.linkTypeNode(options.name, {
+      data: nodes.accountDataNode({
+        ...account.data,
+        link: nodes.linkTypeNode(options.name, {
           importFrom: options.importFrom,
-        })
-      ),
+        }),
+      }),
     });
   }
 }

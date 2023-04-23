@@ -2,11 +2,9 @@ import * as nodes from '../../nodes';
 
 export function renameStructNode(
   node: nodes.StructTypeNode,
-  map: Record<string, string>,
-  newName?: string
+  map: Record<string, string>
 ): nodes.StructTypeNode {
   return nodes.structTypeNode(
-    newName ?? node.name,
     node.fields.map((field) =>
       map[field.name]
         ? nodes.structFieldTypeNode({ ...field, name: map[field.name] })
@@ -17,11 +15,9 @@ export function renameStructNode(
 
 export function renameEnumNode(
   node: nodes.EnumTypeNode,
-  map: Record<string, string>,
-  newName?: string
+  map: Record<string, string>
 ): nodes.EnumTypeNode {
   return nodes.enumTypeNode(
-    newName ?? node.name,
     node.variants.map((variant) =>
       map[variant.name]
         ? renameEnumVariant(variant, map[variant.name])

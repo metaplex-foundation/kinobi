@@ -39,21 +39,14 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
               const { data: dataUpdates, ...otherUpdates } = updates;
               let newData = node.data;
               if (nodes.isStructTypeNode(node.data)) {
-                newData = renameStructNode(
-                  node.data,
-                  dataUpdates ?? {},
-                  newName ?? node.name
-                );
+                newData = renameStructNode(node.data, dataUpdates ?? {});
               } else if (nodes.isEnumTypeNode(node.data)) {
-                newData = renameEnumNode(
-                  node.data,
-                  dataUpdates ?? {},
-                  newName ?? node.name
-                );
+                newData = renameEnumNode(node.data, dataUpdates ?? {});
               }
               return nodes.definedTypeNode({
                 ...node,
                 ...otherUpdates,
+                name: newName ?? node.name,
                 data: newData,
               });
             },

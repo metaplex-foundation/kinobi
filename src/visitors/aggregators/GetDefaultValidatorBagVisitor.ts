@@ -245,9 +245,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitEnumType(enumType: nodes.EnumTypeNode): ValidatorBag {
     this.pushNode(enumType);
     const bag = new ValidatorBag();
-    if (!enumType.name) {
-      bag.info('Enum has no name.', enumType, this.stack);
-    }
     if (enumType.variants.length === 0) {
       bag.warn('Enum has no variants.', enumType, this.stack);
     }
@@ -324,9 +321,6 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
   visitStructType(structType: nodes.StructTypeNode): ValidatorBag {
     this.pushNode(structType);
     const bag = new ValidatorBag();
-    if (!structType.name) {
-      bag.info('Struct has no name.', structType, this.stack);
-    }
 
     // Check for duplicate field names.
     const fieldNameHistogram = new Map<string, number>();

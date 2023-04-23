@@ -46,9 +46,9 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   visitAccountData(accountData: nodes.AccountDataNode): nodes.Node {
     const struct = visit(accountData.struct, this);
     nodes.assertStructTypeNode(struct);
-    const link = accountData.link ? visit(accountData.link, this) : null;
-    if (link !== null) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode(struct, link ?? undefined);
+    const link = accountData.link ? visit(accountData.link, this) : undefined;
+    if (link !== undefined) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode({ ...accountData, struct, link });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
@@ -82,9 +82,9 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     nodes.assertStructTypeNode(struct);
     const link = instructionDataArgs.link
       ? visit(instructionDataArgs.link, this)
-      : null;
-    if (link !== null) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode(struct, link ?? undefined);
+      : undefined;
+    if (link !== undefined) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode({ ...instructionDataArgs, struct, link });
   }
 
   visitInstructionExtraArgs(
@@ -94,9 +94,9 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     nodes.assertStructTypeNode(struct);
     const link = instructionExtraArgs.link
       ? visit(instructionExtraArgs.link, this)
-      : null;
-    if (link !== null) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode(struct, link ?? undefined);
+      : undefined;
+    if (link !== undefined) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode({ ...instructionExtraArgs, struct, link });
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node {
@@ -121,7 +121,6 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node {
     return nodes.enumTypeNode(
-      enumType.name,
       enumType.variants
         .map((variant) => visit(variant, this))
         .filter(nodes.assertNodeFilter(nodes.assertEnumVariantTypeNode))
@@ -175,7 +174,6 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
 
   visitStructType(structType: nodes.StructTypeNode): nodes.Node {
     return nodes.structTypeNode(
-      structType.name,
       structType.fields
         .map((field) => visit(field, this))
         .filter(nodes.assertNodeFilter(nodes.assertStructFieldTypeNode))

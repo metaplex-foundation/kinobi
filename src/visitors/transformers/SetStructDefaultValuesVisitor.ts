@@ -31,7 +31,7 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
                 });
               }
             );
-            return nodes.structTypeNode(node.name, fields);
+            return nodes.structTypeNode(fields);
           },
         };
       }

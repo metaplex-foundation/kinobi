@@ -60,12 +60,12 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
     if (!options) return instruction;
     return nodes.instructionNode({
       ...instruction,
-      dataArgs: nodes.instructionDataArgsNode(
-        instruction.dataArgs.struct,
-        nodes.linkTypeNode(options.name, {
+      dataArgs: nodes.instructionDataArgsNode({
+        ...instruction.dataArgs,
+        link: nodes.linkTypeNode(options.name, {
           importFrom: options.importFrom,
-        })
-      ),
+        }),
+      }),
     });
   }
 }

@@ -53,9 +53,9 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     const struct = visit(accountData.struct, this);
     if (struct === null) return null;
     nodes.assertStructTypeNode(struct);
-    const link = accountData.link ? visit(accountData.link, this) : null;
-    if (link !== null) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode(struct, link ?? undefined);
+    const link = accountData.link ? visit(accountData.link, this) : undefined;
+    if (link !== undefined) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode({ ...accountData, struct, link });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node | null {
@@ -96,9 +96,9 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     nodes.assertStructTypeNode(struct);
     const link = instructionDataArgs.link
       ? visit(instructionDataArgs.link, this)
-      : null;
-    if (link !== null) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode(struct, link ?? undefined);
+      : undefined;
+    if (link !== undefined) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode({ ...instructionDataArgs, struct, link });
   }
 
   visitInstructionExtraArgs(
@@ -109,9 +109,9 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     nodes.assertStructTypeNode(struct);
     const link = instructionExtraArgs.link
       ? visit(instructionExtraArgs.link, this)
-      : null;
-    if (link !== null) nodes.assertLinkTypeNode(link);
-    return nodes.accountDataNode(struct, link ?? undefined);
+      : undefined;
+    if (link !== undefined) nodes.assertLinkTypeNode(link);
+    return nodes.accountDataNode({ ...instructionExtraArgs, struct, link });
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node | null {
@@ -138,7 +138,6 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
 
   visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node | null {
     return nodes.enumTypeNode(
-      enumType.name,
       enumType.variants
         .map((variant) => visit(variant, this))
         .filter(
@@ -199,7 +198,6 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
 
   visitStructType(structType: nodes.StructTypeNode): nodes.Node | null {
     return nodes.structTypeNode(
-      structType.name,
       structType.fields
         .map((field) => visit(field, this))
         .filter(

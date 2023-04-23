@@ -59,20 +59,16 @@ export class NodeStack {
             : 'Unnamed Defined Type';
         case 'errorNode':
           return node.name ? `Error: ${node.name}` : 'Unnamed Error';
-        case 'enumTypeNode':
-          return node.name ? `Enum: ${node.name}` : 'Enum';
         case 'enumEmptyVariantTypeNode':
         case 'enumStructVariantTypeNode':
         case 'enumTupleVariantTypeNode':
           return node.name ? `Variant: ${node.name}` : 'Variant';
         case 'numberWrapperTypeNode':
           return `Number Wrapper: ${node.wrapper.kind}`;
-        case 'structTypeNode':
-          return node.name ? `Struct: ${node.name}` : 'Struct';
         case 'structFieldTypeNode':
           return node.name ? `Field: ${node.name}` : 'Field';
         default:
-          return titleCase(node.kind.replace(/Node$/, '').replace(/^Type/, ''));
+          return titleCase(node.kind.replace(/(Type)?Node$/, ''));
       }
     });
   }

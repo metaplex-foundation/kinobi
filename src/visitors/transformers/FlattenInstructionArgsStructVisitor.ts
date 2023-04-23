@@ -11,10 +11,10 @@ export class FlattenInstructionArgsStructVisitor extends TransformNodesVisitor {
           nodes.assertInstructionNode(instruction);
           return nodes.instructionNode({
             ...instruction,
-            dataArgs: nodes.instructionDataArgsNode(
-              flattenStruct(instruction.dataArgs),
-              instruction.dataArgs.link
-            ),
+            dataArgs: nodes.instructionDataArgsNode({
+              ...instruction.dataArgs,
+              struct: flattenStruct(instruction.dataArgs.struct),
+            }),
           });
         },
       },

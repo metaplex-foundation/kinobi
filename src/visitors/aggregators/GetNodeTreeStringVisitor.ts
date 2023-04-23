@@ -167,12 +167,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent += 1;
     const children = enumType.variants.map((variant) => visit(variant, this));
     this.indent -= 1;
-    return [
-      this.indented(
-        `[EnumTypeNode]${enumType.name ? ` ${enumType.name}` : ''}`
-      ),
-      ...children,
-    ].join('\n');
+    return [this.indented('[EnumTypeNode]'), ...children].join('\n');
   }
 
   visitEnumEmptyVariantType(
@@ -252,10 +247,7 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     this.indent += 1;
     const children = structType.fields.map((field) => visit(field, this));
     this.indent -= 1;
-    return [
-      this.indented(`[StructTypeNode] ${structType.name}`),
-      ...children,
-    ].join('\n');
+    return [this.indented('[StructTypeNode]'), ...children].join('\n');
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {

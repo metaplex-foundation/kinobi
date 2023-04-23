@@ -29,8 +29,9 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
             return nodes.accountNode({
               ...node,
               discriminator: fieldAccountDiscriminator(field),
-              data: nodes.accountDataNode(
-                nodes.structTypeNode(node.data.struct.name, [
+              data: nodes.accountDataNode({
+                ...node.data,
+                struct: nodes.structTypeNode([
                   ...node.data.struct.fields.slice(0, fieldIndex),
                   nodes.structFieldTypeNode({
                     ...fieldNode,
@@ -38,8 +39,7 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
                   }),
                   ...node.data.struct.fields.slice(fieldIndex + 1),
                 ]),
-                node.data.link
-              ),
+              }),
             });
           },
         };

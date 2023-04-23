@@ -96,7 +96,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
 
   visitEnumType(enumType: nodes.EnumTypeNode): string {
     const children = enumType.variants.map((variant) => visit(variant, this));
-    return `enum[${enumType.name}](${children.join(',')})`;
+    return `enum(${children.join(',')})`;
   }
 
   visitEnumEmptyVariantType(
@@ -141,7 +141,7 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
 
   visitStructType(structType: nodes.StructTypeNode): string {
     const children = structType.fields.map((field) => visit(field, this));
-    return `struct[${structType.name}](${children.join(',')})`;
+    return `struct(${children.join(',')})`;
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): string {

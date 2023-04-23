@@ -49,14 +49,12 @@ export const flattenStruct = (
 
   if (hasConflictingNames) {
     logWarn(
-      `Cound not flatten the attributes of struct [${node.name}] ` +
+      `Cound not flatten the attributes of a struct ` +
         `since this would cause the following attributes ` +
         `to conflict [${uniqueDuplicates.join(', ')}].` +
         'You may want to rename the conflicting attributes.'
     );
   }
 
-  return hasConflictingNames
-    ? node
-    : nodes.structTypeNode(node.name, inlinedFields);
+  return hasConflictingNames ? node : nodes.structTypeNode(inlinedFields);
 };

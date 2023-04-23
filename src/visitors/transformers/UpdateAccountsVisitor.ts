@@ -35,10 +35,11 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
             return nodes.accountNode({
               ...node,
               ...updates,
-              data: nodes.accountDataNode(
-                renameStructNode(node.data.struct, updates.data ?? {}, newName),
-                node.data.link
-              ),
+              data: nodes.accountDataNode({
+                ...node.data,
+                name: newName,
+                struct: renameStructNode(node.data.struct, updates.data ?? {}),
+              }),
             });
           },
         };
