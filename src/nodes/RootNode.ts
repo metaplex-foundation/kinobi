@@ -49,6 +49,6 @@ export function isRootNode(node: Node | null): node is RootNode {
 
 export function assertRootNode(node: Node | null): asserts node is RootNode {
   if (!isRootNode(node)) {
-    throw new Error(`Expected RootNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected rootNode, got ${node?.kind ?? 'null'}.`);
   }
 }

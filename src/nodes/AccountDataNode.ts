@@ -36,6 +36,6 @@ export function assertAccountDataNode(
   node: Node | null
 ): asserts node is AccountDataNode {
   if (!isAccountDataNode(node)) {
-    throw new Error(`Expected AccountDataNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected accountDataNode, got ${node?.kind ?? 'null'}.`);
   }
 }

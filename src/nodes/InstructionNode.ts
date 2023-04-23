@@ -141,6 +141,6 @@ export function assertInstructionNode(
   node: Node | null
 ): asserts node is InstructionNode {
   if (!isInstructionNode(node)) {
-    throw new Error(`Expected InstructionNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected instructionNode, got ${node?.kind ?? 'null'}.`);
   }
 }

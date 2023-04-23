@@ -63,7 +63,7 @@ export function assertStructFieldTypeNode(
 ): asserts node is StructFieldTypeNode {
   if (!isStructFieldTypeNode(node)) {
     throw new Error(
-      `Expected StructFieldTypeNode, got ${node?.kind ?? 'null'}.`
+      `Expected structFieldTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

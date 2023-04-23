@@ -35,7 +35,7 @@ export function assertNumberWrapperTypeNode(
 ): asserts node is NumberWrapperTypeNode {
   if (!isNumberWrapperTypeNode(node)) {
     throw new Error(
-      `Expected NumberWrapperTypeNode, got ${node?.kind ?? 'null'}.`
+      `Expected numberWrapperTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

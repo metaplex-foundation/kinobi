@@ -47,7 +47,7 @@ export function assertEnumTupleVariantTypeNode(
 ): asserts node is EnumTupleVariantTypeNode {
   if (!isEnumTupleVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumTupleVariantTypeNode, got ${node?.kind ?? 'null'}.`
+      `Expected enumTupleVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

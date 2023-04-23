@@ -39,7 +39,7 @@ export function assertEnumEmptyVariantTypeNode(
 ): asserts node is EnumEmptyVariantTypeNode {
   if (!isEnumEmptyVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumEmptyVariantTypeNode, got ${node?.kind ?? 'null'}.`
+      `Expected enumEmptyVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

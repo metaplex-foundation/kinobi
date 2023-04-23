@@ -26,7 +26,7 @@ export function assertEnumVariantTypeNode(
 ): asserts node is EnumVariantTypeNode {
   if (!isEnumVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumVariantTypeNode, got ${node?.kind ?? 'null'}.`
+      `Expected enumVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

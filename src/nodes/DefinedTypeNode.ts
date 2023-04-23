@@ -52,6 +52,6 @@ export function assertDefinedTypeNode(
   node: Node | null
 ): asserts node is DefinedTypeNode {
   if (!isDefinedTypeNode(node)) {
-    throw new Error(`Expected DefinedTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected definedTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

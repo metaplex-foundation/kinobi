@@ -27,6 +27,6 @@ export function assertStructTypeNode(
   node: Node | null
 ): asserts node is StructTypeNode {
   if (!isStructTypeNode(node)) {
-    throw new Error(`Expected StructTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected structTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

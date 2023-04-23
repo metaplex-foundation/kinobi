@@ -24,6 +24,6 @@ export function assertTupleTypeNode(
   node: Node | null
 ): asserts node is TupleTypeNode {
   if (!isTupleTypeNode(node)) {
-    throw new Error(`Expected TupleTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected tupleTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

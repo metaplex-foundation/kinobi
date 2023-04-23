@@ -43,7 +43,7 @@ export function assertInstructionDataArgsNode(
 ): asserts node is InstructionDataArgsNode {
   if (!isInstructionDataArgsNode(node)) {
     throw new Error(
-      `Expected InstructionDataArgsNode, got ${node?.kind ?? 'null'}.`
+      `Expected instructionDataArgsNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

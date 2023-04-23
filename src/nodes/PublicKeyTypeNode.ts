@@ -19,6 +19,6 @@ export function assertPublicKeyTypeNode(
   node: Node | null
 ): asserts node is PublicKeyTypeNode {
   if (!isPublicKeyTypeNode(node)) {
-    throw new Error(`Expected PublicKeyTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected publicKeyTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

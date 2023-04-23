@@ -50,7 +50,7 @@ export function assertEnumStructVariantTypeNode(
 ): asserts node is EnumStructVariantTypeNode {
   if (!isEnumStructVariantTypeNode(node)) {
     throw new Error(
-      `Expected EnumStructVariantTypeNode, got ${node?.kind ?? 'null'}.`
+      `Expected enumStructVariantTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

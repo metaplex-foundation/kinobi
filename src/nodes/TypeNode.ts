@@ -125,7 +125,7 @@ export function isTypeNode(node: Node | null): node is TypeNode {
 
 export function assertTypeNode(node: Node | null): asserts node is TypeNode {
   if (!isTypeNode(node)) {
-    throw new Error(`Expected TypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected typeNode, got ${node?.kind ?? 'null'}.`);
   }
 }
 
@@ -142,7 +142,7 @@ export function assertStructOrLinkTypeNode(
 ): asserts node is StructTypeNode | LinkTypeNode {
   if (!isStructOrLinkTypeNode(node)) {
     throw new Error(
-      `Expected StructTypeNode | LinkTypeNode, got ${node?.kind ?? 'null'}.`
+      `Expected structTypeNode | LinkTypeNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

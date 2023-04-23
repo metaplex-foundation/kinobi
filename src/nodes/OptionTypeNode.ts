@@ -48,6 +48,6 @@ export function assertOptionTypeNode(
   node: Node | null
 ): asserts node is OptionTypeNode {
   if (!isOptionTypeNode(node)) {
-    throw new Error(`Expected OptionTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected optionTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

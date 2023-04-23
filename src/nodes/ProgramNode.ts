@@ -82,6 +82,6 @@ export function assertProgramNode(
   node: Node | null
 ): asserts node is ProgramNode {
   if (!isProgramNode(node)) {
-    throw new Error(`Expected ProgramNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected programNode, got ${node?.kind ?? 'null'}.`);
   }
 }

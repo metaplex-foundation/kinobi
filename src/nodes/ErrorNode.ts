@@ -51,6 +51,6 @@ export function isErrorNode(node: Node | null): node is ErrorNode {
 
 export function assertErrorNode(node: Node | null): asserts node is ErrorNode {
   if (!isErrorNode(node)) {
-    throw new Error(`Expected ErrorNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected errorNode, got ${node?.kind ?? 'null'}.`);
   }
 }

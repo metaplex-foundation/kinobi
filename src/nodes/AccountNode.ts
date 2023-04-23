@@ -94,6 +94,6 @@ export function assertAccountNode(
   node: Node | null
 ): asserts node is AccountNode {
   if (!isAccountNode(node)) {
-    throw new Error(`Expected AccountNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected accountNode, got ${node?.kind ?? 'null'}.`);
   }
 }

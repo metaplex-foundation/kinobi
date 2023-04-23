@@ -56,6 +56,6 @@ export function assertNumberTypeNode(
   node: Node | null
 ): asserts node is NumberTypeNode {
   if (!isNumberTypeNode(node)) {
-    throw new Error(`Expected NumberTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected numberTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

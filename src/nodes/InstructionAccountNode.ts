@@ -66,7 +66,7 @@ export function assertInstructionAccountNode(
 ): asserts node is InstructionAccountNode {
   if (!isInstructionAccountNode(node)) {
     throw new Error(
-      `Expected InstructionAccountNode, got ${node?.kind ?? 'null'}.`
+      `Expected instructionAccountNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

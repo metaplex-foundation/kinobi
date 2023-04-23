@@ -46,7 +46,7 @@ export function assertEnumTypeNode(
   node: Node | null
 ): asserts node is EnumTypeNode {
   if (!isEnumTypeNode(node)) {
-    throw new Error(`Expected EnumTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected enumTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }
 

@@ -56,6 +56,6 @@ export function assertSetTypeNode(
   node: Node | null
 ): asserts node is SetTypeNode {
   if (!isSetTypeNode(node)) {
-    throw new Error(`Expected SetTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected setTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

@@ -59,6 +59,6 @@ export function assertMapTypeNode(
   node: Node | null
 ): asserts node is MapTypeNode {
   if (!isMapTypeNode(node)) {
-    throw new Error(`Expected MapTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected mapTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

@@ -43,7 +43,7 @@ export function assertInstructionExtraArgsNode(
 ): asserts node is InstructionExtraArgsNode {
   if (!isInstructionExtraArgsNode(node)) {
     throw new Error(
-      `Expected InstructionExtraArgsNode, got ${node?.kind ?? 'null'}.`
+      `Expected instructionExtraArgsNode, got ${node?.kind ?? 'null'}.`
     );
   }
 }

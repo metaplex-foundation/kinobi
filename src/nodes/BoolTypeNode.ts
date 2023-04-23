@@ -30,6 +30,6 @@ export function assertBoolTypeNode(
   node: Node | null
 ): asserts node is BoolTypeNode {
   if (!isBoolTypeNode(node)) {
-    throw new Error(`Expected BoolTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected boolTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

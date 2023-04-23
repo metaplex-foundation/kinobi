@@ -30,6 +30,6 @@ export function assertBytesTypeNode(
   node: Node | null
 ): asserts node is BytesTypeNode {
   if (!isBytesTypeNode(node)) {
-    throw new Error(`Expected BytesTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected bytesTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

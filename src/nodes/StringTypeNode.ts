@@ -39,6 +39,6 @@ export function assertStringTypeNode(
   node: Node | null
 ): asserts node is StringTypeNode {
   if (!isStringTypeNode(node)) {
-    throw new Error(`Expected StringTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected stringTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

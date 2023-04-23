@@ -32,6 +32,6 @@ export function assertLinkTypeNode(
   node: Node | null
 ): asserts node is LinkTypeNode {
   if (!isLinkTypeNode(node)) {
-    throw new Error(`Expected LinkTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected linkTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }

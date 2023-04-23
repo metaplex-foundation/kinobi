@@ -55,6 +55,6 @@ export function assertArrayTypeNode(
   node: Node | null
 ): asserts node is ArrayTypeNode {
   if (!isArrayTypeNode(node)) {
-    throw new Error(`Expected ArrayTypeNode, got ${node?.kind ?? 'null'}.`);
+    throw new Error(`Expected arrayTypeNode, got ${node?.kind ?? 'null'}.`);
   }
 }
