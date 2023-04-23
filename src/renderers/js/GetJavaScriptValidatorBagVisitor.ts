@@ -43,21 +43,19 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
       [`safeFetch${pascalCaseName}`]: 'function',
       [`deserialize${pascalCaseName}`]: 'function',
       [`get${pascalCaseName}AccountDataSerializer`]: 'function',
+      [`get${pascalCaseName}GpaBuilder`]: 'function',
       [`get${pascalCaseName}Size`]: 'function',
     };
-    if (account.metadata.seeds.length > 0) {
+    if (account.seeds.length > 0) {
       exports[`find${pascalCaseName}Pda`] = 'function';
     }
-    if (account.metadata.gpaFields.length > 0) {
-      exports[`get${pascalCaseName}GpaBuilder`] = 'function';
-    }
-    if (!account.metadata.internal) {
+    if (!account.internal) {
       bag.mergeWith([this.checkExportConflicts(account, exports)]);
     }
 
     const reservedAccountFields = new Set(['publicKey', 'header']);
-    if (!nodes.isLinkTypeNode(account.type)) {
-      const invalidFields = account.type.fields
+    if (!account.data.link) {
+      const invalidFields = account.data.struct.fields
         .map((field) => field.name)
         .filter((name) => reservedAccountFields.has(name));
       if (invalidFields.length > 0) {
@@ -78,7 +76,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     this.pushNode(instruction);
     const camelCaseName = camelCase(instruction.name);
     const pascalCaseName = pascalCase(instruction.name);
-    if (!instruction.metadata.internal) {
+    if (!instruction.internal) {
       bag.mergeWith([
         this.checkExportConflicts(instruction, {
           [camelCaseName]: 'function',
@@ -99,10 +97,11 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const bag = super.visitDefinedType(definedType);
     this.pushNode(definedType);
     const isDataEnum =
-      nodes.isEnumTypeNode(definedType.type) && definedType.type.isDataEnum();
+      nodes.isEnumTypeNode(definedType.data) &&
+      nodes.isDataEnum(definedType.data);
     const camelCaseName = camelCase(definedType.name);
     const pascalCaseName = pascalCase(definedType.name);
-    if (!definedType.metadata.internal) {
+    if (!definedType.internal) {
       bag.mergeWith([
         this.checkExportConflicts(definedType, {
           [pascalCaseName]: 'type',
@@ -125,8 +124,7 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     const bag = super.visitError(error);
     this.pushNode(error);
     const prefixedName =
-      pascalCase(this.program?.metadata.prefix ?? '') +
-      pascalCase(error.metadata.name);
+      pascalCase(this.program?.prefix ?? '') + pascalCase(error.name);
     bag.mergeWith([
       this.checkExportConflicts(error, {
         [`${prefixedName}Error`]: 'class',
@@ -139,26 +137,26 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): ValidatorBag {
-    const bag = super.visitNumberWrapperType(typeNumberWrapper);
-    this.pushNode(typeNumberWrapper);
-    const { wrapper, item } = typeNumberWrapper;
+    const bag = super.visitNumberWrapperType(numberWrapperType);
+    this.pushNode(numberWrapperType);
+    const { wrapper, number } = numberWrapperType;
     switch (wrapper.kind) {
       case 'DateTime':
-        if (!item.isInteger()) {
+        if (!nodes.isInteger(number)) {
           bag.error(
-            `DateTime wrapper can only be applied to ` +
-              `integer types. Got type [${item.toString()}].`,
-            typeNumberWrapper,
+            `DateTime wrapper can only be applied to integer types. ` +
+              `Got type [${nodes.displayNumberTypeNode(number)}].`,
+            numberWrapperType,
             this.stack
           );
         }
         break;
       case 'Amount':
-        if (!item.isUnsignedInteger()) {
+        if (!nodes.isUnsignedInteger(number)) {
           bag.error(
-            `Amount wrapper can only be applied to ` +
-              `unsigned integer types. Got type [${item.toString()}].`,
-            typeNumberWrapper,
+            `Amount wrapper can only be applied to unsigned integer types. ` +
+              `Got type [${nodes.displayNumberTypeNode(number)}].`,
+            numberWrapperType,
             this.stack
           );
         }

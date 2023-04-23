@@ -1,7 +1,11 @@
 import { LogLevel } from '../../shared/logs';
 import * as nodes from '../../nodes';
-import { BaseThrowVisitor, ThrowValidatorItemsVisitor } from '../../visitors';
-import { deleteFolder } from '../shared';
+import {
+  BaseThrowVisitor,
+  ThrowValidatorItemsVisitor,
+  visit,
+} from '../../visitors';
+import { deleteFolder } from '../utils';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
 import {
   GetJavaScriptRenderMapOptions,
@@ -24,7 +28,8 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
 
   visitRoot(root: nodes.RootNode): void {
     // Validate nodes.
-    root.accept(
+    visit(
+      root,
       new ThrowValidatorItemsVisitor(
         new GetJavaScriptValidatorBagVisitor(),
         this.options.throwLevel
@@ -37,9 +42,12 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
     }
 
     // Render the new files.
-    new WriteRenderMapVisitor(
-      new GetJavaScriptRenderMapVisitor(this.options),
-      this.path
-    ).visitRoot(root);
+    visit(
+      root,
+      new WriteRenderMapVisitor(
+        new GetJavaScriptRenderMapVisitor(this.options),
+        this.path
+      )
+    );
   }
 }
