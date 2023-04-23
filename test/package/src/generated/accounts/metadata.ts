@@ -124,7 +124,7 @@ export function getMetadataAccountDataSerializer(
         ],
         ['delegateState', s.option(getDelegateStateSerializer(context))],
       ],
-      { description: 'Metadata' }
+      { description: 'MetadataAccountData' }
     ),
     (value) => ({ ...value, key: TmKey.MetadataV1 } as MetadataAccountData)
   ) as Serializer<MetadataAccountDataArgs, MetadataAccountData>;

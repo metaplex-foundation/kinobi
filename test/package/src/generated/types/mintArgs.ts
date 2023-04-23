@@ -39,16 +39,13 @@ export function getMintArgsSerializer(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<MintArgs, 'V1'>>(
+        s.struct<GetDataEnumKindContent<MintArgs, 'V1'>>([
+          ['amount', s.u64()],
           [
-            ['amount', s.u64()],
-            [
-              'authorizationData',
-              s.option(getAuthorizationDataSerializer(context)),
-            ],
+            'authorizationData',
+            s.option(getAuthorizationDataSerializer(context)),
           ],
-          { description: 'V1' }
-        ),
+        ]),
       ],
     ],
     { description: 'MintArgs' }

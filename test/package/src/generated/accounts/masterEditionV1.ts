@@ -63,7 +63,7 @@ export function getMasterEditionV1AccountDataSerializer(
         ['printingMint', s.publicKey()],
         ['oneTimePrintingAuthorizationMint', s.publicKey()],
       ],
-      { description: 'MasterEditionV1' }
+      { description: 'MasterEditionV1AccountData' }
     ),
     (value) =>
       ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)

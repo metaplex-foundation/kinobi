@@ -25,6 +25,7 @@ import {
   getCandyMachineDataSerializer,
 } from '../types';
 
+/** Candy machine state and config data. */
 export type CandyMachine = Account<CandyMachineAccountData>;
 
 export type CandyMachineAccountData = {
@@ -77,7 +78,7 @@ export function getCandyMachineAccountDataSerializer(
         ['itemsRedeemed', s.u64()],
         ['data', getCandyMachineDataSerializer(context)],
       ],
-      { description: 'CandyMachine' }
+      { description: 'CandyMachineAccountData' }
     ),
     (value) =>
       ({

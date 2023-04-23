@@ -80,9 +80,9 @@ kinobi.update(
       accounts: {
         metadata: { defaultsTo: k.pdaDefault('metadata') },
       },
-      // args: {
-      //   metadataBump: { defaultsTo: k.accountBumpDefault('metadata') },
-      // },
+      args: {
+        metadataBump: { defaultsTo: k.accountBumpDefault('metadata') },
+      },
     },
     CreateMetadataAccountV3: {
       accounts: {
