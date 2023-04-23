@@ -83,6 +83,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
+    this.byteSizeVisitor.registerDefinedTypes?.(nodes.getAllDefinedTypes(root));
+
     const programsToExport = root.programs.filter((p) => !p.internal);
     const accountsToExport = nodes
       .getAllAccounts(root)
