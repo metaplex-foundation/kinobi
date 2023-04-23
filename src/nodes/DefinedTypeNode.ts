@@ -23,7 +23,7 @@ export type DefinedTypeNodeInput = {
 
 export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
   if (!input.name) {
-    throw new InvalidKinobiTreeError('DefinedTypeNodeInput must have a name.');
+    throw new InvalidKinobiTreeError('DefinedTypeNode must have a name.');
   }
   return {
     kind: 'definedTypeNode',

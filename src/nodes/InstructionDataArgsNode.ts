@@ -1,3 +1,4 @@
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import { LinkTypeNode } from './LinkTypeNode';
 import type { Node } from './Node';
 import { StructTypeNode } from './StructTypeNode';
@@ -5,18 +6,29 @@ import { StructTypeNode } from './StructTypeNode';
 export type InstructionDataArgsNode = {
   readonly __instructionDataArgsNode: unique symbol;
   readonly kind: 'instructionDataArgsNode';
+  readonly name: string;
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
 
+export type InstructionDataArgsNodeInput = Omit<
+  InstructionDataArgsNode,
+  '__instructionDataArgsNode' | 'kind'
+>;
+
 export function instructionDataArgsNode(
-  struct: StructTypeNode,
-  link?: LinkTypeNode | null
+  input: InstructionDataArgsNodeInput
 ): InstructionDataArgsNode {
+  if (!input.name) {
+    throw new InvalidKinobiTreeError(
+      'InstructionDataArgsNode must have a name.'
+    );
+  }
   return {
     kind: 'instructionDataArgsNode',
-    struct,
-    link,
+    name: mainCase(input.name),
+    struct: input.struct,
+    link: input.link,
   } as InstructionDataArgsNode;
 }
 

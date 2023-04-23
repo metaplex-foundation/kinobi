@@ -1,3 +1,4 @@
+import { InvalidKinobiTreeError, mainCase } from '../shared';
 import { LinkTypeNode } from './LinkTypeNode';
 import type { Node } from './Node';
 import { StructTypeNode } from './StructTypeNode';
@@ -5,15 +6,26 @@ import { StructTypeNode } from './StructTypeNode';
 export type AccountDataNode = {
   readonly __accountDataNode: unique symbol;
   readonly kind: 'accountDataNode';
+  readonly name: string;
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
 
-export function accountDataNode(
-  struct: StructTypeNode,
-  link?: LinkTypeNode
-): AccountDataNode {
-  return { kind: 'accountDataNode', struct, link } as AccountDataNode;
+export type AccountDataNodeInput = Omit<
+  AccountDataNode,
+  '__accountDataNode' | 'kind'
+>;
+
+export function accountDataNode(input: AccountDataNodeInput): AccountDataNode {
+  if (!input.name) {
+    throw new InvalidKinobiTreeError('AccountDataNode must have a name.');
+  }
+  return {
+    kind: 'accountDataNode',
+    name: mainCase(input.name),
+    struct: input.struct,
+    link: input.link,
+  } as AccountDataNode;
 }
 
 export function isAccountDataNode(node: Node | null): node is AccountDataNode {

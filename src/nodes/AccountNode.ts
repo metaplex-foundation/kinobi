@@ -31,7 +31,7 @@ export type AccountNodeInput = Omit<
 
 export function accountNode(input: AccountNodeInput): AccountNode {
   if (!input.name) {
-    throw new InvalidKinobiTreeError('DefinedTypeNodeInput must have a name.');
+    throw new InvalidKinobiTreeError('AccountNode must have a name.');
   }
   return {
     kind: 'accountNode',
@@ -63,7 +63,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   });
   return accountNode({
     name,
-    data: accountDataNode(data),
+    data: accountDataNode({ name: '', struct: data }),
     idlName: name,
     docs: idl.docs ?? [],
     size: idl.size,

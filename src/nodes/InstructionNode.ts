@@ -48,7 +48,7 @@ export type InstructionNodeInput = Omit<
 
 export function instructionNode(input: InstructionNodeInput): InstructionNode {
   if (!input.name) {
-    throw new InvalidKinobiTreeError('InstructionNodeInput must have a name.');
+    throw new InvalidKinobiTreeError('InstructionNode must have a name.');
   }
   const name = mainCase(input.name);
   return {

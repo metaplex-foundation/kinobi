@@ -27,9 +27,7 @@ export function structFieldTypeNode(
   input: StructFieldTypeNodeInput
 ): StructFieldTypeNode {
   if (!input.name) {
-    throw new InvalidKinobiTreeError(
-      'StructFieldTypeNodeInput must have a name.'
-    );
+    throw new InvalidKinobiTreeError('StructFieldTypeNode must have a name.');
   }
   return {
     kind: 'structFieldTypeNode',
