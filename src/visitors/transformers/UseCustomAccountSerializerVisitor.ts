@@ -1,7 +1,8 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
-import { BaseNodeVisitor } from '../BaseNodeVisitor';
 import { ImportFrom } from '../../shared/ImportFrom';
+import { BaseNodeVisitor } from '../BaseNodeVisitor';
+import { visit } from '../Visitor';
 
 export type CustomAccountSerializerOptions = {
   name: string;
@@ -34,62 +35,38 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
       const options: CustomAccountSerializerOptions | null =
         this.map[account.name] ?? null;
       if (!options || !options.extract) return;
-      if (nodes.isLinkTypeNode(account.type)) return;
-      const newType = nodes.definedTypeNode(
-        {
-          name: options.extractAs,
-          idlName: account.metadata.idlName,
-          docs: account.metadata.docs,
-          internal: options.extractedTypeShouldBeInternal,
-        },
-        account.type
-      );
+      const newType = nodes.definedTypeNode({
+        name: options.extractAs,
+        data: account.data.struct,
+        idlName: account.idlName,
+        docs: account.docs,
+        internal: options.extractedTypeShouldBeInternal,
+      });
       newDefinedTypes.push(newType);
     });
 
-    return nodes.programNode(
-      program.metadata,
-      program.accounts
+    return nodes.programNode({
+      ...program,
+      accounts: program.accounts
         .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
-      program.instructions,
-      newDefinedTypes,
-      program.errors
-    );
+      definedTypes: newDefinedTypes,
+    });
   }
 
   visitAccount(account: nodes.AccountNode): nodes.Node {
     const options: CustomAccountSerializerOptions | null =
       this.map[account.name] ?? null;
     if (!options) return account;
-    if (nodes.isLinkTypeNode(account.type)) return account;
-
-    let newMetadata = account.metadata;
-
-    // Ensure the discriminator value is not lost.
-    if (
-      account.metadata.discriminator?.kind === 'field' &&
-      account.metadata.discriminator.value === null
-    ) {
-      const fieldName = account.metadata.discriminator.name;
-      const discriminatorField =
-        account.type.fields.find((field) => field.name === fieldName) ?? null;
-      const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value;
-      newMetadata = {
-        ...account.metadata,
-        discriminator: {
-          ...account.metadata.discriminator,
-          value: discriminatorValue ?? null,
-        },
-      };
-    }
-
-    return nodes.accountNode(
-      newMetadata,
-      nodes.linkTypeNode(options.name, {
-        importFrom: options.importFrom,
-      })
-    );
+    return nodes.accountNode({
+      ...account,
+      data: nodes.accountDataNode(
+        account.data.struct,
+        nodes.linkTypeNode(options.name, {
+          importFrom: options.importFrom,
+        })
+      ),
+    });
   }
 }
 
