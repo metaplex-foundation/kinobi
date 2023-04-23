@@ -47,10 +47,10 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
 
     return nodes.programNode({
       ...program,
+      definedTypes: newDefinedTypes,
       accounts: program.accounts
         .map((account) => visit(account, this))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
-      definedTypes: newDefinedTypes,
     });
   }
 

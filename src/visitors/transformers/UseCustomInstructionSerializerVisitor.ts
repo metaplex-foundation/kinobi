@@ -1,7 +1,8 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
-import { BaseNodeVisitor } from '../BaseNodeVisitor';
 import { ImportFrom } from '../../shared/ImportFrom';
+import { BaseNodeVisitor } from '../BaseNodeVisitor';
+import { visit } from '../Visitor';
 
 export type CustomInstructionSerializerOptions = {
   name: string;
@@ -34,45 +35,38 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
       const options: CustomInstructionSerializerOptions | null =
         this.map[instruction.name] ?? null;
       if (!options || !options.extract) return;
-      if (nodes.isLinkTypeNode(instruction.args)) return;
-      const newType = nodes.definedTypeNode(
-        {
-          name: options.extractAs,
-          idlName: instruction.metadata.idlName,
-          docs: instruction.metadata.docs,
-          internal: options.extractedTypeShouldBeInternal,
-        },
-        instruction.args
-      );
+      const newType = nodes.definedTypeNode({
+        name: options.extractAs,
+        data: instruction.dataArgs.struct,
+        idlName: instruction.idlName,
+        docs: instruction.docs,
+        internal: options.extractedTypeShouldBeInternal,
+      });
       newDefinedTypes.push(newType);
     });
 
-    return nodes.programNode(
-      program.metadata,
-      program.accounts,
-      program.instructions
+    return nodes.programNode({
+      ...program,
+      definedTypes: newDefinedTypes,
+      instructions: program.instructions
         .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-      newDefinedTypes,
-      program.errors
-    );
+    });
   }
 
   visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
     const options: CustomInstructionSerializerOptions | null =
       this.map[instruction.name] ?? null;
     if (!options) return instruction;
-    if (nodes.isLinkTypeNode(instruction.args)) return instruction;
-
-    return nodes.instructionNode(
-      instruction.metadata,
-      instruction.accounts,
-      nodes.linkTypeNode(options.name, {
-        importFrom: options.importFrom,
-      }),
-      instruction.extraArgs,
-      instruction.subInstructions
-    );
+    return nodes.instructionNode({
+      ...instruction,
+      dataArgs: nodes.instructionDataArgsNode(
+        instruction.dataArgs.struct,
+        nodes.linkTypeNode(options.name, {
+          importFrom: options.importFrom,
+        })
+      ),
+    });
   }
 }
 
