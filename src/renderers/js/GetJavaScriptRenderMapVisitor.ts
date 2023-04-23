@@ -1,6 +1,5 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
-import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
 import {
   camelCase,
@@ -9,14 +8,15 @@ import {
   InstructionAccountDefault,
   pascalCase,
 } from '../../shared';
+import { logWarn } from '../../shared/logs';
 import {
-  Visitor,
   BaseThrowVisitor,
-  GetResolvedInstructionInputsVisitor,
-  ResolvedInstructionInput,
-  ResolvedInstructionAccount,
-  visit,
   GetByteSizeVisitor,
+  GetResolvedInstructionInputsVisitor,
+  ResolvedInstructionAccount,
+  ResolvedInstructionInput,
+  visit,
+  Visitor,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
@@ -290,6 +290,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     if (seeds.length > 0) {
       imports.add('core', ['Pda']);
     }
+    const hasVariableSeeds =
+      account.seeds.filter((seed) => seed.kind === 'variable').length > 0;
 
     return new RenderMap().add(
       `accounts/${camelCase(account.name)}.ts`,
@@ -302,6 +304,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         gpaFields: resolvedGpaFields,
         seeds,
         pdaHelperNeedsSerializer,
+        hasVariableSeeds,
       })
     );
   }

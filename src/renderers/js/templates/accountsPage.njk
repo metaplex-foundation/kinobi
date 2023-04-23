@@ -92,7 +92,7 @@ export function get{{ account.name | pascalCase }}Size(): number {
 {% if seeds.length > 0 %}
 export function find{{ account.name | pascalCase }}Pda(
   context: Pick<Context, 'eddsa' | 'programs'{% if pdaHelperNeedsSerializer %} | 'serializer'{% endif %}>,
-  {% if account.hasVariableSeeds %}
+  {% if hasVariableSeeds %}
     seeds: {
       {% for seed in seeds %}
         {% if seed.kind === 'variable' %}

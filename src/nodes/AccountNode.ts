@@ -72,20 +72,6 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   });
 }
 
-// export function variableSeeds(): Extract<
-//   AccountNodeSeed,
-//   { kind: 'variable' }
-// >[] {
-//   return this.metadata.seeds.filter(
-//     (seed): seed is Extract<AccountNodeSeed, { kind: 'variable' }> =>
-//       seed.kind === 'variable'
-//   );
-// }
-
-// export function hasVariableSeeds(): boolean {
-//   return this.variableSeeds.length > 0;
-// }
-
 export function isAccountNode(node: Node | null): node is AccountNode {
   return !!node && node.kind === 'accountNode';
 }
