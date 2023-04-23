@@ -329,9 +329,6 @@ export class GetJavaScriptTypeManifestVisitor
     const fields = structType.fields.map((field) => visit(field, this));
     const mergedManifest = this.mergeManifests(fields);
     const fieldSerializers = fields.map((field) => field.serializer).join(', ');
-    const structDescription = parentName?.strict
-      ? `, { description: '${pascalCase(parentName.strict)}' }`
-      : '';
     const serializerTypeParams = parentName ? parentName.strict : 'any';
     const baseManifest = {
       ...mergedManifest,
@@ -339,7 +336,7 @@ export class GetJavaScriptTypeManifestVisitor
       looseType: `{ ${fields.map((field) => field.looseType).join('')} }`,
       serializer:
         `${this.s('struct')}<${serializerTypeParams}>` +
-        `([${fieldSerializers}]${structDescription})`,
+        `([${fieldSerializers}])`,
     };
 
     const optionalFields = structType.fields.filter(

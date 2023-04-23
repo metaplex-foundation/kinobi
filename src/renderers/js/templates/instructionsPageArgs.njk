@@ -1,8 +1,8 @@
 {% if not instruction.hasLinkedArgs and hasData %}
   // Data.
-  {{ macros.exportType(instruction.name | pascalCase + 'InstructionData', argManifest) }}
+  {{ macros.exportType(instruction.name | pascalCase + 'InstructionData', dataArgManifest) }}
 
-  {{ macros.exportSerializer(instruction.name | pascalCase + 'InstructionData', argManifest) }}
+  {{ macros.exportSerializer(instruction.name | pascalCase + 'InstructionData', dataArgManifest) }}
 {% endif %}
 
 {% if not instruction.hasLinkedExtraArgs and hasExtraArgs %}
