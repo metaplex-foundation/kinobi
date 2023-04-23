@@ -526,6 +526,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           generatedTypes: '.',
         }),
         typeManifest,
+        isDataEnum:
+          nodes.isEnumTypeNode(definedType.data) &&
+          nodes.isDataEnum(definedType.data),
       })
     );
   }
