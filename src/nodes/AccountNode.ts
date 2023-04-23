@@ -47,10 +47,11 @@ export function accountNode(input: AccountNodeInput): AccountNode {
 }
 
 export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
-  const name = idl.name ?? '';
+  const idlName = idl.name ?? '';
+  const name = mainCase(idlName);
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
-  const data = createTypeNodeFromIdl({ name, ...idlStruct });
-  assertStructTypeNode(data);
+  const struct = createTypeNodeFromIdl(idlStruct);
+  assertStructTypeNode(struct);
   const seeds = (idl.seeds ?? []).map((seed) => {
     if (seed.kind === 'variable') {
       return {
@@ -63,17 +64,13 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   });
   return accountNode({
     name,
-    data: accountDataNode({ name: '', struct: data }),
-    idlName: name,
+    data: accountDataNode({ name: `${name}AccountData`, struct }),
+    idlName,
     docs: idl.docs ?? [],
     size: idl.size,
     seeds,
   });
 }
-
-// export function isLinked(): boolean {
-//   return isLinkTypeNode(this.type);
-// }
 
 // export function variableSeeds(): Extract<
 //   AccountNodeSeed,

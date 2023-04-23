@@ -1,5 +1,4 @@
 import type { IdlTypeEnum } from '../idl';
-import { InvalidKinobiTreeError, mainCase } from '../shared';
 import { enumEmptyVariantTypeNodeFromIdl } from './EnumEmptyVariantTypeNode';
 import { enumStructVariantTypeNodeFromIdl } from './EnumStructVariantTypeNode';
 import { enumTupleVariantTypeNodeFromIdl } from './EnumTupleVariantTypeNode';
@@ -9,22 +8,11 @@ import type { Node } from './Node';
 export type EnumTypeNode = {
   readonly __enumTypeNode: unique symbol;
   readonly kind: 'enumTypeNode';
-  readonly name: string;
   readonly variants: EnumVariantTypeNode[];
 };
 
-export function enumTypeNode(
-  name: string,
-  variants: EnumVariantTypeNode[]
-): EnumTypeNode {
-  if (!name) {
-    throw new InvalidKinobiTreeError('EnumTypeNode must have a name.');
-  }
-  return {
-    kind: 'enumTypeNode',
-    name: mainCase(name),
-    variants,
-  } as EnumTypeNode;
+export function enumTypeNode(variants: EnumVariantTypeNode[]): EnumTypeNode {
+  return { kind: 'enumTypeNode', variants } as EnumTypeNode;
 }
 
 export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {
@@ -37,7 +25,7 @@ export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {
     }
     return enumTupleVariantTypeNodeFromIdl(variant);
   });
-  return enumTypeNode(idl.name ?? '', variants);
+  return enumTypeNode(variants);
 }
 
 export function isScalarEnum(node: EnumTypeNode): boolean {

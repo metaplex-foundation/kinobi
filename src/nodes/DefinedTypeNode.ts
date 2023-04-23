@@ -40,7 +40,7 @@ export function definedTypeNodeFromIdl(
 ): DefinedTypeNode {
   const name = idl.name ?? '';
   const idlType = idl.type ?? { kind: 'struct', fields: [] };
-  const data = createTypeNodeFromIdl({ name, ...idlType });
+  const data = createTypeNodeFromIdl(idlType);
   return definedTypeNode({ name, data, idlName: name, docs: idl.docs });
 }
 

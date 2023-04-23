@@ -58,7 +58,10 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     dataArgs: input.dataArgs,
     extraArgs:
       input.extraArgs ??
-      instructionExtraArgsNode(structTypeNode(`${name}InstructionExtra`, [])),
+      instructionExtraArgsNode({
+        name: `${name}InstructionExtra`,
+        struct: structTypeNode([]),
+      }),
     subInstructions: input.subInstructions ?? [],
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
@@ -81,7 +84,6 @@ export function instructionNodeFromIdl(
   const useProgramIdForOptionalAccounts = idl.defaultOptionalAccounts ?? false;
   let dataArgs = structTypeNodeFromIdl({
     kind: 'struct',
-    name: name ? `${name}InstructionData` : '',
     fields: idl.args ?? [],
   });
   if (idl.discriminant) {
@@ -93,10 +95,7 @@ export function instructionNodeFromIdl(
         value: vScalar(idl.discriminant.value),
       },
     });
-    dataArgs = structTypeNode(dataArgs.name, [
-      discriminatorField,
-      ...dataArgs.fields,
-    ]);
+    dataArgs = structTypeNode([discriminatorField, ...dataArgs.fields]);
   }
   return instructionNode({
     name,
@@ -105,7 +104,10 @@ export function instructionNodeFromIdl(
     accounts: (idl.accounts ?? []).map((account) =>
       instructionAccountNodeFromIdl(account, useProgramIdForOptionalAccounts)
     ),
-    dataArgs: instructionDataArgsNode(dataArgs),
+    dataArgs: instructionDataArgsNode({
+      name: `${name}InstructionData`,
+      struct: dataArgs,
+    }),
   });
 }
 
@@ -130,14 +132,6 @@ export function getAllInstructionsWithSubs(
     ...getAllSubInstructions(instruction),
   ]);
 }
-
-// export function hasLinkedArgs(): boolean {
-//   return isLinkTypeNode(this.args);
-// }
-
-// export function hasLinkedExtraArgs(): boolean {
-//   return isLinkTypeNode(this.extraArgs);
-// }
 
 // export function hasAccounts(): boolean {
 //   return this.accounts.length > 0;

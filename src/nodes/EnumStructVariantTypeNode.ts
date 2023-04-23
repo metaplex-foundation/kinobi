@@ -34,7 +34,6 @@ export function enumStructVariantTypeNodeFromIdl(
     name,
     structTypeNodeFromIdl({
       kind: 'struct',
-      name,
       fields: idl.fields as IdlTypeEnumField[],
     })
   );
