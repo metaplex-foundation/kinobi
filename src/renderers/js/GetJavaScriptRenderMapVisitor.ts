@@ -2,17 +2,24 @@ import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import { logWarn } from '../../shared/logs';
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../shared';
+import {
+  camelCase,
+  getGpaFieldsFromAccount,
+  ImportFrom,
+  InstructionAccountDefault,
+  pascalCase,
+} from '../../shared';
 import {
   Visitor,
   BaseThrowVisitor,
   GetResolvedInstructionInputsVisitor,
-  ImportFrom,
   ResolvedInstructionInput,
   ResolvedInstructionAccount,
+  visit,
+  GetByteSizeVisitor,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
-import { resolveTemplate } from '../shared';
+import { resolveTemplate } from '../utils';
 import {
   GetJavaScriptTypeManifestVisitor,
   JavaScriptTypeManifest,
@@ -35,19 +42,17 @@ export type GetJavaScriptRenderMapOptions = {
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
-  typeManifestVisitor?: Visitor<JavaScriptTypeManifest> & {
-    setDefinedName: (
-      definedName: { strict: string; loose: string } | null
-    ) => void;
+  typeManifestVisitor?: Visitor<JavaScriptTypeManifest>;
+  byteSizeVisitor?: Visitor<number | null> & {
+    registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
   };
+  resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
 };
 
 export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   readonly options: Required<GetJavaScriptRenderMapOptions>;
 
   private program: nodes.ProgramNode | null = null;
-
-  private resolvedInstructionInputVisitor: Visitor<ResolvedInstructionInput[]>;
 
   constructor(options: GetJavaScriptRenderMapOptions = {}) {
     super();
@@ -70,22 +75,24 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       },
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
+      byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),
+      resolvedInstructionInputVisitor:
+        options.resolvedInstructionInputVisitor ??
+        new GetResolvedInstructionInputsVisitor(),
     };
-    this.resolvedInstructionInputVisitor =
-      new GetResolvedInstructionInputsVisitor();
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
-    const programsToExport = root.programs.filter((p) => !p.metadata.internal);
-    const accountsToExport = root.allAccounts.filter(
-      (a) => !a.metadata.internal
-    );
-    const instructionsToExport = root.allInstructionsWithSubs.filter(
-      (i) => !i.metadata.internal
-    );
-    const definedTypesToExport = root.allDefinedTypes.filter(
-      (t) => !t.metadata.internal
-    );
+    const programsToExport = root.programs.filter((p) => !p.internal);
+    const accountsToExport = nodes
+      .getAllAccounts(root)
+      .filter((a) => !a.internal);
+    const instructionsToExport = nodes
+      .getAllInstructionsWithSubs(root)
+      .filter((i) => !i.internal);
+    const definedTypesToExport = nodes
+      .getAllDefinedTypes(root)
+      .filter((t) => !t.internal);
     const hasAnythingToExport =
       programsToExport.length > 0 ||
       accountsToExport.length > 0 ||
@@ -130,7 +137,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitProgram(program: nodes.ProgramNode): RenderMap {
     this.program = program;
-    const { name } = program.metadata;
+    const { name } = program;
     const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
       .mergeWith(...program.accounts.map((account) => visit(account, this)))
@@ -139,13 +146,17 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Internal programs are support programs that
     // were added to fill missing types or accounts.
     // They don't need to render anything else.
-    if (program.metadata.internal) {
+    if (program.internal) {
       this.program = null;
       return renderMap;
     }
 
     renderMap
-      .mergeWith(...program.instructionsWithSubs.map((ix) => visit(ix, this)))
+      .mergeWith(
+        ...nodes
+          .getAllInstructionsWithSubs(program)
+          .map((ix) => visit(ix, this))
+      )
       .add(
         `errors/${camelCase(name)}.ts`,
         this.render('errorsPage.njk', {
@@ -155,9 +166,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           program,
           errors: program.errors.map((error) => ({
             ...error,
-            prefixedName:
-              pascalCase(program.metadata.prefix) +
-              pascalCase(error.metadata.name),
+            prefixedName: pascalCase(program.prefix) + pascalCase(error.name),
           })),
         })
       )
@@ -185,7 +194,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
-    const isLinked = nodes.isLinkTypeNode(account.type);
+    const isLinked = !!account.data.link;
     const typeManifest = visit(account, this.typeManifestVisitor);
     const imports = new JavaScriptImportMap().mergeWith(
       typeManifest.strictImports,
@@ -209,29 +218,17 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .remove('generatedTypes', [account.name]);
 
     // Discriminator.
-    const { discriminator } = account.metadata;
+    const { discriminator } = account;
     let resolvedDiscriminator:
       | { kind: 'size'; value: string }
       | { kind: 'field'; name: string; value: string }
       | null = null;
-    if (discriminator?.kind === 'field' && discriminator.value !== null) {
-      const rendered = renderJavaScriptValueNode(discriminator.value);
-      imports.mergeWith(rendered.imports);
-      resolvedDiscriminator = {
-        kind: 'field',
-        name: discriminator.name,
-        value: rendered.render,
-      };
-    } else if (
-      discriminator?.kind === 'field' &&
-      !nodes.isLinkTypeNode(account.type)
-    ) {
-      const discriminatorField =
-        account.type.fields.find((f) => f.name === discriminator.name) ?? null;
-      const discriminatorValue = discriminatorField?.metadata.defaultsTo?.value
-        ? renderJavaScriptValueNode(
-            discriminatorField.metadata.defaultsTo.value
-          )
+    if (discriminator?.kind === 'field') {
+      const discriminatorField = account.data.struct.fields.find(
+        (f) => f.name === discriminator.name
+      );
+      const discriminatorValue = discriminatorField?.defaultsTo?.value
+        ? renderJavaScriptValueNode(discriminatorField.defaultsTo.value)
         : undefined;
       if (discriminatorValue) {
         imports.mergeWith(discriminatorValue.imports);
@@ -243,13 +240,16 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       }
     } else if (discriminator?.kind === 'size') {
       resolvedDiscriminator =
-        account.metadata.size !== null
-          ? { kind: 'size', value: `${account.metadata.size}` }
+        account.size !== null
+          ? { kind: 'size', value: `${account.size}` }
           : null;
     }
 
     // GPA Fields.
-    const gpaFields = account.metadata.gpaFields.map((gpaField) => {
+    const gpaFields = getGpaFieldsFromAccount(
+      account,
+      this.byteSizeVisitor
+    ).map((gpaField) => {
       const gpaFieldManifest = visit(gpaField.type, this.typeManifestVisitor);
       imports.mergeWith(
         gpaFieldManifest.looseImports,
@@ -275,9 +275,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // Seeds.
     const pdaHelperNeedsSerializer =
-      account.metadata.seeds.filter((seed) => seed.kind !== 'programId')
-        .length > 0;
-    const seeds = account.metadata.seeds.map((seed) => {
+      account.seeds.filter((seed) => seed.kind !== 'programId').length > 0;
+    const seeds = account.seeds.map((seed) => {
       if (seed.kind !== 'variable') return seed;
       const seedManifest = visit(seed.type, this.typeManifestVisitor);
       imports.mergeWith(
@@ -316,27 +315,28 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     ]);
 
     // Resolved inputs.
-    const resolvedInputs = instruction
-      .accept(this.resolvedInstructionInputVisitor)
-      .map((input: ResolvedInstructionInput) => {
-        if (input.kind === 'account' && input.defaultsTo?.kind === 'pda') {
-          const { seeds } = input.defaultsTo;
-          Object.keys(seeds).forEach((seed: string) => {
-            const seedValue = seeds[seed];
-            if (seedValue.kind !== 'value') return;
-            const valueManifest = renderJavaScriptValueNode(seedValue.value);
-            (seedValue as any).render = valueManifest.render;
-            imports.mergeWith(valueManifest.imports);
-          });
-        }
-        if (input.kind === 'arg' && input.defaultsTo.kind === 'value') {
-          const { defaultsTo } = input;
-          const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
-          (defaultsTo as any).render = valueManifest.render;
+    const resolvedInputs = visit(
+      instruction,
+      this.resolvedInstructionInputVisitor
+    ).map((input: ResolvedInstructionInput) => {
+      if (input.kind === 'account' && input.defaultsTo?.kind === 'pda') {
+        const { seeds } = input.defaultsTo;
+        Object.keys(seeds).forEach((seed: string) => {
+          const seedValue = seeds[seed];
+          if (seedValue.kind !== 'value') return;
+          const valueManifest = renderJavaScriptValueNode(seedValue.value);
+          (seedValue as any).render = valueManifest.render;
           imports.mergeWith(valueManifest.imports);
-        }
-        return input;
-      });
+        });
+      }
+      if (input.kind === 'arg' && input.defaultsTo.kind === 'value') {
+        const { defaultsTo } = input;
+        const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
+        (defaultsTo as any).render = valueManifest.render;
+        imports.mergeWith(valueManifest.imports);
+      }
+      return input;
+    });
     const resolvedInputsWithDefaults = resolvedInputs.filter(
       (input) => input.kind !== 'account' || input.defaultsTo !== null
     );
@@ -368,17 +368,22 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       imports.add('shared', 'isWritable');
     }
 
-    // Args.
-    const argManifest = visit(instruction, this.typeManifestVisitor);
-    imports.mergeWith(argManifest.looseImports, argManifest.serializerImports);
-    if (!nodes.isLinkTypeNode(instruction.args)) {
-      imports.mergeWith(argManifest.strictImports);
+    // Data Args.
+    const linkedDataArgs = !!instruction.dataArgs.link;
+    const dataArgManifest = visit(instruction, this.typeManifestVisitor);
+    imports.mergeWith(
+      dataArgManifest.looseImports,
+      dataArgManifest.serializerImports
+    );
+    if (!linkedDataArgs) {
+      imports.mergeWith(dataArgManifest.strictImports);
     }
-    if (!nodes.isLinkTypeNode(instruction.args) && instruction.hasData) {
+    if (!linkedDataArgs && instruction.hasData) {
       imports.add('core', ['Serializer']);
     }
 
     // Extra args.
+    const linkedExtraArgs = !!instruction.extraArgs.link;
     let extraArgManifest: JavaScriptTypeManifest | null = null;
     if (instruction.extraArgs) {
       this.typeManifestVisitor.setDefinedName({
@@ -391,7 +396,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Arg defaults.
-    Object.values(instruction.metadata.argDefaults).forEach((argDefault) => {
+    Object.values(instruction.argDefaults).forEach((argDefault) => {
       if (argDefault.kind === 'resolver') {
         imports.add(argDefault.importFrom, camelCase(argDefault.name));
       }
@@ -401,7 +406,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Bytes created on chain.
-    const bytes = instruction.metadata.bytesCreatedOnChain;
+    const bytes = instruction.bytesCreatedOnChain;
     if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
       imports.add('core', 'ACCOUNT_HEADER_SIZE');
     }
@@ -425,10 +430,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     // canMergeAccountsAndArgs
     let canMergeAccountsAndArgs = false;
-    if (
-      !nodes.isLinkTypeNode(instruction.args) &&
-      !nodes.isLinkTypeNode(instruction.extraArgs)
-    ) {
+    if (!linkedDataArgs && !linkedExtraArgs) {
       const accountsAndArgsConflicts =
         this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
       if (accountsAndArgsConflicts.length > 0) {
@@ -445,7 +447,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     const hasAccountDefaultKinds = (
-      kinds: Array<nodes.InstructionNodeAccountDefaults['kind']>
+      kinds: Array<InstructionAccountDefault['kind']>
     ) =>
       accounts.some((a) => a.defaultsTo && kinds.includes(a.defaultsTo.kind));
 
@@ -463,7 +465,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         needsEddsa: hasAccountDefaultKinds(['pda', 'resolver']),
         needsIdentity: hasAccountDefaultKinds(['identity', 'resolver']),
         needsPayer: hasAccountDefaultKinds(['payer', 'resolver']),
-        argManifest,
+        dataArgManifest,
         extraArgManifest,
         canMergeAccountsAndArgs,
       })
@@ -492,6 +494,14 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   get typeManifestVisitor() {
     return this.options.typeManifestVisitor;
+  }
+
+  get byteSizeVisitor() {
+    return this.options.byteSizeVisitor;
+  }
+
+  get resolvedInstructionInputVisitor() {
+    return this.options.resolvedInstructionInputVisitor;
   }
 
   protected getInstructionAccountType(
@@ -544,15 +554,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   protected getMergeConflictsForInstructionAccountsAndArgs(
     instruction: nodes.InstructionNode
   ): string[] {
-    nodes.assertStructTypeNode(instruction.args);
-    let extraArgsFields: nodes.StructFieldTypeNode[] = [];
-    if (nodes.isStructTypeNode(instruction.extraArgs)) {
-      extraArgsFields = instruction.extraArgs.fields;
-    }
     const allNames = [
       ...instruction.accounts.map((account) => account.name),
-      ...instruction.args.fields.map((field) => field.name),
-      ...extraArgsFields.map((field) => field.name),
+      ...instruction.dataArgs.struct.fields.map((field) => field.name),
+      ...instruction.extraArgs.struct.fields.map((field) => field.name),
     ];
     const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
     return [...new Set(duplicates)];
