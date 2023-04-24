@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.7.2
+
+### Patch Changes
+
+- [`6c66054`](https://github.com/metaplex-foundation/kinobi/commit/6c6605432ad35847c7be71fdc7692f74db03ba02) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Improve conditions on resolved variables
+
 ## 0.7.1
 
 ### Patch Changes
