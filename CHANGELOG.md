@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.7.1
+
+### Patch Changes
+
+- [`1c798af`](https://github.com/metaplex-foundation/kinobi/commit/1c798af4dc2ea14704b018f345b87c8dce1f9309) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Improve create options
+
 ## 0.7.0
 
 ### Minor Changes
