@@ -45,10 +45,16 @@ export function createFromRoot(
   };
 }
 
-export function createFromIdls(idls: IdlInputs): Kinobi {
-  return createFromRoot(rootNodeFromIdls(idls));
+export function createFromIdls(
+  idls: IdlInputs,
+  useDefaultVisitor = true
+): Kinobi {
+  return createFromRoot(rootNodeFromIdls(idls), useDefaultVisitor);
 }
 
-export function createFromJson(json: string): Kinobi {
-  return createFromRoot(JSON.parse(json) as RootNode, false);
+export function createFromJson(
+  json: string,
+  useDefaultVisitor = false
+): Kinobi {
+  return createFromRoot(JSON.parse(json) as RootNode, useDefaultVisitor);
 }
