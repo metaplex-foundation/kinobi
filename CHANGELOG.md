@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.7.3
+
+### Patch Changes
+
+- [`8466e9c`](https://github.com/metaplex-foundation/kinobi/commit/8466e9c0b35d2e0e4cc4298da64c9493a976543d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Offer more default kinds for args
+
 ## 0.7.2
 
 ### Patch Changes
