@@ -5,7 +5,7 @@ import {
   camelCase,
   getGpaFieldsFromAccount,
   ImportFrom,
-  InstructionAccountDefault,
+  InstructionDefault,
   pascalCase,
 } from '../../shared';
 import { logWarn } from '../../shared/logs';
@@ -352,7 +352,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       this.resolvedInstructionInputVisitor
     ).map((input: ResolvedInstructionInput) => {
-      if (input.kind === 'account' && input.defaultsTo?.kind === 'pda') {
+      if (input.defaultsTo?.kind === 'pda') {
         const { seeds } = input.defaultsTo;
         Object.keys(seeds).forEach((seed: string) => {
           const seedValue = seeds[seed];
@@ -361,8 +361,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           (seedValue as any).render = valueManifest.render;
           imports.mergeWith(valueManifest.imports);
         });
-      }
-      if (input.kind === 'arg' && input.defaultsTo.kind === 'value') {
+      } else if (input.defaultsTo?.kind === 'value') {
         const { defaultsTo } = input;
         const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
         (defaultsTo as any).render = valueManifest.render;
@@ -477,10 +476,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
     }
 
-    const hasAccountDefaultKinds = (
-      kinds: Array<InstructionAccountDefault['kind']>
-    ) =>
-      accounts.some((a) => a.defaultsTo && kinds.includes(a.defaultsTo.kind));
+    const hasDefaultKinds = (kinds: Array<InstructionDefault['kind']>) =>
+      resolvedInputs.some(
+        (input) => input.defaultsTo && kinds.includes(input.defaultsTo.kind)
+      );
 
     return new RenderMap().add(
       `instructions/${camelCase(instruction.name)}.ts`,
@@ -493,9 +492,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         accountsWithDefaults,
         argsWithDefaults,
         accounts,
-        needsEddsa: hasAccountDefaultKinds(['pda']) || hasResolvers,
-        needsIdentity: hasAccountDefaultKinds(['identity']) || hasResolvers,
-        needsPayer: hasAccountDefaultKinds(['payer']) || hasResolvers,
+        needsEddsa: hasDefaultKinds(['pda']) || hasResolvers,
+        needsIdentity: hasDefaultKinds(['identity']) || hasResolvers,
+        needsPayer: hasDefaultKinds(['payer']) || hasResolvers,
         dataArgManifest,
         extraArgManifest,
         canMergeAccountsAndArgs,

@@ -108,6 +108,12 @@ kinobi.update(
           }),
         },
       },
+      args: {
+        identityArg: {
+          type: k.publicKeyTypeNode(),
+          defaultsTo: k.identityDefault(),
+        },
+      },
     },
     DeprecatedCreateReservationList: { name: 'CreateReservationList' },
     Transfer: {

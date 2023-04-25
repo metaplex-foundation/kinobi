@@ -19,7 +19,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';
-import { addObjectProperty, isWritable } from '../shared';
+import { PickPartial, addObjectProperty, isWritable } from '../shared';
 import { DelegateRole } from '../types';
 
 // Accounts.
@@ -60,10 +60,22 @@ export function getDummyInstructionDataSerializer(
   ) as Serializer<DummyInstructionDataArgs, DummyInstructionData>;
 }
 
+// Extra Args.
+export type DummyInstructionExtraArgs = { identityArg: PublicKey };
+
+// Args.
+export type DummyInstructionArgs = PickPartial<
+  DummyInstructionExtraArgs,
+  'identityArg'
+>;
+
 // Instruction.
 export function dummy(
-  context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
-  input: DummyInstructionAccounts
+  context: Pick<
+    Context,
+    'serializer' | 'programs' | 'eddsa' | 'identity' | 'payer'
+  >,
+  input: DummyInstructionAccounts & DummyInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
   const keys: AccountMeta[] = [];
@@ -79,6 +91,7 @@ export function dummy(
 
   // Resolved inputs.
   const resolvingAccounts = {};
+  const resolvingArgs = {};
   addObjectProperty(resolvingAccounts, 'mint', input.mint ?? programId);
   addObjectProperty(
     resolvingAccounts,
@@ -102,6 +115,11 @@ export function dummy(
     'delegateRecord',
     input.delegateRecord ??
       findDelegateRecordPda(context, { role: DelegateRole.Collection })
+  );
+  addObjectProperty(
+    resolvingArgs,
+    'identityArg',
+    input.identityArg ?? context.identity.publicKey
   );
   const resolvedAccounts = { ...input, ...resolvingAccounts };
 

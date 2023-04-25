@@ -41,13 +41,10 @@ export type InstructionAccountDefault = ExtractInstructionDefault<
   | 'resolver'
 >;
 
-export type InstructionArgDefault = ExtractInstructionDefault<
-  'arg' | 'account' | 'accountBump' | 'value' | 'resolver'
->;
+export type InstructionArgDefault = InstructionDefault;
 
-export type InstructionSeedDefault = Extract<
-  InstructionDefault,
-  { kind: 'arg' | 'account' | 'value' }
+export type InstructionSeedDefault = ExtractInstructionDefault<
+  'arg' | 'account' | 'value'
 >;
 
 export const identityDefault = (): ExtractInstructionDefault<'identity'> => ({

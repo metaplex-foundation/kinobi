@@ -2,7 +2,7 @@ import { InstructionArgDefault, InstructionDependency } from '../../shared';
 import type * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
-type InstructionNodeInput = InstructionArg | InstructionAccount;
+type InstructionInput = InstructionArg | InstructionAccount;
 type InstructionArg = {
   kind: 'arg';
   name: string;
@@ -29,7 +29,7 @@ export type ResolvedInstructionArg = InstructionArg & {
 export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
   ResolvedInstructionInput[]
 > {
-  protected stack: InstructionNodeInput[] = [];
+  protected stack: InstructionInput[] = [];
 
   protected resolved: ResolvedInstructionInput[] = [];
 
@@ -53,7 +53,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
     this.visitedAccounts = new Map();
     this.visitedArgs = new Map();
 
-    const inputs: InstructionNodeInput[] = [
+    const inputs: InstructionInput[] = [
       ...instruction.accounts.map((account) => ({
         ...account,
         kind: 'account' as const,
@@ -77,7 +77,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
   resolveInstructionInput(
     instruction: nodes.InstructionNode,
-    input: InstructionNodeInput
+    input: InstructionInput
   ): void {
     // Ensure we don't visit the same input twice.
     if (
@@ -123,29 +123,8 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
     instruction: nodes.InstructionNode,
     account: InstructionAccount
   ): ResolvedInstructionAccount {
-    // Get account dependencies.
-    const dependsOn: InstructionDependency[] = [];
-    if (account.defaultsTo?.kind === 'account') {
-      dependsOn.push({ kind: 'account', name: account.defaultsTo.name });
-    } else if (account.defaultsTo?.kind === 'pda') {
-      const accounts = new Set<string>();
-      const args = new Set<string>();
-      Object.values(account.defaultsTo.seeds).forEach((seed) => {
-        if (seed.kind === 'account') {
-          accounts.add(seed.name);
-        } else if (seed.kind === 'arg') {
-          args.add(seed.name);
-        }
-      });
-      dependsOn.push(
-        ...[...accounts].map((name) => ({ kind: 'account' as const, name })),
-        ...[...accounts].map((name) => ({ kind: 'arg' as const, name }))
-      );
-    } else if (account.defaultsTo?.kind === 'resolver') {
-      dependsOn.push(...account.defaultsTo.dependsOn);
-    }
-
-    // Visit account dependencies first.
+    // Find and visit dependencies first.
+    const dependsOn = this.getInstructionDependencies(account);
     this.resolveInstructionDependencies(instruction, account, dependsOn);
 
     const resolved: ResolvedInstructionAccount = {
@@ -220,20 +199,8 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
     instruction: nodes.InstructionNode,
     arg: InstructionArg & { kind: 'arg' }
   ): ResolvedInstructionArg {
-    // Get account dependencies.
-    const dependsOn: InstructionDependency[] = [];
-    if (
-      arg.defaultsTo.kind === 'account' ||
-      arg.defaultsTo.kind === 'accountBump'
-    ) {
-      dependsOn.push({ kind: 'account', name: arg.defaultsTo.name });
-    } else if (arg.defaultsTo.kind === 'arg') {
-      dependsOn.push({ kind: 'arg', name: arg.defaultsTo.name });
-    } else if (arg.defaultsTo.kind === 'resolver') {
-      dependsOn.push(...arg.defaultsTo.dependsOn);
-    }
-
-    // Visit account dependencies first.
+    // Find and visit dependencies first.
+    const dependsOn = this.getInstructionDependencies(arg);
     this.resolveInstructionDependencies(instruction, arg, dependsOn);
 
     return { ...arg, dependsOn };
@@ -241,11 +208,11 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
   resolveInstructionDependencies(
     instruction: nodes.InstructionNode,
-    parent: InstructionNodeInput,
+    parent: InstructionInput,
     dependencies: InstructionDependency[]
   ): void {
     dependencies.forEach((dependency) => {
-      let input: InstructionNodeInput | null = null;
+      let input: InstructionInput | null = null;
       if (dependency.kind === 'account') {
         const dependencyAccount = instruction.accounts.find(
           ({ name }) => name === dependency.name
@@ -271,5 +238,38 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
         this.resolveInstructionInput(instruction, input);
       }
     });
+  }
+
+  getInstructionDependencies(input: InstructionInput): InstructionDependency[] {
+    if (!input.defaultsTo) return [];
+
+    if (
+      input.defaultsTo.kind === 'account' ||
+      input.defaultsTo.kind === 'accountBump'
+    ) {
+      return [{ kind: 'account', name: input.defaultsTo.name }];
+    }
+
+    if (input.defaultsTo.kind === 'pda') {
+      const accounts = new Set<string>();
+      const args = new Set<string>();
+      Object.values(input.defaultsTo.seeds).forEach((seed) => {
+        if (seed.kind === 'account') {
+          accounts.add(seed.name);
+        } else if (seed.kind === 'arg') {
+          args.add(seed.name);
+        }
+      });
+      return [
+        ...[...accounts].map((name) => ({ kind: 'account' as const, name })),
+        ...[...args].map((name) => ({ kind: 'arg' as const, name })),
+      ];
+    }
+
+    if (input.defaultsTo.kind === 'resolver') {
+      return input.defaultsTo.dependsOn;
+    }
+
+    return [];
   }
 }
