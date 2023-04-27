@@ -36,12 +36,13 @@ export function errorNode(input: ErrorNodeInput): ErrorNode {
 
 export function errorNodeFromIdl(idl: Partial<IdlError>): ErrorNode {
   const name = idl.name ?? '';
+  const msg = idl.msg ?? '';
   return errorNode({
     name,
     idlName: name,
     code: idl.code ?? -1,
-    message: idl.msg ?? '',
-    docs: idl.docs ?? [`${name}: '${idl.msg}'`],
+    message: msg,
+    docs: idl.docs ?? [msg ? `${name}: ${msg}` : `${name}`],
   });
 }
 

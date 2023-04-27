@@ -15,7 +15,7 @@ type ProgramErrorConstructor = new (
 const codeToErrorMap: Map<number, ProgramErrorConstructor> = new Map();
 const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
-/** NumericalOverflow: 'Numerical Overflow' */
+/** NumericalOverflow: Numerical Overflow */
 export class TaNumericalOverflowError extends ProgramError {
   readonly name: string = 'NumericalOverflow';
 
@@ -28,7 +28,7 @@ export class TaNumericalOverflowError extends ProgramError {
 codeToErrorMap.set(0x0, TaNumericalOverflowError);
 nameToErrorMap.set('NumericalOverflow', TaNumericalOverflowError);
 
-/** DataTypeMismatch: 'Data type mismatch' */
+/** DataTypeMismatch: Data type mismatch */
 export class TaDataTypeMismatchError extends ProgramError {
   readonly name: string = 'DataTypeMismatch';
 
@@ -41,7 +41,7 @@ export class TaDataTypeMismatchError extends ProgramError {
 codeToErrorMap.set(0x1, TaDataTypeMismatchError);
 nameToErrorMap.set('DataTypeMismatch', TaDataTypeMismatchError);
 
-/** IncorrectOwner: 'Incorrect account owner' */
+/** IncorrectOwner: Incorrect account owner */
 export class TaIncorrectOwnerError extends ProgramError {
   readonly name: string = 'IncorrectOwner';
 
@@ -54,7 +54,7 @@ export class TaIncorrectOwnerError extends ProgramError {
 codeToErrorMap.set(0x2, TaIncorrectOwnerError);
 nameToErrorMap.set('IncorrectOwner', TaIncorrectOwnerError);
 
-/** PayloadVecIndexError: 'Could not index into PayloadVec' */
+/** PayloadVecIndexError: Could not index into PayloadVec */
 export class TaPayloadVecIndexErrorError extends ProgramError {
   readonly name: string = 'PayloadVecIndexError';
 
@@ -67,7 +67,7 @@ export class TaPayloadVecIndexErrorError extends ProgramError {
 codeToErrorMap.set(0x3, TaPayloadVecIndexErrorError);
 nameToErrorMap.set('PayloadVecIndexError', TaPayloadVecIndexErrorError);
 
-/** DerivedKeyInvalid: 'Derived key invalid' */
+/** DerivedKeyInvalid: Derived key invalid */
 export class TaDerivedKeyInvalidError extends ProgramError {
   readonly name: string = 'DerivedKeyInvalid';
 
@@ -80,7 +80,7 @@ export class TaDerivedKeyInvalidError extends ProgramError {
 codeToErrorMap.set(0x4, TaDerivedKeyInvalidError);
 nameToErrorMap.set('DerivedKeyInvalid', TaDerivedKeyInvalidError);
 
-/** AdditionalSignerCheckFailed: 'Additional Signer check failed' */
+/** AdditionalSignerCheckFailed: Additional Signer check failed */
 export class TaAdditionalSignerCheckFailedError extends ProgramError {
   readonly name: string = 'AdditionalSignerCheckFailed';
 
@@ -96,7 +96,7 @@ nameToErrorMap.set(
   TaAdditionalSignerCheckFailedError
 );
 
-/** PubkeyMatchCheckFailed: 'Pubkey Match check failed' */
+/** PubkeyMatchCheckFailed: Pubkey Match check failed */
 export class TaPubkeyMatchCheckFailedError extends ProgramError {
   readonly name: string = 'PubkeyMatchCheckFailed';
 
@@ -109,7 +109,7 @@ export class TaPubkeyMatchCheckFailedError extends ProgramError {
 codeToErrorMap.set(0x6, TaPubkeyMatchCheckFailedError);
 nameToErrorMap.set('PubkeyMatchCheckFailed', TaPubkeyMatchCheckFailedError);
 
-/** DerivedKeyMatchCheckFailed: 'Derived Key Match check failed' */
+/** DerivedKeyMatchCheckFailed: Derived Key Match check failed */
 export class TaDerivedKeyMatchCheckFailedError extends ProgramError {
   readonly name: string = 'DerivedKeyMatchCheckFailed';
 
@@ -125,7 +125,7 @@ nameToErrorMap.set(
   TaDerivedKeyMatchCheckFailedError
 );
 
-/** ProgramOwnedCheckFailed: 'Program Owned check failed' */
+/** ProgramOwnedCheckFailed: Program Owned check failed */
 export class TaProgramOwnedCheckFailedError extends ProgramError {
   readonly name: string = 'ProgramOwnedCheckFailed';
 
@@ -138,7 +138,7 @@ export class TaProgramOwnedCheckFailedError extends ProgramError {
 codeToErrorMap.set(0x8, TaProgramOwnedCheckFailedError);
 nameToErrorMap.set('ProgramOwnedCheckFailed', TaProgramOwnedCheckFailedError);
 
-/** AmountCheckFailed: 'Amount checked failed' */
+/** AmountCheckFailed: Amount checked failed */
 export class TaAmountCheckFailedError extends ProgramError {
   readonly name: string = 'AmountCheckFailed';
 
@@ -151,7 +151,7 @@ export class TaAmountCheckFailedError extends ProgramError {
 codeToErrorMap.set(0x9, TaAmountCheckFailedError);
 nameToErrorMap.set('AmountCheckFailed', TaAmountCheckFailedError);
 
-/** FrequencyCheckFailed: 'Frequency check failed' */
+/** FrequencyCheckFailed: Frequency check failed */
 export class TaFrequencyCheckFailedError extends ProgramError {
   readonly name: string = 'FrequencyCheckFailed';
 
@@ -164,7 +164,7 @@ export class TaFrequencyCheckFailedError extends ProgramError {
 codeToErrorMap.set(0xa, TaFrequencyCheckFailedError);
 nameToErrorMap.set('FrequencyCheckFailed', TaFrequencyCheckFailedError);
 
-/** PubkeyTreeMatchCheckFailed: 'Pubkey Tree Match check failed' */
+/** PubkeyTreeMatchCheckFailed: Pubkey Tree Match check failed */
 export class TaPubkeyTreeMatchCheckFailedError extends ProgramError {
   readonly name: string = 'PubkeyTreeMatchCheckFailed';
 
@@ -180,7 +180,7 @@ nameToErrorMap.set(
   TaPubkeyTreeMatchCheckFailedError
 );
 
-/** PayerIsNotSigner: 'Payer is not a signer' */
+/** PayerIsNotSigner: Payer is not a signer */
 export class TaPayerIsNotSignerError extends ProgramError {
   readonly name: string = 'PayerIsNotSigner';
 
@@ -193,20 +193,20 @@ export class TaPayerIsNotSignerError extends ProgramError {
 codeToErrorMap.set(0xc, TaPayerIsNotSignerError);
 nameToErrorMap.set('PayerIsNotSigner', TaPayerIsNotSignerError);
 
-/** NotImplemented: 'Not implemented' */
+/** NotImplemented */
 export class TaNotImplementedError extends ProgramError {
   readonly name: string = 'NotImplemented';
 
   readonly code: number = 0xd; // 13
 
   constructor(program: Program, cause?: Error) {
-    super('Not implemented', program, cause);
+    super('', program, cause);
   }
 }
 codeToErrorMap.set(0xd, TaNotImplementedError);
 nameToErrorMap.set('NotImplemented', TaNotImplementedError);
 
-/** BorshSerializationError: 'Borsh Serialization Error' */
+/** BorshSerializationError: Borsh Serialization Error */
 export class TaBorshSerializationErrorError extends ProgramError {
   readonly name: string = 'BorshSerializationError';
 

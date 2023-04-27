@@ -484,8 +484,7 @@
     },
     {
       "code": 13,
-      "name": "NotImplemented",
-      "msg": "Not implemented"
+      "name": "NotImplemented"
     },
     {
       "code": 14,

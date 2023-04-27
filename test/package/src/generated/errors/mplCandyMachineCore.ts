@@ -15,7 +15,7 @@ type ProgramErrorConstructor = new (
 const codeToErrorMap: Map<number, ProgramErrorConstructor> = new Map();
 const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
-/** IncorrectOwner: 'Account does not have correct owner' */
+/** IncorrectOwner: Account does not have correct owner */
 export class CmIncorrectOwnerError extends ProgramError {
   readonly name: string = 'IncorrectOwner';
 
@@ -28,7 +28,7 @@ export class CmIncorrectOwnerError extends ProgramError {
 codeToErrorMap.set(0x1770, CmIncorrectOwnerError);
 nameToErrorMap.set('IncorrectOwner', CmIncorrectOwnerError);
 
-/** Uninitialized: 'Account is not initialized' */
+/** Uninitialized: Account is not initialized */
 export class CmUninitializedError extends ProgramError {
   readonly name: string = 'Uninitialized';
 
@@ -41,7 +41,7 @@ export class CmUninitializedError extends ProgramError {
 codeToErrorMap.set(0x1771, CmUninitializedError);
 nameToErrorMap.set('Uninitialized', CmUninitializedError);
 
-/** MintMismatch: 'Mint Mismatch' */
+/** MintMismatch: Mint Mismatch */
 export class CmMintMismatchError extends ProgramError {
   readonly name: string = 'MintMismatch';
 
@@ -54,7 +54,7 @@ export class CmMintMismatchError extends ProgramError {
 codeToErrorMap.set(0x1772, CmMintMismatchError);
 nameToErrorMap.set('MintMismatch', CmMintMismatchError);
 
-/** IndexGreaterThanLength: 'Index greater than length' */
+/** IndexGreaterThanLength: Index greater than length */
 export class CmIndexGreaterThanLengthError extends ProgramError {
   readonly name: string = 'IndexGreaterThanLength';
 
@@ -67,7 +67,7 @@ export class CmIndexGreaterThanLengthError extends ProgramError {
 codeToErrorMap.set(0x1773, CmIndexGreaterThanLengthError);
 nameToErrorMap.set('IndexGreaterThanLength', CmIndexGreaterThanLengthError);
 
-/** NumericalOverflowError: 'Numerical overflow error' */
+/** NumericalOverflowError: Numerical overflow error */
 export class CmNumericalOverflowErrorError extends ProgramError {
   readonly name: string = 'NumericalOverflowError';
 
@@ -80,7 +80,7 @@ export class CmNumericalOverflowErrorError extends ProgramError {
 codeToErrorMap.set(0x1774, CmNumericalOverflowErrorError);
 nameToErrorMap.set('NumericalOverflowError', CmNumericalOverflowErrorError);
 
-/** TooManyCreators: 'Can only provide up to 4 creators to candy machine (because candy machine is one)' */
+/** TooManyCreators: Can only provide up to 4 creators to candy machine (because candy machine is one) */
 export class CmTooManyCreatorsError extends ProgramError {
   readonly name: string = 'TooManyCreators';
 
@@ -97,7 +97,7 @@ export class CmTooManyCreatorsError extends ProgramError {
 codeToErrorMap.set(0x1775, CmTooManyCreatorsError);
 nameToErrorMap.set('TooManyCreators', CmTooManyCreatorsError);
 
-/** CandyMachineEmpty: 'Candy machine is empty' */
+/** CandyMachineEmpty: Candy machine is empty */
 export class CmCandyMachineEmptyError extends ProgramError {
   readonly name: string = 'CandyMachineEmpty';
 
@@ -110,7 +110,7 @@ export class CmCandyMachineEmptyError extends ProgramError {
 codeToErrorMap.set(0x1776, CmCandyMachineEmptyError);
 nameToErrorMap.set('CandyMachineEmpty', CmCandyMachineEmptyError);
 
-/** HiddenSettingsDoNotHaveConfigLines: 'Candy machines using hidden uris do not have config lines, they have a single hash representing hashed order' */
+/** HiddenSettingsDoNotHaveConfigLines: Candy machines using hidden uris do not have config lines, they have a single hash representing hashed order */
 export class CmHiddenSettingsDoNotHaveConfigLinesError extends ProgramError {
   readonly name: string = 'HiddenSettingsDoNotHaveConfigLines';
 
@@ -130,7 +130,7 @@ nameToErrorMap.set(
   CmHiddenSettingsDoNotHaveConfigLinesError
 );
 
-/** CannotChangeNumberOfLines: 'Cannot change number of lines unless is a hidden config' */
+/** CannotChangeNumberOfLines: Cannot change number of lines unless is a hidden config */
 export class CmCannotChangeNumberOfLinesError extends ProgramError {
   readonly name: string = 'CannotChangeNumberOfLines';
 
@@ -150,7 +150,7 @@ nameToErrorMap.set(
   CmCannotChangeNumberOfLinesError
 );
 
-/** CannotSwitchToHiddenSettings: 'Cannot switch to hidden settings after items available is greater than 0' */
+/** CannotSwitchToHiddenSettings: Cannot switch to hidden settings after items available is greater than 0 */
 export class CmCannotSwitchToHiddenSettingsError extends ProgramError {
   readonly name: string = 'CannotSwitchToHiddenSettings';
 
@@ -170,7 +170,7 @@ nameToErrorMap.set(
   CmCannotSwitchToHiddenSettingsError
 );
 
-/** IncorrectCollectionAuthority: 'Incorrect collection NFT authority' */
+/** IncorrectCollectionAuthority: Incorrect collection NFT authority */
 export class CmIncorrectCollectionAuthorityError extends ProgramError {
   readonly name: string = 'IncorrectCollectionAuthority';
 
@@ -186,7 +186,7 @@ nameToErrorMap.set(
   CmIncorrectCollectionAuthorityError
 );
 
-/** MetadataAccountMustBeEmpty: 'The metadata account has data in it, and this must be empty to mint a new NFT' */
+/** MetadataAccountMustBeEmpty: The metadata account has data in it, and this must be empty to mint a new NFT */
 export class CmMetadataAccountMustBeEmptyError extends ProgramError {
   readonly name: string = 'MetadataAccountMustBeEmpty';
 
@@ -206,7 +206,7 @@ nameToErrorMap.set(
   CmMetadataAccountMustBeEmptyError
 );
 
-/** NoChangingCollectionDuringMint: 'Can't change collection settings after items have begun to be minted' */
+/** NoChangingCollectionDuringMint: Can't change collection settings after items have begun to be minted */
 export class CmNoChangingCollectionDuringMintError extends ProgramError {
   readonly name: string = 'NoChangingCollectionDuringMint';
 
@@ -226,7 +226,7 @@ nameToErrorMap.set(
   CmNoChangingCollectionDuringMintError
 );
 
-/** ExceededLengthError: 'Value longer than expected maximum value' */
+/** ExceededLengthError: Value longer than expected maximum value */
 export class CmExceededLengthErrorError extends ProgramError {
   readonly name: string = 'ExceededLengthError';
 
@@ -239,7 +239,7 @@ export class CmExceededLengthErrorError extends ProgramError {
 codeToErrorMap.set(0x177d, CmExceededLengthErrorError);
 nameToErrorMap.set('ExceededLengthError', CmExceededLengthErrorError);
 
-/** MissingConfigLinesSettings: 'Missing config lines settings' */
+/** MissingConfigLinesSettings: Missing config lines settings */
 export class CmMissingConfigLinesSettingsError extends ProgramError {
   readonly name: string = 'MissingConfigLinesSettings';
 
@@ -255,7 +255,7 @@ nameToErrorMap.set(
   CmMissingConfigLinesSettingsError
 );
 
-/** CannotIncreaseLength: 'Cannot increase the length in config lines settings' */
+/** CannotIncreaseLength: Cannot increase the length in config lines settings */
 export class CmCannotIncreaseLengthError extends ProgramError {
   readonly name: string = 'CannotIncreaseLength';
 
@@ -272,7 +272,7 @@ export class CmCannotIncreaseLengthError extends ProgramError {
 codeToErrorMap.set(0x177f, CmCannotIncreaseLengthError);
 nameToErrorMap.set('CannotIncreaseLength', CmCannotIncreaseLengthError);
 
-/** CannotSwitchFromHiddenSettings: 'Cannot switch from hidden settings' */
+/** CannotSwitchFromHiddenSettings: Cannot switch from hidden settings */
 export class CmCannotSwitchFromHiddenSettingsError extends ProgramError {
   readonly name: string = 'CannotSwitchFromHiddenSettings';
 
@@ -288,7 +288,7 @@ nameToErrorMap.set(
   CmCannotSwitchFromHiddenSettingsError
 );
 
-/** CannotChangeSequentialIndexGeneration: 'Cannot change sequential index generation after items have begun to be minted' */
+/** CannotChangeSequentialIndexGeneration: Cannot change sequential index generation after items have begun to be minted */
 export class CmCannotChangeSequentialIndexGenerationError extends ProgramError {
   readonly name: string = 'CannotChangeSequentialIndexGeneration';
 
@@ -308,7 +308,7 @@ nameToErrorMap.set(
   CmCannotChangeSequentialIndexGenerationError
 );
 
-/** CollectionKeyMismatch: 'Collection public key mismatch' */
+/** CollectionKeyMismatch: Collection public key mismatch */
 export class CmCollectionKeyMismatchError extends ProgramError {
   readonly name: string = 'CollectionKeyMismatch';
 
@@ -321,7 +321,7 @@ export class CmCollectionKeyMismatchError extends ProgramError {
 codeToErrorMap.set(0x1782, CmCollectionKeyMismatchError);
 nameToErrorMap.set('CollectionKeyMismatch', CmCollectionKeyMismatchError);
 
-/** CouldNotRetrieveConfigLineData: 'Could not retrive config line data' */
+/** CouldNotRetrieveConfigLineData: Could not retrive config line data */
 export class CmCouldNotRetrieveConfigLineDataError extends ProgramError {
   readonly name: string = 'CouldNotRetrieveConfigLineData';
 
@@ -337,7 +337,7 @@ nameToErrorMap.set(
   CmCouldNotRetrieveConfigLineDataError
 );
 
-/** NotFullyLoaded: 'Not all config lines were added to the candy machine' */
+/** NotFullyLoaded: Not all config lines were added to the candy machine */
 export class CmNotFullyLoadedError extends ProgramError {
   readonly name: string = 'NotFullyLoaded';
 
