@@ -1,17 +1,27 @@
-import { TypeNode, publicKeyTypeNode } from '../nodes';
+import {
+  TypeNode,
+  ValueNode,
+  publicKeyTypeNode,
+  stringTypeNode,
+  vScalar,
+} from '../nodes';
+import { remainderSize } from './SizeStrategy';
 import { mainCase } from './utils';
 
 export type AccountSeed =
   | { kind: 'programId' }
-  | { kind: 'literal'; value: string }
+  | { kind: 'constant'; type: TypeNode; value: ValueNode }
   | { kind: 'variable'; name: string; type: TypeNode; docs: string[] };
 
 export const programSeed = (): AccountSeed => ({ kind: 'programId' });
 
-export const literalSeed = (value: string): AccountSeed => ({
-  kind: 'literal',
-  value,
-});
+export const constantSeed = (
+  type: TypeNode,
+  value: ValueNode
+): AccountSeed => ({ kind: 'constant', type, value });
+
+export const stringConstantSeed = (value: string): AccountSeed =>
+  constantSeed(stringTypeNode({ size: remainderSize() }), vScalar(value));
 
 export const variableSeed = (
   name: string,
@@ -28,3 +38,9 @@ export const publicKeySeed = (
   name: string,
   docs: string | string[] = []
 ): AccountSeed => variableSeed(name, publicKeyTypeNode(), docs);
+
+export const stringSeed = (
+  name: string,
+  docs: string | string[] = []
+): AccountSeed =>
+  variableSeed(name, stringTypeNode({ size: remainderSize() }), docs);

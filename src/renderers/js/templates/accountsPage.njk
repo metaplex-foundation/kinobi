@@ -109,8 +109,8 @@ export function find{{ account.name | pascalCase }}Pda(
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}
         programId.bytes,
-      {% elif seed.kind === 'literal' %}
-        s.string({ size: 'variable' }).serialize("{{ seed.value }}"),
+      {% elif seed.kind === 'constant' %}
+        {{ seed.typeManifest.serializer }}.serialize({{ seed.value.render }}),
       {% else %}
         {{ seed.typeManifest.serializer }}.serialize(seeds.{{ seed.name | camelCase }}),
       {% endif %}

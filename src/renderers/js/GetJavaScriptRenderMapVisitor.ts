@@ -279,13 +279,24 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const pdaHelperNeedsSerializer =
       account.seeds.filter((seed) => seed.kind !== 'programId').length > 0;
     const seeds = account.seeds.map((seed) => {
-      if (seed.kind !== 'variable') return seed;
-      const seedManifest = visit(seed.type, this.typeManifestVisitor);
-      imports.mergeWith(
-        seedManifest.looseImports,
-        seedManifest.serializerImports
-      );
-      return { ...seed, typeManifest: seedManifest };
+      if (seed.kind === 'constant') {
+        const seedManifest = visit(seed.type, this.typeManifestVisitor);
+        imports.mergeWith(seedManifest.serializerImports);
+        const seedValue = seed.value;
+        const valueManifest = renderJavaScriptValueNode(seedValue);
+        (seedValue as any).render = valueManifest.render;
+        imports.mergeWith(valueManifest.imports);
+        return { ...seed, typeManifest: seedManifest };
+      }
+      if (seed.kind === 'variable') {
+        const seedManifest = visit(seed.type, this.typeManifestVisitor);
+        imports.mergeWith(
+          seedManifest.looseImports,
+          seedManifest.serializerImports
+        );
+        return { ...seed, typeManifest: seedManifest };
+      }
+      return seed;
     });
     if (seeds.length > 0) {
       imports.add('core', ['Pda']);

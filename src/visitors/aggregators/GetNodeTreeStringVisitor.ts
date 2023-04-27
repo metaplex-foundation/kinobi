@@ -51,7 +51,15 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
       children.push(
         ...account.seeds.map((seed) => {
           if (seed.kind === 'programId') return this.indented('programId');
-          if (seed.kind === 'literal') return this.indented(`"${seed.value}"`);
+          if (seed.kind === 'constant') {
+            if (seed.value.kind === 'string') {
+              return this.indented(`"${seed.value.value}"`);
+            }
+            if (seed.value.kind === 'number' || seed.value.kind === 'boolean') {
+              return this.indented(`${seed.value.value}`);
+            }
+            return this.indented(`[${seed.value.kind}]`);
+          }
           this.indent += 1;
           const type = visit(seed.type, this);
           this.indent -= 1;

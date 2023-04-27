@@ -10,5 +10,5 @@ export type IdlAccount = {
 
 export type IdlAccountSeed =
   | { kind: 'programId' }
-  | { kind: 'literal'; value: string }
+  | { kind: 'constant'; type: IdlTypeLeaf; value: string | boolean | number }
   | { kind: 'variable'; name: string; description: string; type: IdlTypeLeaf };
