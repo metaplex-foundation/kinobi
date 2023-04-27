@@ -48,6 +48,8 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     };
     if (account.seeds.length > 0) {
       exports[`find${pascalCaseName}Pda`] = 'function';
+      exports[`fetch${pascalCaseName}FromSeeds`] = 'function';
+      exports[`safeFetch${pascalCaseName}FromSeeds`] = 'function';
     }
     if (!account.internal) {
       bag.mergeWith([this.checkExportConflicts(account, exports)]);

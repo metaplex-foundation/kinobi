@@ -117,5 +117,25 @@ export function find{{ account.name | pascalCase }}Pda(
     {% endfor %}
   ]);
 }
+
+export async function fetch{{ account.name | pascalCase }}FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  {% if hasVariableSeeds %}
+    seeds: Parameters<typeof find{{ account.name | pascalCase }}Pda>[1],
+  {% endif %}
+  options?: RpcGetAccountOptions,
+): Promise<{{ account.name | pascalCase }}> {
+  return fetch{{ account.name | pascalCase }}(context, find{{ account.name | pascalCase }}Pda(context, seeds), options);
+}
+
+export async function safeFetch{{ account.name | pascalCase }}FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  {% if hasVariableSeeds %}
+    seeds: Parameters<typeof find{{ account.name | pascalCase }}Pda>[1],
+  {% endif %}
+  options?: RpcGetAccountOptions,
+): Promise<{{ account.name | pascalCase }} | null> {
+  return safeFetch{{ account.name | pascalCase }}(context, find{{ account.name | pascalCase }}Pda(context, seeds), options);
+}
 {% endif %}
 {% endblock %}

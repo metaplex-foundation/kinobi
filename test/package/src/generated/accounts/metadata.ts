@@ -262,3 +262,19 @@ export function findMetadataPda(
     s.publicKey().serialize(seeds.mint),
   ]);
 }
+
+export async function fetchMetadataFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findMetadataPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Metadata> {
+  return fetchMetadata(context, findMetadataPda(context, seeds), options);
+}
+
+export async function safeFetchMetadataFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findMetadataPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Metadata | null> {
+  return safeFetchMetadata(context, findMetadataPda(context, seeds), options);
+}

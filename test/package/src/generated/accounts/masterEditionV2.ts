@@ -160,3 +160,27 @@ export function findMasterEditionV2Pda(
     s.string({ size: 'variable' }).serialize('edition'),
   ]);
 }
+
+export async function fetchMasterEditionV2FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findMasterEditionV2Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV2> {
+  return fetchMasterEditionV2(
+    context,
+    findMasterEditionV2Pda(context, seeds),
+    options
+  );
+}
+
+export async function safeFetchMasterEditionV2FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findMasterEditionV2Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV2 | null> {
+  return safeFetchMasterEditionV2(
+    context,
+    findMasterEditionV2Pda(context, seeds),
+    options
+  );
+}

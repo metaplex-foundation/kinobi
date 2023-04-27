@@ -171,3 +171,27 @@ export function findMasterEditionV1Pda(
     getDelegateRoleSerializer(context).serialize(seeds.delegateRole),
   ]);
 }
+
+export async function fetchMasterEditionV1FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findMasterEditionV1Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV1> {
+  return fetchMasterEditionV1(
+    context,
+    findMasterEditionV1Pda(context, seeds),
+    options
+  );
+}
+
+export async function safeFetchMasterEditionV1FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findMasterEditionV1Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV1 | null> {
+  return safeFetchMasterEditionV1(
+    context,
+    findMasterEditionV1Pda(context, seeds),
+    options
+  );
+}

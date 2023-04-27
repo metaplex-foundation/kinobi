@@ -161,3 +161,27 @@ export function findDelegateRecordPda(
     getDelegateRoleSerializer(context).serialize(seeds.role),
   ]);
 }
+
+export async function fetchDelegateRecordFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findDelegateRecordPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<DelegateRecord> {
+  return fetchDelegateRecord(
+    context,
+    findDelegateRecordPda(context, seeds),
+    options
+  );
+}
+
+export async function safeFetchDelegateRecordFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  seeds: Parameters<typeof findDelegateRecordPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<DelegateRecord | null> {
+  return safeFetchDelegateRecord(
+    context,
+    findDelegateRecordPda(context, seeds),
+    options
+  );
+}
