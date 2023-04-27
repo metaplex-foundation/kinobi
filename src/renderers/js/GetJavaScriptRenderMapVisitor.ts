@@ -465,8 +465,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Remove imports from the same module.
     imports.remove('generatedTypes', [
       `${instruction.name}InstructionAccounts`,
-      `${instruction.name}InstructionData`,
-      `${instruction.name}InstructionDataArgs`,
+      `${instruction.name}InstructionArgs`,
+      `${instruction.dataArgs.name}`,
+      `${instruction.dataArgs.name}Args`,
+      `${instruction.extraArgs.name}Args`,
     ]);
 
     // canMergeAccountsAndArgs

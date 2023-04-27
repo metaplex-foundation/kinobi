@@ -87,6 +87,10 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
                     name: `${subName}InstructionData`,
                     struct: flattenStruct(nodes.structTypeNode(subFields)),
                   }),
+                  extraArgs: nodes.instructionExtraArgsNode({
+                    ...node.extraArgs,
+                    name: `${subName}InstructionExtra`,
+                  }),
                 });
               }
             );

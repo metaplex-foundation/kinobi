@@ -76,16 +76,18 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     this.pushNode(instruction);
     const camelCaseName = camelCase(instruction.name);
     const pascalCaseName = pascalCase(instruction.name);
+    const pascalCaseData = pascalCase(instruction.dataArgs.name);
+    const pascalCaseExtra = pascalCase(instruction.extraArgs.name);
     if (!instruction.internal) {
       bag.mergeWith([
         this.checkExportConflicts(instruction, {
           [camelCaseName]: 'function',
           [`${pascalCaseName}InstructionAccounts`]: 'type',
-          [`${pascalCaseName}InstructionData`]: 'type',
-          [`${pascalCaseName}InstructionDataArgs`]: 'type',
-          [`get${pascalCaseName}InstructionDataSerializer`]: 'function',
-          [`${pascalCaseName}InstructionExtraArgs`]: 'type',
           [`${pascalCaseName}InstructionArgs`]: 'type',
+          [`${pascalCaseData}`]: 'type',
+          [`${pascalCaseData}Args`]: 'type',
+          [`get${pascalCaseData}Serializer`]: 'function',
+          [`${pascalCaseExtra}Args`]: 'type',
         }),
       ]);
     }

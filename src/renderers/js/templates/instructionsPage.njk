@@ -51,9 +51,9 @@ export function {{ instruction.name | camelCase }}(
 
   // Data.
   {% if hasDataArgs %}
-    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize(resolvedArgs);
+    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer(context).serialize(resolvedArgs);
   {% elif hasData %}
-    const data = get{{ instruction.name | pascalCase }}InstructionDataSerializer(context).serialize({});
+    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer(context).serialize({});
   {% else %}
     const data = new Uint8Array();
   {% endif %}
