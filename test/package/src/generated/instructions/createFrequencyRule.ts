@@ -53,7 +53,7 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     CreateFrequencyRuleInstructionDataArgs,
-    CreateFrequencyRuleInstructionData,
+    any,
     CreateFrequencyRuleInstructionData
   >(
     s.struct<CreateFrequencyRuleInstructionData>(
@@ -66,8 +66,7 @@ export function getCreateFrequencyRuleInstructionDataSerializer(
       ],
       { description: 'CreateFrequencyRuleInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 2 } as CreateFrequencyRuleInstructionData)
+    (value) => ({ ...value, discriminator: 2 })
   ) as Serializer<
     CreateFrequencyRuleInstructionDataArgs,
     CreateFrequencyRuleInstructionData

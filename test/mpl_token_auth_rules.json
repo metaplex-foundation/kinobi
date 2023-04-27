@@ -190,9 +190,7 @@
         "fields": [
           {
             "name": "key",
-            "type": {
-              "defined": "Key"
-            },
+            "type": "u64",
             "docs": ["Test with only one line."]
           },
           {

@@ -21,7 +21,7 @@ export function getCollectionSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<CollectionArgs, Collection> {
   const s = context.serializer;
-  return mapSerializer<CollectionArgs, Collection, Collection>(
+  return mapSerializer<CollectionArgs, any, Collection>(
     s.struct<Collection>(
       [
         ['verified', s.bool()],
@@ -29,6 +29,6 @@ export function getCollectionSerializer(
       ],
       { description: 'Collection' }
     ),
-    (value) => ({ ...value, verified: value.verified ?? false } as Collection)
+    (value) => ({ ...value, verified: value.verified ?? false })
   ) as Serializer<CollectionArgs, Collection>;
 }

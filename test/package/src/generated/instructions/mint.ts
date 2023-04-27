@@ -57,11 +57,7 @@ export function getMintInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MintInstructionDataArgs, MintInstructionData> {
   const s = context.serializer;
-  return mapSerializer<
-    MintInstructionDataArgs,
-    MintInstructionData,
-    MintInstructionData
-  >(
+  return mapSerializer<MintInstructionDataArgs, any, MintInstructionData>(
     s.struct<MintInstructionData>(
       [
         ['discriminator', s.u8()],
@@ -69,7 +65,7 @@ export function getMintInstructionDataSerializer(
       ],
       { description: 'MintInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 42 } as MintInstructionData)
+    (value) => ({ ...value, discriminator: 42 })
   ) as Serializer<MintInstructionDataArgs, MintInstructionData>;
 }
 

@@ -56,11 +56,7 @@ export function getUpdateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<UpdateInstructionDataArgs, UpdateInstructionData> {
   const s = context.serializer;
-  return mapSerializer<
-    UpdateInstructionDataArgs,
-    UpdateInstructionData,
-    UpdateInstructionData
-  >(
+  return mapSerializer<UpdateInstructionDataArgs, any, UpdateInstructionData>(
     s.struct<UpdateInstructionData>(
       [
         ['discriminator', s.u8()],
@@ -68,7 +64,7 @@ export function getUpdateInstructionDataSerializer(
       ],
       { description: 'UpdateInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 43 } as UpdateInstructionData)
+    (value) => ({ ...value, discriminator: 43 })
   ) as Serializer<UpdateInstructionDataArgs, UpdateInstructionData>;
 }
 

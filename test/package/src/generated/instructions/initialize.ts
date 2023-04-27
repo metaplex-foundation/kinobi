@@ -52,7 +52,7 @@ export function getInitializeInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     InitializeInstructionDataArgs,
-    InitializeInstructionData,
+    any,
     InitializeInstructionData
   >(
     s.struct<InitializeInstructionData>(
@@ -62,11 +62,10 @@ export function getInitializeInstructionDataSerializer(
       ],
       { description: 'InitializeInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
-      } as InitializeInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
+    })
   ) as Serializer<InitializeInstructionDataArgs, InitializeInstructionData>;
 }
 

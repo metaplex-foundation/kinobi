@@ -45,11 +45,7 @@ export function getVerifyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<VerifyInstructionDataArgs, VerifyInstructionData> {
   const s = context.serializer;
-  return mapSerializer<
-    VerifyInstructionDataArgs,
-    VerifyInstructionData,
-    VerifyInstructionData
-  >(
+  return mapSerializer<VerifyInstructionDataArgs, any, VerifyInstructionData>(
     s.struct<VerifyInstructionData>(
       [
         ['discriminator', s.u8()],
@@ -57,7 +53,7 @@ export function getVerifyInstructionDataSerializer(
       ],
       { description: 'VerifyInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 47 } as VerifyInstructionData)
+    (value) => ({ ...value, discriminator: 47 })
   ) as Serializer<VerifyInstructionDataArgs, VerifyInstructionData>;
 }
 

@@ -126,7 +126,7 @@ export function getUpdateV1InstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     UpdateV1InstructionDataArgs,
-    UpdateV1InstructionData,
+    any,
     UpdateV1InstructionData
   >(
     s.struct<UpdateV1InstructionData>(
@@ -168,20 +168,17 @@ export function getUpdateV1InstructionDataSerializer(
       ],
       { description: 'UpdateV1InstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 43,
-        updateV1Discriminator: 0,
-        tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
-        collection:
-          value.collection ??
-          some(
-            payloadType('Pubkey', [
-              publicKey('11111111111111111111111111111111'),
-            ])
-          ),
-      } as UpdateV1InstructionData)
+    (value) => ({
+      ...value,
+      discriminator: 43,
+      updateV1Discriminator: 0,
+      tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
+      collection:
+        value.collection ??
+        some(
+          payloadType('Pubkey', [publicKey('11111111111111111111111111111111')])
+        ),
+    })
   ) as Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData>;
 }
 

@@ -19,13 +19,13 @@ import {
   gpaBuilder,
   mapSerializer,
 } from '@metaplex-foundation/umi';
-import { TaKey, TaKeyArgs, getTaKeySerializer } from '../types';
+import { TaKey } from '../types';
 
 export type FrequencyAccount = Account<FrequencyAccountAccountData>;
 
 export type FrequencyAccountAccountData = {
   /** Test with only one line. */
-  key: TaKey;
+  key: bigint;
   /**
    * Test with multiple lines
    * and this is the second line.
@@ -49,19 +49,18 @@ export function getFrequencyAccountAccountDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     FrequencyAccountAccountDataArgs,
-    FrequencyAccountAccountData,
+    any,
     FrequencyAccountAccountData
   >(
     s.struct<FrequencyAccountAccountData>(
       [
-        ['key', getTaKeySerializer(context)],
+        ['key', s.u64()],
         ['lastUpdate', s.i64()],
         ['period', s.i64()],
       ],
       { description: 'FrequencyAccountAccountData' }
     ),
-    (value) =>
-      ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
+    (value) => ({ ...value, key: TaKey.Frequency })
   ) as Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
 }
 
@@ -131,14 +130,10 @@ export function getFrequencyAccountGpaBuilder(
   );
   return gpaBuilder(context, programId)
     .registerFields<{
-      key: TaKeyArgs;
+      key: number | bigint;
       lastUpdate: number | bigint;
       period: number | bigint;
-    }>({
-      key: [0, getTaKeySerializer(context)],
-      lastUpdate: [1, s.i64()],
-      period: [9, s.i64()],
-    })
+    }>({ key: [0, s.u64()], lastUpdate: [8, s.i64()], period: [16, s.i64()] })
     .deserializeUsing<FrequencyAccount>((account) =>
       deserializeFrequencyAccount(context, account)
     )
@@ -146,5 +141,5 @@ export function getFrequencyAccountGpaBuilder(
 }
 
 export function getFrequencyAccountSize(): number {
-  return 17;
+  return 24;
 }

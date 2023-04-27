@@ -102,7 +102,7 @@ export function getUpdateArgsSerializer(
         'V1',
         mapSerializer<
           GetDataEnumKindContent<UpdateArgsArgs, 'V1'>,
-          GetDataEnumKindContent<UpdateArgs, 'V1'>,
+          any,
           GetDataEnumKindContent<UpdateArgs, 'V1'>
         >(
           s.struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
@@ -142,19 +142,18 @@ export function getUpdateArgsSerializer(
             ['delegateState', s.option(getDelegateStateSerializer(context))],
             ['authorityType', getAuthorityTypeSerializer(context)],
           ]),
-          (value) =>
-            ({
-              ...value,
-              tokenStandard:
-                value.tokenStandard ?? some(TokenStandard.NonFungible),
-              collection:
-                value.collection ??
-                some(
-                  payloadType('Pubkey', [
-                    publicKey('11111111111111111111111111111111'),
-                  ])
-                ),
-            } as GetDataEnumKindContent<UpdateArgs, 'V1'>)
+          (value) => ({
+            ...value,
+            tokenStandard:
+              value.tokenStandard ?? some(TokenStandard.NonFungible),
+            collection:
+              value.collection ??
+              some(
+                payloadType('Pubkey', [
+                  publicKey('11111111111111111111111111111111'),
+                ])
+              ),
+          })
         ),
       ],
     ],

@@ -68,7 +68,7 @@ export function getDelegateInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     DelegateInstructionDataArgs,
-    DelegateInstructionData,
+    any,
     DelegateInstructionData
   >(
     s.struct<DelegateInstructionData>(
@@ -78,7 +78,7 @@ export function getDelegateInstructionDataSerializer(
       ],
       { description: 'DelegateInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 48 } as DelegateInstructionData)
+    (value) => ({ ...value, discriminator: 48 })
   ) as Serializer<DelegateInstructionDataArgs, DelegateInstructionData>;
 }
 

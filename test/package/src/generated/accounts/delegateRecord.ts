@@ -48,7 +48,7 @@ export function getDelegateRecordAccountDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     DelegateRecordAccountDataArgs,
-    DelegateRecordAccountData,
+    any,
     DelegateRecordAccountData
   >(
     s.struct<DelegateRecordAccountData>(
@@ -59,7 +59,7 @@ export function getDelegateRecordAccountDataSerializer(
       ],
       { description: 'DelegateRecordAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.Delegate } as DelegateRecordAccountData)
+    (value) => ({ ...value, key: TmKey.Delegate })
   ) as Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
 }
 

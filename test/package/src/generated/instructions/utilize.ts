@@ -57,11 +57,7 @@ export function getUtilizeInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<UtilizeInstructionDataArgs, UtilizeInstructionData> {
   const s = context.serializer;
-  return mapSerializer<
-    UtilizeInstructionDataArgs,
-    UtilizeInstructionData,
-    UtilizeInstructionData
-  >(
+  return mapSerializer<UtilizeInstructionDataArgs, any, UtilizeInstructionData>(
     s.struct<UtilizeInstructionData>(
       [
         ['discriminator', s.u8()],
@@ -69,7 +65,7 @@ export function getUtilizeInstructionDataSerializer(
       ],
       { description: 'UtilizeInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 19 } as UtilizeInstructionData)
+    (value) => ({ ...value, discriminator: 19 })
   ) as Serializer<UtilizeInstructionDataArgs, UtilizeInstructionData>;
 }
 

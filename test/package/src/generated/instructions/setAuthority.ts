@@ -38,7 +38,7 @@ export function getSetAuthorityInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     SetAuthorityInstructionDataArgs,
-    SetAuthorityInstructionData,
+    any,
     SetAuthorityInstructionData
   >(
     s.struct<SetAuthorityInstructionData>(
@@ -48,11 +48,10 @@ export function getSetAuthorityInstructionDataSerializer(
       ],
       { description: 'SetAuthorityInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
-      } as SetAuthorityInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
+    })
   ) as Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData>;
 }
 

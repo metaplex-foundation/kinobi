@@ -54,7 +54,7 @@ export function getReservationListV2AccountDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     ReservationListV2AccountDataArgs,
-    ReservationListV2AccountData,
+    any,
     ReservationListV2AccountData
   >(
     s.struct<ReservationListV2AccountData>(
@@ -68,11 +68,7 @@ export function getReservationListV2AccountDataSerializer(
       ],
       { description: 'ReservationListV2AccountData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.ReservationListV2,
-      } as ReservationListV2AccountData)
+    (value) => ({ ...value, key: TmKey.ReservationListV2 })
   ) as Serializer<
     ReservationListV2AccountDataArgs,
     ReservationListV2AccountData

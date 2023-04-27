@@ -63,7 +63,7 @@ export function getUseAssetInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     UseAssetInstructionDataArgs,
-    UseAssetInstructionData,
+    any,
     UseAssetInstructionData
   >(
     s.struct<UseAssetInstructionData>(
@@ -73,7 +73,7 @@ export function getUseAssetInstructionDataSerializer(
       ],
       { description: 'UseAssetInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 45 } as UseAssetInstructionData)
+    (value) => ({ ...value, discriminator: 45 })
   ) as Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData>;
 }
 

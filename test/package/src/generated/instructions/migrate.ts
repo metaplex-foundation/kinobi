@@ -60,11 +60,7 @@ export function getMigrateInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MigrateInstructionDataArgs, MigrateInstructionData> {
   const s = context.serializer;
-  return mapSerializer<
-    MigrateInstructionDataArgs,
-    MigrateInstructionData,
-    MigrateInstructionData
-  >(
+  return mapSerializer<MigrateInstructionDataArgs, any, MigrateInstructionData>(
     s.struct<MigrateInstructionData>(
       [
         ['discriminator', s.u8()],
@@ -72,7 +68,7 @@ export function getMigrateInstructionDataSerializer(
       ],
       { description: 'MigrateInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 50 } as MigrateInstructionData)
+    (value) => ({ ...value, discriminator: 50 })
   ) as Serializer<MigrateInstructionDataArgs, MigrateInstructionData>;
 }
 

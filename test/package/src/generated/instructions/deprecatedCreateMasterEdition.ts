@@ -73,7 +73,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     DeprecatedCreateMasterEditionInstructionDataArgs,
-    DeprecatedCreateMasterEditionInstructionData,
+    any,
     DeprecatedCreateMasterEditionInstructionData
   >(
     s.struct<DeprecatedCreateMasterEditionInstructionData>(
@@ -86,11 +86,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
       ],
       { description: 'DeprecatedCreateMasterEditionInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 2,
-      } as DeprecatedCreateMasterEditionInstructionData)
+    (value) => ({ ...value, discriminator: 2 })
   ) as Serializer<
     DeprecatedCreateMasterEditionInstructionDataArgs,
     DeprecatedCreateMasterEditionInstructionData

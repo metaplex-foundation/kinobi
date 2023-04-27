@@ -365,13 +365,12 @@ export class GetJavaScriptTypeManifestVisitor
       })
       .join(', ');
     const mapSerializerTypeParams = parentName
-      ? `${parentName.loose}, ${parentName.strict}, ${parentName.strict}`
+      ? `${parentName.loose}, any, ${parentName.strict}`
       : 'any, any, any';
-    const asReturnType = parentName ? ` as ${parentName.strict}` : '';
     const mappedSerializer =
       `mapSerializer<${mapSerializerTypeParams}>(` +
       `${baseManifest.serializer}, ` +
-      `(value) => ({ ...value, ${defaultValues} }${asReturnType}) ` +
+      `(value) => ({ ...value, ${defaultValues} }) ` +
       `)`;
     baseManifest.serializerImports.add('core', 'mapSerializer');
     return { ...baseManifest, serializer: mappedSerializer };

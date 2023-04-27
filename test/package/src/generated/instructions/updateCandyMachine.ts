@@ -48,7 +48,7 @@ export function getUpdateCandyMachineInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     UpdateCandyMachineInstructionDataArgs,
-    UpdateCandyMachineInstructionData,
+    any,
     UpdateCandyMachineInstructionData
   >(
     s.struct<UpdateCandyMachineInstructionData>(
@@ -58,11 +58,10 @@ export function getUpdateCandyMachineInstructionDataSerializer(
       ],
       { description: 'UpdateCandyMachineInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
-      } as UpdateCandyMachineInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
+    })
   ) as Serializer<
     UpdateCandyMachineInstructionDataArgs,
     UpdateCandyMachineInstructionData

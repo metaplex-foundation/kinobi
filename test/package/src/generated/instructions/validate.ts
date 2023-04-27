@@ -77,7 +77,7 @@ export function getValidateInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     ValidateInstructionDataArgs,
-    ValidateInstructionData,
+    any,
     ValidateInstructionData
   >(
     s.struct<ValidateInstructionData>(
@@ -89,7 +89,7 @@ export function getValidateInstructionDataSerializer(
       ],
       { description: 'ValidateInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 1 } as ValidateInstructionData)
+    (value) => ({ ...value, discriminator: 1 })
   ) as Serializer<ValidateInstructionDataArgs, ValidateInstructionData>;
 }
 

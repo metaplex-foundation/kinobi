@@ -59,7 +59,7 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     DeprecatedSetReservationListInstructionDataArgs,
-    DeprecatedSetReservationListInstructionData,
+    any,
     DeprecatedSetReservationListInstructionData
   >(
     s.struct<DeprecatedSetReservationListInstructionData>(
@@ -72,11 +72,7 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(
       ],
       { description: 'DeprecatedSetReservationListInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 5,
-      } as DeprecatedSetReservationListInstructionData)
+    (value) => ({ ...value, discriminator: 5 })
   ) as Serializer<
     DeprecatedSetReservationListInstructionDataArgs,
     DeprecatedSetReservationListInstructionData

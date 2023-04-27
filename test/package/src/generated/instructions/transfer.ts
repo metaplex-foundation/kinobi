@@ -75,7 +75,7 @@ export function getTransferInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     TransferInstructionDataArgs,
-    TransferInstructionData,
+    any,
     TransferInstructionData
   >(
     s.struct<TransferInstructionData>(
@@ -85,7 +85,7 @@ export function getTransferInstructionDataSerializer(
       ],
       { description: 'TransferInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 46 } as TransferInstructionData)
+    (value) => ({ ...value, discriminator: 46 })
   ) as Serializer<TransferInstructionDataArgs, TransferInstructionData>;
 }
 

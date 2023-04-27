@@ -52,7 +52,7 @@ export function getCreateRuleSetInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     CreateRuleSetInstructionDataArgs,
-    CreateRuleSetInstructionData,
+    any,
     CreateRuleSetInstructionData
   >(
     s.struct<CreateRuleSetInstructionData>(
@@ -63,7 +63,7 @@ export function getCreateRuleSetInstructionDataSerializer(
       ],
       { description: 'CreateRuleSetInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 0 } as CreateRuleSetInstructionData)
+    (value) => ({ ...value, discriminator: 0 })
   ) as Serializer<
     CreateRuleSetInstructionDataArgs,
     CreateRuleSetInstructionData

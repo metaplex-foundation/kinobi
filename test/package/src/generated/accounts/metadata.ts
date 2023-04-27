@@ -93,11 +93,7 @@ export function getMetadataAccountDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<MetadataAccountDataArgs, MetadataAccountData> {
   const s = context.serializer;
-  return mapSerializer<
-    MetadataAccountDataArgs,
-    MetadataAccountData,
-    MetadataAccountData
-  >(
+  return mapSerializer<MetadataAccountDataArgs, any, MetadataAccountData>(
     s.struct<MetadataAccountData>(
       [
         ['key', getTmKeySerializer(context)],
@@ -126,7 +122,7 @@ export function getMetadataAccountDataSerializer(
       ],
       { description: 'MetadataAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.MetadataV1 } as MetadataAccountData)
+    (value) => ({ ...value, key: TmKey.MetadataV1 })
   ) as Serializer<MetadataAccountDataArgs, MetadataAccountData>;
 }
 

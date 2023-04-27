@@ -52,7 +52,7 @@ export function getMasterEditionV1AccountDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     MasterEditionV1AccountDataArgs,
-    MasterEditionV1AccountData,
+    any,
     MasterEditionV1AccountData
   >(
     s.struct<MasterEditionV1AccountData>(
@@ -65,8 +65,7 @@ export function getMasterEditionV1AccountDataSerializer(
       ],
       { description: 'MasterEditionV1AccountData' }
     ),
-    (value) =>
-      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
+    (value) => ({ ...value, key: TmKey.MasterEditionV1 })
   ) as Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData>;
 }
 

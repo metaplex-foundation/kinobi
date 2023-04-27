@@ -46,7 +46,7 @@ export function getAddConfigLinesInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     AddConfigLinesInstructionDataArgs,
-    AddConfigLinesInstructionData,
+    any,
     AddConfigLinesInstructionData
   >(
     s.struct<AddConfigLinesInstructionData>(
@@ -57,11 +57,10 @@ export function getAddConfigLinesInstructionDataSerializer(
       ],
       { description: 'AddConfigLinesInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
-      } as AddConfigLinesInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
+    })
   ) as Serializer<
     AddConfigLinesInstructionDataArgs,
     AddConfigLinesInstructionData

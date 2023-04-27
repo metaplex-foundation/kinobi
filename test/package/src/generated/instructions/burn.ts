@@ -50,11 +50,7 @@ export function getBurnInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<BurnInstructionDataArgs, BurnInstructionData> {
   const s = context.serializer;
-  return mapSerializer<
-    BurnInstructionDataArgs,
-    BurnInstructionData,
-    BurnInstructionData
-  >(
+  return mapSerializer<BurnInstructionDataArgs, any, BurnInstructionData>(
     s.struct<BurnInstructionData>(
       [
         ['discriminator', s.u8()],
@@ -62,7 +58,7 @@ export function getBurnInstructionDataSerializer(
       ],
       { description: 'BurnInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 44 } as BurnInstructionData)
+    (value) => ({ ...value, discriminator: 44 })
   ) as Serializer<BurnInstructionDataArgs, BurnInstructionData>;
 }
 

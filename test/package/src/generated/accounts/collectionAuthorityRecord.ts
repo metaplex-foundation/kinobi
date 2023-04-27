@@ -45,7 +45,7 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     CollectionAuthorityRecordAccountDataArgs,
-    CollectionAuthorityRecordAccountData,
+    any,
     CollectionAuthorityRecordAccountData
   >(
     s.struct<CollectionAuthorityRecordAccountData>(
@@ -56,11 +56,7 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
       ],
       { description: 'CollectionAuthorityRecordAccountData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.CollectionAuthorityRecord,
-      } as CollectionAuthorityRecordAccountData)
+    (value) => ({ ...value, key: TmKey.CollectionAuthorityRecord })
   ) as Serializer<
     CollectionAuthorityRecordAccountDataArgs,
     CollectionAuthorityRecordAccountData

@@ -33,7 +33,7 @@ export function getEditionMarkerAccountDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     EditionMarkerAccountDataArgs,
-    EditionMarkerAccountData,
+    any,
     EditionMarkerAccountData
   >(
     s.struct<EditionMarkerAccountData>(
@@ -43,8 +43,7 @@ export function getEditionMarkerAccountDataSerializer(
       ],
       { description: 'EditionMarkerAccountData' }
     ),
-    (value) =>
-      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
+    (value) => ({ ...value, key: TmKey.EditionMarker })
   ) as Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
 }
 

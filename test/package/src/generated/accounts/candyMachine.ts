@@ -65,7 +65,7 @@ export function getCandyMachineAccountDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     CandyMachineAccountDataArgs,
-    CandyMachineAccountData,
+    any,
     CandyMachineAccountData
   >(
     s.struct<CandyMachineAccountData>(
@@ -80,11 +80,10 @@ export function getCandyMachineAccountDataSerializer(
       ],
       { description: 'CandyMachineAccountData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
-      } as CandyMachineAccountData)
+    (value) => ({
+      ...value,
+      discriminator: [115, 157, 18, 166, 35, 44, 221, 13],
+    })
   ) as Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
 }
 

@@ -43,20 +43,15 @@ export function getDummyInstructionDataSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<DummyInstructionDataArgs, DummyInstructionData> {
   const s = context.serializer;
-  return mapSerializer<
-    DummyInstructionDataArgs,
-    DummyInstructionData,
-    DummyInstructionData
-  >(
+  return mapSerializer<DummyInstructionDataArgs, any, DummyInstructionData>(
     s.struct<DummyInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
       { description: 'DummyInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
-      } as DummyInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
+    })
   ) as Serializer<DummyInstructionDataArgs, DummyInstructionData>;
 }
 

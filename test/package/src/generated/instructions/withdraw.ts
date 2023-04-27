@@ -35,18 +35,17 @@ export function getWithdrawInstructionDataSerializer(
   const s = context.serializer;
   return mapSerializer<
     WithdrawInstructionDataArgs,
-    WithdrawInstructionData,
+    any,
     WithdrawInstructionData
   >(
     s.struct<WithdrawInstructionData>(
       [['discriminator', s.array(s.u8(), { size: 8 })]],
       { description: 'WithdrawInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
-      } as WithdrawInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
+    })
   ) as Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData>;
 }
 
