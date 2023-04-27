@@ -39,6 +39,7 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
 };
 
 export type GetJavaScriptRenderMapOptions = {
+  renderParentInstructions?: boolean;
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
@@ -57,6 +58,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   constructor(options: GetJavaScriptRenderMapOptions = {}) {
     super();
     this.options = {
+      renderParentInstructions: options.renderParentInstructions ?? false,
       formatCode: options.formatCode ?? true,
       prettierOptions: {
         ...DEFAULT_PRETTIER_OPTIONS,
@@ -90,7 +92,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .getAllAccounts(root)
       .filter((a) => !a.internal);
     const instructionsToExport = nodes
-      .getAllInstructionsWithSubs(root)
+      .getAllInstructionsWithSubs(root, !this.options.renderParentInstructions)
       .filter((i) => !i.internal);
     const definedTypesToExport = nodes
       .getAllDefinedTypes(root)
@@ -156,7 +158,10 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     renderMap
       .mergeWith(
         ...nodes
-          .getAllInstructionsWithSubs(program)
+          .getAllInstructionsWithSubs(
+            program,
+            !this.options.renderParentInstructions
+          )
           .map((ix) => visit(ix, this))
       )
       .add(

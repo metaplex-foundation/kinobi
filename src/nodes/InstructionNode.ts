@@ -111,26 +111,25 @@ export function instructionNodeFromIdl(
   });
 }
 
-export function getAllSubInstructions(
-  node: InstructionNode
-): InstructionNode[] {
-  return node.subInstructions.flatMap((subInstruction) => [
-    subInstruction,
-    ...getAllSubInstructions(subInstruction),
-  ]);
-}
-
 export function getAllInstructionsWithSubs(
-  node: ProgramNode | RootNode
+  node: ProgramNode | RootNode | InstructionNode,
+  leavesOnly = false
 ): InstructionNode[] {
+  if (isInstructionNode(node)) {
+    if (node.subInstructions.length === 0) return [node];
+    const subInstructions = node.subInstructions.flatMap((sub) =>
+      getAllInstructionsWithSubs(sub, leavesOnly)
+    );
+    return leavesOnly ? subInstructions : [node, ...subInstructions];
+  }
+
   const instructions = isProgramNode(node)
     ? node.instructions
     : node.programs.flatMap((program) => program.instructions);
 
-  return instructions.flatMap((instruction) => [
-    instruction,
-    ...getAllSubInstructions(instruction),
-  ]);
+  return instructions.flatMap((instruction) =>
+    getAllInstructionsWithSubs(instruction, leavesOnly)
+  );
 }
 
 export function isInstructionNode(node: Node | null): node is InstructionNode {
