@@ -18,8 +18,8 @@ export function getBurnArgsSerializer(
   context: Pick<Context, 'serializer'>
 ): Serializer<BurnArgsArgs, BurnArgs> {
   const s = context.serializer;
-  return s.enum<BurnArgs>(BurnArgs, { description: 'BurnArgs' }) as Serializer<
-    BurnArgsArgs,
-    BurnArgs
-  >;
+  return s.enum<BurnArgs>(BurnArgs, {
+    size: s.u64(),
+    description: 'BurnArgs',
+  }) as Serializer<BurnArgsArgs, BurnArgs>;
 }

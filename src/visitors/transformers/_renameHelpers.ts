@@ -22,7 +22,8 @@ export function renameEnumNode(
       map[variant.name]
         ? renameEnumVariant(variant, map[variant.name])
         : variant
-    )
+    ),
+    { ...node }
   );
 }
 

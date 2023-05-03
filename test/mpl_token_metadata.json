@@ -4207,6 +4207,7 @@
       "name": "BurnArgs",
       "type": {
         "kind": "enum",
+        "size": "u64",
         "variants": [
           {
             "name": "V1"

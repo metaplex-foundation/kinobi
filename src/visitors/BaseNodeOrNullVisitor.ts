@@ -150,7 +150,8 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
         .map((variant) => visit(variant, this))
         .filter(
           nodes.removeNullAndAssertNodeFilter(nodes.assertEnumVariantTypeNode)
-        )
+        ),
+      { ...enumType }
     );
   }
 
