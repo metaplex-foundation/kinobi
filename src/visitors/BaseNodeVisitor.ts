@@ -131,7 +131,8 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.enumTypeNode(
       enumType.variants
         .map((variant) => visit(variant, this))
-        .filter(nodes.assertNodeFilter(nodes.assertEnumVariantTypeNode))
+        .filter(nodes.assertNodeFilter(nodes.assertEnumVariantTypeNode)),
+      { ...enumType }
     );
   }
 
