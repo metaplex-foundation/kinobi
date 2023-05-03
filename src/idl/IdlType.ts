@@ -51,7 +51,11 @@ export type IdlTypeStructField = {
 };
 
 // Enums.
-export type IdlTypeEnum = { kind: 'enum'; variants: IdlTypeEnumVariant[] };
+export type IdlTypeEnum = {
+  kind: 'enum';
+  variants: IdlTypeEnumVariant[];
+  size?: IdlTypeUnsignedInteger;
+};
 export type IdlTypeEnumVariant = { name: string; fields?: IdlTypeEnumFields };
 export type IdlTypeEnumFields = IdlTypeEnumField[] | IdlType[];
 export type IdlTypeEnumField = { name: string; type: IdlType; docs?: string[] };

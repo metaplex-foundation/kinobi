@@ -150,6 +150,12 @@ export class GetJavaScriptTypeManifestVisitor
     );
     const { parentName } = this;
     this.parentName = null;
+    const options: string[] = [];
+
+    if (enumType.size.format !== 'u8') {
+      const sizeManifest = visit(enumType.size, this);
+      options.push(`size: ${sizeManifest.serializer}`);
+    }
 
     if (nodes.isScalarEnum(enumType)) {
       if (parentName === null) {
@@ -159,6 +165,9 @@ export class GetJavaScriptTypeManifestVisitor
             'defined type that is a scalar enum through a visitor.'
         );
       }
+      options.push(`description: '${parentName.strict}'`);
+      const optionsAsString =
+        options.length > 0 ? `, { ${options.join(', ')} }` : '';
       return {
         isEnum: true,
         strictType: `{ ${variantNames.join(', ')} }`,
@@ -167,7 +176,7 @@ export class GetJavaScriptTypeManifestVisitor
         looseImports: new JavaScriptImportMap(),
         serializer:
           `${this.s('enum')}<${parentName.strict}>` +
-          `(${parentName.strict}, { description: '${parentName.strict}' })`,
+          `(${parentName.strict + optionsAsString})`,
         serializerImports: new JavaScriptImportMap(),
       };
     }
@@ -191,10 +200,12 @@ export class GetJavaScriptTypeManifestVisitor
     const variantSerializers = variants
       .map((variant) => variant.serializer)
       .join(', ');
-    const descriptionArgs = parentName?.strict
-      ? `, { description: '${pascalCase(parentName.strict)}' }`
-      : '';
     const serializerTypeParams = parentName ? parentName.strict : 'any';
+    if (parentName?.strict) {
+      options.push(`description: '${pascalCase(parentName.strict)}'`);
+    }
+    const optionsAsString =
+      options.length > 0 ? `, { ${options.join(', ')} }` : '';
 
     return {
       ...mergedManifest,
@@ -202,7 +213,7 @@ export class GetJavaScriptTypeManifestVisitor
       looseType: variants.map((v) => v.looseType).join(' | '),
       serializer:
         `${this.s('dataEnum')}<${serializerTypeParams}>` +
-        `([${variantSerializers}]${descriptionArgs})`,
+        `([${variantSerializers}]${optionsAsString})`,
       serializerImports: mergedManifest.serializerImports.add('core', [
         'GetDataEnumKindContent',
         'GetDataEnumKind',

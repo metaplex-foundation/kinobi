@@ -4,15 +4,24 @@ import { enumStructVariantTypeNodeFromIdl } from './EnumStructVariantTypeNode';
 import { enumTupleVariantTypeNodeFromIdl } from './EnumTupleVariantTypeNode';
 import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
 import type { Node } from './Node';
+import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
 export type EnumTypeNode = {
   readonly __enumTypeNode: unique symbol;
   readonly kind: 'enumTypeNode';
   readonly variants: EnumVariantTypeNode[];
+  readonly size: NumberTypeNode;
 };
 
-export function enumTypeNode(variants: EnumVariantTypeNode[]): EnumTypeNode {
-  return { kind: 'enumTypeNode', variants } as EnumTypeNode;
+export function enumTypeNode(
+  variants: EnumVariantTypeNode[],
+  options: { size?: NumberTypeNode } = {}
+): EnumTypeNode {
+  return {
+    kind: 'enumTypeNode',
+    variants,
+    size: options.size ?? numberTypeNode('u8'),
+  } as EnumTypeNode;
 }
 
 export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {
@@ -25,7 +34,9 @@ export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {
     }
     return enumTupleVariantTypeNodeFromIdl(variant);
   });
-  return enumTypeNode(variants);
+  return enumTypeNode(variants, {
+    size: idl.size ? numberTypeNode(idl.size) : undefined,
+  });
 }
 
 export function isScalarEnum(node: EnumTypeNode): boolean {
