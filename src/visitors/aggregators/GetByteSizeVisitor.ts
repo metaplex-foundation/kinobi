@@ -63,10 +63,11 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     if (linkType.size !== undefined) return linkType.size;
     if (linkType.importFrom !== 'generated') return null;
 
+    // Fetch the linked type and return null if not found.
+    // The validator visitor will throw a proper error later on.
     const linkedDefinedType = this.availableDefinedTypes.get(linkType.name);
-
     if (!linkedDefinedType) {
-      throw new Error(`Cannot find linked defined type ${linkType.name}.`);
+      return null;
     }
 
     // This prevents infinite recursion by using assuming
