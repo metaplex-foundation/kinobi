@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.8.1
+
+### Patch Changes
+
+- [#36](https://github.com/metaplex-foundation/kinobi/pull/36) [`1f34c3a`](https://github.com/metaplex-foundation/kinobi/commit/1f34c3a218d034340e236f1a712d7c724ebc0435) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support custom discriminator sizes for enums
+
+- [`ff685c7`](https://github.com/metaplex-foundation/kinobi/commit/ff685c76bce46c838970af623ce6fcfd1707808b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Don't throw too early in the GetByteSizeVisitor
+
 ## 0.8.0
 
 ### Minor Changes
