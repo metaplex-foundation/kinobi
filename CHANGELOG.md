@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.8.2
+
+### Patch Changes
+
+- [`69f2425`](https://github.com/metaplex-foundation/kinobi/commit/69f2425c62ddef5233c7febb90d235a2cb57f2c0) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix byte size calculation for custom sized enums
+
+- [`07ffd93`](https://github.com/metaplex-foundation/kinobi/commit/07ffd93d1f39df6eda4249fb21d1c5743f1f1065) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Convert account to public key when used as an arg default
+
 ## 0.8.1
 
 ### Patch Changes
