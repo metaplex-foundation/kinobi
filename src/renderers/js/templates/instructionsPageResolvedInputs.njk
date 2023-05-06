@@ -23,8 +23,10 @@
       {% set inputPrefix %}resolvingArgs, '{{ input.name | camelCase }}', {{ argsObj }}.{{ input.name | camelCase }} ??{% endset %}
     {% endif %}
     {#- Input default value. -#}
-    {% if input.defaultsTo.kind === 'account' %}
+    {% if input.defaultsTo.kind === 'account' and input.kind === 'account' %}
       {% set inputDefault %}{{ getAccountVar(input.defaultsTo.name, accountsObj) }}{% endset %}
+    {% elif input.defaultsTo.kind === 'account' %}
+      {% set inputDefault %}publicKey({{ getAccountVar(input.defaultsTo.name, accountsObj) }}){% endset %}
     {% elif input.defaultsTo.kind === 'pda' %}
       {% set inputDefault -%}
         find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
