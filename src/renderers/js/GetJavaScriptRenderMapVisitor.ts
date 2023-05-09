@@ -210,19 +210,17 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     if (!isLinked) {
       imports.mergeWith(typeManifest.looseImports);
     }
-    imports
-      .add('core', [
-        'Account',
-        'assertAccountExists',
-        'Context',
-        'deserializeAccount',
-        'PublicKey',
-        'RpcAccount',
-        'RpcGetAccountOptions',
-        'RpcGetAccountsOptions',
-        ...(!isLinked ? ['Serializer'] : []),
-      ])
-      .remove('generatedTypes', [account.name]);
+    imports.add('core', [
+      'Account',
+      'assertAccountExists',
+      'Context',
+      'deserializeAccount',
+      'PublicKey',
+      'RpcAccount',
+      'RpcGetAccountOptions',
+      'RpcGetAccountsOptions',
+      ...(!isLinked ? ['Serializer'] : []),
+    ]);
 
     // Discriminator.
     const { discriminator } = account;
@@ -467,15 +465,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       imports.add(bytes.importFrom, camelCase(bytes.name));
     }
 
-    // Remove imports from the same module.
-    imports.remove('generatedTypes', [
-      `${instruction.name}InstructionAccounts`,
-      `${instruction.name}InstructionArgs`,
-      `${instruction.dataArgs.name}`,
-      `${instruction.dataArgs.name}Args`,
-      `${instruction.extraArgs.name}Args`,
-    ]);
-
     // canMergeAccountsAndArgs
     let canMergeAccountsAndArgs = false;
     if (!linkedDataArgs && !linkedExtraArgs) {
@@ -531,11 +520,16 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
+    const pascalCaseName = pascalCase(definedType.name);
     const typeManifest = visit(definedType, this.typeManifestVisitor);
     const imports = new JavaScriptImportMap()
       .mergeWithManifest(typeManifest)
       .add('core', ['Context', 'Serializer'])
-      .remove('generatedTypes', [definedType.name]);
+      .remove('generatedTypes', [
+        pascalCaseName,
+        `${pascalCaseName}Args`,
+        `get${pascalCaseName}Serializer`,
+      ]);
 
     return new RenderMap().add(
       `types/${camelCase(definedType.name)}.ts`,

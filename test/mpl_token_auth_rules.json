@@ -208,6 +208,26 @@
   ],
   "types": [
     {
+      "name": "RecursiveType",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "children",
+            "type": {
+              "vec": {
+                "defined": "RecursiveType"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "CreateArgs",
       "type": {
         "kind": "struct",
