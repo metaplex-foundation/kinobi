@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.8.3
+
+### Patch Changes
+
+- [`8b1d051`](https://github.com/metaplex-foundation/kinobi/commit/8b1d051bb304186c41097ce3601da4bf002138e4) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix recursive type imports
+
 ## 0.8.2
 
 ### Patch Changes
