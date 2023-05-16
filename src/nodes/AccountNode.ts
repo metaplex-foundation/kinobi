@@ -4,6 +4,7 @@ import {
   AccountSeed,
   InvalidKinobiTreeError,
   PartialExcept,
+  fieldAccountDiscriminator,
   mainCase,
   remainderSize,
 } from '../shared';
@@ -11,7 +12,8 @@ import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import { bytesTypeNode } from './BytesTypeNode';
 import type { Node } from './Node';
 import { stringTypeNode } from './StringTypeNode';
-import { assertStructTypeNode } from './StructTypeNode';
+import { structFieldTypeNode } from './StructFieldTypeNode';
+import { assertStructTypeNode, structTypeNode } from './StructTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 import { vScalar } from './ValueNode';
 
@@ -54,7 +56,8 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
-  const struct = createTypeNodeFromIdl(idlStruct);
+  let struct = createTypeNodeFromIdl(idlStruct);
+  let accountDiscriminatorField: AccountDiscriminator | undefined;
   assertStructTypeNode(struct);
   const seeds = (idl.seeds ?? []).map((seed): AccountSeed => {
     if (seed.kind === 'constant') {
@@ -78,9 +81,26 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
     }
     return { kind: 'programId' };
   });
+
+  if (idl.discriminant) {
+    if (idl.discriminant.kind === 'constant') {
+      const discriminatorField = structFieldTypeNode({
+        name: 'discriminator',
+        child: createTypeNodeFromIdl(idl.discriminant.type),
+        defaultsTo: {
+          strategy: "omitted",
+          value: vScalar(idl.discriminant.value)
+        }
+      })
+      struct = structTypeNode([discriminatorField, ...struct.fields])
+      accountDiscriminatorField = fieldAccountDiscriminator('discriminator')
+    }
+ }
+
   return accountNode({
     name,
     data: accountDataNode({ name: `${name}AccountData`, struct }),
+    discriminator: accountDiscriminatorField,
     idlName,
     docs: idl.docs ?? [],
     size: idl.size,

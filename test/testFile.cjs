@@ -70,7 +70,7 @@ kinobi.update(
         ruleSetBump: { defaultsTo: k.accountBumpDefault('ruleSetPda') },
       },
     },
-    'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
+    'mplCandyMachineCore.Update':  { name: 'UpdateCandyMachine' },
     CreateMetadataAccount: {
       bytesCreatedOnChain: k.bytesFromAccount('Metadata'),
       accounts: {
