@@ -1,0 +1,158 @@
+{
+	"version": "0.2.3",
+	"name": "phoenix_v1",
+	"accounts": [{
+			"name": "Seat",
+			"type": {
+				"kind": "struct",
+				"fields": [{
+						"name": "market",
+						"type": "publicKey"
+					},
+					{
+						"name": "trader",
+						"type": "publicKey"
+					},
+					{
+						"name": "approval_status",
+						"type": "u64"
+					},
+					{
+						"name": "_padding",
+						"type": {
+							"array": ["u64", 6]
+						}
+					}
+				]
+			},
+			"discriminant": {
+				"kind": "base64String",
+				"value": "iLdCH0etyhs="
+			}
+		},
+		{
+			"name": "MarketHeader",
+			"type": {
+				"kind": "struct",
+				"fields": [{
+						"name": "status",
+						"type": "u64"
+					},
+					{
+						"name": "market_size_params",
+						"type": {
+							"defined": "MarketSizeParams"
+						}
+					},
+					{
+						"name": "base_params",
+						"type": {
+							"defined": "TokenParams"
+						}
+					},
+					{
+						"name": "base_lot_size",
+						"type": "u64"
+					},
+					{
+						"name": "quote_params",
+						"type": {
+							"defined": "TokenParams"
+						}
+					},
+					{
+						"name": "quote_lot_size",
+						"type": "u64"
+					},
+					{
+						"name": "tick_size_in_quote_atoms_per_base_unit",
+						"type": "u64"
+					},
+					{
+						"name": "authority",
+						"type": "publicKey"
+					},
+					{
+						"name": "fee_recipient",
+						"type": "publicKey"
+					},
+					{
+						"name": "market_sequence_number",
+						"type": "u64"
+					},
+					{
+						"name": "successor",
+						"type": "publicKey"
+					},
+					{
+						"name": "raw_base_units_per_base_unit",
+						"type": "u32"
+					},
+					{
+						"name": "_padding",
+						"type": "u32"
+					},
+					{
+						"name": "_padding2",
+						"type": {
+							"array": ["u64", 32]
+						}
+					}
+
+				]
+			},
+			"discriminant": {
+				"kind": "base64String",
+				"value": "d99xc7cgWHE=="
+			}
+		}
+	],
+	"instructions": [],
+	"types": [{
+			"name": "MarketSizeParams",
+			"type": {
+				"kind": "struct",
+				"fields": [{
+						"name": "bidsSize",
+						"type": "u64"
+					},
+					{
+						"name": "asksSize",
+						"type": "u64"
+					},
+					{
+						"name": "numSeats",
+						"type": "u64"
+					}
+				]
+			}
+		},
+		{
+			"name": "TokenParams",
+			"type": {
+				"kind": "struct",
+				"fields": [{
+						"name": "decimals",
+						"type": "u32"
+					},
+					{
+						"name": "vaultBump",
+						"type": "u32"
+					},
+					{
+						"name": "mintKey",
+						"type": "publicKey"
+					},
+					{
+						"name": "vaultKey",
+						"type": "publicKey"
+					}
+				]
+			}
+		}
+	],
+	"metadata": {
+		"origin": "shank",
+		"address": "PhoeNiXZ8ByJGLkxNfZRnkUfjvmuYqLR89jjFHGqdXY"
+	}
+}

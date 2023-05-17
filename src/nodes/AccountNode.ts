@@ -4,7 +4,7 @@ import {
   AccountSeed,
   InvalidKinobiTreeError,
   PartialExcept,
-  fieldAccountDiscriminator,
+  constantAccountDiscriminator,
   mainCase,
   remainderSize,
 } from '../shared';
@@ -12,10 +12,10 @@ import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import { bytesTypeNode } from './BytesTypeNode';
 import type { Node } from './Node';
 import { stringTypeNode } from './StringTypeNode';
-import { structFieldTypeNode } from './StructFieldTypeNode';
+import { StructFieldTypeNode, structFieldTypeNode } from './StructFieldTypeNode';
 import { assertStructTypeNode, structTypeNode } from './StructTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
-import { vScalar } from './ValueNode';
+import { vList, vScalar } from './ValueNode';
 
 export type AccountNode = {
   readonly __accountNode: unique symbol;
@@ -57,6 +57,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const name = mainCase(idlName);
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
   let struct = createTypeNodeFromIdl(idlStruct);
+  let discriminatorField: StructFieldTypeNode | undefined;
   let accountDiscriminatorField: AccountDiscriminator | undefined;
   assertStructTypeNode(struct);
   const seeds = (idl.seeds ?? []).map((seed): AccountSeed => {
@@ -84,7 +85,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
 
   if (idl.discriminant) {
     if (idl.discriminant.kind === 'constant') {
-      const discriminatorField = structFieldTypeNode({
+      discriminatorField = structFieldTypeNode({
         name: 'discriminator',
         child: createTypeNodeFromIdl(idl.discriminant.type),
         defaultsTo: {
@@ -92,8 +93,24 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
           value: vScalar(idl.discriminant.value)
         }
       })
+    }
+
+    if (idl.discriminant.kind === "base64String") {
+      discriminatorField = structFieldTypeNode({
+        name: 'discriminator',
+        child: createTypeNodeFromIdl({
+          array: ["u8", 8]
+        }),
+        defaultsTo: {
+          strategy: "omitted",
+          value: vList([...Buffer.from(idl.discriminant.value, "base64")].map((byte) => vScalar(byte)))
+        }
+      })    
+    }
+
+    if (discriminatorField) {
       struct = structTypeNode([discriminatorField, ...struct.fields])
-      accountDiscriminatorField = fieldAccountDiscriminator('discriminator')
+      accountDiscriminatorField = constantAccountDiscriminator('discriminator')
     }
  }
 

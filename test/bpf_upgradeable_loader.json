@@ -1,0 +1,108 @@
+{
+  "version": "0.0.0",
+  "name": "bpf_upgradeable_loader",
+  "accounts": [
+    {
+      "name": "Uninitialized",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      },
+      "discriminant": {
+        "kind": "constant",
+        "type": "u32",
+        "value": 0
+      }
+    },
+    {
+      "name": "Buffer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority_address",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ]
+      },
+    "discriminant": {
+        "kind": "constant",
+        "type": "u32",
+        "value": 1
+      }
+    },
+    {
+      "name": "Program",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "program_data_address",
+            "type": "publicKey"
+          }
+        ]
+      },
+    "discriminant": {
+        "kind": "constant",
+        "type": "u32",
+        "value": 2
+      }
+    },
+    {
+      "name": "ProgramData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slot",
+            "type": "u64"
+          },
+          {
+            "name": "upgrade_authority_address",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ]
+      },
+    "discriminant": {
+        "kind": "constant",
+        "type": "u32",
+        "value": 3
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "ConfigKeys",
+      "type": {
+        "vec": {
+          "defined": "Keys"
+        },
+        "size": "u8"
+      }
+    },
+    {
+      "name": "Keys",
+      "type": {
+        "tuple": ["publicKey", "bool"]
+      }
+    }
+  ],
+  "metadata": {
+    "origin": "shank",
+    "address": "BPFLoaderUpgradeab1e11111111111111111111111",
+    "binaryVersion": "0.0.1",
+    "libVersion": "0.0.1"
+  }
+}

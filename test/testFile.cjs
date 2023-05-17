@@ -4,6 +4,8 @@ const kinobi = k.createFromIdls([
   __dirname + '/mpl_candy_machine_core.json',
   __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
+  __dirname + '/bpf_upgradeable_loader.json',
+  __dirname + '/phoenix.json',
 ]);
 
 kinobi.update(

@@ -6,6 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+export * from './bpfUpgradeableLoader';
 export * from './mplCandyMachineCore';
 export * from './mplTokenAuthRules';
 export * from './mplTokenMetadata';
+export * from './phoenixV1';

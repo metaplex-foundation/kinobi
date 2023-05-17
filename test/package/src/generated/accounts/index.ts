@@ -6,16 +6,22 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+export * from './buffer';
 export * from './candyMachine';
 export * from './collectionAuthorityRecord';
 export * from './delegateRecord';
 export * from './edition';
 export * from './editionMarker';
 export * from './frequencyAccount';
+export * from './marketHeader';
 export * from './masterEditionV1';
 export * from './masterEditionV2';
 export * from './metadata';
+export * from './program';
+export * from './programData';
 export * from './reservationListV1';
 export * from './reservationListV2';
+export * from './seat';
 export * from './tokenOwnedEscrow';
+export * from './uninitialized';
 export * from './useAuthorityRecord';

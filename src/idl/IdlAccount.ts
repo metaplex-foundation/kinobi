@@ -14,5 +14,6 @@ export type IdlAccountSeed =
   | { kind: 'constant'; type: IdlTypeLeaf; value: string | boolean | number }
   | { kind: 'variable'; name: string; description: string; type: IdlTypeLeaf };
 
-  export type IdlAccountDiscriminator = 
+export type IdlAccountDiscriminator = 
+  | { kind: "base64String", value: string}
   | { kind: 'constant'; type: IdlTypeLeaf; value: string | boolean | number }
