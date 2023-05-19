@@ -9,6 +9,7 @@
 import {
   Account,
   Context,
+  Pda,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
@@ -142,4 +143,40 @@ export function getFrequencyAccountGpaBuilder(
 
 export function getFrequencyAccountSize(): number {
   return 24;
+}
+
+export function findFrequencyAccountPda(
+  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>
+): Pda {
+  const s = context.serializer;
+  const programId = context.programs.getPublicKey(
+    'mplTokenAuthRules',
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  );
+  return context.eddsa.findPda(programId, [
+    s.string({ size: 'variable' }).serialize('frequency_pda'),
+    programId.bytes,
+  ]);
+}
+
+export async function fetchFrequencyAccountFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  options?: RpcGetAccountOptions
+): Promise<FrequencyAccount> {
+  return fetchFrequencyAccount(
+    context,
+    findFrequencyAccountPda(context),
+    options
+  );
+}
+
+export async function safeFetchFrequencyAccountFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  options?: RpcGetAccountOptions
+): Promise<FrequencyAccount | null> {
+  return safeFetchFrequencyAccount(
+    context,
+    findFrequencyAccountPda(context),
+    options
+  );
 }

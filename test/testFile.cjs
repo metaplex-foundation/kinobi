@@ -49,6 +49,9 @@ kinobi.update(
         ),
       ],
     },
+    FrequencyAccount: {
+      seeds: [k.stringConstantSeed('frequency_pda'), k.programSeed()],
+    },
   })
 );
 
