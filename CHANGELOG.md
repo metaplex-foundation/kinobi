@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.8.4
+
+### Patch Changes
+
+- [#41](https://github.com/metaplex-foundation/kinobi/pull/41) [`c01c113`](https://github.com/metaplex-foundation/kinobi/commit/c01c113304377b7b1f3642a383aa718ce3b66c1a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix account seeds with no variable seeds
+
 ## 0.8.3
 
 ### Patch Changes
