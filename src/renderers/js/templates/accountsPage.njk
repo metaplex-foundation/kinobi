@@ -125,7 +125,7 @@ export async function fetch{{ account.name | pascalCase }}FromSeeds(
   {% endif %}
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }}> {
-  return fetch{{ account.name | pascalCase }}(context, find{{ account.name | pascalCase }}Pda(context, seeds), options);
+  return fetch{{ account.name | pascalCase }}(context, find{{ account.name | pascalCase }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %}), options);
 }
 
 export async function safeFetch{{ account.name | pascalCase }}FromSeeds(
@@ -135,7 +135,7 @@ export async function safeFetch{{ account.name | pascalCase }}FromSeeds(
   {% endif %}
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }} | null> {
-  return safeFetch{{ account.name | pascalCase }}(context, find{{ account.name | pascalCase }}Pda(context, seeds), options);
+  return safeFetch{{ account.name | pascalCase }}(context, find{{ account.name | pascalCase }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %}), options);
 }
 {% endif %}
 {% endblock %}
