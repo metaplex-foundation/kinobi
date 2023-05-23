@@ -1,6 +1,10 @@
-import { sha256 } from '@noble/hashes/sha256';
 import * as nodes from '../../nodes';
-import { fieldAccountDiscriminator, fixedSize, snakeCase } from '../../shared';
+import {
+  fieldAccountDiscriminator,
+  fixedSize,
+  getAnchorAccountDiscriminator,
+  getAnchorInstructionDiscriminator,
+} from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
 import { visit } from '../Visitor';
 
@@ -26,9 +30,6 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     const shouldAddDiscriminator = this.program?.origin === 'anchor';
     if (!shouldAddDiscriminator) return account;
 
-    const idlName = snakeCase(account.idlName);
-    const hash = sha256(`global:${idlName}`).slice(0, 8);
-
     const discriminatorField = nodes.structFieldTypeNode({
       name: 'discriminator',
       child: nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
@@ -36,7 +37,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       }),
       defaultsTo: {
         strategy: 'omitted',
-        value: getValueNodeFromBytes(hash),
+        value: getAnchorAccountDiscriminator(account.idlName),
       },
     });
 
@@ -57,9 +58,6 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
     const shouldAddDiscriminator = this.program?.origin === 'anchor';
     if (!shouldAddDiscriminator) return instruction;
 
-    const idlName = snakeCase(instruction.idlName);
-    const hash = sha256(`global:${idlName}`).slice(0, 8);
-
     const discriminatorField = nodes.structFieldTypeNode({
       name: 'discriminator',
       child: nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
@@ -67,7 +65,7 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       }),
       defaultsTo: {
         strategy: 'omitted',
-        value: getValueNodeFromBytes(hash),
+        value: getAnchorInstructionDiscriminator(instruction.idlName),
       },
     });
 
@@ -82,8 +80,4 @@ export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
       }),
     });
   }
-}
-
-function getValueNodeFromBytes(bytes: Uint8Array): nodes.ListValueNode {
-  return nodes.vList([...bytes].map((byte) => nodes.vScalar(byte)));
 }

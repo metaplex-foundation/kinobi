@@ -1,5 +1,6 @@
 export * from './AccountDiscriminator';
 export * from './AccountSeed';
+export * from './AnchorDiscriminator';
 export * from './BytesCreatedOnChain';
 export * from './GpaField';
 export * from './ImportFrom';
