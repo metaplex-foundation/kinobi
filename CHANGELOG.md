@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.9.0
+
+### Minor Changes
+
+- [`05b9c36`](https://github.com/metaplex-foundation/kinobi/commit/05b9c361623c2f41ed5923a9818817965afd5728) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Rename mpl-essentials to mpl-toolbox
+
 ## 0.8.5
 
 ### Patch Changes
