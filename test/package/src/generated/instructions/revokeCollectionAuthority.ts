@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -21,15 +23,15 @@ import { isWritable } from '../shared';
 // Accounts.
 export type RevokeCollectionAuthorityInstructionAccounts = {
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord: PublicKey;
+  collectionAuthorityRecord: PublicKey | Pda;
   /** Delegated Collection Authority */
-  delegateAuthority: PublicKey;
+  delegateAuthority: PublicKey | Pda;
   /** Update Authority, or Delegated Authority, of Collection NFT */
   revokeAuthority: Signer;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Mint of Metadata */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
 };
 
 // Data.
@@ -85,14 +87,14 @@ export function revokeCollectionAuthority(
 
   // Collection Authority Record.
   keys.push({
-    pubkey: resolvedAccounts.collectionAuthorityRecord,
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
   });
 
   // Delegate Authority.
   keys.push({
-    pubkey: resolvedAccounts.delegateAuthority,
+    pubkey: publicKey(resolvedAccounts.delegateAuthority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.delegateAuthority, true),
   });
@@ -107,14 +109,14 @@ export function revokeCollectionAuthority(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });

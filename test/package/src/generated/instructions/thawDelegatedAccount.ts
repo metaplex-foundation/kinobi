@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -23,13 +25,13 @@ export type ThawDelegatedAccountInstructionAccounts = {
   /** Delegate */
   delegate: Signer;
   /** Token account to thaw */
-  tokenAccount: PublicKey;
+  tokenAccount: PublicKey | Pda;
   /** Edition */
-  edition: PublicKey;
+  edition: PublicKey | Pda;
   /** Token mint */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Token Program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -101,28 +103,28 @@ export function thawDelegatedAccount(
 
   // Token Account.
   keys.push({
-    pubkey: resolvedAccounts.tokenAccount,
+    pubkey: publicKey(resolvedAccounts.tokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Edition.
   keys.push({
-    pubkey: resolvedAccounts.edition,
+    pubkey: publicKey(resolvedAccounts.edition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });

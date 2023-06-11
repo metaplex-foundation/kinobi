@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -23,37 +24,37 @@ import { addObjectProperty, isWritable } from '../shared';
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts =
   {
     /** New Metadata key (pda of ['metadata', program id, mint id]) */
-    metadata: PublicKey;
+    metadata: PublicKey | Pda;
     /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
-    edition: PublicKey;
+    edition: PublicKey | Pda;
     /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-    masterEdition: PublicKey;
+    masterEdition: PublicKey | Pda;
     /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-    mint: PublicKey;
+    mint: PublicKey | Pda;
     /** Mint authority of new mint */
     mintAuthority: Signer;
     /** Printing Mint of master record edition */
-    printingMint: PublicKey;
+    printingMint: PublicKey | Pda;
     /** Token account containing Printing mint token to be transferred */
-    masterTokenAccount: PublicKey;
+    masterTokenAccount: PublicKey | Pda;
     /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
-    editionMarker: PublicKey;
+    editionMarker: PublicKey | Pda;
     /** Burn authority for this token */
     burnAuthority: Signer;
     /** payer */
     payer?: Signer;
     /** update authority info for new metadata account */
-    masterUpdateAuthority: PublicKey;
+    masterUpdateAuthority: PublicKey | Pda;
     /** Master record metadata account */
-    masterMetadata: PublicKey;
+    masterMetadata: PublicKey | Pda;
     /** Token program */
-    tokenProgram?: PublicKey;
+    tokenProgram?: PublicKey | Pda;
     /** System program */
-    systemProgram?: PublicKey;
+    systemProgram?: PublicKey | Pda;
     /** Rent info */
-    rent?: PublicKey;
+    rent?: PublicKey | Pda;
     /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
-    reservationList?: PublicKey;
+    reservationList?: PublicKey | Pda;
   };
 
 // Data.
@@ -140,28 +141,28 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Edition.
   keys.push({
-    pubkey: resolvedAccounts.edition,
+    pubkey: publicKey(resolvedAccounts.edition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, true),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -176,21 +177,21 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Printing Mint.
   keys.push({
-    pubkey: resolvedAccounts.printingMint,
+    pubkey: publicKey(resolvedAccounts.printingMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printingMint, true),
   });
 
   // Master Token Account.
   keys.push({
-    pubkey: resolvedAccounts.masterTokenAccount,
+    pubkey: publicKey(resolvedAccounts.masterTokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterTokenAccount, true),
   });
 
   // Edition Marker.
   keys.push({
-    pubkey: resolvedAccounts.editionMarker,
+    pubkey: publicKey(resolvedAccounts.editionMarker),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.editionMarker, true),
   });
@@ -213,35 +214,35 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Master Update Authority.
   keys.push({
-    pubkey: resolvedAccounts.masterUpdateAuthority,
+    pubkey: publicKey(resolvedAccounts.masterUpdateAuthority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterUpdateAuthority, false),
   });
 
   // Master Metadata.
   keys.push({
-    pubkey: resolvedAccounts.masterMetadata,
+    pubkey: publicKey(resolvedAccounts.masterMetadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterMetadata, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: resolvedAccounts.rent,
+    pubkey: publicKey(resolvedAccounts.rent),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });
@@ -249,7 +250,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   // Reservation List (optional).
   if (resolvedAccounts.reservationList) {
     keys.push({
-      pubkey: resolvedAccounts.reservationList,
+      pubkey: publicKey(resolvedAccounts.reservationList),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.reservationList, true),
     });

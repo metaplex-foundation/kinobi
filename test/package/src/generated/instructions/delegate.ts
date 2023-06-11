@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -27,31 +28,31 @@ import {
 // Accounts.
 export type DelegateInstructionAccounts = {
   /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
-  delegateRecord: PublicKey;
+  delegateRecord: PublicKey | Pda;
   /** Owner of the delegated account */
-  delegate: PublicKey;
+  delegate: PublicKey | Pda;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Master Edition account */
-  masterEdition?: PublicKey;
+  masterEdition?: PublicKey | Pda;
   /** Mint of metadata */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Owned Token Account of mint */
-  token?: PublicKey;
+  token?: PublicKey | Pda;
   /** Authority to approve the delegation */
   authority?: Signer;
   /** Payer */
   payer?: Signer;
   /** System Program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Instructions sysvar account */
-  sysvarInstructions?: PublicKey;
+  sysvarInstructions?: PublicKey | Pda;
   /** SPL Token Program */
-  splTokenProgram?: PublicKey;
+  splTokenProgram?: PublicKey | Pda;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: PublicKey;
+  authorizationRulesProgram?: PublicKey | Pda;
   /** Token Authorization Rules account */
-  authorizationRules?: PublicKey;
+  authorizationRules?: PublicKey | Pda;
 };
 
 // Data.
@@ -154,42 +155,42 @@ export function delegate(
 
   // Delegate Record.
   keys.push({
-    pubkey: resolvedAccounts.delegateRecord,
+    pubkey: publicKey(resolvedAccounts.delegateRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.delegateRecord, true),
   });
 
   // Delegate.
   keys.push({
-    pubkey: resolvedAccounts.delegate,
+    pubkey: publicKey(resolvedAccounts.delegate),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.delegate, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Token.
   keys.push({
-    pubkey: resolvedAccounts.token,
+    pubkey: publicKey(resolvedAccounts.token),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, true),
   });
@@ -212,35 +213,35 @@ export function delegate(
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: resolvedAccounts.sysvarInstructions,
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: resolvedAccounts.splTokenProgram,
+    pubkey: publicKey(resolvedAccounts.splTokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRulesProgram,
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRules,
+    pubkey: publicKey(resolvedAccounts.authorizationRules),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });

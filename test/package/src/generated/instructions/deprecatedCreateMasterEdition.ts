@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -27,13 +28,13 @@ import {
 // Accounts.
 export type DeprecatedCreateMasterEditionInstructionAccounts = {
   /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
-  edition: PublicKey;
+  edition: PublicKey | Pda;
   /** Metadata mint */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Printing mint - A mint you control that can mint tokens that can be exchanged for limited editions of your master edition via the MintNewEditionFromMasterEditionViaToken endpoint */
-  printingMint: PublicKey;
+  printingMint: PublicKey | Pda;
   /** One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token. */
-  oneTimePrintingAuthorizationMint: PublicKey;
+  oneTimePrintingAuthorizationMint: PublicKey | Pda;
   /** Current Update authority key */
   updateAuthority: Signer;
   /** Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
@@ -41,15 +42,15 @@ export type DeprecatedCreateMasterEditionInstructionAccounts = {
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: Signer;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** payer */
   payer?: Signer;
   /** Token program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
   /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
   oneTimePrintingAuthorizationMintAuthority: Signer;
 };
@@ -151,28 +152,28 @@ export function deprecatedCreateMasterEdition(
 
   // Edition.
   keys.push({
-    pubkey: resolvedAccounts.edition,
+    pubkey: publicKey(resolvedAccounts.edition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
 
   // Printing Mint.
   keys.push({
-    pubkey: resolvedAccounts.printingMint,
+    pubkey: publicKey(resolvedAccounts.printingMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printingMint, true),
   });
 
   // One Time Printing Authorization Mint.
   keys.push({
-    pubkey: resolvedAccounts.oneTimePrintingAuthorizationMint,
+    pubkey: publicKey(resolvedAccounts.oneTimePrintingAuthorizationMint),
     isSigner: false,
     isWritable: isWritable(
       resolvedAccounts.oneTimePrintingAuthorizationMint,
@@ -206,7 +207,7 @@ export function deprecatedCreateMasterEdition(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
@@ -221,21 +222,21 @@ export function deprecatedCreateMasterEdition(
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: resolvedAccounts.rent,
+    pubkey: publicKey(resolvedAccounts.rent),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

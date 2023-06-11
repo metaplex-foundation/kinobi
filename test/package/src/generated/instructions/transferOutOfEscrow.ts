@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -22,29 +23,29 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type TransferOutOfEscrowInstructionAccounts = {
   /** Escrow account */
-  escrow: PublicKey;
+  escrow: PublicKey | Pda;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Wallet paying for the transaction and new account */
   payer?: Signer;
   /** Mint account for the new attribute */
-  attributeMint: PublicKey;
+  attributeMint: PublicKey | Pda;
   /** Token account source for the new attribute */
-  attributeSrc: PublicKey;
+  attributeSrc: PublicKey | Pda;
   /** Token account, owned by TM, destination for the new attribute */
-  attributeDst: PublicKey;
+  attributeDst: PublicKey | Pda;
   /** Mint account that the escrow is attached */
-  escrowMint: PublicKey;
+  escrowMint: PublicKey | Pda;
   /** Token account that holds the token the escrow is attached to */
-  escrowAccount: PublicKey;
+  escrowAccount: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Associated Token program */
-  ataProgram?: PublicKey;
+  ataProgram?: PublicKey | Pda;
   /** Token program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
   /** Instructions sysvar account */
-  sysvarInstructions?: PublicKey;
+  sysvarInstructions?: PublicKey | Pda;
   /** Authority/creator of the escrow account */
   authority?: Signer;
 };
@@ -155,14 +156,14 @@ export function transferOutOfEscrow(
 
   // Escrow.
   keys.push({
-    pubkey: resolvedAccounts.escrow,
+    pubkey: publicKey(resolvedAccounts.escrow),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrow, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -177,63 +178,63 @@ export function transferOutOfEscrow(
 
   // Attribute Mint.
   keys.push({
-    pubkey: resolvedAccounts.attributeMint,
+    pubkey: publicKey(resolvedAccounts.attributeMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.attributeMint, false),
   });
 
   // Attribute Src.
   keys.push({
-    pubkey: resolvedAccounts.attributeSrc,
+    pubkey: publicKey(resolvedAccounts.attributeSrc),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.attributeSrc, true),
   });
 
   // Attribute Dst.
   keys.push({
-    pubkey: resolvedAccounts.attributeDst,
+    pubkey: publicKey(resolvedAccounts.attributeDst),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.attributeDst, true),
   });
 
   // Escrow Mint.
   keys.push({
-    pubkey: resolvedAccounts.escrowMint,
+    pubkey: publicKey(resolvedAccounts.escrowMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrowMint, false),
   });
 
   // Escrow Account.
   keys.push({
-    pubkey: resolvedAccounts.escrowAccount,
+    pubkey: publicKey(resolvedAccounts.escrowAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrowAccount, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Ata Program.
   keys.push({
-    pubkey: resolvedAccounts.ataProgram,
+    pubkey: publicKey(resolvedAccounts.ataProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ataProgram, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: resolvedAccounts.sysvarInstructions,
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });

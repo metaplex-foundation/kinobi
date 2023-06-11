@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -21,21 +23,21 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type ApproveCollectionAuthorityInstructionAccounts = {
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord: PublicKey;
+  collectionAuthorityRecord: PublicKey | Pda;
   /** A Collection Authority */
-  newCollectionAuthority: PublicKey;
+  newCollectionAuthority: PublicKey | Pda;
   /** Update Authority of Collection NFT */
   updateAuthority: Signer;
   /** Payer */
   payer?: Signer;
   /** Collection Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Mint of Collection Metadata */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Data.
@@ -103,14 +105,14 @@ export function approveCollectionAuthority(
 
   // Collection Authority Record.
   keys.push({
-    pubkey: resolvedAccounts.collectionAuthorityRecord,
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
   });
 
   // New Collection Authority.
   keys.push({
-    pubkey: resolvedAccounts.newCollectionAuthority,
+    pubkey: publicKey(resolvedAccounts.newCollectionAuthority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newCollectionAuthority, false),
   });
@@ -133,21 +135,21 @@ export function approveCollectionAuthority(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -155,7 +157,7 @@ export function approveCollectionAuthority(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: resolvedAccounts.rent,
+      pubkey: publicKey(resolvedAccounts.rent),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

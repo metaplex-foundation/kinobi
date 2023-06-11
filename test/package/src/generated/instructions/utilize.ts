@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -22,27 +23,27 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type UtilizeInstructionAccounts = {
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Token Account Of NFT */
-  tokenAccount: PublicKey;
+  tokenAccount: PublicKey | Pda;
   /** Mint of the Metadata */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** A Use Authority / Can be the current Owner of the NFT */
   useAuthority: Signer;
   /** Owner */
-  owner: PublicKey;
+  owner: PublicKey | Pda;
   /** Token program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
   /** Associated Token program */
-  ataProgram?: PublicKey;
+  ataProgram?: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
   /** Use Authority Record PDA If present the program Assumes a delegated use authority */
-  useAuthorityRecord?: PublicKey;
+  useAuthorityRecord?: PublicKey | Pda;
   /** Program As Signer (Burner) */
-  burner?: PublicKey;
+  burner?: PublicKey | Pda;
 };
 
 // Data.
@@ -135,21 +136,21 @@ export function utilize(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Token Account.
   keys.push({
-    pubkey: resolvedAccounts.tokenAccount,
+    pubkey: publicKey(resolvedAccounts.tokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -164,35 +165,35 @@ export function utilize(
 
   // Owner.
   keys.push({
-    pubkey: resolvedAccounts.owner,
+    pubkey: publicKey(resolvedAccounts.owner),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.owner, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // Ata Program.
   keys.push({
-    pubkey: resolvedAccounts.ataProgram,
+    pubkey: publicKey(resolvedAccounts.ataProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ataProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: resolvedAccounts.rent,
+    pubkey: publicKey(resolvedAccounts.rent),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });
@@ -200,7 +201,7 @@ export function utilize(
   // Use Authority Record (optional).
   if (resolvedAccounts.useAuthorityRecord) {
     keys.push({
-      pubkey: resolvedAccounts.useAuthorityRecord,
+      pubkey: publicKey(resolvedAccounts.useAuthorityRecord),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.useAuthorityRecord, true),
     });
@@ -209,7 +210,7 @@ export function utilize(
   // Burner (optional).
   if (resolvedAccounts.burner) {
     keys.push({
-      pubkey: resolvedAccounts.burner,
+      pubkey: publicKey(resolvedAccounts.burner),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.burner, false),
     });

@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -33,10 +34,10 @@ export type ValidateInstructionAccounts = {
   /** Payer and creator of the RuleSet */
   payer?: Signer;
   /** The PDA account where the RuleSet is stored */
-  ruleSet: PublicKey;
+  ruleSet: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
-  optRuleSigner1?: PublicKey | Signer;
+  systemProgram?: PublicKey | Pda;
+  optRuleSigner1?: PublicKey | Pda | Signer;
   /** Optional rule validation signer 2 */
   optRuleSigner2?: Signer;
   /** Optional rule validation signer 3 */
@@ -46,15 +47,15 @@ export type ValidateInstructionAccounts = {
   /** Optional rule validation signer 5 */
   optRuleSigner5?: Signer;
   /** Optional rule validation non-signer 1 */
-  optRuleNonsigner1?: PublicKey;
+  optRuleNonsigner1?: PublicKey | Pda;
   /** Optional rule validation non-signer 2 */
-  optRuleNonsigner2?: PublicKey;
+  optRuleNonsigner2?: PublicKey | Pda;
   /** Optional rule validation non-signer 3 */
-  optRuleNonsigner3?: PublicKey;
+  optRuleNonsigner3?: PublicKey | Pda;
   /** Optional rule validation non-signer 4 */
-  optRuleNonsigner4?: PublicKey;
+  optRuleNonsigner4?: PublicKey | Pda;
   /** Optional rule validation non-signer 5 */
-  optRuleNonsigner5?: PublicKey;
+  optRuleNonsigner5?: PublicKey | Pda;
 };
 
 // Data.
@@ -141,14 +142,14 @@ export function validate(
 
   // Rule Set.
   keys.push({
-    pubkey: resolvedAccounts.ruleSet,
+    pubkey: publicKey(resolvedAccounts.ruleSet),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ruleSet, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -208,7 +209,7 @@ export function validate(
   // Opt Rule Nonsigner1 (optional).
   if (resolvedAccounts.optRuleNonsigner1) {
     keys.push({
-      pubkey: resolvedAccounts.optRuleNonsigner1,
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner1),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner1, false),
     });
@@ -217,7 +218,7 @@ export function validate(
   // Opt Rule Nonsigner2 (optional).
   if (resolvedAccounts.optRuleNonsigner2) {
     keys.push({
-      pubkey: resolvedAccounts.optRuleNonsigner2,
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner2),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner2, false),
     });
@@ -226,7 +227,7 @@ export function validate(
   // Opt Rule Nonsigner3 (optional).
   if (resolvedAccounts.optRuleNonsigner3) {
     keys.push({
-      pubkey: resolvedAccounts.optRuleNonsigner3,
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner3),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner3, false),
     });
@@ -235,7 +236,7 @@ export function validate(
   // Opt Rule Nonsigner4 (optional).
   if (resolvedAccounts.optRuleNonsigner4) {
     keys.push({
-      pubkey: resolvedAccounts.optRuleNonsigner4,
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner4),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner4, false),
     });
@@ -244,7 +245,7 @@ export function validate(
   // Opt Rule Nonsigner5 (optional).
   if (resolvedAccounts.optRuleNonsigner5) {
     keys.push({
-      pubkey: resolvedAccounts.optRuleNonsigner5,
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner5),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner5, false),
     });

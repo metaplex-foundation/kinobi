@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -25,13 +26,13 @@ import { DelegateRole } from '../types';
 // Accounts.
 export type DummyInstructionAccounts = {
   edition?: Signer;
-  mint?: PublicKey;
+  mint?: PublicKey | Pda;
   updateAuthority: Signer;
   mintAuthority?: Signer;
   payer?: Signer;
-  foo?: PublicKey;
+  foo?: PublicKey | Pda;
   bar?: Signer;
-  delegateRecord?: PublicKey;
+  delegateRecord?: PublicKey | Pda;
 };
 
 // Data.
@@ -132,7 +133,7 @@ export function dummy(
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -183,7 +184,7 @@ export function dummy(
 
   // Delegate Record.
   keys.push({
-    pubkey: resolvedAccounts.delegateRecord,
+    pubkey: publicKey(resolvedAccounts.delegateRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.delegateRecord, true),
   });

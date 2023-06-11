@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -22,23 +24,23 @@ import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
 // Accounts.
 export type BurnInstructionAccounts = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Asset owner */
   owner: Signer;
   /** Mint of token asset */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Token account to close */
-  tokenAccount: PublicKey;
+  tokenAccount: PublicKey | Pda;
   /** MasterEdition of the asset */
-  masterEditionAccount: PublicKey;
+  masterEditionAccount: PublicKey | Pda;
   /** SPL Token Program */
-  splTokenProgram?: PublicKey;
+  splTokenProgram?: PublicKey | Pda;
   /** Metadata of the Collection */
-  collectionMetadata?: PublicKey;
+  collectionMetadata?: PublicKey | Pda;
   /** Token Authorization Rules account */
-  authorizationRules?: PublicKey;
+  authorizationRules?: PublicKey | Pda;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: PublicKey;
+  authorizationRulesProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -116,7 +118,7 @@ export function burn(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -131,49 +133,49 @@ export function burn(
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
 
   // Token Account.
   keys.push({
-    pubkey: resolvedAccounts.tokenAccount,
+    pubkey: publicKey(resolvedAccounts.tokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Master Edition Account.
   keys.push({
-    pubkey: resolvedAccounts.masterEditionAccount,
+    pubkey: publicKey(resolvedAccounts.masterEditionAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionAccount, true),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: resolvedAccounts.splTokenProgram,
+    pubkey: publicKey(resolvedAccounts.splTokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Collection Metadata.
   keys.push({
-    pubkey: resolvedAccounts.collectionMetadata,
+    pubkey: publicKey(resolvedAccounts.collectionMetadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRules,
+    pubkey: publicKey(resolvedAccounts.authorizationRules),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRulesProgram,
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });

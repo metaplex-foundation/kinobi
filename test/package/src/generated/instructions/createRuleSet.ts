@@ -15,6 +15,7 @@ import {
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { PickPartial, addObjectProperty, isWritable } from '../shared';
@@ -31,7 +32,7 @@ export type CreateRuleSetInstructionAccounts = {
   /** The PDA account where the RuleSet is stored */
   ruleSetPda: Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -126,14 +127,14 @@ export function createRuleSet(
 
   // Rule Set Pda.
   keys.push({
-    pubkey: resolvedAccounts.ruleSetPda,
+    pubkey: publicKey(resolvedAccounts.ruleSetPda),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ruleSetPda, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });

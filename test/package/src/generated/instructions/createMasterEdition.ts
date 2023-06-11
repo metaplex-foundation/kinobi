@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -27,9 +28,9 @@ import {
 // Accounts.
 export type CreateMasterEditionInstructionAccounts = {
   /** Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition'] */
-  edition: PublicKey;
+  edition: PublicKey | Pda;
   /** Metadata mint */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Update authority */
   updateAuthority: Signer;
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
@@ -37,13 +38,13 @@ export type CreateMasterEditionInstructionAccounts = {
   /** payer */
   payer?: Signer;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Token program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Data.
@@ -143,14 +144,14 @@ export function createMasterEdition(
 
   // Edition.
   keys.push({
-    pubkey: resolvedAccounts.edition,
+    pubkey: publicKey(resolvedAccounts.edition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -181,28 +182,28 @@ export function createMasterEdition(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: resolvedAccounts.rent,
+    pubkey: publicKey(resolvedAccounts.rent),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

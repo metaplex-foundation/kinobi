@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -27,23 +28,23 @@ import {
 // Accounts.
 export type DeprecatedMintPrintingTokensViaTokenInstructionAccounts = {
   /** Destination account */
-  destination: PublicKey;
+  destination: PublicKey | Pda;
   /** Token account containing one time authorization token */
-  token: PublicKey;
+  token: PublicKey | Pda;
   /** One time authorization mint */
-  oneTimePrintingAuthorizationMint: PublicKey;
+  oneTimePrintingAuthorizationMint: PublicKey | Pda;
   /** Printing mint */
-  printingMint: PublicKey;
+  printingMint: PublicKey | Pda;
   /** Burn authority */
   burnAuthority: Signer;
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: PublicKey;
+  masterEdition: PublicKey | Pda;
   /** Token program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
   /** Rent */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Data.
@@ -131,21 +132,21 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Destination.
   keys.push({
-    pubkey: resolvedAccounts.destination,
+    pubkey: publicKey(resolvedAccounts.destination),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.destination, true),
   });
 
   // Token.
   keys.push({
-    pubkey: resolvedAccounts.token,
+    pubkey: publicKey(resolvedAccounts.token),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, true),
   });
 
   // One Time Printing Authorization Mint.
   keys.push({
-    pubkey: resolvedAccounts.oneTimePrintingAuthorizationMint,
+    pubkey: publicKey(resolvedAccounts.oneTimePrintingAuthorizationMint),
     isSigner: false,
     isWritable: isWritable(
       resolvedAccounts.oneTimePrintingAuthorizationMint,
@@ -155,7 +156,7 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Printing Mint.
   keys.push({
-    pubkey: resolvedAccounts.printingMint,
+    pubkey: publicKey(resolvedAccounts.printingMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printingMint, true),
   });
@@ -170,28 +171,28 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: resolvedAccounts.rent,
+    pubkey: publicKey(resolvedAccounts.rent),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

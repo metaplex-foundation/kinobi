@@ -10,11 +10,13 @@ import {
   AccountMeta,
   Context,
   Option,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -27,9 +29,9 @@ import {
 // Accounts.
 export type DeprecatedSetReservationListInstructionAccounts = {
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: PublicKey;
+  masterEdition: PublicKey | Pda;
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: PublicKey;
+  reservationList: PublicKey | Pda;
   /** The resource you tied the reservation list too */
   resource: Signer;
 };
@@ -109,14 +111,14 @@ export function deprecatedSetReservationList(
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // Reservation List.
   keys.push({
-    pubkey: resolvedAccounts.reservationList,
+    pubkey: publicKey(resolvedAccounts.reservationList),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.reservationList, true),
   });

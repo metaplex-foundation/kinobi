@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -21,17 +23,17 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type VerifyCollectionInstructionAccounts = {
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Collection Update authority */
   collectionAuthority: Signer;
   /** payer */
   payer?: Signer;
   /** Mint of the Collection */
-  collectionMint: PublicKey;
+  collectionMint: PublicKey | Pda;
   /** Metadata Account of the Collection */
-  collection: PublicKey;
+  collection: PublicKey | Pda;
   /** MasterEdition2 Account of the Collection Token */
-  collectionMasterEditionAccount: PublicKey;
+  collectionMasterEditionAccount: PublicKey | Pda;
 };
 
 // Data.
@@ -85,7 +87,7 @@ export function verifyCollection(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -108,21 +110,21 @@ export function verifyCollection(
 
   // Collection Mint.
   keys.push({
-    pubkey: resolvedAccounts.collectionMint,
+    pubkey: publicKey(resolvedAccounts.collectionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection.
   keys.push({
-    pubkey: resolvedAccounts.collection,
+    pubkey: publicKey(resolvedAccounts.collection),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collection, false),
   });
 
   // Collection Master Edition Account.
   keys.push({
-    pubkey: resolvedAccounts.collectionMasterEditionAccount,
+    pubkey: publicKey(resolvedAccounts.collectionMasterEditionAccount),
     isSigner: false,
     isWritable: isWritable(
       resolvedAccounts.collectionMasterEditionAccount,

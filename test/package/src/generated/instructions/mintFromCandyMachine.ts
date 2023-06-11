@@ -9,34 +9,36 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type MintFromCandyMachineInstructionAccounts = {
-  candyMachine: PublicKey;
-  authorityPda: PublicKey;
+  candyMachine: PublicKey | Pda;
+  authorityPda: PublicKey | Pda;
   mintAuthority: Signer;
   payer?: Signer;
-  nftMint: PublicKey;
+  nftMint: PublicKey | Pda;
   nftMintAuthority?: Signer;
-  nftMetadata: PublicKey;
-  nftMasterEdition: PublicKey;
-  collectionAuthorityRecord: PublicKey;
-  collectionMint: PublicKey;
-  collectionMetadata: PublicKey;
-  collectionMasterEdition: PublicKey;
-  collectionUpdateAuthority: PublicKey;
-  tokenMetadataProgram?: PublicKey;
-  tokenProgram?: PublicKey;
-  systemProgram?: PublicKey;
-  recentSlothashes: PublicKey;
+  nftMetadata: PublicKey | Pda;
+  nftMasterEdition: PublicKey | Pda;
+  collectionAuthorityRecord: PublicKey | Pda;
+  collectionMint: PublicKey | Pda;
+  collectionMetadata: PublicKey | Pda;
+  collectionMasterEdition: PublicKey | Pda;
+  collectionUpdateAuthority: PublicKey | Pda;
+  tokenMetadataProgram?: PublicKey | Pda;
+  tokenProgram?: PublicKey | Pda;
+  systemProgram?: PublicKey | Pda;
+  recentSlothashes: PublicKey | Pda;
 };
 
 // Data.
@@ -134,14 +136,14 @@ export function mintFromCandyMachine(
 
   // Candy Machine.
   keys.push({
-    pubkey: resolvedAccounts.candyMachine,
+    pubkey: publicKey(resolvedAccounts.candyMachine),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority Pda.
   keys.push({
-    pubkey: resolvedAccounts.authorityPda,
+    pubkey: publicKey(resolvedAccounts.authorityPda),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorityPda, true),
   });
@@ -164,7 +166,7 @@ export function mintFromCandyMachine(
 
   // Nft Mint.
   keys.push({
-    pubkey: resolvedAccounts.nftMint,
+    pubkey: publicKey(resolvedAccounts.nftMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.nftMint, true),
   });
@@ -179,77 +181,77 @@ export function mintFromCandyMachine(
 
   // Nft Metadata.
   keys.push({
-    pubkey: resolvedAccounts.nftMetadata,
+    pubkey: publicKey(resolvedAccounts.nftMetadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.nftMetadata, true),
   });
 
   // Nft Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.nftMasterEdition,
+    pubkey: publicKey(resolvedAccounts.nftMasterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.nftMasterEdition, true),
   });
 
   // Collection Authority Record.
   keys.push({
-    pubkey: resolvedAccounts.collectionAuthorityRecord,
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: resolvedAccounts.collectionMint,
+    pubkey: publicKey(resolvedAccounts.collectionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection Metadata.
   keys.push({
-    pubkey: resolvedAccounts.collectionMetadata,
+    pubkey: publicKey(resolvedAccounts.collectionMetadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
 
   // Collection Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.collectionMasterEdition,
+    pubkey: publicKey(resolvedAccounts.collectionMasterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMasterEdition, false),
   });
 
   // Collection Update Authority.
   keys.push({
-    pubkey: resolvedAccounts.collectionUpdateAuthority,
+    pubkey: publicKey(resolvedAccounts.collectionUpdateAuthority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionUpdateAuthority, false),
   });
 
   // Token Metadata Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenMetadataProgram,
+    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenMetadataProgram, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Recent Slothashes.
   keys.push({
-    pubkey: resolvedAccounts.recentSlothashes,
+    pubkey: publicKey(resolvedAccounts.recentSlothashes),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.recentSlothashes, false),
   });

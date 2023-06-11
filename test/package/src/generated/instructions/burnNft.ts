@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -21,19 +23,19 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type BurnNftInstructionAccounts = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** NFT owner */
   owner: Signer;
   /** Mint of the NFT */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Token account to close */
-  tokenAccount: PublicKey;
+  tokenAccount: PublicKey | Pda;
   /** MasterEdition2 of the NFT */
-  masterEditionAccount: PublicKey;
+  masterEditionAccount: PublicKey | Pda;
   /** SPL Token Program */
-  splTokenProgram?: PublicKey;
+  splTokenProgram?: PublicKey | Pda;
   /** Metadata of the Collection */
-  collectionMetadata?: PublicKey;
+  collectionMetadata?: PublicKey | Pda;
 };
 
 // Data.
@@ -87,7 +89,7 @@ export function burnNft(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -102,28 +104,28 @@ export function burnNft(
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
 
   // Token Account.
   keys.push({
-    pubkey: resolvedAccounts.tokenAccount,
+    pubkey: publicKey(resolvedAccounts.tokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Master Edition Account.
   keys.push({
-    pubkey: resolvedAccounts.masterEditionAccount,
+    pubkey: publicKey(resolvedAccounts.masterEditionAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionAccount, true),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: resolvedAccounts.splTokenProgram,
+    pubkey: publicKey(resolvedAccounts.splTokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
@@ -131,7 +133,7 @@ export function burnNft(
   // Collection Metadata (optional).
   if (resolvedAccounts.collectionMetadata) {
     keys.push({
-      pubkey: resolvedAccounts.collectionMetadata,
+      pubkey: publicKey(resolvedAccounts.collectionMetadata),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
     });

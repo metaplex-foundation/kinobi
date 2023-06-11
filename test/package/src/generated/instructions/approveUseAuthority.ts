@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -21,27 +23,27 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type ApproveUseAuthorityInstructionAccounts = {
   /** Use Authority Record PDA */
-  useAuthorityRecord: PublicKey;
+  useAuthorityRecord: PublicKey | Pda;
   /** Owner */
   owner: Signer;
   /** Payer */
   payer?: Signer;
   /** A Use Authority */
-  user: PublicKey;
+  user: PublicKey | Pda;
   /** Owned Token Account Of Mint */
-  ownerTokenAccount: PublicKey;
+  ownerTokenAccount: PublicKey | Pda;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Mint of Metadata */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Program As Signer (Burner) */
-  burner: PublicKey;
+  burner: PublicKey | Pda;
   /** Token program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Data.
@@ -133,7 +135,7 @@ export function approveUseAuthority(
 
   // Use Authority Record.
   keys.push({
-    pubkey: resolvedAccounts.useAuthorityRecord,
+    pubkey: publicKey(resolvedAccounts.useAuthorityRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.useAuthorityRecord, true),
   });
@@ -156,49 +158,49 @@ export function approveUseAuthority(
 
   // User.
   keys.push({
-    pubkey: resolvedAccounts.user,
+    pubkey: publicKey(resolvedAccounts.user),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.user, false),
   });
 
   // Owner Token Account.
   keys.push({
-    pubkey: resolvedAccounts.ownerTokenAccount,
+    pubkey: publicKey(resolvedAccounts.ownerTokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ownerTokenAccount, true),
   });
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Burner.
   keys.push({
-    pubkey: resolvedAccounts.burner,
+    pubkey: publicKey(resolvedAccounts.burner),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.burner, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -206,7 +208,7 @@ export function approveUseAuthority(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: resolvedAccounts.rent,
+      pubkey: publicKey(resolvedAccounts.rent),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

@@ -29,17 +29,17 @@ export type CreateMetadataAccountInstructionAccounts = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata?: Pda;
   /** Mint of token asset */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Mint authority */
   mintAuthority: Signer;
   /** payer */
   payer?: Signer;
   /** update authority info */
-  updateAuthority: PublicKey;
+  updateAuthority: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Data.
@@ -164,14 +164,14 @@ export function createMetadataAccount(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
@@ -194,21 +194,21 @@ export function createMetadataAccount(
 
   // Update Authority.
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority,
+    pubkey: publicKey(resolvedAccounts.updateAuthority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: resolvedAccounts.rent,
+    pubkey: publicKey(resolvedAccounts.rent),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

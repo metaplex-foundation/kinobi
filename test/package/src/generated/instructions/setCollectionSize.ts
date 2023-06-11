@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -26,13 +28,13 @@ import {
 // Accounts.
 export type SetCollectionSizeInstructionAccounts = {
   /** Collection Metadata account */
-  collectionMetadata: PublicKey;
+  collectionMetadata: PublicKey | Pda;
   /** Collection Update authority */
   collectionAuthority: Signer;
   /** Mint of the Collection */
-  collectionMint: PublicKey;
+  collectionMint: PublicKey | Pda;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord?: PublicKey;
+  collectionAuthorityRecord?: PublicKey | Pda;
 };
 
 // Data.
@@ -100,7 +102,7 @@ export function setCollectionSize(
 
   // Collection Metadata.
   keys.push({
-    pubkey: resolvedAccounts.collectionMetadata,
+    pubkey: publicKey(resolvedAccounts.collectionMetadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
@@ -115,7 +117,7 @@ export function setCollectionSize(
 
   // Collection Mint.
   keys.push({
-    pubkey: resolvedAccounts.collectionMint,
+    pubkey: publicKey(resolvedAccounts.collectionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
@@ -123,7 +125,7 @@ export function setCollectionSize(
   // Collection Authority Record (optional).
   if (resolvedAccounts.collectionAuthorityRecord) {
     keys.push({
-      pubkey: resolvedAccounts.collectionAuthorityRecord,
+      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
     });

@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -22,19 +24,19 @@ import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
 // Accounts.
 export type CreateMetadataAccountV2InstructionAccounts = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Mint of token asset */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Mint authority */
   mintAuthority: Signer;
   /** payer */
   payer?: Signer;
   /** update authority info */
-  updateAuthority: PublicKey;
+  updateAuthority: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Data.
@@ -118,14 +120,14 @@ export function createMetadataAccountV2(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
@@ -148,14 +150,14 @@ export function createMetadataAccountV2(
 
   // Update Authority.
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority,
+    pubkey: publicKey(resolvedAccounts.updateAuthority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -163,7 +165,7 @@ export function createMetadataAccountV2(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: resolvedAccounts.rent,
+      pubkey: publicKey(resolvedAccounts.rent),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

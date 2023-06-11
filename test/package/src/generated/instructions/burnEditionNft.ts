@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -21,25 +23,25 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type BurnEditionNftInstructionAccounts = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** NFT owner */
   owner: Signer;
   /** Mint of the print edition NFT */
-  printEditionMint: PublicKey;
+  printEditionMint: PublicKey | Pda;
   /** Mint of the original/master NFT */
-  masterEditionMint: PublicKey;
+  masterEditionMint: PublicKey | Pda;
   /** Token account the print edition NFT is in */
-  printEditionTokenAccount: PublicKey;
+  printEditionTokenAccount: PublicKey | Pda;
   /** Token account the Master Edition NFT is in */
-  masterEditionTokenAccount: PublicKey;
+  masterEditionTokenAccount: PublicKey | Pda;
   /** MasterEdition2 of the original NFT */
-  masterEditionAccount: PublicKey;
+  masterEditionAccount: PublicKey | Pda;
   /** Print Edition account of the NFT */
-  printEditionAccount: PublicKey;
+  printEditionAccount: PublicKey | Pda;
   /** Edition Marker PDA of the NFT */
-  editionMarkerAccount: PublicKey;
+  editionMarkerAccount: PublicKey | Pda;
   /** SPL Token Program */
-  splTokenProgram?: PublicKey;
+  splTokenProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -103,7 +105,7 @@ export function burnEditionNft(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -118,56 +120,56 @@ export function burnEditionNft(
 
   // Print Edition Mint.
   keys.push({
-    pubkey: resolvedAccounts.printEditionMint,
+    pubkey: publicKey(resolvedAccounts.printEditionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printEditionMint, true),
   });
 
   // Master Edition Mint.
   keys.push({
-    pubkey: resolvedAccounts.masterEditionMint,
+    pubkey: publicKey(resolvedAccounts.masterEditionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionMint, false),
   });
 
   // Print Edition Token Account.
   keys.push({
-    pubkey: resolvedAccounts.printEditionTokenAccount,
+    pubkey: publicKey(resolvedAccounts.printEditionTokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printEditionTokenAccount, true),
   });
 
   // Master Edition Token Account.
   keys.push({
-    pubkey: resolvedAccounts.masterEditionTokenAccount,
+    pubkey: publicKey(resolvedAccounts.masterEditionTokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionTokenAccount, false),
   });
 
   // Master Edition Account.
   keys.push({
-    pubkey: resolvedAccounts.masterEditionAccount,
+    pubkey: publicKey(resolvedAccounts.masterEditionAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionAccount, true),
   });
 
   // Print Edition Account.
   keys.push({
-    pubkey: resolvedAccounts.printEditionAccount,
+    pubkey: publicKey(resolvedAccounts.printEditionAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printEditionAccount, true),
   });
 
   // Edition Marker Account.
   keys.push({
-    pubkey: resolvedAccounts.editionMarkerAccount,
+    pubkey: publicKey(resolvedAccounts.editionMarkerAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.editionMarkerAccount, true),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: resolvedAccounts.splTokenProgram,
+    pubkey: publicKey(resolvedAccounts.splTokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });

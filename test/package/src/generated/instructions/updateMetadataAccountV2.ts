@@ -10,11 +10,13 @@ import {
   AccountMeta,
   Context,
   Option,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -23,7 +25,7 @@ import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
 // Accounts.
 export type UpdateMetadataAccountV2InstructionAccounts = {
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Update authority key */
   updateAuthority: Signer;
 };
@@ -103,7 +105,7 @@ export function updateMetadataAccountV2(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });

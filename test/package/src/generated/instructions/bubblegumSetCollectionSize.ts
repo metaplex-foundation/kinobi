@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -26,15 +28,15 @@ import {
 // Accounts.
 export type BubblegumSetCollectionSizeInstructionAccounts = {
   /** Collection Metadata account */
-  collectionMetadata: PublicKey;
+  collectionMetadata: PublicKey | Pda;
   /** Collection Update authority */
   collectionAuthority: Signer;
   /** Mint of the Collection */
-  collectionMint: PublicKey;
+  collectionMint: PublicKey | Pda;
   /** Signing PDA of Bubblegum program */
   bubblegumSigner: Signer;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord?: PublicKey;
+  collectionAuthorityRecord?: PublicKey | Pda;
 };
 
 // Data.
@@ -103,7 +105,7 @@ export function bubblegumSetCollectionSize(
 
   // Collection Metadata.
   keys.push({
-    pubkey: resolvedAccounts.collectionMetadata,
+    pubkey: publicKey(resolvedAccounts.collectionMetadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
@@ -118,7 +120,7 @@ export function bubblegumSetCollectionSize(
 
   // Collection Mint.
   keys.push({
-    pubkey: resolvedAccounts.collectionMint,
+    pubkey: publicKey(resolvedAccounts.collectionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
@@ -134,7 +136,7 @@ export function bubblegumSetCollectionSize(
   // Collection Authority Record (optional).
   if (resolvedAccounts.collectionAuthorityRecord) {
     keys.push({
-      pubkey: resolvedAccounts.collectionAuthorityRecord,
+      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
     });

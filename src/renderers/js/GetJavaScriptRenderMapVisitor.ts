@@ -564,8 +564,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     account: ResolvedInstructionAccount
   ): string {
     if (account.isPda && account.isSigner === false) return 'Pda';
-    if (account.isSigner === 'either') return 'PublicKey | Signer';
-    return account.isSigner ? 'Signer' : 'PublicKey';
+    if (account.isSigner === 'either') return 'PublicKey | Pda | Signer';
+    return account.isSigner ? 'Signer' : 'PublicKey | Pda';
   }
 
   protected getInstructionAccountImports(
@@ -573,8 +573,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   ): JavaScriptImportMap {
     const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
-      if (account.isPda && account.isSigner === false) {
-        imports.add('core', 'Pda');
+      if (account.isSigner === false) {
+        imports.add('core', ['Pda', 'publicKey']);
       }
       if (account.defaultsTo?.kind === 'publicKey') {
         imports.add('core', 'publicKey');

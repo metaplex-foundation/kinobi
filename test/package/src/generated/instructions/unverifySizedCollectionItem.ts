@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -21,19 +23,19 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type UnverifySizedCollectionItemInstructionAccounts = {
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Collection Authority */
   collectionAuthority: Signer;
   /** payer */
   payer?: Signer;
   /** Mint of the Collection */
-  collectionMint: PublicKey;
+  collectionMint: PublicKey | Pda;
   /** Metadata Account of the Collection */
-  collection: PublicKey;
+  collection: PublicKey | Pda;
   /** MasterEdition2 Account of the Collection Token */
-  collectionMasterEditionAccount: PublicKey;
+  collectionMasterEditionAccount: PublicKey | Pda;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord?: PublicKey;
+  collectionAuthorityRecord?: PublicKey | Pda;
 };
 
 // Data.
@@ -90,7 +92,7 @@ export function unverifySizedCollectionItem(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -113,21 +115,21 @@ export function unverifySizedCollectionItem(
 
   // Collection Mint.
   keys.push({
-    pubkey: resolvedAccounts.collectionMint,
+    pubkey: publicKey(resolvedAccounts.collectionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection.
   keys.push({
-    pubkey: resolvedAccounts.collection,
+    pubkey: publicKey(resolvedAccounts.collection),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collection, true),
   });
 
   // Collection Master Edition Account.
   keys.push({
-    pubkey: resolvedAccounts.collectionMasterEditionAccount,
+    pubkey: publicKey(resolvedAccounts.collectionMasterEditionAccount),
     isSigner: false,
     isWritable: isWritable(
       resolvedAccounts.collectionMasterEditionAccount,
@@ -138,7 +140,7 @@ export function unverifySizedCollectionItem(
   // Collection Authority Record (optional).
   if (resolvedAccounts.collectionAuthorityRecord) {
     keys.push({
-      pubkey: resolvedAccounts.collectionAuthorityRecord,
+      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
     });

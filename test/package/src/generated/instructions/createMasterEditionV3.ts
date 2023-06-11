@@ -10,11 +10,13 @@ import {
   ACCOUNT_HEADER_SIZE,
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { getMasterEditionV2Size } from '../accounts';
@@ -28,9 +30,9 @@ import {
 // Accounts.
 export type CreateMasterEditionV3InstructionAccounts = {
   /** Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition'] */
-  edition: PublicKey;
+  edition: PublicKey | Pda;
   /** Metadata mint */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Update authority */
   updateAuthority: Signer;
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
@@ -38,13 +40,13 @@ export type CreateMasterEditionV3InstructionAccounts = {
   /** payer */
   payer?: Signer;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Token program */
-  tokenProgram?: PublicKey;
+  tokenProgram?: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Data.
@@ -139,14 +141,14 @@ export function createMasterEditionV3(
 
   // Edition.
   keys.push({
-    pubkey: resolvedAccounts.edition,
+    pubkey: publicKey(resolvedAccounts.edition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -177,21 +179,21 @@ export function createMasterEditionV3(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Token Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
+    pubkey: publicKey(resolvedAccounts.tokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -199,7 +201,7 @@ export function createMasterEditionV3(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: resolvedAccounts.rent,
+      pubkey: publicKey(resolvedAccounts.rent),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

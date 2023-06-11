@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -22,21 +23,21 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type CreateEscrowAccountInstructionAccounts = {
   /** Escrow account */
-  escrow: PublicKey;
+  escrow: PublicKey | Pda;
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Mint account */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Token account of the token */
-  tokenAccount: PublicKey;
+  tokenAccount: PublicKey | Pda;
   /** Edition account */
-  edition: PublicKey;
+  edition: PublicKey | Pda;
   /** Wallet paying for the transaction and new account */
   payer?: Signer;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Instructions sysvar account */
-  sysvarInstructions?: PublicKey;
+  sysvarInstructions?: PublicKey | Pda;
   /** Authority/creator of the escrow account */
   authority?: Signer;
 };
@@ -109,35 +110,35 @@ export function createEscrowAccount(
 
   // Escrow.
   keys.push({
-    pubkey: resolvedAccounts.escrow,
+    pubkey: publicKey(resolvedAccounts.escrow),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrow, true),
   });
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Token Account.
   keys.push({
-    pubkey: resolvedAccounts.tokenAccount,
+    pubkey: publicKey(resolvedAccounts.tokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, false),
   });
 
   // Edition.
   keys.push({
-    pubkey: resolvedAccounts.edition,
+    pubkey: publicKey(resolvedAccounts.edition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, false),
   });
@@ -152,14 +153,14 @@ export function createEscrowAccount(
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: resolvedAccounts.sysvarInstructions,
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });

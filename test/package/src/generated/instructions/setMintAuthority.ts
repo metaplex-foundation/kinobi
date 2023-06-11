@@ -9,18 +9,20 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
 
 // Accounts.
 export type SetMintAuthorityInstructionAccounts = {
-  candyMachine: PublicKey;
+  candyMachine: PublicKey | Pda;
   authority?: Signer;
   mintAuthority: Signer;
 };
@@ -84,7 +86,7 @@ export function setMintAuthority(
 
   // Candy Machine.
   keys.push({
-    pubkey: resolvedAccounts.candyMachine,
+    pubkey: publicKey(resolvedAccounts.candyMachine),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });

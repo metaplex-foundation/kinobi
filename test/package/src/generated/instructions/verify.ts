@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -22,15 +24,15 @@ import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 // Accounts.
 export type VerifyInstructionAccounts = {
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Collection Update authority */
   collectionAuthority: Signer;
   /** payer */
   payer?: Signer;
   /** Token Authorization Rules account */
-  authorizationRules?: PublicKey;
+  authorizationRules?: PublicKey | Pda;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: PublicKey;
+  authorizationRulesProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -96,7 +98,7 @@ export function verify(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -119,14 +121,14 @@ export function verify(
 
   // Authorization Rules.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRules,
+    pubkey: publicKey(resolvedAccounts.authorizationRules),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRulesProgram,
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });

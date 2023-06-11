@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -26,27 +28,27 @@ import {
 // Accounts.
 export type UseAssetInstructionAccounts = {
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Token Account Of NFT */
-  tokenAccount: PublicKey;
+  tokenAccount: PublicKey | Pda;
   /** Mint of the Metadata */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Use authority or current owner of the asset */
   useAuthority: Signer;
   /** Owner */
-  owner: PublicKey;
+  owner: PublicKey | Pda;
   /** SPL Token program */
-  splTokenProgram?: PublicKey;
+  splTokenProgram?: PublicKey | Pda;
   /** Associated Token program */
-  ataProgram?: PublicKey;
+  ataProgram?: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
-  useAuthorityRecord?: PublicKey;
+  useAuthorityRecord?: PublicKey | Pda;
   /** Token Authorization Rules account */
-  authorizationRules?: PublicKey;
+  authorizationRules?: PublicKey | Pda;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: PublicKey;
+  authorizationRulesProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -153,21 +155,21 @@ export function useAsset(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Token Account.
   keys.push({
-    pubkey: resolvedAccounts.tokenAccount,
+    pubkey: publicKey(resolvedAccounts.tokenAccount),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -182,49 +184,49 @@ export function useAsset(
 
   // Owner.
   keys.push({
-    pubkey: resolvedAccounts.owner,
+    pubkey: publicKey(resolvedAccounts.owner),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.owner, false),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: resolvedAccounts.splTokenProgram,
+    pubkey: publicKey(resolvedAccounts.splTokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Ata Program.
   keys.push({
-    pubkey: resolvedAccounts.ataProgram,
+    pubkey: publicKey(resolvedAccounts.ataProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ataProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Use Authority Record.
   keys.push({
-    pubkey: resolvedAccounts.useAuthorityRecord,
+    pubkey: publicKey(resolvedAccounts.useAuthorityRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.useAuthorityRecord, true),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRules,
+    pubkey: publicKey(resolvedAccounts.authorizationRules),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRulesProgram,
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });

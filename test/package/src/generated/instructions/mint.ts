@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -23,29 +24,29 @@ import { MintArgs, MintArgsArgs, getMintArgsSerializer } from '../types';
 // Accounts.
 export type MintInstructionAccounts = {
   /** Token account */
-  token: PublicKey;
+  token: PublicKey | Pda;
   /** Metadata account key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Master Edition account */
-  masterEdition?: PublicKey;
+  masterEdition?: PublicKey | Pda;
   /** Mint of token asset */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Payer */
   payer?: Signer;
   /** (Mint or Update) authority */
   authority?: Signer;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Instructions sysvar account */
-  sysvarInstructions?: PublicKey;
+  sysvarInstructions?: PublicKey | Pda;
   /** SPL Token program */
-  splTokenProgram?: PublicKey;
+  splTokenProgram?: PublicKey | Pda;
   /** SPL Associated Token Account program */
-  splAtaProgram?: PublicKey;
+  splAtaProgram?: PublicKey | Pda;
   /** Token Authorization Rules program */
-  authorizationRulesProgram?: PublicKey;
+  authorizationRulesProgram?: PublicKey | Pda;
   /** Token Authorization Rules account */
-  authorizationRules?: PublicKey;
+  authorizationRules?: PublicKey | Pda;
 };
 
 // Data.
@@ -157,28 +158,28 @@ export function mint(
 
   // Token.
   keys.push({
-    pubkey: resolvedAccounts.token,
+    pubkey: publicKey(resolvedAccounts.token),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, true),
   });
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -201,42 +202,42 @@ export function mint(
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: resolvedAccounts.sysvarInstructions,
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: resolvedAccounts.splTokenProgram,
+    pubkey: publicKey(resolvedAccounts.splTokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Spl Ata Program.
   keys.push({
-    pubkey: resolvedAccounts.splAtaProgram,
+    pubkey: publicKey(resolvedAccounts.splAtaProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splAtaProgram, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRulesProgram,
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: resolvedAccounts.authorizationRules,
+    pubkey: publicKey(resolvedAccounts.authorizationRules),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });

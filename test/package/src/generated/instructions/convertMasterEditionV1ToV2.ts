@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -21,11 +23,11 @@ import { isWritable } from '../shared';
 // Accounts.
 export type ConvertMasterEditionV1ToV2InstructionAccounts = {
   /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: PublicKey;
+  masterEdition: PublicKey | Pda;
   /** One time authorization mint */
-  oneTimeAuth: PublicKey;
+  oneTimeAuth: PublicKey | Pda;
   /** Printing mint */
-  printingMint: PublicKey;
+  printingMint: PublicKey | Pda;
 };
 
 // Data.
@@ -81,21 +83,21 @@ export function convertMasterEditionV1ToV2(
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // One Time Auth.
   keys.push({
-    pubkey: resolvedAccounts.oneTimeAuth,
+    pubkey: publicKey(resolvedAccounts.oneTimeAuth),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.oneTimeAuth, true),
   });
 
   // Printing Mint.
   keys.push({
-    pubkey: resolvedAccounts.printingMint,
+    pubkey: publicKey(resolvedAccounts.printingMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printingMint, true),
   });

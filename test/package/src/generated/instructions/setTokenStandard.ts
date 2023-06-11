@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -21,13 +23,13 @@ import { isWritable } from '../shared';
 // Accounts.
 export type SetTokenStandardInstructionAccounts = {
   /** Metadata account */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Metadata update authority */
   updateAuthority: Signer;
   /** Mint account */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Edition account */
-  edition?: PublicKey;
+  edition?: PublicKey | Pda;
 };
 
 // Data.
@@ -80,7 +82,7 @@ export function setTokenStandard(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -95,7 +97,7 @@ export function setTokenStandard(
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
@@ -103,7 +105,7 @@ export function setTokenStandard(
   // Edition (optional).
   if (resolvedAccounts.edition) {
     keys.push({
-      pubkey: resolvedAccounts.edition,
+      pubkey: publicKey(resolvedAccounts.edition),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.edition, false),
     });

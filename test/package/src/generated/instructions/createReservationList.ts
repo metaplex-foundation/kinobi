@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Signer,
   TransactionBuilder,
@@ -24,21 +25,21 @@ import { addObjectProperty, isWritable } from '../shared';
 // Accounts.
 export type CreateReservationListInstructionAccounts = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: PublicKey;
+  reservationList: PublicKey | Pda;
   /** Payer */
   payer?: Signer;
   /** Update authority */
   updateAuthority: Signer;
   /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: PublicKey;
+  masterEdition: PublicKey | Pda;
   /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
-  resource: PublicKey;
+  resource: PublicKey | Pda;
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Rent info */
-  rent?: PublicKey;
+  rent?: PublicKey | Pda;
 };
 
 // Args.
@@ -92,7 +93,7 @@ export function createReservationList(
 
   // Reservation List.
   keys.push({
-    pubkey: resolvedAccounts.reservationList,
+    pubkey: publicKey(resolvedAccounts.reservationList),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.reservationList, true),
   });
@@ -115,35 +116,35 @@ export function createReservationList(
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Resource.
   keys.push({
-    pubkey: resolvedAccounts.resource,
+    pubkey: publicKey(resolvedAccounts.resource),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.resource, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: resolvedAccounts.rent,
+    pubkey: publicKey(resolvedAccounts.rent),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

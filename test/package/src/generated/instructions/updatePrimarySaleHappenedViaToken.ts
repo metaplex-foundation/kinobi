@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { isWritable } from '../shared';
@@ -21,11 +23,11 @@ import { isWritable } from '../shared';
 // Accounts.
 export type UpdatePrimarySaleHappenedViaTokenInstructionAccounts = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Owner on the token account */
   owner: Signer;
   /** Account containing tokens from the metadata's mint */
-  token: PublicKey;
+  token: PublicKey | Pda;
 };
 
 // Data.
@@ -81,7 +83,7 @@ export function updatePrimarySaleHappenedViaToken(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -96,7 +98,7 @@ export function updatePrimarySaleHappenedViaToken(
 
   // Token.
   keys.push({
-    pubkey: resolvedAccounts.token,
+    pubkey: publicKey(resolvedAccounts.token),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, false),
   });

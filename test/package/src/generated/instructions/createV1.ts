@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   Option,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -24,23 +25,23 @@ import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
 // Accounts.
 export type CreateV1InstructionAccounts = {
   /** Metadata account key (pda of ['metadata', program id, mint id]) */
-  metadata: PublicKey;
+  metadata: PublicKey | Pda;
   /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
-  masterEdition?: PublicKey;
+  masterEdition?: PublicKey | Pda;
   /** Mint of token asset */
-  mint: PublicKey;
+  mint: PublicKey | Pda;
   /** Mint authority */
   mintAuthority: Signer;
   /** Payer */
   payer?: Signer;
   /** update authority info */
-  updateAuthority: PublicKey;
+  updateAuthority: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
   /** Instructions sysvar account */
-  sysvarInstructions?: PublicKey;
+  sysvarInstructions?: PublicKey | Pda;
   /** SPL Token program */
-  splTokenProgram?: PublicKey;
+  splTokenProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -143,21 +144,21 @@ export function createV1(
 
   // Metadata.
   keys.push({
-    pubkey: resolvedAccounts.metadata,
+    pubkey: publicKey(resolvedAccounts.metadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.masterEdition,
+    pubkey: publicKey(resolvedAccounts.masterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: resolvedAccounts.mint,
+    pubkey: publicKey(resolvedAccounts.mint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -180,28 +181,28 @@ export function createV1(
 
   // Update Authority.
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority,
+    pubkey: publicKey(resolvedAccounts.updateAuthority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: resolvedAccounts.sysvarInstructions,
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: resolvedAccounts.splTokenProgram,
+    pubkey: publicKey(resolvedAccounts.splTokenProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });

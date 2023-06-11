@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -25,17 +27,17 @@ import {
 
 // Accounts.
 export type InitializeInstructionAccounts = {
-  candyMachine: PublicKey;
-  authorityPda: PublicKey;
-  authority?: PublicKey;
+  candyMachine: PublicKey | Pda;
+  authorityPda: PublicKey | Pda;
+  authority?: PublicKey | Pda;
   payer?: Signer;
-  collectionMetadata: PublicKey;
-  collectionMint: PublicKey;
-  collectionMasterEdition: PublicKey;
+  collectionMetadata: PublicKey | Pda;
+  collectionMint: PublicKey | Pda;
+  collectionMasterEdition: PublicKey | Pda;
   collectionUpdateAuthority: Signer;
-  collectionAuthorityRecord: PublicKey;
-  tokenMetadataProgram?: PublicKey;
-  systemProgram?: PublicKey;
+  collectionAuthorityRecord: PublicKey | Pda;
+  tokenMetadataProgram?: PublicKey | Pda;
+  systemProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -125,21 +127,21 @@ export function initialize(
 
   // Candy Machine.
   keys.push({
-    pubkey: resolvedAccounts.candyMachine,
+    pubkey: publicKey(resolvedAccounts.candyMachine),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority Pda.
   keys.push({
-    pubkey: resolvedAccounts.authorityPda,
+    pubkey: publicKey(resolvedAccounts.authorityPda),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorityPda, true),
   });
 
   // Authority.
   keys.push({
-    pubkey: resolvedAccounts.authority,
+    pubkey: publicKey(resolvedAccounts.authority),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authority, false),
   });
@@ -154,21 +156,21 @@ export function initialize(
 
   // Collection Metadata.
   keys.push({
-    pubkey: resolvedAccounts.collectionMetadata,
+    pubkey: publicKey(resolvedAccounts.collectionMetadata),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, false),
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: resolvedAccounts.collectionMint,
+    pubkey: publicKey(resolvedAccounts.collectionMint),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection Master Edition.
   keys.push({
-    pubkey: resolvedAccounts.collectionMasterEdition,
+    pubkey: publicKey(resolvedAccounts.collectionMasterEdition),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMasterEdition, false),
   });
@@ -183,21 +185,21 @@ export function initialize(
 
   // Collection Authority Record.
   keys.push({
-    pubkey: resolvedAccounts.collectionAuthorityRecord,
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
   });
 
   // Token Metadata Program.
   keys.push({
-    pubkey: resolvedAccounts.tokenMetadataProgram,
+    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenMetadataProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });

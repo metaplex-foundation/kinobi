@@ -9,11 +9,13 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
   TransactionBuilder,
   mapSerializer,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { addObjectProperty, isWritable } from '../shared';
@@ -23,9 +25,9 @@ export type CreateFrequencyRuleInstructionAccounts = {
   /** Payer and creator of the Frequency Rule */
   payer?: Signer;
   /** The PDA account where the Frequency Rule is stored */
-  frequencyPda: PublicKey;
+  frequencyPda: PublicKey | Pda;
   /** System program */
-  systemProgram?: PublicKey;
+  systemProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -123,14 +125,14 @@ export function createFrequencyRule(
 
   // Frequency Pda.
   keys.push({
-    pubkey: resolvedAccounts.frequencyPda,
+    pubkey: publicKey(resolvedAccounts.frequencyPda),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.frequencyPda, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: resolvedAccounts.systemProgram,
+    pubkey: publicKey(resolvedAccounts.systemProgram),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });

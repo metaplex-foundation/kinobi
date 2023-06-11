@@ -13,7 +13,7 @@
       signers.push(resolvedAccounts.{{ account.name | camelCase }});
       keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}.publicKey, isSigner: true, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% else %}
-      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}, isSigner: false, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
+      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}), isSigner: false, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% endif %}
   {% if account.resolvedIsOptional %}
   }
