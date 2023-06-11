@@ -112,7 +112,7 @@ export function createRuleSet(
   addObjectProperty(
     resolvingArgs,
     'ruleSetBump',
-    input.ruleSetBump ?? input.ruleSetPda.bump
+    input.ruleSetBump ?? input.ruleSetPda[1]
   );
   const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };

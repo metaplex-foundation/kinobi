@@ -62,7 +62,7 @@
     {% elif input.defaultsTo.kind === 'arg' %}
       {% set inputDefault %}{{ getArgVar(input.defaultsTo.name, argsObj) }}{% endset %}
     {% elif input.defaultsTo.kind === 'accountBump' %}
-      {% set inputDefault %}{{ getAccountVar(input.defaultsTo.name, accountsObj) }}.bump{% endset %}
+      {% set inputDefault %}{{ getAccountVar(input.defaultsTo.name, accountsObj) }}[1]{% endset %}
     {% elif input.defaultsTo.kind === 'value' %}
       {% set inputDefault %}{{ input.defaultsTo.render }}{% endset %}
     {% elif input.defaultsTo.kind === 'resolver' %}

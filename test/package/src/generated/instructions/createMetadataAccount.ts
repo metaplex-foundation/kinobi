@@ -157,7 +157,7 @@ export function createMetadataAccount(
   addObjectProperty(
     resolvingArgs,
     'metadataBump',
-    input.metadataBump ?? resolvingAccounts.metadata.bump
+    input.metadataBump ?? resolvingAccounts.metadata[1]
   );
   const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
