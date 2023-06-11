@@ -211,17 +211,21 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     if (!isLinked) {
       imports.mergeWith(typeManifest.looseImports);
     }
-    imports.add('core', [
-      'Account',
-      'assertAccountExists',
-      'Context',
-      'deserializeAccount',
-      'PublicKey',
-      'RpcAccount',
-      'RpcGetAccountOptions',
-      'RpcGetAccountsOptions',
-      ...(!isLinked ? ['Serializer'] : []),
-    ]);
+    imports
+      .add('core', [
+        'Account',
+        'assertAccountExists',
+        'Context',
+        'deserializeAccount',
+        'Pda',
+        'PublicKey',
+        'publicKey',
+        'RpcAccount',
+        'RpcGetAccountOptions',
+        'RpcGetAccountsOptions',
+        ...(!isLinked ? ['Serializer'] : []),
+      ])
+      .addAlias('core', 'publicKey', 'toPublicKey');
 
     // Discriminator.
     const { discriminator } = account;

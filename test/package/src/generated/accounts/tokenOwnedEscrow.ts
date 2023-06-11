@@ -9,6 +9,7 @@
 import {
   Account,
   Context,
+  Pda,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
@@ -18,6 +19,7 @@ import {
   deserializeAccount,
   gpaBuilder,
   mapSerializer,
+  publicKey as toPublicKey,
 } from '@metaplex-foundation/umi';
 import {
   EscrowAuthority,
@@ -77,10 +79,13 @@ export function deserializeTokenOwnedEscrow(
 
 export async function fetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(
+    toPublicKey(publicKey),
+    options
+  );
   assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
   return deserializeTokenOwnedEscrow(context, maybeAccount);
 }
@@ -90,7 +95,10 @@ export async function safeFetchTokenOwnedEscrow(
   publicKey: PublicKey,
   options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(
+    toPublicKey(publicKey),
+    options
+  );
   return maybeAccount.exists
     ? deserializeTokenOwnedEscrow(context, maybeAccount)
     : null;
@@ -98,10 +106,13 @@ export async function safeFetchTokenOwnedEscrow(
 
 export async function fetchAllTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map(toPublicKey),
+    options
+  );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
     return deserializeTokenOwnedEscrow(context, maybeAccount);
@@ -110,10 +121,13 @@ export async function fetchAllTokenOwnedEscrow(
 
 export async function safeFetchAllTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map(toPublicKey),
+    options
+  );
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

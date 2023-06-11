@@ -9,6 +9,7 @@
 import {
   Account,
   Context,
+  Pda,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
@@ -18,6 +19,7 @@ import {
   deserializeAccount,
   gpaBuilder,
   mapSerializer,
+  publicKey as toPublicKey,
 } from '@metaplex-foundation/umi';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
@@ -73,10 +75,13 @@ export function deserializeUseAuthorityRecord(
 
 export async function fetchUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<UseAuthorityRecord> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(
+    toPublicKey(publicKey),
+    options
+  );
   assertAccountExists(maybeAccount, 'UseAuthorityRecord');
   return deserializeUseAuthorityRecord(context, maybeAccount);
 }
@@ -86,7 +91,10 @@ export async function safeFetchUseAuthorityRecord(
   publicKey: PublicKey,
   options?: RpcGetAccountOptions
 ): Promise<UseAuthorityRecord | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(
+    toPublicKey(publicKey),
+    options
+  );
   return maybeAccount.exists
     ? deserializeUseAuthorityRecord(context, maybeAccount)
     : null;
@@ -94,10 +102,13 @@ export async function safeFetchUseAuthorityRecord(
 
 export async function fetchAllUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map(toPublicKey),
+    options
+  );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'UseAuthorityRecord');
     return deserializeUseAuthorityRecord(context, maybeAccount);
@@ -106,10 +117,13 @@ export async function fetchAllUseAuthorityRecord(
 
 export async function safeFetchAllUseAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map(toPublicKey),
+    options
+  );
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

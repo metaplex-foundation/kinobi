@@ -10,6 +10,7 @@ import {
   Account,
   Context,
   Option,
+  Pda,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
@@ -17,6 +18,7 @@ import {
   assertAccountExists,
   deserializeAccount,
   gpaBuilder,
+  publicKey as toPublicKey,
 } from '@metaplex-foundation/umi';
 import {
   ReservationListV1AccountData,
@@ -44,10 +46,13 @@ export function deserializeReservationListV1(
 
 export async function fetchReservationListV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<ReservationListV1> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(
+    toPublicKey(publicKey),
+    options
+  );
   assertAccountExists(maybeAccount, 'ReservationListV1');
   return deserializeReservationListV1(context, maybeAccount);
 }
@@ -57,7 +62,10 @@ export async function safeFetchReservationListV1(
   publicKey: PublicKey,
   options?: RpcGetAccountOptions
 ): Promise<ReservationListV1 | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(
+    toPublicKey(publicKey),
+    options
+  );
   return maybeAccount.exists
     ? deserializeReservationListV1(context, maybeAccount)
     : null;
@@ -65,10 +73,13 @@ export async function safeFetchReservationListV1(
 
 export async function fetchAllReservationListV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<ReservationListV1[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map(toPublicKey),
+    options
+  );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'ReservationListV1');
     return deserializeReservationListV1(context, maybeAccount);
@@ -77,10 +88,13 @@ export async function fetchAllReservationListV1(
 
 export async function safeFetchAllReservationListV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<ReservationListV1[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map(toPublicKey),
+    options
+  );
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
