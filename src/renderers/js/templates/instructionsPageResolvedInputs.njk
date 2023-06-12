@@ -26,7 +26,7 @@
     {% if input.defaultsTo.kind === 'account' and input.kind === 'account' %}
       {% set inputDefault %}{{ getAccountVar(input.defaultsTo.name, accountsObj) }}{% endset %}
     {% elif input.defaultsTo.kind === 'account' %}
-      {% set inputDefault %}publicKey({{ getAccountVar(input.defaultsTo.name, accountsObj) }}){% endset %}
+      {% set inputDefault %}publicKey({{ getAccountVar(input.defaultsTo.name, accountsObj) }}, false){% endset %}
     {% elif input.defaultsTo.kind === 'pda' %}
       {% set inputDefault -%}
         find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
@@ -36,7 +36,7 @@
                 {%- if seedValue.kind === 'value' -%}
                   {{ seedKey }}: {{ seedValue.render }},
                 {%- elif seedValue.kind === 'account' -%}
-                  {{ seedKey }}: publicKey({{ getAccountVar(seedValue.name, accountsObj) }}),
+                  {{ seedKey }}: publicKey({{ getAccountVar(seedValue.name, accountsObj) }}, false),
                 {%- else -%}
                   {{ seedKey }}: {{ getArgVar(seedValue.name, argsObj) }},
                 {%- endif -%}

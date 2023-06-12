@@ -28,7 +28,7 @@ export async function fetch{{ account.name | pascalCase }}(
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }}> {
-  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey), options);
+  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
   assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
   return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
 }
@@ -38,7 +38,7 @@ export async function safeFetch{{ account.name | pascalCase }}(
   publicKey: PublicKey,
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }} | null> {
-  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey), options);
+  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
   return maybeAccount.exists
     ? deserialize{{ account.name | pascalCase }}(context, maybeAccount)
     : null;
@@ -49,7 +49,7 @@ export async function fetchAll{{ account.name | pascalCase }}(
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
 ): Promise<{{ account.name | pascalCase }}[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(toPublicKey), options);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
     return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
@@ -61,7 +61,7 @@ export async function safeFetchAll{{ account.name | pascalCase }}(
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
 ): Promise<{{ account.name | pascalCase }}[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(toPublicKey), options);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserialize{{ account.name | pascalCase }}(context, maybeAccount as RpcAccount));

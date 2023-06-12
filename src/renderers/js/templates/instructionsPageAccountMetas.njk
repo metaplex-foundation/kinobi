@@ -8,12 +8,12 @@
       if (isSigner(resolvedAccounts.{{ account.name | camelCase }})) {
         signers.push(resolvedAccounts.{{ account.name | camelCase }});
       }
-      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}), isSigner: isSigner(resolvedAccounts.{{ account.name | camelCase }}), isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
+      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}, false), isSigner: isSigner(resolvedAccounts.{{ account.name | camelCase }}), isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% elif account.resolvedIsSigner  %}
       signers.push(resolvedAccounts.{{ account.name | camelCase }});
       keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}.publicKey, isSigner: true, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% else %}
-      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}), isSigner: false, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
+      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}, false), isSigner: false, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
     {% endif %}
   {% if account.resolvedIsOptional %}
   }
