@@ -125,14 +125,14 @@ export function createFrequencyRule(
 
   // Frequency Pda.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.frequencyPda),
+    pubkey: publicKey(resolvedAccounts.frequencyPda, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.frequencyPda, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });

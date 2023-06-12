@@ -118,7 +118,7 @@ export function burn(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -133,49 +133,49 @@ export function burn(
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
 
   // Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount),
+    pubkey: publicKey(resolvedAccounts.tokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Master Edition Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionAccount),
+    pubkey: publicKey(resolvedAccounts.masterEditionAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionAccount, true),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram),
+    pubkey: publicKey(resolvedAccounts.splTokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata),
+    pubkey: publicKey(resolvedAccounts.collectionMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules),
+    pubkey: publicKey(resolvedAccounts.authorizationRules, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });

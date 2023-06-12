@@ -117,7 +117,7 @@ export function setCollection(
 
   // Candy Machine.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine),
+    pubkey: publicKey(resolvedAccounts.candyMachine, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
@@ -132,7 +132,7 @@ export function setCollection(
 
   // Authority Pda.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorityPda),
+    pubkey: publicKey(resolvedAccounts.authorityPda, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorityPda, true),
   });
@@ -147,21 +147,21 @@ export function setCollection(
 
   // Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint),
+    pubkey: publicKey(resolvedAccounts.collectionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata),
+    pubkey: publicKey(resolvedAccounts.collectionMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, false),
   });
 
   // Collection Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
   });
@@ -176,42 +176,42 @@ export function setCollection(
 
   // New Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionMetadata),
+    pubkey: publicKey(resolvedAccounts.newCollectionMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newCollectionMetadata, false),
   });
 
   // New Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionMint),
+    pubkey: publicKey(resolvedAccounts.newCollectionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newCollectionMint, false),
   });
 
   // New Collection Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionMasterEdition),
+    pubkey: publicKey(resolvedAccounts.newCollectionMasterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newCollectionMasterEdition, false),
   });
 
   // New Collection Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionAuthorityRecord),
+    pubkey: publicKey(resolvedAccounts.newCollectionAuthorityRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newCollectionAuthorityRecord, true),
   });
 
   // Token Metadata Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram),
+    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenMetadataProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });

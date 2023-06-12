@@ -105,14 +105,14 @@ export function approveCollectionAuthority(
 
   // Collection Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
   });
 
   // New Collection Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionAuthority),
+    pubkey: publicKey(resolvedAccounts.newCollectionAuthority, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newCollectionAuthority, false),
   });
@@ -135,21 +135,21 @@ export function approveCollectionAuthority(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -157,7 +157,7 @@ export function approveCollectionAuthority(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.rent),
+      pubkey: publicKey(resolvedAccounts.rent, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

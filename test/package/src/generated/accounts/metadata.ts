@@ -143,7 +143,7 @@ export async function fetchMetadata(
   options?: RpcGetAccountOptions
 ): Promise<Metadata> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'Metadata');
@@ -156,7 +156,7 @@ export async function safeFetchMetadata(
   options?: RpcGetAccountOptions
 ): Promise<Metadata | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -170,7 +170,7 @@ export async function fetchAllMetadata(
   options?: RpcGetAccountsOptions
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -185,7 +185,7 @@ export async function safeFetchAllMetadata(
   options?: RpcGetAccountsOptions
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

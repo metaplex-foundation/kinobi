@@ -80,7 +80,7 @@ export async function fetchDelegateRecord(
   options?: RpcGetAccountOptions
 ): Promise<DelegateRecord> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'DelegateRecord');
@@ -93,7 +93,7 @@ export async function safeFetchDelegateRecord(
   options?: RpcGetAccountOptions
 ): Promise<DelegateRecord | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -107,7 +107,7 @@ export async function fetchAllDelegateRecord(
   options?: RpcGetAccountsOptions
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -122,7 +122,7 @@ export async function safeFetchAllDelegateRecord(
   options?: RpcGetAccountsOptions
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

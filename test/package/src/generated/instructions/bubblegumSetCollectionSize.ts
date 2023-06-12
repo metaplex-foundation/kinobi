@@ -105,7 +105,7 @@ export function bubblegumSetCollectionSize(
 
   // Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata),
+    pubkey: publicKey(resolvedAccounts.collectionMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
@@ -120,7 +120,7 @@ export function bubblegumSetCollectionSize(
 
   // Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint),
+    pubkey: publicKey(resolvedAccounts.collectionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
@@ -136,7 +136,7 @@ export function bubblegumSetCollectionSize(
   // Collection Authority Record (optional).
   if (resolvedAccounts.collectionAuthorityRecord) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
+      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
     });

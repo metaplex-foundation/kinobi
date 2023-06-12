@@ -127,21 +127,21 @@ export function initialize(
 
   // Candy Machine.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine),
+    pubkey: publicKey(resolvedAccounts.candyMachine, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });
 
   // Authority Pda.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorityPda),
+    pubkey: publicKey(resolvedAccounts.authorityPda, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorityPda, true),
   });
 
   // Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authority),
+    pubkey: publicKey(resolvedAccounts.authority, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authority, false),
   });
@@ -156,21 +156,21 @@ export function initialize(
 
   // Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata),
+    pubkey: publicKey(resolvedAccounts.collectionMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, false),
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint),
+    pubkey: publicKey(resolvedAccounts.collectionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMasterEdition),
+    pubkey: publicKey(resolvedAccounts.collectionMasterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMasterEdition, false),
   });
@@ -185,21 +185,21 @@ export function initialize(
 
   // Collection Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
   });
 
   // Token Metadata Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram),
+    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenMetadataProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });

@@ -120,14 +120,14 @@ export function createMetadataAccountV2(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
@@ -150,14 +150,14 @@ export function createMetadataAccountV2(
 
   // Update Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.updateAuthority),
+    pubkey: publicKey(resolvedAccounts.updateAuthority, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.updateAuthority, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -165,7 +165,7 @@ export function createMetadataAccountV2(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.rent),
+      pubkey: publicKey(resolvedAccounts.rent, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

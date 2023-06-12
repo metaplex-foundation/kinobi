@@ -141,28 +141,28 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.edition),
+    pubkey: publicKey(resolvedAccounts.edition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, true),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -177,21 +177,21 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Printing Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint),
+    pubkey: publicKey(resolvedAccounts.printingMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printingMint, true),
   });
 
   // Master Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterTokenAccount),
+    pubkey: publicKey(resolvedAccounts.masterTokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterTokenAccount, true),
   });
 
   // Edition Marker.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.editionMarker),
+    pubkey: publicKey(resolvedAccounts.editionMarker, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.editionMarker, true),
   });
@@ -214,35 +214,35 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Master Update Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterUpdateAuthority),
+    pubkey: publicKey(resolvedAccounts.masterUpdateAuthority, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterUpdateAuthority, false),
   });
 
   // Master Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterMetadata),
+    pubkey: publicKey(resolvedAccounts.masterMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterMetadata, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram),
+    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent),
+    pubkey: publicKey(resolvedAccounts.rent, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });
@@ -250,7 +250,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   // Reservation List (optional).
   if (resolvedAccounts.reservationList) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.reservationList),
+      pubkey: publicKey(resolvedAccounts.reservationList, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.reservationList, true),
     });

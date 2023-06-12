@@ -158,28 +158,28 @@ export function mint(
 
   // Token.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.token),
+    pubkey: publicKey(resolvedAccounts.token, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, true),
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -202,42 +202,42 @@ export function mint(
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram),
+    pubkey: publicKey(resolvedAccounts.splTokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Spl Ata Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.splAtaProgram),
+    pubkey: publicKey(resolvedAccounts.splAtaProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splAtaProgram, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules),
+    pubkey: publicKey(resolvedAccounts.authorizationRules, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });

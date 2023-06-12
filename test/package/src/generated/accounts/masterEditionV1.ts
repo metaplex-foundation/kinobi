@@ -86,7 +86,7 @@ export async function fetchMasterEditionV1(
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV1> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'MasterEditionV1');
@@ -99,7 +99,7 @@ export async function safeFetchMasterEditionV1(
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV1 | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -113,7 +113,7 @@ export async function fetchAllMasterEditionV1(
   options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -128,7 +128,7 @@ export async function safeFetchAllMasterEditionV1(
   options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

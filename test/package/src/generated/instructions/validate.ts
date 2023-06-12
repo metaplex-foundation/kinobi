@@ -142,14 +142,14 @@ export function validate(
 
   // Rule Set.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.ruleSet),
+    pubkey: publicKey(resolvedAccounts.ruleSet, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ruleSet, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -160,7 +160,7 @@ export function validate(
       signers.push(resolvedAccounts.optRuleSigner1);
     }
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleSigner1),
+      pubkey: publicKey(resolvedAccounts.optRuleSigner1, false),
       isSigner: isSigner(resolvedAccounts.optRuleSigner1),
       isWritable: isWritable(resolvedAccounts.optRuleSigner1, false),
     });
@@ -209,7 +209,7 @@ export function validate(
   // Opt Rule Nonsigner1 (optional).
   if (resolvedAccounts.optRuleNonsigner1) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner1),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner1, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner1, false),
     });
@@ -218,7 +218,7 @@ export function validate(
   // Opt Rule Nonsigner2 (optional).
   if (resolvedAccounts.optRuleNonsigner2) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner2),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner2, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner2, false),
     });
@@ -227,7 +227,7 @@ export function validate(
   // Opt Rule Nonsigner3 (optional).
   if (resolvedAccounts.optRuleNonsigner3) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner3),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner3, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner3, false),
     });
@@ -236,7 +236,7 @@ export function validate(
   // Opt Rule Nonsigner4 (optional).
   if (resolvedAccounts.optRuleNonsigner4) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner4),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner4, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner4, false),
     });
@@ -245,7 +245,7 @@ export function validate(
   // Opt Rule Nonsigner5 (optional).
   if (resolvedAccounts.optRuleNonsigner5) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner5),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner5, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.optRuleNonsigner5, false),
     });

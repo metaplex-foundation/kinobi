@@ -105,7 +105,7 @@ export function burnEditionNft(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -120,56 +120,56 @@ export function burnEditionNft(
 
   // Print Edition Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printEditionMint),
+    pubkey: publicKey(resolvedAccounts.printEditionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printEditionMint, true),
   });
 
   // Master Edition Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionMint),
+    pubkey: publicKey(resolvedAccounts.masterEditionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionMint, false),
   });
 
   // Print Edition Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printEditionTokenAccount),
+    pubkey: publicKey(resolvedAccounts.printEditionTokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printEditionTokenAccount, true),
   });
 
   // Master Edition Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionTokenAccount),
+    pubkey: publicKey(resolvedAccounts.masterEditionTokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionTokenAccount, false),
   });
 
   // Master Edition Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionAccount),
+    pubkey: publicKey(resolvedAccounts.masterEditionAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEditionAccount, true),
   });
 
   // Print Edition Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printEditionAccount),
+    pubkey: publicKey(resolvedAccounts.printEditionAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printEditionAccount, true),
   });
 
   // Edition Marker Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.editionMarkerAccount),
+    pubkey: publicKey(resolvedAccounts.editionMarkerAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.editionMarkerAccount, true),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram),
+    pubkey: publicKey(resolvedAccounts.splTokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });

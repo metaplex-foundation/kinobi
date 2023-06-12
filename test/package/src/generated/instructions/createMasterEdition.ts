@@ -144,14 +144,14 @@ export function createMasterEdition(
 
   // Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.edition),
+    pubkey: publicKey(resolvedAccounts.edition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -182,28 +182,28 @@ export function createMasterEdition(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram),
+    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent),
+    pubkey: publicKey(resolvedAccounts.rent, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

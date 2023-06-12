@@ -149,35 +149,35 @@ export function mintNewEditionFromMasterEditionViaToken(
 
   // New Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newMetadata),
+    pubkey: publicKey(resolvedAccounts.newMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newMetadata, true),
   });
 
   // New Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newEdition),
+    pubkey: publicKey(resolvedAccounts.newEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newEdition, true),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // New Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newMint),
+    pubkey: publicKey(resolvedAccounts.newMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newMint, true),
   });
 
   // Edition Mark Pda.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.editionMarkPda),
+    pubkey: publicKey(resolvedAccounts.editionMarkPda, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.editionMarkPda, true),
   });
@@ -208,35 +208,35 @@ export function mintNewEditionFromMasterEditionViaToken(
 
   // Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount),
+    pubkey: publicKey(resolvedAccounts.tokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, false),
   });
 
   // New Metadata Update Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newMetadataUpdateAuthority),
+    pubkey: publicKey(resolvedAccounts.newMetadataUpdateAuthority, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.newMetadataUpdateAuthority, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram),
+    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -244,7 +244,7 @@ export function mintNewEditionFromMasterEditionViaToken(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.rent),
+      pubkey: publicKey(resolvedAccounts.rent, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

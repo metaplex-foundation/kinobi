@@ -102,7 +102,7 @@ export function setCollectionSize(
 
   // Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata),
+    pubkey: publicKey(resolvedAccounts.collectionMetadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
   });
@@ -117,7 +117,7 @@ export function setCollectionSize(
 
   // Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint),
+    pubkey: publicKey(resolvedAccounts.collectionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
@@ -125,7 +125,7 @@ export function setCollectionSize(
   // Collection Authority Record (optional).
   if (resolvedAccounts.collectionAuthorityRecord) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
+      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
     });

@@ -90,7 +90,7 @@ export function setAuthority(
 
   // Candy Machine.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine),
+    pubkey: publicKey(resolvedAccounts.candyMachine, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.candyMachine, true),
   });

@@ -87,7 +87,7 @@ export function verifyCollection(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -110,21 +110,21 @@ export function verifyCollection(
 
   // Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint),
+    pubkey: publicKey(resolvedAccounts.collectionMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionMint, false),
   });
 
   // Collection.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collection),
+    pubkey: publicKey(resolvedAccounts.collection, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collection, false),
   });
 
   // Collection Master Edition Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMasterEditionAccount),
+    pubkey: publicKey(resolvedAccounts.collectionMasterEditionAccount, false),
     isSigner: false,
     isWritable: isWritable(
       resolvedAccounts.collectionMasterEditionAccount,

@@ -105,7 +105,7 @@ export async function fetchCandyMachine(
   options?: RpcGetAccountOptions
 ): Promise<CandyMachine> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'CandyMachine');
@@ -118,7 +118,7 @@ export async function safeFetchCandyMachine(
   options?: RpcGetAccountOptions
 ): Promise<CandyMachine | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -132,7 +132,7 @@ export async function fetchAllCandyMachine(
   options?: RpcGetAccountsOptions
 ): Promise<CandyMachine[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -147,7 +147,7 @@ export async function safeFetchAllCandyMachine(
   options?: RpcGetAccountsOptions
 ): Promise<CandyMachine[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

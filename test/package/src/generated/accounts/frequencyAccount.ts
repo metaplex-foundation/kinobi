@@ -82,7 +82,7 @@ export async function fetchFrequencyAccount(
   options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'FrequencyAccount');
@@ -95,7 +95,7 @@ export async function safeFetchFrequencyAccount(
   options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -109,7 +109,7 @@ export async function fetchAllFrequencyAccount(
   options?: RpcGetAccountsOptions
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -124,7 +124,7 @@ export async function safeFetchAllFrequencyAccount(
   options?: RpcGetAccountsOptions
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

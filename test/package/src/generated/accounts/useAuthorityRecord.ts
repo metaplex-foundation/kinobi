@@ -79,7 +79,7 @@ export async function fetchUseAuthorityRecord(
   options?: RpcGetAccountOptions
 ): Promise<UseAuthorityRecord> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'UseAuthorityRecord');
@@ -92,7 +92,7 @@ export async function safeFetchUseAuthorityRecord(
   options?: RpcGetAccountOptions
 ): Promise<UseAuthorityRecord | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -106,7 +106,7 @@ export async function fetchAllUseAuthorityRecord(
   options?: RpcGetAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -121,7 +121,7 @@ export async function safeFetchAllUseAuthorityRecord(
   options?: RpcGetAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

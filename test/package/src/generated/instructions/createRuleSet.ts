@@ -127,14 +127,14 @@ export function createRuleSet(
 
   // Rule Set Pda.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.ruleSetPda),
+    pubkey: publicKey(resolvedAccounts.ruleSetPda, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ruleSetPda, true),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });

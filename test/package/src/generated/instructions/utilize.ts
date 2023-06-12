@@ -136,21 +136,21 @@ export function utilize(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount),
+    pubkey: publicKey(resolvedAccounts.tokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -165,35 +165,35 @@ export function utilize(
 
   // Owner.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.owner),
+    pubkey: publicKey(resolvedAccounts.owner, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.owner, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram),
+    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // Ata Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.ataProgram),
+    pubkey: publicKey(resolvedAccounts.ataProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ataProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent),
+    pubkey: publicKey(resolvedAccounts.rent, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });
@@ -201,7 +201,7 @@ export function utilize(
   // Use Authority Record (optional).
   if (resolvedAccounts.useAuthorityRecord) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.useAuthorityRecord),
+      pubkey: publicKey(resolvedAccounts.useAuthorityRecord, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.useAuthorityRecord, true),
     });
@@ -210,7 +210,7 @@ export function utilize(
   // Burner (optional).
   if (resolvedAccounts.burner) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.burner),
+      pubkey: publicKey(resolvedAccounts.burner, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.burner, false),
     });

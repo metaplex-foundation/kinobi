@@ -93,7 +93,7 @@ export function createReservationList(
 
   // Reservation List.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.reservationList),
+    pubkey: publicKey(resolvedAccounts.reservationList, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.reservationList, true),
   });
@@ -116,35 +116,35 @@ export function createReservationList(
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Resource.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.resource),
+    pubkey: publicKey(resolvedAccounts.resource, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.resource, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent),
+    pubkey: publicKey(resolvedAccounts.rent, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

@@ -82,7 +82,7 @@ export function setTokenStandard(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -97,7 +97,7 @@ export function setTokenStandard(
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
@@ -105,7 +105,7 @@ export function setTokenStandard(
   // Edition (optional).
   if (resolvedAccounts.edition) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.edition),
+      pubkey: publicKey(resolvedAccounts.edition, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.edition, false),
     });

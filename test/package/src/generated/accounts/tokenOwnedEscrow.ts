@@ -83,7 +83,7 @@ export async function fetchTokenOwnedEscrow(
   options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
@@ -96,7 +96,7 @@ export async function safeFetchTokenOwnedEscrow(
   options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -110,7 +110,7 @@ export async function fetchAllTokenOwnedEscrow(
   options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -125,7 +125,7 @@ export async function safeFetchAllTokenOwnedEscrow(
   options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

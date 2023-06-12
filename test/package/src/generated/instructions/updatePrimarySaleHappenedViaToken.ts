@@ -83,7 +83,7 @@ export function updatePrimarySaleHappenedViaToken(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -98,7 +98,7 @@ export function updatePrimarySaleHappenedViaToken(
 
   // Token.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.token),
+    pubkey: publicKey(resolvedAccounts.token, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, false),
   });

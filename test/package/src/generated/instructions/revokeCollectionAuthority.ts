@@ -87,14 +87,14 @@ export function revokeCollectionAuthority(
 
   // Collection Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord),
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
   });
 
   // Delegate Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.delegateAuthority),
+    pubkey: publicKey(resolvedAccounts.delegateAuthority, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.delegateAuthority, true),
   });
@@ -109,14 +109,14 @@ export function revokeCollectionAuthority(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });

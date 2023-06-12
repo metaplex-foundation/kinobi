@@ -125,7 +125,7 @@ export function dummy(
       signers.push(resolvedAccounts.edition);
     }
     keys.push({
-      pubkey: publicKey(resolvedAccounts.edition),
+      pubkey: publicKey(resolvedAccounts.edition, false),
       isSigner: isSigner(resolvedAccounts.edition),
       isWritable: isWritable(resolvedAccounts.edition, true),
     });
@@ -133,7 +133,7 @@ export function dummy(
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, true),
   });
@@ -167,7 +167,7 @@ export function dummy(
     signers.push(resolvedAccounts.foo);
   }
   keys.push({
-    pubkey: publicKey(resolvedAccounts.foo),
+    pubkey: publicKey(resolvedAccounts.foo, false),
     isSigner: isSigner(resolvedAccounts.foo),
     isWritable: isWritable(resolvedAccounts.foo, true),
   });
@@ -177,14 +177,14 @@ export function dummy(
     signers.push(resolvedAccounts.bar);
   }
   keys.push({
-    pubkey: publicKey(resolvedAccounts.bar),
+    pubkey: publicKey(resolvedAccounts.bar, false),
     isSigner: isSigner(resolvedAccounts.bar),
     isWritable: isWritable(resolvedAccounts.bar, false),
   });
 
   // Delegate Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.delegateRecord),
+    pubkey: publicKey(resolvedAccounts.delegateRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.delegateRecord, true),
   });

@@ -210,98 +210,98 @@ export function transfer(
 
   // Delegate Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.delegateRecord),
+    pubkey: publicKey(resolvedAccounts.delegateRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.delegateRecord, true),
   });
 
   // Token.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.token),
+    pubkey: publicKey(resolvedAccounts.token, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, true),
   });
 
   // Token Owner.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenOwner),
+    pubkey: publicKey(resolvedAccounts.tokenOwner, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenOwner, false),
   });
 
   // Destination.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.destination),
+    pubkey: publicKey(resolvedAccounts.destination, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.destination, true),
   });
 
   // Destination Owner.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.destinationOwner),
+    pubkey: publicKey(resolvedAccounts.destinationOwner, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.destinationOwner, false),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram),
+    pubkey: publicKey(resolvedAccounts.splTokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
   });
 
   // Spl Ata Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.splAtaProgram),
+    pubkey: publicKey(resolvedAccounts.splAtaProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.splAtaProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram),
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules),
+    pubkey: publicKey(resolvedAccounts.authorizationRules, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.authorizationRules, false),
   });

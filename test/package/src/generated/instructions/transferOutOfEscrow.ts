@@ -156,14 +156,14 @@ export function transferOutOfEscrow(
 
   // Escrow.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.escrow),
+    pubkey: publicKey(resolvedAccounts.escrow, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrow, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
@@ -178,63 +178,63 @@ export function transferOutOfEscrow(
 
   // Attribute Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.attributeMint),
+    pubkey: publicKey(resolvedAccounts.attributeMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.attributeMint, false),
   });
 
   // Attribute Src.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.attributeSrc),
+    pubkey: publicKey(resolvedAccounts.attributeSrc, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.attributeSrc, true),
   });
 
   // Attribute Dst.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.attributeDst),
+    pubkey: publicKey(resolvedAccounts.attributeDst, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.attributeDst, true),
   });
 
   // Escrow Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.escrowMint),
+    pubkey: publicKey(resolvedAccounts.escrowMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrowMint, false),
   });
 
   // Escrow Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.escrowAccount),
+    pubkey: publicKey(resolvedAccounts.escrowAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrowAccount, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Ata Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.ataProgram),
+    pubkey: publicKey(resolvedAccounts.ataProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ataProgram, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram),
+    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });

@@ -132,21 +132,21 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Destination.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.destination),
+    pubkey: publicKey(resolvedAccounts.destination, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.destination, true),
   });
 
   // Token.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.token),
+    pubkey: publicKey(resolvedAccounts.token, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.token, true),
   });
 
   // One Time Printing Authorization Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.oneTimePrintingAuthorizationMint),
+    pubkey: publicKey(resolvedAccounts.oneTimePrintingAuthorizationMint, false),
     isSigner: false,
     isWritable: isWritable(
       resolvedAccounts.oneTimePrintingAuthorizationMint,
@@ -156,7 +156,7 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Printing Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint),
+    pubkey: publicKey(resolvedAccounts.printingMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printingMint, true),
   });
@@ -171,28 +171,28 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram),
+    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent),
+    pubkey: publicKey(resolvedAccounts.rent, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.rent, false),
   });

@@ -19,7 +19,8 @@ import {
 } from '../errors';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ID = publicKey(
-  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  false
 );
 
 export function createMplTokenMetadataProgram(): Program {

@@ -83,21 +83,21 @@ export function convertMasterEditionV1ToV2(
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // One Time Auth.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.oneTimeAuth),
+    pubkey: publicKey(resolvedAccounts.oneTimeAuth, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.oneTimeAuth, true),
   });
 
   // Printing Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint),
+    pubkey: publicKey(resolvedAccounts.printingMint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.printingMint, true),
   });

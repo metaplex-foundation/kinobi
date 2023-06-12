@@ -69,7 +69,7 @@ export async function fetchEdition(
   options?: RpcGetAccountOptions
 ): Promise<Edition> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'Edition');
@@ -82,7 +82,7 @@ export async function safeFetchEdition(
   options?: RpcGetAccountOptions
 ): Promise<Edition | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists ? deserializeEdition(context, maybeAccount) : null;
@@ -94,7 +94,7 @@ export async function fetchAllEdition(
   options?: RpcGetAccountsOptions
 ): Promise<Edition[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -109,7 +109,7 @@ export async function safeFetchAllEdition(
   options?: RpcGetAccountsOptions
 ): Promise<Edition[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

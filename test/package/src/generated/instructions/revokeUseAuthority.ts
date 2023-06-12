@@ -114,7 +114,7 @@ export function revokeUseAuthority(
 
   // Use Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.useAuthorityRecord),
+    pubkey: publicKey(resolvedAccounts.useAuthorityRecord, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.useAuthorityRecord, true),
   });
@@ -129,42 +129,42 @@ export function revokeUseAuthority(
 
   // User.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.user),
+    pubkey: publicKey(resolvedAccounts.user, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.user, false),
   });
 
   // Owner Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.ownerTokenAccount),
+    pubkey: publicKey(resolvedAccounts.ownerTokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.ownerTokenAccount, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, false),
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram),
+    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenProgram, false),
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
@@ -172,7 +172,7 @@ export function revokeUseAuthority(
   // Rent (optional).
   if (resolvedAccounts.rent) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.rent),
+      pubkey: publicKey(resolvedAccounts.rent, false),
       isSigner: false,
       isWritable: isWritable(resolvedAccounts.rent, false),
     });

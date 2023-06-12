@@ -111,14 +111,14 @@ export function deprecatedSetReservationList(
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition),
+    pubkey: publicKey(resolvedAccounts.masterEdition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.masterEdition, true),
   });
 
   // Reservation List.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.reservationList),
+    pubkey: publicKey(resolvedAccounts.reservationList, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.reservationList, true),
   });

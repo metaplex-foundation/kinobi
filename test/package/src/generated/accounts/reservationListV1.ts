@@ -50,7 +50,7 @@ export async function fetchReservationListV1(
   options?: RpcGetAccountOptions
 ): Promise<ReservationListV1> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   assertAccountExists(maybeAccount, 'ReservationListV1');
@@ -63,7 +63,7 @@ export async function safeFetchReservationListV1(
   options?: RpcGetAccountOptions
 ): Promise<ReservationListV1 | null> {
   const maybeAccount = await context.rpc.getAccount(
-    toPublicKey(publicKey),
+    toPublicKey(publicKey, false),
     options
   );
   return maybeAccount.exists
@@ -77,7 +77,7 @@ export async function fetchAllReservationListV1(
   options?: RpcGetAccountsOptions
 ): Promise<ReservationListV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts.map((maybeAccount) => {
@@ -92,7 +92,7 @@ export async function safeFetchAllReservationListV1(
   options?: RpcGetAccountsOptions
 ): Promise<ReservationListV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(
-    publicKeys.map(toPublicKey),
+    publicKeys.map((key) => toPublicKey(key, false)),
     options
   );
   return maybeAccounts

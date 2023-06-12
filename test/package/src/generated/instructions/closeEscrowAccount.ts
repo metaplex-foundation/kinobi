@@ -108,35 +108,35 @@ export function closeEscrowAccount(
 
   // Escrow.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.escrow),
+    pubkey: publicKey(resolvedAccounts.escrow, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.escrow, true),
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata),
+    pubkey: publicKey(resolvedAccounts.metadata, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.metadata, true),
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint),
+    pubkey: publicKey(resolvedAccounts.mint, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.mint, false),
   });
 
   // Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount),
+    pubkey: publicKey(resolvedAccounts.tokenAccount, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.tokenAccount, false),
   });
 
   // Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.edition),
+    pubkey: publicKey(resolvedAccounts.edition, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.edition, false),
   });
@@ -151,14 +151,14 @@ export function closeEscrowAccount(
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram),
+    pubkey: publicKey(resolvedAccounts.systemProgram, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.systemProgram, false),
   });
 
   // Sysvar Instructions.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions),
+    pubkey: publicKey(resolvedAccounts.sysvarInstructions, false),
     isSigner: false,
     isWritable: isWritable(resolvedAccounts.sysvarInstructions, false),
   });
