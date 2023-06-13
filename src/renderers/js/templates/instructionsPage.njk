@@ -43,11 +43,11 @@ export function {{ instruction.name | camelCase }}(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = { ...context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}'), isWritable: false };
+  const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
 
   {% include "instructionsPageResolvedInputs.njk" %}
 
-  {% include "instructionsPageAccountMetas.njk" -%}
+  {% include "instructionsPageAccountMetas.njk" %}
 
   // Data.
   {% if hasDataArgs %}

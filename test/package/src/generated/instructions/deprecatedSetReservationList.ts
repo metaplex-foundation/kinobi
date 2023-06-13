@@ -10,6 +10,7 @@ import {
   AccountMeta,
   Context,
   Option,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -17,7 +18,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
+import { addAccountMeta } from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -27,9 +28,9 @@ import {
 // Accounts.
 export type DeprecatedSetReservationListInstructionAccounts = {
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: PublicKey;
+  masterEdition: PublicKey | Pda;
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: PublicKey;
+  reservationList: PublicKey | Pda;
   /** The resource you tied the reservation list too */
   resource: Signer;
 };
@@ -93,41 +94,23 @@ export function deprecatedSetReservationList(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    masterEdition: [input.masterEdition, true] as const,
+    reservationList: [input.reservationList, true] as const,
+    resource: [input.resource, false] as const,
+  };
   const resolvingArgs = {};
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Master Edition.
-  keys.push({
-    pubkey: resolvedAccounts.masterEdition,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.masterEdition, true),
-  });
-
-  // Reservation List.
-  keys.push({
-    pubkey: resolvedAccounts.reservationList,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.reservationList, true),
-  });
-
-  // Resource.
-  signers.push(resolvedAccounts.resource);
-  keys.push({
-    pubkey: resolvedAccounts.resource.publicKey,
-    isSigner: true,
-    isWritable: isWritable(resolvedAccounts.resource, false),
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.reservationList, false);
+  addAccountMeta(keys, signers, resolvedAccounts.resource, false);
 
   // Data.
   const data =

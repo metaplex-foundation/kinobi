@@ -182,13 +182,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         `programs/${camelCase(name)}.ts`,
         this.render('programsPage.njk', {
           imports: new JavaScriptImportMap()
-            .add('core', [
-              'ClusterFilter',
-              'Context',
-              'Program',
-              'publicKey',
-              'PublicKey',
-            ])
+            .add('core', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
             .add('errors', [
               `get${pascalCaseName}ErrorFromCode`,
               `get${pascalCaseName}ErrorFromName`,
@@ -211,17 +205,21 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     if (!isLinked) {
       imports.mergeWith(typeManifest.looseImports);
     }
-    imports.add('core', [
-      'Account',
-      'assertAccountExists',
-      'Context',
-      'deserializeAccount',
-      'PublicKey',
-      'RpcAccount',
-      'RpcGetAccountOptions',
-      'RpcGetAccountsOptions',
-      ...(!isLinked ? ['Serializer'] : []),
-    ]);
+    imports
+      .add('core', [
+        'Account',
+        'assertAccountExists',
+        'Context',
+        'deserializeAccount',
+        'Pda',
+        'PublicKey',
+        'publicKey',
+        'RpcAccount',
+        'RpcGetAccountOptions',
+        'RpcGetAccountsOptions',
+        ...(!isLinked ? ['Serializer'] : []),
+      ])
+      .addAlias('core', 'publicKey', 'toPublicKey');
 
     // Discriminator.
     const { discriminator } = account;
@@ -280,8 +278,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Seeds.
-    const pdaHelperNeedsSerializer =
-      account.seeds.filter((seed) => seed.kind !== 'programId').length > 0;
+    const pdaHelperNeedsSerializer = account.seeds.length > 0;
     const seeds = account.seeds.map((seed) => {
       if (seed.kind === 'constant') {
         const seedManifest = visit(seed.type, this.typeManifestVisitor);
@@ -412,7 +409,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
     if (accounts.length > 0) {
-      imports.add('shared', 'isWritable');
+      imports.add('shared', 'addAccountMeta');
     }
 
     // Data Args.
@@ -564,8 +561,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     account: ResolvedInstructionAccount
   ): string {
     if (account.isPda && account.isSigner === false) return 'Pda';
-    if (account.isSigner === 'either') return 'PublicKey | Signer';
-    return account.isSigner ? 'Signer' : 'PublicKey';
+    if (account.isSigner === 'either') return 'PublicKey | Pda | Signer';
+    return account.isSigner ? 'Signer' : 'PublicKey | Pda';
   }
 
   protected getInstructionAccountImports(
@@ -573,9 +570,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   ): JavaScriptImportMap {
     const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
-      if (account.isPda && account.isSigner === false) {
-        imports.add('core', 'Pda');
-      }
+      if (account.isSigner !== true && !account.isPda)
+        imports.add('core', 'PublicKey');
+      if (account.isSigner !== true) imports.add('core', 'Pda');
+      if (account.isSigner !== false) imports.add('core', 'Signer');
+
       if (account.defaultsTo?.kind === 'publicKey') {
         imports.add('core', 'publicKey');
       } else if (account.defaultsTo?.kind === 'pda') {
@@ -595,13 +594,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           account.defaultsTo.importFrom,
           camelCase(account.defaultsTo.name)
         );
-      }
-      if (account.resolvedIsSigner === 'either') {
-        imports.add('core', ['PublicKey', 'publicKey', 'Signer', 'isSigner']);
-      } else if (account.resolvedIsSigner) {
-        imports.add('core', 'Signer');
-      } else {
-        imports.add('core', 'PublicKey');
       }
     });
     return imports;

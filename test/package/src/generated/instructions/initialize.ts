@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -16,7 +17,7 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -25,17 +26,17 @@ import {
 
 // Accounts.
 export type InitializeInstructionAccounts = {
-  candyMachine: PublicKey;
-  authorityPda: PublicKey;
-  authority?: PublicKey;
+  candyMachine: PublicKey | Pda;
+  authorityPda: PublicKey | Pda;
+  authority?: PublicKey | Pda;
   payer?: Signer;
-  collectionMetadata: PublicKey;
-  collectionMint: PublicKey;
-  collectionMasterEdition: PublicKey;
+  collectionMetadata: PublicKey | Pda;
+  collectionMint: PublicKey | Pda;
+  collectionMasterEdition: PublicKey | Pda;
   collectionUpdateAuthority: Signer;
-  collectionAuthorityRecord: PublicKey;
-  tokenMetadataProgram?: PublicKey;
-  systemProgram?: PublicKey;
+  collectionAuthorityRecord: PublicKey | Pda;
+  tokenMetadataProgram?: PublicKey | Pda;
+  systemProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -81,126 +82,90 @@ export function initialize(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplCandyMachineCore',
-      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplCandyMachineCore',
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    candyMachine: [input.candyMachine, true] as const,
+    authorityPda: [input.authorityPda, true] as const,
+    collectionMetadata: [input.collectionMetadata, false] as const,
+    collectionMint: [input.collectionMint, false] as const,
+    collectionMasterEdition: [input.collectionMasterEdition, false] as const,
+    collectionUpdateAuthority: [input.collectionUpdateAuthority, true] as const,
+    collectionAuthorityRecord: [input.collectionAuthorityRecord, true] as const,
+  };
   const resolvingArgs = {};
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'authority',
-    input.authority ?? context.identity.publicKey
+    input.authority
+      ? ([input.authority, false] as const)
+      : ([context.identity.publicKey, false] as const)
   );
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, false] as const)
+      : ([context.payer, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
     'tokenMetadataProgram',
-    input.tokenMetadataProgram ?? {
-      ...context.programs.getPublicKey(
-        'mplTokenMetadata',
-        'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-      ),
-      isWritable: false,
-    }
+    input.tokenMetadataProgram
+      ? ([input.tokenMetadataProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'mplTokenMetadata',
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'systemProgram',
-    input.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    input.systemProgram
+      ? ([input.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Candy Machine.
-  keys.push({
-    pubkey: resolvedAccounts.candyMachine,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.candyMachine, true),
-  });
-
-  // Authority Pda.
-  keys.push({
-    pubkey: resolvedAccounts.authorityPda,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.authorityPda, true),
-  });
-
-  // Authority.
-  keys.push({
-    pubkey: resolvedAccounts.authority,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.authority, false),
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer);
-  keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
-    isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, false),
-  });
-
-  // Collection Metadata.
-  keys.push({
-    pubkey: resolvedAccounts.collectionMetadata,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMetadata, false),
-  });
-
-  // Collection Mint.
-  keys.push({
-    pubkey: resolvedAccounts.collectionMint,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMint, false),
-  });
-
-  // Collection Master Edition.
-  keys.push({
-    pubkey: resolvedAccounts.collectionMasterEdition,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMasterEdition, false),
-  });
-
-  // Collection Update Authority.
-  signers.push(resolvedAccounts.collectionUpdateAuthority);
-  keys.push({
-    pubkey: resolvedAccounts.collectionUpdateAuthority.publicKey,
-    isSigner: true,
-    isWritable: isWritable(resolvedAccounts.collectionUpdateAuthority, true),
-  });
-
-  // Collection Authority Record.
-  keys.push({
-    pubkey: resolvedAccounts.collectionAuthorityRecord,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
-  });
-
-  // Token Metadata Program.
-  keys.push({
-    pubkey: resolvedAccounts.tokenMetadataProgram,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenMetadataProgram, false),
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: resolvedAccounts.systemProgram,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.candyMachine, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authorityPda, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMint, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionMasterEdition,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionUpdateAuthority,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionAuthorityRecord,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.tokenMetadataProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
 
   // Data.
   const data =

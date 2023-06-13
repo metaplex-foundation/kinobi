@@ -1,22 +1,3 @@
 {% for account in accounts %}
-  {% set isWritableString = 'true' if account.isWritable else 'false' %}
-  // {{ account.name | camelCase | titleCase }}{% if account.resolvedIsOptional %} (optional){% endif %}.
-  {% if account.resolvedIsOptional %}
-  if (resolvedAccounts.{{ account.name | camelCase }}) {
-  {% endif %}
-    {% if account.resolvedIsSigner === 'either' %}
-      if (isSigner(resolvedAccounts.{{ account.name | camelCase }})) {
-        signers.push(resolvedAccounts.{{ account.name | camelCase }});
-      }
-      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}), isSigner: isSigner(resolvedAccounts.{{ account.name | camelCase }}), isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
-    {% elif account.resolvedIsSigner  %}
-      signers.push(resolvedAccounts.{{ account.name | camelCase }});
-      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}.publicKey, isSigner: true, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
-    {% else %}
-      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}, isSigner: false, isWritable: isWritable(resolvedAccounts.{{ account.name | camelCase }}, {{ isWritableString }}) });
-    {% endif %}
-  {% if account.resolvedIsOptional %}
-  }
-  {% endif %}
-
+  addAccountMeta(keys, signers, resolvedAccounts.{{ account.name | camelCase }}, {{ 'true' if account.resolvedIsOptional else 'false' }});
 {% endfor %}

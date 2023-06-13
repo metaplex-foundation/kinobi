@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@metaplex-foundation/umi':
-    specifier: ^0.7.4
-    version: 0.7.4
+    specifier: ^0.8.0
+    version: 0.8.0
 
 devDependencies:
   typescript:
@@ -12,8 +12,8 @@ devDependencies:
 
 packages:
 
-  /@metaplex-foundation/umi@0.7.4:
-    resolution: {integrity: sha512-A6IgqD9LdDmDHhtKEZ1/riJUNqljoz9IkDG1GtWUAvcN7POY1tjsTyDWYyvyQrVCHucV+0z9HUDUQ9WLV0AG8g==}
+  /@metaplex-foundation/umi@0.8.0:
+    resolution: {integrity: sha512-vpHMc7DtqSaTDZnFQiQAkMsZt2c1ird2vQN9cAgP7cmTQofk93SqvReAxdN8soigGEY3Zsy1zwZlGaZv5itYKA==}
     dev: false
 
   /typescript@4.9.4:

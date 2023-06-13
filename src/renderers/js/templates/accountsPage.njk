@@ -25,20 +25,20 @@ export function deserialize{{ account.name | pascalCase }}(
 
 export async function fetch{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }}> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
   assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
   return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
 }
 
 export async function safeFetch{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }} | null> {
-  const maybeAccount = await context.rpc.getAccount(publicKey, options);
+  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
   return maybeAccount.exists
     ? deserialize{{ account.name | pascalCase }}(context, maybeAccount)
     : null;
@@ -46,10 +46,10 @@ export async function safeFetch{{ account.name | pascalCase }}(
 
 export async function fetchAll{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
 ): Promise<{{ account.name | pascalCase }}[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
     return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
@@ -58,10 +58,10 @@ export async function fetchAll{{ account.name | pascalCase }}(
 
 export async function safeFetchAll{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKeys: PublicKey[],
+  publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
 ): Promise<{{ account.name | pascalCase }}[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys, options);
+  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserialize{{ account.name | pascalCase }}(context, maybeAccount as RpcAccount));
@@ -108,7 +108,7 @@ export function find{{ account.name | pascalCase }}Pda(
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}
-        programId.bytes,
+        s.publicKey().serialize(programId),
       {% elif seed.kind === 'constant' %}
         {{ seed.typeManifest.serializer }}.serialize({{ seed.value.render }}),
       {% else %}

@@ -4,7 +4,7 @@
 {% block main %}
 {{ imports }}
 
-export const {{ program.name | snakeCase | upper }}_PROGRAM_ID = publicKey('{{ program.publicKey }}');
+export const {{ program.name | snakeCase | upper }}_PROGRAM_ID = '{{ program.publicKey }}' as PublicKey<'{{ program.publicKey }}'>;
 
 {{ macros.docblock(program.docs) }}
 export function create{{ program.name | pascalCase }}Program(): Program {

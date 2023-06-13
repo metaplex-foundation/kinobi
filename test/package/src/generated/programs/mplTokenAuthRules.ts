@@ -11,16 +11,14 @@ import {
   Context,
   Program,
   PublicKey,
-  publicKey,
 } from '@metaplex-foundation/umi';
 import {
   getMplTokenAuthRulesErrorFromCode,
   getMplTokenAuthRulesErrorFromName,
 } from '../errors';
 
-export const MPL_TOKEN_AUTH_RULES_PROGRAM_ID = publicKey(
-  'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-);
+export const MPL_TOKEN_AUTH_RULES_PROGRAM_ID =
+  'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as PublicKey<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
 export function createMplTokenAuthRulesProgram(): Program {
   return {

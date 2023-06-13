@@ -11,16 +11,14 @@ import {
   Context,
   Program,
   PublicKey,
-  publicKey,
 } from '@metaplex-foundation/umi';
 import {
   getMplCandyMachineCoreErrorFromCode,
   getMplCandyMachineCoreErrorFromName,
 } from '../errors';
 
-export const MPL_CANDY_MACHINE_CORE_PROGRAM_ID = publicKey(
-  'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-);
+export const MPL_CANDY_MACHINE_CORE_PROGRAM_ID =
+  'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as PublicKey<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
 export function createMplCandyMachineCoreProgram(): Program {
   return {

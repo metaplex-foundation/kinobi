@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Pda,
   PublicKey,
   Serializer,
   Signer,
@@ -16,27 +17,27 @@ import {
   mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type MintFromCandyMachineInstructionAccounts = {
-  candyMachine: PublicKey;
-  authorityPda: PublicKey;
+  candyMachine: PublicKey | Pda;
+  authorityPda: PublicKey | Pda;
   mintAuthority: Signer;
   payer?: Signer;
-  nftMint: PublicKey;
+  nftMint: PublicKey | Pda;
   nftMintAuthority?: Signer;
-  nftMetadata: PublicKey;
-  nftMasterEdition: PublicKey;
-  collectionAuthorityRecord: PublicKey;
-  collectionMint: PublicKey;
-  collectionMetadata: PublicKey;
-  collectionMasterEdition: PublicKey;
-  collectionUpdateAuthority: PublicKey;
-  tokenMetadataProgram?: PublicKey;
-  tokenProgram?: PublicKey;
-  systemProgram?: PublicKey;
-  recentSlothashes: PublicKey;
+  nftMetadata: PublicKey | Pda;
+  nftMasterEdition: PublicKey | Pda;
+  collectionAuthorityRecord: PublicKey | Pda;
+  collectionMint: PublicKey | Pda;
+  collectionMetadata: PublicKey | Pda;
+  collectionMasterEdition: PublicKey | Pda;
+  collectionUpdateAuthority: PublicKey | Pda;
+  tokenMetadataProgram?: PublicKey | Pda;
+  tokenProgram?: PublicKey | Pda;
+  systemProgram?: PublicKey | Pda;
+  recentSlothashes: PublicKey | Pda;
 };
 
 // Data.
@@ -81,178 +82,118 @@ export function mintFromCandyMachine(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplCandyMachineCore',
-      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplCandyMachineCore',
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
+  const resolvedAccounts = {
+    candyMachine: [input.candyMachine, true] as const,
+    authorityPda: [input.authorityPda, true] as const,
+    mintAuthority: [input.mintAuthority, false] as const,
+    nftMint: [input.nftMint, true] as const,
+    nftMetadata: [input.nftMetadata, true] as const,
+    nftMasterEdition: [input.nftMasterEdition, true] as const,
+    collectionAuthorityRecord: [
+      input.collectionAuthorityRecord,
+      false,
+    ] as const,
+    collectionMint: [input.collectionMint, false] as const,
+    collectionMetadata: [input.collectionMetadata, true] as const,
+    collectionMasterEdition: [input.collectionMasterEdition, false] as const,
+    collectionUpdateAuthority: [
+      input.collectionUpdateAuthority,
+      false,
+    ] as const,
+    recentSlothashes: [input.recentSlothashes, false] as const,
+  };
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
     'nftMintAuthority',
-    input.nftMintAuthority ?? context.identity
+    input.nftMintAuthority
+      ? ([input.nftMintAuthority, false] as const)
+      : ([context.identity, false] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'tokenMetadataProgram',
-    input.tokenMetadataProgram ?? {
-      ...context.programs.getPublicKey(
-        'mplTokenMetadata',
-        'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-      ),
-      isWritable: false,
-    }
+    input.tokenMetadataProgram
+      ? ([input.tokenMetadataProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'mplTokenMetadata',
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'tokenProgram',
-    input.tokenProgram ?? {
-      ...context.programs.getPublicKey(
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isWritable: false,
-    }
+    input.tokenProgram
+      ? ([input.tokenProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splToken',
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'systemProgram',
-    input.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    input.systemProgram
+      ? ([input.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
-  // Candy Machine.
-  keys.push({
-    pubkey: resolvedAccounts.candyMachine,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.candyMachine, true),
-  });
-
-  // Authority Pda.
-  keys.push({
-    pubkey: resolvedAccounts.authorityPda,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.authorityPda, true),
-  });
-
-  // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority);
-  keys.push({
-    pubkey: resolvedAccounts.mintAuthority.publicKey,
-    isSigner: true,
-    isWritable: isWritable(resolvedAccounts.mintAuthority, false),
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer);
-  keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
-    isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
-  });
-
-  // Nft Mint.
-  keys.push({
-    pubkey: resolvedAccounts.nftMint,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.nftMint, true),
-  });
-
-  // Nft Mint Authority.
-  signers.push(resolvedAccounts.nftMintAuthority);
-  keys.push({
-    pubkey: resolvedAccounts.nftMintAuthority.publicKey,
-    isSigner: true,
-    isWritable: isWritable(resolvedAccounts.nftMintAuthority, false),
-  });
-
-  // Nft Metadata.
-  keys.push({
-    pubkey: resolvedAccounts.nftMetadata,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.nftMetadata, true),
-  });
-
-  // Nft Master Edition.
-  keys.push({
-    pubkey: resolvedAccounts.nftMasterEdition,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.nftMasterEdition, true),
-  });
-
-  // Collection Authority Record.
-  keys.push({
-    pubkey: resolvedAccounts.collectionAuthorityRecord,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
-  });
-
-  // Collection Mint.
-  keys.push({
-    pubkey: resolvedAccounts.collectionMint,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMint, false),
-  });
-
-  // Collection Metadata.
-  keys.push({
-    pubkey: resolvedAccounts.collectionMetadata,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
-  });
-
-  // Collection Master Edition.
-  keys.push({
-    pubkey: resolvedAccounts.collectionMasterEdition,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMasterEdition, false),
-  });
-
-  // Collection Update Authority.
-  keys.push({
-    pubkey: resolvedAccounts.collectionUpdateAuthority,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionUpdateAuthority, false),
-  });
-
-  // Token Metadata Program.
-  keys.push({
-    pubkey: resolvedAccounts.tokenMetadataProgram,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenMetadataProgram, false),
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: resolvedAccounts.tokenProgram,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenProgram, false),
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: resolvedAccounts.systemProgram,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
-  });
-
-  // Recent Slothashes.
-  keys.push({
-    pubkey: resolvedAccounts.recentSlothashes,
-    isSigner: false,
-    isWritable: isWritable(resolvedAccounts.recentSlothashes, false),
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.candyMachine, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authorityPda, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMetadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMasterEdition, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionAuthorityRecord,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionMasterEdition,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionUpdateAuthority,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.tokenMetadataProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.recentSlothashes, false);
 
   // Data.
   const data = getMintFromCandyMachineInstructionDataSerializer(
