@@ -152,7 +152,7 @@ export function transfer(
       ? ([input.masterEdition, false] as const)
       : resolveMasterEditionFromTokenStandard(
           context,
-          resolvedAccounts,
+          { ...input, ...resolvedAccounts },
           { ...input, ...resolvingArgs },
           programId,
           false
