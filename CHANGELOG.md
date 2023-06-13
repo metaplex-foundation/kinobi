@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.10.1
+
+### Patch Changes
+
+- [`88939ca`](https://github.com/metaplex-foundation/kinobi/commit/88939cabecacd3f107e8579580e74b83a7ff0bea) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Pass unresolved raw accounts to resolvers
+
 ## 0.10.0
 
 ### Minor Changes
