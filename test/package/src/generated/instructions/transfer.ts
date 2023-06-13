@@ -154,7 +154,8 @@ export function transfer(
           context,
           resolvedAccounts,
           { ...input, ...resolvingArgs },
-          programId
+          programId,
+          false
         )
   );
   addObjectProperty(

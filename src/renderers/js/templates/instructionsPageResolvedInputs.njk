@@ -80,7 +80,7 @@
     {% elif input.defaultsTo.kind === 'value' %}
       {% set inputDefault %}{{ input.defaultsTo.render }}{% endset %}
     {% elif input.defaultsTo.kind === 'resolver' %}
-      {% set inputDefault %}{{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, { ...{{ argsObj }}, ...resolvingArgs }, programId){% endset %}
+      {% set inputDefault %}{{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, { ...{{ argsObj }}, ...resolvingArgs }, programId, {{ inputDefaultIsWritable }}){% endset %}
     {% else %}
       {% set inputDefault %}programId /* Unrecognized default kind [{{ input.defaultsTo.kind }}]. */{% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
