@@ -8,7 +8,6 @@
 
 import {
   AccountMeta,
-  HasPublicKey,
   isSigner,
   Pda,
   publicKey,
