@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.10.0
+
+### Minor Changes
+
+- [#45](https://github.com/metaplex-foundation/kinobi/pull/45) [`6210eeb`](https://github.com/metaplex-foundation/kinobi/commit/6210eebf5554f15877e5aad71417434fa44132e3) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use PublicKeys as base58 strings. See `@metaplex-foundation/umi` changelog for more details.
+
 ## 0.9.0
 
 ### Minor Changes
