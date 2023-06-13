@@ -570,9 +570,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   ): JavaScriptImportMap {
     const imports = new JavaScriptImportMap();
     accounts.forEach((account) => {
-      if (account.isSigner === false) {
-        imports.add('core', ['Pda', 'publicKey']);
-      }
+      if (account.isSigner !== true && !account.isPda)
+        imports.add('core', 'PublicKey');
+      if (account.isSigner !== true) imports.add('core', 'Pda');
+      if (account.isSigner !== false) imports.add('core', 'Signer');
+
       if (account.defaultsTo?.kind === 'publicKey') {
         imports.add('core', 'publicKey');
       } else if (account.defaultsTo?.kind === 'pda') {
@@ -592,13 +594,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           account.defaultsTo.importFrom,
           camelCase(account.defaultsTo.name)
         );
-      }
-      if (account.resolvedIsSigner === 'either') {
-        imports.add('core', ['PublicKey', 'publicKey', 'Signer', 'isSigner']);
-      } else if (account.resolvedIsSigner) {
-        imports.add('core', 'Signer');
-      } else {
-        imports.add('core', 'PublicKey');
       }
     });
     return imports;

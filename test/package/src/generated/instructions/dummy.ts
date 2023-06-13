@@ -14,9 +14,7 @@ import {
   Serializer,
   Signer,
   TransactionBuilder,
-  isSigner,
   mapSerializer,
-  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';

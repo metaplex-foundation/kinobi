@@ -15,7 +15,6 @@ import {
   Signer,
   TransactionBuilder,
   mapSerializer,
-  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
