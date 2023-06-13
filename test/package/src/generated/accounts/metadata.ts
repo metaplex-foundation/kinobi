@@ -152,7 +152,7 @@ export async function fetchMetadata(
 
 export async function safeFetchMetadata(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Metadata | null> {
   const maybeAccount = await context.rpc.getAccount(
@@ -271,7 +271,7 @@ export function findMetadataPda(
   );
   return context.eddsa.findPda(programId, [
     s.string({ size: 'variable' }).serialize('metadata'),
-    programId.bytes,
+    s.publicKey().serialize(programId),
     s.publicKey().serialize(seeds.mint),
   ]);
 }

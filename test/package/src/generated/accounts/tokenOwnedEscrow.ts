@@ -92,7 +92,7 @@ export async function fetchTokenOwnedEscrow(
 
 export async function safeFetchTokenOwnedEscrow(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow | null> {
   const maybeAccount = await context.rpc.getAccount(

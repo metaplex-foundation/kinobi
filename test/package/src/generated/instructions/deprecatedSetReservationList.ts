@@ -19,7 +19,6 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -95,40 +94,40 @@ export function deprecatedSetReservationList(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    masterEdition: [input.masterEdition, true] as const,
+    reservationList: [input.reservationList, true] as const,
+    resource: [input.resource, false] as const,
+  };
   const resolvingArgs = {};
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition, false),
+    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.masterEdition, true),
+    isWritable: resolvedAccounts.masterEdition[1],
   });
 
   // Reservation List.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.reservationList, false),
+    pubkey: publicKey(resolvedAccounts.reservationList[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.reservationList, true),
+    isWritable: resolvedAccounts.reservationList[1],
   });
 
   // Resource.
-  signers.push(resolvedAccounts.resource);
+  signers.push(resolvedAccounts.resource[0]);
   keys.push({
-    pubkey: resolvedAccounts.resource.publicKey,
+    pubkey: resolvedAccounts.resource[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.resource, false),
+    isWritable: resolvedAccounts.resource[1],
   });
 
   // Data.

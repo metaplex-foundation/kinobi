@@ -89,7 +89,7 @@ export async function fetchDelegateRecord(
 
 export async function safeFetchDelegateRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<DelegateRecord | null> {
   const maybeAccount = await context.rpc.getAccount(
@@ -170,7 +170,7 @@ export function findDelegateRecordPda(
   );
   return context.eddsa.findPda(programId, [
     s.string({ size: 'variable' }).serialize('delegate_record'),
-    programId.bytes,
+    s.publicKey().serialize(programId),
     getDelegateRoleSerializer(context).serialize(seeds.role),
   ]);
 }

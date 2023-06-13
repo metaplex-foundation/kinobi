@@ -19,7 +19,6 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
 import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
 
 // Accounts.
@@ -89,33 +88,32 @@ export function updateMetadataAccountV2(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    metadata: [accounts.metadata, true] as const,
+    updateAuthority: [accounts.updateAuthority, false] as const,
+  };
   const resolvingArgs = {};
-  const resolvedAccounts = { ...accounts, ...resolvingAccounts };
   const resolvedArgs = { ...args, ...resolvingArgs };
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, true),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority);
+  signers.push(resolvedAccounts.updateAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority.publicKey,
+    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
+    isWritable: resolvedAccounts.updateAuthority[1],
   });
 
   // Data.

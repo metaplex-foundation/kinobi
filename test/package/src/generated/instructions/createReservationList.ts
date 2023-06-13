@@ -20,7 +20,7 @@ import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
 } from '../../hooked';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 
 // Accounts.
 export type CreateReservationListInstructionAccounts = {
@@ -56,97 +56,108 @@ export function createReservationList(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    reservationList: [accounts.reservationList, true] as const,
+    updateAuthority: [accounts.updateAuthority, false] as const,
+    masterEdition: [accounts.masterEdition, false] as const,
+    resource: [accounts.resource, false] as const,
+    metadata: [accounts.metadata, false] as const,
+  };
   const resolvingArgs = {};
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'payer',
-    accounts.payer ?? context.payer
+    accounts.payer
+      ? ([accounts.payer, false] as const)
+      : ([context.payer, false] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'systemProgram',
-    accounts.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    accounts.systemProgram
+      ? ([accounts.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'rent',
-    accounts.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
+    accounts.rent
+      ? ([accounts.rent, false] as const)
+      : ([
+          publicKey('SysvarRent111111111111111111111111111111111'),
+          false,
+        ] as const)
   );
-  const resolvedAccounts = { ...accounts, ...resolvingAccounts };
   const resolvedArgs = { ...args, ...resolvingArgs };
 
   // Reservation List.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.reservationList, false),
+    pubkey: publicKey(resolvedAccounts.reservationList[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.reservationList, true),
+    isWritable: resolvedAccounts.reservationList[1],
   });
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, false),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority);
+  signers.push(resolvedAccounts.updateAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority.publicKey,
+    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
+    isWritable: resolvedAccounts.updateAuthority[1],
   });
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition, false),
+    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.masterEdition, false),
+    isWritable: resolvedAccounts.masterEdition[1],
   });
 
   // Resource.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.resource, false),
+    pubkey: publicKey(resolvedAccounts.resource[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.resource, false),
+    isWritable: resolvedAccounts.resource[1],
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, false),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram, false),
+    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
+    isWritable: resolvedAccounts.systemProgram[1],
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent, false),
+    pubkey: publicKey(resolvedAccounts.rent[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.rent, false),
+    isWritable: resolvedAccounts.rent[1],
   });
 
   // Data.

@@ -18,7 +18,6 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -86,48 +85,52 @@ export function setCollectionSize(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    collectionMetadata: [input.collectionMetadata, true] as const,
+    collectionAuthority: [input.collectionAuthority, true] as const,
+    collectionMint: [input.collectionMint, false] as const,
+    collectionAuthorityRecord: [
+      input.collectionAuthorityRecord,
+      false,
+    ] as const,
+  };
   const resolvingArgs = {};
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata, false),
+    pubkey: publicKey(resolvedAccounts.collectionMetadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
+    isWritable: resolvedAccounts.collectionMetadata[1],
   });
 
   // Collection Authority.
-  signers.push(resolvedAccounts.collectionAuthority);
+  signers.push(resolvedAccounts.collectionAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.collectionAuthority.publicKey,
+    pubkey: resolvedAccounts.collectionAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.collectionAuthority, true),
+    isWritable: resolvedAccounts.collectionAuthority[1],
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint, false),
+    pubkey: publicKey(resolvedAccounts.collectionMint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMint, false),
+    isWritable: resolvedAccounts.collectionMint[1],
   });
 
   // Collection Authority Record (optional).
-  if (resolvedAccounts.collectionAuthorityRecord) {
+  if (resolvedAccounts.collectionAuthorityRecord[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
+      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, false),
+      isWritable: resolvedAccounts.collectionAuthorityRecord[1],
     });
   }
 

@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 
 // Accounts.
 export type SetMintAuthorityInstructionAccounts = {
@@ -67,44 +67,45 @@ export function setMintAuthority(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplCandyMachineCore',
-      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplCandyMachineCore',
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    candyMachine: [input.candyMachine, true] as const,
+    mintAuthority: [input.mintAuthority, false] as const,
+  };
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'authority',
-    input.authority ?? context.identity
+    input.authority
+      ? ([input.authority, false] as const)
+      : ([context.identity, false] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Candy Machine.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine, false),
+    pubkey: publicKey(resolvedAccounts.candyMachine[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.candyMachine, true),
+    isWritable: resolvedAccounts.candyMachine[1],
   });
 
   // Authority.
-  signers.push(resolvedAccounts.authority);
+  signers.push(resolvedAccounts.authority[0]);
   keys.push({
-    pubkey: resolvedAccounts.authority.publicKey,
+    pubkey: resolvedAccounts.authority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.authority, false),
+    isWritable: resolvedAccounts.authority[1],
   });
 
   // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority);
+  signers.push(resolvedAccounts.mintAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.mintAuthority.publicKey,
+    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.mintAuthority, false),
+    isWritable: resolvedAccounts.mintAuthority[1],
   });
 
   // Data.

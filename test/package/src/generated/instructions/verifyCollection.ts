@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 
 // Accounts.
 export type VerifyCollectionInstructionAccounts = {
@@ -72,64 +72,75 @@ export function verifyCollection(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedAccounts = {
+    metadata: [input.metadata, true] as const,
+    collectionAuthority: [input.collectionAuthority, true] as const,
+    collectionMint: [input.collectionMint, false] as const,
+    collection: [input.collection, false] as const,
+    collectionMasterEditionAccount: [
+      input.collectionMasterEditionAccount,
+      false,
+    ] as const,
+  };
+  addObjectProperty(
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
+  );
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, true),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Collection Authority.
-  signers.push(resolvedAccounts.collectionAuthority);
+  signers.push(resolvedAccounts.collectionAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.collectionAuthority.publicKey,
+    pubkey: resolvedAccounts.collectionAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.collectionAuthority, true),
+    isWritable: resolvedAccounts.collectionAuthority[1],
   });
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Collection Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint, false),
+    pubkey: publicKey(resolvedAccounts.collectionMint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMint, false),
+    isWritable: resolvedAccounts.collectionMint[1],
   });
 
   // Collection.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collection, false),
+    pubkey: publicKey(resolvedAccounts.collection[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collection, false),
+    isWritable: resolvedAccounts.collection[1],
   });
 
   // Collection Master Edition Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMasterEditionAccount, false),
-    isSigner: false,
-    isWritable: isWritable(
-      resolvedAccounts.collectionMasterEditionAccount,
+    pubkey: publicKey(
+      resolvedAccounts.collectionMasterEditionAccount[0],
       false
     ),
+    isSigner: false,
+    isWritable: resolvedAccounts.collectionMasterEditionAccount[1],
   });
 
   // Data.

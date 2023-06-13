@@ -19,7 +19,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 import {
   Operation,
   OperationArgs,
@@ -106,148 +106,164 @@ export function validate(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenAuthRules',
-      'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenAuthRules',
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    ruleSet: [input.ruleSet, true] as const,
+    optRuleSigner1: [input.optRuleSigner1, false] as const,
+    optRuleSigner2: [input.optRuleSigner2, false] as const,
+    optRuleSigner3: [input.optRuleSigner3, false] as const,
+    optRuleSigner4: [input.optRuleSigner4, false] as const,
+    optRuleSigner5: [input.optRuleSigner5, false] as const,
+    optRuleNonsigner1: [input.optRuleNonsigner1, false] as const,
+    optRuleNonsigner2: [input.optRuleNonsigner2, false] as const,
+    optRuleNonsigner3: [input.optRuleNonsigner3, false] as const,
+    optRuleNonsigner4: [input.optRuleNonsigner4, false] as const,
+    optRuleNonsigner5: [input.optRuleNonsigner5, false] as const,
+  };
   const resolvingArgs = {};
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvingAccounts,
-    'systemProgram',
-    input.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  addObjectProperty(
+    resolvedAccounts,
+    'systemProgram',
+    input.systemProgram
+      ? ([input.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
+  );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Rule Set.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.ruleSet, false),
+    pubkey: publicKey(resolvedAccounts.ruleSet[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.ruleSet, true),
+    isWritable: resolvedAccounts.ruleSet[1],
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram, false),
+    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
+    isWritable: resolvedAccounts.systemProgram[1],
   });
 
   // Opt Rule Signer1 (optional).
-  if (resolvedAccounts.optRuleSigner1) {
-    if (isSigner(resolvedAccounts.optRuleSigner1)) {
-      signers.push(resolvedAccounts.optRuleSigner1);
+  if (resolvedAccounts.optRuleSigner1[0]) {
+    if (isSigner(resolvedAccounts.optRuleSigner1[0])) {
+      signers.push(resolvedAccounts.optRuleSigner1[0]);
     }
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleSigner1, false),
-      isSigner: isSigner(resolvedAccounts.optRuleSigner1),
-      isWritable: isWritable(resolvedAccounts.optRuleSigner1, false),
+      pubkey: publicKey(resolvedAccounts.optRuleSigner1[0], false),
+      isSigner: isSigner(resolvedAccounts.optRuleSigner1[0]),
+      isWritable: resolvedAccounts.optRuleSigner1[1],
     });
   }
 
   // Opt Rule Signer2 (optional).
-  if (resolvedAccounts.optRuleSigner2) {
-    signers.push(resolvedAccounts.optRuleSigner2);
+  if (resolvedAccounts.optRuleSigner2[0]) {
+    signers.push(resolvedAccounts.optRuleSigner2[0]);
     keys.push({
-      pubkey: resolvedAccounts.optRuleSigner2.publicKey,
+      pubkey: resolvedAccounts.optRuleSigner2[0].publicKey,
       isSigner: true,
-      isWritable: isWritable(resolvedAccounts.optRuleSigner2, false),
+      isWritable: resolvedAccounts.optRuleSigner2[1],
     });
   }
 
   // Opt Rule Signer3 (optional).
-  if (resolvedAccounts.optRuleSigner3) {
-    signers.push(resolvedAccounts.optRuleSigner3);
+  if (resolvedAccounts.optRuleSigner3[0]) {
+    signers.push(resolvedAccounts.optRuleSigner3[0]);
     keys.push({
-      pubkey: resolvedAccounts.optRuleSigner3.publicKey,
+      pubkey: resolvedAccounts.optRuleSigner3[0].publicKey,
       isSigner: true,
-      isWritable: isWritable(resolvedAccounts.optRuleSigner3, false),
+      isWritable: resolvedAccounts.optRuleSigner3[1],
     });
   }
 
   // Opt Rule Signer4 (optional).
-  if (resolvedAccounts.optRuleSigner4) {
-    signers.push(resolvedAccounts.optRuleSigner4);
+  if (resolvedAccounts.optRuleSigner4[0]) {
+    signers.push(resolvedAccounts.optRuleSigner4[0]);
     keys.push({
-      pubkey: resolvedAccounts.optRuleSigner4.publicKey,
+      pubkey: resolvedAccounts.optRuleSigner4[0].publicKey,
       isSigner: true,
-      isWritable: isWritable(resolvedAccounts.optRuleSigner4, false),
+      isWritable: resolvedAccounts.optRuleSigner4[1],
     });
   }
 
   // Opt Rule Signer5 (optional).
-  if (resolvedAccounts.optRuleSigner5) {
-    signers.push(resolvedAccounts.optRuleSigner5);
+  if (resolvedAccounts.optRuleSigner5[0]) {
+    signers.push(resolvedAccounts.optRuleSigner5[0]);
     keys.push({
-      pubkey: resolvedAccounts.optRuleSigner5.publicKey,
+      pubkey: resolvedAccounts.optRuleSigner5[0].publicKey,
       isSigner: true,
-      isWritable: isWritable(resolvedAccounts.optRuleSigner5, false),
+      isWritable: resolvedAccounts.optRuleSigner5[1],
     });
   }
 
   // Opt Rule Nonsigner1 (optional).
-  if (resolvedAccounts.optRuleNonsigner1) {
+  if (resolvedAccounts.optRuleNonsigner1[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner1, false),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner1[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.optRuleNonsigner1, false),
+      isWritable: resolvedAccounts.optRuleNonsigner1[1],
     });
   }
 
   // Opt Rule Nonsigner2 (optional).
-  if (resolvedAccounts.optRuleNonsigner2) {
+  if (resolvedAccounts.optRuleNonsigner2[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner2, false),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner2[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.optRuleNonsigner2, false),
+      isWritable: resolvedAccounts.optRuleNonsigner2[1],
     });
   }
 
   // Opt Rule Nonsigner3 (optional).
-  if (resolvedAccounts.optRuleNonsigner3) {
+  if (resolvedAccounts.optRuleNonsigner3[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner3, false),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner3[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.optRuleNonsigner3, false),
+      isWritable: resolvedAccounts.optRuleNonsigner3[1],
     });
   }
 
   // Opt Rule Nonsigner4 (optional).
-  if (resolvedAccounts.optRuleNonsigner4) {
+  if (resolvedAccounts.optRuleNonsigner4[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner4, false),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner4[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.optRuleNonsigner4, false),
+      isWritable: resolvedAccounts.optRuleNonsigner4[1],
     });
   }
 
   // Opt Rule Nonsigner5 (optional).
-  if (resolvedAccounts.optRuleNonsigner5) {
+  if (resolvedAccounts.optRuleNonsigner5[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.optRuleNonsigner5, false),
+      pubkey: publicKey(resolvedAccounts.optRuleNonsigner5[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.optRuleNonsigner5, false),
+      isWritable: resolvedAccounts.optRuleNonsigner5[1],
     });
   }
 

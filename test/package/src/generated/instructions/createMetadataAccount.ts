@@ -21,7 +21,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findMetadataPda, getMetadataSize } from '../accounts';
-import { PickPartial, addObjectProperty, isWritable } from '../shared';
+import { PickPartial, addObjectProperty } from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 
 // Accounts.
@@ -121,97 +121,114 @@ export function createMetadataAccount(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    mint: [input.mint, false] as const,
+    mintAuthority: [input.mintAuthority, false] as const,
+    updateAuthority: [input.updateAuthority, false] as const,
+  };
   const resolvingArgs = {};
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'metadata',
-    input.metadata ??
-      findMetadataPda(context, { mint: publicKey(input.mint, false) })
+    input.metadata
+      ? ([input.metadata, true] as const)
+      : ([
+          findMetadataPda(context, { mint: publicKey(input.mint, false) }),
+          true,
+        ] as const)
   );
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
     'systemProgram',
-    input.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    input.systemProgram
+      ? ([input.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'rent',
-    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
+    input.rent
+      ? ([input.rent, false] as const)
+      : ([
+          publicKey('SysvarRent111111111111111111111111111111111'),
+          false,
+        ] as const)
   );
   addObjectProperty(
     resolvingArgs,
     'metadataBump',
-    input.metadataBump ?? resolvingAccounts.metadata[1]
+    input.metadataBump ?? resolvedAccounts.metadata[0][1]
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, true),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint, false),
+    pubkey: publicKey(resolvedAccounts.mint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.mint, false),
+    isWritable: resolvedAccounts.mint[1],
   });
 
   // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority);
+  signers.push(resolvedAccounts.mintAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.mintAuthority.publicKey,
+    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.mintAuthority, false),
+    isWritable: resolvedAccounts.mintAuthority[1],
   });
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Update Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.updateAuthority, false),
+    pubkey: publicKey(resolvedAccounts.updateAuthority[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
+    isWritable: resolvedAccounts.updateAuthority[1],
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram, false),
+    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
+    isWritable: resolvedAccounts.systemProgram[1],
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent, false),
+    pubkey: publicKey(resolvedAccounts.rent[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.rent, false),
+    isWritable: resolvedAccounts.rent[1],
   });
 
   // Data.

@@ -35,7 +35,7 @@ export async function fetch{{ account.name | pascalCase }}(
 
 export async function safeFetch{{ account.name | pascalCase }}(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }} | null> {
   const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
@@ -108,7 +108,7 @@ export function find{{ account.name | pascalCase }}Pda(
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}
-        programId.bytes,
+        s.publicKey().serialize(programId),
       {% elif seed.kind === 'constant' %}
         {{ seed.typeManifest.serializer }}.serialize({{ seed.value.render }}),
       {% else %}

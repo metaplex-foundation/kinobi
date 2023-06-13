@@ -18,7 +18,6 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
 
 // Accounts.
 export type ConvertMasterEditionV1ToV2InstructionAccounts = {
@@ -69,37 +68,37 @@ export function convertMasterEditionV1ToV2(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedAccounts = {
+    masterEdition: [input.masterEdition, true] as const,
+    oneTimeAuth: [input.oneTimeAuth, true] as const,
+    printingMint: [input.printingMint, true] as const,
+  };
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition, false),
+    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.masterEdition, true),
+    isWritable: resolvedAccounts.masterEdition[1],
   });
 
   // One Time Auth.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.oneTimeAuth, false),
+    pubkey: publicKey(resolvedAccounts.oneTimeAuth[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.oneTimeAuth, true),
+    isWritable: resolvedAccounts.oneTimeAuth[1],
   });
 
   // Printing Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint, false),
+    pubkey: publicKey(resolvedAccounts.printingMint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.printingMint, true),
+    isWritable: resolvedAccounts.printingMint[1],
   });
 
   // Data.

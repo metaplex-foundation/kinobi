@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
 
 // Accounts.
@@ -76,108 +76,118 @@ export function burn(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    metadata: [input.metadata, true] as const,
+    owner: [input.owner, true] as const,
+    mint: [input.mint, true] as const,
+    tokenAccount: [input.tokenAccount, true] as const,
+    masterEditionAccount: [input.masterEditionAccount, true] as const,
+  };
   const resolvingArgs = {};
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'splTokenProgram',
-    input.splTokenProgram ?? {
-      ...context.programs.getPublicKey(
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isWritable: false,
-    }
+    input.splTokenProgram
+      ? ([input.splTokenProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splToken',
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'collectionMetadata',
-    input.collectionMetadata ?? programId
+    input.collectionMetadata
+      ? ([input.collectionMetadata, true] as const)
+      : ([programId, false] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'authorizationRules',
-    input.authorizationRules ?? programId
+    input.authorizationRules
+      ? ([input.authorizationRules, false] as const)
+      : ([programId, false] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'authorizationRulesProgram',
-    input.authorizationRulesProgram ?? programId
+    input.authorizationRulesProgram
+      ? ([input.authorizationRulesProgram, false] as const)
+      : ([programId, false] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, true),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Owner.
-  signers.push(resolvedAccounts.owner);
+  signers.push(resolvedAccounts.owner[0]);
   keys.push({
-    pubkey: resolvedAccounts.owner.publicKey,
+    pubkey: resolvedAccounts.owner[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.owner, true),
+    isWritable: resolvedAccounts.owner[1],
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint, false),
+    pubkey: publicKey(resolvedAccounts.mint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.mint, true),
+    isWritable: resolvedAccounts.mint[1],
   });
 
   // Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount, false),
+    pubkey: publicKey(resolvedAccounts.tokenAccount[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenAccount, true),
+    isWritable: resolvedAccounts.tokenAccount[1],
   });
 
   // Master Edition Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionAccount, false),
+    pubkey: publicKey(resolvedAccounts.masterEditionAccount[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.masterEditionAccount, true),
+    isWritable: resolvedAccounts.masterEditionAccount[1],
   });
 
   // Spl Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram, false),
+    pubkey: publicKey(resolvedAccounts.splTokenProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.splTokenProgram, false),
+    isWritable: resolvedAccounts.splTokenProgram[1],
   });
 
   // Collection Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata, false),
+    pubkey: publicKey(resolvedAccounts.collectionMetadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionMetadata, true),
+    isWritable: resolvedAccounts.collectionMetadata[1],
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules, false),
+    pubkey: publicKey(resolvedAccounts.authorizationRules[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.authorizationRules, false),
+    isWritable: resolvedAccounts.authorizationRules[1],
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram, false),
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
+    isWritable: resolvedAccounts.authorizationRulesProgram[1],
   });
 
   // Data.

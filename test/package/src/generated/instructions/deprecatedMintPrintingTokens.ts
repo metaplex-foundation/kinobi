@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -96,84 +96,93 @@ export function deprecatedMintPrintingTokens(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    destination: [input.destination, true] as const,
+    printingMint: [input.printingMint, true] as const,
+    updateAuthority: [input.updateAuthority, false] as const,
+    metadata: [input.metadata, false] as const,
+    masterEdition: [input.masterEdition, false] as const,
+  };
   const resolvingArgs = {};
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'tokenProgram',
-    input.tokenProgram ?? {
-      ...context.programs.getPublicKey(
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isWritable: false,
-    }
+    input.tokenProgram
+      ? ([input.tokenProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splToken',
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'rent',
-    input.rent ?? publicKey('SysvarRent111111111111111111111111111111111')
+    input.rent
+      ? ([input.rent, false] as const)
+      : ([
+          publicKey('SysvarRent111111111111111111111111111111111'),
+          false,
+        ] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Destination.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.destination, false),
+    pubkey: publicKey(resolvedAccounts.destination[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.destination, true),
+    isWritable: resolvedAccounts.destination[1],
   });
 
   // Printing Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint, false),
+    pubkey: publicKey(resolvedAccounts.printingMint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.printingMint, true),
+    isWritable: resolvedAccounts.printingMint[1],
   });
 
   // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority);
+  signers.push(resolvedAccounts.updateAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority.publicKey,
+    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
+    isWritable: resolvedAccounts.updateAuthority[1],
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, false),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Master Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition, false),
+    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.masterEdition, false),
+    isWritable: resolvedAccounts.masterEdition[1],
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
+    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenProgram, false),
+    isWritable: resolvedAccounts.tokenProgram[1],
   });
 
   // Rent.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.rent, false),
+    pubkey: publicKey(resolvedAccounts.rent[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.rent, false),
+    isWritable: resolvedAccounts.rent[1],
   });
 
   // Data.

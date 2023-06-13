@@ -114,7 +114,7 @@ export async function fetchCandyMachine(
 
 export async function safeFetchCandyMachine(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<CandyMachine | null> {
   const maybeAccount = await context.rpc.getAccount(

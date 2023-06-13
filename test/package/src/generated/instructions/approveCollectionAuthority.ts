@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 
 // Accounts.
 export type ApproveCollectionAuthorityInstructionAccounts = {
@@ -79,87 +79,98 @@ export function approveCollectionAuthority(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
+  const resolvedAccounts = {
+    collectionAuthorityRecord: [input.collectionAuthorityRecord, true] as const,
+    newCollectionAuthority: [input.newCollectionAuthority, false] as const,
+    updateAuthority: [input.updateAuthority, true] as const,
+    metadata: [input.metadata, false] as const,
+    mint: [input.mint, false] as const,
+    rent: [input.rent, false] as const,
+  };
   addObjectProperty(
-    resolvingAccounts,
-    'systemProgram',
-    input.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  addObjectProperty(
+    resolvedAccounts,
+    'systemProgram',
+    input.systemProgram
+      ? ([input.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
+  );
 
   // Collection Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord, false),
+    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.collectionAuthorityRecord, true),
+    isWritable: resolvedAccounts.collectionAuthorityRecord[1],
   });
 
   // New Collection Authority.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionAuthority, false),
+    pubkey: publicKey(resolvedAccounts.newCollectionAuthority[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.newCollectionAuthority, false),
+    isWritable: resolvedAccounts.newCollectionAuthority[1],
   });
 
   // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority);
+  signers.push(resolvedAccounts.updateAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority.publicKey,
+    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.updateAuthority, true),
+    isWritable: resolvedAccounts.updateAuthority[1],
   });
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, false),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint, false),
+    pubkey: publicKey(resolvedAccounts.mint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.mint, false),
+    isWritable: resolvedAccounts.mint[1],
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram, false),
+    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
+    isWritable: resolvedAccounts.systemProgram[1],
   });
 
   // Rent (optional).
-  if (resolvedAccounts.rent) {
+  if (resolvedAccounts.rent[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.rent, false),
+      pubkey: publicKey(resolvedAccounts.rent[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.rent, false),
+      isWritable: resolvedAccounts.rent[1],
     });
   }
 

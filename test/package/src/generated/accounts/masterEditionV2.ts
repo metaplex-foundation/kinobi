@@ -83,7 +83,7 @@ export async function fetchMasterEditionV2(
 
 export async function safeFetchMasterEditionV2(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV2 | null> {
   const maybeAccount = await context.rpc.getAccount(
@@ -168,7 +168,7 @@ export function findMasterEditionV2Pda(
   );
   return context.eddsa.findPda(programId, [
     s.string({ size: 'variable' }).serialize('metadata'),
-    programId.bytes,
+    s.publicKey().serialize(programId),
     s.publicKey().serialize(seeds.mint),
     s.string({ size: 'variable' }).serialize('edition'),
   ]);

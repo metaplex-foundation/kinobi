@@ -18,7 +18,6 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { isWritable } from '../shared';
 
 // Accounts.
 export type UpdatePrimarySaleHappenedViaTokenInstructionAccounts = {
@@ -69,38 +68,38 @@ export function updatePrimarySaleHappenedViaToken(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  const resolvedAccounts = {
+    metadata: [input.metadata, true] as const,
+    owner: [input.owner, false] as const,
+    token: [input.token, false] as const,
+  };
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, true),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Owner.
-  signers.push(resolvedAccounts.owner);
+  signers.push(resolvedAccounts.owner[0]);
   keys.push({
-    pubkey: resolvedAccounts.owner.publicKey,
+    pubkey: resolvedAccounts.owner[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.owner, false),
+    isWritable: resolvedAccounts.owner[1],
   });
 
   // Token.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.token, false),
+    pubkey: publicKey(resolvedAccounts.token[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.token, false),
+    isWritable: resolvedAccounts.token[1],
   });
 
   // Data.

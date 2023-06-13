@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 
 // Accounts.
 export type FreezeDelegatedAccountInstructionAccounts = {
@@ -71,63 +71,66 @@ export function freezeDelegatedAccount(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    delegate: [input.delegate, true] as const,
+    tokenAccount: [input.tokenAccount, true] as const,
+    edition: [input.edition, false] as const,
+    mint: [input.mint, false] as const,
+  };
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'tokenProgram',
-    input.tokenProgram ?? {
-      ...context.programs.getPublicKey(
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isWritable: false,
-    }
+    input.tokenProgram
+      ? ([input.tokenProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splToken',
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+          ),
+          false,
+        ] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Delegate.
-  signers.push(resolvedAccounts.delegate);
+  signers.push(resolvedAccounts.delegate[0]);
   keys.push({
-    pubkey: resolvedAccounts.delegate.publicKey,
+    pubkey: resolvedAccounts.delegate[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.delegate, true),
+    isWritable: resolvedAccounts.delegate[1],
   });
 
   // Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount, false),
+    pubkey: publicKey(resolvedAccounts.tokenAccount[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenAccount, true),
+    isWritable: resolvedAccounts.tokenAccount[1],
   });
 
   // Edition.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.edition, false),
+    pubkey: publicKey(resolvedAccounts.edition[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.edition, false),
+    isWritable: resolvedAccounts.edition[1],
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint, false),
+    pubkey: publicKey(resolvedAccounts.mint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.mint, false),
+    isWritable: resolvedAccounts.mint[1],
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
+    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenProgram, false),
+    isWritable: resolvedAccounts.tokenProgram[1],
   });
 
   // Data.

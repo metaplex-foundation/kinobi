@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 
 // Accounts.
 export type CreateFrequencyRuleInstructionAccounts = {
@@ -89,52 +89,58 @@ export function createFrequencyRule(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenAuthRules',
-      'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenAuthRules',
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    frequencyPda: [input.frequencyPda, true] as const,
+  };
   const resolvingArgs = {};
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvingAccounts,
-    'systemProgram',
-    input.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
+  addObjectProperty(
+    resolvedAccounts,
+    'systemProgram',
+    input.systemProgram
+      ? ([input.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
+  );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Frequency Pda.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.frequencyPda, false),
+    pubkey: publicKey(resolvedAccounts.frequencyPda[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.frequencyPda, true),
+    isWritable: resolvedAccounts.frequencyPda[1],
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram, false),
+    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
+    isWritable: resolvedAccounts.systemProgram[1],
   });
 
   // Data.

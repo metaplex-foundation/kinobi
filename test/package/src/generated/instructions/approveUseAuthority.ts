@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 
 // Accounts.
 export type ApproveUseAuthorityInstructionAccounts = {
@@ -96,121 +96,136 @@ export function approveUseAuthority(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    useAuthorityRecord: [input.useAuthorityRecord, true] as const,
+    owner: [input.owner, true] as const,
+    user: [input.user, false] as const,
+    ownerTokenAccount: [input.ownerTokenAccount, true] as const,
+    metadata: [input.metadata, false] as const,
+    mint: [input.mint, false] as const,
+    burner: [input.burner, false] as const,
+    rent: [input.rent, false] as const,
+  };
   const resolvingArgs = {};
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
     'tokenProgram',
-    input.tokenProgram ?? {
-      ...context.programs.getPublicKey(
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      ),
-      isWritable: false,
-    }
+    input.tokenProgram
+      ? ([input.tokenProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splToken',
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+          ),
+          false,
+        ] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'systemProgram',
-    input.systemProgram ?? {
-      ...context.programs.getPublicKey(
-        'splSystem',
-        '11111111111111111111111111111111'
-      ),
-      isWritable: false,
-    }
+    input.systemProgram
+      ? ([input.systemProgram, false] as const)
+      : ([
+          context.programs.getPublicKey(
+            'splSystem',
+            '11111111111111111111111111111111'
+          ),
+          false,
+        ] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Use Authority Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.useAuthorityRecord, false),
+    pubkey: publicKey(resolvedAccounts.useAuthorityRecord[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.useAuthorityRecord, true),
+    isWritable: resolvedAccounts.useAuthorityRecord[1],
   });
 
   // Owner.
-  signers.push(resolvedAccounts.owner);
+  signers.push(resolvedAccounts.owner[0]);
   keys.push({
-    pubkey: resolvedAccounts.owner.publicKey,
+    pubkey: resolvedAccounts.owner[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.owner, true),
+    isWritable: resolvedAccounts.owner[1],
   });
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // User.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.user, false),
+    pubkey: publicKey(resolvedAccounts.user[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.user, false),
+    isWritable: resolvedAccounts.user[1],
   });
 
   // Owner Token Account.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.ownerTokenAccount, false),
+    pubkey: publicKey(resolvedAccounts.ownerTokenAccount[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.ownerTokenAccount, true),
+    isWritable: resolvedAccounts.ownerTokenAccount[1],
   });
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, false),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint, false),
+    pubkey: publicKey(resolvedAccounts.mint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.mint, false),
+    isWritable: resolvedAccounts.mint[1],
   });
 
   // Burner.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.burner, false),
+    pubkey: publicKey(resolvedAccounts.burner[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.burner, false),
+    isWritable: resolvedAccounts.burner[1],
   });
 
   // Token Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram, false),
+    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.tokenProgram, false),
+    isWritable: resolvedAccounts.tokenProgram[1],
   });
 
   // System Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram, false),
+    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.systemProgram, false),
+    isWritable: resolvedAccounts.systemProgram[1],
   });
 
   // Rent (optional).
-  if (resolvedAccounts.rent) {
+  if (resolvedAccounts.rent[0]) {
     keys.push({
-      pubkey: publicKey(resolvedAccounts.rent, false),
+      pubkey: publicKey(resolvedAccounts.rent[0], false),
       isSigner: false,
-      isWritable: isWritable(resolvedAccounts.rent, false),
+      isWritable: resolvedAccounts.rent[1],
     });
   }
 

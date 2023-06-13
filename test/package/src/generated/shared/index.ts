@@ -6,7 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey, HasPublicKey } from '@metaplex-foundation/umi';
+import type {
+  HasPublicKey,
+  Pda,
+  PublicKey,
+  Signer,
+} from '@metaplex-foundation/umi';
 
 /**
  * Transforms the given object such that the given keys are optional.
@@ -14,6 +19,13 @@ import { PublicKey, HasPublicKey } from '@metaplex-foundation/umi';
  */
 export type PickPartial<T, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
+
+/**
+ * Defines an instruction account that keeps track of whether it is writable or not.
+ * @internal
+ */
+export type WithWritable<T extends PublicKey | Pda | Signer | undefined> =
+  readonly [T, boolean];
 
 /**
  * Helper function that dynamically updates the type of
@@ -27,16 +39,3 @@ export function addObjectProperty<T extends object, U extends string, V>(
 ): asserts obj is T & { [K in U]: V } {
   (obj as any)[key] = value;
 }
-
-/**
- * Helper function that enables public keys and signers
- * to override the `isWritable` property of an account meta.
- * @internal
- */
-export const isWritable = (
-  account: (PublicKey | HasPublicKey) & { isWritable?: boolean },
-  value: boolean
-): boolean =>
-  'isWritable' in account && typeof account.isWritable === 'boolean'
-    ? account.isWritable
-    : value;

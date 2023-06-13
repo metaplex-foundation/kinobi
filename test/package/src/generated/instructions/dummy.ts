@@ -20,7 +20,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';
-import { PickPartial, addObjectProperty, isWritable } from '../shared';
+import { PickPartial, addObjectProperty } from '../shared';
 import { DelegateRole } from '../types';
 
 // Accounts.
@@ -77,116 +77,138 @@ export function dummy(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplCandyMachineCore',
-      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplCandyMachineCore',
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    updateAuthority: [input.updateAuthority, false] as const,
+  };
   const resolvingArgs = {};
-  addObjectProperty(resolvingAccounts, 'mint', input.mint ?? programId);
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
+    'mint',
+    input.mint ? ([input.mint, true] as const) : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
     'edition',
-    input.edition ?? resolvingAccounts.mint
+    input.edition
+      ? ([input.edition, true] as const)
+      : ([resolvedAccounts.mint[0], true] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'mintAuthority',
-    input.mintAuthority ?? input.updateAuthority
+    input.mintAuthority
+      ? ([input.mintAuthority, true] as const)
+      : ([input.updateAuthority, true] as const)
   );
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
-  addObjectProperty(resolvingAccounts, 'bar', input.bar ?? programId);
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'bar',
+    input.bar ? ([input.bar, false] as const) : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
     'foo',
-    input.foo ?? resolvingAccounts.bar
+    input.foo
+      ? ([input.foo, true] as const)
+      : ([resolvedAccounts.bar[0], true] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'delegateRecord',
-    input.delegateRecord ??
-      findDelegateRecordPda(context, { role: DelegateRole.Collection })
+    input.delegateRecord
+      ? ([input.delegateRecord, true] as const)
+      : ([
+          findDelegateRecordPda(context, { role: DelegateRole.Collection }),
+          true,
+        ] as const)
   );
   addObjectProperty(
     resolvingArgs,
     'identityArg',
     input.identityArg ?? context.identity.publicKey
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
 
   // Edition (optional).
-  if (resolvedAccounts.edition) {
-    if (isSigner(resolvedAccounts.edition)) {
-      signers.push(resolvedAccounts.edition);
+  if (resolvedAccounts.edition[0]) {
+    if (isSigner(resolvedAccounts.edition[0])) {
+      signers.push(resolvedAccounts.edition[0]);
     }
     keys.push({
-      pubkey: publicKey(resolvedAccounts.edition, false),
-      isSigner: isSigner(resolvedAccounts.edition),
-      isWritable: isWritable(resolvedAccounts.edition, true),
+      pubkey: publicKey(resolvedAccounts.edition[0], false),
+      isSigner: isSigner(resolvedAccounts.edition[0]),
+      isWritable: resolvedAccounts.edition[1],
     });
   }
 
   // Mint.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.mint, false),
+    pubkey: publicKey(resolvedAccounts.mint[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.mint, true),
+    isWritable: resolvedAccounts.mint[1],
   });
 
   // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority);
+  signers.push(resolvedAccounts.updateAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.updateAuthority.publicKey,
+    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.updateAuthority, false),
+    isWritable: resolvedAccounts.updateAuthority[1],
   });
 
   // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority);
+  signers.push(resolvedAccounts.mintAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.mintAuthority.publicKey,
+    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.mintAuthority, true),
+    isWritable: resolvedAccounts.mintAuthority[1],
   });
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Foo.
-  if (isSigner(resolvedAccounts.foo)) {
-    signers.push(resolvedAccounts.foo);
+  if (isSigner(resolvedAccounts.foo[0])) {
+    signers.push(resolvedAccounts.foo[0]);
   }
   keys.push({
-    pubkey: publicKey(resolvedAccounts.foo, false),
-    isSigner: isSigner(resolvedAccounts.foo),
-    isWritable: isWritable(resolvedAccounts.foo, true),
+    pubkey: publicKey(resolvedAccounts.foo[0], false),
+    isSigner: isSigner(resolvedAccounts.foo[0]),
+    isWritable: resolvedAccounts.foo[1],
   });
 
   // Bar.
-  if (isSigner(resolvedAccounts.bar)) {
-    signers.push(resolvedAccounts.bar);
+  if (isSigner(resolvedAccounts.bar[0])) {
+    signers.push(resolvedAccounts.bar[0]);
   }
   keys.push({
-    pubkey: publicKey(resolvedAccounts.bar, false),
-    isSigner: isSigner(resolvedAccounts.bar),
-    isWritable: isWritable(resolvedAccounts.bar, false),
+    pubkey: publicKey(resolvedAccounts.bar[0], false),
+    isSigner: isSigner(resolvedAccounts.bar[0]),
+    isWritable: resolvedAccounts.bar[1],
   });
 
   // Delegate Record.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.delegateRecord, false),
+    pubkey: publicKey(resolvedAccounts.delegateRecord[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.delegateRecord, true),
+    isWritable: resolvedAccounts.delegateRecord[1],
   });
 
   // Data.

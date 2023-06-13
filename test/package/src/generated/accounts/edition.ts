@@ -78,7 +78,7 @@ export async function fetchEdition(
 
 export async function safeFetchEdition(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Edition | null> {
   const maybeAccount = await context.rpc.getAccount(

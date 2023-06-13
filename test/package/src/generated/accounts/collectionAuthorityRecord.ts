@@ -90,7 +90,7 @@ export async function fetchCollectionAuthorityRecord(
 
 export async function safeFetchCollectionAuthorityRecord(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<CollectionAuthorityRecord | null> {
   const maybeAccount = await context.rpc.getAccount(

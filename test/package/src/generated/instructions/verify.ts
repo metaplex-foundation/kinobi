@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty, isWritable } from '../shared';
+import { addObjectProperty } from '../shared';
 import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 
 // Accounts.
@@ -71,66 +71,75 @@ export function verify(
   const keys: AccountMeta[] = [];
 
   // Program ID.
-  const programId = {
-    ...context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    ),
-    isWritable: false,
-  };
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
 
   // Resolved inputs.
-  const resolvingAccounts = {};
+  const resolvedAccounts = {
+    metadata: [input.metadata, true] as const,
+    collectionAuthority: [input.collectionAuthority, true] as const,
+  };
   const resolvingArgs = {};
-  addObjectProperty(resolvingAccounts, 'payer', input.payer ?? context.payer);
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
+    'payer',
+    input.payer
+      ? ([input.payer, true] as const)
+      : ([context.payer, true] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
     'authorizationRules',
-    input.authorizationRules ?? programId
+    input.authorizationRules
+      ? ([input.authorizationRules, false] as const)
+      : ([programId, false] as const)
   );
   addObjectProperty(
-    resolvingAccounts,
+    resolvedAccounts,
     'authorizationRulesProgram',
-    input.authorizationRulesProgram ?? programId
+    input.authorizationRulesProgram
+      ? ([input.authorizationRulesProgram, false] as const)
+      : ([programId, false] as const)
   );
-  const resolvedAccounts = { ...input, ...resolvingAccounts };
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   // Metadata.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata, false),
+    pubkey: publicKey(resolvedAccounts.metadata[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.metadata, true),
+    isWritable: resolvedAccounts.metadata[1],
   });
 
   // Collection Authority.
-  signers.push(resolvedAccounts.collectionAuthority);
+  signers.push(resolvedAccounts.collectionAuthority[0]);
   keys.push({
-    pubkey: resolvedAccounts.collectionAuthority.publicKey,
+    pubkey: resolvedAccounts.collectionAuthority[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.collectionAuthority, true),
+    isWritable: resolvedAccounts.collectionAuthority[1],
   });
 
   // Payer.
-  signers.push(resolvedAccounts.payer);
+  signers.push(resolvedAccounts.payer[0]);
   keys.push({
-    pubkey: resolvedAccounts.payer.publicKey,
+    pubkey: resolvedAccounts.payer[0].publicKey,
     isSigner: true,
-    isWritable: isWritable(resolvedAccounts.payer, true),
+    isWritable: resolvedAccounts.payer[1],
   });
 
   // Authorization Rules.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules, false),
+    pubkey: publicKey(resolvedAccounts.authorizationRules[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.authorizationRules, false),
+    isWritable: resolvedAccounts.authorizationRules[1],
   });
 
   // Authorization Rules Program.
   keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram, false),
+    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram[0], false),
     isSigner: false,
-    isWritable: isWritable(resolvedAccounts.authorizationRulesProgram, false),
+    isWritable: resolvedAccounts.authorizationRulesProgram[1],
   });
 
   // Data.

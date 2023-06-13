@@ -182,13 +182,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         `programs/${camelCase(name)}.ts`,
         this.render('programsPage.njk', {
           imports: new JavaScriptImportMap()
-            .add('core', [
-              'ClusterFilter',
-              'Context',
-              'Program',
-              'publicKey',
-              'PublicKey',
-            ])
+            .add('core', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
             .add('errors', [
               `get${pascalCaseName}ErrorFromCode`,
               `get${pascalCaseName}ErrorFromName`,
@@ -284,8 +278,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Seeds.
-    const pdaHelperNeedsSerializer =
-      account.seeds.filter((seed) => seed.kind !== 'programId').length > 0;
+    const pdaHelperNeedsSerializer = account.seeds.length > 0;
     const seeds = account.seeds.map((seed) => {
       if (seed.kind === 'constant') {
         const seedManifest = visit(seed.type, this.typeManifestVisitor);
@@ -415,9 +408,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
-    if (accounts.length > 0) {
-      imports.add('shared', 'isWritable');
-    }
 
     // Data Args.
     const linkedDataArgs = !!instruction.dataArgs.link;

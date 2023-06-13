@@ -91,7 +91,7 @@ export async function fetchFrequencyAccount(
 
 export async function safeFetchFrequencyAccount(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount | null> {
   const maybeAccount = await context.rpc.getAccount(
@@ -168,7 +168,7 @@ export function findFrequencyAccountPda(
   );
   return context.eddsa.findPda(programId, [
     s.string({ size: 'variable' }).serialize('frequency_pda'),
-    programId.bytes,
+    s.publicKey().serialize(programId),
   ]);
 }
 

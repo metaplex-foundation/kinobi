@@ -59,7 +59,7 @@ export async function fetchReservationListV1(
 
 export async function safeFetchReservationListV1(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<ReservationListV1 | null> {
   const maybeAccount = await context.rpc.getAccount(

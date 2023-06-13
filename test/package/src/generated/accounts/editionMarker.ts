@@ -74,7 +74,7 @@ export async function fetchEditionMarker(
 
 export async function safeFetchEditionMarker(
   context: Pick<Context, 'rpc' | 'serializer'>,
-  publicKey: PublicKey,
+  publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<EditionMarker | null> {
   const maybeAccount = await context.rpc.getAccount(
