@@ -20,7 +20,7 @@ import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
 } from '../../hooked';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type CreateReservationListInstructionAccounts = {
@@ -102,63 +102,14 @@ export function createReservationList(
   );
   const resolvedArgs = { ...args, ...resolvingArgs };
 
-  // Reservation List.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.reservationList[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.reservationList[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.updateAuthority[1],
-  });
-
-  // Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEdition[1],
-  });
-
-  // Resource.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.resource[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.resource[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Rent.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.rent[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.rent[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.reservationList, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.resource, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
 
   // Data.
   const data =

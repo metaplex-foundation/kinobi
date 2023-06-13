@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 
 // Accounts.
 export type UpdatePrimarySaleHappenedViaTokenInstructionAccounts = {
@@ -80,27 +81,9 @@ export function updatePrimarySaleHappenedViaToken(
     token: [input.token, false] as const,
   };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Owner.
-  signers.push(resolvedAccounts.owner[0]);
-  keys.push({
-    pubkey: resolvedAccounts.owner[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.owner[1],
-  });
-
-  // Token.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.token[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.token[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.owner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.token, false);
 
   // Data.
   const data = getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(

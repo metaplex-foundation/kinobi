@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type MintFromCandyMachineInstructionAccounts = {
@@ -163,127 +163,38 @@ export function mintFromCandyMachine(
         ] as const)
   );
 
-  // Candy Machine.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.candyMachine[1],
-  });
-
-  // Authority Pda.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorityPda[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorityPda[1],
-  });
-
-  // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.mintAuthority[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Nft Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.nftMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.nftMint[1],
-  });
-
-  // Nft Mint Authority.
-  signers.push(resolvedAccounts.nftMintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.nftMintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.nftMintAuthority[1],
-  });
-
-  // Nft Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.nftMetadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.nftMetadata[1],
-  });
-
-  // Nft Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.nftMasterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.nftMasterEdition[1],
-  });
-
-  // Collection Authority Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionAuthorityRecord[1],
-  });
-
-  // Collection Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMint[1],
-  });
-
-  // Collection Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMetadata[1],
-  });
-
-  // Collection Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMasterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMasterEdition[1],
-  });
-
-  // Collection Update Authority.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionUpdateAuthority[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionUpdateAuthority[1],
-  });
-
-  // Token Metadata Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenMetadataProgram[1],
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenProgram[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Recent Slothashes.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.recentSlothashes[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.recentSlothashes[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.candyMachine, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authorityPda, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMetadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.nftMasterEdition, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionAuthorityRecord,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionMasterEdition,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionUpdateAuthority,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.tokenMetadataProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.recentSlothashes, false);
 
   // Data.
   const data = getMintFromCandyMachineInstructionDataSerializer(

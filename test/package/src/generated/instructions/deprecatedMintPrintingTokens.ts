@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -135,55 +135,13 @@ export function deprecatedMintPrintingTokens(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Destination.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.destination[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.destination[1],
-  });
-
-  // Printing Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.printingMint[1],
-  });
-
-  // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.updateAuthority[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEdition[1],
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenProgram[1],
-  });
-
-  // Rent.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.rent[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.rent[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.destination, false);
+  addAccountMeta(keys, signers, resolvedAccounts.printingMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
 
   // Data.
   const data =

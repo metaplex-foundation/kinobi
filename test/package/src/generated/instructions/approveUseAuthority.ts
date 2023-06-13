@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type ApproveUseAuthorityInstructionAccounts = {
@@ -148,86 +148,17 @@ export function approveUseAuthority(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Use Authority Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.useAuthorityRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.useAuthorityRecord[1],
-  });
-
-  // Owner.
-  signers.push(resolvedAccounts.owner[0]);
-  keys.push({
-    pubkey: resolvedAccounts.owner[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.owner[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // User.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.user[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.user[1],
-  });
-
-  // Owner Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.ownerTokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.ownerTokenAccount[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Burner.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.burner[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.burner[1],
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenProgram[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Rent (optional).
-  if (resolvedAccounts.rent[0]) {
-    keys.push({
-      pubkey: publicKey(resolvedAccounts.rent[0], false),
-      isSigner: false,
-      isWritable: resolvedAccounts.rent[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.useAuthorityRecord, false);
+  addAccountMeta(keys, signers, resolvedAccounts.owner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.user, false);
+  addAccountMeta(keys, signers, resolvedAccounts.ownerTokenAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.burner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.rent, true);
 
   // Data.
   const data =

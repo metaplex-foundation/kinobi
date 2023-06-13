@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type SetCollectionInstructionAccounts = {
@@ -143,106 +143,40 @@ export function setCollection(
         ] as const)
   );
 
-  // Candy Machine.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.candyMachine[1],
-  });
-
-  // Authority.
-  signers.push(resolvedAccounts.authority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.authority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.authority[1],
-  });
-
-  // Authority Pda.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorityPda[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorityPda[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Collection Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMint[1],
-  });
-
-  // Collection Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMetadata[1],
-  });
-
-  // Collection Authority Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionAuthorityRecord[1],
-  });
-
-  // New Collection Update Authority.
-  signers.push(resolvedAccounts.newCollectionUpdateAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.newCollectionUpdateAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.newCollectionUpdateAuthority[1],
-  });
-
-  // New Collection Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionMetadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.newCollectionMetadata[1],
-  });
-
-  // New Collection Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.newCollectionMint[1],
-  });
-
-  // New Collection Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionMasterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.newCollectionMasterEdition[1],
-  });
-
-  // New Collection Authority Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.newCollectionAuthorityRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.newCollectionAuthorityRecord[1],
-  });
-
-  // Token Metadata Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenMetadataProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenMetadataProgram[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.candyMachine, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authorityPda, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionAuthorityRecord,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.newCollectionUpdateAuthority,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.newCollectionMetadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.newCollectionMint, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.newCollectionMasterEdition,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.newCollectionAuthorityRecord,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.tokenMetadataProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
 
   // Data.
   const data = getSetCollectionInstructionDataSerializer(context).serialize({});

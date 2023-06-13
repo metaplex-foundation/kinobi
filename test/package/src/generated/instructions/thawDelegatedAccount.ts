@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type ThawDelegatedAccountInstructionAccounts = {
@@ -96,41 +96,11 @@ export function thawDelegatedAccount(
         ] as const)
   );
 
-  // Delegate.
-  signers.push(resolvedAccounts.delegate[0]);
-  keys.push({
-    pubkey: resolvedAccounts.delegate[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.delegate[1],
-  });
-
-  // Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenAccount[1],
-  });
-
-  // Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.edition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.edition[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenProgram[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.delegate, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
 
   // Data.
   const data = getThawDelegatedAccountInstructionDataSerializer(

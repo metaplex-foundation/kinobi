@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type CreateEscrowAccountInstructionAccounts = {
@@ -123,72 +123,15 @@ export function createEscrowAccount(
         ] as const)
   );
 
-  // Escrow.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.escrow[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.escrow[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenAccount[1],
-  });
-
-  // Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.edition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.edition[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Sysvar Instructions.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.sysvarInstructions[1],
-  });
-
-  // Authority (optional).
-  if (resolvedAccounts.authority[0]) {
-    signers.push(resolvedAccounts.authority[0]);
-    keys.push({
-      pubkey: resolvedAccounts.authority[0].publicKey,
-      isSigner: true,
-      isWritable: resolvedAccounts.authority[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.escrow, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authority, true);
 
   // Data.
   const data = getCreateEscrowAccountInstructionDataSerializer(

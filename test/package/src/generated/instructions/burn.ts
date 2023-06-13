@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
 
 // Accounts.
@@ -126,69 +126,20 @@ export function burn(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Owner.
-  signers.push(resolvedAccounts.owner[0]);
-  keys.push({
-    pubkey: resolvedAccounts.owner[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.owner[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenAccount[1],
-  });
-
-  // Master Edition Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEditionAccount[1],
-  });
-
-  // Spl Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.splTokenProgram[1],
-  });
-
-  // Collection Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMetadata[1],
-  });
-
-  // Authorization Rules.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRules[1],
-  });
-
-  // Authorization Rules Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRulesProgram[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.owner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEditionAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.authorizationRulesProgram,
+    false
+  );
 
   // Data.
   const data =

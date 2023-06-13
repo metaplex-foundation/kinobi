@@ -19,7 +19,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
 
 // Accounts.
@@ -159,70 +159,15 @@ export function createV1(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEdition[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.mintAuthority[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Update Authority.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.updateAuthority[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.updateAuthority[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Sysvar Instructions.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.sysvarInstructions[1],
-  });
-
-  // Spl Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.splTokenProgram[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
+  addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
 
   // Data.
   const data =

@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 
 // Accounts.
 export type SetTokenStandardInstructionAccounts = {
@@ -80,36 +81,10 @@ export function setTokenStandard(
     edition: [input.edition, false] as const,
   };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.updateAuthority[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Edition (optional).
-  if (resolvedAccounts.edition[0]) {
-    keys.push({
-      pubkey: publicKey(resolvedAccounts.edition[0], false),
-      isSigner: false,
-      isWritable: resolvedAccounts.edition[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.edition, true);
 
   // Data.
   const data = getSetTokenStandardInstructionDataSerializer(context).serialize(

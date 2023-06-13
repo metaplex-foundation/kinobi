@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 
 // Accounts.
@@ -105,42 +105,16 @@ export function verify(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Collection Authority.
-  signers.push(resolvedAccounts.collectionAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.collectionAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.collectionAuthority[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Authorization Rules.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRules[1],
-  });
-
-  // Authorization Rules Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRulesProgram[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.authorizationRulesProgram,
+    false
+  );
 
   // Data.
   const data =

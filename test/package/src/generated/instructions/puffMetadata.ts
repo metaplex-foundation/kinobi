@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 
 // Accounts.
 export type PuffMetadataInstructionAccounts = {
@@ -65,12 +66,7 @@ export function puffMetadata(
     metadata: [input.metadata, true] as const,
   };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
 
   // Data.
   const data = getPuffMetadataInstructionDataSerializer(context).serialize({});

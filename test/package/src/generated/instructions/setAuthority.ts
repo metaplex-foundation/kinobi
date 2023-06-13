@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type SetAuthorityInstructionAccounts = {
@@ -88,20 +88,8 @@ export function setAuthority(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Candy Machine.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.candyMachine[1],
-  });
-
-  // Authority.
-  signers.push(resolvedAccounts.authority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.authority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.authority[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.candyMachine, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
 
   // Data.
   const data =

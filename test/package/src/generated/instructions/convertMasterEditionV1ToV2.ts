@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 
 // Accounts.
 export type ConvertMasterEditionV1ToV2InstructionAccounts = {
@@ -80,26 +81,9 @@ export function convertMasterEditionV1ToV2(
     printingMint: [input.printingMint, true] as const,
   };
 
-  // Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEdition[1],
-  });
-
-  // One Time Auth.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.oneTimeAuth[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.oneTimeAuth[1],
-  });
-
-  // Printing Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.printingMint[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.oneTimeAuth, false);
+  addAccountMeta(keys, signers, resolvedAccounts.printingMint, false);
 
   // Data.
   const data = getConvertMasterEditionV1ToV2InstructionDataSerializer(

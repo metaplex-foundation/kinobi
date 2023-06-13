@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 
 // Accounts.
 export type RemoveCreatorVerificationInstructionAccounts = {
@@ -77,20 +78,8 @@ export function removeCreatorVerification(
     creator: [input.creator, false] as const,
   };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Creator.
-  signers.push(resolvedAccounts.creator[0]);
-  keys.push({
-    pubkey: resolvedAccounts.creator[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.creator[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.creator, false);
 
   // Data.
   const data = getRemoveCreatorVerificationInstructionDataSerializer(

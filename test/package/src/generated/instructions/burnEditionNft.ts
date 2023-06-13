@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type BurnEditionNftInstructionAccounts = {
@@ -114,76 +114,26 @@ export function burnEditionNft(
         ] as const)
   );
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Owner.
-  signers.push(resolvedAccounts.owner[0]);
-  keys.push({
-    pubkey: resolvedAccounts.owner[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.owner[1],
-  });
-
-  // Print Edition Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.printEditionMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.printEditionMint[1],
-  });
-
-  // Master Edition Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEditionMint[1],
-  });
-
-  // Print Edition Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.printEditionTokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.printEditionTokenAccount[1],
-  });
-
-  // Master Edition Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionTokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEditionTokenAccount[1],
-  });
-
-  // Master Edition Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEditionAccount[1],
-  });
-
-  // Print Edition Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.printEditionAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.printEditionAccount[1],
-  });
-
-  // Edition Marker Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.editionMarkerAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.editionMarkerAccount[1],
-  });
-
-  // Spl Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.splTokenProgram[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.owner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.printEditionMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEditionMint, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.printEditionTokenAccount,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.masterEditionTokenAccount,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.masterEditionAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.printEditionAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.editionMarkerAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
 
   // Data.
   const data = getBurnEditionNftInstructionDataSerializer(context).serialize(

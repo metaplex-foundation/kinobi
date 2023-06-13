@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type TransferOutOfEscrowInstructionAccounts = {
@@ -175,100 +175,19 @@ export function transferOutOfEscrow(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Escrow.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.escrow[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.escrow[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Attribute Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.attributeMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.attributeMint[1],
-  });
-
-  // Attribute Src.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.attributeSrc[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.attributeSrc[1],
-  });
-
-  // Attribute Dst.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.attributeDst[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.attributeDst[1],
-  });
-
-  // Escrow Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.escrowMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.escrowMint[1],
-  });
-
-  // Escrow Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.escrowAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.escrowAccount[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Ata Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.ataProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.ataProgram[1],
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenProgram[1],
-  });
-
-  // Sysvar Instructions.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.sysvarInstructions[1],
-  });
-
-  // Authority (optional).
-  if (resolvedAccounts.authority[0]) {
-    signers.push(resolvedAccounts.authority[0]);
-    keys.push({
-      pubkey: resolvedAccounts.authority[0].publicKey,
-      isSigner: true,
-      isWritable: resolvedAccounts.authority[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.escrow, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.attributeMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.attributeSrc, false);
+  addAccountMeta(keys, signers, resolvedAccounts.attributeDst, false);
+  addAccountMeta(keys, signers, resolvedAccounts.escrowMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.escrowAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.ataProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authority, true);
 
   // Data.
   const data =

@@ -6,9 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import type {
+import {
+  AccountMeta,
   HasPublicKey,
+  isSigner,
   Pda,
+  publicKey,
   PublicKey,
   Signer,
 } from '@metaplex-foundation/umi';
@@ -38,4 +41,42 @@ export function addObjectProperty<T extends object, U extends string, V>(
   value: V
 ): asserts obj is T & { [K in U]: V } {
   (obj as any)[key] = value;
+}
+
+/**
+ * Adds an instruction account to the given list of keys and signers.
+ * @internal
+ */
+export function addAccountMeta(
+  keys: AccountMeta[],
+  signers: Signer[],
+  account: WithWritable<PublicKey | Pda | Signer>,
+  isOptional: false
+): void;
+export function addAccountMeta(
+  keys: AccountMeta[],
+  signers: Signer[],
+  account: WithWritable<PublicKey | Pda | Signer | undefined>,
+  isOptional: true
+): void;
+export function addAccountMeta(
+  keys: AccountMeta[],
+  signers: Signer[],
+  account: WithWritable<PublicKey | Pda | Signer | undefined>,
+  isOptional: boolean
+): void {
+  if (isOptional && !account[0]) {
+    return;
+  }
+  if (!account[0]) {
+    throw new Error('Expected instruction account to be defined');
+  }
+  if (isSigner(account[0])) {
+    signers.push(account[0]);
+  }
+  keys.push({
+    pubkey: publicKey(account[0], false),
+    isSigner: isSigner(account[0]),
+    isWritable: account[1],
+  });
 }

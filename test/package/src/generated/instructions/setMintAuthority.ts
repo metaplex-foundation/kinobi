@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type SetMintAuthorityInstructionAccounts = {
@@ -85,28 +85,9 @@ export function setMintAuthority(
       : ([context.identity, false] as const)
   );
 
-  // Candy Machine.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.candyMachine[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.candyMachine[1],
-  });
-
-  // Authority.
-  signers.push(resolvedAccounts.authority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.authority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.authority[1],
-  });
-
-  // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.mintAuthority[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.candyMachine, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
 
   // Data.
   const data = getSetMintAuthorityInstructionDataSerializer(context).serialize(

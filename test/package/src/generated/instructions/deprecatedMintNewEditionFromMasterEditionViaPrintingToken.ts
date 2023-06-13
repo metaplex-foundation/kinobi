@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts =
@@ -163,122 +163,22 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
         ] as const)
   );
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.edition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.edition[1],
-  });
-
-  // Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEdition[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.mintAuthority[1],
-  });
-
-  // Printing Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.printingMint[1],
-  });
-
-  // Master Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterTokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterTokenAccount[1],
-  });
-
-  // Edition Marker.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.editionMarker[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.editionMarker[1],
-  });
-
-  // Burn Authority.
-  signers.push(resolvedAccounts.burnAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.burnAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.burnAuthority[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Master Update Authority.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterUpdateAuthority[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterUpdateAuthority[1],
-  });
-
-  // Master Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterMetadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterMetadata[1],
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenProgram[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Rent.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.rent[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.rent[1],
-  });
-
-  // Reservation List (optional).
-  if (resolvedAccounts.reservationList[0]) {
-    keys.push({
-      pubkey: publicKey(resolvedAccounts.reservationList[0], false),
-      isSigner: false,
-      isWritable: resolvedAccounts.reservationList[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.printingMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterTokenAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.editionMarker, false);
+  addAccountMeta(keys, signers, resolvedAccounts.burnAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterUpdateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterMetadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
+  addAccountMeta(keys, signers, resolvedAccounts.reservationList, true);
 
   // Data.
   const data =

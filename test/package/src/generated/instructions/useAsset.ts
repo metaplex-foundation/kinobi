@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   UseAssetArgs,
   UseAssetArgsArgs,
@@ -167,83 +167,22 @@ export function useAsset(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenAccount[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Use Authority.
-  signers.push(resolvedAccounts.useAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.useAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.useAuthority[1],
-  });
-
-  // Owner.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.owner[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.owner[1],
-  });
-
-  // Spl Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.splTokenProgram[1],
-  });
-
-  // Ata Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.ataProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.ataProgram[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Use Authority Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.useAuthorityRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.useAuthorityRecord[1],
-  });
-
-  // Authorization Rules.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRules[1],
-  });
-
-  // Authorization Rules Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRulesProgram[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.useAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.owner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.ataProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.useAuthorityRecord, false);
+  addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.authorizationRulesProgram,
+    false
+  );
 
   // Data.
   const data =

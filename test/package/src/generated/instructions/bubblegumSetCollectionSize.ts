@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -107,44 +108,16 @@ export function bubblegumSetCollectionSize(
   const resolvingArgs = {};
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Collection Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMetadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMetadata[1],
-  });
-
-  // Collection Authority.
-  signers.push(resolvedAccounts.collectionAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.collectionAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.collectionAuthority[1],
-  });
-
-  // Collection Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMint[1],
-  });
-
-  // Bubblegum Signer.
-  signers.push(resolvedAccounts.bubblegumSigner[0]);
-  keys.push({
-    pubkey: resolvedAccounts.bubblegumSigner[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.bubblegumSigner[1],
-  });
-
-  // Collection Authority Record (optional).
-  if (resolvedAccounts.collectionAuthorityRecord[0]) {
-    keys.push({
-      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord[0], false),
-      isSigner: false,
-      isWritable: resolvedAccounts.collectionAuthorityRecord[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.bubblegumSigner, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionAuthorityRecord,
+    true
+  );
 
   // Data.
   const data =

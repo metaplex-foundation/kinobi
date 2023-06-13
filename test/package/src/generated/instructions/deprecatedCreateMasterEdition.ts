@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   CreateMasterEditionArgs,
   CreateMasterEditionArgsArgs,
@@ -177,105 +177,29 @@ export function deprecatedCreateMasterEdition(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.edition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.edition[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Printing Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.printingMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.printingMint[1],
-  });
-
-  // One Time Printing Authorization Mint.
-  keys.push({
-    pubkey: publicKey(
-      resolvedAccounts.oneTimePrintingAuthorizationMint[0],
-      false
-    ),
-    isSigner: false,
-    isWritable: resolvedAccounts.oneTimePrintingAuthorizationMint[1],
-  });
-
-  // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.updateAuthority[1],
-  });
-
-  // Printing Mint Authority.
-  signers.push(resolvedAccounts.printingMintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.printingMintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.printingMintAuthority[1],
-  });
-
-  // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.mintAuthority[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenProgram[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Rent.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.rent[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.rent[1],
-  });
-
-  // One Time Printing Authorization Mint Authority.
-  signers.push(resolvedAccounts.oneTimePrintingAuthorizationMintAuthority[0]);
-  keys.push({
-    pubkey:
-      resolvedAccounts.oneTimePrintingAuthorizationMintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.oneTimePrintingAuthorizationMintAuthority[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.printingMint, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.oneTimePrintingAuthorizationMint,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.printingMintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.oneTimePrintingAuthorizationMintAuthority,
+    false
+  );
 
   // Data.
   const data =

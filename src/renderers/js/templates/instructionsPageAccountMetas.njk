@@ -1,21 +1,3 @@
 {% for account in accounts %}
-  // {{ account.name | camelCase | titleCase }}{% if account.resolvedIsOptional %} (optional){% endif %}.
-  {% if account.resolvedIsOptional %}
-  if (resolvedAccounts.{{ account.name | camelCase }}[0]) {
-  {% endif %}
-    {% if account.resolvedIsSigner === 'either' %}
-      if (isSigner(resolvedAccounts.{{ account.name | camelCase }}[0])) {
-        signers.push(resolvedAccounts.{{ account.name | camelCase }}[0]);
-      }
-      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}[0], false), isSigner: isSigner(resolvedAccounts.{{ account.name | camelCase }}[0]), isWritable: resolvedAccounts.{{ account.name | camelCase }}[1] });
-    {% elif account.resolvedIsSigner  %}
-      signers.push(resolvedAccounts.{{ account.name | camelCase }}[0]);
-      keys.push({ pubkey: resolvedAccounts.{{ account.name | camelCase }}[0].publicKey, isSigner: true, isWritable: resolvedAccounts.{{ account.name | camelCase }}[1] });
-    {% else %}
-      keys.push({ pubkey: publicKey(resolvedAccounts.{{ account.name | camelCase }}[0], false), isSigner: false, isWritable: resolvedAccounts.{{ account.name | camelCase }}[1] });
-    {% endif %}
-  {% if account.resolvedIsOptional %}
-  }
-  {% endif %}
-
+  addAccountMeta(keys, signers, resolvedAccounts.{{ account.name | camelCase }}, {{ 'true' if account.resolvedIsOptional else 'false' }});
 {% endfor %}

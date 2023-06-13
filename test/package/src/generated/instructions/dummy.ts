@@ -20,7 +20,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { findDelegateRecordPda } from '../accounts';
-import { PickPartial, addObjectProperty } from '../shared';
+import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import { DelegateRole } from '../types';
 
 // Accounts.
@@ -141,75 +141,14 @@ export function dummy(
     input.identityArg ?? context.identity.publicKey
   );
 
-  // Edition (optional).
-  if (resolvedAccounts.edition[0]) {
-    if (isSigner(resolvedAccounts.edition[0])) {
-      signers.push(resolvedAccounts.edition[0]);
-    }
-    keys.push({
-      pubkey: publicKey(resolvedAccounts.edition[0], false),
-      isSigner: isSigner(resolvedAccounts.edition[0]),
-      isWritable: resolvedAccounts.edition[1],
-    });
-  }
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Update Authority.
-  signers.push(resolvedAccounts.updateAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.updateAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.updateAuthority[1],
-  });
-
-  // Mint Authority.
-  signers.push(resolvedAccounts.mintAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.mintAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.mintAuthority[1],
-  });
-
-  // Payer.
-  signers.push(resolvedAccounts.payer[0]);
-  keys.push({
-    pubkey: resolvedAccounts.payer[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.payer[1],
-  });
-
-  // Foo.
-  if (isSigner(resolvedAccounts.foo[0])) {
-    signers.push(resolvedAccounts.foo[0]);
-  }
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.foo[0], false),
-    isSigner: isSigner(resolvedAccounts.foo[0]),
-    isWritable: resolvedAccounts.foo[1],
-  });
-
-  // Bar.
-  if (isSigner(resolvedAccounts.bar[0])) {
-    signers.push(resolvedAccounts.bar[0]);
-  }
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.bar[0], false),
-    isSigner: isSigner(resolvedAccounts.bar[0]),
-    isWritable: resolvedAccounts.bar[1],
-  });
-
-  // Delegate Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.delegateRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.delegateRecord[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.edition, true);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
+  addAccountMeta(keys, signers, resolvedAccounts.foo, false);
+  addAccountMeta(keys, signers, resolvedAccounts.bar, false);
+  addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
 
   // Data.
   const data = getDummyInstructionDataSerializer(context).serialize({});

@@ -19,7 +19,7 @@ import {
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
-import { PickPartial, addObjectProperty } from '../shared';
+import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import {
   TokenStandard,
   TokenStandardArgs,
@@ -222,111 +222,26 @@ export function transfer(
   );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Authority.
-  signers.push(resolvedAccounts.authority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.authority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.authority[1],
-  });
-
-  // Delegate Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.delegateRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.delegateRecord[1],
-  });
-
-  // Token.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.token[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.token[1],
-  });
-
-  // Token Owner.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenOwner[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenOwner[1],
-  });
-
-  // Destination.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.destination[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.destination[1],
-  });
-
-  // Destination Owner.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.destinationOwner[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.destinationOwner[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEdition[1],
-  });
-
-  // Spl Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.splTokenProgram[1],
-  });
-
-  // Spl Ata Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.splAtaProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.splAtaProgram[1],
-  });
-
-  // System Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.systemProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.systemProgram[1],
-  });
-
-  // Sysvar Instructions.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.sysvarInstructions[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.sysvarInstructions[1],
-  });
-
-  // Authorization Rules Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRulesProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRulesProgram[1],
-  });
-
-  // Authorization Rules.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.authorizationRules[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.authorizationRules[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
+  addAccountMeta(keys, signers, resolvedAccounts.token, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenOwner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.destination, false);
+  addAccountMeta(keys, signers, resolvedAccounts.destinationOwner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.splAtaProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.authorizationRulesProgram,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
   const data =

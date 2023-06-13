@@ -408,6 +408,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
+    if (accounts.length > 0) {
+      imports.add('shared', 'addAccountMeta');
+    }
 
     // Data Args.
     const linkedDataArgs = !!instruction.dataArgs.link;

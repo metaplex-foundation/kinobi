@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 
 // Accounts.
 export type RevokeCollectionAuthorityInstructionAccounts = {
@@ -86,41 +87,16 @@ export function revokeCollectionAuthority(
     mint: [input.mint, false] as const,
   };
 
-  // Collection Authority Record.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionAuthorityRecord[1],
-  });
-
-  // Delegate Authority.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.delegateAuthority[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.delegateAuthority[1],
-  });
-
-  // Revoke Authority.
-  signers.push(resolvedAccounts.revokeAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.revokeAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.revokeAuthority[1],
-  });
-
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionAuthorityRecord,
+    false
+  );
+  addAccountMeta(keys, signers, resolvedAccounts.delegateAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.revokeAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
 
   // Data.
   const data = getRevokeCollectionAuthorityInstructionDataSerializer(

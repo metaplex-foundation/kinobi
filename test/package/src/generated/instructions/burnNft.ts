@@ -18,7 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
-import { addObjectProperty } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type BurnNftInstructionAccounts = {
@@ -92,57 +92,13 @@ export function burnNft(
         ] as const)
   );
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Owner.
-  signers.push(resolvedAccounts.owner[0]);
-  keys.push({
-    pubkey: resolvedAccounts.owner[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.owner[1],
-  });
-
-  // Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.mint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.mint[1],
-  });
-
-  // Token Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.tokenAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.tokenAccount[1],
-  });
-
-  // Master Edition Account.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEditionAccount[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEditionAccount[1],
-  });
-
-  // Spl Token Program.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.splTokenProgram[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.splTokenProgram[1],
-  });
-
-  // Collection Metadata (optional).
-  if (resolvedAccounts.collectionMetadata[0]) {
-    keys.push({
-      pubkey: publicKey(resolvedAccounts.collectionMetadata[0], false),
-      isSigner: false,
-      isWritable: resolvedAccounts.collectionMetadata[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.owner, false);
+  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.tokenAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.masterEditionAccount, false);
+  addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, true);
 
   // Data.
   const data = getBurnNftInstructionDataSerializer(context).serialize({});

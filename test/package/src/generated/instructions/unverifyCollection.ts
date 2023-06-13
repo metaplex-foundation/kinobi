@@ -18,6 +18,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 
 // Accounts.
 export type UnverifyCollectionInstructionAccounts = {
@@ -92,53 +93,22 @@ export function unverifyCollection(
     ] as const,
   };
 
-  // Metadata.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.metadata[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.metadata[1],
-  });
-
-  // Collection Authority.
-  signers.push(resolvedAccounts.collectionAuthority[0]);
-  keys.push({
-    pubkey: resolvedAccounts.collectionAuthority[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.collectionAuthority[1],
-  });
-
-  // Collection Mint.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collectionMint[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMint[1],
-  });
-
-  // Collection.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.collection[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.collection[1],
-  });
-
-  // Collection Master Edition Account.
-  keys.push({
-    pubkey: publicKey(
-      resolvedAccounts.collectionMasterEditionAccount[0],
-      false
-    ),
-    isSigner: false,
-    isWritable: resolvedAccounts.collectionMasterEditionAccount[1],
-  });
-
-  // Collection Authority Record (optional).
-  if (resolvedAccounts.collectionAuthorityRecord[0]) {
-    keys.push({
-      pubkey: publicKey(resolvedAccounts.collectionAuthorityRecord[0], false),
-      isSigner: false,
-      isWritable: resolvedAccounts.collectionAuthorityRecord[1],
-    });
-  }
+  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionAuthority, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMint, false);
+  addAccountMeta(keys, signers, resolvedAccounts.collection, false);
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionMasterEditionAccount,
+    false
+  );
+  addAccountMeta(
+    keys,
+    signers,
+    resolvedAccounts.collectionAuthorityRecord,
+    true
+  );
 
   // Data.
   const data = getUnverifyCollectionInstructionDataSerializer(

@@ -19,6 +19,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { addAccountMeta } from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -108,27 +109,9 @@ export function deprecatedSetReservationList(
   const resolvingArgs = {};
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  // Master Edition.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.masterEdition[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.masterEdition[1],
-  });
-
-  // Reservation List.
-  keys.push({
-    pubkey: publicKey(resolvedAccounts.reservationList[0], false),
-    isSigner: false,
-    isWritable: resolvedAccounts.reservationList[1],
-  });
-
-  // Resource.
-  signers.push(resolvedAccounts.resource[0]);
-  keys.push({
-    pubkey: resolvedAccounts.resource[0].publicKey,
-    isSigner: true,
-    isWritable: resolvedAccounts.resource[1],
-  });
+  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.reservationList, false);
+  addAccountMeta(keys, signers, resolvedAccounts.resource, false);
 
   // Data.
   const data =
