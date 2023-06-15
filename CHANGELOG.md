@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.10.2
+
+### Patch Changes
+
+- [`a3a9987`](https://github.com/metaplex-foundation/kinobi/commit/a3a9987a8a8ef9609c131345add0d1fcd8c94253) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add UnwrapTupleEnumWithSingleStructVisitor
+
 ## 0.10.1
 
 ### Patch Changes
