@@ -214,6 +214,8 @@ kinobi.update(
   })
 );
 
+kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
+
 const kinobiJson = kinobi.getJson();
 const kinobiReconstructed = k.createFromJson(kinobiJson);
 

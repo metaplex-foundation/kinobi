@@ -13,26 +13,18 @@ import {
   PublicKey,
   Serializer,
 } from '@metaplex-foundation/umi';
-import {
-  LeafInfo,
-  LeafInfoArgs,
-  SeedsVec,
-  SeedsVecArgs,
-  getLeafInfoSerializer,
-  getSeedsVecSerializer,
-} from '.';
 
 /** This is a union of all the possible payload types. */
 export type PayloadType =
   | { __kind: 'Pubkey'; fields: [PublicKey] }
-  | { __kind: 'Seeds'; fields: [SeedsVec] }
-  | { __kind: 'MerkleProof'; fields: [LeafInfo] }
+  | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
+  | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [bigint] };
 
 export type PayloadTypeArgs =
   | { __kind: 'Pubkey'; fields: [PublicKey] }
-  | { __kind: 'Seeds'; fields: [SeedsVecArgs] }
-  | { __kind: 'MerkleProof'; fields: [LeafInfoArgs] }
+  | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
+  | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [number | bigint] };
 
 export function getPayloadTypeSerializer(
@@ -50,13 +42,14 @@ export function getPayloadTypeSerializer(
       [
         'Seeds',
         s.struct<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
-          ['fields', s.tuple([getSeedsVecSerializer(context)])],
+          ['seeds', s.array(s.bytes())],
         ]),
       ],
       [
         'MerkleProof',
         s.struct<GetDataEnumKindContent<PayloadType, 'MerkleProof'>>([
-          ['fields', s.tuple([getLeafInfoSerializer(context)])],
+          ['leaf', s.bytes({ size: 32 })],
+          ['proof', s.array(s.bytes({ size: 32 }))],
         ]),
       ],
       [
@@ -77,11 +70,11 @@ export function payloadType(
 ): GetDataEnumKind<PayloadTypeArgs, 'Pubkey'>;
 export function payloadType(
   kind: 'Seeds',
-  data: GetDataEnumKindContent<PayloadTypeArgs, 'Seeds'>['fields']
+  data: GetDataEnumKindContent<PayloadTypeArgs, 'Seeds'>
 ): GetDataEnumKind<PayloadTypeArgs, 'Seeds'>;
 export function payloadType(
   kind: 'MerkleProof',
-  data: GetDataEnumKindContent<PayloadTypeArgs, 'MerkleProof'>['fields']
+  data: GetDataEnumKindContent<PayloadTypeArgs, 'MerkleProof'>
 ): GetDataEnumKind<PayloadTypeArgs, 'MerkleProof'>;
 export function payloadType(
   kind: 'Number',
