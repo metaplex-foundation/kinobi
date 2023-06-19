@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Option, PublicKey } from '@metaplex-foundation/umi';
+import { Nullable, Option, PublicKey } from '@metaplex-foundation/umi';
 import {
   Serializer,
   array,
@@ -66,16 +66,20 @@ export type AssetDataArgs = {
   symbol: string;
   uri: string;
   sellerFeeBasisPoints: number;
-  creators: Option<Array<CreatorArgs>>;
+  creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
   primarySaleHappened: boolean;
   isMutable: boolean;
-  editionNonce: Option<number>;
+  editionNonce: Option<number> | Nullable<number>;
   tokenStandard: TokenStandardArgs;
-  collection: Option<CollectionArgs>;
-  uses: Option<UsesArgs>;
-  collectionDetails: Option<CollectionDetailsArgs>;
-  programmableConfig: Option<ProgrammableConfigArgs>;
-  delegateState: Option<DelegateStateArgs>;
+  collection: Option<CollectionArgs> | Nullable<CollectionArgs>;
+  uses: Option<UsesArgs> | Nullable<UsesArgs>;
+  collectionDetails:
+    | Option<CollectionDetailsArgs>
+    | Nullable<CollectionDetailsArgs>;
+  programmableConfig:
+    | Option<ProgrammableConfigArgs>
+    | Nullable<ProgrammableConfigArgs>;
+  delegateState: Option<DelegateStateArgs> | Nullable<DelegateStateArgs>;
 };
 
 export function getAssetDataSerializer(

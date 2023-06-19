@@ -9,6 +9,7 @@
 import {
   Account,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -41,7 +42,7 @@ export type CollectionAuthorityRecordAccountData = {
 
 export type CollectionAuthorityRecordAccountDataArgs = {
   bump: number;
-  updateAuthority: Option<PublicKey>;
+  updateAuthority: Option<PublicKey> | Nullable<PublicKey>;
 };
 
 export function getCollectionAuthorityRecordAccountDataSerializer(
@@ -149,7 +150,7 @@ export function getCollectionAuthorityRecordGpaBuilder(
     .registerFields<{
       key: TmKeyArgs;
       bump: number;
-      updateAuthority: Option<PublicKey>;
+      updateAuthority: Option<PublicKey> | Nullable<PublicKey>;
     }>({
       key: [0, getTmKeySerializer()],
       bump: [1, u8()],

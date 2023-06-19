@@ -9,6 +9,7 @@
 import {
   Account,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -49,7 +50,7 @@ export type MasterEditionV1AccountData = {
 
 export type MasterEditionV1AccountDataArgs = {
   supply: number | bigint;
-  maxSupply: Option<number | bigint>;
+  maxSupply: Option<number | bigint> | Nullable<number | bigint>;
   printingMint: PublicKey;
   oneTimePrintingAuthorizationMint: PublicKey;
 };
@@ -155,7 +156,7 @@ export function getMasterEditionV1GpaBuilder(
     .registerFields<{
       key: TmKeyArgs;
       supply: number | bigint;
-      maxSupply: Option<number | bigint>;
+      maxSupply: Option<number | bigint> | Nullable<number | bigint>;
       printingMint: PublicKey;
       oneTimePrintingAuthorizationMint: PublicKey;
     }>({

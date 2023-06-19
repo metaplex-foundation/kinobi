@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -54,15 +55,23 @@ export type UpdateMetadataAccountInstructionData = {
 };
 
 export type UpdateMetadataAccountInstructionDataArgs = {
-  data: Option<{
-    name: string;
-    symbol: string;
-    uri: string;
-    sellerFeeBasisPoints: number;
-    creators: Option<Array<CreatorArgs>>;
-  }>;
-  updateAuthority: Option<PublicKey>;
-  primarySaleHappened: Option<boolean>;
+  data:
+    | Option<{
+        name: string;
+        symbol: string;
+        uri: string;
+        sellerFeeBasisPoints: number;
+        creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
+      }>
+    | Nullable<{
+        name: string;
+        symbol: string;
+        uri: string;
+        sellerFeeBasisPoints: number;
+        creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
+      }>;
+  updateAuthority: Option<PublicKey> | Nullable<PublicKey>;
+  primarySaleHappened: Option<boolean> | Nullable<boolean>;
 };
 
 export function getUpdateMetadataAccountInstructionDataSerializer(

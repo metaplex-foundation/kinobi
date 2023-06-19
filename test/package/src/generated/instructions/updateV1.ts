@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -111,23 +112,37 @@ export type UpdateV1InstructionData = {
 };
 
 export type UpdateV1InstructionDataArgs = {
-  authorizationData: Option<AuthorizationDataArgs>;
-  newUpdateAuthority: Option<PublicKey>;
-  data: Option<{
-    name: string;
-    symbol: string;
-    uri: string;
-    sellerFeeBasisPoints: number;
-    creators: Option<Array<CreatorArgs>>;
-  }>;
-  primarySaleHappened: Option<boolean>;
-  isMutable: Option<boolean>;
-  tokenStandard?: Option<TokenStandardArgs>;
-  collection?: Option<CollectionArgs>;
-  uses: Option<UsesArgs>;
-  collectionDetails: Option<CollectionDetailsArgs>;
-  programmableConfig: Option<ProgrammableConfigArgs>;
-  delegateState: Option<DelegateStateArgs>;
+  authorizationData:
+    | Option<AuthorizationDataArgs>
+    | Nullable<AuthorizationDataArgs>;
+  newUpdateAuthority: Option<PublicKey> | Nullable<PublicKey>;
+  data:
+    | Option<{
+        name: string;
+        symbol: string;
+        uri: string;
+        sellerFeeBasisPoints: number;
+        creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
+      }>
+    | Nullable<{
+        name: string;
+        symbol: string;
+        uri: string;
+        sellerFeeBasisPoints: number;
+        creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
+      }>;
+  primarySaleHappened: Option<boolean> | Nullable<boolean>;
+  isMutable: Option<boolean> | Nullable<boolean>;
+  tokenStandard?: Option<TokenStandardArgs> | Nullable<TokenStandardArgs>;
+  collection?: Option<CollectionArgs> | Nullable<CollectionArgs>;
+  uses: Option<UsesArgs> | Nullable<UsesArgs>;
+  collectionDetails:
+    | Option<CollectionDetailsArgs>
+    | Nullable<CollectionDetailsArgs>;
+  programmableConfig:
+    | Option<ProgrammableConfigArgs>
+    | Nullable<ProgrammableConfigArgs>;
+  delegateState: Option<DelegateStateArgs> | Nullable<DelegateStateArgs>;
   authorityType: AuthorityTypeArgs;
 };
 

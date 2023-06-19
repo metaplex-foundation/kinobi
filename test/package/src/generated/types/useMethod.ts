@@ -6,7 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context } from '@metaplex-foundation/umi';
 import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum UseMethod {

@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -53,7 +54,7 @@ export type DeprecatedSetReservationListInstructionData = {
 
 export type DeprecatedSetReservationListInstructionDataArgs = {
   reservations: Array<ReservationArgs>;
-  totalReservationSpots: Option<number | bigint>;
+  totalReservationSpots: Option<number | bigint> | Nullable<number | bigint>;
   offset: number | bigint;
   totalSpotOffset: number | bigint;
 };

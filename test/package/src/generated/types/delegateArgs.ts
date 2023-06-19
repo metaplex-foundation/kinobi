@@ -6,11 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Context,
-  SolAmount,
-  mapAmountSerializer,
-} from '@metaplex-foundation/umi';
+import { SolAmount, mapAmountSerializer } from '@metaplex-foundation/umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,

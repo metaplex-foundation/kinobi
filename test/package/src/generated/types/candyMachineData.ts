@@ -8,7 +8,7 @@
 
 import {
   Amount,
-  Context,
+  Nullable,
   Option,
   mapAmountSerializer,
 } from '@metaplex-foundation/umi';
@@ -69,9 +69,11 @@ export type CandyMachineDataArgs = {
   /** List of creators */
   creators: Array<CmCreatorArgs>;
   /** Config line settings */
-  configLineSettings: Option<ConfigLineSettingsArgs>;
+  configLineSettings:
+    | Option<ConfigLineSettingsArgs>
+    | Nullable<ConfigLineSettingsArgs>;
   /** Hidden setttings */
-  hiddenSettings: Option<HiddenSettingsArgs>;
+  hiddenSettings: Option<HiddenSettingsArgs> | Nullable<HiddenSettingsArgs>;
 };
 
 export function getCandyMachineDataSerializer(

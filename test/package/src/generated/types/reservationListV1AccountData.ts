@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Option, PublicKey } from '@metaplex-foundation/umi';
+import { Nullable, Option, PublicKey } from '@metaplex-foundation/umi';
 import {
   Serializer,
   array,
@@ -34,7 +34,7 @@ export type ReservationListV1AccountData = {
 
 export type ReservationListV1AccountDataArgs = {
   masterEdition: PublicKey;
-  supplySnapshot: Option<number | bigint>;
+  supplySnapshot: Option<number | bigint> | Nullable<number | bigint>;
   reservations: Array<ReservationV1Args>;
 };
 

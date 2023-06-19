@@ -524,7 +524,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const typeManifest = visit(definedType, this.typeManifestVisitor);
     const imports = new JavaScriptImportMap()
       .mergeWithManifest(typeManifest)
-      .add('umi', ['Context'])
       .add('umiSerializers', ['Serializer'])
       .remove('generatedTypes', [
         pascalCaseName,

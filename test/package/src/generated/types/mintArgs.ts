@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Option } from '@metaplex-foundation/umi';
+import { Nullable, Option } from '@metaplex-foundation/umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
@@ -31,7 +31,9 @@ export type MintArgs = {
 export type MintArgsArgs = {
   __kind: 'V1';
   amount: number | bigint;
-  authorizationData: Option<AuthorizationDataArgs>;
+  authorizationData:
+    | Option<AuthorizationDataArgs>
+    | Nullable<AuthorizationDataArgs>;
 };
 
 export function getMintArgsSerializer(

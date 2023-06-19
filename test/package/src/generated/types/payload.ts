@@ -6,7 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context } from '@metaplex-foundation/umi';
 import { Serializer, map, struct } from '@metaplex-foundation/umi/serializers';
 import {
   PayloadKey,

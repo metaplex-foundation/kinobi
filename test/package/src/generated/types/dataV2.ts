@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Option } from '@metaplex-foundation/umi';
+import { Nullable, Option } from '@metaplex-foundation/umi';
 import {
   Serializer,
   array,
@@ -42,9 +42,9 @@ export type DataV2Args = {
   symbol: string;
   uri: string;
   sellerFeeBasisPoints: number;
-  creators: Option<Array<CreatorArgs>>;
-  collection: Option<CollectionArgs>;
-  uses: Option<UsesArgs>;
+  creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
+  collection: Option<CollectionArgs> | Nullable<CollectionArgs>;
+  uses: Option<UsesArgs> | Nullable<UsesArgs>;
 };
 
 export function getDataV2Serializer(

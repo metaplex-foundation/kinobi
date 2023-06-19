@@ -10,6 +10,7 @@ import {
   ACCOUNT_HEADER_SIZE,
   AccountMeta,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -71,7 +72,7 @@ export type CreateMetadataAccountInstructionDataArgs = {
     symbol: string;
     uri: string;
     sellerFeeBasisPoints: number;
-    creators: Option<Array<CreatorArgs>>;
+    creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
   };
   isMutable: boolean;
   metadataBump: number;

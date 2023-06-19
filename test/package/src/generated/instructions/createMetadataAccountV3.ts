@@ -9,6 +9,7 @@
 import {
   AccountMeta,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -65,7 +66,9 @@ export type CreateMetadataAccountV3InstructionData = {
 export type CreateMetadataAccountV3InstructionDataArgs = {
   data: DataV2Args;
   isMutable: boolean;
-  collectionDetails: Option<CollectionDetailsArgs>;
+  collectionDetails:
+    | Option<CollectionDetailsArgs>
+    | Nullable<CollectionDetailsArgs>;
 };
 
 export function getCreateMetadataAccountV3InstructionDataSerializer(

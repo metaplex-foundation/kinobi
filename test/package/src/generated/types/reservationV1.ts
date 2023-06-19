@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from '@metaplex-foundation/umi';
 import {
   Serializer,
   publicKey as publicKeySerializer,

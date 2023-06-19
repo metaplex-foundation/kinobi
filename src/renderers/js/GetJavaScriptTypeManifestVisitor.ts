@@ -306,7 +306,7 @@ export class GetJavaScriptTypeManifestVisitor
   visitOptionType(optionType: nodes.OptionTypeNode): JavaScriptTypeManifest {
     const childManifest = visit(optionType.child, this);
     childManifest.strictImports.add('umi', 'Option');
-    childManifest.looseImports.add('umi', 'Option');
+    childManifest.looseImports.add('umi', ['Option', 'Nullable']);
     childManifest.serializerImports.add('umiSerializers', 'option');
     const options: string[] = [];
 
@@ -327,7 +327,7 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       ...childManifest,
       strictType: `Option<${childManifest.strictType}>`,
-      looseType: `Option<${childManifest.looseType}>`,
+      looseType: `Option<${childManifest.looseType}> | Nullable<${childManifest.looseType}>`,
       serializer: `option(${childManifest.serializer}${optionsAsString})`,
     };
   }

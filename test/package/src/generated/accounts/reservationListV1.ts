@@ -9,6 +9,7 @@
 import {
   Account,
   Context,
+  Nullable,
   Option,
   Pda,
   PublicKey,
@@ -119,7 +120,7 @@ export function getReservationListV1GpaBuilder(
     .registerFields<{
       key: TmKeyArgs;
       masterEdition: PublicKey;
-      supplySnapshot: Option<number | bigint>;
+      supplySnapshot: Option<number | bigint> | Nullable<number | bigint>;
       reservations: Array<ReservationV1Args>;
     }>({
       key: [0, getTmKeySerializer()],

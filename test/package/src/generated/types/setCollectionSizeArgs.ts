@@ -6,7 +6,6 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context } from '@metaplex-foundation/umi';
 import { Serializer, struct, u64 } from '@metaplex-foundation/umi/serializers';
 
 export type SetCollectionSizeArgs = { size: bigint };
