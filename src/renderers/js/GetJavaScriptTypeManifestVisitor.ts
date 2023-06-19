@@ -448,16 +448,29 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): JavaScriptTypeManifest {
-    const size = visit(boolType.size, this);
-    size.serializerImports.add('umiSerializers', 'bool');
-    const sizeSerializer =
-      size.serializer === 'u8()' ? '' : `{ size: ${size.serializer} }`;
+    const looseImports = new JavaScriptImportMap();
+    const strictImports = new JavaScriptImportMap();
+    const serializerImports = new JavaScriptImportMap().add(
+      'umiSerializers',
+      'bool'
+    );
+    let sizeSerializer = '';
+    if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
+      const size = visit(boolType.size, this);
+      looseImports.mergeWith(size.looseImports);
+      strictImports.mergeWith(size.strictImports);
+      serializerImports.mergeWith(size.serializerImports);
+      sizeSerializer = `{ size: ${size.serializer} }`;
+    }
+
     return {
-      ...size,
       isEnum: false,
       strictType: 'boolean',
       looseType: 'boolean',
       serializer: `bool(${sizeSerializer})`,
+      looseImports,
+      strictImports,
+      serializerImports,
     };
   }
 

@@ -21,7 +21,6 @@ import {
   struct,
   u16,
   u64,
-  u8,
 } from '@metaplex-foundation/umi/serializers';
 import {
   CmCreator,
