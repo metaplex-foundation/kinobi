@@ -9,8 +9,8 @@
 import {
   Account,
   Context,
-  Nullable,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
   RpcAccount,
@@ -89,20 +89,16 @@ export type MetadataAccountDataArgs = {
   symbol: string;
   uri: string;
   sellerFeeBasisPoints: number;
-  creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
+  creators: OptionOrNullable<Array<CreatorArgs>>;
   primarySaleHappened: boolean;
   isMutable: boolean;
-  editionNonce: Option<number> | Nullable<number>;
-  tokenStandard: Option<TokenStandardArgs> | Nullable<TokenStandardArgs>;
-  collection: Option<CollectionArgs> | Nullable<CollectionArgs>;
-  uses: Option<UsesArgs> | Nullable<UsesArgs>;
-  collectionDetails:
-    | Option<CollectionDetailsArgs>
-    | Nullable<CollectionDetailsArgs>;
-  programmableConfig:
-    | Option<ProgrammableConfigArgs>
-    | Nullable<ProgrammableConfigArgs>;
-  delegateState: Option<DelegateStateArgs> | Nullable<DelegateStateArgs>;
+  editionNonce: OptionOrNullable<number>;
+  tokenStandard: OptionOrNullable<TokenStandardArgs>;
+  collection: OptionOrNullable<CollectionArgs>;
+  uses: OptionOrNullable<UsesArgs>;
+  collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+  programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+  delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
 export function getMetadataAccountDataSerializer(
@@ -216,20 +212,16 @@ export function getMetadataGpaBuilder(
       symbol: string;
       uri: string;
       sellerFeeBasisPoints: number;
-      creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
+      creators: OptionOrNullable<Array<CreatorArgs>>;
       primarySaleHappened: boolean;
       isMutable: boolean;
-      editionNonce: Option<number> | Nullable<number>;
-      tokenStandard: Option<TokenStandardArgs> | Nullable<TokenStandardArgs>;
-      collection: Option<CollectionArgs> | Nullable<CollectionArgs>;
-      uses: Option<UsesArgs> | Nullable<UsesArgs>;
-      collectionDetails:
-        | Option<CollectionDetailsArgs>
-        | Nullable<CollectionDetailsArgs>;
-      programmableConfig:
-        | Option<ProgrammableConfigArgs>
-        | Nullable<ProgrammableConfigArgs>;
-      delegateState: Option<DelegateStateArgs> | Nullable<DelegateStateArgs>;
+      editionNonce: OptionOrNullable<number>;
+      tokenStandard: OptionOrNullable<TokenStandardArgs>;
+      collection: OptionOrNullable<CollectionArgs>;
+      uses: OptionOrNullable<UsesArgs>;
+      collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+      programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+      delegateState: OptionOrNullable<DelegateStateArgs>;
     }>({
       key: [0, getTmKeySerializer()],
       updateAuthority: [1, publicKeySerializer()],

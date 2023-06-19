@@ -9,8 +9,8 @@
 import {
   AccountMeta,
   Context,
-  Nullable,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
   Signer,
@@ -62,8 +62,8 @@ export type CreateV1InstructionData = {
 
 export type CreateV1InstructionDataArgs = {
   assetData: AssetDataArgs;
-  decimals: Option<number> | Nullable<number>;
-  maxSupply: Option<number | bigint> | Nullable<number | bigint>;
+  decimals: OptionOrNullable<number>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
 export function getCreateV1InstructionDataSerializer(

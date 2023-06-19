@@ -9,8 +9,8 @@
 import {
   Account,
   Context,
-  Nullable,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
   RpcAccount,
@@ -52,7 +52,7 @@ export type ReservationListV2AccountData = {
 
 export type ReservationListV2AccountDataArgs = {
   masterEdition: PublicKey;
-  supplySnapshot: Option<number | bigint> | Nullable<number | bigint>;
+  supplySnapshot: OptionOrNullable<number | bigint>;
   reservations: Array<ReservationArgs>;
   totalReservationSpots: number | bigint;
   currentReservationSpots: number | bigint;
@@ -163,7 +163,7 @@ export function getReservationListV2GpaBuilder(
     .registerFields<{
       key: TmKeyArgs;
       masterEdition: PublicKey;
-      supplySnapshot: Option<number | bigint> | Nullable<number | bigint>;
+      supplySnapshot: OptionOrNullable<number | bigint>;
       reservations: Array<ReservationArgs>;
       totalReservationSpots: number | bigint;
       currentReservationSpots: number | bigint;

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Nullable, Option } from '@metaplex-foundation/umi';
+import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
@@ -29,8 +29,8 @@ export type TmCreateArgs = {
 export type TmCreateArgsArgs = {
   __kind: 'V1';
   assetData: AssetDataArgs;
-  decimals: Option<number> | Nullable<number>;
-  maxSupply: Option<number | bigint> | Nullable<number | bigint>;
+  decimals: OptionOrNullable<number>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
 export function getTmCreateArgsSerializer(

@@ -9,8 +9,8 @@
 import {
   Account,
   Context,
-  Nullable,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
   RpcAccount,
@@ -42,7 +42,7 @@ export type MasterEditionV2AccountData = {
 
 export type MasterEditionV2AccountDataArgs = {
   supply: number | bigint;
-  maxSupply: Option<number | bigint> | Nullable<number | bigint>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
 export function getMasterEditionV2AccountDataSerializer(
@@ -144,7 +144,7 @@ export function getMasterEditionV2GpaBuilder(
     .registerFields<{
       key: TmKeyArgs;
       supply: number | bigint;
-      maxSupply: Option<number | bigint> | Nullable<number | bigint>;
+      maxSupply: OptionOrNullable<number | bigint>;
     }>({
       key: [0, getTmKeySerializer()],
       supply: [1, u64()],

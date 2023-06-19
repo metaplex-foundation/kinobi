@@ -7,8 +7,8 @@
  */
 
 import {
-  Nullable,
   Option,
+  OptionOrNullable,
   PublicKey,
   publicKey,
   some,
@@ -83,37 +83,23 @@ export type UpdateArgs = {
 
 export type UpdateArgsArgs = {
   __kind: 'V1';
-  authorizationData:
-    | Option<AuthorizationDataArgs>
-    | Nullable<AuthorizationDataArgs>;
-  newUpdateAuthority: Option<PublicKey> | Nullable<PublicKey>;
-  data:
-    | Option<{
-        name: string;
-        symbol: string;
-        uri: string;
-        sellerFeeBasisPoints: number;
-        creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
-      }>
-    | Nullable<{
-        name: string;
-        symbol: string;
-        uri: string;
-        sellerFeeBasisPoints: number;
-        creators: Option<Array<CreatorArgs>> | Nullable<Array<CreatorArgs>>;
-      }>;
-  primarySaleHappened: Option<boolean> | Nullable<boolean>;
-  isMutable: Option<boolean> | Nullable<boolean>;
-  tokenStandard?: Option<TokenStandardArgs> | Nullable<TokenStandardArgs>;
-  collection?: Option<CollectionArgs> | Nullable<CollectionArgs>;
-  uses: Option<UsesArgs> | Nullable<UsesArgs>;
-  collectionDetails:
-    | Option<CollectionDetailsArgs>
-    | Nullable<CollectionDetailsArgs>;
-  programmableConfig:
-    | Option<ProgrammableConfigArgs>
-    | Nullable<ProgrammableConfigArgs>;
-  delegateState: Option<DelegateStateArgs> | Nullable<DelegateStateArgs>;
+  authorizationData: OptionOrNullable<AuthorizationDataArgs>;
+  newUpdateAuthority: OptionOrNullable<PublicKey>;
+  data: OptionOrNullable<{
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: OptionOrNullable<Array<CreatorArgs>>;
+  }>;
+  primarySaleHappened: OptionOrNullable<boolean>;
+  isMutable: OptionOrNullable<boolean>;
+  tokenStandard?: OptionOrNullable<TokenStandardArgs>;
+  collection?: OptionOrNullable<CollectionArgs>;
+  uses: OptionOrNullable<UsesArgs>;
+  collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+  programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+  delegateState: OptionOrNullable<DelegateStateArgs>;
   authorityType: AuthorityTypeArgs;
 };
 

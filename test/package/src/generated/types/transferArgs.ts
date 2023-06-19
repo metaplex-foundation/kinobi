@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Nullable, Option } from '@metaplex-foundation/umi';
+import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
@@ -30,9 +30,7 @@ export type TransferArgs = {
 
 export type TransferArgsArgs = {
   __kind: 'V1';
-  authorizationData:
-    | Option<AuthorizationDataArgs>
-    | Nullable<AuthorizationDataArgs>;
+  authorizationData: OptionOrNullable<AuthorizationDataArgs>;
   amount: number | bigint;
 };
 

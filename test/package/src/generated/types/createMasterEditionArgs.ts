@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Nullable, Option } from '@metaplex-foundation/umi';
+import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
 import {
   Serializer,
   option,
@@ -17,7 +17,7 @@ import {
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };
 
 export type CreateMasterEditionArgsArgs = {
-  maxSupply: Option<number | bigint> | Nullable<number | bigint>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
 export function getCreateMasterEditionArgsSerializer(
