@@ -48,7 +48,7 @@ export type CreateReservationListInstructionArgs =
 
 // Instruction.
 export function createReservationList(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   accounts: CreateReservationListInstructionAccounts,
   args: CreateReservationListInstructionArgs
 ): TransactionBuilder {
@@ -113,9 +113,7 @@ export function createReservationList(
 
   // Data.
   const data =
-    getCreateReservationListInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateReservationListInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

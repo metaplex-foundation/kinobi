@@ -10,18 +10,26 @@ import {
   Account,
   Context,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
-  Serializer,
   assertAccountExists,
   deserializeAccount,
   gpaBuilder,
-  mapSerializer,
   publicKey as toPublicKey,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u64,
+} from '@metaplex-foundation/umi/serializers';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;
@@ -34,23 +42,30 @@ export type MasterEditionV2AccountData = {
 
 export type MasterEditionV2AccountDataArgs = {
   supply: number | bigint;
-  maxSupply: Option<number | bigint>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getMasterEditionV2AccountDataSerializer()` without any argument instead. */
 export function getMasterEditionV2AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
+export function getMasterEditionV2AccountDataSerializer(): Serializer<
+  MasterEditionV2AccountDataArgs,
+  MasterEditionV2AccountData
+>;
+export function getMasterEditionV2AccountDataSerializer(
+  _context: object = {}
 ): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData> {
-  const s = context.serializer;
   return mapSerializer<
     MasterEditionV2AccountDataArgs,
     any,
     MasterEditionV2AccountData
   >(
-    s.struct<MasterEditionV2AccountData>(
+    struct<MasterEditionV2AccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['supply', s.u64()],
-        ['maxSupply', s.option(s.u64())],
+        ['key', getTmKeySerializer()],
+        ['supply', u64()],
+        ['maxSupply', option(u64())],
       ],
       { description: 'MasterEditionV2AccountData' }
     ),
@@ -58,18 +73,26 @@ export function getMasterEditionV2AccountDataSerializer(
   ) as Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
 }
 
+/** @deprecated Use `deserializeMasterEditionV2(rawAccount)` without any context instead. */
 export function deserializeMasterEditionV2(
-  context: Pick<Context, 'serializer'>,
+  context: object,
   rawAccount: RpcAccount
+): MasterEditionV2;
+export function deserializeMasterEditionV2(
+  rawAccount: RpcAccount
+): MasterEditionV2;
+export function deserializeMasterEditionV2(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): MasterEditionV2 {
   return deserializeAccount(
-    rawAccount,
-    getMasterEditionV2AccountDataSerializer(context)
+    rawAccount ?? (context as RpcAccount),
+    getMasterEditionV2AccountDataSerializer()
   );
 }
 
 export async function fetchMasterEditionV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV2> {
@@ -78,11 +101,11 @@ export async function fetchMasterEditionV2(
     options
   );
   assertAccountExists(maybeAccount, 'MasterEditionV2');
-  return deserializeMasterEditionV2(context, maybeAccount);
+  return deserializeMasterEditionV2(maybeAccount);
 }
 
 export async function safeFetchMasterEditionV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV2 | null> {
@@ -90,13 +113,11 @@ export async function safeFetchMasterEditionV2(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeMasterEditionV2(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeMasterEditionV2(maybeAccount) : null;
 }
 
 export async function fetchAllMasterEditionV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV2[]> {
@@ -106,12 +127,12 @@ export async function fetchAllMasterEditionV2(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'MasterEditionV2');
-    return deserializeMasterEditionV2(context, maybeAccount);
+    return deserializeMasterEditionV2(maybeAccount);
   });
 }
 
 export async function safeFetchAllMasterEditionV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV2[]> {
@@ -122,14 +143,13 @@ export async function safeFetchAllMasterEditionV2(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeMasterEditionV2(context, maybeAccount as RpcAccount)
+      deserializeMasterEditionV2(maybeAccount as RpcAccount)
     );
 }
 
 export function getMasterEditionV2GpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -138,14 +158,14 @@ export function getMasterEditionV2GpaBuilder(
     .registerFields<{
       key: TmKeyArgs;
       supply: number | bigint;
-      maxSupply: Option<number | bigint>;
+      maxSupply: OptionOrNullable<number | bigint>;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      supply: [1, s.u64()],
-      maxSupply: [9, s.option(s.u64())],
+      key: [0, getTmKeySerializer()],
+      supply: [1, u64()],
+      maxSupply: [9, option(u64())],
     })
     .deserializeUsing<MasterEditionV2>((account) =>
-      deserializeMasterEditionV2(context, account)
+      deserializeMasterEditionV2(account)
     )
     .whereField('key', TmKey.MasterEditionV2);
 }
@@ -155,27 +175,26 @@ export function getMasterEditionV2Size(): number {
 }
 
 export function findMasterEditionV2Pda(
-  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs'>,
   seeds: {
     /** The address of the mint account */
     mint: PublicKey;
   }
 ): Pda {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
-    s.string({ size: 'variable' }).serialize('metadata'),
-    s.publicKey().serialize(programId),
-    s.publicKey().serialize(seeds.mint),
-    s.string({ size: 'variable' }).serialize('edition'),
+    string({ size: 'variable' }).serialize('metadata'),
+    publicKeySerializer().serialize(programId),
+    publicKeySerializer().serialize(seeds.mint),
+    string({ size: 'variable' }).serialize('edition'),
   ]);
 }
 
 export async function fetchMasterEditionV2FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV2> {
@@ -187,7 +206,7 @@ export async function fetchMasterEditionV2FromSeeds(
 }
 
 export async function safeFetchMasterEditionV2FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV2 | null> {

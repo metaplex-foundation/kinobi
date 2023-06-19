@@ -11,13 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -70,19 +74,26 @@ export type TransferInstructionData = {
 
 export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
+/** @deprecated Use `getTransferInstructionDataSerializer()` without any argument instead. */
 export function getTransferInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<TransferInstructionDataArgs, TransferInstructionData>;
+export function getTransferInstructionDataSerializer(): Serializer<
+  TransferInstructionDataArgs,
+  TransferInstructionData
+>;
+export function getTransferInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<TransferInstructionDataArgs, TransferInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     TransferInstructionDataArgs,
     any,
     TransferInstructionData
   >(
-    s.struct<TransferInstructionData>(
+    struct<TransferInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['transferArgs', getTransferArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['transferArgs', getTransferArgsSerializer()],
       ],
       { description: 'TransferInstructionData' }
     ),
@@ -101,10 +112,7 @@ export type TransferInstructionArgs = PickPartial<
 
 // Instruction.
 export function transfer(
-  context: Pick<
-    Context,
-    'serializer' | 'programs' | 'eddsa' | 'identity' | 'payer'
-  >,
+  context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
   input: TransferInstructionAccounts & TransferInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -245,8 +253,7 @@ export function transfer(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getTransferInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getTransferInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

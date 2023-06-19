@@ -6,13 +6,17 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
 import {
-  Context,
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Option,
   Serializer,
-} from '@metaplex-foundation/umi';
+  dataEnum,
+  option,
+  struct,
+  u64,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 
 export type TmCreateArgs = {
@@ -25,22 +29,29 @@ export type TmCreateArgs = {
 export type TmCreateArgsArgs = {
   __kind: 'V1';
   assetData: AssetDataArgs;
-  decimals: Option<number>;
-  maxSupply: Option<number | bigint>;
+  decimals: OptionOrNullable<number>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getTmCreateArgsSerializer()` without any argument instead. */
 export function getTmCreateArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<TmCreateArgsArgs, TmCreateArgs>;
+export function getTmCreateArgsSerializer(): Serializer<
+  TmCreateArgsArgs,
+  TmCreateArgs
+>;
+export function getTmCreateArgsSerializer(
+  _context: object = {}
 ): Serializer<TmCreateArgsArgs, TmCreateArgs> {
-  const s = context.serializer;
-  return s.dataEnum<TmCreateArgs>(
+  return dataEnum<TmCreateArgs>(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
-          ['assetData', getAssetDataSerializer(context)],
-          ['decimals', s.option(s.u8())],
-          ['maxSupply', s.option(s.u64())],
+        struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
+          ['assetData', getAssetDataSerializer()],
+          ['decimals', option(u8())],
+          ['maxSupply', option(u64())],
         ]),
       ],
     ],

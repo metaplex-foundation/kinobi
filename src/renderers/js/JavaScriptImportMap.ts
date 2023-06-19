@@ -2,7 +2,8 @@ import type { ImportFrom } from '../../shared';
 import { JavaScriptTypeManifest } from './GetJavaScriptTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
-  core: '@metaplex-foundation/umi',
+  umi: '@metaplex-foundation/umi',
+  umiSerializers: '@metaplex-foundation/umi/serializers',
   types: '../types',
   errors: '../errors',
   shared: '../shared',
@@ -44,6 +45,11 @@ export class JavaScriptImportMap {
     others.forEach((other) => {
       other._imports.forEach((imports, module) => {
         this.add(module, imports);
+      });
+      other._aliases.forEach((aliases, module) => {
+        Object.entries(aliases).forEach(([name, alias]) => {
+          this.addAlias(module, name, alias);
+        });
       });
     });
     return this;

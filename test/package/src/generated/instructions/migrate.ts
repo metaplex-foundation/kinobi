@@ -11,13 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   MigrateArgs,
@@ -57,15 +61,22 @@ export type MigrateInstructionData = {
 
 export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
+/** @deprecated Use `getMigrateInstructionDataSerializer()` without any argument instead. */
 export function getMigrateInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<MigrateInstructionDataArgs, MigrateInstructionData>;
+export function getMigrateInstructionDataSerializer(): Serializer<
+  MigrateInstructionDataArgs,
+  MigrateInstructionData
+>;
+export function getMigrateInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<MigrateInstructionDataArgs, MigrateInstructionData> {
-  const s = context.serializer;
   return mapSerializer<MigrateInstructionDataArgs, any, MigrateInstructionData>(
-    s.struct<MigrateInstructionData>(
+    struct<MigrateInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['migrateArgs', getMigrateArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['migrateArgs', getMigrateArgsSerializer()],
       ],
       { description: 'MigrateInstructionData' }
     ),
@@ -78,7 +89,7 @@ export type MigrateInstructionArgs = MigrateInstructionDataArgs;
 
 // Instruction.
 export function migrate(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: MigrateInstructionAccounts & MigrateInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -157,8 +168,7 @@ export function migrate(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getMigrateInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getMigrateInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

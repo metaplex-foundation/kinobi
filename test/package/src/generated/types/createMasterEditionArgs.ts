@@ -6,19 +6,32 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Option, Serializer } from '@metaplex-foundation/umi';
+import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  option,
+  struct,
+  u64,
+} from '@metaplex-foundation/umi/serializers';
 
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };
 
 export type CreateMasterEditionArgsArgs = {
-  maxSupply: Option<number | bigint>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getCreateMasterEditionArgsSerializer()` without any argument instead. */
 export function getCreateMasterEditionArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs>;
+export function getCreateMasterEditionArgsSerializer(): Serializer<
+  CreateMasterEditionArgsArgs,
+  CreateMasterEditionArgs
+>;
+export function getCreateMasterEditionArgsSerializer(
+  _context: object = {}
 ): Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs> {
-  const s = context.serializer;
-  return s.struct<CreateMasterEditionArgs>([['maxSupply', s.option(s.u64())]], {
+  return struct<CreateMasterEditionArgs>([['maxSupply', option(u64())]], {
     description: 'CreateMasterEditionArgs',
   }) as Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs>;
 }

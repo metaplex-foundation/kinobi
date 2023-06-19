@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum Operation {
   Transfer,
@@ -17,11 +17,15 @@ export enum Operation {
 
 export type OperationArgs = Operation;
 
+/** @deprecated Use `getOperationSerializer()` without any argument instead. */
 export function getOperationSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<OperationArgs, Operation>;
+export function getOperationSerializer(): Serializer<OperationArgs, Operation>;
+export function getOperationSerializer(
+  _context: object = {}
 ): Serializer<OperationArgs, Operation> {
-  const s = context.serializer;
-  return s.enum<Operation>(Operation, {
+  return scalarEnum<Operation>(Operation, {
     description: 'Operation',
   }) as Serializer<OperationArgs, Operation>;
 }

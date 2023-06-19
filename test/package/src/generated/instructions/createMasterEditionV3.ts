@@ -12,12 +12,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { getMasterEditionV2Size } from '../accounts';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -58,25 +62,32 @@ export type CreateMasterEditionV3InstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
+/** @deprecated Use `getCreateMasterEditionV3InstructionDataSerializer()` without any argument instead. */
 export function getCreateMasterEditionV3InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  CreateMasterEditionV3InstructionDataArgs,
+  CreateMasterEditionV3InstructionData
+>;
+export function getCreateMasterEditionV3InstructionDataSerializer(): Serializer<
+  CreateMasterEditionV3InstructionDataArgs,
+  CreateMasterEditionV3InstructionData
+>;
+export function getCreateMasterEditionV3InstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   CreateMasterEditionV3InstructionDataArgs,
   CreateMasterEditionV3InstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateMasterEditionV3InstructionDataArgs,
     any,
     CreateMasterEditionV3InstructionData
   >(
-    s.struct<CreateMasterEditionV3InstructionData>(
+    struct<CreateMasterEditionV3InstructionData>(
       [
-        ['discriminator', s.u8()],
-        [
-          'createMasterEditionArgs',
-          getCreateMasterEditionArgsSerializer(context),
-        ],
+        ['discriminator', u8()],
+        ['createMasterEditionArgs', getCreateMasterEditionArgsSerializer()],
       ],
       { description: 'CreateMasterEditionV3InstructionData' }
     ),
@@ -93,7 +104,7 @@ export type CreateMasterEditionV3InstructionArgs =
 
 // Instruction.
 export function createMasterEditionV3(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateMasterEditionV3InstructionAccounts &
     CreateMasterEditionV3InstructionArgs
 ): TransactionBuilder {
@@ -163,9 +174,7 @@ export function createMasterEditionV3(
 
   // Data.
   const data =
-    getCreateMasterEditionV3InstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateMasterEditionV3InstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;

@@ -6,13 +6,16 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Option, OptionOrNullable, PublicKey } from '@metaplex-foundation/umi';
 import {
-  Context,
-  Option,
-  PublicKey,
   Serializer,
+  array,
   mapSerializer,
-} from '@metaplex-foundation/umi';
+  option,
+  publicKey as publicKeySerializer,
+  struct,
+  u64,
+} from '@metaplex-foundation/umi/serializers';
 import {
   ReservationV1,
   ReservationV1Args,
@@ -31,25 +34,32 @@ export type ReservationListV1AccountData = {
 
 export type ReservationListV1AccountDataArgs = {
   masterEdition: PublicKey;
-  supplySnapshot: Option<number | bigint>;
+  supplySnapshot: OptionOrNullable<number | bigint>;
   reservations: Array<ReservationV1Args>;
 };
 
+/** @deprecated Use `getReservationListV1AccountDataSerializer()` without any argument instead. */
 export function getReservationListV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData>;
+export function getReservationListV1AccountDataSerializer(): Serializer<
+  ReservationListV1AccountDataArgs,
+  ReservationListV1AccountData
+>;
+export function getReservationListV1AccountDataSerializer(
+  _context: object = {}
 ): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
-  const s = context.serializer;
   return mapSerializer<
     ReservationListV1AccountDataArgs,
     any,
     ReservationListV1AccountData
   >(
-    s.struct<ReservationListV1AccountData>(
+    struct<ReservationListV1AccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey()],
-        ['supplySnapshot', s.option(s.u64())],
-        ['reservations', s.array(getReservationV1Serializer(context))],
+        ['key', getTmKeySerializer()],
+        ['masterEdition', publicKeySerializer()],
+        ['supplySnapshot', option(u64())],
+        ['reservations', array(getReservationV1Serializer())],
       ],
       { description: 'ReservationListV1AccountData' }
     ),

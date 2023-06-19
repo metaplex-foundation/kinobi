@@ -11,13 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { RevokeArgs, RevokeArgsArgs, getRevokeArgsSerializer } from '../types';
 
@@ -59,15 +63,22 @@ export type RevokeInstructionData = {
 
 export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
 
+/** @deprecated Use `getRevokeInstructionDataSerializer()` without any argument instead. */
 export function getRevokeInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<RevokeInstructionDataArgs, RevokeInstructionData>;
+export function getRevokeInstructionDataSerializer(): Serializer<
+  RevokeInstructionDataArgs,
+  RevokeInstructionData
+>;
+export function getRevokeInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<RevokeInstructionDataArgs, RevokeInstructionData> {
-  const s = context.serializer;
   return mapSerializer<RevokeInstructionDataArgs, any, RevokeInstructionData>(
-    s.struct<RevokeInstructionData>(
+    struct<RevokeInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['revokeArgs', getRevokeArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['revokeArgs', getRevokeArgsSerializer()],
       ],
       { description: 'RevokeInstructionData' }
     ),
@@ -80,7 +91,7 @@ export type RevokeInstructionArgs = RevokeInstructionDataArgs;
 
 // Instruction.
 export function revoke(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: RevokeInstructionAccounts & RevokeInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -192,8 +203,7 @@ export function revoke(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getRevokeInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getRevokeInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

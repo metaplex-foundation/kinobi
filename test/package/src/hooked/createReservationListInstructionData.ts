@@ -1,25 +1,26 @@
-import { Context, mapSerializer, Serializer } from '@metaplex-foundation/umi';
+import {
+  mapSerializer,
+  Serializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 
 export type CreateReservationListInstructionData = { discriminator: number };
 
 export type CreateReservationListInstructionDataArgs = {};
 
-export function getCreateReservationListInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<
+export function getCreateReservationListInstructionDataSerializer(): Serializer<
   CreateReservationListInstructionDataArgs,
   CreateReservationListInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateReservationListInstructionDataArgs,
     CreateReservationListInstructionData,
     CreateReservationListInstructionData
   >(
-    s.struct<CreateReservationListInstructionData>(
-      [['discriminator', s.u8()]],
-      { description: 'CreateReservationListInstructionData' }
-    ),
+    struct<CreateReservationListInstructionData>([['discriminator', u8()]], {
+      description: 'CreateReservationListInstructionData',
+    }),
     (value) =>
       ({ ...value, discriminator: 6 } as CreateReservationListInstructionData)
   ) as Serializer<

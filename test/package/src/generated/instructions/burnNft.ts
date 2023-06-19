@@ -11,12 +11,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -42,12 +46,19 @@ export type BurnNftInstructionData = { discriminator: number };
 
 export type BurnNftInstructionDataArgs = {};
 
+/** @deprecated Use `getBurnNftInstructionDataSerializer()` without any argument instead. */
 export function getBurnNftInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<BurnNftInstructionDataArgs, BurnNftInstructionData>;
+export function getBurnNftInstructionDataSerializer(): Serializer<
+  BurnNftInstructionDataArgs,
+  BurnNftInstructionData
+>;
+export function getBurnNftInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<BurnNftInstructionDataArgs, BurnNftInstructionData> {
-  const s = context.serializer;
   return mapSerializer<BurnNftInstructionDataArgs, any, BurnNftInstructionData>(
-    s.struct<BurnNftInstructionData>([['discriminator', s.u8()]], {
+    struct<BurnNftInstructionData>([['discriminator', u8()]], {
       description: 'BurnNftInstructionData',
     }),
     (value) => ({ ...value, discriminator: 29 })
@@ -56,7 +67,7 @@ export function getBurnNftInstructionDataSerializer(
 
 // Instruction.
 export function burnNft(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: BurnNftInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -100,7 +111,7 @@ export function burnNft(
   addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, true);
 
   // Data.
-  const data = getBurnNftInstructionDataSerializer(context).serialize({});
+  const data = getBurnNftInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

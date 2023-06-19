@@ -6,7 +6,14 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, PublicKey, Serializer } from '@metaplex-foundation/umi';
+import { PublicKey } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  bool,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { DelegateRole, DelegateRoleArgs, getDelegateRoleSerializer } from '.';
 
 export type DelegateState = {
@@ -21,15 +28,22 @@ export type DelegateStateArgs = {
   hasData: boolean;
 };
 
+/** @deprecated Use `getDelegateStateSerializer()` without any argument instead. */
 export function getDelegateStateSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<DelegateStateArgs, DelegateState>;
+export function getDelegateStateSerializer(): Serializer<
+  DelegateStateArgs,
+  DelegateState
+>;
+export function getDelegateStateSerializer(
+  _context: object = {}
 ): Serializer<DelegateStateArgs, DelegateState> {
-  const s = context.serializer;
-  return s.struct<DelegateState>(
+  return struct<DelegateState>(
     [
-      ['role', getDelegateRoleSerializer(context)],
-      ['delegate', s.publicKey()],
-      ['hasData', s.bool()],
+      ['role', getDelegateRoleSerializer()],
+      ['delegate', publicKeySerializer()],
+      ['hasData', bool()],
     ],
     { description: 'DelegateState' }
   ) as Serializer<DelegateStateArgs, DelegateState>;

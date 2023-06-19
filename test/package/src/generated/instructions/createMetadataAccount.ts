@@ -11,15 +11,25 @@ import {
   AccountMeta,
   Context,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  bool,
+  mapSerializer,
+  option,
+  string,
+  struct,
+  u16,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
@@ -62,39 +72,49 @@ export type CreateMetadataAccountInstructionDataArgs = {
     symbol: string;
     uri: string;
     sellerFeeBasisPoints: number;
-    creators: Option<Array<CreatorArgs>>;
+    creators: OptionOrNullable<Array<CreatorArgs>>;
   };
   isMutable: boolean;
   metadataBump: number;
 };
 
+/** @deprecated Use `getCreateMetadataAccountInstructionDataSerializer()` without any argument instead. */
 export function getCreateMetadataAccountInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  CreateMetadataAccountInstructionDataArgs,
+  CreateMetadataAccountInstructionData
+>;
+export function getCreateMetadataAccountInstructionDataSerializer(): Serializer<
+  CreateMetadataAccountInstructionDataArgs,
+  CreateMetadataAccountInstructionData
+>;
+export function getCreateMetadataAccountInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   CreateMetadataAccountInstructionDataArgs,
   CreateMetadataAccountInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateMetadataAccountInstructionDataArgs,
     any,
     CreateMetadataAccountInstructionData
   >(
-    s.struct<CreateMetadataAccountInstructionData>(
+    struct<CreateMetadataAccountInstructionData>(
       [
-        ['discriminator', s.u8()],
+        ['discriminator', u8()],
         [
           'data',
-          s.struct<any>([
-            ['name', s.string()],
-            ['symbol', s.string()],
-            ['uri', s.string()],
-            ['sellerFeeBasisPoints', s.u16()],
-            ['creators', s.option(s.array(getCreatorSerializer(context)))],
+          struct<any>([
+            ['name', string()],
+            ['symbol', string()],
+            ['uri', string()],
+            ['sellerFeeBasisPoints', u16()],
+            ['creators', option(array(getCreatorSerializer()))],
           ]),
         ],
-        ['isMutable', s.bool()],
-        ['metadataBump', s.u8()],
+        ['isMutable', bool()],
+        ['metadataBump', u8()],
       ],
       { description: 'CreateMetadataAccountInstructionData' }
     ),
@@ -113,7 +133,7 @@ export type CreateMetadataAccountInstructionArgs = PickPartial<
 
 // Instruction.
 export function createMetadataAccount(
-  context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
+  context: Pick<Context, 'programs' | 'eddsa' | 'payer'>,
   input: CreateMetadataAccountInstructionAccounts &
     CreateMetadataAccountInstructionArgs
 ): TransactionBuilder {
@@ -190,9 +210,7 @@ export function createMetadataAccount(
 
   // Data.
   const data =
-    getCreateMetadataAccountInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateMetadataAccountInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;

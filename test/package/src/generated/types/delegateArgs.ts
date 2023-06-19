@@ -6,14 +6,16 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { SolAmount, mapAmountSerializer } from '@metaplex-foundation/umi';
 import {
-  Context,
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
-  SolAmount,
-  mapAmountSerializer,
-} from '@metaplex-foundation/umi';
+  dataEnum,
+  struct,
+  u64,
+  unit,
+} from '@metaplex-foundation/umi/serializers';
 
 export type DelegateArgs =
   | { __kind: 'CollectionV1' }
@@ -25,23 +27,30 @@ export type DelegateArgsArgs =
   | { __kind: 'SaleV1'; amount: SolAmount }
   | { __kind: 'TransferV1'; amount: number | bigint };
 
+/** @deprecated Use `getDelegateArgsSerializer()` without any argument instead. */
 export function getDelegateArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<DelegateArgsArgs, DelegateArgs>;
+export function getDelegateArgsSerializer(): Serializer<
+  DelegateArgsArgs,
+  DelegateArgs
+>;
+export function getDelegateArgsSerializer(
+  _context: object = {}
 ): Serializer<DelegateArgsArgs, DelegateArgs> {
-  const s = context.serializer;
-  return s.dataEnum<DelegateArgs>(
+  return dataEnum<DelegateArgs>(
     [
-      ['CollectionV1', s.unit()],
+      ['CollectionV1', unit()],
       [
         'SaleV1',
-        s.struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
-          ['amount', mapAmountSerializer(s.u64(), 'SOL', 9)],
+        struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
+          ['amount', mapAmountSerializer(u64(), 'SOL', 9)],
         ]),
       ],
       [
         'TransferV1',
-        s.struct<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
-          ['amount', s.u64()],
+        struct<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
+          ['amount', u64()],
         ]),
       ],
     ],

@@ -11,13 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -45,19 +49,29 @@ export type CloseEscrowAccountInstructionData = { discriminator: number };
 
 export type CloseEscrowAccountInstructionDataArgs = {};
 
+/** @deprecated Use `getCloseEscrowAccountInstructionDataSerializer()` without any argument instead. */
 export function getCloseEscrowAccountInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  CloseEscrowAccountInstructionDataArgs,
+  CloseEscrowAccountInstructionData
+>;
+export function getCloseEscrowAccountInstructionDataSerializer(): Serializer<
+  CloseEscrowAccountInstructionDataArgs,
+  CloseEscrowAccountInstructionData
+>;
+export function getCloseEscrowAccountInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   CloseEscrowAccountInstructionDataArgs,
   CloseEscrowAccountInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CloseEscrowAccountInstructionDataArgs,
     any,
     CloseEscrowAccountInstructionData
   >(
-    s.struct<CloseEscrowAccountInstructionData>([['discriminator', s.u8()]], {
+    struct<CloseEscrowAccountInstructionData>([['discriminator', u8()]], {
       description: 'CloseEscrowAccountInstructionData',
     }),
     (value) => ({ ...value, discriminator: 39 })
@@ -69,7 +83,7 @@ export function getCloseEscrowAccountInstructionDataSerializer(
 
 // Instruction.
 export function closeEscrowAccount(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CloseEscrowAccountInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -130,9 +144,7 @@ export function closeEscrowAccount(
   addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
 
   // Data.
-  const data = getCloseEscrowAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getCloseEscrowAccountInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

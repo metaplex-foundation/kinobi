@@ -11,12 +11,18 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  i64,
+  mapSerializer,
+  string,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -45,25 +51,35 @@ export type CreateFrequencyRuleInstructionDataArgs = {
   period: number | bigint;
 };
 
+/** @deprecated Use `getCreateFrequencyRuleInstructionDataSerializer()` without any argument instead. */
 export function getCreateFrequencyRuleInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  CreateFrequencyRuleInstructionDataArgs,
+  CreateFrequencyRuleInstructionData
+>;
+export function getCreateFrequencyRuleInstructionDataSerializer(): Serializer<
+  CreateFrequencyRuleInstructionDataArgs,
+  CreateFrequencyRuleInstructionData
+>;
+export function getCreateFrequencyRuleInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   CreateFrequencyRuleInstructionDataArgs,
   CreateFrequencyRuleInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateFrequencyRuleInstructionDataArgs,
     any,
     CreateFrequencyRuleInstructionData
   >(
-    s.struct<CreateFrequencyRuleInstructionData>(
+    struct<CreateFrequencyRuleInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['ruleSetName', s.string()],
-        ['freqRuleName', s.string()],
-        ['lastUpdate', s.i64()],
-        ['period', s.i64()],
+        ['discriminator', u8()],
+        ['ruleSetName', string()],
+        ['freqRuleName', string()],
+        ['lastUpdate', i64()],
+        ['period', i64()],
       ],
       { description: 'CreateFrequencyRuleInstructionData' }
     ),
@@ -80,7 +96,7 @@ export type CreateFrequencyRuleInstructionArgs =
 
 // Instruction.
 export function createFrequencyRule(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateFrequencyRuleInstructionAccounts &
     CreateFrequencyRuleInstructionArgs
 ): TransactionBuilder {
@@ -126,9 +142,7 @@ export function createFrequencyRule(
 
   // Data.
   const data =
-    getCreateFrequencyRuleInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateFrequencyRuleInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

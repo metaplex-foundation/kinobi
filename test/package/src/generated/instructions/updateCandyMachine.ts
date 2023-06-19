@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   CandyMachineData,
@@ -40,22 +45,32 @@ export type UpdateCandyMachineInstructionDataArgs = {
   data: CandyMachineDataArgs;
 };
 
+/** @deprecated Use `getUpdateCandyMachineInstructionDataSerializer()` without any argument instead. */
 export function getUpdateCandyMachineInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  UpdateCandyMachineInstructionDataArgs,
+  UpdateCandyMachineInstructionData
+>;
+export function getUpdateCandyMachineInstructionDataSerializer(): Serializer<
+  UpdateCandyMachineInstructionDataArgs,
+  UpdateCandyMachineInstructionData
+>;
+export function getUpdateCandyMachineInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   UpdateCandyMachineInstructionDataArgs,
   UpdateCandyMachineInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     UpdateCandyMachineInstructionDataArgs,
     any,
     UpdateCandyMachineInstructionData
   >(
-    s.struct<UpdateCandyMachineInstructionData>(
+    struct<UpdateCandyMachineInstructionData>(
       [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['data', getCandyMachineDataSerializer(context)],
+        ['discriminator', array(u8(), { size: 8 })],
+        ['data', getCandyMachineDataSerializer()],
       ],
       { description: 'UpdateCandyMachineInstructionData' }
     ),
@@ -75,7 +90,7 @@ export type UpdateCandyMachineInstructionArgs =
 
 // Instruction.
 export function updateCandyMachine(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: UpdateCandyMachineInstructionAccounts &
     UpdateCandyMachineInstructionArgs
 ): TransactionBuilder {
@@ -107,9 +122,7 @@ export function updateCandyMachine(
 
   // Data.
   const data =
-    getUpdateCandyMachineInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getUpdateCandyMachineInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

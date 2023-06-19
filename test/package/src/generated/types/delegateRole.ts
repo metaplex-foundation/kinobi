@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum DelegateRole {
   Authority,
@@ -20,11 +20,18 @@ export enum DelegateRole {
 
 export type DelegateRoleArgs = DelegateRole;
 
+/** @deprecated Use `getDelegateRoleSerializer()` without any argument instead. */
 export function getDelegateRoleSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<DelegateRoleArgs, DelegateRole>;
+export function getDelegateRoleSerializer(): Serializer<
+  DelegateRoleArgs,
+  DelegateRole
+>;
+export function getDelegateRoleSerializer(
+  _context: object = {}
 ): Serializer<DelegateRoleArgs, DelegateRole> {
-  const s = context.serializer;
-  return s.enum<DelegateRole>(DelegateRole, {
+  return scalarEnum<DelegateRole>(DelegateRole, {
     description: 'DelegateRole',
   }) as Serializer<DelegateRoleArgs, DelegateRole>;
 }

@@ -6,26 +6,36 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { PublicKey } from '@metaplex-foundation/umi';
 import {
-  Context,
-  PublicKey,
   Serializer,
+  bool,
   mapSerializer,
-} from '@metaplex-foundation/umi';
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 
 export type Collection = { verified: boolean; key: PublicKey };
 
 export type CollectionArgs = { verified?: boolean; key: PublicKey };
 
+/** @deprecated Use `getCollectionSerializer()` without any argument instead. */
 export function getCollectionSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<CollectionArgs, Collection>;
+export function getCollectionSerializer(): Serializer<
+  CollectionArgs,
+  Collection
+>;
+export function getCollectionSerializer(
+  _context: object = {}
 ): Serializer<CollectionArgs, Collection> {
-  const s = context.serializer;
   return mapSerializer<CollectionArgs, any, Collection>(
-    s.struct<Collection>(
+    struct<Collection>(
       [
-        ['verified', s.bool()],
-        ['key', s.publicKey()],
+        ['verified', bool()],
+        ['key', publicKeySerializer()],
       ],
       { description: 'Collection' }
     ),

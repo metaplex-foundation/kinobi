@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  string,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   Operation,
@@ -70,21 +75,28 @@ export type ValidateInstructionDataArgs = {
   payload: PayloadArgs;
 };
 
+/** @deprecated Use `getValidateInstructionDataSerializer()` without any argument instead. */
 export function getValidateInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<ValidateInstructionDataArgs, ValidateInstructionData>;
+export function getValidateInstructionDataSerializer(): Serializer<
+  ValidateInstructionDataArgs,
+  ValidateInstructionData
+>;
+export function getValidateInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<ValidateInstructionDataArgs, ValidateInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     ValidateInstructionDataArgs,
     any,
     ValidateInstructionData
   >(
-    s.struct<ValidateInstructionData>(
+    struct<ValidateInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['ruleSetName', s.string()],
-        ['operation', getOperationSerializer(context)],
-        ['payload', getPayloadSerializer(context)],
+        ['discriminator', u8()],
+        ['ruleSetName', string()],
+        ['operation', getOperationSerializer()],
+        ['payload', getPayloadSerializer()],
       ],
       { description: 'ValidateInstructionData' }
     ),
@@ -97,7 +109,7 @@ export type ValidateInstructionArgs = ValidateInstructionDataArgs;
 
 // Instruction.
 export function validate(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: ValidateInstructionAccounts & ValidateInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -161,8 +173,7 @@ export function validate(
   addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner5, true);
 
   // Data.
-  const data =
-    getValidateInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getValidateInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

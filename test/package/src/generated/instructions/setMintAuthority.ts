@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -31,20 +36,30 @@ export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
 
 export type SetMintAuthorityInstructionDataArgs = {};
 
+/** @deprecated Use `getSetMintAuthorityInstructionDataSerializer()` without any argument instead. */
 export function getSetMintAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  SetMintAuthorityInstructionDataArgs,
+  SetMintAuthorityInstructionData
+>;
+export function getSetMintAuthorityInstructionDataSerializer(): Serializer<
+  SetMintAuthorityInstructionDataArgs,
+  SetMintAuthorityInstructionData
+>;
+export function getSetMintAuthorityInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   SetMintAuthorityInstructionDataArgs,
   SetMintAuthorityInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     SetMintAuthorityInstructionDataArgs,
     any,
     SetMintAuthorityInstructionData
   >(
-    s.struct<SetMintAuthorityInstructionData>(
-      [['discriminator', s.array(s.u8(), { size: 8 })]],
+    struct<SetMintAuthorityInstructionData>(
+      [['discriminator', array(u8(), { size: 8 })]],
       { description: 'SetMintAuthorityInstructionData' }
     ),
     (value) => ({
@@ -59,7 +74,7 @@ export function getSetMintAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function setMintAuthority(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: SetMintAuthorityInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -89,9 +104,7 @@ export function setMintAuthority(
   addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
 
   // Data.
-  const data = getSetMintAuthorityInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data = getSetMintAuthorityInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

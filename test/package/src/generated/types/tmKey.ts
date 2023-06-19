@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum TmKey {
   Uninitialized,
@@ -25,11 +25,15 @@ export enum TmKey {
 
 export type TmKeyArgs = TmKey;
 
+/** @deprecated Use `getTmKeySerializer()` without any argument instead. */
 export function getTmKeySerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<TmKeyArgs, TmKey>;
+export function getTmKeySerializer(): Serializer<TmKeyArgs, TmKey>;
+export function getTmKeySerializer(
+  _context: object = {}
 ): Serializer<TmKeyArgs, TmKey> {
-  const s = context.serializer;
-  return s.enum<TmKey>(TmKey, { description: 'TmKey' }) as Serializer<
+  return scalarEnum<TmKey>(TmKey, { description: 'TmKey' }) as Serializer<
     TmKeyArgs,
     TmKey
   >;

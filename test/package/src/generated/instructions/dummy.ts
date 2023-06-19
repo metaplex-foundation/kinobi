@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { findDelegateRecordPda } from '../accounts';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import { DelegateRole } from '../types';
@@ -38,13 +43,20 @@ export type DummyInstructionData = { discriminator: Array<number> };
 
 export type DummyInstructionDataArgs = {};
 
+/** @deprecated Use `getDummyInstructionDataSerializer()` without any argument instead. */
 export function getDummyInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<DummyInstructionDataArgs, DummyInstructionData>;
+export function getDummyInstructionDataSerializer(): Serializer<
+  DummyInstructionDataArgs,
+  DummyInstructionData
+>;
+export function getDummyInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<DummyInstructionDataArgs, DummyInstructionData> {
-  const s = context.serializer;
   return mapSerializer<DummyInstructionDataArgs, any, DummyInstructionData>(
-    s.struct<DummyInstructionData>(
-      [['discriminator', s.array(s.u8(), { size: 8 })]],
+    struct<DummyInstructionData>(
+      [['discriminator', array(u8(), { size: 8 })]],
       { description: 'DummyInstructionData' }
     ),
     (value) => ({
@@ -65,10 +77,7 @@ export type DummyInstructionArgs = PickPartial<
 
 // Instruction.
 export function dummy(
-  context: Pick<
-    Context,
-    'serializer' | 'programs' | 'eddsa' | 'identity' | 'payer'
-  >,
+  context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
   input: DummyInstructionAccounts & DummyInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -149,7 +158,7 @@ export function dummy(
   addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
 
   // Data.
-  const data = getDummyInstructionDataSerializer(context).serialize({});
+  const data = getDummyInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

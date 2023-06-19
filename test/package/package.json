@@ -10,10 +10,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@metaplex-foundation/umi": "^0.8.2"
+  },
   "devDependencies": {
     "typescript": "^4.9.4"
-  },
-  "dependencies": {
-    "@metaplex-foundation/umi": "^0.8.0"
   }
 }

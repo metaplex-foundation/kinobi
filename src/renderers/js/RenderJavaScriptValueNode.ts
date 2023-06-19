@@ -78,17 +78,17 @@ export function renderJavaScriptValueNode(value: nodes.ValueNode): {
     case 'optionSome':
       const child = renderJavaScriptValueNode(value.value);
       return {
-        imports: child.imports.add('core', 'some'),
+        imports: child.imports.add('umi', 'some'),
         render: `some(${child.render})`,
       };
     case 'optionNone':
       return {
-        imports: new JavaScriptImportMap().add('core', 'none'),
+        imports: new JavaScriptImportMap().add('umi', 'none'),
         render: 'none()',
       };
     case 'publicKey':
       return {
-        imports: new JavaScriptImportMap().add('core', 'publicKey'),
+        imports: new JavaScriptImportMap().add('umi', 'publicKey'),
         render: `publicKey("${value.value}")`,
       };
     case 'string':

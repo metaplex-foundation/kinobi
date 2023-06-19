@@ -10,15 +10,22 @@ import {
   AccountMeta,
   Context,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  option,
+  struct,
+  u64,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
 
@@ -55,26 +62,33 @@ export type CreateV1InstructionData = {
 
 export type CreateV1InstructionDataArgs = {
   assetData: AssetDataArgs;
-  decimals: Option<number>;
-  maxSupply: Option<number | bigint>;
+  decimals: OptionOrNullable<number>;
+  maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getCreateV1InstructionDataSerializer()` without any argument instead. */
 export function getCreateV1InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<CreateV1InstructionDataArgs, CreateV1InstructionData>;
+export function getCreateV1InstructionDataSerializer(): Serializer<
+  CreateV1InstructionDataArgs,
+  CreateV1InstructionData
+>;
+export function getCreateV1InstructionDataSerializer(
+  _context: object = {}
 ): Serializer<CreateV1InstructionDataArgs, CreateV1InstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     CreateV1InstructionDataArgs,
     any,
     CreateV1InstructionData
   >(
-    s.struct<CreateV1InstructionData>(
+    struct<CreateV1InstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['createV1Discriminator', s.u8()],
-        ['assetData', getAssetDataSerializer(context)],
-        ['decimals', s.option(s.u8())],
-        ['maxSupply', s.option(s.u64())],
+        ['discriminator', u8()],
+        ['createV1Discriminator', u8()],
+        ['assetData', getAssetDataSerializer()],
+        ['decimals', option(u8())],
+        ['maxSupply', option(u64())],
       ],
       { description: 'CreateV1InstructionData' }
     ),
@@ -87,7 +101,7 @@ export type CreateV1InstructionArgs = CreateV1InstructionDataArgs;
 
 // Instruction.
 export function createV1(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateV1InstructionAccounts & CreateV1InstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -170,8 +184,7 @@ export function createV1(
   addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
 
   // Data.
-  const data =
-    getCreateV1InstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getCreateV1InstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -11,13 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   DelegateArgs,
@@ -63,19 +67,26 @@ export type DelegateInstructionData = {
 
 export type DelegateInstructionDataArgs = { delegateArgs: DelegateArgsArgs };
 
+/** @deprecated Use `getDelegateInstructionDataSerializer()` without any argument instead. */
 export function getDelegateInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<DelegateInstructionDataArgs, DelegateInstructionData>;
+export function getDelegateInstructionDataSerializer(): Serializer<
+  DelegateInstructionDataArgs,
+  DelegateInstructionData
+>;
+export function getDelegateInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<DelegateInstructionDataArgs, DelegateInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     DelegateInstructionDataArgs,
     any,
     DelegateInstructionData
   >(
-    s.struct<DelegateInstructionData>(
+    struct<DelegateInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['delegateArgs', getDelegateArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['delegateArgs', getDelegateArgsSerializer()],
       ],
       { description: 'DelegateInstructionData' }
     ),
@@ -88,7 +99,7 @@ export type DelegateInstructionArgs = DelegateInstructionDataArgs;
 
 // Instruction.
 export function delegate(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: DelegateInstructionAccounts & DelegateInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -200,8 +211,7 @@ export function delegate(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getDelegateInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getDelegateInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

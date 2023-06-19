@@ -6,17 +6,29 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, PublicKey, Serializer } from '@metaplex-foundation/umi';
+import { PublicKey } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  publicKey as publicKeySerializer,
+  struct,
+} from '@metaplex-foundation/umi/serializers';
 
 export type ProgrammableConfig = { ruleSet: PublicKey };
 
 export type ProgrammableConfigArgs = ProgrammableConfig;
 
+/** @deprecated Use `getProgrammableConfigSerializer()` without any argument instead. */
 export function getProgrammableConfigSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<ProgrammableConfigArgs, ProgrammableConfig>;
+export function getProgrammableConfigSerializer(): Serializer<
+  ProgrammableConfigArgs,
+  ProgrammableConfig
+>;
+export function getProgrammableConfigSerializer(
+  _context: object = {}
 ): Serializer<ProgrammableConfigArgs, ProgrammableConfig> {
-  const s = context.serializer;
-  return s.struct<ProgrammableConfig>([['ruleSet', s.publicKey()]], {
+  return struct<ProgrammableConfig>([['ruleSet', publicKeySerializer()]], {
     description: 'ProgrammableConfig',
   }) as Serializer<ProgrammableConfigArgs, ProgrammableConfig>;
 }

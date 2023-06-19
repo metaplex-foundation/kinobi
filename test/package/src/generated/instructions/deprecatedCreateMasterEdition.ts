@@ -11,13 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   CreateMasterEditionArgs,
@@ -65,25 +69,32 @@ export type DeprecatedCreateMasterEditionInstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
+/** @deprecated Use `getDeprecatedCreateMasterEditionInstructionDataSerializer()` without any argument instead. */
 export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  DeprecatedCreateMasterEditionInstructionDataArgs,
+  DeprecatedCreateMasterEditionInstructionData
+>;
+export function getDeprecatedCreateMasterEditionInstructionDataSerializer(): Serializer<
+  DeprecatedCreateMasterEditionInstructionDataArgs,
+  DeprecatedCreateMasterEditionInstructionData
+>;
+export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   DeprecatedCreateMasterEditionInstructionDataArgs,
   DeprecatedCreateMasterEditionInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     DeprecatedCreateMasterEditionInstructionDataArgs,
     any,
     DeprecatedCreateMasterEditionInstructionData
   >(
-    s.struct<DeprecatedCreateMasterEditionInstructionData>(
+    struct<DeprecatedCreateMasterEditionInstructionData>(
       [
-        ['discriminator', s.u8()],
-        [
-          'createMasterEditionArgs',
-          getCreateMasterEditionArgsSerializer(context),
-        ],
+        ['discriminator', u8()],
+        ['createMasterEditionArgs', getCreateMasterEditionArgsSerializer()],
       ],
       { description: 'DeprecatedCreateMasterEditionInstructionData' }
     ),
@@ -100,7 +111,7 @@ export type DeprecatedCreateMasterEditionInstructionArgs =
 
 // Instruction.
 export function deprecatedCreateMasterEdition(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: DeprecatedCreateMasterEditionInstructionAccounts &
     DeprecatedCreateMasterEditionInstructionArgs
 ): TransactionBuilder {
@@ -203,9 +214,9 @@ export function deprecatedCreateMasterEdition(
 
   // Data.
   const data =
-    getDeprecatedCreateMasterEditionInstructionDataSerializer(
-      context
-    ).serialize(resolvedArgs);
+    getDeprecatedCreateMasterEditionInstructionDataSerializer().serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

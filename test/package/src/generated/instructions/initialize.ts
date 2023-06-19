@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   CandyMachineData,
@@ -47,19 +52,26 @@ export type InitializeInstructionData = {
 
 export type InitializeInstructionDataArgs = { data: CandyMachineDataArgs };
 
+/** @deprecated Use `getInitializeInstructionDataSerializer()` without any argument instead. */
 export function getInitializeInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<InitializeInstructionDataArgs, InitializeInstructionData>;
+export function getInitializeInstructionDataSerializer(): Serializer<
+  InitializeInstructionDataArgs,
+  InitializeInstructionData
+>;
+export function getInitializeInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<InitializeInstructionDataArgs, InitializeInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     InitializeInstructionDataArgs,
     any,
     InitializeInstructionData
   >(
-    s.struct<InitializeInstructionData>(
+    struct<InitializeInstructionData>(
       [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['data', getCandyMachineDataSerializer(context)],
+        ['discriminator', array(u8(), { size: 8 })],
+        ['data', getCandyMachineDataSerializer()],
       ],
       { description: 'InitializeInstructionData' }
     ),
@@ -75,7 +87,7 @@ export type InitializeInstructionArgs = InitializeInstructionDataArgs;
 
 // Instruction.
 export function initialize(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: InitializeInstructionAccounts & InitializeInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -168,8 +180,7 @@ export function initialize(
   addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
 
   // Data.
-  const data =
-    getInitializeInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getInitializeInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

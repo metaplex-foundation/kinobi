@@ -1,10 +1,13 @@
+import { Nullable, Option, PublicKey } from '@metaplex-foundation/umi';
 import {
-  Context,
+  array,
   mapSerializer,
-  Option,
-  PublicKey,
+  option,
+  publicKey,
   Serializer,
-} from '@metaplex-foundation/umi';
+  struct,
+  u64,
+} from '@metaplex-foundation/umi/serializers';
 import {
   getReservationV1Serializer,
   getTmKeySerializer,
@@ -22,25 +25,25 @@ export type ReservationListV1AccountData = {
 
 export type ReservationListV1AccountDataArgs = {
   masterEdition: PublicKey;
-  supplySnapshot: Option<number | bigint>;
+  supplySnapshot: Option<number | bigint> | Nullable<number | bigint>;
   reservations: Array<ReservationV1Args>;
 };
 
-export function getReservationListV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
-  const s = context.serializer;
+export function getReservationListV1AccountDataSerializer(): Serializer<
+  ReservationListV1AccountDataArgs,
+  ReservationListV1AccountData
+> {
   return mapSerializer<
     ReservationListV1AccountDataArgs,
     ReservationListV1AccountData,
     ReservationListV1AccountData
   >(
-    s.struct<ReservationListV1AccountData>(
+    struct<ReservationListV1AccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey()],
-        ['supplySnapshot', s.option(s.u64())],
-        ['reservations', s.array(getReservationV1Serializer(context))],
+        ['key', getTmKeySerializer()],
+        ['masterEdition', publicKey()],
+        ['supplySnapshot', option(u64())],
+        ['reservations', array(getReservationV1Serializer())],
       ],
       { description: 'ReservationListV1' }
     ),

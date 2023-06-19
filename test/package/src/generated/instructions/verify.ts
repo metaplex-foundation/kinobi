@@ -11,12 +11,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 
@@ -42,15 +46,22 @@ export type VerifyInstructionData = {
 
 export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
+/** @deprecated Use `getVerifyInstructionDataSerializer()` without any argument instead. */
 export function getVerifyInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<VerifyInstructionDataArgs, VerifyInstructionData>;
+export function getVerifyInstructionDataSerializer(): Serializer<
+  VerifyInstructionDataArgs,
+  VerifyInstructionData
+>;
+export function getVerifyInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<VerifyInstructionDataArgs, VerifyInstructionData> {
-  const s = context.serializer;
   return mapSerializer<VerifyInstructionDataArgs, any, VerifyInstructionData>(
-    s.struct<VerifyInstructionData>(
+    struct<VerifyInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['verifyArgs', getVerifyArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['verifyArgs', getVerifyArgsSerializer()],
       ],
       { description: 'VerifyInstructionData' }
     ),
@@ -63,7 +74,7 @@ export type VerifyInstructionArgs = VerifyInstructionDataArgs;
 
 // Instruction.
 export function verify(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: VerifyInstructionAccounts & VerifyInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -116,8 +127,7 @@ export function verify(
   );
 
   // Data.
-  const data =
-    getVerifyInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getVerifyInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

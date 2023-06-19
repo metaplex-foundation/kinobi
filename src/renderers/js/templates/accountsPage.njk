@@ -16,63 +16,62 @@
   {{ macros.exportSerializer(account.name | pascalCase + 'AccountData', typeManifest) }}
 {% endif %}
 
-export function deserialize{{ account.name | pascalCase }}(
-  context: Pick<Context, 'serializer'>,
-  rawAccount: RpcAccount,
-): {{ account.name | pascalCase }} {
-  return deserializeAccount(rawAccount, get{{ account.name | pascalCase }}AccountDataSerializer(context));
+/** @deprecated Use `deserialize{{ account.name | pascalCase }}(rawAccount)` without any context instead. */
+export function deserialize{{ account.name | pascalCase }}(context: object, rawAccount: RpcAccount): {{ account.name | pascalCase }};
+export function deserialize{{ account.name | pascalCase }}(rawAccount: RpcAccount): {{ account.name | pascalCase }};
+export function deserialize{{ account.name | pascalCase }}(context: RpcAccount | object, rawAccount?: RpcAccount): {{ account.name | pascalCase }} {
+  return deserializeAccount(rawAccount ?? context as RpcAccount, get{{ account.name | pascalCase }}AccountDataSerializer());
 }
 
 export async function fetch{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }}> {
   const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
   assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
-  return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
+  return deserialize{{ account.name | pascalCase }}(maybeAccount);
 }
 
 export async function safeFetch{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
 ): Promise<{{ account.name | pascalCase }} | null> {
   const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
   return maybeAccount.exists
-    ? deserialize{{ account.name | pascalCase }}(context, maybeAccount)
+    ? deserialize{{ account.name | pascalCase }}(maybeAccount)
     : null;
 }
 
 export async function fetchAll{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
 ): Promise<{{ account.name | pascalCase }}[]> {
   const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
-    return deserialize{{ account.name | pascalCase }}(context, maybeAccount);
+    return deserialize{{ account.name | pascalCase }}(maybeAccount);
   });
 }
 
 export async function safeFetchAll{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
 ): Promise<{{ account.name | pascalCase }}[]> {
   const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserialize{{ account.name | pascalCase }}(context, maybeAccount as RpcAccount));
+    .map((maybeAccount) => deserialize{{ account.name | pascalCase }}(maybeAccount as RpcAccount));
 }
 
-export function get{{ account.name | pascalCase }}GpaBuilder(context: Pick<Context, 'rpc' | 'serializer' | 'programs'>) {
-  const s = context.serializer;
+export function get{{ account.name | pascalCase }}GpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
   return gpaBuilder(context, programId)
     .registerFields<{{ gpaFields.type }}>({{ gpaFields.argument }})
-    .deserializeUsing<{{ account.name | pascalCase }}>((account) => deserialize{{ account.name | pascalCase }}(context, account))
+    .deserializeUsing<{{ account.name | pascalCase }}>((account) => deserialize{{ account.name | pascalCase }}(account))
     {%- if discriminator.kind === 'field' %}
       .whereField('{{ discriminator.name }}', {{ discriminator.value }})
     {% elif discriminator.kind === 'size' %}
@@ -89,7 +88,7 @@ export function get{{ account.name | pascalCase }}Size(): number {
 
 {% if seeds.length > 0 %}
 export function find{{ account.name | pascalCase }}Pda(
-  context: Pick<Context, 'eddsa' | 'programs'{% if pdaHelperNeedsSerializer %} | 'serializer'{% endif %}>,
+  context: Pick<Context, 'eddsa' | 'programs'>,
   {% if hasVariableSeeds %}
     seeds: {
       {% for seed in seeds %}
@@ -101,14 +100,11 @@ export function find{{ account.name | pascalCase }}Pda(
     }
   {% endif %}
 ): Pda {
-  {% if pdaHelperNeedsSerializer %}
-    const s = context.serializer;
-  {% endif %}
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}
-        s.publicKey().serialize(programId),
+        publicKeySerializer().serialize(programId),
       {% elif seed.kind === 'constant' %}
         {{ seed.typeManifest.serializer }}.serialize({{ seed.value.render }}),
       {% else %}
@@ -119,7 +115,7 @@ export function find{{ account.name | pascalCase }}Pda(
 }
 
 export async function fetch{{ account.name | pascalCase }}FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   {% if hasVariableSeeds %}
     seeds: Parameters<typeof find{{ account.name | pascalCase }}Pda>[1],
   {% endif %}
@@ -129,7 +125,7 @@ export async function fetch{{ account.name | pascalCase }}FromSeeds(
 }
 
 export async function safeFetch{{ account.name | pascalCase }}FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   {% if hasVariableSeeds %}
     seeds: Parameters<typeof find{{ account.name | pascalCase }}Pda>[1],
   {% endif %}

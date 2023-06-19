@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -47,20 +52,30 @@ export type MintFromCandyMachineInstructionData = {
 
 export type MintFromCandyMachineInstructionDataArgs = {};
 
+/** @deprecated Use `getMintFromCandyMachineInstructionDataSerializer()` without any argument instead. */
 export function getMintFromCandyMachineInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  MintFromCandyMachineInstructionDataArgs,
+  MintFromCandyMachineInstructionData
+>;
+export function getMintFromCandyMachineInstructionDataSerializer(): Serializer<
+  MintFromCandyMachineInstructionDataArgs,
+  MintFromCandyMachineInstructionData
+>;
+export function getMintFromCandyMachineInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   MintFromCandyMachineInstructionDataArgs,
   MintFromCandyMachineInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     MintFromCandyMachineInstructionDataArgs,
     any,
     MintFromCandyMachineInstructionData
   >(
-    s.struct<MintFromCandyMachineInstructionData>(
-      [['discriminator', s.array(s.u8(), { size: 8 })]],
+    struct<MintFromCandyMachineInstructionData>(
+      [['discriminator', array(u8(), { size: 8 })]],
       { description: 'MintFromCandyMachineInstructionData' }
     ),
     (value) => ({
@@ -75,7 +90,7 @@ export function getMintFromCandyMachineInstructionDataSerializer(
 
 // Instruction.
 export function mintFromCandyMachine(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: MintFromCandyMachineInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -196,9 +211,7 @@ export function mintFromCandyMachine(
   addAccountMeta(keys, signers, resolvedAccounts.recentSlothashes, false);
 
   // Data.
-  const data = getMintFromCandyMachineInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getMintFromCandyMachineInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

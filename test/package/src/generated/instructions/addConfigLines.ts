@@ -11,12 +11,18 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  struct,
+  u32,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { ConfigLine, ConfigLineArgs, getConfigLineSerializer } from '../types';
 
@@ -38,23 +44,30 @@ export type AddConfigLinesInstructionDataArgs = {
   configLines: Array<ConfigLineArgs>;
 };
 
+/** @deprecated Use `getAddConfigLinesInstructionDataSerializer()` without any argument instead. */
 export function getAddConfigLinesInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<AddConfigLinesInstructionDataArgs, AddConfigLinesInstructionData>;
+export function getAddConfigLinesInstructionDataSerializer(): Serializer<
+  AddConfigLinesInstructionDataArgs,
+  AddConfigLinesInstructionData
+>;
+export function getAddConfigLinesInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   AddConfigLinesInstructionDataArgs,
   AddConfigLinesInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     AddConfigLinesInstructionDataArgs,
     any,
     AddConfigLinesInstructionData
   >(
-    s.struct<AddConfigLinesInstructionData>(
+    struct<AddConfigLinesInstructionData>(
       [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['index', s.u32()],
-        ['configLines', s.array(getConfigLineSerializer(context))],
+        ['discriminator', array(u8(), { size: 8 })],
+        ['index', u32()],
+        ['configLines', array(getConfigLineSerializer())],
       ],
       { description: 'AddConfigLinesInstructionData' }
     ),
@@ -73,7 +86,7 @@ export type AddConfigLinesInstructionArgs = AddConfigLinesInstructionDataArgs;
 
 // Instruction.
 export function addConfigLines(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -104,7 +117,7 @@ export function addConfigLines(
 
   // Data.
   const data =
-    getAddConfigLinesInstructionDataSerializer(context).serialize(resolvedArgs);
+    getAddConfigLinesInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

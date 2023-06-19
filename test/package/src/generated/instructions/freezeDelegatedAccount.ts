@@ -11,12 +11,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -38,22 +42,31 @@ export type FreezeDelegatedAccountInstructionData = { discriminator: number };
 
 export type FreezeDelegatedAccountInstructionDataArgs = {};
 
+/** @deprecated Use `getFreezeDelegatedAccountInstructionDataSerializer()` without any argument instead. */
 export function getFreezeDelegatedAccountInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  FreezeDelegatedAccountInstructionDataArgs,
+  FreezeDelegatedAccountInstructionData
+>;
+export function getFreezeDelegatedAccountInstructionDataSerializer(): Serializer<
+  FreezeDelegatedAccountInstructionDataArgs,
+  FreezeDelegatedAccountInstructionData
+>;
+export function getFreezeDelegatedAccountInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   FreezeDelegatedAccountInstructionDataArgs,
   FreezeDelegatedAccountInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     FreezeDelegatedAccountInstructionDataArgs,
     any,
     FreezeDelegatedAccountInstructionData
   >(
-    s.struct<FreezeDelegatedAccountInstructionData>(
-      [['discriminator', s.u8()]],
-      { description: 'FreezeDelegatedAccountInstructionData' }
-    ),
+    struct<FreezeDelegatedAccountInstructionData>([['discriminator', u8()]], {
+      description: 'FreezeDelegatedAccountInstructionData',
+    }),
     (value) => ({ ...value, discriminator: 26 })
   ) as Serializer<
     FreezeDelegatedAccountInstructionDataArgs,
@@ -63,7 +76,7 @@ export function getFreezeDelegatedAccountInstructionDataSerializer(
 
 // Instruction.
 export function freezeDelegatedAccount(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: FreezeDelegatedAccountInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -103,9 +116,9 @@ export function freezeDelegatedAccount(
   addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
 
   // Data.
-  const data = getFreezeDelegatedAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getFreezeDelegatedAccountInstructionDataSerializer().serialize(
+    {}
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

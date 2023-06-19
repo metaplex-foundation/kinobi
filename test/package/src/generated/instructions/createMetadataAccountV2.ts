@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  bool,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
 
@@ -50,23 +55,33 @@ export type CreateMetadataAccountV2InstructionDataArgs = {
   isMutable: boolean;
 };
 
+/** @deprecated Use `getCreateMetadataAccountV2InstructionDataSerializer()` without any argument instead. */
 export function getCreateMetadataAccountV2InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  CreateMetadataAccountV2InstructionDataArgs,
+  CreateMetadataAccountV2InstructionData
+>;
+export function getCreateMetadataAccountV2InstructionDataSerializer(): Serializer<
+  CreateMetadataAccountV2InstructionDataArgs,
+  CreateMetadataAccountV2InstructionData
+>;
+export function getCreateMetadataAccountV2InstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   CreateMetadataAccountV2InstructionDataArgs,
   CreateMetadataAccountV2InstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateMetadataAccountV2InstructionDataArgs,
     any,
     CreateMetadataAccountV2InstructionData
   >(
-    s.struct<CreateMetadataAccountV2InstructionData>(
+    struct<CreateMetadataAccountV2InstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['data', getDataV2Serializer(context)],
-        ['isMutable', s.bool()],
+        ['discriminator', u8()],
+        ['data', getDataV2Serializer()],
+        ['isMutable', bool()],
       ],
       { description: 'CreateMetadataAccountV2InstructionData' }
     ),
@@ -83,7 +98,7 @@ export type CreateMetadataAccountV2InstructionArgs =
 
 // Instruction.
 export function createMetadataAccountV2(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateMetadataAccountV2InstructionAccounts &
     CreateMetadataAccountV2InstructionArgs
 ): TransactionBuilder {
@@ -137,7 +152,7 @@ export function createMetadataAccountV2(
 
   // Data.
   const data =
-    getCreateMetadataAccountV2InstructionDataSerializer(context).serialize(
+    getCreateMetadataAccountV2InstructionDataSerializer().serialize(
       resolvedArgs
     );
 

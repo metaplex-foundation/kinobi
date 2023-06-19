@@ -11,12 +11,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 
 // Accounts.
@@ -40,20 +44,30 @@ export type RevokeCollectionAuthorityInstructionData = {
 
 export type RevokeCollectionAuthorityInstructionDataArgs = {};
 
+/** @deprecated Use `getRevokeCollectionAuthorityInstructionDataSerializer()` without any argument instead. */
 export function getRevokeCollectionAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  RevokeCollectionAuthorityInstructionDataArgs,
+  RevokeCollectionAuthorityInstructionData
+>;
+export function getRevokeCollectionAuthorityInstructionDataSerializer(): Serializer<
+  RevokeCollectionAuthorityInstructionDataArgs,
+  RevokeCollectionAuthorityInstructionData
+>;
+export function getRevokeCollectionAuthorityInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   RevokeCollectionAuthorityInstructionDataArgs,
   RevokeCollectionAuthorityInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     RevokeCollectionAuthorityInstructionDataArgs,
     any,
     RevokeCollectionAuthorityInstructionData
   >(
-    s.struct<RevokeCollectionAuthorityInstructionData>(
-      [['discriminator', s.u8()]],
+    struct<RevokeCollectionAuthorityInstructionData>(
+      [['discriminator', u8()]],
       { description: 'RevokeCollectionAuthorityInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 24 })
@@ -65,7 +79,7 @@ export function getRevokeCollectionAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function revokeCollectionAuthority(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: RevokeCollectionAuthorityInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -98,9 +112,8 @@ export function revokeCollectionAuthority(
   addAccountMeta(keys, signers, resolvedAccounts.mint, false);
 
   // Data.
-  const data = getRevokeCollectionAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getRevokeCollectionAuthorityInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

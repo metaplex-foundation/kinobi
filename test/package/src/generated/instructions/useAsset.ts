@@ -11,12 +11,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   UseAssetArgs,
@@ -58,19 +62,26 @@ export type UseAssetInstructionData = {
 
 export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
+/** @deprecated Use `getUseAssetInstructionDataSerializer()` without any argument instead. */
 export function getUseAssetInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData>;
+export function getUseAssetInstructionDataSerializer(): Serializer<
+  UseAssetInstructionDataArgs,
+  UseAssetInstructionData
+>;
+export function getUseAssetInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     UseAssetInstructionDataArgs,
     any,
     UseAssetInstructionData
   >(
-    s.struct<UseAssetInstructionData>(
+    struct<UseAssetInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['useAssetArgs', getUseAssetArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['useAssetArgs', getUseAssetArgsSerializer()],
       ],
       { description: 'UseAssetInstructionData' }
     ),
@@ -83,7 +94,7 @@ export type UseAssetInstructionArgs = UseAssetInstructionDataArgs;
 
 // Instruction.
 export function useAsset(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: UseAssetInstructionAccounts & UseAssetInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -184,8 +195,7 @@ export function useAsset(
   );
 
   // Data.
-  const data =
-    getUseAssetInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getUseAssetInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

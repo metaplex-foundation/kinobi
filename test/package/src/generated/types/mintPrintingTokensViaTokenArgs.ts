@@ -6,20 +6,30 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi';
+import { Serializer, struct, u64 } from '@metaplex-foundation/umi/serializers';
 
 export type MintPrintingTokensViaTokenArgs = { supply: bigint };
 
 export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
+/** @deprecated Use `getMintPrintingTokensViaTokenArgsSerializer()` without any argument instead. */
 export function getMintPrintingTokensViaTokenArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  MintPrintingTokensViaTokenArgsArgs,
+  MintPrintingTokensViaTokenArgs
+>;
+export function getMintPrintingTokensViaTokenArgsSerializer(): Serializer<
+  MintPrintingTokensViaTokenArgsArgs,
+  MintPrintingTokensViaTokenArgs
+>;
+export function getMintPrintingTokensViaTokenArgsSerializer(
+  _context: object = {}
 ): Serializer<
   MintPrintingTokensViaTokenArgsArgs,
   MintPrintingTokensViaTokenArgs
 > {
-  const s = context.serializer;
-  return s.struct<MintPrintingTokensViaTokenArgs>([['supply', s.u64()]], {
+  return struct<MintPrintingTokensViaTokenArgs>([['supply', u64()]], {
     description: 'MintPrintingTokensViaTokenArgs',
   }) as Serializer<
     MintPrintingTokensViaTokenArgsArgs,

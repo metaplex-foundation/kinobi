@@ -10,7 +10,6 @@
 // Instruction.
 export function {{ instruction.name | camelCase }}(
   context: Pick<Context,
-    | 'serializer'
     | 'programs'
     {{- '| \'eddsa\'' if needsEddsa else '' }}
     {{- '| \'identity\'' if needsIdentity else '' }}
@@ -51,9 +50,9 @@ export function {{ instruction.name | camelCase }}(
 
   // Data.
   {% if hasDataArgs %}
-    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer(context).serialize(resolvedArgs);
+    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize(resolvedArgs);
   {% elif hasData %}
-    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer(context).serialize({});
+    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize({});
   {% else %}
     const data = new Uint8Array();
   {% endif %}

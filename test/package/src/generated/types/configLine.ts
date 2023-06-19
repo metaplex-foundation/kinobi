@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  string,
+  struct,
+} from '@metaplex-foundation/umi/serializers';
 
 /** Config line struct for storing asset (NFT) data pre-mint. */
 export type ConfigLine = {
@@ -18,14 +22,21 @@ export type ConfigLine = {
 
 export type ConfigLineArgs = ConfigLine;
 
+/** @deprecated Use `getConfigLineSerializer()` without any argument instead. */
 export function getConfigLineSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<ConfigLineArgs, ConfigLine>;
+export function getConfigLineSerializer(): Serializer<
+  ConfigLineArgs,
+  ConfigLine
+>;
+export function getConfigLineSerializer(
+  _context: object = {}
 ): Serializer<ConfigLineArgs, ConfigLine> {
-  const s = context.serializer;
-  return s.struct<ConfigLine>(
+  return struct<ConfigLine>(
     [
-      ['name', s.string()],
-      ['uri', s.string()],
+      ['name', string()],
+      ['uri', string()],
     ],
     { description: 'ConfigLine' }
   ) as Serializer<ConfigLineArgs, ConfigLine>;

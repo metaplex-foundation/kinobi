@@ -11,12 +11,18 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -33,19 +39,26 @@ export type SetAuthorityInstructionData = {
 
 export type SetAuthorityInstructionDataArgs = { newAuthority: PublicKey };
 
+/** @deprecated Use `getSetAuthorityInstructionDataSerializer()` without any argument instead. */
 export function getSetAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData>;
+export function getSetAuthorityInstructionDataSerializer(): Serializer<
+  SetAuthorityInstructionDataArgs,
+  SetAuthorityInstructionData
+>;
+export function getSetAuthorityInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     SetAuthorityInstructionDataArgs,
     any,
     SetAuthorityInstructionData
   >(
-    s.struct<SetAuthorityInstructionData>(
+    struct<SetAuthorityInstructionData>(
       [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['newAuthority', s.publicKey()],
+        ['discriminator', array(u8(), { size: 8 })],
+        ['newAuthority', publicKeySerializer()],
       ],
       { description: 'SetAuthorityInstructionData' }
     ),
@@ -61,7 +74,7 @@ export type SetAuthorityInstructionArgs = SetAuthorityInstructionDataArgs;
 
 // Instruction.
 export function setAuthority(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: SetAuthorityInstructionAccounts & SetAuthorityInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -92,7 +105,7 @@ export function setAuthority(
 
   // Data.
   const data =
-    getSetAuthorityInstructionDataSerializer(context).serialize(resolvedArgs);
+    getSetAuthorityInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

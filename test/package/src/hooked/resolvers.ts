@@ -12,7 +12,7 @@ import {
 } from '../generated';
 
 export const resolveMasterEditionFromTokenStandard = (
-  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs'>,
   accounts: { mint: WithWritable<PublicKey | Pda | Signer> },
   args: { tokenStandard: TokenStandard },
   programId: PublicKey,

@@ -11,13 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
@@ -57,24 +61,34 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionDataArgs = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
 };
 
+/** @deprecated Use `getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer()` without any argument instead. */
 export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
+  DeprecatedMintPrintingTokensViaTokenInstructionData
+>;
+export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(): Serializer<
+  DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
+  DeprecatedMintPrintingTokensViaTokenInstructionData
+>;
+export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
   DeprecatedMintPrintingTokensViaTokenInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
     any,
     DeprecatedMintPrintingTokensViaTokenInstructionData
   >(
-    s.struct<DeprecatedMintPrintingTokensViaTokenInstructionData>(
+    struct<DeprecatedMintPrintingTokensViaTokenInstructionData>(
       [
-        ['discriminator', s.u8()],
+        ['discriminator', u8()],
         [
           'mintPrintingTokensViaTokenArgs',
-          getMintPrintingTokensViaTokenArgsSerializer(context),
+          getMintPrintingTokensViaTokenArgsSerializer(),
         ],
       ],
       { description: 'DeprecatedMintPrintingTokensViaTokenInstructionData' }
@@ -92,7 +106,7 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionArgs =
 
 // Instruction.
 export function deprecatedMintPrintingTokensViaToken(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: DeprecatedMintPrintingTokensViaTokenInstructionAccounts &
     DeprecatedMintPrintingTokensViaTokenInstructionArgs
 ): TransactionBuilder {
@@ -161,9 +175,9 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Data.
   const data =
-    getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
-      context
-    ).serialize(resolvedArgs);
+    getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer().serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

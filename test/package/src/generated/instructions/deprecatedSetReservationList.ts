@@ -10,14 +10,22 @@ import {
   AccountMeta,
   Context,
   Option,
+  OptionOrNullable,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  option,
+  struct,
+  u64,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 import {
   Reservation,
@@ -46,30 +54,40 @@ export type DeprecatedSetReservationListInstructionData = {
 
 export type DeprecatedSetReservationListInstructionDataArgs = {
   reservations: Array<ReservationArgs>;
-  totalReservationSpots: Option<number | bigint>;
+  totalReservationSpots: OptionOrNullable<number | bigint>;
   offset: number | bigint;
   totalSpotOffset: number | bigint;
 };
 
+/** @deprecated Use `getDeprecatedSetReservationListInstructionDataSerializer()` without any argument instead. */
 export function getDeprecatedSetReservationListInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  DeprecatedSetReservationListInstructionDataArgs,
+  DeprecatedSetReservationListInstructionData
+>;
+export function getDeprecatedSetReservationListInstructionDataSerializer(): Serializer<
+  DeprecatedSetReservationListInstructionDataArgs,
+  DeprecatedSetReservationListInstructionData
+>;
+export function getDeprecatedSetReservationListInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   DeprecatedSetReservationListInstructionDataArgs,
   DeprecatedSetReservationListInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     DeprecatedSetReservationListInstructionDataArgs,
     any,
     DeprecatedSetReservationListInstructionData
   >(
-    s.struct<DeprecatedSetReservationListInstructionData>(
+    struct<DeprecatedSetReservationListInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['reservations', s.array(getReservationSerializer(context))],
-        ['totalReservationSpots', s.option(s.u64())],
-        ['offset', s.u64()],
-        ['totalSpotOffset', s.u64()],
+        ['discriminator', u8()],
+        ['reservations', array(getReservationSerializer())],
+        ['totalReservationSpots', option(u64())],
+        ['offset', u64()],
+        ['totalSpotOffset', u64()],
       ],
       { description: 'DeprecatedSetReservationListInstructionData' }
     ),
@@ -86,7 +104,7 @@ export type DeprecatedSetReservationListInstructionArgs =
 
 // Instruction.
 export function deprecatedSetReservationList(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: DeprecatedSetReservationListInstructionAccounts &
     DeprecatedSetReservationListInstructionArgs
 ): TransactionBuilder {
@@ -114,7 +132,7 @@ export function deprecatedSetReservationList(
 
   // Data.
   const data =
-    getDeprecatedSetReservationListInstructionDataSerializer(context).serialize(
+    getDeprecatedSetReservationListInstructionDataSerializer().serialize(
       resolvedArgs
     );
 

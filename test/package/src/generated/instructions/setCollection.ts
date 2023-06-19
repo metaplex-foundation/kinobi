@@ -11,12 +11,17 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -42,17 +47,24 @@ export type SetCollectionInstructionData = { discriminator: Array<number> };
 
 export type SetCollectionInstructionDataArgs = {};
 
+/** @deprecated Use `getSetCollectionInstructionDataSerializer()` without any argument instead. */
 export function getSetCollectionInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<SetCollectionInstructionDataArgs, SetCollectionInstructionData>;
+export function getSetCollectionInstructionDataSerializer(): Serializer<
+  SetCollectionInstructionDataArgs,
+  SetCollectionInstructionData
+>;
+export function getSetCollectionInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<SetCollectionInstructionDataArgs, SetCollectionInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     SetCollectionInstructionDataArgs,
     any,
     SetCollectionInstructionData
   >(
-    s.struct<SetCollectionInstructionData>(
-      [['discriminator', s.array(s.u8(), { size: 8 })]],
+    struct<SetCollectionInstructionData>(
+      [['discriminator', array(u8(), { size: 8 })]],
       { description: 'SetCollectionInstructionData' }
     ),
     (value) => ({
@@ -67,7 +79,7 @@ export function getSetCollectionInstructionDataSerializer(
 
 // Instruction.
 export function setCollection(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: SetCollectionInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -178,7 +190,7 @@ export function setCollection(
   addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
 
   // Data.
-  const data = getSetCollectionInstructionDataSerializer(context).serialize({});
+  const data = getSetCollectionInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

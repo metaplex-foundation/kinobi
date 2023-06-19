@@ -6,7 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  array,
+  string,
+  struct,
+} from '@metaplex-foundation/umi/serializers';
 
 export type RecursiveType = { name: string; children: Array<RecursiveType> };
 
@@ -15,14 +20,21 @@ export type RecursiveTypeArgs = {
   children: Array<RecursiveTypeArgs>;
 };
 
+/** @deprecated Use `getRecursiveTypeSerializer()` without any argument instead. */
 export function getRecursiveTypeSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<RecursiveTypeArgs, RecursiveType>;
+export function getRecursiveTypeSerializer(): Serializer<
+  RecursiveTypeArgs,
+  RecursiveType
+>;
+export function getRecursiveTypeSerializer(
+  _context: object = {}
 ): Serializer<RecursiveTypeArgs, RecursiveType> {
-  const s = context.serializer;
-  return s.struct<RecursiveType>(
+  return struct<RecursiveType>(
     [
-      ['name', s.string()],
-      ['children', s.array(getRecursiveTypeSerializer(context))],
+      ['name', string()],
+      ['children', array(getRecursiveTypeSerializer())],
     ],
     { description: 'RecursiveType' }
   ) as Serializer<RecursiveTypeArgs, RecursiveType>;

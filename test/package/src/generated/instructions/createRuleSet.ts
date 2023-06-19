@@ -11,12 +11,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import {
   TaCreateArgs,
@@ -46,20 +50,27 @@ export type CreateRuleSetInstructionDataArgs = {
   ruleSetBump: number;
 };
 
+/** @deprecated Use `getCreateRuleSetInstructionDataSerializer()` without any argument instead. */
 export function getCreateRuleSetInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData>;
+export function getCreateRuleSetInstructionDataSerializer(): Serializer<
+  CreateRuleSetInstructionDataArgs,
+  CreateRuleSetInstructionData
+>;
+export function getCreateRuleSetInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     CreateRuleSetInstructionDataArgs,
     any,
     CreateRuleSetInstructionData
   >(
-    s.struct<CreateRuleSetInstructionData>(
+    struct<CreateRuleSetInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['createArgs', getTaCreateArgsSerializer(context)],
-        ['ruleSetBump', s.u8()],
+        ['discriminator', u8()],
+        ['createArgs', getTaCreateArgsSerializer()],
+        ['ruleSetBump', u8()],
       ],
       { description: 'CreateRuleSetInstructionData' }
     ),
@@ -78,7 +89,7 @@ export type CreateRuleSetInstructionArgs = PickPartial<
 
 // Instruction.
 export function createRuleSet(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -128,7 +139,7 @@ export function createRuleSet(
 
   // Data.
   const data =
-    getCreateRuleSetInstructionDataSerializer(context).serialize(resolvedArgs);
+    getCreateRuleSetInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

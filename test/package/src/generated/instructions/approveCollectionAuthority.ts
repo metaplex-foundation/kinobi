@@ -11,12 +11,16 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
@@ -46,20 +50,30 @@ export type ApproveCollectionAuthorityInstructionData = {
 
 export type ApproveCollectionAuthorityInstructionDataArgs = {};
 
+/** @deprecated Use `getApproveCollectionAuthorityInstructionDataSerializer()` without any argument instead. */
 export function getApproveCollectionAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object
+): Serializer<
+  ApproveCollectionAuthorityInstructionDataArgs,
+  ApproveCollectionAuthorityInstructionData
+>;
+export function getApproveCollectionAuthorityInstructionDataSerializer(): Serializer<
+  ApproveCollectionAuthorityInstructionDataArgs,
+  ApproveCollectionAuthorityInstructionData
+>;
+export function getApproveCollectionAuthorityInstructionDataSerializer(
+  _context: object = {}
 ): Serializer<
   ApproveCollectionAuthorityInstructionDataArgs,
   ApproveCollectionAuthorityInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     ApproveCollectionAuthorityInstructionDataArgs,
     any,
     ApproveCollectionAuthorityInstructionData
   >(
-    s.struct<ApproveCollectionAuthorityInstructionData>(
-      [['discriminator', s.u8()]],
+    struct<ApproveCollectionAuthorityInstructionData>(
+      [['discriminator', u8()]],
       { description: 'ApproveCollectionAuthorityInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 23 })
@@ -71,7 +85,7 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function approveCollectionAuthority(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: ApproveCollectionAuthorityInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];
@@ -128,9 +142,8 @@ export function approveCollectionAuthority(
   addAccountMeta(keys, signers, resolvedAccounts.rent, true);
 
   // Data.
-  const data = getApproveCollectionAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getApproveCollectionAuthorityInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
