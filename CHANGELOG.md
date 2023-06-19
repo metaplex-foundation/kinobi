@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.11.0
+
+### Minor Changes
+
+- [#49](https://github.com/metaplex-foundation/kinobi/pull/49) [`3f54670`](https://github.com/metaplex-foundation/kinobi/commit/3f546701d1c6b08d4237783e4e258e16d758fa2c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update Umi to v0.8.2
+
 ## 0.10.2
 
 ### Patch Changes
