@@ -69,10 +69,7 @@ export type DummyInstructionArgs = PickPartial<
 
 // Instruction.
 export function dummy(
-  context: Pick<
-    Context,
-    'serializer' | 'programs' | 'eddsa' | 'identity' | 'payer'
-  >,
+  context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
   input: DummyInstructionAccounts & DummyInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

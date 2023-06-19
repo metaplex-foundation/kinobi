@@ -79,7 +79,7 @@ export function getMintFromCandyMachineInstructionDataSerializer(
 
 // Instruction.
 export function mintFromCandyMachine(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: MintFromCandyMachineInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

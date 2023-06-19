@@ -81,7 +81,7 @@ export type SetCollectionSizeInstructionArgs =
 
 // Instruction.
 export function setCollectionSize(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: SetCollectionSizeInstructionAccounts & SetCollectionSizeInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

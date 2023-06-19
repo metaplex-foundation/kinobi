@@ -121,7 +121,7 @@ export type CreateMetadataAccountInstructionArgs = PickPartial<
 
 // Instruction.
 export function createMetadataAccount(
-  context: Pick<Context, 'serializer' | 'programs' | 'eddsa' | 'payer'>,
+  context: Pick<Context, 'programs' | 'eddsa' | 'payer'>,
   input: CreateMetadataAccountInstructionAccounts &
     CreateMetadataAccountInstructionArgs
 ): TransactionBuilder {

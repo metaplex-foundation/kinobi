@@ -92,7 +92,7 @@ export type DeprecatedSetReservationListInstructionArgs =
 
 // Instruction.
 export function deprecatedSetReservationList(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: DeprecatedSetReservationListInstructionAccounts &
     DeprecatedSetReservationListInstructionArgs
 ): TransactionBuilder {

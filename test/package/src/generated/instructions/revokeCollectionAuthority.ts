@@ -68,7 +68,7 @@ export function getRevokeCollectionAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function revokeCollectionAuthority(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: RevokeCollectionAuthorityInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

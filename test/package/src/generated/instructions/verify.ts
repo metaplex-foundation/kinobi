@@ -66,7 +66,7 @@ export type VerifyInstructionArgs = VerifyInstructionDataArgs;
 
 // Instruction.
 export function verify(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: VerifyInstructionAccounts & VerifyInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

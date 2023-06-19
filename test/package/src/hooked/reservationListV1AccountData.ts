@@ -26,10 +26,10 @@ export type ReservationListV1AccountDataArgs = {
   reservations: Array<ReservationV1Args>;
 };
 
-export function getReservationListV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
-): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
-  const s = context.serializer;
+export function getReservationListV1AccountDataSerializer(): Serializer<
+  ReservationListV1AccountDataArgs,
+  ReservationListV1AccountData
+> {
   return mapSerializer<
     ReservationListV1AccountDataArgs,
     ReservationListV1AccountData,

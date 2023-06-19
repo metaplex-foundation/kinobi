@@ -83,7 +83,7 @@ export type BubblegumSetCollectionSizeInstructionArgs =
 
 // Instruction.
 export function bubblegumSetCollectionSize(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: BubblegumSetCollectionSizeInstructionAccounts &
     BubblegumSetCollectionSizeInstructionArgs
 ): TransactionBuilder {

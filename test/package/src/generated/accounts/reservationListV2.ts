@@ -84,17 +84,17 @@ export function getReservationListV2AccountDataSerializer(
 }
 
 export function deserializeReservationListV2(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): ReservationListV2 {
   return deserializeAccount(
     rawAccount,
-    getReservationListV2AccountDataSerializer(context)
+    getReservationListV2AccountDataSerializer()
   );
 }
 
 export async function fetchReservationListV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<ReservationListV2> {
@@ -107,7 +107,7 @@ export async function fetchReservationListV2(
 }
 
 export async function safeFetchReservationListV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<ReservationListV2 | null> {
@@ -121,7 +121,7 @@ export async function safeFetchReservationListV2(
 }
 
 export async function fetchAllReservationListV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<ReservationListV2[]> {
@@ -136,7 +136,7 @@ export async function fetchAllReservationListV2(
 }
 
 export async function safeFetchAllReservationListV2(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<ReservationListV2[]> {
@@ -152,9 +152,8 @@ export async function safeFetchAllReservationListV2(
 }
 
 export function getReservationListV2GpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

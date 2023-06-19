@@ -96,17 +96,14 @@ export function getCandyMachineAccountDataSerializer(
 }
 
 export function deserializeCandyMachine(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): CandyMachine {
-  return deserializeAccount(
-    rawAccount,
-    getCandyMachineAccountDataSerializer(context)
-  );
+  return deserializeAccount(rawAccount, getCandyMachineAccountDataSerializer());
 }
 
 export async function fetchCandyMachine(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<CandyMachine> {
@@ -119,7 +116,7 @@ export async function fetchCandyMachine(
 }
 
 export async function safeFetchCandyMachine(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<CandyMachine | null> {
@@ -133,7 +130,7 @@ export async function safeFetchCandyMachine(
 }
 
 export async function fetchAllCandyMachine(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<CandyMachine[]> {
@@ -148,7 +145,7 @@ export async function fetchAllCandyMachine(
 }
 
 export async function safeFetchAllCandyMachine(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<CandyMachine[]> {
@@ -164,9 +161,8 @@ export async function safeFetchAllCandyMachine(
 }
 
 export function getCandyMachineGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplCandyMachineCore',
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'

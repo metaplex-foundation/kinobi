@@ -74,7 +74,7 @@ export function getCreateEscrowAccountInstructionDataSerializer(
 
 // Instruction.
 export function createEscrowAccount(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateEscrowAccountInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

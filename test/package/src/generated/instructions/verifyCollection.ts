@@ -67,7 +67,7 @@ export function getVerifyCollectionInstructionDataSerializer(
 
 // Instruction.
 export function verifyCollection(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: VerifyCollectionInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

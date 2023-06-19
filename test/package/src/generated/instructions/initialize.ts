@@ -79,7 +79,7 @@ export type InitializeInstructionArgs = InitializeInstructionDataArgs;
 
 // Instruction.
 export function initialize(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: InitializeInstructionAccounts & InitializeInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

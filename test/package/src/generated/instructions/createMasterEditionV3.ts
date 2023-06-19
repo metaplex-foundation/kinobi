@@ -93,7 +93,7 @@ export type CreateMasterEditionV3InstructionArgs =
 
 // Instruction.
 export function createMasterEditionV3(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateMasterEditionV3InstructionAccounts &
     CreateMasterEditionV3InstructionArgs
 ): TransactionBuilder {

@@ -279,7 +279,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Seeds.
-    const pdaHelperNeedsSerializer = account.seeds.length > 0;
     const seeds = account.seeds.map((seed) => {
       if (seed.kind === 'constant') {
         const seedManifest = visit(seed.type, this.typeManifestVisitor);
@@ -298,6 +297,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         );
         return { ...seed, typeManifest: seedManifest };
       }
+      imports
+        .add('umiSerializers', 'publicKey')
+        .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
       return seed;
     });
     if (seeds.length > 0) {
@@ -316,7 +318,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         discriminator: resolvedDiscriminator,
         gpaFields: resolvedGpaFields,
         seeds,
-        pdaHelperNeedsSerializer,
         hasVariableSeeds,
       })
     );

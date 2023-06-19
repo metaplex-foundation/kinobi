@@ -81,7 +81,7 @@ export type CreateRuleSetInstructionArgs = PickPartial<
 
 // Instruction.
 export function createRuleSet(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

@@ -83,7 +83,7 @@ export type RevokeInstructionArgs = RevokeInstructionDataArgs;
 
 // Instruction.
 export function revoke(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: RevokeInstructionAccounts & RevokeInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

@@ -66,7 +66,7 @@ export type SetAuthorityInstructionArgs = SetAuthorityInstructionDataArgs;
 
 // Instruction.
 export function setAuthority(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: SetAuthorityInstructionAccounts & SetAuthorityInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

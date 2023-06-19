@@ -92,7 +92,7 @@ export type CreateV1InstructionArgs = CreateV1InstructionDataArgs;
 
 // Instruction.
 export function createV1(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateV1InstructionAccounts & CreateV1InstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

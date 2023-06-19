@@ -64,7 +64,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
 
 // Instruction.
 export function updatePrimarySaleHappenedViaToken(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: UpdatePrimarySaleHappenedViaTokenInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

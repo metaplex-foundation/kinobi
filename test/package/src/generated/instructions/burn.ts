@@ -71,7 +71,7 @@ export type BurnInstructionArgs = BurnInstructionDataArgs;
 
 // Instruction.
 export function burn(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: BurnInstructionAccounts & BurnInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

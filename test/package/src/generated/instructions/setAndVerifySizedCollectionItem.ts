@@ -74,7 +74,7 @@ export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(
 
 // Instruction.
 export function setAndVerifySizedCollectionItem(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: SetAndVerifySizedCollectionItemInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

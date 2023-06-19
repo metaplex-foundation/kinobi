@@ -65,7 +65,7 @@ export function getThawDelegatedAccountInstructionDataSerializer(
 
 // Instruction.
 export function thawDelegatedAccount(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: ThawDelegatedAccountInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

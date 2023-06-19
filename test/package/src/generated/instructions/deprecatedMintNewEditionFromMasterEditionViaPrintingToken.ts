@@ -95,7 +95,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
 
 // Instruction.
 export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

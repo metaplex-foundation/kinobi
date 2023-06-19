@@ -23,6 +23,7 @@ import {
   Serializer,
   i64,
   mapSerializer,
+  publicKey as publicKeySerializer,
   string,
   struct,
   u64,
@@ -72,17 +73,17 @@ export function getFrequencyAccountAccountDataSerializer(
 }
 
 export function deserializeFrequencyAccount(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): FrequencyAccount {
   return deserializeAccount(
     rawAccount,
-    getFrequencyAccountAccountDataSerializer(context)
+    getFrequencyAccountAccountDataSerializer()
   );
 }
 
 export async function fetchFrequencyAccount(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount> {
@@ -95,7 +96,7 @@ export async function fetchFrequencyAccount(
 }
 
 export async function safeFetchFrequencyAccount(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount | null> {
@@ -109,7 +110,7 @@ export async function safeFetchFrequencyAccount(
 }
 
 export async function fetchAllFrequencyAccount(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<FrequencyAccount[]> {
@@ -124,7 +125,7 @@ export async function fetchAllFrequencyAccount(
 }
 
 export async function safeFetchAllFrequencyAccount(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<FrequencyAccount[]> {
@@ -140,9 +141,8 @@ export async function safeFetchAllFrequencyAccount(
 }
 
 export function getFrequencyAccountGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenAuthRules',
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
@@ -164,21 +164,20 @@ export function getFrequencyAccountSize(): number {
 }
 
 export function findFrequencyAccountPda(
-  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>
+  context: Pick<Context, 'eddsa' | 'programs'>
 ): Pda {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenAuthRules',
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
   return context.eddsa.findPda(programId, [
     string({ size: 'variable' }).serialize('frequency_pda'),
-    s.publicKey().serialize(programId),
+    publicKeySerializer().serialize(programId),
   ]);
 }
 
 export async function fetchFrequencyAccountFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount> {
   return fetchFrequencyAccount(
@@ -189,7 +188,7 @@ export async function fetchFrequencyAccountFromSeeds(
 }
 
 export async function safeFetchFrequencyAccountFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   options?: RpcGetAccountOptions
 ): Promise<FrequencyAccount | null> {
   return safeFetchFrequencyAccount(

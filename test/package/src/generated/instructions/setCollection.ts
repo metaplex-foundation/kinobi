@@ -71,7 +71,7 @@ export function getSetCollectionInstructionDataSerializer(
 
 // Instruction.
 export function setCollection(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: SetCollectionInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

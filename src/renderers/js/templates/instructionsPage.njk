@@ -10,7 +10,6 @@
 // Instruction.
 export function {{ instruction.name | camelCase }}(
   context: Pick<Context,
-    | 'serializer'
     | 'programs'
     {{- '| \'eddsa\'' if needsEddsa else '' }}
     {{- '| \'identity\'' if needsIdentity else '' }}

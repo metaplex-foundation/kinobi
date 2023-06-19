@@ -63,7 +63,7 @@ export function getSetTokenStandardInstructionDataSerializer(
 
 // Instruction.
 export function setTokenStandard(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: SetTokenStandardInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

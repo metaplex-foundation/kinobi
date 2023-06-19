@@ -86,7 +86,7 @@ export type UpdateMetadataAccountV2InstructionArgs =
 
 // Instruction.
 export function updateMetadataAccountV2(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   accounts: UpdateMetadataAccountV2InstructionAccounts,
   args: UpdateMetadataAccountV2InstructionArgs
 ): TransactionBuilder {

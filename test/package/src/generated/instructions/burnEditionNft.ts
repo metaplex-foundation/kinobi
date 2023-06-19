@@ -75,7 +75,7 @@ export function getBurnEditionNftInstructionDataSerializer(
 
 // Instruction.
 export function burnEditionNft(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: BurnEditionNftInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

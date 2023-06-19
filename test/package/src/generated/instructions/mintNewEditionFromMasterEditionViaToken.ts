@@ -104,7 +104,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionArgs =
 
 // Instruction.
 export function mintNewEditionFromMasterEditionViaToken(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: MintNewEditionFromMasterEditionViaTokenInstructionAccounts &
     MintNewEditionFromMasterEditionViaTokenInstructionArgs
 ): TransactionBuilder {

@@ -48,7 +48,7 @@ export type CreateReservationListInstructionArgs =
 
 // Instruction.
 export function createReservationList(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   accounts: CreateReservationListInstructionAccounts,
   args: CreateReservationListInstructionArgs
 ): TransactionBuilder {

@@ -81,7 +81,7 @@ export type MigrateInstructionArgs = MigrateInstructionDataArgs;
 
 // Instruction.
 export function migrate(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: MigrateInstructionAccounts & MigrateInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

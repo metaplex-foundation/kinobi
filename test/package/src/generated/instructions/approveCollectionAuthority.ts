@@ -74,7 +74,7 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function approveCollectionAuthority(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: ApproveCollectionAuthorityInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

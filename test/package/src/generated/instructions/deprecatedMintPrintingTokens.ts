@@ -91,7 +91,7 @@ export type DeprecatedMintPrintingTokensInstructionArgs =
 
 // Instruction.
 export function deprecatedMintPrintingTokens(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: DeprecatedMintPrintingTokensInstructionAccounts &
     DeprecatedMintPrintingTokensInstructionArgs
 ): TransactionBuilder {

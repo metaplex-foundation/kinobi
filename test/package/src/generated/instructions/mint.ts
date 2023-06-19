@@ -78,7 +78,7 @@ export type MintInstructionArgs = MintInstructionDataArgs;
 
 // Instruction.
 export function mint(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: MintInstructionAccounts & MintInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

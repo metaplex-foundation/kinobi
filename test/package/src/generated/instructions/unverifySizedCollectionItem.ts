@@ -72,7 +72,7 @@ export function getUnverifySizedCollectionItemInstructionDataSerializer(
 
 // Instruction.
 export function unverifySizedCollectionItem(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: UnverifySizedCollectionItemInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

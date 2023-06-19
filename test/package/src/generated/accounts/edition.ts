@@ -58,17 +58,14 @@ export function getEditionAccountDataSerializer(
 }
 
 export function deserializeEdition(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): Edition {
-  return deserializeAccount(
-    rawAccount,
-    getEditionAccountDataSerializer(context)
-  );
+  return deserializeAccount(rawAccount, getEditionAccountDataSerializer());
 }
 
 export async function fetchEdition(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Edition> {
@@ -81,7 +78,7 @@ export async function fetchEdition(
 }
 
 export async function safeFetchEdition(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Edition | null> {
@@ -93,7 +90,7 @@ export async function safeFetchEdition(
 }
 
 export async function fetchAllEdition(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Edition[]> {
@@ -108,7 +105,7 @@ export async function fetchAllEdition(
 }
 
 export async function safeFetchAllEdition(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Edition[]> {
@@ -124,9 +121,8 @@ export async function safeFetchAllEdition(
 }
 
 export function getEditionGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

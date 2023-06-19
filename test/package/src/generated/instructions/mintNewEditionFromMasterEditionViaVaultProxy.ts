@@ -113,7 +113,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs =
 
 // Instruction.
 export function mintNewEditionFromMasterEditionViaVaultProxy(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: MintNewEditionFromMasterEditionViaVaultProxyInstructionAccounts &
     MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs
 ): TransactionBuilder {

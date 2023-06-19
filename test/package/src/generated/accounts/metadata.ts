@@ -131,17 +131,14 @@ export function getMetadataAccountDataSerializer(
 }
 
 export function deserializeMetadata(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): Metadata {
-  return deserializeAccount(
-    rawAccount,
-    getMetadataAccountDataSerializer(context)
-  );
+  return deserializeAccount(rawAccount, getMetadataAccountDataSerializer());
 }
 
 export async function fetchMetadata(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Metadata> {
@@ -154,7 +151,7 @@ export async function fetchMetadata(
 }
 
 export async function safeFetchMetadata(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<Metadata | null> {
@@ -168,7 +165,7 @@ export async function safeFetchMetadata(
 }
 
 export async function fetchAllMetadata(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Metadata[]> {
@@ -183,7 +180,7 @@ export async function fetchAllMetadata(
 }
 
 export async function safeFetchAllMetadata(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<Metadata[]> {
@@ -199,9 +196,8 @@ export async function safeFetchAllMetadata(
 }
 
 export function getMetadataGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -255,26 +251,25 @@ export function getMetadataSize(): number {
 }
 
 export function findMetadataPda(
-  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs'>,
   seeds: {
     /** The address of the mint account */
     mint: PublicKey;
   }
 ): Pda {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
     string({ size: 'variable' }).serialize('metadata'),
-    s.publicKey().serialize(programId),
+    publicKeySerializer().serialize(programId),
     publicKeySerializer().serialize(seeds.mint),
   ]);
 }
 
 export async function fetchMetadataFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMetadataPda>[1],
   options?: RpcGetAccountOptions
 ): Promise<Metadata> {
@@ -282,7 +277,7 @@ export async function fetchMetadataFromSeeds(
 }
 
 export async function safeFetchMetadataFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMetadataPda>[1],
   options?: RpcGetAccountOptions
 ): Promise<Metadata | null> {

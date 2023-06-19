@@ -64,7 +64,7 @@ export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
 
 // Instruction.
 export function convertMasterEditionV1ToV2(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: ConvertMasterEditionV1ToV2InstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

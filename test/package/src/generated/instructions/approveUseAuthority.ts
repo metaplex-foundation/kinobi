@@ -91,7 +91,7 @@ export type ApproveUseAuthorityInstructionArgs =
 
 // Instruction.
 export function approveUseAuthority(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: ApproveUseAuthorityInstructionAccounts &
     ApproveUseAuthorityInstructionArgs
 ): TransactionBuilder {

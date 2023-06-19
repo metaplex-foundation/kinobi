@@ -22,6 +22,7 @@ import {
 import {
   Serializer,
   mapSerializer,
+  publicKey as publicKeySerializer,
   string,
   struct,
   u8,
@@ -69,17 +70,17 @@ export function getDelegateRecordAccountDataSerializer(
 }
 
 export function deserializeDelegateRecord(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): DelegateRecord {
   return deserializeAccount(
     rawAccount,
-    getDelegateRecordAccountDataSerializer(context)
+    getDelegateRecordAccountDataSerializer()
   );
 }
 
 export async function fetchDelegateRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<DelegateRecord> {
@@ -92,7 +93,7 @@ export async function fetchDelegateRecord(
 }
 
 export async function safeFetchDelegateRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<DelegateRecord | null> {
@@ -106,7 +107,7 @@ export async function safeFetchDelegateRecord(
 }
 
 export async function fetchAllDelegateRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<DelegateRecord[]> {
@@ -121,7 +122,7 @@ export async function fetchAllDelegateRecord(
 }
 
 export async function safeFetchAllDelegateRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<DelegateRecord[]> {
@@ -137,9 +138,8 @@ export async function safeFetchAllDelegateRecord(
 }
 
 export function getDelegateRecordGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -161,26 +161,25 @@ export function getDelegateRecordSize(): number {
 }
 
 export function findDelegateRecordPda(
-  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs'>,
   seeds: {
     /** The delegate role */
     role: DelegateRoleArgs;
   }
 ): Pda {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
     string({ size: 'variable' }).serialize('delegate_record'),
-    s.publicKey().serialize(programId),
+    publicKeySerializer().serialize(programId),
     getDelegateRoleSerializer().serialize(seeds.role),
   ]);
 }
 
 export async function fetchDelegateRecordFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
   options?: RpcGetAccountOptions
 ): Promise<DelegateRecord> {
@@ -192,7 +191,7 @@ export async function fetchDelegateRecordFromSeeds(
 }
 
 export async function safeFetchDelegateRecordFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
   options?: RpcGetAccountOptions
 ): Promise<DelegateRecord | null> {

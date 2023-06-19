@@ -53,7 +53,7 @@ export function getSignMetadataInstructionDataSerializer(
 
 // Instruction.
 export function signMetadata(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: SignMetadataInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

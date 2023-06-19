@@ -85,7 +85,7 @@ export type CreateFrequencyRuleInstructionArgs =
 
 // Instruction.
 export function createFrequencyRule(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateFrequencyRuleInstructionAccounts &
     CreateFrequencyRuleInstructionArgs
 ): TransactionBuilder {

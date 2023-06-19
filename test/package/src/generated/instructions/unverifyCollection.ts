@@ -67,7 +67,7 @@ export function getUnverifyCollectionInstructionDataSerializer(
 
 // Instruction.
 export function unverifyCollection(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: UnverifyCollectionInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

@@ -87,7 +87,7 @@ export type CreateMetadataAccountV2InstructionArgs =
 
 // Instruction.
 export function createMetadataAccountV2(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CreateMetadataAccountV2InstructionAccounts &
     CreateMetadataAccountV2InstructionArgs
 ): TransactionBuilder {

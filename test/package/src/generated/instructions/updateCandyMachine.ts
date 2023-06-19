@@ -79,7 +79,7 @@ export type UpdateCandyMachineInstructionArgs =
 
 // Instruction.
 export function updateCandyMachine(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: UpdateCandyMachineInstructionAccounts &
     UpdateCandyMachineInstructionArgs
 ): TransactionBuilder {

@@ -59,7 +59,7 @@ export function getBurnNftInstructionDataSerializer(
 
 // Instruction.
 export function burnNft(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: BurnNftInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

@@ -101,7 +101,7 @@ export type ValidateInstructionArgs = ValidateInstructionDataArgs;
 
 // Instruction.
 export function validate(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: ValidateInstructionAccounts & ValidateInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

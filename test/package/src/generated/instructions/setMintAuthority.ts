@@ -63,7 +63,7 @@ export function getSetMintAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function setMintAuthority(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: SetMintAuthorityInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

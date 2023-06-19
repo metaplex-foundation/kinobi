@@ -54,17 +54,17 @@ export function getEditionMarkerAccountDataSerializer(
 }
 
 export function deserializeEditionMarker(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): EditionMarker {
   return deserializeAccount(
     rawAccount,
-    getEditionMarkerAccountDataSerializer(context)
+    getEditionMarkerAccountDataSerializer()
   );
 }
 
 export async function fetchEditionMarker(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<EditionMarker> {
@@ -77,7 +77,7 @@ export async function fetchEditionMarker(
 }
 
 export async function safeFetchEditionMarker(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<EditionMarker | null> {
@@ -91,7 +91,7 @@ export async function safeFetchEditionMarker(
 }
 
 export async function fetchAllEditionMarker(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<EditionMarker[]> {
@@ -106,7 +106,7 @@ export async function fetchAllEditionMarker(
 }
 
 export async function safeFetchAllEditionMarker(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<EditionMarker[]> {
@@ -122,9 +122,8 @@ export async function safeFetchAllEditionMarker(
 }
 
 export function getEditionMarkerGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

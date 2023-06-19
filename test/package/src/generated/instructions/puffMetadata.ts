@@ -51,7 +51,7 @@ export function getPuffMetadataInstructionDataSerializer(
 
 // Instruction.
 export function puffMetadata(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: PuffMetadataInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

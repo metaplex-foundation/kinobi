@@ -68,17 +68,17 @@ export function getUseAuthorityRecordAccountDataSerializer(
 }
 
 export function deserializeUseAuthorityRecord(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): UseAuthorityRecord {
   return deserializeAccount(
     rawAccount,
-    getUseAuthorityRecordAccountDataSerializer(context)
+    getUseAuthorityRecordAccountDataSerializer()
   );
 }
 
 export async function fetchUseAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<UseAuthorityRecord> {
@@ -91,7 +91,7 @@ export async function fetchUseAuthorityRecord(
 }
 
 export async function safeFetchUseAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<UseAuthorityRecord | null> {
@@ -105,7 +105,7 @@ export async function safeFetchUseAuthorityRecord(
 }
 
 export async function fetchAllUseAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
@@ -120,7 +120,7 @@ export async function fetchAllUseAuthorityRecord(
 }
 
 export async function safeFetchAllUseAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
@@ -136,9 +136,8 @@ export async function safeFetchAllUseAuthorityRecord(
 }
 
 export function getUseAuthorityRecordGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

@@ -86,7 +86,7 @@ export type UseAssetInstructionArgs = UseAssetInstructionDataArgs;
 
 // Instruction.
 export function useAsset(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: UseAssetInstructionAccounts & UseAssetInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

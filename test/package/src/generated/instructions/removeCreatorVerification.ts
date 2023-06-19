@@ -62,7 +62,7 @@ export function getRemoveCreatorVerificationInstructionDataSerializer(
 
 // Instruction.
 export function removeCreatorVerification(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: RemoveCreatorVerificationInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

@@ -77,17 +77,17 @@ export function getMasterEditionV1AccountDataSerializer(
 }
 
 export function deserializeMasterEditionV1(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): MasterEditionV1 {
   return deserializeAccount(
     rawAccount,
-    getMasterEditionV1AccountDataSerializer(context)
+    getMasterEditionV1AccountDataSerializer()
   );
 }
 
 export async function fetchMasterEditionV1(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV1> {
@@ -100,7 +100,7 @@ export async function fetchMasterEditionV1(
 }
 
 export async function safeFetchMasterEditionV1(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV1 | null> {
@@ -114,7 +114,7 @@ export async function safeFetchMasterEditionV1(
 }
 
 export async function fetchAllMasterEditionV1(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV1[]> {
@@ -129,7 +129,7 @@ export async function fetchAllMasterEditionV1(
 }
 
 export async function safeFetchAllMasterEditionV1(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<MasterEditionV1[]> {
@@ -145,9 +145,8 @@ export async function safeFetchAllMasterEditionV1(
 }
 
 export function getMasterEditionV1GpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -173,26 +172,25 @@ export function getMasterEditionV1GpaBuilder(
 }
 
 export function findMasterEditionV1Pda(
-  context: Pick<Context, 'eddsa' | 'programs' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs'>,
   seeds: {
     /** The role of the delegate */
     delegateRole: DelegateRoleArgs;
   }
 ): Pda {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
     string({ size: 'variable' }).serialize('metadata'),
-    s.publicKey().serialize(programId),
+    publicKeySerializer().serialize(programId),
     getDelegateRoleSerializer().serialize(seeds.delegateRole),
   ]);
 }
 
 export async function fetchMasterEditionV1FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV1> {
@@ -204,7 +202,7 @@ export async function fetchMasterEditionV1FromSeeds(
 }
 
 export async function safeFetchMasterEditionV1FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc' | 'serializer'>,
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
   options?: RpcGetAccountOptions
 ): Promise<MasterEditionV1 | null> {

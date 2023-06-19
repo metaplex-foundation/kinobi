@@ -79,7 +79,7 @@ export type UtilizeInstructionArgs = UtilizeInstructionDataArgs;
 
 // Instruction.
 export function utilize(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: UtilizeInstructionAccounts & UtilizeInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

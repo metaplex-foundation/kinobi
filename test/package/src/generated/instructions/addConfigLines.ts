@@ -78,7 +78,7 @@ export type AddConfigLinesInstructionArgs = AddConfigLinesInstructionDataArgs;
 
 // Instruction.
 export function addConfigLines(
-  context: Pick<Context, 'serializer' | 'programs' | 'identity'>,
+  context: Pick<Context, 'programs' | 'identity'>,
   input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionArgs
 ): TransactionBuilder {
   const signers: Signer[] = [];

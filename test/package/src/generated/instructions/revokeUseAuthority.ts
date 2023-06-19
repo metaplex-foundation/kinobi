@@ -73,7 +73,7 @@ export function getRevokeUseAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function revokeUseAuthority(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: RevokeUseAuthorityInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

@@ -71,17 +71,17 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
 }
 
 export function deserializeCollectionAuthorityRecord(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): CollectionAuthorityRecord {
   return deserializeAccount(
     rawAccount,
-    getCollectionAuthorityRecordAccountDataSerializer(context)
+    getCollectionAuthorityRecordAccountDataSerializer()
   );
 }
 
 export async function fetchCollectionAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<CollectionAuthorityRecord> {
@@ -94,7 +94,7 @@ export async function fetchCollectionAuthorityRecord(
 }
 
 export async function safeFetchCollectionAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<CollectionAuthorityRecord | null> {
@@ -108,7 +108,7 @@ export async function safeFetchCollectionAuthorityRecord(
 }
 
 export async function fetchAllCollectionAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<CollectionAuthorityRecord[]> {
@@ -123,7 +123,7 @@ export async function fetchAllCollectionAuthorityRecord(
 }
 
 export async function safeFetchAllCollectionAuthorityRecord(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<CollectionAuthorityRecord[]> {
@@ -139,9 +139,8 @@ export async function safeFetchAllCollectionAuthorityRecord(
 }
 
 export function getCollectionAuthorityRecordGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

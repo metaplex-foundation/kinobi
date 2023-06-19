@@ -72,7 +72,7 @@ export function getCloseEscrowAccountInstructionDataSerializer(
 
 // Instruction.
 export function closeEscrowAccount(
-  context: Pick<Context, 'serializer' | 'programs' | 'payer'>,
+  context: Pick<Context, 'programs' | 'payer'>,
   input: CloseEscrowAccountInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

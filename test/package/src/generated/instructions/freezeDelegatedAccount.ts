@@ -65,7 +65,7 @@ export function getFreezeDelegatedAccountInstructionDataSerializer(
 
 // Instruction.
 export function freezeDelegatedAccount(
-  context: Pick<Context, 'serializer' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: FreezeDelegatedAccountInstructionAccounts
 ): TransactionBuilder {
   const signers: Signer[] = [];

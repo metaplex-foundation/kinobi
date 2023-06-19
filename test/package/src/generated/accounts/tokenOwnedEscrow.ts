@@ -72,17 +72,17 @@ export function getTokenOwnedEscrowAccountDataSerializer(
 }
 
 export function deserializeTokenOwnedEscrow(
-  context: Pick<Context, 'serializer'>,
+  _context: object,
   rawAccount: RpcAccount
 ): TokenOwnedEscrow {
   return deserializeAccount(
     rawAccount,
-    getTokenOwnedEscrowAccountDataSerializer(context)
+    getTokenOwnedEscrowAccountDataSerializer()
   );
 }
 
 export async function fetchTokenOwnedEscrow(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow> {
@@ -95,7 +95,7 @@ export async function fetchTokenOwnedEscrow(
 }
 
 export async function safeFetchTokenOwnedEscrow(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions
 ): Promise<TokenOwnedEscrow | null> {
@@ -109,7 +109,7 @@ export async function safeFetchTokenOwnedEscrow(
 }
 
 export async function fetchAllTokenOwnedEscrow(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
@@ -124,7 +124,7 @@ export async function fetchAllTokenOwnedEscrow(
 }
 
 export async function safeFetchAllTokenOwnedEscrow(
-  context: Pick<Context, 'rpc' | 'serializer'>,
+  context: Pick<Context, 'rpc'>,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
@@ -140,9 +140,8 @@ export async function safeFetchAllTokenOwnedEscrow(
 }
 
 export function getTokenOwnedEscrowGpaBuilder(
-  context: Pick<Context, 'rpc' | 'serializer' | 'programs'>
+  context: Pick<Context, 'rpc' | 'programs'>
 ) {
-  const s = context.serializer;
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
