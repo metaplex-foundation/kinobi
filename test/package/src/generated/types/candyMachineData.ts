@@ -10,9 +10,9 @@ import {
   Amount,
   Context,
   Option,
-  Serializer,
   mapAmountSerializer,
 } from '@metaplex-foundation/umi';
+import { Serializer } from '@metaplex-foundation/umi/serializers';
 import {
   CmCreator,
   CmCreatorArgs,

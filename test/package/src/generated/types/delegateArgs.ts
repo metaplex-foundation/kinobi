@@ -8,12 +8,14 @@
 
 import {
   Context,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
-  Serializer,
   SolAmount,
   mapAmountSerializer,
 } from '@metaplex-foundation/umi';
+import {
+  GetDataEnumKind,
+  GetDataEnumKindContent,
+  Serializer,
+} from '@metaplex-foundation/umi/serializers';
 
 export type DelegateArgs =
   | { __kind: 'CollectionV1' }

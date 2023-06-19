@@ -6,12 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Context,
-  Option,
-  PublicKey,
-  Serializer,
-} from '@metaplex-foundation/umi';
+import { Context, Option, PublicKey } from '@metaplex-foundation/umi';
+import { Serializer } from '@metaplex-foundation/umi/serializers';
 import {
   Collection,
   CollectionArgs,

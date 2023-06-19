@@ -6,13 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Context, Option, PublicKey } from '@metaplex-foundation/umi';
 import {
-  Context,
-  Option,
-  PublicKey,
   Serializer,
   mapSerializer,
-} from '@metaplex-foundation/umi';
+} from '@metaplex-foundation/umi/serializers';
 import {
   ReservationV1,
   ReservationV1Args,

@@ -20,6 +20,7 @@ import {
   gpaBuilder,
   publicKey as toPublicKey,
 } from '@metaplex-foundation/umi';
+import {} from '@metaplex-foundation/umi/serializers';
 import {
   ReservationListV1AccountData,
   getReservationListV1AccountDataSerializer,

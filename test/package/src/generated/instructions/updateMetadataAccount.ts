@@ -12,12 +12,14 @@ import {
   Option,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+} from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 

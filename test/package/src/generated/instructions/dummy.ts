@@ -11,12 +11,14 @@ import {
   Context,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+} from '@metaplex-foundation/umi/serializers';
 import { findDelegateRecordPda } from '../accounts';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import { DelegateRole } from '../types';

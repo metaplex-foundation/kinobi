@@ -6,13 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Context, PublicKey } from '@metaplex-foundation/umi';
 import {
-  Context,
   GetDataEnumKind,
   GetDataEnumKindContent,
-  PublicKey,
   Serializer,
-} from '@metaplex-foundation/umi';
+} from '@metaplex-foundation/umi/serializers';
 
 /** This is a union of all the possible payload types. */
 export type PayloadType =

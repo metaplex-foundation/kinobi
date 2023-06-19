@@ -6,12 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Context, PublicKey } from '@metaplex-foundation/umi';
 import {
-  Context,
-  PublicKey,
   Serializer,
   mapSerializer,
-} from '@metaplex-foundation/umi';
+} from '@metaplex-foundation/umi/serializers';
 
 export type Creator = { address: PublicKey; verified: boolean; share: number };
 

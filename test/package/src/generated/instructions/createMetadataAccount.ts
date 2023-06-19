@@ -13,13 +13,15 @@ import {
   Option,
   Pda,
   PublicKey,
-  Serializer,
   Signer,
   TransactionBuilder,
-  mapSerializer,
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import {
+  Serializer,
+  mapSerializer,
+} from '@metaplex-foundation/umi/serializers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';

@@ -6,12 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Context } from '@metaplex-foundation/umi';
 import {
-  Context,
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
-} from '@metaplex-foundation/umi';
+} from '@metaplex-foundation/umi/serializers';
 
 export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 

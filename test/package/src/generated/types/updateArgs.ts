@@ -8,15 +8,17 @@
 
 import {
   Context,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
   Option,
   PublicKey,
-  Serializer,
-  mapSerializer,
   publicKey,
   some,
 } from '@metaplex-foundation/umi';
+import {
+  GetDataEnumKind,
+  GetDataEnumKindContent,
+  Serializer,
+  mapSerializer,
+} from '@metaplex-foundation/umi/serializers';
 import {
   AuthorityType,
   AuthorityTypeArgs,

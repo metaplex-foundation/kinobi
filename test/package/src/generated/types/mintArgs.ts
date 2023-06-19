@@ -6,13 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Context, Option } from '@metaplex-foundation/umi';
 import {
-  Context,
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Option,
   Serializer,
-} from '@metaplex-foundation/umi';
+} from '@metaplex-foundation/umi/serializers';
 import {
   AuthorizationData,
   AuthorizationDataArgs,

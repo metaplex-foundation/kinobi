@@ -6,7 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Context, Serializer } from '@metaplex-foundation/umi';
+import { Context } from '@metaplex-foundation/umi';
+import { Serializer } from '@metaplex-foundation/umi/serializers';
 
 /** Config line struct for storing asset (NFT) data pre-mint. */
 export type ConfigLine = {

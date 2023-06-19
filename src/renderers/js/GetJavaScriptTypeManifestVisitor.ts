@@ -214,10 +214,10 @@ export class GetJavaScriptTypeManifestVisitor
       serializer:
         `${this.s('dataEnum')}<${serializerTypeParams}>` +
         `([${variantSerializers}]${optionsAsString})`,
-      serializerImports: mergedManifest.serializerImports.add('core', [
-        'GetDataEnumKindContent',
-        'GetDataEnumKind',
-      ]),
+      serializerImports: mergedManifest.serializerImports.add(
+        'umiSerializers',
+        ['GetDataEnumKindContent', 'GetDataEnumKind']
+      ),
     };
   }
 
@@ -293,8 +293,8 @@ export class GetJavaScriptTypeManifestVisitor
 
   visitOptionType(optionType: nodes.OptionTypeNode): JavaScriptTypeManifest {
     const childManifest = visit(optionType.child, this);
-    childManifest.strictImports.add('core', 'Option');
-    childManifest.looseImports.add('core', 'Option');
+    childManifest.strictImports.add('umi', 'Option');
+    childManifest.looseImports.add('umi', 'Option');
     const options: string[] = [];
 
     // Prefix option.
@@ -383,7 +383,7 @@ export class GetJavaScriptTypeManifestVisitor
       `${baseManifest.serializer}, ` +
       `(value) => ({ ...value, ${defaultValues} }) ` +
       `)`;
-    baseManifest.serializerImports.add('core', 'mapSerializer');
+    baseManifest.serializerImports.add('umiSerializers', 'mapSerializer');
     return { ...baseManifest, serializer: mappedSerializer };
   }
 
@@ -469,7 +469,7 @@ export class GetJavaScriptTypeManifestVisitor
     const serializerImports = new JavaScriptImportMap();
     let endianness = '';
     if (numberType.endian === 'be') {
-      serializerImports.add('core', 'Endian');
+      serializerImports.add('umiSerializers', 'Endian');
       endianness = '{ endian: Endian.Big }';
     }
     return {
@@ -496,9 +496,9 @@ export class GetJavaScriptTypeManifestVisitor
               `types. Got type [${number.toString()}].`
           );
         }
-        numberManifest.strictImports.add('core', 'DateTime');
-        numberManifest.looseImports.add('core', 'DateTimeInput');
-        numberManifest.serializerImports.add('core', 'mapDateTimeSerializer');
+        numberManifest.strictImports.add('umi', 'DateTime');
+        numberManifest.looseImports.add('umi', 'DateTimeInput');
+        numberManifest.serializerImports.add('umi', 'mapDateTimeSerializer');
         return {
           ...numberManifest,
           strictType: `DateTime`,
@@ -522,9 +522,9 @@ export class GetJavaScriptTypeManifestVisitor
           ? 'SolAmount'
           : `Amount<${idAndDecimals}>`;
         const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
-        numberManifest.strictImports.add('core', amountImport);
-        numberManifest.looseImports.add('core', amountImport);
-        numberManifest.serializerImports.add('core', 'mapAmountSerializer');
+        numberManifest.strictImports.add('umi', amountImport);
+        numberManifest.looseImports.add('umi', amountImport);
+        numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
         return {
           ...numberManifest,
           strictType: amountType,
@@ -537,7 +537,7 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitPublicKeyType(): JavaScriptTypeManifest {
-    const imports = new JavaScriptImportMap().add('core', 'PublicKey');
+    const imports = new JavaScriptImportMap().add('umi', 'PublicKey');
     return {
       isEnum: false,
       strictType: 'PublicKey',
@@ -555,7 +555,7 @@ export class GetJavaScriptTypeManifestVisitor
 
     // Encoding option.
     if (stringType.encoding !== 'utf8') {
-      imports.add('core', stringType.encoding);
+      imports.add('umiSerializers', stringType.encoding);
       options.push(`encoding: ${stringType.encoding}`);
     }
 
