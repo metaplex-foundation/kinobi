@@ -166,8 +166,7 @@ export function utilize(
   addAccountMeta(keys, signers, resolvedAccounts.burner, true);
 
   // Data.
-  const data =
-    getUtilizeInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getUtilizeInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

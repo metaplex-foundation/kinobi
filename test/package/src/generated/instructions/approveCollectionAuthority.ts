@@ -131,9 +131,8 @@ export function approveCollectionAuthority(
   addAccountMeta(keys, signers, resolvedAccounts.rent, true);
 
   // Data.
-  const data = getApproveCollectionAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getApproveCollectionAuthorityInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

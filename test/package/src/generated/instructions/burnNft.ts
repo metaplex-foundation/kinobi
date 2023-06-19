@@ -103,7 +103,7 @@ export function burnNft(
   addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, true);
 
   // Data.
-  const data = getBurnNftInstructionDataSerializer(context).serialize({});
+  const data = getBurnNftInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -105,9 +105,9 @@ export function freezeDelegatedAccount(
   addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
 
   // Data.
-  const data = getFreezeDelegatedAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getFreezeDelegatedAccountInstructionDataSerializer().serialize(
+    {}
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

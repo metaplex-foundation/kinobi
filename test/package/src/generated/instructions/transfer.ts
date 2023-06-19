@@ -245,8 +245,7 @@ export function transfer(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getTransferInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getTransferInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -101,9 +101,8 @@ export function revokeCollectionAuthority(
   addAccountMeta(keys, signers, resolvedAccounts.mint, false);
 
   // Data.
-  const data = getRevokeCollectionAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getRevokeCollectionAuthorityInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

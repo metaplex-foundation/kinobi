@@ -120,7 +120,7 @@ export function deprecatedSetReservationList(
 
   // Data.
   const data =
-    getDeprecatedSetReservationListInstructionDataSerializer(context).serialize(
+    getDeprecatedSetReservationListInstructionDataSerializer().serialize(
       resolvedArgs
     );
 

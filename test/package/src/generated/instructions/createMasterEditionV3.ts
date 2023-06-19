@@ -163,9 +163,7 @@ export function createMasterEditionV3(
 
   // Data.
   const data =
-    getCreateMasterEditionV3InstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateMasterEditionV3InstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;

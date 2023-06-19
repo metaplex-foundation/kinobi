@@ -127,9 +127,9 @@ export function setAndVerifyCollection(
   );
 
   // Data.
-  const data = getSetAndVerifyCollectionInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getSetAndVerifyCollectionInstructionDataSerializer().serialize(
+    {}
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

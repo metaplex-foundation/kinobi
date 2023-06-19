@@ -198,9 +198,7 @@ export function createMetadataAccount(
 
   // Data.
   const data =
-    getCreateMetadataAccountInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateMetadataAccountInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;

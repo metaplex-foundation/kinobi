@@ -195,8 +195,7 @@ export function revoke(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getRevokeInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getRevokeInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

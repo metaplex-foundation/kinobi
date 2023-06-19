@@ -131,9 +131,7 @@ export function createFrequencyRule(
 
   // Data.
   const data =
-    getCreateFrequencyRuleInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateFrequencyRuleInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

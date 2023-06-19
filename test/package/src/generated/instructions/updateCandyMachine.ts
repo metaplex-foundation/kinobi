@@ -111,9 +111,7 @@ export function updateCandyMachine(
 
   // Data.
   const data =
-    getUpdateCandyMachineInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getUpdateCandyMachineInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

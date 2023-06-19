@@ -89,9 +89,7 @@ export function setTokenStandard(
   addAccountMeta(keys, signers, resolvedAccounts.edition, true);
 
   // Data.
-  const data = getSetTokenStandardInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data = getSetTokenStandardInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -130,9 +130,8 @@ export function setAndVerifySizedCollectionItem(
   );
 
   // Data.
-  const data = getSetAndVerifySizedCollectionItemInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getSetAndVerifySizedCollectionItemInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -164,9 +164,9 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Data.
   const data =
-    getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
-      context
-    ).serialize(resolvedArgs);
+    getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer().serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

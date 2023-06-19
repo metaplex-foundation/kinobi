@@ -105,9 +105,7 @@ export function thawDelegatedAccount(
   addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
 
   // Data.
-  const data = getThawDelegatedAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getThawDelegatedAccountInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

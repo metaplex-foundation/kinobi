@@ -93,9 +93,7 @@ export function setMintAuthority(
   addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
 
   // Data.
-  const data = getSetMintAuthorityInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data = getSetMintAuthorityInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

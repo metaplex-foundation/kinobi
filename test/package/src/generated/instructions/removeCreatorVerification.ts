@@ -84,9 +84,8 @@ export function removeCreatorVerification(
   addAccountMeta(keys, signers, resolvedAccounts.creator, false);
 
   // Data.
-  const data = getRemoveCreatorVerificationInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getRemoveCreatorVerificationInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

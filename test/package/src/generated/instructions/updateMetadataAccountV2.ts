@@ -112,7 +112,7 @@ export function updateMetadataAccountV2(
 
   // Data.
   const data =
-    getUpdateMetadataAccountV2InstructionDataSerializer(context).serialize(
+    getUpdateMetadataAccountV2InstructionDataSerializer().serialize(
       resolvedArgs
     );
 

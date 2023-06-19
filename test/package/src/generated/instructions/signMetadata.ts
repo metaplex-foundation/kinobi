@@ -75,7 +75,7 @@ export function signMetadata(
   addAccountMeta(keys, signers, resolvedAccounts.creator, false);
 
   // Data.
-  const data = getSignMetadataInstructionDataSerializer(context).serialize({});
+  const data = getSignMetadataInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

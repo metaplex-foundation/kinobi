@@ -118,9 +118,7 @@ export function setCollectionSize(
 
   // Data.
   const data =
-    getSetCollectionSizeInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getSetCollectionSizeInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

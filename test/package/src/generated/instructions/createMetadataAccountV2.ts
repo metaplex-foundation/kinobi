@@ -141,7 +141,7 @@ export function createMetadataAccountV2(
 
   // Data.
   const data =
-    getCreateMetadataAccountV2InstructionDataSerializer(context).serialize(
+    getCreateMetadataAccountV2InstructionDataSerializer().serialize(
       resolvedArgs
     );
 

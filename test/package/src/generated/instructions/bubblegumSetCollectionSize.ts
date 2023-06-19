@@ -123,7 +123,7 @@ export function bubblegumSetCollectionSize(
 
   // Data.
   const data =
-    getBubblegumSetCollectionSizeInstructionDataSerializer(context).serialize(
+    getBubblegumSetCollectionSizeInstructionDataSerializer().serialize(
       resolvedArgs
     );
 

@@ -137,9 +137,7 @@ export function createEscrowAccount(
   addAccountMeta(keys, signers, resolvedAccounts.authority, true);
 
   // Data.
-  const data = getCreateEscrowAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getCreateEscrowAccountInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -71,7 +71,7 @@ export function puffMetadata(
   addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
 
   // Data.
-  const data = getPuffMetadataInstructionDataSerializer(context).serialize({});
+  const data = getPuffMetadataInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

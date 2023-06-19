@@ -187,8 +187,7 @@ export function useAsset(
   );
 
   // Data.
-  const data =
-    getUseAssetInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getUseAssetInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

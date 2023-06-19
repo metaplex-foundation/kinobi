@@ -171,9 +171,7 @@ export function createMasterEdition(
 
   // Data.
   const data =
-    getCreateMasterEditionInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateMasterEditionInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

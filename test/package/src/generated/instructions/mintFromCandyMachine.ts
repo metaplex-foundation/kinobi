@@ -200,9 +200,7 @@ export function mintFromCandyMachine(
   addAccountMeta(keys, signers, resolvedAccounts.recentSlothashes, false);
 
   // Data.
-  const data = getMintFromCandyMachineInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getMintFromCandyMachineInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

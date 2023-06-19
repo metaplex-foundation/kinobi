@@ -144,8 +144,7 @@ export function burn(
   );
 
   // Data.
-  const data =
-    getBurnInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getBurnInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

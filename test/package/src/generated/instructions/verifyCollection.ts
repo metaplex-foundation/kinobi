@@ -111,9 +111,7 @@ export function verifyCollection(
   );
 
   // Data.
-  const data = getVerifyCollectionInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data = getVerifyCollectionInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

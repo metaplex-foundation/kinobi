@@ -165,8 +165,7 @@ export function validate(
   addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner5, true);
 
   // Data.
-  const data =
-    getValidateInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getValidateInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

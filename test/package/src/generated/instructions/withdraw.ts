@@ -84,7 +84,7 @@ export function withdraw(
   addAccountMeta(keys, signers, resolvedAccounts.authority, false);
 
   // Data.
-  const data = getWithdrawInstructionDataSerializer(context).serialize({});
+  const data = getWithdrawInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

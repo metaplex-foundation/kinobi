@@ -131,7 +131,7 @@ export function createRuleSet(
 
   // Data.
   const data =
-    getCreateRuleSetInstructionDataSerializer(context).serialize(resolvedArgs);
+    getCreateRuleSetInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

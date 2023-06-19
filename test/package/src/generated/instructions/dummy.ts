@@ -150,7 +150,7 @@ export function dummy(
   addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
 
   // Data.
-  const data = getDummyInstructionDataSerializer(context).serialize({});
+  const data = getDummyInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

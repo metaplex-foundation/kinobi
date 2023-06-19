@@ -172,8 +172,7 @@ export function initialize(
   addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
 
   // Data.
-  const data =
-    getInitializeInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getInitializeInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

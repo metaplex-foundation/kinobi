@@ -165,9 +165,7 @@ export function approveUseAuthority(
 
   // Data.
   const data =
-    getApproveUseAuthorityInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getApproveUseAuthorityInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -113,9 +113,7 @@ export function unverifyCollection(
   );
 
   // Data.
-  const data = getUnverifyCollectionInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getUnverifyCollectionInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

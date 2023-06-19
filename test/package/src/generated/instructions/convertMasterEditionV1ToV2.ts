@@ -88,9 +88,8 @@ export function convertMasterEditionV1ToV2(
   addAccountMeta(keys, signers, resolvedAccounts.printingMint, false);
 
   // Data.
-  const data = getConvertMasterEditionV1ToV2InstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getConvertMasterEditionV1ToV2InstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -133,9 +133,7 @@ export function revokeUseAuthority(
   addAccountMeta(keys, signers, resolvedAccounts.rent, true);
 
   // Data.
-  const data = getRevokeUseAuthorityInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getRevokeUseAuthorityInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

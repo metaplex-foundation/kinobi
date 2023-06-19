@@ -88,9 +88,10 @@ export function updatePrimarySaleHappenedViaToken(
   addAccountMeta(keys, signers, resolvedAccounts.token, false);
 
   // Data.
-  const data = getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer().serialize(
+      {}
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

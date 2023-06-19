@@ -160,8 +160,7 @@ export function migrate(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getMigrateInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getMigrateInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

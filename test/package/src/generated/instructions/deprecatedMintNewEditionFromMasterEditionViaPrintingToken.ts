@@ -185,9 +185,9 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
 
   // Data.
   const data =
-    getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(
-      context
-    ).serialize({});
+    getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer().serialize(
+      {}
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

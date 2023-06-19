@@ -135,9 +135,7 @@ export function updateMetadataAccount(
 
   // Data.
   const data =
-    getUpdateMetadataAccountInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getUpdateMetadataAccountInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

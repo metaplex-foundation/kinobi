@@ -119,8 +119,7 @@ export function verify(
   );
 
   // Data.
-  const data =
-    getVerifyInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getVerifyInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

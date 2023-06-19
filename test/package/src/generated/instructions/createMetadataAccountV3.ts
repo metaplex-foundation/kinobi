@@ -164,7 +164,7 @@ export function createMetadataAccountV3(
 
   // Data.
   const data =
-    getCreateMetadataAccountV3InstructionDataSerializer(context).serialize(
+    getCreateMetadataAccountV3InstructionDataSerializer().serialize(
       resolvedArgs
     );
 

@@ -182,7 +182,7 @@ export function setCollection(
   addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
 
   // Data.
-  const data = getSetCollectionInstructionDataSerializer(context).serialize({});
+  const data = getSetCollectionInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

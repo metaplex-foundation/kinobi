@@ -97,7 +97,7 @@ export function setAuthority(
 
   // Data.
   const data =
-    getSetAuthorityInstructionDataSerializer(context).serialize(resolvedArgs);
+    getSetAuthorityInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

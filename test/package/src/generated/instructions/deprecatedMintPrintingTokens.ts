@@ -148,7 +148,7 @@ export function deprecatedMintPrintingTokens(
 
   // Data.
   const data =
-    getDeprecatedMintPrintingTokensInstructionDataSerializer(context).serialize(
+    getDeprecatedMintPrintingTokensInstructionDataSerializer().serialize(
       resolvedArgs
     );
 

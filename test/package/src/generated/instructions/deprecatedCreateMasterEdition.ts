@@ -203,9 +203,9 @@ export function deprecatedCreateMasterEdition(
 
   // Data.
   const data =
-    getDeprecatedCreateMasterEditionInstructionDataSerializer(
-      context
-    ).serialize(resolvedArgs);
+    getDeprecatedCreateMasterEditionInstructionDataSerializer().serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

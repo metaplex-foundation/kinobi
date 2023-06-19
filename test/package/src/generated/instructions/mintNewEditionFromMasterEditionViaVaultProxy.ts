@@ -207,9 +207,9 @@ export function mintNewEditionFromMasterEditionViaVaultProxy(
 
   // Data.
   const data =
-    getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer(
-      context
-    ).serialize(resolvedArgs);
+    getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer().serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

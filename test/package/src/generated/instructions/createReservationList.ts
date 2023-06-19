@@ -113,9 +113,7 @@ export function createReservationList(
 
   // Data.
   const data =
-    getCreateReservationListInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getCreateReservationListInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

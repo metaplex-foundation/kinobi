@@ -126,9 +126,8 @@ export function unverifySizedCollectionItem(
   );
 
   // Data.
-  const data = getUnverifySizedCollectionItemInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data =
+    getUnverifySizedCollectionItemInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

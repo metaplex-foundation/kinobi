@@ -202,8 +202,7 @@ export function mint(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getMintInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getMintInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

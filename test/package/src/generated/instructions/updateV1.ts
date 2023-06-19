@@ -290,8 +290,7 @@ export function updateV1(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getUpdateV1InstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getUpdateV1InstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -195,9 +195,7 @@ export function transferOutOfEscrow(
 
   // Data.
   const data =
-    getTransferOutOfEscrowInstructionDataSerializer(context).serialize(
-      resolvedArgs
-    );
+    getTransferOutOfEscrowInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -192,9 +192,9 @@ export function mintNewEditionFromMasterEditionViaToken(
 
   // Data.
   const data =
-    getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer(
-      context
-    ).serialize(resolvedArgs);
+    getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer().serialize(
+      resolvedArgs
+    );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

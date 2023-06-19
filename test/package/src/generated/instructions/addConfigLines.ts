@@ -109,7 +109,7 @@ export function addConfigLines(
 
   // Data.
   const data =
-    getAddConfigLinesInstructionDataSerializer(context).serialize(resolvedArgs);
+    getAddConfigLinesInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

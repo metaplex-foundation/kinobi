@@ -175,8 +175,7 @@ export function createV1(
   addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
 
   // Data.
-  const data =
-    getCreateV1InstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getCreateV1InstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

@@ -133,9 +133,7 @@ export function closeEscrowAccount(
   addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
 
   // Data.
-  const data = getCloseEscrowAccountInstructionDataSerializer(
-    context
-  ).serialize({});
+  const data = getCloseEscrowAccountInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

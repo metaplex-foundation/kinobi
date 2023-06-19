@@ -138,9 +138,7 @@ export function burnEditionNft(
   addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
 
   // Data.
-  const data = getBurnEditionNftInstructionDataSerializer(context).serialize(
-    {}
-  );
+  const data = getBurnEditionNftInstructionDataSerializer().serialize({});
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

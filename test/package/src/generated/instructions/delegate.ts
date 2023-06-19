@@ -203,8 +203,7 @@ export function delegate(
   addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data =
-    getDelegateInstructionDataSerializer(context).serialize(resolvedArgs);
+  const data = getDelegateInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
