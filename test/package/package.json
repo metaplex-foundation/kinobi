@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@metaplex-foundation/umi": "^0.8.2-rc.1"
+    "@metaplex-foundation/umi": "^0.8.2"
   },
   "devDependencies": {
     "typescript": "^4.9.4"
