@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.11.1
+
+### Patch Changes
+
+- [`205cfad`](https://github.com/metaplex-foundation/kinobi/commit/205cfadc9f498d45c3c0a3b8a2dbdb3546b3eff4) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix unused serializer import for booleans
+
 ## 0.11.0
 
 ### Minor Changes
