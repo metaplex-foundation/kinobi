@@ -48,6 +48,17 @@ export type VerifySizedCollectionItemInstructionData = {
 
 export type VerifySizedCollectionItemInstructionDataArgs = {};
 
+/** @deprecated Use `getVerifySizedCollectionItemInstructionDataSerializer()` without any argument instead. */
+export function getVerifySizedCollectionItemInstructionDataSerializer(
+  _context: object
+): Serializer<
+  VerifySizedCollectionItemInstructionDataArgs,
+  VerifySizedCollectionItemInstructionData
+>;
+export function getVerifySizedCollectionItemInstructionDataSerializer(): Serializer<
+  VerifySizedCollectionItemInstructionDataArgs,
+  VerifySizedCollectionItemInstructionData
+>;
 export function getVerifySizedCollectionItemInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

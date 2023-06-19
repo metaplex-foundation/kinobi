@@ -78,6 +78,17 @@ export type CreateMetadataAccountInstructionDataArgs = {
   metadataBump: number;
 };
 
+/** @deprecated Use `getCreateMetadataAccountInstructionDataSerializer()` without any argument instead. */
+export function getCreateMetadataAccountInstructionDataSerializer(
+  _context: object
+): Serializer<
+  CreateMetadataAccountInstructionDataArgs,
+  CreateMetadataAccountInstructionData
+>;
+export function getCreateMetadataAccountInstructionDataSerializer(): Serializer<
+  CreateMetadataAccountInstructionDataArgs,
+  CreateMetadataAccountInstructionData
+>;
 export function getCreateMetadataAccountInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

@@ -43,6 +43,14 @@ export type DummyInstructionData = { discriminator: Array<number> };
 
 export type DummyInstructionDataArgs = {};
 
+/** @deprecated Use `getDummyInstructionDataSerializer()` without any argument instead. */
+export function getDummyInstructionDataSerializer(
+  _context: object
+): Serializer<DummyInstructionDataArgs, DummyInstructionData>;
+export function getDummyInstructionDataSerializer(): Serializer<
+  DummyInstructionDataArgs,
+  DummyInstructionData
+>;
 export function getDummyInstructionDataSerializer(
   _context: object = {}
 ): Serializer<DummyInstructionDataArgs, DummyInstructionData> {

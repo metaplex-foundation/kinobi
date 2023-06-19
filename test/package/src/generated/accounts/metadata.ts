@@ -101,6 +101,14 @@ export type MetadataAccountDataArgs = {
   delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
+/** @deprecated Use `getMetadataAccountDataSerializer()` without any argument instead. */
+export function getMetadataAccountDataSerializer(
+  _context: object
+): Serializer<MetadataAccountDataArgs, MetadataAccountData>;
+export function getMetadataAccountDataSerializer(): Serializer<
+  MetadataAccountDataArgs,
+  MetadataAccountData
+>;
 export function getMetadataAccountDataSerializer(
   _context: object = {}
 ): Serializer<MetadataAccountDataArgs, MetadataAccountData> {
@@ -131,11 +139,20 @@ export function getMetadataAccountDataSerializer(
   ) as Serializer<MetadataAccountDataArgs, MetadataAccountData>;
 }
 
+/** @deprecated Use `deserializeMetadata(rawAccount)` without any context instead. */
 export function deserializeMetadata(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): Metadata;
+export function deserializeMetadata(rawAccount: RpcAccount): Metadata;
+export function deserializeMetadata(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): Metadata {
-  return deserializeAccount(rawAccount, getMetadataAccountDataSerializer());
+  return deserializeAccount(
+    rawAccount ?? (context as RpcAccount),
+    getMetadataAccountDataSerializer()
+  );
 }
 
 export async function fetchMetadata(
@@ -148,7 +165,7 @@ export async function fetchMetadata(
     options
   );
   assertAccountExists(maybeAccount, 'Metadata');
-  return deserializeMetadata(context, maybeAccount);
+  return deserializeMetadata(maybeAccount);
 }
 
 export async function safeFetchMetadata(
@@ -160,9 +177,7 @@ export async function safeFetchMetadata(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeMetadata(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeMetadata(maybeAccount) : null;
 }
 
 export async function fetchAllMetadata(
@@ -176,7 +191,7 @@ export async function fetchAllMetadata(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'Metadata');
-    return deserializeMetadata(context, maybeAccount);
+    return deserializeMetadata(maybeAccount);
   });
 }
 
@@ -191,9 +206,7 @@ export async function safeFetchAllMetadata(
   );
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      deserializeMetadata(context, maybeAccount as RpcAccount)
-    );
+    .map((maybeAccount) => deserializeMetadata(maybeAccount as RpcAccount));
 }
 
 export function getMetadataGpaBuilder(
@@ -241,9 +254,7 @@ export function getMetadataGpaBuilder(
       programmableConfig: [null, option(getProgrammableConfigSerializer())],
       delegateState: [null, option(getDelegateStateSerializer())],
     })
-    .deserializeUsing<Metadata>((account) =>
-      deserializeMetadata(context, account)
-    )
+    .deserializeUsing<Metadata>((account) => deserializeMetadata(account))
     .whereField('key', TmKey.MetadataV1);
 }
 

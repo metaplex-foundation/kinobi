@@ -62,6 +62,14 @@ export type UseAssetInstructionData = {
 
 export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
+/** @deprecated Use `getUseAssetInstructionDataSerializer()` without any argument instead. */
+export function getUseAssetInstructionDataSerializer(
+  _context: object
+): Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData>;
+export function getUseAssetInstructionDataSerializer(): Serializer<
+  UseAssetInstructionDataArgs,
+  UseAssetInstructionData
+>;
 export function getUseAssetInstructionDataSerializer(
   _context: object = {}
 ): Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData> {

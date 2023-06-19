@@ -45,6 +45,17 @@ export type UpdateCandyMachineInstructionDataArgs = {
   data: CandyMachineDataArgs;
 };
 
+/** @deprecated Use `getUpdateCandyMachineInstructionDataSerializer()` without any argument instead. */
+export function getUpdateCandyMachineInstructionDataSerializer(
+  _context: object
+): Serializer<
+  UpdateCandyMachineInstructionDataArgs,
+  UpdateCandyMachineInstructionData
+>;
+export function getUpdateCandyMachineInstructionDataSerializer(): Serializer<
+  UpdateCandyMachineInstructionDataArgs,
+  UpdateCandyMachineInstructionData
+>;
 export function getUpdateCandyMachineInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

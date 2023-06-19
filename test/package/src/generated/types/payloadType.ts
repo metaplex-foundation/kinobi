@@ -33,6 +33,14 @@ export type PayloadTypeArgs =
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [number | bigint] };
 
+/** @deprecated Use `getPayloadTypeSerializer()` without any argument instead. */
+export function getPayloadTypeSerializer(
+  _context: object
+): Serializer<PayloadTypeArgs, PayloadType>;
+export function getPayloadTypeSerializer(): Serializer<
+  PayloadTypeArgs,
+  PayloadType
+>;
 export function getPayloadTypeSerializer(
   _context: object = {}
 ): Serializer<PayloadTypeArgs, PayloadType> {

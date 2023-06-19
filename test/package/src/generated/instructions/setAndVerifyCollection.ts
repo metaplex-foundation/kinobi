@@ -48,6 +48,17 @@ export type SetAndVerifyCollectionInstructionData = { discriminator: number };
 
 export type SetAndVerifyCollectionInstructionDataArgs = {};
 
+/** @deprecated Use `getSetAndVerifyCollectionInstructionDataSerializer()` without any argument instead. */
+export function getSetAndVerifyCollectionInstructionDataSerializer(
+  _context: object
+): Serializer<
+  SetAndVerifyCollectionInstructionDataArgs,
+  SetAndVerifyCollectionInstructionData
+>;
+export function getSetAndVerifyCollectionInstructionDataSerializer(): Serializer<
+  SetAndVerifyCollectionInstructionDataArgs,
+  SetAndVerifyCollectionInstructionData
+>;
 export function getSetAndVerifyCollectionInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

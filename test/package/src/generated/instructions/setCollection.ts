@@ -47,6 +47,14 @@ export type SetCollectionInstructionData = { discriminator: Array<number> };
 
 export type SetCollectionInstructionDataArgs = {};
 
+/** @deprecated Use `getSetCollectionInstructionDataSerializer()` without any argument instead. */
+export function getSetCollectionInstructionDataSerializer(
+  _context: object
+): Serializer<SetCollectionInstructionDataArgs, SetCollectionInstructionData>;
+export function getSetCollectionInstructionDataSerializer(): Serializer<
+  SetCollectionInstructionDataArgs,
+  SetCollectionInstructionData
+>;
 export function getSetCollectionInstructionDataSerializer(
   _context: object = {}
 ): Serializer<SetCollectionInstructionDataArgs, SetCollectionInstructionData> {

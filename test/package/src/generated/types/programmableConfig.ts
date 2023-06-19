@@ -17,6 +17,14 @@ export type ProgrammableConfig = { ruleSet: PublicKey };
 
 export type ProgrammableConfigArgs = ProgrammableConfig;
 
+/** @deprecated Use `getProgrammableConfigSerializer()` without any argument instead. */
+export function getProgrammableConfigSerializer(
+  _context: object
+): Serializer<ProgrammableConfigArgs, ProgrammableConfig>;
+export function getProgrammableConfigSerializer(): Serializer<
+  ProgrammableConfigArgs,
+  ProgrammableConfig
+>;
 export function getProgrammableConfigSerializer(
   _context: object = {}
 ): Serializer<ProgrammableConfigArgs, ProgrammableConfig> {

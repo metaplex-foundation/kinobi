@@ -50,6 +50,17 @@ export type SetCollectionSizeInstructionDataArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
+/** @deprecated Use `getSetCollectionSizeInstructionDataSerializer()` without any argument instead. */
+export function getSetCollectionSizeInstructionDataSerializer(
+  _context: object
+): Serializer<
+  SetCollectionSizeInstructionDataArgs,
+  SetCollectionSizeInstructionData
+>;
+export function getSetCollectionSizeInstructionDataSerializer(): Serializer<
+  SetCollectionSizeInstructionDataArgs,
+  SetCollectionSizeInstructionData
+>;
 export function getSetCollectionSizeInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

@@ -44,6 +44,17 @@ export type UnverifyCollectionInstructionData = { discriminator: number };
 
 export type UnverifyCollectionInstructionDataArgs = {};
 
+/** @deprecated Use `getUnverifyCollectionInstructionDataSerializer()` without any argument instead. */
+export function getUnverifyCollectionInstructionDataSerializer(
+  _context: object
+): Serializer<
+  UnverifyCollectionInstructionDataArgs,
+  UnverifyCollectionInstructionData
+>;
+export function getUnverifyCollectionInstructionDataSerializer(): Serializer<
+  UnverifyCollectionInstructionDataArgs,
+  UnverifyCollectionInstructionData
+>;
 export function getUnverifyCollectionInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

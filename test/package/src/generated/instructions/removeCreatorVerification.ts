@@ -38,6 +38,17 @@ export type RemoveCreatorVerificationInstructionData = {
 
 export type RemoveCreatorVerificationInstructionDataArgs = {};
 
+/** @deprecated Use `getRemoveCreatorVerificationInstructionDataSerializer()` without any argument instead. */
+export function getRemoveCreatorVerificationInstructionDataSerializer(
+  _context: object
+): Serializer<
+  RemoveCreatorVerificationInstructionDataArgs,
+  RemoveCreatorVerificationInstructionData
+>;
+export function getRemoveCreatorVerificationInstructionDataSerializer(): Serializer<
+  RemoveCreatorVerificationInstructionDataArgs,
+  RemoveCreatorVerificationInstructionData
+>;
 export function getRemoveCreatorVerificationInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

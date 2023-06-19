@@ -41,6 +41,14 @@ export type EditionAccountDataArgs = {
   edition: number | bigint;
 };
 
+/** @deprecated Use `getEditionAccountDataSerializer()` without any argument instead. */
+export function getEditionAccountDataSerializer(
+  _context: object
+): Serializer<EditionAccountDataArgs, EditionAccountData>;
+export function getEditionAccountDataSerializer(): Serializer<
+  EditionAccountDataArgs,
+  EditionAccountData
+>;
 export function getEditionAccountDataSerializer(
   _context: object = {}
 ): Serializer<EditionAccountDataArgs, EditionAccountData> {
@@ -57,11 +65,20 @@ export function getEditionAccountDataSerializer(
   ) as Serializer<EditionAccountDataArgs, EditionAccountData>;
 }
 
+/** @deprecated Use `deserializeEdition(rawAccount)` without any context instead. */
 export function deserializeEdition(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): Edition;
+export function deserializeEdition(rawAccount: RpcAccount): Edition;
+export function deserializeEdition(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): Edition {
-  return deserializeAccount(rawAccount, getEditionAccountDataSerializer());
+  return deserializeAccount(
+    rawAccount ?? (context as RpcAccount),
+    getEditionAccountDataSerializer()
+  );
 }
 
 export async function fetchEdition(
@@ -74,7 +91,7 @@ export async function fetchEdition(
     options
   );
   assertAccountExists(maybeAccount, 'Edition');
-  return deserializeEdition(context, maybeAccount);
+  return deserializeEdition(maybeAccount);
 }
 
 export async function safeFetchEdition(
@@ -86,7 +103,7 @@ export async function safeFetchEdition(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists ? deserializeEdition(context, maybeAccount) : null;
+  return maybeAccount.exists ? deserializeEdition(maybeAccount) : null;
 }
 
 export async function fetchAllEdition(
@@ -100,7 +117,7 @@ export async function fetchAllEdition(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'Edition');
-    return deserializeEdition(context, maybeAccount);
+    return deserializeEdition(maybeAccount);
   });
 }
 
@@ -115,9 +132,7 @@ export async function safeFetchAllEdition(
   );
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      deserializeEdition(context, maybeAccount as RpcAccount)
-    );
+    .map((maybeAccount) => deserializeEdition(maybeAccount as RpcAccount));
 }
 
 export function getEditionGpaBuilder(
@@ -137,9 +152,7 @@ export function getEditionGpaBuilder(
       parent: [1, publicKeySerializer()],
       edition: [33, u64()],
     })
-    .deserializeUsing<Edition>((account) =>
-      deserializeEdition(context, account)
-    )
+    .deserializeUsing<Edition>((account) => deserializeEdition(account))
     .whereField('key', TmKey.EditionV1);
 }
 

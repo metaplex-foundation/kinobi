@@ -68,6 +68,17 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs =
   {};
 
+/** @deprecated Use `getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer()` without any argument instead. */
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(
+  _context: object
+): Serializer<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs,
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
+>;
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(): Serializer<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs,
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
+>;
 export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

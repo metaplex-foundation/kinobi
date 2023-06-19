@@ -52,6 +52,17 @@ export type MintFromCandyMachineInstructionData = {
 
 export type MintFromCandyMachineInstructionDataArgs = {};
 
+/** @deprecated Use `getMintFromCandyMachineInstructionDataSerializer()` without any argument instead. */
+export function getMintFromCandyMachineInstructionDataSerializer(
+  _context: object
+): Serializer<
+  MintFromCandyMachineInstructionDataArgs,
+  MintFromCandyMachineInstructionData
+>;
+export function getMintFromCandyMachineInstructionDataSerializer(): Serializer<
+  MintFromCandyMachineInstructionDataArgs,
+  MintFromCandyMachineInstructionData
+>;
 export function getMintFromCandyMachineInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

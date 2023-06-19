@@ -132,6 +132,14 @@ export type UpdateV1InstructionDataArgs = {
   authorityType: AuthorityTypeArgs;
 };
 
+/** @deprecated Use `getUpdateV1InstructionDataSerializer()` without any argument instead. */
+export function getUpdateV1InstructionDataSerializer(
+  _context: object
+): Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData>;
+export function getUpdateV1InstructionDataSerializer(): Serializer<
+  UpdateV1InstructionDataArgs,
+  UpdateV1InstructionData
+>;
 export function getUpdateV1InstructionDataSerializer(
   _context: object = {}
 ): Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData> {

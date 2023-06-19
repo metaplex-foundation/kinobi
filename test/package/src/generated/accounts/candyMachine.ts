@@ -68,6 +68,14 @@ export type CandyMachineAccountDataArgs = {
   data: CandyMachineDataArgs;
 };
 
+/** @deprecated Use `getCandyMachineAccountDataSerializer()` without any argument instead. */
+export function getCandyMachineAccountDataSerializer(
+  _context: object
+): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
+export function getCandyMachineAccountDataSerializer(): Serializer<
+  CandyMachineAccountDataArgs,
+  CandyMachineAccountData
+>;
 export function getCandyMachineAccountDataSerializer(
   _context: object = {}
 ): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData> {
@@ -95,11 +103,20 @@ export function getCandyMachineAccountDataSerializer(
   ) as Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
 }
 
+/** @deprecated Use `deserializeCandyMachine(rawAccount)` without any context instead. */
 export function deserializeCandyMachine(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): CandyMachine;
+export function deserializeCandyMachine(rawAccount: RpcAccount): CandyMachine;
+export function deserializeCandyMachine(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): CandyMachine {
-  return deserializeAccount(rawAccount, getCandyMachineAccountDataSerializer());
+  return deserializeAccount(
+    rawAccount ?? (context as RpcAccount),
+    getCandyMachineAccountDataSerializer()
+  );
 }
 
 export async function fetchCandyMachine(
@@ -112,7 +129,7 @@ export async function fetchCandyMachine(
     options
   );
   assertAccountExists(maybeAccount, 'CandyMachine');
-  return deserializeCandyMachine(context, maybeAccount);
+  return deserializeCandyMachine(maybeAccount);
 }
 
 export async function safeFetchCandyMachine(
@@ -124,9 +141,7 @@ export async function safeFetchCandyMachine(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeCandyMachine(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeCandyMachine(maybeAccount) : null;
 }
 
 export async function fetchAllCandyMachine(
@@ -140,7 +155,7 @@ export async function fetchAllCandyMachine(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'CandyMachine');
-    return deserializeCandyMachine(context, maybeAccount);
+    return deserializeCandyMachine(maybeAccount);
   });
 }
 
@@ -155,9 +170,7 @@ export async function safeFetchAllCandyMachine(
   );
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      deserializeCandyMachine(context, maybeAccount as RpcAccount)
-    );
+    .map((maybeAccount) => deserializeCandyMachine(maybeAccount as RpcAccount));
 }
 
 export function getCandyMachineGpaBuilder(
@@ -186,7 +199,7 @@ export function getCandyMachineGpaBuilder(
       data: [120, getCandyMachineDataSerializer()],
     })
     .deserializeUsing<CandyMachine>((account) =>
-      deserializeCandyMachine(context, account)
+      deserializeCandyMachine(account)
     )
     .whereField('discriminator', [51, 173, 177, 113, 25, 241, 109, 189]);
 }

@@ -50,6 +50,17 @@ export type RevokeUseAuthorityInstructionData = { discriminator: number };
 
 export type RevokeUseAuthorityInstructionDataArgs = {};
 
+/** @deprecated Use `getRevokeUseAuthorityInstructionDataSerializer()` without any argument instead. */
+export function getRevokeUseAuthorityInstructionDataSerializer(
+  _context: object
+): Serializer<
+  RevokeUseAuthorityInstructionDataArgs,
+  RevokeUseAuthorityInstructionData
+>;
+export function getRevokeUseAuthorityInstructionDataSerializer(): Serializer<
+  RevokeUseAuthorityInstructionDataArgs,
+  RevokeUseAuthorityInstructionData
+>;
 export function getRevokeUseAuthorityInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

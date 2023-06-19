@@ -20,6 +20,14 @@ export enum DelegateRole {
 
 export type DelegateRoleArgs = DelegateRole;
 
+/** @deprecated Use `getDelegateRoleSerializer()` without any argument instead. */
+export function getDelegateRoleSerializer(
+  _context: object
+): Serializer<DelegateRoleArgs, DelegateRole>;
+export function getDelegateRoleSerializer(): Serializer<
+  DelegateRoleArgs,
+  DelegateRole
+>;
 export function getDelegateRoleSerializer(
   _context: object = {}
 ): Serializer<DelegateRoleArgs, DelegateRole> {

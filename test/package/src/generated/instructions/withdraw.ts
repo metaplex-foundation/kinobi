@@ -35,6 +35,14 @@ export type WithdrawInstructionData = { discriminator: Array<number> };
 
 export type WithdrawInstructionDataArgs = {};
 
+/** @deprecated Use `getWithdrawInstructionDataSerializer()` without any argument instead. */
+export function getWithdrawInstructionDataSerializer(
+  _context: object
+): Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData>;
+export function getWithdrawInstructionDataSerializer(): Serializer<
+  WithdrawInstructionDataArgs,
+  WithdrawInstructionData
+>;
 export function getWithdrawInstructionDataSerializer(
   _context: object = {}
 ): Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData> {

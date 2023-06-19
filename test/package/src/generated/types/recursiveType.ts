@@ -20,6 +20,14 @@ export type RecursiveTypeArgs = {
   children: Array<RecursiveTypeArgs>;
 };
 
+/** @deprecated Use `getRecursiveTypeSerializer()` without any argument instead. */
+export function getRecursiveTypeSerializer(
+  _context: object
+): Serializer<RecursiveTypeArgs, RecursiveType>;
+export function getRecursiveTypeSerializer(): Serializer<
+  RecursiveTypeArgs,
+  RecursiveType
+>;
 export function getRecursiveTypeSerializer(
   _context: object = {}
 ): Serializer<RecursiveTypeArgs, RecursiveType> {

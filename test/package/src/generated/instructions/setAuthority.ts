@@ -39,6 +39,14 @@ export type SetAuthorityInstructionData = {
 
 export type SetAuthorityInstructionDataArgs = { newAuthority: PublicKey };
 
+/** @deprecated Use `getSetAuthorityInstructionDataSerializer()` without any argument instead. */
+export function getSetAuthorityInstructionDataSerializer(
+  _context: object
+): Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData>;
+export function getSetAuthorityInstructionDataSerializer(): Serializer<
+  SetAuthorityInstructionDataArgs,
+  SetAuthorityInstructionData
+>;
 export function getSetAuthorityInstructionDataSerializer(
   _context: object = {}
 ): Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData> {

@@ -53,6 +53,17 @@ export type UpdateMetadataAccountV2InstructionDataArgs = {
   isMutable: OptionOrNullable<boolean>;
 };
 
+/** @deprecated Use `getUpdateMetadataAccountV2InstructionDataSerializer()` without any argument instead. */
+export function getUpdateMetadataAccountV2InstructionDataSerializer(
+  _context: object
+): Serializer<
+  UpdateMetadataAccountV2InstructionDataArgs,
+  UpdateMetadataAccountV2InstructionData
+>;
+export function getUpdateMetadataAccountV2InstructionDataSerializer(): Serializer<
+  UpdateMetadataAccountV2InstructionDataArgs,
+  UpdateMetadataAccountV2InstructionData
+>;
 export function getUpdateMetadataAccountV2InstructionDataSerializer(
   _context: object = {}
 ): Serializer<

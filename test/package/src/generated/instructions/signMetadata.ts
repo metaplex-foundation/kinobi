@@ -36,6 +36,14 @@ export type SignMetadataInstructionData = { discriminator: number };
 
 export type SignMetadataInstructionDataArgs = {};
 
+/** @deprecated Use `getSignMetadataInstructionDataSerializer()` without any argument instead. */
+export function getSignMetadataInstructionDataSerializer(
+  _context: object
+): Serializer<SignMetadataInstructionDataArgs, SignMetadataInstructionData>;
+export function getSignMetadataInstructionDataSerializer(): Serializer<
+  SignMetadataInstructionDataArgs,
+  SignMetadataInstructionData
+>;
 export function getSignMetadataInstructionDataSerializer(
   _context: object = {}
 ): Serializer<SignMetadataInstructionDataArgs, SignMetadataInstructionData> {

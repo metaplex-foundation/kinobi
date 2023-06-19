@@ -40,6 +40,17 @@ export type UpdatePrimarySaleHappenedViaTokenInstructionData = {
 
 export type UpdatePrimarySaleHappenedViaTokenInstructionDataArgs = {};
 
+/** @deprecated Use `getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer()` without any argument instead. */
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
+  _context: object
+): Serializer<
+  UpdatePrimarySaleHappenedViaTokenInstructionDataArgs,
+  UpdatePrimarySaleHappenedViaTokenInstructionData
+>;
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(): Serializer<
+  UpdatePrimarySaleHappenedViaTokenInstructionDataArgs,
+  UpdatePrimarySaleHappenedViaTokenInstructionData
+>;
 export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

@@ -40,6 +40,17 @@ export type SetTokenStandardInstructionData = { discriminator: number };
 
 export type SetTokenStandardInstructionDataArgs = {};
 
+/** @deprecated Use `getSetTokenStandardInstructionDataSerializer()` without any argument instead. */
+export function getSetTokenStandardInstructionDataSerializer(
+  _context: object
+): Serializer<
+  SetTokenStandardInstructionDataArgs,
+  SetTokenStandardInstructionData
+>;
+export function getSetTokenStandardInstructionDataSerializer(): Serializer<
+  SetTokenStandardInstructionDataArgs,
+  SetTokenStandardInstructionData
+>;
 export function getSetTokenStandardInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

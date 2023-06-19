@@ -42,6 +42,17 @@ export type FreezeDelegatedAccountInstructionData = { discriminator: number };
 
 export type FreezeDelegatedAccountInstructionDataArgs = {};
 
+/** @deprecated Use `getFreezeDelegatedAccountInstructionDataSerializer()` without any argument instead. */
+export function getFreezeDelegatedAccountInstructionDataSerializer(
+  _context: object
+): Serializer<
+  FreezeDelegatedAccountInstructionDataArgs,
+  FreezeDelegatedAccountInstructionData
+>;
+export function getFreezeDelegatedAccountInstructionDataSerializer(): Serializer<
+  FreezeDelegatedAccountInstructionDataArgs,
+  FreezeDelegatedAccountInstructionData
+>;
 export function getFreezeDelegatedAccountInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

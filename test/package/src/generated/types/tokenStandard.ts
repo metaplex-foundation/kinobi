@@ -18,6 +18,14 @@ export enum TokenStandard {
 
 export type TokenStandardArgs = TokenStandard;
 
+/** @deprecated Use `getTokenStandardSerializer()` without any argument instead. */
+export function getTokenStandardSerializer(
+  _context: object
+): Serializer<TokenStandardArgs, TokenStandard>;
+export function getTokenStandardSerializer(): Serializer<
+  TokenStandardArgs,
+  TokenStandard
+>;
 export function getTokenStandardSerializer(
   _context: object = {}
 ): Serializer<TokenStandardArgs, TokenStandard> {

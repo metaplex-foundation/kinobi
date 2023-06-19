@@ -46,6 +46,14 @@ export type VerifyInstructionData = {
 
 export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
+/** @deprecated Use `getVerifyInstructionDataSerializer()` without any argument instead. */
+export function getVerifyInstructionDataSerializer(
+  _context: object
+): Serializer<VerifyInstructionDataArgs, VerifyInstructionData>;
+export function getVerifyInstructionDataSerializer(): Serializer<
+  VerifyInstructionDataArgs,
+  VerifyInstructionData
+>;
 export function getVerifyInstructionDataSerializer(
   _context: object = {}
 ): Serializer<VerifyInstructionDataArgs, VerifyInstructionData> {

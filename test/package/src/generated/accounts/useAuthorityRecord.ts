@@ -41,6 +41,14 @@ export type UseAuthorityRecordAccountDataArgs = {
   bump: number;
 };
 
+/** @deprecated Use `getUseAuthorityRecordAccountDataSerializer()` without any argument instead. */
+export function getUseAuthorityRecordAccountDataSerializer(
+  _context: object
+): Serializer<UseAuthorityRecordAccountDataArgs, UseAuthorityRecordAccountData>;
+export function getUseAuthorityRecordAccountDataSerializer(): Serializer<
+  UseAuthorityRecordAccountDataArgs,
+  UseAuthorityRecordAccountData
+>;
 export function getUseAuthorityRecordAccountDataSerializer(
   _context: object = {}
 ): Serializer<
@@ -67,12 +75,20 @@ export function getUseAuthorityRecordAccountDataSerializer(
   >;
 }
 
+/** @deprecated Use `deserializeUseAuthorityRecord(rawAccount)` without any context instead. */
 export function deserializeUseAuthorityRecord(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): UseAuthorityRecord;
+export function deserializeUseAuthorityRecord(
+  rawAccount: RpcAccount
+): UseAuthorityRecord;
+export function deserializeUseAuthorityRecord(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): UseAuthorityRecord {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getUseAuthorityRecordAccountDataSerializer()
   );
 }
@@ -87,7 +103,7 @@ export async function fetchUseAuthorityRecord(
     options
   );
   assertAccountExists(maybeAccount, 'UseAuthorityRecord');
-  return deserializeUseAuthorityRecord(context, maybeAccount);
+  return deserializeUseAuthorityRecord(maybeAccount);
 }
 
 export async function safeFetchUseAuthorityRecord(
@@ -100,7 +116,7 @@ export async function safeFetchUseAuthorityRecord(
     options
   );
   return maybeAccount.exists
-    ? deserializeUseAuthorityRecord(context, maybeAccount)
+    ? deserializeUseAuthorityRecord(maybeAccount)
     : null;
 }
 
@@ -115,7 +131,7 @@ export async function fetchAllUseAuthorityRecord(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'UseAuthorityRecord');
-    return deserializeUseAuthorityRecord(context, maybeAccount);
+    return deserializeUseAuthorityRecord(maybeAccount);
   });
 }
 
@@ -131,7 +147,7 @@ export async function safeFetchAllUseAuthorityRecord(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeUseAuthorityRecord(context, maybeAccount as RpcAccount)
+      deserializeUseAuthorityRecord(maybeAccount as RpcAccount)
     );
 }
 
@@ -153,7 +169,7 @@ export function getUseAuthorityRecordGpaBuilder(
       bump: [9, u8()],
     })
     .deserializeUsing<UseAuthorityRecord>((account) =>
-      deserializeUseAuthorityRecord(context, account)
+      deserializeUseAuthorityRecord(account)
     )
     .whereField('key', TmKey.UseAuthorityRecord);
 }

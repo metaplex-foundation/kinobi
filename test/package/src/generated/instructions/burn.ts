@@ -51,6 +51,14 @@ export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
 
 export type BurnInstructionDataArgs = { burnArgs: BurnArgsArgs };
 
+/** @deprecated Use `getBurnInstructionDataSerializer()` without any argument instead. */
+export function getBurnInstructionDataSerializer(
+  _context: object
+): Serializer<BurnInstructionDataArgs, BurnInstructionData>;
+export function getBurnInstructionDataSerializer(): Serializer<
+  BurnInstructionDataArgs,
+  BurnInstructionData
+>;
 export function getBurnInstructionDataSerializer(
   _context: object = {}
 ): Serializer<BurnInstructionDataArgs, BurnInstructionData> {

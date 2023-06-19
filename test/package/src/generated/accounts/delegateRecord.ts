@@ -49,6 +49,14 @@ export type DelegateRecordAccountDataArgs = {
   bump: number;
 };
 
+/** @deprecated Use `getDelegateRecordAccountDataSerializer()` without any argument instead. */
+export function getDelegateRecordAccountDataSerializer(
+  _context: object
+): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
+export function getDelegateRecordAccountDataSerializer(): Serializer<
+  DelegateRecordAccountDataArgs,
+  DelegateRecordAccountData
+>;
 export function getDelegateRecordAccountDataSerializer(
   _context: object = {}
 ): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData> {
@@ -69,12 +77,20 @@ export function getDelegateRecordAccountDataSerializer(
   ) as Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
 }
 
+/** @deprecated Use `deserializeDelegateRecord(rawAccount)` without any context instead. */
 export function deserializeDelegateRecord(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): DelegateRecord;
+export function deserializeDelegateRecord(
+  rawAccount: RpcAccount
+): DelegateRecord;
+export function deserializeDelegateRecord(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): DelegateRecord {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getDelegateRecordAccountDataSerializer()
   );
 }
@@ -89,7 +105,7 @@ export async function fetchDelegateRecord(
     options
   );
   assertAccountExists(maybeAccount, 'DelegateRecord');
-  return deserializeDelegateRecord(context, maybeAccount);
+  return deserializeDelegateRecord(maybeAccount);
 }
 
 export async function safeFetchDelegateRecord(
@@ -101,9 +117,7 @@ export async function safeFetchDelegateRecord(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeDelegateRecord(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeDelegateRecord(maybeAccount) : null;
 }
 
 export async function fetchAllDelegateRecord(
@@ -117,7 +131,7 @@ export async function fetchAllDelegateRecord(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'DelegateRecord');
-    return deserializeDelegateRecord(context, maybeAccount);
+    return deserializeDelegateRecord(maybeAccount);
   });
 }
 
@@ -133,7 +147,7 @@ export async function safeFetchAllDelegateRecord(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeDelegateRecord(context, maybeAccount as RpcAccount)
+      deserializeDelegateRecord(maybeAccount as RpcAccount)
     );
 }
 
@@ -151,7 +165,7 @@ export function getDelegateRecordGpaBuilder(
       bump: [2, u8()],
     })
     .deserializeUsing<DelegateRecord>((account) =>
-      deserializeDelegateRecord(context, account)
+      deserializeDelegateRecord(account)
     )
     .whereField('key', TmKey.Delegate);
 }

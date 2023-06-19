@@ -13,6 +13,14 @@ export type AuthorizationData = { payload: Payload };
 
 export type AuthorizationDataArgs = { payload: PayloadArgs };
 
+/** @deprecated Use `getAuthorizationDataSerializer()` without any argument instead. */
+export function getAuthorizationDataSerializer(
+  _context: object
+): Serializer<AuthorizationDataArgs, AuthorizationData>;
+export function getAuthorizationDataSerializer(): Serializer<
+  AuthorizationDataArgs,
+  AuthorizationData
+>;
 export function getAuthorizationDataSerializer(
   _context: object = {}
 ): Serializer<AuthorizationDataArgs, AuthorizationData> {

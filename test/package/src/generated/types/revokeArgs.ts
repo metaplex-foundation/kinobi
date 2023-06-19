@@ -16,6 +16,14 @@ export enum RevokeArgs {
 
 export type RevokeArgsArgs = RevokeArgs;
 
+/** @deprecated Use `getRevokeArgsSerializer()` without any argument instead. */
+export function getRevokeArgsSerializer(
+  _context: object
+): Serializer<RevokeArgsArgs, RevokeArgs>;
+export function getRevokeArgsSerializer(): Serializer<
+  RevokeArgsArgs,
+  RevokeArgs
+>;
 export function getRevokeArgsSerializer(
   _context: object = {}
 ): Serializer<RevokeArgsArgs, RevokeArgs> {

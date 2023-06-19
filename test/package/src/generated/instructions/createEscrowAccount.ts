@@ -51,6 +51,17 @@ export type CreateEscrowAccountInstructionData = { discriminator: number };
 
 export type CreateEscrowAccountInstructionDataArgs = {};
 
+/** @deprecated Use `getCreateEscrowAccountInstructionDataSerializer()` without any argument instead. */
+export function getCreateEscrowAccountInstructionDataSerializer(
+  _context: object
+): Serializer<
+  CreateEscrowAccountInstructionDataArgs,
+  CreateEscrowAccountInstructionData
+>;
+export function getCreateEscrowAccountInstructionDataSerializer(): Serializer<
+  CreateEscrowAccountInstructionDataArgs,
+  CreateEscrowAccountInstructionData
+>;
 export function getCreateEscrowAccountInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

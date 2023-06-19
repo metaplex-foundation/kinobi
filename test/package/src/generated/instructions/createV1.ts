@@ -66,6 +66,14 @@ export type CreateV1InstructionDataArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getCreateV1InstructionDataSerializer()` without any argument instead. */
+export function getCreateV1InstructionDataSerializer(
+  _context: object
+): Serializer<CreateV1InstructionDataArgs, CreateV1InstructionData>;
+export function getCreateV1InstructionDataSerializer(): Serializer<
+  CreateV1InstructionDataArgs,
+  CreateV1InstructionData
+>;
 export function getCreateV1InstructionDataSerializer(
   _context: object = {}
 ): Serializer<CreateV1InstructionDataArgs, CreateV1InstructionData> {

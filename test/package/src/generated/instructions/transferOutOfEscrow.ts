@@ -65,6 +65,17 @@ export type TransferOutOfEscrowInstructionDataArgs = {
   amount: number | bigint;
 };
 
+/** @deprecated Use `getTransferOutOfEscrowInstructionDataSerializer()` without any argument instead. */
+export function getTransferOutOfEscrowInstructionDataSerializer(
+  _context: object
+): Serializer<
+  TransferOutOfEscrowInstructionDataArgs,
+  TransferOutOfEscrowInstructionData
+>;
+export function getTransferOutOfEscrowInstructionDataSerializer(): Serializer<
+  TransferOutOfEscrowInstructionDataArgs,
+  TransferOutOfEscrowInstructionData
+>;
 export function getTransferOutOfEscrowInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

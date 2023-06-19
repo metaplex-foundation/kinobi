@@ -52,6 +52,17 @@ export type BubblegumSetCollectionSizeInstructionDataArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
+/** @deprecated Use `getBubblegumSetCollectionSizeInstructionDataSerializer()` without any argument instead. */
+export function getBubblegumSetCollectionSizeInstructionDataSerializer(
+  _context: object
+): Serializer<
+  BubblegumSetCollectionSizeInstructionDataArgs,
+  BubblegumSetCollectionSizeInstructionData
+>;
+export function getBubblegumSetCollectionSizeInstructionDataSerializer(): Serializer<
+  BubblegumSetCollectionSizeInstructionDataArgs,
+  BubblegumSetCollectionSizeInstructionData
+>;
 export function getBubblegumSetCollectionSizeInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

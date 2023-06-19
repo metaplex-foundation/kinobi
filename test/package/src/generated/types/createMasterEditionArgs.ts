@@ -20,6 +20,14 @@ export type CreateMasterEditionArgsArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getCreateMasterEditionArgsSerializer()` without any argument instead. */
+export function getCreateMasterEditionArgsSerializer(
+  _context: object
+): Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs>;
+export function getCreateMasterEditionArgsSerializer(): Serializer<
+  CreateMasterEditionArgsArgs,
+  CreateMasterEditionArgs
+>;
 export function getCreateMasterEditionArgsSerializer(
   _context: object = {}
 ): Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs> {

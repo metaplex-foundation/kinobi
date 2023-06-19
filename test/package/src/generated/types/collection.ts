@@ -20,6 +20,14 @@ export type Collection = { verified: boolean; key: PublicKey };
 
 export type CollectionArgs = { verified?: boolean; key: PublicKey };
 
+/** @deprecated Use `getCollectionSerializer()` without any argument instead. */
+export function getCollectionSerializer(
+  _context: object
+): Serializer<CollectionArgs, Collection>;
+export function getCollectionSerializer(): Serializer<
+  CollectionArgs,
+  Collection
+>;
 export function getCollectionSerializer(
   _context: object = {}
 ): Serializer<CollectionArgs, Collection> {

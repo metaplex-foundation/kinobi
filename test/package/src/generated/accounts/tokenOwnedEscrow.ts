@@ -50,6 +50,14 @@ export type TokenOwnedEscrowAccountDataArgs = {
   bump: number;
 };
 
+/** @deprecated Use `getTokenOwnedEscrowAccountDataSerializer()` without any argument instead. */
+export function getTokenOwnedEscrowAccountDataSerializer(
+  _context: object
+): Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData>;
+export function getTokenOwnedEscrowAccountDataSerializer(): Serializer<
+  TokenOwnedEscrowAccountDataArgs,
+  TokenOwnedEscrowAccountData
+>;
 export function getTokenOwnedEscrowAccountDataSerializer(
   _context: object = {}
 ): Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData> {
@@ -71,12 +79,20 @@ export function getTokenOwnedEscrowAccountDataSerializer(
   ) as Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData>;
 }
 
+/** @deprecated Use `deserializeTokenOwnedEscrow(rawAccount)` without any context instead. */
 export function deserializeTokenOwnedEscrow(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): TokenOwnedEscrow;
+export function deserializeTokenOwnedEscrow(
+  rawAccount: RpcAccount
+): TokenOwnedEscrow;
+export function deserializeTokenOwnedEscrow(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): TokenOwnedEscrow {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getTokenOwnedEscrowAccountDataSerializer()
   );
 }
@@ -91,7 +107,7 @@ export async function fetchTokenOwnedEscrow(
     options
   );
   assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
-  return deserializeTokenOwnedEscrow(context, maybeAccount);
+  return deserializeTokenOwnedEscrow(maybeAccount);
 }
 
 export async function safeFetchTokenOwnedEscrow(
@@ -103,9 +119,7 @@ export async function safeFetchTokenOwnedEscrow(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeTokenOwnedEscrow(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeTokenOwnedEscrow(maybeAccount) : null;
 }
 
 export async function fetchAllTokenOwnedEscrow(
@@ -119,7 +133,7 @@ export async function fetchAllTokenOwnedEscrow(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
-    return deserializeTokenOwnedEscrow(context, maybeAccount);
+    return deserializeTokenOwnedEscrow(maybeAccount);
   });
 }
 
@@ -135,7 +149,7 @@ export async function safeFetchAllTokenOwnedEscrow(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeTokenOwnedEscrow(context, maybeAccount as RpcAccount)
+      deserializeTokenOwnedEscrow(maybeAccount as RpcAccount)
     );
 }
 
@@ -159,7 +173,7 @@ export function getTokenOwnedEscrowGpaBuilder(
       bump: [null, u8()],
     })
     .deserializeUsing<TokenOwnedEscrow>((account) =>
-      deserializeTokenOwnedEscrow(context, account)
+      deserializeTokenOwnedEscrow(account)
     )
     .whereField('key', TmKey.TokenOwnedEscrow);
 }

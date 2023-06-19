@@ -61,6 +61,17 @@ export type CreateMasterEditionInstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
+/** @deprecated Use `getCreateMasterEditionInstructionDataSerializer()` without any argument instead. */
+export function getCreateMasterEditionInstructionDataSerializer(
+  _context: object
+): Serializer<
+  CreateMasterEditionInstructionDataArgs,
+  CreateMasterEditionInstructionData
+>;
+export function getCreateMasterEditionInstructionDataSerializer(): Serializer<
+  CreateMasterEditionInstructionDataArgs,
+  CreateMasterEditionInstructionData
+>;
 export function getCreateMasterEditionInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

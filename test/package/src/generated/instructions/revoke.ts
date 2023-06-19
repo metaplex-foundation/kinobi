@@ -63,6 +63,14 @@ export type RevokeInstructionData = {
 
 export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
 
+/** @deprecated Use `getRevokeInstructionDataSerializer()` without any argument instead. */
+export function getRevokeInstructionDataSerializer(
+  _context: object
+): Serializer<RevokeInstructionDataArgs, RevokeInstructionData>;
+export function getRevokeInstructionDataSerializer(): Serializer<
+  RevokeInstructionDataArgs,
+  RevokeInstructionData
+>;
 export function getRevokeInstructionDataSerializer(
   _context: object = {}
 ): Serializer<RevokeInstructionDataArgs, RevokeInstructionData> {

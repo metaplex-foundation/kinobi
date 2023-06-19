@@ -45,6 +45,17 @@ export type CollectionAuthorityRecordAccountDataArgs = {
   updateAuthority: OptionOrNullable<PublicKey>;
 };
 
+/** @deprecated Use `getCollectionAuthorityRecordAccountDataSerializer()` without any argument instead. */
+export function getCollectionAuthorityRecordAccountDataSerializer(
+  _context: object
+): Serializer<
+  CollectionAuthorityRecordAccountDataArgs,
+  CollectionAuthorityRecordAccountData
+>;
+export function getCollectionAuthorityRecordAccountDataSerializer(): Serializer<
+  CollectionAuthorityRecordAccountDataArgs,
+  CollectionAuthorityRecordAccountData
+>;
 export function getCollectionAuthorityRecordAccountDataSerializer(
   _context: object = {}
 ): Serializer<
@@ -71,12 +82,20 @@ export function getCollectionAuthorityRecordAccountDataSerializer(
   >;
 }
 
+/** @deprecated Use `deserializeCollectionAuthorityRecord(rawAccount)` without any context instead. */
 export function deserializeCollectionAuthorityRecord(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): CollectionAuthorityRecord;
+export function deserializeCollectionAuthorityRecord(
+  rawAccount: RpcAccount
+): CollectionAuthorityRecord;
+export function deserializeCollectionAuthorityRecord(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): CollectionAuthorityRecord {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getCollectionAuthorityRecordAccountDataSerializer()
   );
 }
@@ -91,7 +110,7 @@ export async function fetchCollectionAuthorityRecord(
     options
   );
   assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
-  return deserializeCollectionAuthorityRecord(context, maybeAccount);
+  return deserializeCollectionAuthorityRecord(maybeAccount);
 }
 
 export async function safeFetchCollectionAuthorityRecord(
@@ -104,7 +123,7 @@ export async function safeFetchCollectionAuthorityRecord(
     options
   );
   return maybeAccount.exists
-    ? deserializeCollectionAuthorityRecord(context, maybeAccount)
+    ? deserializeCollectionAuthorityRecord(maybeAccount)
     : null;
 }
 
@@ -119,7 +138,7 @@ export async function fetchAllCollectionAuthorityRecord(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
-    return deserializeCollectionAuthorityRecord(context, maybeAccount);
+    return deserializeCollectionAuthorityRecord(maybeAccount);
   });
 }
 
@@ -135,7 +154,7 @@ export async function safeFetchAllCollectionAuthorityRecord(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeCollectionAuthorityRecord(context, maybeAccount as RpcAccount)
+      deserializeCollectionAuthorityRecord(maybeAccount as RpcAccount)
     );
 }
 
@@ -157,7 +176,7 @@ export function getCollectionAuthorityRecordGpaBuilder(
       updateAuthority: [2, option(publicKeySerializer())],
     })
     .deserializeUsing<CollectionAuthorityRecord>((account) =>
-      deserializeCollectionAuthorityRecord(context, account)
+      deserializeCollectionAuthorityRecord(account)
     )
     .whereField('key', TmKey.CollectionAuthorityRecord);
 }

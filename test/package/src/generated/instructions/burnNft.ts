@@ -46,6 +46,14 @@ export type BurnNftInstructionData = { discriminator: number };
 
 export type BurnNftInstructionDataArgs = {};
 
+/** @deprecated Use `getBurnNftInstructionDataSerializer()` without any argument instead. */
+export function getBurnNftInstructionDataSerializer(
+  _context: object
+): Serializer<BurnNftInstructionDataArgs, BurnNftInstructionData>;
+export function getBurnNftInstructionDataSerializer(): Serializer<
+  BurnNftInstructionDataArgs,
+  BurnNftInstructionData
+>;
 export function getBurnNftInstructionDataSerializer(
   _context: object = {}
 ): Serializer<BurnNftInstructionDataArgs, BurnNftInstructionData> {

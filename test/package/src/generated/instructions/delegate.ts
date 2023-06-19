@@ -67,6 +67,14 @@ export type DelegateInstructionData = {
 
 export type DelegateInstructionDataArgs = { delegateArgs: DelegateArgsArgs };
 
+/** @deprecated Use `getDelegateInstructionDataSerializer()` without any argument instead. */
+export function getDelegateInstructionDataSerializer(
+  _context: object
+): Serializer<DelegateInstructionDataArgs, DelegateInstructionData>;
+export function getDelegateInstructionDataSerializer(): Serializer<
+  DelegateInstructionDataArgs,
+  DelegateInstructionData
+>;
 export function getDelegateInstructionDataSerializer(
   _context: object = {}
 ): Serializer<DelegateInstructionDataArgs, DelegateInstructionData> {

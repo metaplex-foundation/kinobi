@@ -66,6 +66,17 @@ export type UpdateMetadataAccountInstructionDataArgs = {
   primarySaleHappened: OptionOrNullable<boolean>;
 };
 
+/** @deprecated Use `getUpdateMetadataAccountInstructionDataSerializer()` without any argument instead. */
+export function getUpdateMetadataAccountInstructionDataSerializer(
+  _context: object
+): Serializer<
+  UpdateMetadataAccountInstructionDataArgs,
+  UpdateMetadataAccountInstructionData
+>;
+export function getUpdateMetadataAccountInstructionDataSerializer(): Serializer<
+  UpdateMetadataAccountInstructionDataArgs,
+  UpdateMetadataAccountInstructionData
+>;
 export function getUpdateMetadataAccountInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

@@ -36,6 +36,17 @@ export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
 
 export type SetMintAuthorityInstructionDataArgs = {};
 
+/** @deprecated Use `getSetMintAuthorityInstructionDataSerializer()` without any argument instead. */
+export function getSetMintAuthorityInstructionDataSerializer(
+  _context: object
+): Serializer<
+  SetMintAuthorityInstructionDataArgs,
+  SetMintAuthorityInstructionData
+>;
+export function getSetMintAuthorityInstructionDataSerializer(): Serializer<
+  SetMintAuthorityInstructionDataArgs,
+  SetMintAuthorityInstructionData
+>;
 export function getSetMintAuthorityInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

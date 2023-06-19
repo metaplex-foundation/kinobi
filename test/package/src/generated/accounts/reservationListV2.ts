@@ -58,6 +58,14 @@ export type ReservationListV2AccountDataArgs = {
   currentReservationSpots: number | bigint;
 };
 
+/** @deprecated Use `getReservationListV2AccountDataSerializer()` without any argument instead. */
+export function getReservationListV2AccountDataSerializer(
+  _context: object
+): Serializer<ReservationListV2AccountDataArgs, ReservationListV2AccountData>;
+export function getReservationListV2AccountDataSerializer(): Serializer<
+  ReservationListV2AccountDataArgs,
+  ReservationListV2AccountData
+>;
 export function getReservationListV2AccountDataSerializer(
   _context: object = {}
 ): Serializer<ReservationListV2AccountDataArgs, ReservationListV2AccountData> {
@@ -84,12 +92,20 @@ export function getReservationListV2AccountDataSerializer(
   >;
 }
 
+/** @deprecated Use `deserializeReservationListV2(rawAccount)` without any context instead. */
 export function deserializeReservationListV2(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): ReservationListV2;
+export function deserializeReservationListV2(
+  rawAccount: RpcAccount
+): ReservationListV2;
+export function deserializeReservationListV2(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): ReservationListV2 {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getReservationListV2AccountDataSerializer()
   );
 }
@@ -104,7 +120,7 @@ export async function fetchReservationListV2(
     options
   );
   assertAccountExists(maybeAccount, 'ReservationListV2');
-  return deserializeReservationListV2(context, maybeAccount);
+  return deserializeReservationListV2(maybeAccount);
 }
 
 export async function safeFetchReservationListV2(
@@ -117,7 +133,7 @@ export async function safeFetchReservationListV2(
     options
   );
   return maybeAccount.exists
-    ? deserializeReservationListV2(context, maybeAccount)
+    ? deserializeReservationListV2(maybeAccount)
     : null;
 }
 
@@ -132,7 +148,7 @@ export async function fetchAllReservationListV2(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'ReservationListV2');
-    return deserializeReservationListV2(context, maybeAccount);
+    return deserializeReservationListV2(maybeAccount);
   });
 }
 
@@ -148,7 +164,7 @@ export async function safeFetchAllReservationListV2(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeReservationListV2(context, maybeAccount as RpcAccount)
+      deserializeReservationListV2(maybeAccount as RpcAccount)
     );
 }
 
@@ -176,7 +192,7 @@ export function getReservationListV2GpaBuilder(
       currentReservationSpots: [null, u64()],
     })
     .deserializeUsing<ReservationListV2>((account) =>
-      deserializeReservationListV2(context, account)
+      deserializeReservationListV2(account)
     )
     .whereField('key', TmKey.ReservationListV2);
 }

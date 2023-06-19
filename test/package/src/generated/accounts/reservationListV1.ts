@@ -40,12 +40,20 @@ import {
 
 export type ReservationListV1 = Account<ReservationListV1AccountData>;
 
+/** @deprecated Use `deserializeReservationListV1(rawAccount)` without any context instead. */
 export function deserializeReservationListV1(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): ReservationListV1;
+export function deserializeReservationListV1(
+  rawAccount: RpcAccount
+): ReservationListV1;
+export function deserializeReservationListV1(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): ReservationListV1 {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getReservationListV1AccountDataSerializer()
   );
 }
@@ -60,7 +68,7 @@ export async function fetchReservationListV1(
     options
   );
   assertAccountExists(maybeAccount, 'ReservationListV1');
-  return deserializeReservationListV1(context, maybeAccount);
+  return deserializeReservationListV1(maybeAccount);
 }
 
 export async function safeFetchReservationListV1(
@@ -73,7 +81,7 @@ export async function safeFetchReservationListV1(
     options
   );
   return maybeAccount.exists
-    ? deserializeReservationListV1(context, maybeAccount)
+    ? deserializeReservationListV1(maybeAccount)
     : null;
 }
 
@@ -88,7 +96,7 @@ export async function fetchAllReservationListV1(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'ReservationListV1');
-    return deserializeReservationListV1(context, maybeAccount);
+    return deserializeReservationListV1(maybeAccount);
   });
 }
 
@@ -104,7 +112,7 @@ export async function safeFetchAllReservationListV1(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeReservationListV1(context, maybeAccount as RpcAccount)
+      deserializeReservationListV1(maybeAccount as RpcAccount)
     );
 }
 
@@ -128,7 +136,7 @@ export function getReservationListV1GpaBuilder(
       reservations: [null, array(getReservationV1Serializer())],
     })
     .deserializeUsing<ReservationListV1>((account) =>
-      deserializeReservationListV1(context, account)
+      deserializeReservationListV1(account)
     )
     .whereField('key', TmKey.ReservationListV1);
 }

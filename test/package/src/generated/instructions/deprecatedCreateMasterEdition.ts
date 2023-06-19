@@ -69,6 +69,17 @@ export type DeprecatedCreateMasterEditionInstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
+/** @deprecated Use `getDeprecatedCreateMasterEditionInstructionDataSerializer()` without any argument instead. */
+export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
+  _context: object
+): Serializer<
+  DeprecatedCreateMasterEditionInstructionDataArgs,
+  DeprecatedCreateMasterEditionInstructionData
+>;
+export function getDeprecatedCreateMasterEditionInstructionDataSerializer(): Serializer<
+  DeprecatedCreateMasterEditionInstructionDataArgs,
+  DeprecatedCreateMasterEditionInstructionData
+>;
 export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

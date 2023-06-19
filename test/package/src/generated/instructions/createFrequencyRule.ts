@@ -51,6 +51,17 @@ export type CreateFrequencyRuleInstructionDataArgs = {
   period: number | bigint;
 };
 
+/** @deprecated Use `getCreateFrequencyRuleInstructionDataSerializer()` without any argument instead. */
+export function getCreateFrequencyRuleInstructionDataSerializer(
+  _context: object
+): Serializer<
+  CreateFrequencyRuleInstructionDataArgs,
+  CreateFrequencyRuleInstructionData
+>;
+export function getCreateFrequencyRuleInstructionDataSerializer(): Serializer<
+  CreateFrequencyRuleInstructionDataArgs,
+  CreateFrequencyRuleInstructionData
+>;
 export function getCreateFrequencyRuleInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

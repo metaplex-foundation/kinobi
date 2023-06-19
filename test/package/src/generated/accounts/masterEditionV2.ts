@@ -45,6 +45,14 @@ export type MasterEditionV2AccountDataArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getMasterEditionV2AccountDataSerializer()` without any argument instead. */
+export function getMasterEditionV2AccountDataSerializer(
+  _context: object
+): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
+export function getMasterEditionV2AccountDataSerializer(): Serializer<
+  MasterEditionV2AccountDataArgs,
+  MasterEditionV2AccountData
+>;
 export function getMasterEditionV2AccountDataSerializer(
   _context: object = {}
 ): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData> {
@@ -65,12 +73,20 @@ export function getMasterEditionV2AccountDataSerializer(
   ) as Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
 }
 
+/** @deprecated Use `deserializeMasterEditionV2(rawAccount)` without any context instead. */
 export function deserializeMasterEditionV2(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): MasterEditionV2;
+export function deserializeMasterEditionV2(
+  rawAccount: RpcAccount
+): MasterEditionV2;
+export function deserializeMasterEditionV2(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): MasterEditionV2 {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getMasterEditionV2AccountDataSerializer()
   );
 }
@@ -85,7 +101,7 @@ export async function fetchMasterEditionV2(
     options
   );
   assertAccountExists(maybeAccount, 'MasterEditionV2');
-  return deserializeMasterEditionV2(context, maybeAccount);
+  return deserializeMasterEditionV2(maybeAccount);
 }
 
 export async function safeFetchMasterEditionV2(
@@ -97,9 +113,7 @@ export async function safeFetchMasterEditionV2(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeMasterEditionV2(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeMasterEditionV2(maybeAccount) : null;
 }
 
 export async function fetchAllMasterEditionV2(
@@ -113,7 +127,7 @@ export async function fetchAllMasterEditionV2(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'MasterEditionV2');
-    return deserializeMasterEditionV2(context, maybeAccount);
+    return deserializeMasterEditionV2(maybeAccount);
   });
 }
 
@@ -129,7 +143,7 @@ export async function safeFetchAllMasterEditionV2(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeMasterEditionV2(context, maybeAccount as RpcAccount)
+      deserializeMasterEditionV2(maybeAccount as RpcAccount)
     );
 }
 
@@ -151,7 +165,7 @@ export function getMasterEditionV2GpaBuilder(
       maxSupply: [9, option(u64())],
     })
     .deserializeUsing<MasterEditionV2>((account) =>
-      deserializeMasterEditionV2(context, account)
+      deserializeMasterEditionV2(account)
     )
     .whereField('key', TmKey.MasterEditionV2);
 }

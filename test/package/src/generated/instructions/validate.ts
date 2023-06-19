@@ -75,6 +75,14 @@ export type ValidateInstructionDataArgs = {
   payload: PayloadArgs;
 };
 
+/** @deprecated Use `getValidateInstructionDataSerializer()` without any argument instead. */
+export function getValidateInstructionDataSerializer(
+  _context: object
+): Serializer<ValidateInstructionDataArgs, ValidateInstructionData>;
+export function getValidateInstructionDataSerializer(): Serializer<
+  ValidateInstructionDataArgs,
+  ValidateInstructionData
+>;
 export function getValidateInstructionDataSerializer(
   _context: object = {}
 ): Serializer<ValidateInstructionDataArgs, ValidateInstructionData> {

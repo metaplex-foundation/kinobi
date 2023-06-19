@@ -20,6 +20,11 @@ export type Payload = { map: Map<PayloadKey, PayloadType> };
 
 export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
 
+/** @deprecated Use `getPayloadSerializer()` without any argument instead. */
+export function getPayloadSerializer(
+  _context: object
+): Serializer<PayloadArgs, Payload>;
+export function getPayloadSerializer(): Serializer<PayloadArgs, Payload>;
 export function getPayloadSerializer(
   _context: object = {}
 ): Serializer<PayloadArgs, Payload> {

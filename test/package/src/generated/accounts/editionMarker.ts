@@ -34,6 +34,14 @@ export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
+/** @deprecated Use `getEditionMarkerAccountDataSerializer()` without any argument instead. */
+export function getEditionMarkerAccountDataSerializer(
+  _context: object
+): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
+export function getEditionMarkerAccountDataSerializer(): Serializer<
+  EditionMarkerAccountDataArgs,
+  EditionMarkerAccountData
+>;
 export function getEditionMarkerAccountDataSerializer(
   _context: object = {}
 ): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData> {
@@ -53,12 +61,18 @@ export function getEditionMarkerAccountDataSerializer(
   ) as Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
 }
 
+/** @deprecated Use `deserializeEditionMarker(rawAccount)` without any context instead. */
 export function deserializeEditionMarker(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): EditionMarker;
+export function deserializeEditionMarker(rawAccount: RpcAccount): EditionMarker;
+export function deserializeEditionMarker(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): EditionMarker {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getEditionMarkerAccountDataSerializer()
   );
 }
@@ -73,7 +87,7 @@ export async function fetchEditionMarker(
     options
   );
   assertAccountExists(maybeAccount, 'EditionMarker');
-  return deserializeEditionMarker(context, maybeAccount);
+  return deserializeEditionMarker(maybeAccount);
 }
 
 export async function safeFetchEditionMarker(
@@ -85,9 +99,7 @@ export async function safeFetchEditionMarker(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeEditionMarker(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeEditionMarker(maybeAccount) : null;
 }
 
 export async function fetchAllEditionMarker(
@@ -101,7 +113,7 @@ export async function fetchAllEditionMarker(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'EditionMarker');
-    return deserializeEditionMarker(context, maybeAccount);
+    return deserializeEditionMarker(maybeAccount);
   });
 }
 
@@ -117,7 +129,7 @@ export async function safeFetchAllEditionMarker(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeEditionMarker(context, maybeAccount as RpcAccount)
+      deserializeEditionMarker(maybeAccount as RpcAccount)
     );
 }
 
@@ -134,7 +146,7 @@ export function getEditionMarkerGpaBuilder(
       ledger: [1, array(u8(), { size: 31 })],
     })
     .deserializeUsing<EditionMarker>((account) =>
-      deserializeEditionMarker(context, account)
+      deserializeEditionMarker(account)
     )
     .whereField('key', TmKey.EditionMarker);
 }

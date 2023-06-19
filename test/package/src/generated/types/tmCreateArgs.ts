@@ -33,6 +33,14 @@ export type TmCreateArgsArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
+/** @deprecated Use `getTmCreateArgsSerializer()` without any argument instead. */
+export function getTmCreateArgsSerializer(
+  _context: object
+): Serializer<TmCreateArgsArgs, TmCreateArgs>;
+export function getTmCreateArgsSerializer(): Serializer<
+  TmCreateArgsArgs,
+  TmCreateArgs
+>;
 export function getTmCreateArgsSerializer(
   _context: object = {}
 ): Serializer<TmCreateArgsArgs, TmCreateArgs> {

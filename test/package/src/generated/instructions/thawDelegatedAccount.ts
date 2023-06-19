@@ -42,6 +42,17 @@ export type ThawDelegatedAccountInstructionData = { discriminator: number };
 
 export type ThawDelegatedAccountInstructionDataArgs = {};
 
+/** @deprecated Use `getThawDelegatedAccountInstructionDataSerializer()` without any argument instead. */
+export function getThawDelegatedAccountInstructionDataSerializer(
+  _context: object
+): Serializer<
+  ThawDelegatedAccountInstructionDataArgs,
+  ThawDelegatedAccountInstructionData
+>;
+export function getThawDelegatedAccountInstructionDataSerializer(): Serializer<
+  ThawDelegatedAccountInstructionDataArgs,
+  ThawDelegatedAccountInstructionData
+>;
 export function getThawDelegatedAccountInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

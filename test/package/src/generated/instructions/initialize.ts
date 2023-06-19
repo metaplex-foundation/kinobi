@@ -52,6 +52,14 @@ export type InitializeInstructionData = {
 
 export type InitializeInstructionDataArgs = { data: CandyMachineDataArgs };
 
+/** @deprecated Use `getInitializeInstructionDataSerializer()` without any argument instead. */
+export function getInitializeInstructionDataSerializer(
+  _context: object
+): Serializer<InitializeInstructionDataArgs, InitializeInstructionData>;
+export function getInitializeInstructionDataSerializer(): Serializer<
+  InitializeInstructionDataArgs,
+  InitializeInstructionData
+>;
 export function getInitializeInstructionDataSerializer(
   _context: object = {}
 ): Serializer<InitializeInstructionDataArgs, InitializeInstructionData> {

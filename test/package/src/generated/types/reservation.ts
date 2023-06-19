@@ -26,6 +26,14 @@ export type ReservationArgs = {
   totalSpots: number | bigint;
 };
 
+/** @deprecated Use `getReservationSerializer()` without any argument instead. */
+export function getReservationSerializer(
+  _context: object
+): Serializer<ReservationArgs, Reservation>;
+export function getReservationSerializer(): Serializer<
+  ReservationArgs,
+  Reservation
+>;
 export function getReservationSerializer(
   _context: object = {}
 ): Serializer<ReservationArgs, Reservation> {

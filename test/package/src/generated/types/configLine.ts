@@ -22,6 +22,14 @@ export type ConfigLine = {
 
 export type ConfigLineArgs = ConfigLine;
 
+/** @deprecated Use `getConfigLineSerializer()` without any argument instead. */
+export function getConfigLineSerializer(
+  _context: object
+): Serializer<ConfigLineArgs, ConfigLine>;
+export function getConfigLineSerializer(): Serializer<
+  ConfigLineArgs,
+  ConfigLine
+>;
 export function getConfigLineSerializer(
   _context: object = {}
 ): Serializer<ConfigLineArgs, ConfigLine> {

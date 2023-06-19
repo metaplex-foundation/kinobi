@@ -50,6 +50,14 @@ export type CreateRuleSetInstructionDataArgs = {
   ruleSetBump: number;
 };
 
+/** @deprecated Use `getCreateRuleSetInstructionDataSerializer()` without any argument instead. */
+export function getCreateRuleSetInstructionDataSerializer(
+  _context: object
+): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData>;
+export function getCreateRuleSetInstructionDataSerializer(): Serializer<
+  CreateRuleSetInstructionDataArgs,
+  CreateRuleSetInstructionData
+>;
 export function getCreateRuleSetInstructionDataSerializer(
   _context: object = {}
 ): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData> {

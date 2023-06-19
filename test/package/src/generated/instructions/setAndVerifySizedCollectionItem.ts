@@ -50,6 +50,17 @@ export type SetAndVerifySizedCollectionItemInstructionData = {
 
 export type SetAndVerifySizedCollectionItemInstructionDataArgs = {};
 
+/** @deprecated Use `getSetAndVerifySizedCollectionItemInstructionDataSerializer()` without any argument instead. */
+export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(
+  _context: object
+): Serializer<
+  SetAndVerifySizedCollectionItemInstructionDataArgs,
+  SetAndVerifySizedCollectionItemInstructionData
+>;
+export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(): Serializer<
+  SetAndVerifySizedCollectionItemInstructionDataArgs,
+  SetAndVerifySizedCollectionItemInstructionData
+>;
 export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

@@ -69,6 +69,17 @@ export type CreateMetadataAccountV3InstructionDataArgs = {
   collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
 };
 
+/** @deprecated Use `getCreateMetadataAccountV3InstructionDataSerializer()` without any argument instead. */
+export function getCreateMetadataAccountV3InstructionDataSerializer(
+  _context: object
+): Serializer<
+  CreateMetadataAccountV3InstructionDataArgs,
+  CreateMetadataAccountV3InstructionData
+>;
+export function getCreateMetadataAccountV3InstructionDataSerializer(): Serializer<
+  CreateMetadataAccountV3InstructionDataArgs,
+  CreateMetadataAccountV3InstructionData
+>;
 export function getCreateMetadataAccountV3InstructionDataSerializer(
   _context: object = {}
 ): Serializer<

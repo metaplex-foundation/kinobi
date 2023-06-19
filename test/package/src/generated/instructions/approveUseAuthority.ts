@@ -60,6 +60,17 @@ export type ApproveUseAuthorityInstructionDataArgs = {
   numberOfUses: number | bigint;
 };
 
+/** @deprecated Use `getApproveUseAuthorityInstructionDataSerializer()` without any argument instead. */
+export function getApproveUseAuthorityInstructionDataSerializer(
+  _context: object
+): Serializer<
+  ApproveUseAuthorityInstructionDataArgs,
+  ApproveUseAuthorityInstructionData
+>;
+export function getApproveUseAuthorityInstructionDataSerializer(): Serializer<
+  ApproveUseAuthorityInstructionDataArgs,
+  ApproveUseAuthorityInstructionData
+>;
 export function getApproveUseAuthorityInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

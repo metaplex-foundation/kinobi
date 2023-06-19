@@ -44,6 +44,14 @@ export type AddConfigLinesInstructionDataArgs = {
   configLines: Array<ConfigLineArgs>;
 };
 
+/** @deprecated Use `getAddConfigLinesInstructionDataSerializer()` without any argument instead. */
+export function getAddConfigLinesInstructionDataSerializer(
+  _context: object
+): Serializer<AddConfigLinesInstructionDataArgs, AddConfigLinesInstructionData>;
+export function getAddConfigLinesInstructionDataSerializer(): Serializer<
+  AddConfigLinesInstructionDataArgs,
+  AddConfigLinesInstructionData
+>;
 export function getAddConfigLinesInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

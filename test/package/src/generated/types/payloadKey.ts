@@ -17,6 +17,14 @@ export enum PayloadKey {
 
 export type PayloadKeyArgs = PayloadKey;
 
+/** @deprecated Use `getPayloadKeySerializer()` without any argument instead. */
+export function getPayloadKeySerializer(
+  _context: object
+): Serializer<PayloadKeyArgs, PayloadKey>;
+export function getPayloadKeySerializer(): Serializer<
+  PayloadKeyArgs,
+  PayloadKey
+>;
 export function getPayloadKeySerializer(
   _context: object = {}
 ): Serializer<PayloadKeyArgs, PayloadKey> {

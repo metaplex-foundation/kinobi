@@ -78,6 +78,11 @@ export type AssetDataArgs = {
   delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
+/** @deprecated Use `getAssetDataSerializer()` without any argument instead. */
+export function getAssetDataSerializer(
+  _context: object
+): Serializer<AssetDataArgs, AssetData>;
+export function getAssetDataSerializer(): Serializer<AssetDataArgs, AssetData>;
 export function getAssetDataSerializer(
   _context: object = {}
 ): Serializer<AssetDataArgs, AssetData> {

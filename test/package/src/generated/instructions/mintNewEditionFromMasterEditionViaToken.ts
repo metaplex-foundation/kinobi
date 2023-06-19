@@ -70,6 +70,17 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionDataArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };
 
+/** @deprecated Use `getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer()` without any argument instead. */
+export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer(
+  _context: object
+): Serializer<
+  MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
+  MintNewEditionFromMasterEditionViaTokenInstructionData
+>;
+export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer(): Serializer<
+  MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
+  MintNewEditionFromMasterEditionViaTokenInstructionData
+>;
 export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

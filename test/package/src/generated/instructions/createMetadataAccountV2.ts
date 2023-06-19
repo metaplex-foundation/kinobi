@@ -55,6 +55,17 @@ export type CreateMetadataAccountV2InstructionDataArgs = {
   isMutable: boolean;
 };
 
+/** @deprecated Use `getCreateMetadataAccountV2InstructionDataSerializer()` without any argument instead. */
+export function getCreateMetadataAccountV2InstructionDataSerializer(
+  _context: object
+): Serializer<
+  CreateMetadataAccountV2InstructionDataArgs,
+  CreateMetadataAccountV2InstructionData
+>;
+export function getCreateMetadataAccountV2InstructionDataSerializer(): Serializer<
+  CreateMetadataAccountV2InstructionDataArgs,
+  CreateMetadataAccountV2InstructionData
+>;
 export function getCreateMetadataAccountV2InstructionDataSerializer(
   _context: object = {}
 ): Serializer<

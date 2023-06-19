@@ -34,6 +34,14 @@ export type PuffMetadataInstructionData = { discriminator: number };
 
 export type PuffMetadataInstructionDataArgs = {};
 
+/** @deprecated Use `getPuffMetadataInstructionDataSerializer()` without any argument instead. */
+export function getPuffMetadataInstructionDataSerializer(
+  _context: object
+): Serializer<PuffMetadataInstructionDataArgs, PuffMetadataInstructionData>;
+export function getPuffMetadataInstructionDataSerializer(): Serializer<
+  PuffMetadataInstructionDataArgs,
+  PuffMetadataInstructionData
+>;
 export function getPuffMetadataInstructionDataSerializer(
   _context: object = {}
 ): Serializer<PuffMetadataInstructionDataArgs, PuffMetadataInstructionData> {

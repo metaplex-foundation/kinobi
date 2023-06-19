@@ -52,6 +52,14 @@ export type FrequencyAccountAccountDataArgs = {
   period: number | bigint;
 };
 
+/** @deprecated Use `getFrequencyAccountAccountDataSerializer()` without any argument instead. */
+export function getFrequencyAccountAccountDataSerializer(
+  _context: object
+): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
+export function getFrequencyAccountAccountDataSerializer(): Serializer<
+  FrequencyAccountAccountDataArgs,
+  FrequencyAccountAccountData
+>;
 export function getFrequencyAccountAccountDataSerializer(
   _context: object = {}
 ): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData> {
@@ -72,12 +80,20 @@ export function getFrequencyAccountAccountDataSerializer(
   ) as Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
 }
 
+/** @deprecated Use `deserializeFrequencyAccount(rawAccount)` without any context instead. */
 export function deserializeFrequencyAccount(
-  _context: object,
+  context: object,
   rawAccount: RpcAccount
+): FrequencyAccount;
+export function deserializeFrequencyAccount(
+  rawAccount: RpcAccount
+): FrequencyAccount;
+export function deserializeFrequencyAccount(
+  context: RpcAccount | object,
+  rawAccount?: RpcAccount
 ): FrequencyAccount {
   return deserializeAccount(
-    rawAccount,
+    rawAccount ?? (context as RpcAccount),
     getFrequencyAccountAccountDataSerializer()
   );
 }
@@ -92,7 +108,7 @@ export async function fetchFrequencyAccount(
     options
   );
   assertAccountExists(maybeAccount, 'FrequencyAccount');
-  return deserializeFrequencyAccount(context, maybeAccount);
+  return deserializeFrequencyAccount(maybeAccount);
 }
 
 export async function safeFetchFrequencyAccount(
@@ -104,9 +120,7 @@ export async function safeFetchFrequencyAccount(
     toPublicKey(publicKey, false),
     options
   );
-  return maybeAccount.exists
-    ? deserializeFrequencyAccount(context, maybeAccount)
-    : null;
+  return maybeAccount.exists ? deserializeFrequencyAccount(maybeAccount) : null;
 }
 
 export async function fetchAllFrequencyAccount(
@@ -120,7 +134,7 @@ export async function fetchAllFrequencyAccount(
   );
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount, 'FrequencyAccount');
-    return deserializeFrequencyAccount(context, maybeAccount);
+    return deserializeFrequencyAccount(maybeAccount);
   });
 }
 
@@ -136,7 +150,7 @@ export async function safeFetchAllFrequencyAccount(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeFrequencyAccount(context, maybeAccount as RpcAccount)
+      deserializeFrequencyAccount(maybeAccount as RpcAccount)
     );
 }
 
@@ -154,7 +168,7 @@ export function getFrequencyAccountGpaBuilder(
       period: number | bigint;
     }>({ key: [0, u64()], lastUpdate: [8, i64()], period: [16, i64()] })
     .deserializeUsing<FrequencyAccount>((account) =>
-      deserializeFrequencyAccount(context, account)
+      deserializeFrequencyAccount(account)
     )
     .whereField('key', TaKey.Frequency);
 }

@@ -61,6 +61,14 @@ export type MigrateInstructionData = {
 
 export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
+/** @deprecated Use `getMigrateInstructionDataSerializer()` without any argument instead. */
+export function getMigrateInstructionDataSerializer(
+  _context: object
+): Serializer<MigrateInstructionDataArgs, MigrateInstructionData>;
+export function getMigrateInstructionDataSerializer(): Serializer<
+  MigrateInstructionDataArgs,
+  MigrateInstructionData
+>;
 export function getMigrateInstructionDataSerializer(
   _context: object = {}
 ): Serializer<MigrateInstructionDataArgs, MigrateInstructionData> {

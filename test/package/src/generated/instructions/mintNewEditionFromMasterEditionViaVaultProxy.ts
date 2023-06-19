@@ -76,6 +76,17 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };
 
+/** @deprecated Use `getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer()` without any argument instead. */
+export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer(
+  _context: object
+): Serializer<
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionData
+>;
+export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer(): Serializer<
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionData
+>;
 export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

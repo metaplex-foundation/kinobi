@@ -74,6 +74,14 @@ export type TransferInstructionData = {
 
 export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
+/** @deprecated Use `getTransferInstructionDataSerializer()` without any argument instead. */
+export function getTransferInstructionDataSerializer(
+  _context: object
+): Serializer<TransferInstructionDataArgs, TransferInstructionData>;
+export function getTransferInstructionDataSerializer(): Serializer<
+  TransferInstructionDataArgs,
+  TransferInstructionData
+>;
 export function getTransferInstructionDataSerializer(
   _context: object = {}
 ): Serializer<TransferInstructionDataArgs, TransferInstructionData> {

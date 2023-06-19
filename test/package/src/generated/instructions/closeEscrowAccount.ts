@@ -49,6 +49,17 @@ export type CloseEscrowAccountInstructionData = { discriminator: number };
 
 export type CloseEscrowAccountInstructionDataArgs = {};
 
+/** @deprecated Use `getCloseEscrowAccountInstructionDataSerializer()` without any argument instead. */
+export function getCloseEscrowAccountInstructionDataSerializer(
+  _context: object
+): Serializer<
+  CloseEscrowAccountInstructionDataArgs,
+  CloseEscrowAccountInstructionData
+>;
+export function getCloseEscrowAccountInstructionDataSerializer(): Serializer<
+  CloseEscrowAccountInstructionDataArgs,
+  CloseEscrowAccountInstructionData
+>;
 export function getCloseEscrowAccountInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

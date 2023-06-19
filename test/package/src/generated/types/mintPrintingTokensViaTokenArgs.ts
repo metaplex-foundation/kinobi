@@ -12,6 +12,17 @@ export type MintPrintingTokensViaTokenArgs = { supply: bigint };
 
 export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
+/** @deprecated Use `getMintPrintingTokensViaTokenArgsSerializer()` without any argument instead. */
+export function getMintPrintingTokensViaTokenArgsSerializer(
+  _context: object
+): Serializer<
+  MintPrintingTokensViaTokenArgsArgs,
+  MintPrintingTokensViaTokenArgs
+>;
+export function getMintPrintingTokensViaTokenArgsSerializer(): Serializer<
+  MintPrintingTokensViaTokenArgsArgs,
+  MintPrintingTokensViaTokenArgs
+>;
 export function getMintPrintingTokensViaTokenArgsSerializer(
   _context: object = {}
 ): Serializer<

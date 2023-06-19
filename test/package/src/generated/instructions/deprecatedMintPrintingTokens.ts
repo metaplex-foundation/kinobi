@@ -57,6 +57,17 @@ export type DeprecatedMintPrintingTokensInstructionDataArgs = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
 };
 
+/** @deprecated Use `getDeprecatedMintPrintingTokensInstructionDataSerializer()` without any argument instead. */
+export function getDeprecatedMintPrintingTokensInstructionDataSerializer(
+  _context: object
+): Serializer<
+  DeprecatedMintPrintingTokensInstructionDataArgs,
+  DeprecatedMintPrintingTokensInstructionData
+>;
+export function getDeprecatedMintPrintingTokensInstructionDataSerializer(): Serializer<
+  DeprecatedMintPrintingTokensInstructionDataArgs,
+  DeprecatedMintPrintingTokensInstructionData
+>;
 export function getDeprecatedMintPrintingTokensInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

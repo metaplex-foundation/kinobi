@@ -50,6 +50,17 @@ export type ApproveCollectionAuthorityInstructionData = {
 
 export type ApproveCollectionAuthorityInstructionDataArgs = {};
 
+/** @deprecated Use `getApproveCollectionAuthorityInstructionDataSerializer()` without any argument instead. */
+export function getApproveCollectionAuthorityInstructionDataSerializer(
+  _context: object
+): Serializer<
+  ApproveCollectionAuthorityInstructionDataArgs,
+  ApproveCollectionAuthorityInstructionData
+>;
+export function getApproveCollectionAuthorityInstructionDataSerializer(): Serializer<
+  ApproveCollectionAuthorityInstructionDataArgs,
+  ApproveCollectionAuthorityInstructionData
+>;
 export function getApproveCollectionAuthorityInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

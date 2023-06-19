@@ -22,6 +22,14 @@ export type ReservationV1 = {
 
 export type ReservationV1Args = ReservationV1;
 
+/** @deprecated Use `getReservationV1Serializer()` without any argument instead. */
+export function getReservationV1Serializer(
+  _context: object
+): Serializer<ReservationV1Args, ReservationV1>;
+export function getReservationV1Serializer(): Serializer<
+  ReservationV1Args,
+  ReservationV1
+>;
 export function getReservationV1Serializer(
   _context: object = {}
 ): Serializer<ReservationV1Args, ReservationV1> {

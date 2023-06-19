@@ -40,6 +40,17 @@ export type ConvertMasterEditionV1ToV2InstructionData = {
 
 export type ConvertMasterEditionV1ToV2InstructionDataArgs = {};
 
+/** @deprecated Use `getConvertMasterEditionV1ToV2InstructionDataSerializer()` without any argument instead. */
+export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
+  _context: object
+): Serializer<
+  ConvertMasterEditionV1ToV2InstructionDataArgs,
+  ConvertMasterEditionV1ToV2InstructionData
+>;
+export function getConvertMasterEditionV1ToV2InstructionDataSerializer(): Serializer<
+  ConvertMasterEditionV1ToV2InstructionDataArgs,
+  ConvertMasterEditionV1ToV2InstructionData
+>;
 export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
   _context: object = {}
 ): Serializer<

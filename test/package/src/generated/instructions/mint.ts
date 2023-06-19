@@ -58,6 +58,14 @@ export type MintInstructionData = { discriminator: number; mintArgs: MintArgs };
 
 export type MintInstructionDataArgs = { mintArgs: MintArgsArgs };
 
+/** @deprecated Use `getMintInstructionDataSerializer()` without any argument instead. */
+export function getMintInstructionDataSerializer(
+  _context: object
+): Serializer<MintInstructionDataArgs, MintInstructionData>;
+export function getMintInstructionDataSerializer(): Serializer<
+  MintInstructionDataArgs,
+  MintInstructionData
+>;
 export function getMintInstructionDataSerializer(
   _context: object = {}
 ): Serializer<MintInstructionDataArgs, MintInstructionData> {

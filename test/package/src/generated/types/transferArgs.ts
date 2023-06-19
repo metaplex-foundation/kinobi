@@ -34,6 +34,14 @@ export type TransferArgsArgs = {
   amount: number | bigint;
 };
 
+/** @deprecated Use `getTransferArgsSerializer()` without any argument instead. */
+export function getTransferArgsSerializer(
+  _context: object
+): Serializer<TransferArgsArgs, TransferArgs>;
+export function getTransferArgsSerializer(): Serializer<
+  TransferArgsArgs,
+  TransferArgs
+>;
 export function getTransferArgsSerializer(
   _context: object = {}
 ): Serializer<TransferArgsArgs, TransferArgs> {

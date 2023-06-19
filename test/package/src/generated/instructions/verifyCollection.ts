@@ -44,6 +44,17 @@ export type VerifyCollectionInstructionData = { discriminator: number };
 
 export type VerifyCollectionInstructionDataArgs = {};
 
+/** @deprecated Use `getVerifyCollectionInstructionDataSerializer()` without any argument instead. */
+export function getVerifyCollectionInstructionDataSerializer(
+  _context: object
+): Serializer<
+  VerifyCollectionInstructionDataArgs,
+  VerifyCollectionInstructionData
+>;
+export function getVerifyCollectionInstructionDataSerializer(): Serializer<
+  VerifyCollectionInstructionDataArgs,
+  VerifyCollectionInstructionData
+>;
 export function getVerifyCollectionInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

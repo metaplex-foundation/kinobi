@@ -44,6 +44,17 @@ export type RevokeCollectionAuthorityInstructionData = {
 
 export type RevokeCollectionAuthorityInstructionDataArgs = {};
 
+/** @deprecated Use `getRevokeCollectionAuthorityInstructionDataSerializer()` without any argument instead. */
+export function getRevokeCollectionAuthorityInstructionDataSerializer(
+  _context: object
+): Serializer<
+  RevokeCollectionAuthorityInstructionDataArgs,
+  RevokeCollectionAuthorityInstructionData
+>;
+export function getRevokeCollectionAuthorityInstructionDataSerializer(): Serializer<
+  RevokeCollectionAuthorityInstructionDataArgs,
+  RevokeCollectionAuthorityInstructionData
+>;
 export function getRevokeCollectionAuthorityInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

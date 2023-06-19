@@ -19,6 +19,14 @@ export type CollectionDetails = { __kind: 'V1'; size: bigint };
 
 export type CollectionDetailsArgs = { __kind: 'V1'; size: number | bigint };
 
+/** @deprecated Use `getCollectionDetailsSerializer()` without any argument instead. */
+export function getCollectionDetailsSerializer(
+  _context: object
+): Serializer<CollectionDetailsArgs, CollectionDetails>;
+export function getCollectionDetailsSerializer(): Serializer<
+  CollectionDetailsArgs,
+  CollectionDetails
+>;
 export function getCollectionDetailsSerializer(
   _context: object = {}
 ): Serializer<CollectionDetailsArgs, CollectionDetails> {

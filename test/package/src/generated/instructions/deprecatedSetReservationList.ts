@@ -59,6 +59,17 @@ export type DeprecatedSetReservationListInstructionDataArgs = {
   totalSpotOffset: number | bigint;
 };
 
+/** @deprecated Use `getDeprecatedSetReservationListInstructionDataSerializer()` without any argument instead. */
+export function getDeprecatedSetReservationListInstructionDataSerializer(
+  _context: object
+): Serializer<
+  DeprecatedSetReservationListInstructionDataArgs,
+  DeprecatedSetReservationListInstructionData
+>;
+export function getDeprecatedSetReservationListInstructionDataSerializer(): Serializer<
+  DeprecatedSetReservationListInstructionDataArgs,
+  DeprecatedSetReservationListInstructionData
+>;
 export function getDeprecatedSetReservationListInstructionDataSerializer(
   _context: object = {}
 ): Serializer<

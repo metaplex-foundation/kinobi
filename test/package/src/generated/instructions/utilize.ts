@@ -59,6 +59,14 @@ export type UtilizeInstructionData = {
 
 export type UtilizeInstructionDataArgs = { numberOfUses: number | bigint };
 
+/** @deprecated Use `getUtilizeInstructionDataSerializer()` without any argument instead. */
+export function getUtilizeInstructionDataSerializer(
+  _context: object
+): Serializer<UtilizeInstructionDataArgs, UtilizeInstructionData>;
+export function getUtilizeInstructionDataSerializer(): Serializer<
+  UtilizeInstructionDataArgs,
+  UtilizeInstructionData
+>;
 export function getUtilizeInstructionDataSerializer(
   _context: object = {}
 ): Serializer<UtilizeInstructionDataArgs, UtilizeInstructionData> {

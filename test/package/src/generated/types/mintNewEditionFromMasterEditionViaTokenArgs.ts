@@ -14,6 +14,17 @@ export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
   edition: number | bigint;
 };
 
+/** @deprecated Use `getMintNewEditionFromMasterEditionViaTokenArgsSerializer()` without any argument instead. */
+export function getMintNewEditionFromMasterEditionViaTokenArgsSerializer(
+  _context: object
+): Serializer<
+  MintNewEditionFromMasterEditionViaTokenArgsArgs,
+  MintNewEditionFromMasterEditionViaTokenArgs
+>;
+export function getMintNewEditionFromMasterEditionViaTokenArgsSerializer(): Serializer<
+  MintNewEditionFromMasterEditionViaTokenArgsArgs,
+  MintNewEditionFromMasterEditionViaTokenArgs
+>;
 export function getMintNewEditionFromMasterEditionViaTokenArgsSerializer(
   _context: object = {}
 ): Serializer<
