@@ -420,10 +420,12 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction.dataArgs,
       this.typeManifestVisitor
     );
-    imports.mergeWith(
-      dataArgManifest.looseImports,
-      dataArgManifest.serializerImports
-    );
+    if (linkedDataArgs || hasData) {
+      imports.mergeWith(
+        dataArgManifest.looseImports,
+        dataArgManifest.serializerImports
+      );
+    }
     if (!linkedDataArgs) {
       imports.mergeWith(dataArgManifest.strictImports);
     }
