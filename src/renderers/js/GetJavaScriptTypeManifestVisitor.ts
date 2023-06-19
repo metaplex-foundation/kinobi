@@ -160,7 +160,7 @@ export class GetJavaScriptTypeManifestVisitor
     this.parentName = null;
     const options: string[] = [];
 
-    if (enumType.size.format !== 'u8') {
+    if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
       const sizeManifest = visit(enumType.size, this);
       strictImports.mergeWith(sizeManifest.strictImports);
       looseImports.mergeWith(sizeManifest.looseImports);
@@ -311,8 +311,16 @@ export class GetJavaScriptTypeManifestVisitor
     const options: string[] = [];
 
     // Prefix option.
-    const prefixManifest = visit(optionType.prefix, this);
-    if (prefixManifest.serializer !== 'u8()') {
+    if (
+      optionType.prefix.format !== 'u8' ||
+      optionType.prefix.endian !== 'le'
+    ) {
+      const prefixManifest = visit(optionType.prefix, this);
+      childManifest.strictImports.mergeWith(prefixManifest.strictImports);
+      childManifest.looseImports.mergeWith(prefixManifest.looseImports);
+      childManifest.serializerImports.mergeWith(
+        prefixManifest.serializerImports
+      );
       options.push(`prefix: ${prefixManifest.serializer}`);
     }
 
@@ -454,11 +462,20 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): JavaScriptTypeManifest {
+    const strictImports = new JavaScriptImportMap();
+    const looseImports = new JavaScriptImportMap();
+    const serializerImports = new JavaScriptImportMap().add(
+      'umiSerializers',
+      'bytes'
+    );
     const options: string[] = [];
 
     // Size option.
     if (bytesType.size.kind === 'prefixed') {
       const prefix = visit(bytesType.size.prefix, this);
+      strictImports.mergeWith(prefix.strictImports);
+      looseImports.mergeWith(prefix.looseImports);
+      serializerImports.mergeWith(prefix.serializerImports);
       options.push(`size: ${prefix.serializer}`);
     } else if (bytesType.size.kind === 'fixed') {
       options.push(`size: ${bytesType.size.value}`);
@@ -470,14 +487,11 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       isEnum: false,
       strictType: 'Uint8Array',
-      strictImports: new JavaScriptImportMap(),
+      strictImports,
       looseType: 'Uint8Array',
-      looseImports: new JavaScriptImportMap(),
+      looseImports,
       serializer: `bytes(${optionsAsString})`,
-      serializerImports: new JavaScriptImportMap().add(
-        'umiSerializers',
-        'bytes'
-      ),
+      serializerImports,
     };
   }
 
@@ -574,12 +588,18 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitStringType(stringType: nodes.StringTypeNode): JavaScriptTypeManifest {
-    const imports = new JavaScriptImportMap();
+    const looseImports = new JavaScriptImportMap();
+    const strictImports = new JavaScriptImportMap();
+    const serializerImports = new JavaScriptImportMap().add(
+      'umiSerializers',
+      'string'
+    );
     const options: string[] = [];
 
     // Encoding option.
     if (stringType.encoding !== 'utf8') {
-      imports.add('umiSerializers', stringType.encoding);
+      looseImports.add('umiSerializers', stringType.encoding);
+      strictImports.add('umiSerializers', stringType.encoding);
       options.push(`encoding: ${stringType.encoding}`);
     }
 
@@ -588,12 +608,15 @@ export class GetJavaScriptTypeManifestVisitor
       options.push(`size: 'variable'`);
     } else if (stringType.size.kind === 'fixed') {
       options.push(`size: ${stringType.size.value}`);
-    } else {
+    } else if (
+      stringType.size.prefix.format !== 'u32' ||
+      stringType.size.prefix.endian !== 'le'
+    ) {
       const prefix = visit(stringType.size.prefix, this);
-      if (prefix.serializer !== 'u32()') {
-        imports.mergeWith(prefix.strictImports);
-        options.push(`size: ${prefix.serializer}`);
-      }
+      looseImports.mergeWith(prefix.looseImports);
+      strictImports.mergeWith(prefix.strictImports);
+      serializerImports.mergeWith(prefix.serializerImports);
+      options.push(`size: ${prefix.serializer}`);
     }
 
     const optionsAsString =
@@ -602,14 +625,11 @@ export class GetJavaScriptTypeManifestVisitor
     return {
       isEnum: false,
       strictType: 'string',
-      strictImports: imports,
+      strictImports,
       looseType: 'string',
-      looseImports: imports,
+      looseImports,
       serializer: `string(${optionsAsString})`,
-      serializerImports: new JavaScriptImportMap().add(
-        'umiSerializers',
-        'string'
-      ),
+      serializerImports,
     };
   }
 
