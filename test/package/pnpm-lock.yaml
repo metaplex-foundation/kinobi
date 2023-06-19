@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@metaplex-foundation/umi':
-    specifier: ^0.8.2-rc.0
-    version: 0.8.2-rc.0
+    specifier: ^0.8.2-rc.1
+    version: 0.8.2-rc.1
 
 devDependencies:
   typescript:
@@ -12,8 +12,8 @@ devDependencies:
 
 packages:
 
-  /@metaplex-foundation/umi-options@0.8.2-rc.0:
-    resolution: {integrity: sha512-ok0UhiPTS+csmX2EXGYqMeyH/4CQQ1H1Lircoj2lU9fK4U1WclnKon3TMjUdBfrQqnSlXDP2nvkLhc4OfZ6Qbg==}
+  /@metaplex-foundation/umi-options@0.8.2-rc.1:
+    resolution: {integrity: sha512-rXjhL3u3l7kqvlT2rRJxNmnVqhVzCy0avrKJTuDMu+f2jTyKJkwFa76NLEDFKuXuiueAGRwesS8G8kZL16uy4A==}
     dev: false
 
   /@metaplex-foundation/umi-public-keys@0.8.2-rc.0:
@@ -38,22 +38,22 @@ packages:
       '@metaplex-foundation/umi-serializers-core': 0.8.2-rc.0
     dev: false
 
-  /@metaplex-foundation/umi-serializers@0.8.2-rc.0:
-    resolution: {integrity: sha512-8Uq5Xuel3KfMOYgGoR0IPHIST/KV9wk55RU1Q+FOahyeNcYjknZvw3tgc0wp0moqrVUAP3T4WRV8SsXM8UZCZA==}
+  /@metaplex-foundation/umi-serializers@0.8.2-rc.1:
+    resolution: {integrity: sha512-rWIADm4D6i73UF/aNQmM91gJPTl1QklPXSiQxteiYO9eJa+lxGYhmJyI6ov9u31MVNAd7qDrRkk5WYGRUTXHOg==}
     dependencies:
-      '@metaplex-foundation/umi-options': 0.8.2-rc.0
+      '@metaplex-foundation/umi-options': 0.8.2-rc.1
       '@metaplex-foundation/umi-public-keys': 0.8.2-rc.0
       '@metaplex-foundation/umi-serializers-core': 0.8.2-rc.0
       '@metaplex-foundation/umi-serializers-encodings': 0.8.2-rc.0
       '@metaplex-foundation/umi-serializers-numbers': 0.8.2-rc.0
     dev: false
 
-  /@metaplex-foundation/umi@0.8.2-rc.0:
-    resolution: {integrity: sha512-rl4w152iy7qn10asUQ41WsDOJrSSliKmk0mhUBLr/0yZ2QB+iCIVssD52Npi0dqFj0m/Hk5OqYfetRb0wuo1FQ==}
+  /@metaplex-foundation/umi@0.8.2-rc.1:
+    resolution: {integrity: sha512-D0PqkcV1pVnLkT7JZwlSgOgBHyaXhQNOQK6AMi50dRod+91/vdw5pAMLvnloAKE4vJDV9PcCgj57e8Djrqk2Dw==}
     dependencies:
-      '@metaplex-foundation/umi-options': 0.8.2-rc.0
+      '@metaplex-foundation/umi-options': 0.8.2-rc.1
       '@metaplex-foundation/umi-public-keys': 0.8.2-rc.0
-      '@metaplex-foundation/umi-serializers': 0.8.2-rc.0
+      '@metaplex-foundation/umi-serializers': 0.8.2-rc.1
     dev: false
 
   /typescript@4.9.4:
