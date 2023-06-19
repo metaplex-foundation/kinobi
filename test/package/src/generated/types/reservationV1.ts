@@ -7,7 +7,12 @@
  */
 
 import { Context, PublicKey } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 
 export type ReservationV1 = {
   address: PublicKey;
@@ -18,14 +23,13 @@ export type ReservationV1 = {
 export type ReservationV1Args = ReservationV1;
 
 export function getReservationV1Serializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<ReservationV1Args, ReservationV1> {
-  const s = context.serializer;
-  return s.struct<ReservationV1>(
+  return struct<ReservationV1>(
     [
-      ['address', s.publicKey()],
-      ['spotsRemaining', s.u8()],
-      ['totalSpots', s.u8()],
+      ['address', publicKeySerializer()],
+      ['spotsRemaining', u8()],
+      ['totalSpots', u8()],
     ],
     { description: 'ReservationV1' }
   ) as Serializer<ReservationV1Args, ReservationV1>;

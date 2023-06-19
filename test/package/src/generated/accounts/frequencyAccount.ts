@@ -21,7 +21,11 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  i64,
   mapSerializer,
+  string,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 import { TaKey } from '../types';
 
@@ -48,19 +52,18 @@ export type FrequencyAccountAccountDataArgs = {
 };
 
 export function getFrequencyAccountAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData> {
-  const s = context.serializer;
   return mapSerializer<
     FrequencyAccountAccountDataArgs,
     any,
     FrequencyAccountAccountData
   >(
-    s.struct<FrequencyAccountAccountData>(
+    struct<FrequencyAccountAccountData>(
       [
-        ['key', s.u64()],
-        ['lastUpdate', s.i64()],
-        ['period', s.i64()],
+        ['key', u64()],
+        ['lastUpdate', i64()],
+        ['period', i64()],
       ],
       { description: 'FrequencyAccountAccountData' }
     ),
@@ -149,7 +152,7 @@ export function getFrequencyAccountGpaBuilder(
       key: number | bigint;
       lastUpdate: number | bigint;
       period: number | bigint;
-    }>({ key: [0, s.u64()], lastUpdate: [8, s.i64()], period: [16, s.i64()] })
+    }>({ key: [0, u64()], lastUpdate: [8, i64()], period: [16, i64()] })
     .deserializeUsing<FrequencyAccount>((account) =>
       deserializeFrequencyAccount(context, account)
     )
@@ -169,7 +172,7 @@ export function findFrequencyAccountPda(
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
   return context.eddsa.findPda(programId, [
-    s.string({ size: 'variable' }).serialize('frequency_pda'),
+    string({ size: 'variable' }).serialize('frequency_pda'),
     s.publicKey().serialize(programId),
   ]);
 }

@@ -7,7 +7,12 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  array,
+  string,
+  struct,
+} from '@metaplex-foundation/umi/serializers';
 
 export type RecursiveType = { name: string; children: Array<RecursiveType> };
 
@@ -17,13 +22,12 @@ export type RecursiveTypeArgs = {
 };
 
 export function getRecursiveTypeSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<RecursiveTypeArgs, RecursiveType> {
-  const s = context.serializer;
-  return s.struct<RecursiveType>(
+  return struct<RecursiveType>(
     [
-      ['name', s.string()],
-      ['children', s.array(getRecursiveTypeSerializer(context))],
+      ['name', string()],
+      ['children', array(getRecursiveTypeSerializer())],
     ],
     { description: 'RecursiveType' }
   ) as Serializer<RecursiveTypeArgs, RecursiveType>;

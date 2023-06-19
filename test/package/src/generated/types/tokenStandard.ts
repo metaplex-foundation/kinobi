@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum TokenStandard {
   NonFungible,
@@ -20,10 +20,9 @@ export enum TokenStandard {
 export type TokenStandardArgs = TokenStandard;
 
 export function getTokenStandardSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<TokenStandardArgs, TokenStandard> {
-  const s = context.serializer;
-  return s.enum<TokenStandard>(TokenStandard, {
+  return scalarEnum<TokenStandard>(TokenStandard, {
     description: 'TokenStandard',
   }) as Serializer<TokenStandardArgs, TokenStandard>;
 }

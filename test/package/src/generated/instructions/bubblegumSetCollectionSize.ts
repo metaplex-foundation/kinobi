@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 import {
@@ -51,21 +53,20 @@ export type BubblegumSetCollectionSizeInstructionDataArgs = {
 };
 
 export function getBubblegumSetCollectionSizeInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   BubblegumSetCollectionSizeInstructionDataArgs,
   BubblegumSetCollectionSizeInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     BubblegumSetCollectionSizeInstructionDataArgs,
     any,
     BubblegumSetCollectionSizeInstructionData
   >(
-    s.struct<BubblegumSetCollectionSizeInstructionData>(
+    struct<BubblegumSetCollectionSizeInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer()],
       ],
       { description: 'BubblegumSetCollectionSizeInstructionData' }
     ),

@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum MigrateArgs {
   V1,
@@ -16,10 +16,9 @@ export enum MigrateArgs {
 export type MigrateArgsArgs = MigrateArgs;
 
 export function getMigrateArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<MigrateArgsArgs, MigrateArgs> {
-  const s = context.serializer;
-  return s.enum<MigrateArgs>(MigrateArgs, {
+  return scalarEnum<MigrateArgs>(MigrateArgs, {
     description: 'MigrateArgs',
   }) as Serializer<MigrateArgsArgs, MigrateArgs>;
 }

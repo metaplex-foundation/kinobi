@@ -7,7 +7,17 @@
  */
 
 import { Context, Option, PublicKey } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  array,
+  bool,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u16,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import {
   Collection,
   CollectionArgs,
@@ -69,29 +79,25 @@ export type AssetDataArgs = {
 };
 
 export function getAssetDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<AssetDataArgs, AssetData> {
-  const s = context.serializer;
-  return s.struct<AssetData>(
+  return struct<AssetData>(
     [
-      ['updateAuthority', s.publicKey()],
-      ['name', s.string()],
-      ['symbol', s.string()],
-      ['uri', s.string()],
-      ['sellerFeeBasisPoints', s.u16()],
-      ['creators', s.option(s.array(getCreatorSerializer(context)))],
-      ['primarySaleHappened', s.bool()],
-      ['isMutable', s.bool()],
-      ['editionNonce', s.option(s.u8())],
-      ['tokenStandard', getTokenStandardSerializer(context)],
-      ['collection', s.option(getCollectionSerializer(context))],
-      ['uses', s.option(getUsesSerializer(context))],
-      ['collectionDetails', s.option(getCollectionDetailsSerializer(context))],
-      [
-        'programmableConfig',
-        s.option(getProgrammableConfigSerializer(context)),
-      ],
-      ['delegateState', s.option(getDelegateStateSerializer(context))],
+      ['updateAuthority', publicKeySerializer()],
+      ['name', string()],
+      ['symbol', string()],
+      ['uri', string()],
+      ['sellerFeeBasisPoints', u16()],
+      ['creators', option(array(getCreatorSerializer()))],
+      ['primarySaleHappened', bool()],
+      ['isMutable', bool()],
+      ['editionNonce', option(u8())],
+      ['tokenStandard', getTokenStandardSerializer()],
+      ['collection', option(getCollectionSerializer())],
+      ['uses', option(getUsesSerializer())],
+      ['collectionDetails', option(getCollectionDetailsSerializer())],
+      ['programmableConfig', option(getProgrammableConfigSerializer())],
+      ['delegateState', option(getDelegateStateSerializer())],
     ],
     { description: 'AssetData' }
   ) as Serializer<AssetDataArgs, AssetData>;

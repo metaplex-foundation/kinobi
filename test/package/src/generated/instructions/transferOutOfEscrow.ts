@@ -19,6 +19,9 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u64,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -63,21 +66,20 @@ export type TransferOutOfEscrowInstructionDataArgs = {
 };
 
 export function getTransferOutOfEscrowInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   TransferOutOfEscrowInstructionDataArgs,
   TransferOutOfEscrowInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     TransferOutOfEscrowInstructionDataArgs,
     any,
     TransferOutOfEscrowInstructionData
   >(
-    s.struct<TransferOutOfEscrowInstructionData>(
+    struct<TransferOutOfEscrowInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['amount', s.u64()],
+        ['discriminator', u8()],
+        ['amount', u64()],
       ],
       { description: 'TransferOutOfEscrowInstructionData' }
     ),

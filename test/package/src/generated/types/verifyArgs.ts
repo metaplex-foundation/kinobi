@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum VerifyArgs {
   V1,
@@ -16,10 +16,9 @@ export enum VerifyArgs {
 export type VerifyArgsArgs = VerifyArgs;
 
 export function getVerifyArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<VerifyArgsArgs, VerifyArgs> {
-  const s = context.serializer;
-  return s.enum<VerifyArgs>(VerifyArgs, {
+  return scalarEnum<VerifyArgs>(VerifyArgs, {
     description: 'VerifyArgs',
   }) as Serializer<VerifyArgsArgs, VerifyArgs>;
 }

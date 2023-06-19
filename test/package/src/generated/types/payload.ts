@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, map, struct } from '@metaplex-foundation/umi/serializers';
 import {
   PayloadKey,
   PayloadKeyArgs,
@@ -22,19 +22,10 @@ export type Payload = { map: Map<PayloadKey, PayloadType> };
 export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
 
 export function getPayloadSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<PayloadArgs, Payload> {
-  const s = context.serializer;
-  return s.struct<Payload>(
-    [
-      [
-        'map',
-        s.map(
-          getPayloadKeySerializer(context),
-          getPayloadTypeSerializer(context)
-        ),
-      ],
-    ],
+  return struct<Payload>(
+    [['map', map(getPayloadKeySerializer(), getPayloadTypeSerializer())]],
     { description: 'Payload' }
   ) as Serializer<PayloadArgs, Payload>;
 }

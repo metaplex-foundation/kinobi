@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
@@ -73,18 +75,17 @@ export type TransferInstructionData = {
 export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
 export function getTransferInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<TransferInstructionDataArgs, TransferInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     TransferInstructionDataArgs,
     any,
     TransferInstructionData
   >(
-    s.struct<TransferInstructionData>(
+    struct<TransferInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['transferArgs', getTransferArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['transferArgs', getTransferArgsSerializer()],
       ],
       { description: 'TransferInstructionData' }
     ),

@@ -22,6 +22,9 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u64,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
@@ -39,22 +42,21 @@ export type UseAuthorityRecordAccountDataArgs = {
 };
 
 export function getUseAuthorityRecordAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   UseAuthorityRecordAccountDataArgs,
   UseAuthorityRecordAccountData
 > {
-  const s = context.serializer;
   return mapSerializer<
     UseAuthorityRecordAccountDataArgs,
     any,
     UseAuthorityRecordAccountData
   >(
-    s.struct<UseAuthorityRecordAccountData>(
+    struct<UseAuthorityRecordAccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['allowedUses', s.u64()],
-        ['bump', s.u8()],
+        ['key', getTmKeySerializer()],
+        ['allowedUses', u64()],
+        ['bump', u8()],
       ],
       { description: 'UseAuthorityRecordAccountData' }
     ),
@@ -147,9 +149,9 @@ export function getUseAuthorityRecordGpaBuilder(
       allowedUses: number | bigint;
       bump: number;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      allowedUses: [1, s.u64()],
-      bump: [9, s.u8()],
+      key: [0, getTmKeySerializer()],
+      allowedUses: [1, u64()],
+      bump: [9, u8()],
     })
     .deserializeUsing<UseAuthorityRecord>((account) =>
       deserializeUseAuthorityRecord(context, account)

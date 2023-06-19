@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 
@@ -37,19 +39,18 @@ export type RemoveCreatorVerificationInstructionData = {
 export type RemoveCreatorVerificationInstructionDataArgs = {};
 
 export function getRemoveCreatorVerificationInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   RemoveCreatorVerificationInstructionDataArgs,
   RemoveCreatorVerificationInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     RemoveCreatorVerificationInstructionDataArgs,
     any,
     RemoveCreatorVerificationInstructionData
   >(
-    s.struct<RemoveCreatorVerificationInstructionData>(
-      [['discriminator', s.u8()]],
+    struct<RemoveCreatorVerificationInstructionData>(
+      [['discriminator', u8()]],
       { description: 'RemoveCreatorVerificationInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 28 })

@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, struct, u64 } from '@metaplex-foundation/umi/serializers';
 
 export type MintNewEditionFromMasterEditionViaTokenArgs = { edition: bigint };
 
@@ -16,14 +16,13 @@ export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
 };
 
 export function getMintNewEditionFromMasterEditionViaTokenArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   MintNewEditionFromMasterEditionViaTokenArgsArgs,
   MintNewEditionFromMasterEditionViaTokenArgs
 > {
-  const s = context.serializer;
-  return s.struct<MintNewEditionFromMasterEditionViaTokenArgs>(
-    [['edition', s.u64()]],
+  return struct<MintNewEditionFromMasterEditionViaTokenArgs>(
+    [['edition', u64()]],
     { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
   ) as Serializer<
     MintNewEditionFromMasterEditionViaTokenArgsArgs,

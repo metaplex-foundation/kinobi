@@ -18,7 +18,12 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  option,
+  struct,
+  u64,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 import {
@@ -54,24 +59,23 @@ export type DeprecatedSetReservationListInstructionDataArgs = {
 };
 
 export function getDeprecatedSetReservationListInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   DeprecatedSetReservationListInstructionDataArgs,
   DeprecatedSetReservationListInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     DeprecatedSetReservationListInstructionDataArgs,
     any,
     DeprecatedSetReservationListInstructionData
   >(
-    s.struct<DeprecatedSetReservationListInstructionData>(
+    struct<DeprecatedSetReservationListInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['reservations', s.array(getReservationSerializer(context))],
-        ['totalReservationSpots', s.option(s.u64())],
-        ['offset', s.u64()],
-        ['totalSpotOffset', s.u64()],
+        ['discriminator', u8()],
+        ['reservations', array(getReservationSerializer())],
+        ['totalReservationSpots', option(u64())],
+        ['offset', u64()],
+        ['totalSpotOffset', u64()],
       ],
       { description: 'DeprecatedSetReservationListInstructionData' }
     ),

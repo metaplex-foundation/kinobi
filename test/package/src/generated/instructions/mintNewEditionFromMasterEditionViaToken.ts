@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -69,23 +71,22 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionDataArgs = {
 };
 
 export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
   MintNewEditionFromMasterEditionViaTokenInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
     any,
     MintNewEditionFromMasterEditionViaTokenInstructionData
   >(
-    s.struct<MintNewEditionFromMasterEditionViaTokenInstructionData>(
+    struct<MintNewEditionFromMasterEditionViaTokenInstructionData>(
       [
-        ['discriminator', s.u8()],
+        ['discriminator', u8()],
         [
           'mintNewEditionFromMasterEditionViaTokenArgs',
-          getMintNewEditionFromMasterEditionViaTokenArgsSerializer(context),
+          getMintNewEditionFromMasterEditionViaTokenArgsSerializer(),
         ],
       ],
       { description: 'MintNewEditionFromMasterEditionViaTokenInstructionData' }

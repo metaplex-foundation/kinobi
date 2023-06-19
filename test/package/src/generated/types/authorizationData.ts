@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, struct } from '@metaplex-foundation/umi/serializers';
 import { Payload, PayloadArgs, getPayloadSerializer } from '.';
 
 export type AuthorizationData = { payload: Payload };
@@ -15,11 +15,9 @@ export type AuthorizationData = { payload: Payload };
 export type AuthorizationDataArgs = { payload: PayloadArgs };
 
 export function getAuthorizationDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<AuthorizationDataArgs, AuthorizationData> {
-  const s = context.serializer;
-  return s.struct<AuthorizationData>(
-    [['payload', getPayloadSerializer(context)]],
-    { description: 'AuthorizationData' }
-  ) as Serializer<AuthorizationDataArgs, AuthorizationData>;
+  return struct<AuthorizationData>([['payload', getPayloadSerializer()]], {
+    description: 'AuthorizationData',
+  }) as Serializer<AuthorizationDataArgs, AuthorizationData>;
 }

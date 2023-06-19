@@ -46,6 +46,11 @@ export class JavaScriptImportMap {
       other._imports.forEach((imports, module) => {
         this.add(module, imports);
       });
+      other._aliases.forEach((aliases, module) => {
+        Object.entries(aliases).forEach(([name, alias]) => {
+          this.addAlias(module, name, alias);
+        });
+      });
     });
     return this;
   }

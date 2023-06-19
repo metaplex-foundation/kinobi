@@ -20,7 +20,15 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
+  bool,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u16,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -124,50 +132,40 @@ export type UpdateV1InstructionDataArgs = {
 };
 
 export function getUpdateV1InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     UpdateV1InstructionDataArgs,
     any,
     UpdateV1InstructionData
   >(
-    s.struct<UpdateV1InstructionData>(
+    struct<UpdateV1InstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['updateV1Discriminator', s.u8()],
-        [
-          'authorizationData',
-          s.option(getAuthorizationDataSerializer(context)),
-        ],
-        ['newUpdateAuthority', s.option(s.publicKey())],
+        ['discriminator', u8()],
+        ['updateV1Discriminator', u8()],
+        ['authorizationData', option(getAuthorizationDataSerializer())],
+        ['newUpdateAuthority', option(publicKeySerializer())],
         [
           'data',
-          s.option(
-            s.struct<any>([
-              ['name', s.string()],
-              ['symbol', s.string()],
-              ['uri', s.string()],
-              ['sellerFeeBasisPoints', s.u16()],
-              ['creators', s.option(s.array(getCreatorSerializer(context)))],
+          option(
+            struct<any>([
+              ['name', string()],
+              ['symbol', string()],
+              ['uri', string()],
+              ['sellerFeeBasisPoints', u16()],
+              ['creators', option(array(getCreatorSerializer()))],
             ])
           ),
         ],
-        ['primarySaleHappened', s.option(s.bool())],
-        ['isMutable', s.option(s.bool())],
-        ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-        ['collection', s.option(getCollectionSerializer(context))],
-        ['uses', s.option(getUsesSerializer(context))],
-        [
-          'collectionDetails',
-          s.option(getCollectionDetailsSerializer(context)),
-        ],
-        [
-          'programmableConfig',
-          s.option(getProgrammableConfigSerializer(context)),
-        ],
-        ['delegateState', s.option(getDelegateStateSerializer(context))],
-        ['authorityType', getAuthorityTypeSerializer(context)],
+        ['primarySaleHappened', option(bool())],
+        ['isMutable', option(bool())],
+        ['tokenStandard', option(getTokenStandardSerializer())],
+        ['collection', option(getCollectionSerializer())],
+        ['uses', option(getUsesSerializer())],
+        ['collectionDetails', option(getCollectionDetailsSerializer())],
+        ['programmableConfig', option(getProgrammableConfigSerializer())],
+        ['delegateState', option(getDelegateStateSerializer())],
+        ['authorityType', getAuthorityTypeSerializer()],
       ],
       { description: 'UpdateV1InstructionData' }
     ),

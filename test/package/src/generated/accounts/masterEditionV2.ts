@@ -23,6 +23,11 @@ import {
 import {
   Serializer,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
@@ -40,19 +45,18 @@ export type MasterEditionV2AccountDataArgs = {
 };
 
 export function getMasterEditionV2AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData> {
-  const s = context.serializer;
   return mapSerializer<
     MasterEditionV2AccountDataArgs,
     any,
     MasterEditionV2AccountData
   >(
-    s.struct<MasterEditionV2AccountData>(
+    struct<MasterEditionV2AccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['supply', s.u64()],
-        ['maxSupply', s.option(s.u64())],
+        ['key', getTmKeySerializer()],
+        ['supply', u64()],
+        ['maxSupply', option(u64())],
       ],
       { description: 'MasterEditionV2AccountData' }
     ),
@@ -142,9 +146,9 @@ export function getMasterEditionV2GpaBuilder(
       supply: number | bigint;
       maxSupply: Option<number | bigint>;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      supply: [1, s.u64()],
-      maxSupply: [9, s.option(s.u64())],
+      key: [0, getTmKeySerializer()],
+      supply: [1, u64()],
+      maxSupply: [9, option(u64())],
     })
     .deserializeUsing<MasterEditionV2>((account) =>
       deserializeMasterEditionV2(context, account)
@@ -169,10 +173,10 @@ export function findMasterEditionV2Pda(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
-    s.string({ size: 'variable' }).serialize('metadata'),
+    string({ size: 'variable' }).serialize('metadata'),
     s.publicKey().serialize(programId),
-    s.publicKey().serialize(seeds.mint),
-    s.string({ size: 'variable' }).serialize('edition'),
+    publicKeySerializer().serialize(seeds.mint),
+    string({ size: 'variable' }).serialize('edition'),
   ]);
 }
 

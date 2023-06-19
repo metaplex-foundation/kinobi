@@ -17,7 +17,10 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -34,19 +37,18 @@ export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
 export type SetMintAuthorityInstructionDataArgs = {};
 
 export function getSetMintAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   SetMintAuthorityInstructionDataArgs,
   SetMintAuthorityInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     SetMintAuthorityInstructionDataArgs,
     any,
     SetMintAuthorityInstructionData
   >(
-    s.struct<SetMintAuthorityInstructionData>(
-      [['discriminator', s.array(s.u8(), { size: 8 })]],
+    struct<SetMintAuthorityInstructionData>(
+      [['discriminator', array(u8(), { size: 8 })]],
       { description: 'SetMintAuthorityInstructionData' }
     ),
     (value) => ({

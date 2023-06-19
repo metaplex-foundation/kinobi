@@ -7,7 +7,11 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  scalarEnum,
+  u64,
+} from '@metaplex-foundation/umi/serializers';
 
 export enum BurnArgs {
   V1,
@@ -16,11 +20,10 @@ export enum BurnArgs {
 export type BurnArgsArgs = BurnArgs;
 
 export function getBurnArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<BurnArgsArgs, BurnArgs> {
-  const s = context.serializer;
-  return s.enum<BurnArgs>(BurnArgs, {
-    size: s.u64(),
+  return scalarEnum<BurnArgs>(BurnArgs, {
+    size: u64(),
     description: 'BurnArgs',
   }) as Serializer<BurnArgsArgs, BurnArgs>;
 }

@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -60,14 +62,13 @@ export type MigrateInstructionData = {
 export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
 export function getMigrateInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<MigrateInstructionDataArgs, MigrateInstructionData> {
-  const s = context.serializer;
   return mapSerializer<MigrateInstructionDataArgs, any, MigrateInstructionData>(
-    s.struct<MigrateInstructionData>(
+    struct<MigrateInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['migrateArgs', getMigrateArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['migrateArgs', getMigrateArgsSerializer()],
       ],
       { description: 'MigrateInstructionData' }
     ),

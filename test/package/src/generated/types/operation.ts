@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum Operation {
   Transfer,
@@ -19,10 +19,9 @@ export enum Operation {
 export type OperationArgs = Operation;
 
 export function getOperationSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<OperationArgs, Operation> {
-  const s = context.serializer;
-  return s.enum<Operation>(Operation, {
+  return scalarEnum<Operation>(Operation, {
     description: 'Operation',
   }) as Serializer<OperationArgs, Operation>;
 }

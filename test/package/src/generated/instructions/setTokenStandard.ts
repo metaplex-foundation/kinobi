@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 
@@ -39,18 +41,17 @@ export type SetTokenStandardInstructionData = { discriminator: number };
 export type SetTokenStandardInstructionDataArgs = {};
 
 export function getSetTokenStandardInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   SetTokenStandardInstructionDataArgs,
   SetTokenStandardInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     SetTokenStandardInstructionDataArgs,
     any,
     SetTokenStandardInstructionData
   >(
-    s.struct<SetTokenStandardInstructionData>([['discriminator', s.u8()]], {
+    struct<SetTokenStandardInstructionData>([['discriminator', u8()]], {
       description: 'SetTokenStandardInstructionData',
     }),
     (value) => ({ ...value, discriminator: 35 })

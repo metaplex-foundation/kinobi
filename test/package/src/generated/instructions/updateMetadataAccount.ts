@@ -18,7 +18,15 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
+  bool,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u16,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
@@ -58,34 +66,33 @@ export type UpdateMetadataAccountInstructionDataArgs = {
 };
 
 export function getUpdateMetadataAccountInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   UpdateMetadataAccountInstructionDataArgs,
   UpdateMetadataAccountInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     UpdateMetadataAccountInstructionDataArgs,
     any,
     UpdateMetadataAccountInstructionData
   >(
-    s.struct<UpdateMetadataAccountInstructionData>(
+    struct<UpdateMetadataAccountInstructionData>(
       [
-        ['discriminator', s.u8()],
+        ['discriminator', u8()],
         [
           'data',
-          s.option(
-            s.struct<any>([
-              ['name', s.string()],
-              ['symbol', s.string()],
-              ['uri', s.string()],
-              ['sellerFeeBasisPoints', s.u16()],
-              ['creators', s.option(s.array(getCreatorSerializer(context)))],
+          option(
+            struct<any>([
+              ['name', string()],
+              ['symbol', string()],
+              ['uri', string()],
+              ['sellerFeeBasisPoints', u16()],
+              ['creators', option(array(getCreatorSerializer()))],
             ])
           ),
         ],
-        ['updateAuthority', s.option(s.publicKey())],
-        ['primarySaleHappened', s.option(s.bool())],
+        ['updateAuthority', option(publicKeySerializer())],
+        ['primarySaleHappened', option(bool())],
       ],
       { description: 'UpdateMetadataAccountInstructionData' }
     ),

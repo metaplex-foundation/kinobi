@@ -11,6 +11,11 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  dataEnum,
+  publicKey as publicKeySerializer,
+  struct,
+  tuple,
+  unit,
 } from '@metaplex-foundation/umi/serializers';
 
 export type EscrowAuthority =
@@ -20,16 +25,15 @@ export type EscrowAuthority =
 export type EscrowAuthorityArgs = EscrowAuthority;
 
 export function getEscrowAuthoritySerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<EscrowAuthorityArgs, EscrowAuthority> {
-  const s = context.serializer;
-  return s.dataEnum<EscrowAuthority>(
+  return dataEnum<EscrowAuthority>(
     [
-      ['TokenOwner', s.unit()],
+      ['TokenOwner', unit()],
       [
         'Creator',
-        s.struct<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
-          ['fields', s.tuple([s.publicKey()])],
+        struct<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
+          ['fields', tuple([publicKeySerializer()])],
         ]),
       ],
     ],

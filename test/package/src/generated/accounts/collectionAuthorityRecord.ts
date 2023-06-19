@@ -23,6 +23,10 @@ import {
 import {
   Serializer,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
@@ -41,22 +45,21 @@ export type CollectionAuthorityRecordAccountDataArgs = {
 };
 
 export function getCollectionAuthorityRecordAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   CollectionAuthorityRecordAccountDataArgs,
   CollectionAuthorityRecordAccountData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CollectionAuthorityRecordAccountDataArgs,
     any,
     CollectionAuthorityRecordAccountData
   >(
-    s.struct<CollectionAuthorityRecordAccountData>(
+    struct<CollectionAuthorityRecordAccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['bump', s.u8()],
-        ['updateAuthority', s.option(s.publicKey())],
+        ['key', getTmKeySerializer()],
+        ['bump', u8()],
+        ['updateAuthority', option(publicKeySerializer())],
       ],
       { description: 'CollectionAuthorityRecordAccountData' }
     ),
@@ -149,9 +152,9 @@ export function getCollectionAuthorityRecordGpaBuilder(
       bump: number;
       updateAuthority: Option<PublicKey>;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      bump: [1, s.u8()],
-      updateAuthority: [2, s.option(s.publicKey())],
+      key: [0, getTmKeySerializer()],
+      bump: [1, u8()],
+      updateAuthority: [2, option(publicKeySerializer())],
     })
     .deserializeUsing<CollectionAuthorityRecord>((account) =>
       deserializeCollectionAuthorityRecord(context, account)

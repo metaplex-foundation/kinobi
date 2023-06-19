@@ -11,6 +11,11 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  dataEnum,
+  option,
+  struct,
+  u64,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 
@@ -29,17 +34,16 @@ export type TmCreateArgsArgs = {
 };
 
 export function getTmCreateArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<TmCreateArgsArgs, TmCreateArgs> {
-  const s = context.serializer;
-  return s.dataEnum<TmCreateArgs>(
+  return dataEnum<TmCreateArgs>(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
-          ['assetData', getAssetDataSerializer(context)],
-          ['decimals', s.option(s.u8())],
-          ['maxSupply', s.option(s.u64())],
+        struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
+          ['assetData', getAssetDataSerializer()],
+          ['decimals', option(u8())],
+          ['maxSupply', option(u64())],
         ]),
       ],
     ],

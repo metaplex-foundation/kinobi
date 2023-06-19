@@ -17,7 +17,10 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { findDelegateRecordPda } from '../accounts';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
@@ -41,12 +44,11 @@ export type DummyInstructionData = { discriminator: Array<number> };
 export type DummyInstructionDataArgs = {};
 
 export function getDummyInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<DummyInstructionDataArgs, DummyInstructionData> {
-  const s = context.serializer;
   return mapSerializer<DummyInstructionDataArgs, any, DummyInstructionData>(
-    s.struct<DummyInstructionData>(
-      [['discriminator', s.array(s.u8(), { size: 8 })]],
+    struct<DummyInstructionData>(
+      [['discriminator', array(u8(), { size: 8 })]],
       { description: 'DummyInstructionData' }
     ),
     (value) => ({

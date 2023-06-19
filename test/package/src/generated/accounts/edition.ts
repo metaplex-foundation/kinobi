@@ -22,6 +22,9 @@ import {
 import {
   Serializer,
   mapSerializer,
+  publicKey as publicKeySerializer,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
@@ -39,15 +42,14 @@ export type EditionAccountDataArgs = {
 };
 
 export function getEditionAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<EditionAccountDataArgs, EditionAccountData> {
-  const s = context.serializer;
   return mapSerializer<EditionAccountDataArgs, any, EditionAccountData>(
-    s.struct<EditionAccountData>(
+    struct<EditionAccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['parent', s.publicKey()],
-        ['edition', s.u64()],
+        ['key', getTmKeySerializer()],
+        ['parent', publicKeySerializer()],
+        ['edition', u64()],
       ],
       { description: 'EditionAccountData' }
     ),
@@ -135,9 +137,9 @@ export function getEditionGpaBuilder(
       parent: PublicKey;
       edition: number | bigint;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      parent: [1, s.publicKey()],
-      edition: [33, s.u64()],
+      key: [0, getTmKeySerializer()],
+      parent: [1, publicKeySerializer()],
+      edition: [33, u64()],
     })
     .deserializeUsing<Edition>((account) =>
       deserializeEdition(context, account)

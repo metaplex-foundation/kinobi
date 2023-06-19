@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { BurnArgs, BurnArgsArgs, getBurnArgsSerializer } from '../types';
@@ -50,14 +52,13 @@ export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
 export type BurnInstructionDataArgs = { burnArgs: BurnArgsArgs };
 
 export function getBurnInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<BurnInstructionDataArgs, BurnInstructionData> {
-  const s = context.serializer;
   return mapSerializer<BurnInstructionDataArgs, any, BurnInstructionData>(
-    s.struct<BurnInstructionData>(
+    struct<BurnInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['burnArgs', getBurnArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['burnArgs', getBurnArgsSerializer()],
       ],
       { description: 'BurnInstructionData' }
     ),

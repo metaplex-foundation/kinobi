@@ -12,7 +12,17 @@ import {
   Option,
   mapAmountSerializer,
 } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  array,
+  bool,
+  option,
+  string,
+  struct,
+  u16,
+  u64,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 import {
   CmCreator,
   CmCreatorArgs,
@@ -65,22 +75,18 @@ export type CandyMachineDataArgs = {
 };
 
 export function getCandyMachineDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<CandyMachineDataArgs, CandyMachineData> {
-  const s = context.serializer;
-  return s.struct<CandyMachineData>(
+  return struct<CandyMachineData>(
     [
-      ['itemsAvailable', s.u64()],
-      ['symbol', s.string()],
-      ['sellerFeeBasisPoints', mapAmountSerializer(s.u16(), '%', 2)],
-      ['maxSupply', s.u64()],
-      ['isMutable', s.bool()],
-      ['creators', s.array(getCmCreatorSerializer(context))],
-      [
-        'configLineSettings',
-        s.option(getConfigLineSettingsSerializer(context)),
-      ],
-      ['hiddenSettings', s.option(getHiddenSettingsSerializer(context))],
+      ['itemsAvailable', u64()],
+      ['symbol', string()],
+      ['sellerFeeBasisPoints', mapAmountSerializer(u16(), '%', 2)],
+      ['maxSupply', u64()],
+      ['isMutable', bool()],
+      ['creators', array(getCmCreatorSerializer())],
+      ['configLineSettings', option(getConfigLineSettingsSerializer())],
+      ['hiddenSettings', option(getHiddenSettingsSerializer())],
     ],
     { description: 'CandyMachineData' }
   ) as Serializer<CandyMachineDataArgs, CandyMachineData>;

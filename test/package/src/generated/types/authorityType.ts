@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum AuthorityType {
   Metadata,
@@ -19,10 +19,9 @@ export enum AuthorityType {
 export type AuthorityTypeArgs = AuthorityType;
 
 export function getAuthorityTypeSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<AuthorityTypeArgs, AuthorityType> {
-  const s = context.serializer;
-  return s.enum<AuthorityType>(AuthorityType, {
+  return scalarEnum<AuthorityType>(AuthorityType, {
     description: 'AuthorityType',
   }) as Serializer<AuthorityTypeArgs, AuthorityType>;
 }

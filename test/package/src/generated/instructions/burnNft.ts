@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -45,11 +47,10 @@ export type BurnNftInstructionData = { discriminator: number };
 export type BurnNftInstructionDataArgs = {};
 
 export function getBurnNftInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<BurnNftInstructionDataArgs, BurnNftInstructionData> {
-  const s = context.serializer;
   return mapSerializer<BurnNftInstructionDataArgs, any, BurnNftInstructionData>(
-    s.struct<BurnNftInstructionData>([['discriminator', s.u8()]], {
+    struct<BurnNftInstructionData>([['discriminator', u8()]], {
       description: 'BurnNftInstructionData',
     }),
     (value) => ({ ...value, discriminator: 29 })

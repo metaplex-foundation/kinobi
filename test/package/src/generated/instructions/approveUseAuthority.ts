@@ -18,6 +18,9 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u64,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -58,21 +61,20 @@ export type ApproveUseAuthorityInstructionDataArgs = {
 };
 
 export function getApproveUseAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   ApproveUseAuthorityInstructionDataArgs,
   ApproveUseAuthorityInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     ApproveUseAuthorityInstructionDataArgs,
     any,
     ApproveUseAuthorityInstructionData
   >(
-    s.struct<ApproveUseAuthorityInstructionData>(
+    struct<ApproveUseAuthorityInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['numberOfUses', s.u64()],
+        ['discriminator', u8()],
+        ['numberOfUses', u64()],
       ],
       { description: 'ApproveUseAuthorityInstructionData' }
     ),

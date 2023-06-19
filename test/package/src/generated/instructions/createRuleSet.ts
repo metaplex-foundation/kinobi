@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -49,19 +51,18 @@ export type CreateRuleSetInstructionDataArgs = {
 };
 
 export function getCreateRuleSetInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     CreateRuleSetInstructionDataArgs,
     any,
     CreateRuleSetInstructionData
   >(
-    s.struct<CreateRuleSetInstructionData>(
+    struct<CreateRuleSetInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['createArgs', getTaCreateArgsSerializer(context)],
-        ['ruleSetBump', s.u8()],
+        ['discriminator', u8()],
+        ['createArgs', getTaCreateArgsSerializer()],
+        ['ruleSetBump', u8()],
       ],
       { description: 'CreateRuleSetInstructionData' }
     ),

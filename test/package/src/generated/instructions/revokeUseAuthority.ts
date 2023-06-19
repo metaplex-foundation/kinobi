@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -49,18 +51,17 @@ export type RevokeUseAuthorityInstructionData = { discriminator: number };
 export type RevokeUseAuthorityInstructionDataArgs = {};
 
 export function getRevokeUseAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   RevokeUseAuthorityInstructionDataArgs,
   RevokeUseAuthorityInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     RevokeUseAuthorityInstructionDataArgs,
     any,
     RevokeUseAuthorityInstructionData
   >(
-    s.struct<RevokeUseAuthorityInstructionData>([['discriminator', s.u8()]], {
+    struct<RevokeUseAuthorityInstructionData>([['discriminator', u8()]], {
       description: 'RevokeUseAuthorityInstructionData',
     }),
     (value) => ({ ...value, discriminator: 21 })

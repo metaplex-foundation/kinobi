@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 
@@ -39,19 +41,18 @@ export type ConvertMasterEditionV1ToV2InstructionData = {
 export type ConvertMasterEditionV1ToV2InstructionDataArgs = {};
 
 export function getConvertMasterEditionV1ToV2InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   ConvertMasterEditionV1ToV2InstructionDataArgs,
   ConvertMasterEditionV1ToV2InstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     ConvertMasterEditionV1ToV2InstructionDataArgs,
     any,
     ConvertMasterEditionV1ToV2InstructionData
   >(
-    s.struct<ConvertMasterEditionV1ToV2InstructionData>(
-      [['discriminator', s.u8()]],
+    struct<ConvertMasterEditionV1ToV2InstructionData>(
+      [['discriminator', u8()]],
       { description: 'ConvertMasterEditionV1ToV2InstructionData' }
     ),
     (value) => ({ ...value, discriminator: 12 })

@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -61,18 +63,17 @@ export type UseAssetInstructionData = {
 export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
 export function getUseAssetInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<UseAssetInstructionDataArgs, UseAssetInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     UseAssetInstructionDataArgs,
     any,
     UseAssetInstructionData
   >(
-    s.struct<UseAssetInstructionData>(
+    struct<UseAssetInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['useAssetArgs', getUseAssetArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['useAssetArgs', getUseAssetArgsSerializer()],
       ],
       { description: 'UseAssetInstructionData' }
     ),

@@ -23,6 +23,11 @@ import {
 import {
   Serializer,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 import {
   DelegateRoleArgs,
@@ -50,21 +55,20 @@ export type MasterEditionV1AccountDataArgs = {
 };
 
 export function getMasterEditionV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData> {
-  const s = context.serializer;
   return mapSerializer<
     MasterEditionV1AccountDataArgs,
     any,
     MasterEditionV1AccountData
   >(
-    s.struct<MasterEditionV1AccountData>(
+    struct<MasterEditionV1AccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['supply', s.u64()],
-        ['maxSupply', s.option(s.u64())],
-        ['printingMint', s.publicKey()],
-        ['oneTimePrintingAuthorizationMint', s.publicKey()],
+        ['key', getTmKeySerializer()],
+        ['supply', u64()],
+        ['maxSupply', option(u64())],
+        ['printingMint', publicKeySerializer()],
+        ['oneTimePrintingAuthorizationMint', publicKeySerializer()],
       ],
       { description: 'MasterEditionV1AccountData' }
     ),
@@ -156,11 +160,11 @@ export function getMasterEditionV1GpaBuilder(
       printingMint: PublicKey;
       oneTimePrintingAuthorizationMint: PublicKey;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      supply: [1, s.u64()],
-      maxSupply: [9, s.option(s.u64())],
-      printingMint: [null, s.publicKey()],
-      oneTimePrintingAuthorizationMint: [null, s.publicKey()],
+      key: [0, getTmKeySerializer()],
+      supply: [1, u64()],
+      maxSupply: [9, option(u64())],
+      printingMint: [null, publicKeySerializer()],
+      oneTimePrintingAuthorizationMint: [null, publicKeySerializer()],
     })
     .deserializeUsing<MasterEditionV1>((account) =>
       deserializeMasterEditionV1(context, account)
@@ -181,9 +185,9 @@ export function findMasterEditionV1Pda(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
-    s.string({ size: 'variable' }).serialize('metadata'),
+    string({ size: 'variable' }).serialize('metadata'),
     s.publicKey().serialize(programId),
-    getDelegateRoleSerializer(context).serialize(seeds.delegateRole),
+    getDelegateRoleSerializer().serialize(seeds.delegateRole),
   ]);
 }
 

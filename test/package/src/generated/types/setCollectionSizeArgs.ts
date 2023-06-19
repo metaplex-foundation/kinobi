@@ -7,17 +7,16 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, struct, u64 } from '@metaplex-foundation/umi/serializers';
 
 export type SetCollectionSizeArgs = { size: bigint };
 
 export type SetCollectionSizeArgsArgs = { size: number | bigint };
 
 export function getSetCollectionSizeArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<SetCollectionSizeArgsArgs, SetCollectionSizeArgs> {
-  const s = context.serializer;
-  return s.struct<SetCollectionSizeArgs>([['size', s.u64()]], {
+  return struct<SetCollectionSizeArgs>([['size', u64()]], {
     description: 'SetCollectionSizeArgs',
   }) as Serializer<SetCollectionSizeArgsArgs, SetCollectionSizeArgs>;
 }

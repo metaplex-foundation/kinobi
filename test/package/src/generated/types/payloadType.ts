@@ -11,6 +11,13 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  array,
+  bytes,
+  dataEnum,
+  publicKey as publicKeySerializer,
+  struct,
+  tuple,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 
 /** This is a union of all the possible payload types. */
@@ -27,34 +34,33 @@ export type PayloadTypeArgs =
   | { __kind: 'Number'; fields: [number | bigint] };
 
 export function getPayloadTypeSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<PayloadTypeArgs, PayloadType> {
-  const s = context.serializer;
-  return s.dataEnum<PayloadType>(
+  return dataEnum<PayloadType>(
     [
       [
         'Pubkey',
-        s.struct<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
-          ['fields', s.tuple([s.publicKey()])],
+        struct<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
+          ['fields', tuple([publicKeySerializer()])],
         ]),
       ],
       [
         'Seeds',
-        s.struct<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
-          ['seeds', s.array(s.bytes())],
+        struct<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
+          ['seeds', array(bytes())],
         ]),
       ],
       [
         'MerkleProof',
-        s.struct<GetDataEnumKindContent<PayloadType, 'MerkleProof'>>([
-          ['leaf', s.bytes({ size: 32 })],
-          ['proof', s.array(s.bytes({ size: 32 }))],
+        struct<GetDataEnumKindContent<PayloadType, 'MerkleProof'>>([
+          ['leaf', bytes({ size: 32 })],
+          ['proof', array(bytes({ size: 32 }))],
         ]),
       ],
       [
         'Number',
-        s.struct<GetDataEnumKindContent<PayloadType, 'Number'>>([
-          ['fields', s.tuple([s.u64()])],
+        struct<GetDataEnumKindContent<PayloadType, 'Number'>>([
+          ['fields', tuple([u64()])],
         ]),
       ],
     ],

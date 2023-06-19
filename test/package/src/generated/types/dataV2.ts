@@ -7,7 +7,14 @@
  */
 
 import { Context, Option } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  array,
+  option,
+  string,
+  struct,
+  u16,
+} from '@metaplex-foundation/umi/serializers';
 import {
   Collection,
   CollectionArgs,
@@ -41,18 +48,17 @@ export type DataV2Args = {
 };
 
 export function getDataV2Serializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<DataV2Args, DataV2> {
-  const s = context.serializer;
-  return s.struct<DataV2>(
+  return struct<DataV2>(
     [
-      ['name', s.string()],
-      ['symbol', s.string()],
-      ['uri', s.string()],
-      ['sellerFeeBasisPoints', s.u16()],
-      ['creators', s.option(s.array(getCreatorSerializer(context)))],
-      ['collection', s.option(getCollectionSerializer(context))],
-      ['uses', s.option(getUsesSerializer(context))],
+      ['name', string()],
+      ['symbol', string()],
+      ['uri', string()],
+      ['sellerFeeBasisPoints', u16()],
+      ['creators', option(array(getCreatorSerializer()))],
+      ['collection', option(getCollectionSerializer())],
+      ['uses', option(getUsesSerializer())],
     ],
     { description: 'DataV2' }
   ) as Serializer<DataV2Args, DataV2>;

@@ -7,7 +7,13 @@
  */
 
 import { Context, PublicKey } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  bool,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 
 export type CmCreator = {
   /** Pubkey address */
@@ -20,14 +26,13 @@ export type CmCreator = {
 export type CmCreatorArgs = CmCreator;
 
 export function getCmCreatorSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<CmCreatorArgs, CmCreator> {
-  const s = context.serializer;
-  return s.struct<CmCreator>(
+  return struct<CmCreator>(
     [
-      ['address', s.publicKey()],
-      ['verified', s.bool()],
-      ['percentageShare', s.u8()],
+      ['address', publicKeySerializer()],
+      ['verified', bool()],
+      ['percentageShare', u8()],
     ],
     { description: 'CmCreator' }
   ) as Serializer<CmCreatorArgs, CmCreator>;

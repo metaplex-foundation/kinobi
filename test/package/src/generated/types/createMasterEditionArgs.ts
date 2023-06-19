@@ -7,7 +7,12 @@
  */
 
 import { Context, Option } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  option,
+  struct,
+  u64,
+} from '@metaplex-foundation/umi/serializers';
 
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };
 
@@ -16,10 +21,9 @@ export type CreateMasterEditionArgsArgs = {
 };
 
 export function getCreateMasterEditionArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs> {
-  const s = context.serializer;
-  return s.struct<CreateMasterEditionArgs>([['maxSupply', s.option(s.u64())]], {
+  return struct<CreateMasterEditionArgs>([['maxSupply', option(u64())]], {
     description: 'CreateMasterEditionArgs',
   }) as Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs>;
 }

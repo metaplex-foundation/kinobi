@@ -15,6 +15,10 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  dataEnum,
+  struct,
+  u64,
+  unit,
 } from '@metaplex-foundation/umi/serializers';
 
 export type DelegateArgs =
@@ -28,22 +32,21 @@ export type DelegateArgsArgs =
   | { __kind: 'TransferV1'; amount: number | bigint };
 
 export function getDelegateArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<DelegateArgsArgs, DelegateArgs> {
-  const s = context.serializer;
-  return s.dataEnum<DelegateArgs>(
+  return dataEnum<DelegateArgs>(
     [
-      ['CollectionV1', s.unit()],
+      ['CollectionV1', unit()],
       [
         'SaleV1',
-        s.struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
-          ['amount', mapAmountSerializer(s.u64(), 'SOL', 9)],
+        struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
+          ['amount', mapAmountSerializer(u64(), 'SOL', 9)],
         ]),
       ],
       [
         'TransferV1',
-        s.struct<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
-          ['amount', s.u64()],
+        struct<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
+          ['amount', u64()],
         ]),
       ],
     ],

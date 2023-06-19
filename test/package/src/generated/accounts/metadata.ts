@@ -22,7 +22,15 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
+  bool,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u16,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import {
   Collection,
@@ -93,35 +101,28 @@ export type MetadataAccountDataArgs = {
 };
 
 export function getMetadataAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<MetadataAccountDataArgs, MetadataAccountData> {
-  const s = context.serializer;
   return mapSerializer<MetadataAccountDataArgs, any, MetadataAccountData>(
-    s.struct<MetadataAccountData>(
+    struct<MetadataAccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['updateAuthority', s.publicKey()],
-        ['mint', s.publicKey()],
-        ['name', s.string()],
-        ['symbol', s.string()],
-        ['uri', s.string()],
-        ['sellerFeeBasisPoints', s.u16()],
-        ['creators', s.option(s.array(getCreatorSerializer(context)))],
-        ['primarySaleHappened', s.bool()],
-        ['isMutable', s.bool()],
-        ['editionNonce', s.option(s.u8())],
-        ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-        ['collection', s.option(getCollectionSerializer(context))],
-        ['uses', s.option(getUsesSerializer(context))],
-        [
-          'collectionDetails',
-          s.option(getCollectionDetailsSerializer(context)),
-        ],
-        [
-          'programmableConfig',
-          s.option(getProgrammableConfigSerializer(context)),
-        ],
-        ['delegateState', s.option(getDelegateStateSerializer(context))],
+        ['key', getTmKeySerializer()],
+        ['updateAuthority', publicKeySerializer()],
+        ['mint', publicKeySerializer()],
+        ['name', string()],
+        ['symbol', string()],
+        ['uri', string()],
+        ['sellerFeeBasisPoints', u16()],
+        ['creators', option(array(getCreatorSerializer()))],
+        ['primarySaleHappened', bool()],
+        ['isMutable', bool()],
+        ['editionNonce', option(u8())],
+        ['tokenStandard', option(getTokenStandardSerializer())],
+        ['collection', option(getCollectionSerializer())],
+        ['uses', option(getUsesSerializer())],
+        ['collectionDetails', option(getCollectionDetailsSerializer())],
+        ['programmableConfig', option(getProgrammableConfigSerializer())],
+        ['delegateState', option(getDelegateStateSerializer())],
       ],
       { description: 'MetadataAccountData' }
     ),
@@ -225,29 +226,23 @@ export function getMetadataGpaBuilder(
       programmableConfig: Option<ProgrammableConfigArgs>;
       delegateState: Option<DelegateStateArgs>;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      updateAuthority: [1, s.publicKey()],
-      mint: [33, s.publicKey()],
-      name: [65, s.string()],
-      symbol: [null, s.string()],
-      uri: [null, s.string()],
-      sellerFeeBasisPoints: [null, s.u16()],
-      creators: [null, s.option(s.array(getCreatorSerializer(context)))],
-      primarySaleHappened: [null, s.bool()],
-      isMutable: [null, s.bool()],
-      editionNonce: [null, s.option(s.u8())],
-      tokenStandard: [null, s.option(getTokenStandardSerializer(context))],
-      collection: [null, s.option(getCollectionSerializer(context))],
-      uses: [null, s.option(getUsesSerializer(context))],
-      collectionDetails: [
-        null,
-        s.option(getCollectionDetailsSerializer(context)),
-      ],
-      programmableConfig: [
-        null,
-        s.option(getProgrammableConfigSerializer(context)),
-      ],
-      delegateState: [null, s.option(getDelegateStateSerializer(context))],
+      key: [0, getTmKeySerializer()],
+      updateAuthority: [1, publicKeySerializer()],
+      mint: [33, publicKeySerializer()],
+      name: [65, string()],
+      symbol: [null, string()],
+      uri: [null, string()],
+      sellerFeeBasisPoints: [null, u16()],
+      creators: [null, option(array(getCreatorSerializer()))],
+      primarySaleHappened: [null, bool()],
+      isMutable: [null, bool()],
+      editionNonce: [null, option(u8())],
+      tokenStandard: [null, option(getTokenStandardSerializer())],
+      collection: [null, option(getCollectionSerializer())],
+      uses: [null, option(getUsesSerializer())],
+      collectionDetails: [null, option(getCollectionDetailsSerializer())],
+      programmableConfig: [null, option(getProgrammableConfigSerializer())],
+      delegateState: [null, option(getDelegateStateSerializer())],
     })
     .deserializeUsing<Metadata>((account) =>
       deserializeMetadata(context, account)
@@ -272,9 +267,9 @@ export function findMetadataPda(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
-    s.string({ size: 'variable' }).serialize('metadata'),
+    string({ size: 'variable' }).serialize('metadata'),
     s.publicKey().serialize(programId),
-    s.publicKey().serialize(seeds.mint),
+    publicKeySerializer().serialize(seeds.mint),
   ]);
 }
 

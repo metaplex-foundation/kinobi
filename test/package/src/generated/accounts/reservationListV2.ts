@@ -22,7 +22,12 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 import {
   Reservation,
@@ -53,22 +58,21 @@ export type ReservationListV2AccountDataArgs = {
 };
 
 export function getReservationListV2AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<ReservationListV2AccountDataArgs, ReservationListV2AccountData> {
-  const s = context.serializer;
   return mapSerializer<
     ReservationListV2AccountDataArgs,
     any,
     ReservationListV2AccountData
   >(
-    s.struct<ReservationListV2AccountData>(
+    struct<ReservationListV2AccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey()],
-        ['supplySnapshot', s.option(s.u64())],
-        ['reservations', s.array(getReservationSerializer(context))],
-        ['totalReservationSpots', s.u64()],
-        ['currentReservationSpots', s.u64()],
+        ['key', getTmKeySerializer()],
+        ['masterEdition', publicKeySerializer()],
+        ['supplySnapshot', option(u64())],
+        ['reservations', array(getReservationSerializer())],
+        ['totalReservationSpots', u64()],
+        ['currentReservationSpots', u64()],
       ],
       { description: 'ReservationListV2AccountData' }
     ),
@@ -164,12 +168,12 @@ export function getReservationListV2GpaBuilder(
       totalReservationSpots: number | bigint;
       currentReservationSpots: number | bigint;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      masterEdition: [1, s.publicKey()],
-      supplySnapshot: [33, s.option(s.u64())],
-      reservations: [null, s.array(getReservationSerializer(context))],
-      totalReservationSpots: [null, s.u64()],
-      currentReservationSpots: [null, s.u64()],
+      key: [0, getTmKeySerializer()],
+      masterEdition: [1, publicKeySerializer()],
+      supplySnapshot: [33, option(u64())],
+      reservations: [null, array(getReservationSerializer())],
+      totalReservationSpots: [null, u64()],
+      currentReservationSpots: [null, u64()],
     })
     .deserializeUsing<ReservationListV2>((account) =>
       deserializeReservationListV2(context, account)

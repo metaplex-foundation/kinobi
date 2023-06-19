@@ -7,17 +7,20 @@
  */
 
 import { Context, PublicKey } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  publicKey as publicKeySerializer,
+  struct,
+} from '@metaplex-foundation/umi/serializers';
 
 export type ProgrammableConfig = { ruleSet: PublicKey };
 
 export type ProgrammableConfigArgs = ProgrammableConfig;
 
 export function getProgrammableConfigSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<ProgrammableConfigArgs, ProgrammableConfig> {
-  const s = context.serializer;
-  return s.struct<ProgrammableConfig>([['ruleSet', s.publicKey()]], {
+  return struct<ProgrammableConfig>([['ruleSet', publicKeySerializer()]], {
     description: 'ProgrammableConfig',
   }) as Serializer<ProgrammableConfigArgs, ProgrammableConfig>;
 }

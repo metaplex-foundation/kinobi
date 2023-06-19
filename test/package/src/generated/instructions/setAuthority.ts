@@ -17,7 +17,11 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -36,18 +40,17 @@ export type SetAuthorityInstructionData = {
 export type SetAuthorityInstructionDataArgs = { newAuthority: PublicKey };
 
 export function getSetAuthorityInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<SetAuthorityInstructionDataArgs, SetAuthorityInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     SetAuthorityInstructionDataArgs,
     any,
     SetAuthorityInstructionData
   >(
-    s.struct<SetAuthorityInstructionData>(
+    struct<SetAuthorityInstructionData>(
       [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['newAuthority', s.publicKey()],
+        ['discriminator', array(u8(), { size: 8 })],
+        ['newAuthority', publicKeySerializer()],
       ],
       { description: 'SetAuthorityInstructionData' }
     ),

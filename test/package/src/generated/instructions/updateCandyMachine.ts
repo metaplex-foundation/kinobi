@@ -17,7 +17,10 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -43,21 +46,20 @@ export type UpdateCandyMachineInstructionDataArgs = {
 };
 
 export function getUpdateCandyMachineInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   UpdateCandyMachineInstructionDataArgs,
   UpdateCandyMachineInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     UpdateCandyMachineInstructionDataArgs,
     any,
     UpdateCandyMachineInstructionData
   >(
-    s.struct<UpdateCandyMachineInstructionData>(
+    struct<UpdateCandyMachineInstructionData>(
       [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['data', getCandyMachineDataSerializer(context)],
+        ['discriminator', array(u8(), { size: 8 })],
+        ['data', getCandyMachineDataSerializer()],
       ],
       { description: 'UpdateCandyMachineInstructionData' }
     ),

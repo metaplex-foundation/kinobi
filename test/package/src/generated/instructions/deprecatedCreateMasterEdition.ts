@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -68,24 +70,20 @@ export type DeprecatedCreateMasterEditionInstructionDataArgs = {
 };
 
 export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   DeprecatedCreateMasterEditionInstructionDataArgs,
   DeprecatedCreateMasterEditionInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     DeprecatedCreateMasterEditionInstructionDataArgs,
     any,
     DeprecatedCreateMasterEditionInstructionData
   >(
-    s.struct<DeprecatedCreateMasterEditionInstructionData>(
+    struct<DeprecatedCreateMasterEditionInstructionData>(
       [
-        ['discriminator', s.u8()],
-        [
-          'createMasterEditionArgs',
-          getCreateMasterEditionArgsSerializer(context),
-        ],
+        ['discriminator', u8()],
+        ['createMasterEditionArgs', getCreateMasterEditionArgsSerializer()],
       ],
       { description: 'DeprecatedCreateMasterEditionInstructionData' }
     ),

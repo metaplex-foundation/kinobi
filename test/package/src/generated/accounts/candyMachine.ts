@@ -21,7 +21,12 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  publicKey as publicKeySerializer,
+  struct,
+  u64,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import {
   CandyMachineData,
@@ -64,23 +69,22 @@ export type CandyMachineAccountDataArgs = {
 };
 
 export function getCandyMachineAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData> {
-  const s = context.serializer;
   return mapSerializer<
     CandyMachineAccountDataArgs,
     any,
     CandyMachineAccountData
   >(
-    s.struct<CandyMachineAccountData>(
+    struct<CandyMachineAccountData>(
       [
-        ['discriminator', s.array(s.u8(), { size: 8 })],
-        ['features', s.u64()],
-        ['authority', s.publicKey()],
-        ['mintAuthority', s.publicKey()],
-        ['collectionMint', s.publicKey()],
-        ['itemsRedeemed', s.u64()],
-        ['data', getCandyMachineDataSerializer(context)],
+        ['discriminator', array(u8(), { size: 8 })],
+        ['features', u64()],
+        ['authority', publicKeySerializer()],
+        ['mintAuthority', publicKeySerializer()],
+        ['collectionMint', publicKeySerializer()],
+        ['itemsRedeemed', u64()],
+        ['data', getCandyMachineDataSerializer()],
       ],
       { description: 'CandyMachineAccountData' }
     ),
@@ -177,13 +181,13 @@ export function getCandyMachineGpaBuilder(
       itemsRedeemed: number | bigint;
       data: CandyMachineDataArgs;
     }>({
-      discriminator: [0, s.array(s.u8(), { size: 8 })],
-      features: [8, s.u64()],
-      authority: [16, s.publicKey()],
-      mintAuthority: [48, s.publicKey()],
-      collectionMint: [80, s.publicKey()],
-      itemsRedeemed: [112, s.u64()],
-      data: [120, getCandyMachineDataSerializer(context)],
+      discriminator: [0, array(u8(), { size: 8 })],
+      features: [8, u64()],
+      authority: [16, publicKeySerializer()],
+      mintAuthority: [48, publicKeySerializer()],
+      collectionMint: [80, publicKeySerializer()],
+      itemsRedeemed: [112, u64()],
+      data: [120, getCandyMachineDataSerializer()],
     })
     .deserializeUsing<CandyMachine>((account) =>
       deserializeCandyMachine(context, account)

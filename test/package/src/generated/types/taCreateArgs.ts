@@ -7,7 +7,12 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  bytes,
+  string,
+  struct,
+} from '@metaplex-foundation/umi/serializers';
 
 export type TaCreateArgs = {
   ruleSetName: string;
@@ -17,13 +22,12 @@ export type TaCreateArgs = {
 export type TaCreateArgsArgs = TaCreateArgs;
 
 export function getTaCreateArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<TaCreateArgsArgs, TaCreateArgs> {
-  const s = context.serializer;
-  return s.struct<TaCreateArgs>(
+  return struct<TaCreateArgs>(
     [
-      ['ruleSetName', s.string()],
-      ['serializedRuleSet', s.bytes()],
+      ['ruleSetName', string()],
+      ['serializedRuleSet', bytes()],
     ],
     { description: 'TaCreateArgs' }
   ) as Serializer<TaCreateArgsArgs, TaCreateArgs>;

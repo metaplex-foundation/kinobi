@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -47,19 +49,18 @@ export type VerifySizedCollectionItemInstructionData = {
 export type VerifySizedCollectionItemInstructionDataArgs = {};
 
 export function getVerifySizedCollectionItemInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   VerifySizedCollectionItemInstructionDataArgs,
   VerifySizedCollectionItemInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     VerifySizedCollectionItemInstructionDataArgs,
     any,
     VerifySizedCollectionItemInstructionData
   >(
-    s.struct<VerifySizedCollectionItemInstructionData>(
-      [['discriminator', s.u8()]],
+    struct<VerifySizedCollectionItemInstructionData>(
+      [['discriminator', u8()]],
       { description: 'VerifySizedCollectionItemInstructionData' }
     ),
     (value) => ({ ...value, discriminator: 30 })

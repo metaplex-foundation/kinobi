@@ -22,6 +22,9 @@ import {
 import {
   Serializer,
   mapSerializer,
+  string,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import {
   DelegateRole,
@@ -46,19 +49,18 @@ export type DelegateRecordAccountDataArgs = {
 };
 
 export function getDelegateRecordAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData> {
-  const s = context.serializer;
   return mapSerializer<
     DelegateRecordAccountDataArgs,
     any,
     DelegateRecordAccountData
   >(
-    s.struct<DelegateRecordAccountData>(
+    struct<DelegateRecordAccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['role', getDelegateRoleSerializer(context)],
-        ['bump', s.u8()],
+        ['key', getTmKeySerializer()],
+        ['role', getDelegateRoleSerializer()],
+        ['bump', u8()],
       ],
       { description: 'DelegateRecordAccountData' }
     ),
@@ -144,9 +146,9 @@ export function getDelegateRecordGpaBuilder(
   );
   return gpaBuilder(context, programId)
     .registerFields<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>({
-      key: [0, getTmKeySerializer(context)],
-      role: [1, getDelegateRoleSerializer(context)],
-      bump: [2, s.u8()],
+      key: [0, getTmKeySerializer()],
+      role: [1, getDelegateRoleSerializer()],
+      bump: [2, u8()],
     })
     .deserializeUsing<DelegateRecord>((account) =>
       deserializeDelegateRecord(context, account)
@@ -171,9 +173,9 @@ export function findDelegateRecordPda(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
   return context.eddsa.findPda(programId, [
-    s.string({ size: 'variable' }).serialize('delegate_record'),
+    string({ size: 'variable' }).serialize('delegate_record'),
     s.publicKey().serialize(programId),
-    getDelegateRoleSerializer(context).serialize(seeds.role),
+    getDelegateRoleSerializer().serialize(seeds.role),
   ]);
 }
 

@@ -11,6 +11,10 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  dataEnum,
+  option,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 import {
   AuthorizationData,
@@ -31,19 +35,15 @@ export type TransferArgsArgs = {
 };
 
 export function getTransferArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<TransferArgsArgs, TransferArgs> {
-  const s = context.serializer;
-  return s.dataEnum<TransferArgs>(
+  return dataEnum<TransferArgs>(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<TransferArgs, 'V1'>>([
-          [
-            'authorizationData',
-            s.option(getAuthorizationDataSerializer(context)),
-          ],
-          ['amount', s.u64()],
+        struct<GetDataEnumKindContent<TransferArgs, 'V1'>>([
+          ['authorizationData', option(getAuthorizationDataSerializer())],
+          ['amount', u64()],
         ]),
       ],
     ],

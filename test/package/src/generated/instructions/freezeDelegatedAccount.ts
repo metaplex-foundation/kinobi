@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -41,21 +43,19 @@ export type FreezeDelegatedAccountInstructionData = { discriminator: number };
 export type FreezeDelegatedAccountInstructionDataArgs = {};
 
 export function getFreezeDelegatedAccountInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   FreezeDelegatedAccountInstructionDataArgs,
   FreezeDelegatedAccountInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     FreezeDelegatedAccountInstructionDataArgs,
     any,
     FreezeDelegatedAccountInstructionData
   >(
-    s.struct<FreezeDelegatedAccountInstructionData>(
-      [['discriminator', s.u8()]],
-      { description: 'FreezeDelegatedAccountInstructionData' }
-    ),
+    struct<FreezeDelegatedAccountInstructionData>([['discriminator', u8()]], {
+      description: 'FreezeDelegatedAccountInstructionData',
+    }),
     (value) => ({ ...value, discriminator: 26 })
   ) as Serializer<
     FreezeDelegatedAccountInstructionDataArgs,

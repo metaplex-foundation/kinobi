@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -66,18 +68,17 @@ export type DelegateInstructionData = {
 export type DelegateInstructionDataArgs = { delegateArgs: DelegateArgsArgs };
 
 export function getDelegateInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<DelegateInstructionDataArgs, DelegateInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     DelegateInstructionDataArgs,
     any,
     DelegateInstructionData
   >(
-    s.struct<DelegateInstructionData>(
+    struct<DelegateInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['delegateArgs', getDelegateArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['delegateArgs', getDelegateArgsSerializer()],
       ],
       { description: 'DelegateInstructionData' }
     ),

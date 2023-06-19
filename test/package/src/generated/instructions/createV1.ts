@@ -20,6 +20,10 @@ import {
 import {
   Serializer,
   mapSerializer,
+  option,
+  struct,
+  u64,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '../types';
@@ -62,21 +66,20 @@ export type CreateV1InstructionDataArgs = {
 };
 
 export function getCreateV1InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<CreateV1InstructionDataArgs, CreateV1InstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     CreateV1InstructionDataArgs,
     any,
     CreateV1InstructionData
   >(
-    s.struct<CreateV1InstructionData>(
+    struct<CreateV1InstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['createV1Discriminator', s.u8()],
-        ['assetData', getAssetDataSerializer(context)],
-        ['decimals', s.option(s.u8())],
-        ['maxSupply', s.option(s.u64())],
+        ['discriminator', u8()],
+        ['createV1Discriminator', u8()],
+        ['assetData', getAssetDataSerializer()],
+        ['decimals', option(u8())],
+        ['maxSupply', option(u64())],
       ],
       { description: 'CreateV1InstructionData' }
     ),

@@ -18,6 +18,9 @@ import {
 import {
   Serializer,
   mapSerializer,
+  string,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -73,20 +76,19 @@ export type ValidateInstructionDataArgs = {
 };
 
 export function getValidateInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<ValidateInstructionDataArgs, ValidateInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     ValidateInstructionDataArgs,
     any,
     ValidateInstructionData
   >(
-    s.struct<ValidateInstructionData>(
+    struct<ValidateInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['ruleSetName', s.string()],
-        ['operation', getOperationSerializer(context)],
-        ['payload', getPayloadSerializer(context)],
+        ['discriminator', u8()],
+        ['ruleSetName', string()],
+        ['operation', getOperationSerializer()],
+        ['payload', getPayloadSerializer()],
       ],
       { description: 'ValidateInstructionData' }
     ),

@@ -17,7 +17,10 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -33,16 +36,15 @@ export type WithdrawInstructionData = { discriminator: Array<number> };
 export type WithdrawInstructionDataArgs = {};
 
 export function getWithdrawInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     WithdrawInstructionDataArgs,
     any,
     WithdrawInstructionData
   >(
-    s.struct<WithdrawInstructionData>(
-      [['discriminator', s.array(s.u8(), { size: 8 })]],
+    struct<WithdrawInstructionData>(
+      [['discriminator', array(u8(), { size: 8 })]],
       { description: 'WithdrawInstructionData' }
     ),
     (value) => ({

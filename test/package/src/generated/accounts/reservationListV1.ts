@@ -20,7 +20,12 @@ import {
   gpaBuilder,
   publicKey as toPublicKey,
 } from '@metaplex-foundation/umi';
-import {} from '@metaplex-foundation/umi/serializers';
+import {
+  array,
+  option,
+  publicKey as publicKeySerializer,
+  u64,
+} from '@metaplex-foundation/umi/serializers';
 import {
   ReservationListV1AccountData,
   getReservationListV1AccountDataSerializer,
@@ -118,10 +123,10 @@ export function getReservationListV1GpaBuilder(
       supplySnapshot: Option<number | bigint>;
       reservations: Array<ReservationV1Args>;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      masterEdition: [1, s.publicKey()],
-      supplySnapshot: [33, s.option(s.u64())],
-      reservations: [null, s.array(getReservationV1Serializer(context))],
+      key: [0, getTmKeySerializer()],
+      masterEdition: [1, publicKeySerializer()],
+      supplySnapshot: [33, option(u64())],
+      reservations: [null, array(getReservationV1Serializer())],
     })
     .deserializeUsing<ReservationListV1>((account) =>
       deserializeReservationListV1(context, account)

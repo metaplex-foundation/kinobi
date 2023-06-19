@@ -7,7 +7,14 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  bool,
+  string,
+  struct,
+  u32,
+  u8,
+} from '@metaplex-foundation/umi/serializers';
 
 /** Config line settings to allocate space for individual name + URI. */
 export type ConfigLineSettings = {
@@ -26,16 +33,15 @@ export type ConfigLineSettings = {
 export type ConfigLineSettingsArgs = ConfigLineSettings;
 
 export function getConfigLineSettingsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<ConfigLineSettingsArgs, ConfigLineSettings> {
-  const s = context.serializer;
-  return s.struct<ConfigLineSettings>(
+  return struct<ConfigLineSettings>(
     [
-      ['prefixName', s.string()],
-      ['nameLength', s.u32()],
-      ['prefixUri', s.string()],
-      ['uriLength', s.u32()],
-      ['isSequential', s.bool()],
+      ['prefixName', string()],
+      ['nameLength', u32()],
+      ['prefixUri', string()],
+      ['uriLength', u32()],
+      ['isSequential', bool()],
     ],
     { description: 'ConfigLineSettings' }
   ) as Serializer<ConfigLineSettingsArgs, ConfigLineSettings>;

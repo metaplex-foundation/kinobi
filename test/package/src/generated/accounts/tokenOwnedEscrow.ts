@@ -22,6 +22,9 @@ import {
 import {
   Serializer,
   mapSerializer,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import {
   EscrowAuthority,
@@ -48,20 +51,19 @@ export type TokenOwnedEscrowAccountDataArgs = {
 };
 
 export function getTokenOwnedEscrowAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<TokenOwnedEscrowAccountDataArgs, TokenOwnedEscrowAccountData> {
-  const s = context.serializer;
   return mapSerializer<
     TokenOwnedEscrowAccountDataArgs,
     any,
     TokenOwnedEscrowAccountData
   >(
-    s.struct<TokenOwnedEscrowAccountData>(
+    struct<TokenOwnedEscrowAccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['baseToken', s.publicKey()],
-        ['authority', getEscrowAuthoritySerializer(context)],
-        ['bump', s.u8()],
+        ['key', getTmKeySerializer()],
+        ['baseToken', publicKeySerializer()],
+        ['authority', getEscrowAuthoritySerializer()],
+        ['bump', u8()],
       ],
       { description: 'TokenOwnedEscrowAccountData' }
     ),
@@ -152,10 +154,10 @@ export function getTokenOwnedEscrowGpaBuilder(
       authority: EscrowAuthorityArgs;
       bump: number;
     }>({
-      key: [0, getTmKeySerializer(context)],
-      baseToken: [1, s.publicKey()],
-      authority: [33, getEscrowAuthoritySerializer(context)],
-      bump: [null, s.u8()],
+      key: [0, getTmKeySerializer()],
+      baseToken: [1, publicKeySerializer()],
+      authority: [33, getEscrowAuthoritySerializer()],
+      bump: [null, u8()],
     })
     .deserializeUsing<TokenOwnedEscrow>((account) =>
       deserializeTokenOwnedEscrow(context, account)

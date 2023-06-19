@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 
@@ -50,18 +52,17 @@ export type CreateEscrowAccountInstructionData = { discriminator: number };
 export type CreateEscrowAccountInstructionDataArgs = {};
 
 export function getCreateEscrowAccountInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   CreateEscrowAccountInstructionDataArgs,
   CreateEscrowAccountInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateEscrowAccountInstructionDataArgs,
     any,
     CreateEscrowAccountInstructionData
   >(
-    s.struct<CreateEscrowAccountInstructionData>([['discriminator', s.u8()]], {
+    struct<CreateEscrowAccountInstructionData>([['discriminator', u8()]], {
       description: 'CreateEscrowAccountInstructionData',
     }),
     (value) => ({ ...value, discriminator: 38 })

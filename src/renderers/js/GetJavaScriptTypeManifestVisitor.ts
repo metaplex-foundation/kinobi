@@ -137,7 +137,7 @@ export class GetJavaScriptTypeManifestVisitor
         importFrom,
         `${pascalCaseDefinedType}Args`
       ),
-      serializer: `${serializerName}(context)`,
+      serializer: `${serializerName}()`,
       serializerImports: new JavaScriptImportMap().add(
         importFrom,
         serializerName
@@ -146,6 +146,13 @@ export class GetJavaScriptTypeManifestVisitor
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): JavaScriptTypeManifest {
+    const strictImports = new JavaScriptImportMap();
+    const looseImports = new JavaScriptImportMap();
+    const serializerImports = new JavaScriptImportMap().add(
+      'umiSerializers',
+      'scalarEnum'
+    );
+
     const variantNames = enumType.variants.map((variant) =>
       pascalCase(variant.name)
     );
@@ -155,6 +162,9 @@ export class GetJavaScriptTypeManifestVisitor
 
     if (enumType.size.format !== 'u8') {
       const sizeManifest = visit(enumType.size, this);
+      strictImports.mergeWith(sizeManifest.strictImports);
+      looseImports.mergeWith(sizeManifest.looseImports);
+      serializerImports.mergeWith(sizeManifest.serializerImports);
       options.push(`size: ${sizeManifest.serializer}`);
     }
 
@@ -172,16 +182,13 @@ export class GetJavaScriptTypeManifestVisitor
       return {
         isEnum: true,
         strictType: `{ ${variantNames.join(', ')} }`,
-        strictImports: new JavaScriptImportMap(),
+        strictImports,
         looseType: `{ ${variantNames.join(', ')} }`,
-        looseImports: new JavaScriptImportMap(),
+        looseImports,
         serializer:
-          `enum<${parentName.strict}>` +
+          `scalarEnum<${parentName.strict}>` +
           `(${parentName.strict + optionsAsString})`,
-        serializerImports: new JavaScriptImportMap().add(
-          'umiSerializers',
-          'enum'
-        ),
+        serializerImports,
       };
     }
 

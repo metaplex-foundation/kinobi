@@ -28,8 +28,7 @@ export type {{ looseName }} = {{ typeManifest.looseType if typeManifest.strictTy
 {# Export a serializer. #}
 {% macro exportSerializer(name, typeManifest) %}
 {% set looseName = name + 'Args' %}
-export function get{{ name }}Serializer(context: Pick<Context, 'serializer'>): Serializer<{{ looseName }}, {{ name }}> {
-  const s = context.serializer;
+export function get{{ name }}Serializer(_context: object = {}): Serializer<{{ looseName }}, {{ name }}> {
   return {{ typeManifest.serializer }} as Serializer<{{ looseName }}, {{ name }}>;
 }
 {% endmacro %}

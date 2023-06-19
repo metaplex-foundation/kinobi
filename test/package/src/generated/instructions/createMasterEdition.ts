@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -60,24 +62,20 @@ export type CreateMasterEditionInstructionDataArgs = {
 };
 
 export function getCreateMasterEditionInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   CreateMasterEditionInstructionDataArgs,
   CreateMasterEditionInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateMasterEditionInstructionDataArgs,
     any,
     CreateMasterEditionInstructionData
   >(
-    s.struct<CreateMasterEditionInstructionData>(
+    struct<CreateMasterEditionInstructionData>(
       [
-        ['discriminator', s.u8()],
-        [
-          'createMasterEditionArgs',
-          getCreateMasterEditionArgsSerializer(context),
-        ],
+        ['discriminator', u8()],
+        ['createMasterEditionArgs', getCreateMasterEditionArgsSerializer()],
       ],
       { description: 'CreateMasterEditionInstructionData' }
     ),

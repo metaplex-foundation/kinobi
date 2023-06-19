@@ -21,7 +21,10 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
@@ -32,18 +35,17 @@ export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
 export function getEditionMarkerAccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData> {
-  const s = context.serializer;
   return mapSerializer<
     EditionMarkerAccountDataArgs,
     any,
     EditionMarkerAccountData
   >(
-    s.struct<EditionMarkerAccountData>(
+    struct<EditionMarkerAccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['ledger', s.array(s.u8(), { size: 31 })],
+        ['key', getTmKeySerializer()],
+        ['ledger', array(u8(), { size: 31 })],
       ],
       { description: 'EditionMarkerAccountData' }
     ),
@@ -129,8 +131,8 @@ export function getEditionMarkerGpaBuilder(
   );
   return gpaBuilder(context, programId)
     .registerFields<{ key: TmKeyArgs; ledger: Array<number> }>({
-      key: [0, getTmKeySerializer(context)],
-      ledger: [1, s.array(s.u8(), { size: 31 })],
+      key: [0, getTmKeySerializer()],
+      ledger: [1, array(u8(), { size: 31 })],
     })
     .deserializeUsing<EditionMarker>((account) =>
       deserializeEditionMarker(context, account)

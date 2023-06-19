@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum TaKey {
   Uninitialized,
@@ -17,10 +17,9 @@ export enum TaKey {
 export type TaKeyArgs = TaKey;
 
 export function getTaKeySerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<TaKeyArgs, TaKey> {
-  const s = context.serializer;
-  return s.enum<TaKey>(TaKey, { description: 'TaKey' }) as Serializer<
+  return scalarEnum<TaKey>(TaKey, { description: 'TaKey' }) as Serializer<
     TaKeyArgs,
     TaKey
   >;

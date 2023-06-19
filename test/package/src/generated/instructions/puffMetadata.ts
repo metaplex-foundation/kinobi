@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 
@@ -33,15 +35,14 @@ export type PuffMetadataInstructionData = { discriminator: number };
 export type PuffMetadataInstructionDataArgs = {};
 
 export function getPuffMetadataInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<PuffMetadataInstructionDataArgs, PuffMetadataInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     PuffMetadataInstructionDataArgs,
     any,
     PuffMetadataInstructionData
   >(
-    s.struct<PuffMetadataInstructionData>([['discriminator', s.u8()]], {
+    struct<PuffMetadataInstructionData>([['discriminator', u8()]], {
       description: 'PuffMetadataInstructionData',
     }),
     (value) => ({ ...value, discriminator: 14 })

@@ -17,7 +17,16 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  array,
+  bool,
+  dataEnum,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  string,
+  struct,
+  u16,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import {
   AuthorityType,
@@ -95,10 +104,9 @@ export type UpdateArgsArgs = {
 };
 
 export function getUpdateArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<UpdateArgsArgs, UpdateArgs> {
-  const s = context.serializer;
-  return s.dataEnum<UpdateArgs>(
+  return dataEnum<UpdateArgs>(
     [
       [
         'V1',
@@ -107,42 +115,30 @@ export function getUpdateArgsSerializer(
           any,
           GetDataEnumKindContent<UpdateArgs, 'V1'>
         >(
-          s.struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
-            [
-              'authorizationData',
-              s.option(getAuthorizationDataSerializer(context)),
-            ],
-            ['newUpdateAuthority', s.option(s.publicKey())],
+          struct<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
+            ['authorizationData', option(getAuthorizationDataSerializer())],
+            ['newUpdateAuthority', option(publicKeySerializer())],
             [
               'data',
-              s.option(
-                s.struct<any>([
-                  ['name', s.string()],
-                  ['symbol', s.string()],
-                  ['uri', s.string()],
-                  ['sellerFeeBasisPoints', s.u16()],
-                  [
-                    'creators',
-                    s.option(s.array(getCreatorSerializer(context))),
-                  ],
+              option(
+                struct<any>([
+                  ['name', string()],
+                  ['symbol', string()],
+                  ['uri', string()],
+                  ['sellerFeeBasisPoints', u16()],
+                  ['creators', option(array(getCreatorSerializer()))],
                 ])
               ),
             ],
-            ['primarySaleHappened', s.option(s.bool())],
-            ['isMutable', s.option(s.bool())],
-            ['tokenStandard', s.option(getTokenStandardSerializer(context))],
-            ['collection', s.option(getCollectionSerializer(context))],
-            ['uses', s.option(getUsesSerializer(context))],
-            [
-              'collectionDetails',
-              s.option(getCollectionDetailsSerializer(context)),
-            ],
-            [
-              'programmableConfig',
-              s.option(getProgrammableConfigSerializer(context)),
-            ],
-            ['delegateState', s.option(getDelegateStateSerializer(context))],
-            ['authorityType', getAuthorityTypeSerializer(context)],
+            ['primarySaleHappened', option(bool())],
+            ['isMutable', option(bool())],
+            ['tokenStandard', option(getTokenStandardSerializer())],
+            ['collection', option(getCollectionSerializer())],
+            ['uses', option(getUsesSerializer())],
+            ['collectionDetails', option(getCollectionDetailsSerializer())],
+            ['programmableConfig', option(getProgrammableConfigSerializer())],
+            ['delegateState', option(getDelegateStateSerializer())],
+            ['authorityType', getAuthorityTypeSerializer()],
           ]),
           (value) => ({
             ...value,

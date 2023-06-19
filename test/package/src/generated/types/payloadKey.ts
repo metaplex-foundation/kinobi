@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum PayloadKey {
   Target,
@@ -19,10 +19,9 @@ export enum PayloadKey {
 export type PayloadKeyArgs = PayloadKey;
 
 export function getPayloadKeySerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<PayloadKeyArgs, PayloadKey> {
-  const s = context.serializer;
-  return s.enum<PayloadKey>(PayloadKey, {
+  return scalarEnum<PayloadKey>(PayloadKey, {
     description: 'PayloadKey',
   }) as Serializer<PayloadKeyArgs, PayloadKey>;
 }

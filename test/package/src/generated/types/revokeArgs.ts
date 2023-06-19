@@ -7,7 +7,7 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
 
 export enum RevokeArgs {
   CollectionV1,
@@ -18,10 +18,9 @@ export enum RevokeArgs {
 export type RevokeArgsArgs = RevokeArgs;
 
 export function getRevokeArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<RevokeArgsArgs, RevokeArgs> {
-  const s = context.serializer;
-  return s.enum<RevokeArgs>(RevokeArgs, {
+  return scalarEnum<RevokeArgs>(RevokeArgs, {
     description: 'RevokeArgs',
   }) as Serializer<RevokeArgsArgs, RevokeArgs>;
 }

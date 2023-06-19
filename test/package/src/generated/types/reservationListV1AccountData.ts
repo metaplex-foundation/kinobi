@@ -9,7 +9,12 @@
 import { Context, Option, PublicKey } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 import {
   ReservationV1,
@@ -34,20 +39,19 @@ export type ReservationListV1AccountDataArgs = {
 };
 
 export function getReservationListV1AccountDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
-  const s = context.serializer;
   return mapSerializer<
     ReservationListV1AccountDataArgs,
     any,
     ReservationListV1AccountData
   >(
-    s.struct<ReservationListV1AccountData>(
+    struct<ReservationListV1AccountData>(
       [
-        ['key', getTmKeySerializer(context)],
-        ['masterEdition', s.publicKey()],
-        ['supplySnapshot', s.option(s.u64())],
-        ['reservations', s.array(getReservationV1Serializer(context))],
+        ['key', getTmKeySerializer()],
+        ['masterEdition', publicKeySerializer()],
+        ['supplySnapshot', option(u64())],
+        ['reservations', array(getReservationV1Serializer())],
       ],
       { description: 'ReservationListV1AccountData' }
     ),

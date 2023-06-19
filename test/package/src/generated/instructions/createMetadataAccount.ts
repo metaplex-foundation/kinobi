@@ -20,7 +20,14 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  array,
+  bool,
   mapSerializer,
+  option,
+  string,
+  struct,
+  u16,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
@@ -71,32 +78,31 @@ export type CreateMetadataAccountInstructionDataArgs = {
 };
 
 export function getCreateMetadataAccountInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   CreateMetadataAccountInstructionDataArgs,
   CreateMetadataAccountInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateMetadataAccountInstructionDataArgs,
     any,
     CreateMetadataAccountInstructionData
   >(
-    s.struct<CreateMetadataAccountInstructionData>(
+    struct<CreateMetadataAccountInstructionData>(
       [
-        ['discriminator', s.u8()],
+        ['discriminator', u8()],
         [
           'data',
-          s.struct<any>([
-            ['name', s.string()],
-            ['symbol', s.string()],
-            ['uri', s.string()],
-            ['sellerFeeBasisPoints', s.u16()],
-            ['creators', s.option(s.array(getCreatorSerializer(context)))],
+          struct<any>([
+            ['name', string()],
+            ['symbol', string()],
+            ['uri', string()],
+            ['sellerFeeBasisPoints', u16()],
+            ['creators', option(array(getCreatorSerializer()))],
           ]),
         ],
-        ['isMutable', s.bool()],
-        ['metadataBump', s.u8()],
+        ['isMutable', bool()],
+        ['metadataBump', u8()],
       ],
       { description: 'CreateMetadataAccountInstructionData' }
     ),

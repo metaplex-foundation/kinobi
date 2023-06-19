@@ -17,7 +17,10 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  bool,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
@@ -53,22 +56,21 @@ export type CreateMetadataAccountV2InstructionDataArgs = {
 };
 
 export function getCreateMetadataAccountV2InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   CreateMetadataAccountV2InstructionDataArgs,
   CreateMetadataAccountV2InstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     CreateMetadataAccountV2InstructionDataArgs,
     any,
     CreateMetadataAccountV2InstructionData
   >(
-    s.struct<CreateMetadataAccountV2InstructionData>(
+    struct<CreateMetadataAccountV2InstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['data', getDataV2Serializer(context)],
-        ['isMutable', s.bool()],
+        ['discriminator', u8()],
+        ['data', getDataV2Serializer()],
+        ['isMutable', bool()],
       ],
       { description: 'CreateMetadataAccountV2InstructionData' }
     ),

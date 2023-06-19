@@ -18,7 +18,12 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
+  bool,
   mapSerializer,
+  option,
+  publicKey as publicKeySerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
@@ -48,24 +53,23 @@ export type UpdateMetadataAccountV2InstructionDataArgs = {
 };
 
 export function getUpdateMetadataAccountV2InstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   UpdateMetadataAccountV2InstructionDataArgs,
   UpdateMetadataAccountV2InstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     UpdateMetadataAccountV2InstructionDataArgs,
     any,
     UpdateMetadataAccountV2InstructionData
   >(
-    s.struct<UpdateMetadataAccountV2InstructionData>(
+    struct<UpdateMetadataAccountV2InstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['data', s.option(getDataV2Serializer(context))],
-        ['updateAuthority', s.option(s.publicKey())],
-        ['primarySaleHappened', s.option(s.bool())],
-        ['isMutable', s.option(s.bool())],
+        ['discriminator', u8()],
+        ['data', option(getDataV2Serializer())],
+        ['updateAuthority', option(publicKeySerializer())],
+        ['primarySaleHappened', option(bool())],
+        ['isMutable', option(bool())],
       ],
       { description: 'UpdateMetadataAccountV2InstructionData' }
     ),

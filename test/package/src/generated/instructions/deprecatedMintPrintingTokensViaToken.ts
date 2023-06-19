@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import {
@@ -60,23 +62,22 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionDataArgs = {
 };
 
 export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<
   DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
   DeprecatedMintPrintingTokensViaTokenInstructionData
 > {
-  const s = context.serializer;
   return mapSerializer<
     DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
     any,
     DeprecatedMintPrintingTokensViaTokenInstructionData
   >(
-    s.struct<DeprecatedMintPrintingTokensViaTokenInstructionData>(
+    struct<DeprecatedMintPrintingTokensViaTokenInstructionData>(
       [
-        ['discriminator', s.u8()],
+        ['discriminator', u8()],
         [
           'mintPrintingTokensViaTokenArgs',
-          getMintPrintingTokensViaTokenArgsSerializer(context),
+          getMintPrintingTokensViaTokenArgsSerializer(),
         ],
       ],
       { description: 'DeprecatedMintPrintingTokensViaTokenInstructionData' }

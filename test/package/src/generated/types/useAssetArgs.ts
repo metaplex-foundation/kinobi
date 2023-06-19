@@ -11,6 +11,9 @@ import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
+  dataEnum,
+  struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
 
 export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
@@ -18,15 +21,14 @@ export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 export type UseAssetArgsArgs = { __kind: 'V1'; useCount: number | bigint };
 
 export function getUseAssetArgsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<UseAssetArgsArgs, UseAssetArgs> {
-  const s = context.serializer;
-  return s.dataEnum<UseAssetArgs>(
+  return dataEnum<UseAssetArgs>(
     [
       [
         'V1',
-        s.struct<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
-          ['useCount', s.u64()],
+        struct<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
+          ['useCount', u64()],
         ]),
       ],
     ],

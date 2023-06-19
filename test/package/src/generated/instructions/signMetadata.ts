@@ -18,6 +18,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta } from '../shared';
 
@@ -35,15 +37,14 @@ export type SignMetadataInstructionData = { discriminator: number };
 export type SignMetadataInstructionDataArgs = {};
 
 export function getSignMetadataInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<SignMetadataInstructionDataArgs, SignMetadataInstructionData> {
-  const s = context.serializer;
   return mapSerializer<
     SignMetadataInstructionDataArgs,
     any,
     SignMetadataInstructionData
   >(
-    s.struct<SignMetadataInstructionData>([['discriminator', s.u8()]], {
+    struct<SignMetadataInstructionData>([['discriminator', u8()]], {
       description: 'SignMetadataInstructionData',
     }),
     (value) => ({ ...value, discriminator: 7 })

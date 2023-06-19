@@ -19,6 +19,8 @@ import {
 import {
   Serializer,
   mapSerializer,
+  struct,
+  u8,
 } from '@metaplex-foundation/umi/serializers';
 import { addAccountMeta, addObjectProperty } from '../shared';
 import { RevokeArgs, RevokeArgsArgs, getRevokeArgsSerializer } from '../types';
@@ -62,14 +64,13 @@ export type RevokeInstructionData = {
 export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
 
 export function getRevokeInstructionDataSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<RevokeInstructionDataArgs, RevokeInstructionData> {
-  const s = context.serializer;
   return mapSerializer<RevokeInstructionDataArgs, any, RevokeInstructionData>(
-    s.struct<RevokeInstructionData>(
+    struct<RevokeInstructionData>(
       [
-        ['discriminator', s.u8()],
-        ['revokeArgs', getRevokeArgsSerializer(context)],
+        ['discriminator', u8()],
+        ['revokeArgs', getRevokeArgsSerializer()],
       ],
       { description: 'RevokeInstructionData' }
     ),

@@ -7,7 +7,12 @@
  */
 
 import { Context } from '@metaplex-foundation/umi';
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import {
+  Serializer,
+  bytes,
+  string,
+  struct,
+} from '@metaplex-foundation/umi/serializers';
 
 /** Hidden settings for large mints used with off-chain data. */
 export type HiddenSettings = {
@@ -22,14 +27,13 @@ export type HiddenSettings = {
 export type HiddenSettingsArgs = HiddenSettings;
 
 export function getHiddenSettingsSerializer(
-  context: Pick<Context, 'serializer'>
+  _context: object = {}
 ): Serializer<HiddenSettingsArgs, HiddenSettings> {
-  const s = context.serializer;
-  return s.struct<HiddenSettings>(
+  return struct<HiddenSettings>(
     [
-      ['name', s.string()],
-      ['uri', s.string()],
-      ['hash', s.bytes({ size: 32 })],
+      ['name', string()],
+      ['uri', string()],
+      ['hash', bytes({ size: 32 })],
     ],
     { description: 'HiddenSettings' }
   ) as Serializer<HiddenSettingsArgs, HiddenSettings>;
