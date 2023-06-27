@@ -81,7 +81,7 @@ export function instructionNodeFromIdl(
 ): InstructionNode {
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
-  const useProgramIdForOptionalAccounts = idl.defaultOptionalAccounts ?? false;
+  const useProgramIdForOptionalAccounts = !idl.legacyOptionalAccountsStrategy;
   let dataArgs = structTypeNodeFromIdl({
     kind: 'struct',
     fields: idl.args ?? [],
