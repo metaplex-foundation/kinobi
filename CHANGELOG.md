@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.12.0
+
+### Minor Changes
+
+- [#52](https://github.com/metaplex-foundation/kinobi/pull/52) [`0221889`](https://github.com/metaplex-foundation/kinobi/commit/0221889142300e69cde17eed136a94d82598b715) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Default optional account strategy to program ID
+
 ## 0.11.1
 
 ### Patch Changes
