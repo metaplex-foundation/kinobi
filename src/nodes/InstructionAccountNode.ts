@@ -39,7 +39,7 @@ export function instructionAccountNode(
 
 export function instructionAccountNodeFromIdl(
   idl: IdlInstructionAccount,
-  useProgramIdForOptionalAccounts = false
+  useProgramIdForOptionalAccounts = true
 ): InstructionAccountNode {
   const isOptional = idl.optional ?? idl.isOptional ?? false;
   return instructionAccountNode({

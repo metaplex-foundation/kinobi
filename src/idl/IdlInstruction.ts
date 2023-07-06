@@ -5,6 +5,7 @@ export type IdlInstruction = {
   accounts: IdlInstructionAccount[];
   args: IdlInstructionArg[];
   defaultOptionalAccounts?: boolean;
+  legacyOptionalAccountsStrategy?: boolean;
   discriminant?: IdlInstructionDiscriminant;
   docs?: string[];
 };
