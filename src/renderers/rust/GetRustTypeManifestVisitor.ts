@@ -1,20 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as nodes from '../../nodes';
 import { camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
-import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
+import { RustImportMap } from './RustImportMap';
 
 export type RustTypeManifest = {
   type: string;
-  imports: JavaScriptImportMap;
+  imports: RustImportMap;
 };
 
-export class GetRustTypeManifestVisitor
-  implements Visitor<RustTypeManifest>
-{
+export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   private parentName: string | null = null;
-
-  constructor(readonly serializerVariable = 's') {}
 
   visitRoot(): RustTypeManifest {
     throw new Error(
@@ -54,10 +50,7 @@ export class GetRustTypeManifestVisitor
   visitInstructionDataArgs(
     instructionDataArgs: nodes.InstructionDataArgsNode
   ): RustTypeManifest {
-    this.parentName = {
-      strict: pascalCase(instructionDataArgs.name),
-      loose: `${pascalCase(instructionDataArgs.name)}Args`,
-    };
+    this.parentName = pascalCase(instructionDataArgs.name);
     const manifest = instructionDataArgs.link
       ? visit(instructionDataArgs.link, this)
       : visit(instructionDataArgs.struct, this);
@@ -68,10 +61,7 @@ export class GetRustTypeManifestVisitor
   visitInstructionExtraArgs(
     instructionExtraArgs: nodes.InstructionExtraArgsNode
   ): RustTypeManifest {
-    this.parentName = {
-      strict: pascalCase(instructionExtraArgs.name),
-      loose: `${pascalCase(instructionExtraArgs.name)}Args`,
-    };
+    this.parentName = pascalCase(instructionExtraArgs.name);
     const manifest = instructionExtraArgs.link
       ? visit(instructionExtraArgs.link, this)
       : visit(instructionExtraArgs.struct, this);
@@ -80,10 +70,7 @@ export class GetRustTypeManifestVisitor
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RustTypeManifest {
-    this.parentName = {
-      strict: pascalCase(definedType.name),
-      loose: `${pascalCase(definedType.name)}Args`,
-    };
+    this.parentName = pascalCase(definedType.name);
     const manifest = visit(definedType.data, this);
     this.parentName = null;
     return manifest;
@@ -95,570 +82,143 @@ export class GetRustTypeManifestVisitor
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): RustTypeManifest {
     const childManifest = visit(arrayType.child, this);
-    childManifest.serializerImports.add('umiSerializers', 'array');
-    const sizeOption = this.getArrayLikeSizeOption(
-      arrayType.size,
-      childManifest
-    );
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...childManifest,
-      strictType: `Array<${childManifest.strictType}>`,
-      looseType: `Array<${childManifest.looseType}>`,
-      serializer: `array(${childManifest.serializer + options})`,
-    };
-  }
 
-  visitLinkType(linkType: nodes.LinkTypeNode): RustTypeManifest {
-    const pascalCaseDefinedType = pascalCase(linkType.name);
-    const serializerName = `get${pascalCaseDefinedType}Serializer`;
-    const importFrom =
-      linkType.importFrom === 'generated'
-        ? 'generatedTypes'
-        : linkType.importFrom;
-
-    return {
-      isEnum: false,
-      strictType: pascalCaseDefinedType,
-      strictImports: new JavaScriptImportMap().add(
-        importFrom,
-        pascalCaseDefinedType
-      ),
-      looseType: `${pascalCaseDefinedType}Args`,
-      looseImports: new JavaScriptImportMap().add(
-        importFrom,
-        `${pascalCaseDefinedType}Args`
-      ),
-      serializer: `${serializerName}()`,
-      serializerImports: new JavaScriptImportMap().add(
-        importFrom,
-        serializerName
-      ),
-    };
-  }
-
-  visitEnumType(enumType: nodes.EnumTypeNode): RustTypeManifest {
-    const strictImports = new JavaScriptImportMap();
-    const looseImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'scalarEnum'
-    );
-
-    const variantNames = enumType.variants.map((variant) =>
-      pascalCase(variant.name)
-    );
-    const { parentName } = this;
-    this.parentName = null;
-    const options: string[] = [];
-
-    if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
-      const sizeManifest = visit(enumType.size, this);
-      strictImports.mergeWith(sizeManifest.strictImports);
-      looseImports.mergeWith(sizeManifest.looseImports);
-      serializerImports.mergeWith(sizeManifest.serializerImports);
-      options.push(`size: ${sizeManifest.serializer}`);
-    }
-
-    if (nodes.isScalarEnum(enumType)) {
-      if (parentName === null) {
-        throw new Error(
-          'Scalar enums cannot be inlined and must be introduced ' +
-            'via a defined type. Ensure you are not inlining a ' +
-            'defined type that is a scalar enum through a visitor.'
-        );
-      }
-      options.push(`description: '${parentName.strict}'`);
-      const optionsAsString =
-        options.length > 0 ? `, { ${options.join(', ')} }` : '';
+    if (arrayType.size.kind === 'fixed') {
       return {
-        isEnum: true,
-        strictType: `{ ${variantNames.join(', ')} }`,
-        strictImports,
-        looseType: `{ ${variantNames.join(', ')} }`,
-        looseImports,
-        serializer:
-          `scalarEnum<${parentName.strict}>` +
-          `(${parentName.strict + optionsAsString})`,
-        serializerImports,
+        ...childManifest,
+        type: `[${childManifest.type}; ${arrayType.size.value}]`,
       };
     }
 
-    const variants = enumType.variants.map(
-      (variant): RustTypeManifest => {
-        const variantName = pascalCase(variant.name);
-        this.parentName = parentName
-          ? {
-              strict: `GetDataEnumKindContent<${parentName.strict}, '${variantName}'>`,
-              loose: `GetDataEnumKindContent<${parentName.loose}, '${variantName}'>`,
-            }
-          : null;
-        const variantManifest = visit(variant, this);
-        this.parentName = null;
-        return variantManifest;
-      }
-    );
-
-    const mergedManifest = this.mergeManifests(variants);
-    const variantSerializers = variants
-      .map((variant) => variant.serializer)
-      .join(', ');
-    const serializerTypeParams = parentName ? parentName.strict : 'any';
-    if (parentName?.strict) {
-      options.push(`description: '${pascalCase(parentName.strict)}'`);
+    if (
+      arrayType.size.kind === 'prefixed' &&
+      arrayType.size.prefix.format === 'u32' &&
+      arrayType.size.prefix.endian === 'le'
+    ) {
+      return {
+        ...childManifest,
+        type: `Vec<${childManifest.type}>`,
+      };
     }
-    const optionsAsString =
-      options.length > 0 ? `, { ${options.join(', ')} }` : '';
 
-    return {
-      ...mergedManifest,
-      strictType: variants.map((v) => v.strictType).join(' | '),
-      looseType: variants.map((v) => v.looseType).join(' | '),
-      serializer:
-        `dataEnum<${serializerTypeParams}>` +
-        `([${variantSerializers}]${optionsAsString})`,
-      serializerImports: mergedManifest.serializerImports.add(
-        'umiSerializers',
-        ['GetDataEnumKindContent', 'GetDataEnumKind', 'dataEnum']
-      ),
-    };
+    // TODO: Add to the Rust validator.
+    throw new Error('Array size not supported by Borsh');
+  }
+
+  visitLinkType(linkType: nodes.LinkTypeNode): RustTypeManifest {
+    return { type: '', imports: new RustImportMap() };
+  }
+
+  visitEnumType(enumType: nodes.EnumTypeNode): RustTypeManifest {
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): RustTypeManifest {
-    const name = pascalCase(enumEmptyVariantType.name);
-    const kindAttribute = `__kind: "${name}"`;
-    return {
-      isEnum: false,
-      strictType: `{ ${kindAttribute} }`,
-      strictImports: new JavaScriptImportMap(),
-      looseType: `{ ${kindAttribute} }`,
-      looseImports: new JavaScriptImportMap(),
-      serializer: `['${name}', unit()]`,
-      serializerImports: new JavaScriptImportMap().add(
-        'umiSerializers',
-        'unit'
-      ),
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): RustTypeManifest {
-    const name = pascalCase(enumStructVariantType.name);
-    const kindAttribute = `__kind: "${name}"`;
-    const type = visit(enumStructVariantType.struct, this);
-    return {
-      ...type,
-      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-      serializer: `['${name}', ${type.serializer}]`,
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): RustTypeManifest {
-    const name = pascalCase(enumTupleVariantType.name);
-    const kindAttribute = `__kind: "${name}"`;
-    const struct = nodes.structTypeNode([
-      nodes.structFieldTypeNode({
-        name: 'fields',
-        child: enumTupleVariantType.tuple,
-      }),
-    ]);
-    const type = visit(struct, this);
-    return {
-      ...type,
-      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-      serializer: `['${name}', ${type.serializer}]`,
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitMapType(mapType: nodes.MapTypeNode): RustTypeManifest {
-    const key = visit(mapType.key, this);
-    const value = visit(mapType.value, this);
-    const mergedManifest = this.mergeManifests([key, value]);
-    mergedManifest.serializerImports.add('umiSerializers', 'map');
-    const sizeOption = this.getArrayLikeSizeOption(
-      mapType.size,
-      mergedManifest
-    );
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...mergedManifest,
-      strictType: `Map<${key.strictType}, ${value.strictType}>`,
-      looseType: `Map<${key.looseType}, ${value.looseType}>`,
-      serializer: `map(${key.serializer}, ${value.serializer}${options})`,
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): RustTypeManifest {
-    const childManifest = visit(optionType.child, this);
-    childManifest.strictImports.add('umi', 'Option');
-    childManifest.looseImports.add('umi', 'OptionOrNullable');
-    childManifest.serializerImports.add('umiSerializers', 'option');
-    const options: string[] = [];
-
-    // Prefix option.
-    if (
-      optionType.prefix.format !== 'u8' ||
-      optionType.prefix.endian !== 'le'
-    ) {
-      const prefixManifest = visit(optionType.prefix, this);
-      childManifest.strictImports.mergeWith(prefixManifest.strictImports);
-      childManifest.looseImports.mergeWith(prefixManifest.looseImports);
-      childManifest.serializerImports.mergeWith(
-        prefixManifest.serializerImports
-      );
-      options.push(`prefix: ${prefixManifest.serializer}`);
-    }
-
-    // Fixed option.
-    if (optionType.fixed) {
-      options.push(`fixed: true`);
-    }
-
-    const optionsAsString =
-      options.length > 0 ? `, { ${options.join(', ')} }` : '';
-
-    return {
-      ...childManifest,
-      strictType: `Option<${childManifest.strictType}>`,
-      looseType: `OptionOrNullable<${childManifest.looseType}>`,
-      serializer: `option(${childManifest.serializer}${optionsAsString})`,
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitSetType(setType: nodes.SetTypeNode): RustTypeManifest {
-    const childManifest = visit(setType.child, this);
-    childManifest.serializerImports.add('umiSerializers', 'set');
-    const sizeOption = this.getArrayLikeSizeOption(setType.size, childManifest);
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...childManifest,
-      strictType: `Set<${childManifest.strictType}>`,
-      looseType: `Set<${childManifest.looseType}>`,
-      serializer: `set(${childManifest.serializer + options})`,
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitStructType(structType: nodes.StructTypeNode): RustTypeManifest {
-    const { parentName } = this;
-    this.parentName = null;
-
-    const fields = structType.fields.map((field) => visit(field, this));
-    const mergedManifest = this.mergeManifests(fields);
-
-    return mergedManifest;
-    /*
-    mergedManifest.serializerImports.add('umiSerializers', 'struct');
-    const fieldSerializers = fields.map((field) => field.serializer).join(', ');
-    const structDescription =
-      parentName?.strict && !parentName.strict.match(/['"<>]/)
-        ? `, { description: '${pascalCase(parentName.strict)}' }`
-        : '';
-    const serializerTypeParams = parentName ? parentName.strict : 'any';
-    const baseManifest = {
-      ...mergedManifest,
-      strictType: `{ ${fields.map((field) => field.strictType).join('')} }`,
-      looseType: `{ ${fields.map((field) => field.looseType).join('')} }`,
-      serializer:
-        `struct<${serializerTypeParams}>` +
-        `([${fieldSerializers}]${structDescription})`,
-    };
-
-    const optionalFields = structType.fields.filter(
-      (f) => f.defaultsTo !== null
-    );
-    if (optionalFields.length === 0) {
-      return baseManifest;
-    }
-
-    const defaultValues = optionalFields
-      .map((f) => {
-        const key = camelCase(f.name);
-        const defaultsTo = f.defaultsTo as NonNullable<typeof f.defaultsTo>;
-        const { render: renderedValue, imports } = renderJavaScriptValueNode(
-          defaultsTo.value
-        );
-        baseManifest.serializerImports.mergeWith(imports);
-        if (defaultsTo.strategy === 'omitted') {
-          return `${key}: ${renderedValue}`;
-        }
-        return `${key}: value.${key} ?? ${renderedValue}`;
-      })
-      .join(', ');
-    const mapSerializerTypeParams = parentName
-      ? `${parentName.loose}, any, ${parentName.strict}`
-      : 'any, any, any';
-    const mappedSerializer =
-      `mapSerializer<${mapSerializerTypeParams}>(` +
-      `${baseManifest.serializer}, ` +
-      `(value) => ({ ...value, ${defaultValues} }) ` +
-      `)`;
-    baseManifest.serializerImports.add('umiSerializers', 'mapSerializer');
-    return { ...baseManifest, serializer: mappedSerializer };
-    */
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitStructFieldType(
     structFieldType: nodes.StructFieldTypeNode
   ): RustTypeManifest {
-    const name = camelCase(structFieldType.name);
-    const fieldChild = visit(structFieldType.child, this);
-    const docblock = this.createDocblock(structFieldType.docs);
-    const baseField = {
-      ...fieldChild,
-      strictType: `${docblock}${name}: ${fieldChild.strictType}; `,
-      looseType: `${docblock}${name}: ${fieldChild.looseType}; `,
-      serializer: `['${name}', ${fieldChild.serializer}]`,
-    };
-    if (structFieldType.defaultsTo === null) {
-      return baseField;
-    }
-    if (structFieldType.defaultsTo.strategy === 'optional') {
-      return {
-        ...baseField,
-        looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,
-      };
-    }
-    return { ...baseField, looseType: '' };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): RustTypeManifest {
-    const children = tupleType.children.map((item) => visit(item, this));
-    const mergedManifest = this.mergeManifests(children);
-    mergedManifest.serializerImports.add('umiSerializers', 'tuple');
-    const childrenSerializers = children
-      .map((child) => child.serializer)
-      .join(', ');
-    return {
-      ...mergedManifest,
-      strictType: `[${children.map((item) => item.strictType).join(', ')}]`,
-      looseType: `[${children.map((item) => item.looseType).join(', ')}]`,
-      serializer: `tuple([${childrenSerializers}])`,
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): RustTypeManifest {
-    const looseImports = new JavaScriptImportMap();
-    const strictImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'bool'
-    );
-    let sizeSerializer = '';
-    if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
-      const size = visit(boolType.size, this);
-      looseImports.mergeWith(size.looseImports);
-      strictImports.mergeWith(size.strictImports);
-      serializerImports.mergeWith(size.serializerImports);
-      sizeSerializer = `{ size: ${size.serializer} }`;
+    if (boolType.size.format === 'u8' && boolType.size.endian === 'le') {
+      return { type: 'bool', imports: new RustImportMap() };
     }
 
-    return {
-      isEnum: false,
-      strictType: 'boolean',
-      looseType: 'boolean',
-      serializer: `bool(${sizeSerializer})`,
-      looseImports,
-      strictImports,
-      serializerImports,
-    };
+    // TODO: Add to the Rust validator.
+    throw new Error('Bool size not supported by Borsh');
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): RustTypeManifest {
-    const strictImports = new JavaScriptImportMap();
-    const looseImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'bytes'
-    );
-    const options: string[] = [];
-
-    // Size option.
-    if (bytesType.size.kind === 'prefixed') {
-      const prefix = visit(bytesType.size.prefix, this);
-      strictImports.mergeWith(prefix.strictImports);
-      looseImports.mergeWith(prefix.looseImports);
-      serializerImports.mergeWith(prefix.serializerImports);
-      options.push(`size: ${prefix.serializer}`);
-    } else if (bytesType.size.kind === 'fixed') {
-      options.push(`size: ${bytesType.size.value}`);
-    }
-
-    const optionsAsString =
-      options.length > 0 ? `{ ${options.join(', ')} }` : '';
-
-    return {
-      isEnum: false,
-      strictType: 'Uint8Array',
-      strictImports,
-      looseType: 'Uint8Array',
-      looseImports,
-      serializer: `bytes(${optionsAsString})`,
-      serializerImports,
-    };
+    return { type: '', imports: new RustImportMap() };
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): RustTypeManifest {
-    const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
-      numberType.format
-    );
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      numberType.format
-    );
-    let endianness = '';
-    if (numberType.endian === 'be') {
-      serializerImports.add('umiSerializers', 'Endian');
-      endianness = '{ endian: Endian.Big }';
+    if (numberType.endian === 'le') {
+      return { type: numberType.format, imports: new RustImportMap() };
     }
-    return {
-      isEnum: false,
-      strictType: isBigNumber ? 'bigint' : 'number',
-      strictImports: new JavaScriptImportMap(),
-      looseType: isBigNumber ? 'number | bigint' : 'number',
-      looseImports: new JavaScriptImportMap(),
-      serializer: `${numberType.format}(${endianness})`,
-      serializerImports,
-    };
+
+    // TODO: Add to the Rust validator.
+    throw new Error('Number endianness not supported by Borsh');
   }
 
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): RustTypeManifest {
-    const { number, wrapper } = numberWrapperType;
-    const numberManifest = visit(number, this);
-    switch (wrapper.kind) {
-      case 'DateTime':
-        if (!nodes.isInteger(number)) {
-          throw new Error(
-            `DateTime wrappers can only be applied to integer ` +
-              `types. Got type [${number.toString()}].`
-          );
-        }
-        numberManifest.strictImports.add('umi', 'DateTime');
-        numberManifest.looseImports.add('umi', 'DateTimeInput');
-        numberManifest.serializerImports.add('umi', 'mapDateTimeSerializer');
-        return {
-          ...numberManifest,
-          strictType: `DateTime`,
-          looseType: `DateTimeInput`,
-          serializer: `mapDateTimeSerializer(${numberManifest.serializer})`,
-        };
-      case 'Amount':
-      case 'SolAmount':
-        if (!nodes.isUnsignedInteger(number)) {
-          throw new Error(
-            `Amount wrappers can only be applied to unsigned ` +
-              `integer types. Got type [${number.toString()}].`
-          );
-        }
-        const identifier =
-          wrapper.kind === 'SolAmount' ? 'SOL' : wrapper.identifier;
-        const decimals = wrapper.kind === 'SolAmount' ? 9 : wrapper.decimals;
-        const idAndDecimals = `'${identifier}', ${decimals}`;
-        const isSolAmount = identifier === 'SOL' && decimals === 9;
-        const amountType = isSolAmount
-          ? 'SolAmount'
-          : `Amount<${idAndDecimals}>`;
-        const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
-        numberManifest.strictImports.add('umi', amountImport);
-        numberManifest.looseImports.add('umi', amountImport);
-        numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
-        return {
-          ...numberManifest,
-          strictType: amountType,
-          looseType: amountType,
-          serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
-        };
-      default:
-        return numberManifest;
-    }
+    return visit(numberWrapperType.number, this);
   }
 
   visitPublicKeyType(): RustTypeManifest {
-    const imports = new JavaScriptImportMap().add('umi', 'PublicKey');
     return {
-      isEnum: false,
-      strictType: 'PublicKey',
-      strictImports: imports,
-      looseType: 'PublicKey',
-      looseImports: imports,
-      serializer: `publicKeySerializer()`,
-      serializerImports: new JavaScriptImportMap()
-        .add('umiSerializers', 'publicKey')
-        .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer'),
+      type: 'Pubkey',
+      imports: new RustImportMap().add('solana_program', 'pubkey::Pubkey'),
     };
   }
 
   visitStringType(stringType: nodes.StringTypeNode): RustTypeManifest {
-    const looseImports = new JavaScriptImportMap();
-    const strictImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'string'
-    );
-    const options: string[] = [];
-
-    // Encoding option.
-    if (stringType.encoding !== 'utf8') {
-      looseImports.add('umiSerializers', stringType.encoding);
-      strictImports.add('umiSerializers', stringType.encoding);
-      options.push(`encoding: ${stringType.encoding}`);
-    }
-
-    // Size option.
-    if (stringType.size.kind === 'remainder') {
-      options.push(`size: 'variable'`);
-    } else if (stringType.size.kind === 'fixed') {
-      options.push(`size: ${stringType.size.value}`);
-    } else if (
-      stringType.size.prefix.format !== 'u32' ||
-      stringType.size.prefix.endian !== 'le'
+    if (
+      stringType.size.kind === 'prefixed' &&
+      stringType.size.prefix.format === 'u32' &&
+      stringType.size.prefix.endian === 'le'
     ) {
-      const prefix = visit(stringType.size.prefix, this);
-      looseImports.mergeWith(prefix.looseImports);
-      strictImports.mergeWith(prefix.strictImports);
-      serializerImports.mergeWith(prefix.serializerImports);
-      options.push(`size: ${prefix.serializer}`);
+      return { type: 'String', imports: new RustImportMap() };
     }
 
-    const optionsAsString =
-      options.length > 0 ? `{ ${options.join(', ')} }` : '';
+    if (stringType.size.kind === 'fixed') {
+      return {
+        type: `[u8; ${stringType.size.value}]`,
+        imports: new RustImportMap(),
+      };
+    }
 
-    return {
-      isEnum: false,
-      strictType: 'string',
-      strictImports,
-      looseType: 'string',
-      looseImports,
-      serializer: `string(${optionsAsString})`,
-      serializerImports,
-    };
+    // TODO: Add to the Rust validator.
+    throw new Error('String size not supported by Borsh');
   }
 
   protected mergeManifests(
     manifests: RustTypeManifest[]
-  ): Pick<
-    RustTypeManifest,
-    'strictImports' | 'looseImports' | 'serializerImports' | 'isEnum'
-  > {
+  ): Pick<RustTypeManifest, 'imports'> {
     return {
-      strictImports: new JavaScriptImportMap().mergeWith(
-        ...manifests.map((td) => td.strictImports)
+      imports: new RustImportMap().mergeWith(
+        ...manifests.map((td) => td.imports)
       ),
-      looseImports: new JavaScriptImportMap().mergeWith(
-        ...manifests.map((td) => td.looseImports)
-      ),
-      serializerImports: new JavaScriptImportMap().mergeWith(
-        ...manifests.map((td) => td.serializerImports)
-      ),
-      isEnum: false,
     };
   }
 
@@ -667,24 +227,5 @@ export class GetRustTypeManifestVisitor
     if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
     const lines = docs.map((doc) => ` * ${doc}`);
     return `\n/**\n${lines.join('\n')}\n */\n`;
-  }
-
-  protected getArrayLikeSizeOption(
-    size: nodes.ArrayTypeNode['size'],
-    manifest: Pick<
-      RustTypeManifest,
-      'strictImports' | 'looseImports' | 'serializerImports'
-    >
-  ): string | null {
-    if (size.kind === 'fixed') return `size: ${size.value}`;
-    if (size.kind === 'remainder') return `size: 'remainder'`;
-
-    const prefixManifest = visit(size.prefix, this);
-    if (prefixManifest.serializer === 'u32()') return null;
-
-    manifest.strictImports.mergeWith(prefixManifest.strictImports);
-    manifest.looseImports.mergeWith(prefixManifest.looseImports);
-    manifest.serializerImports.mergeWith(prefixManifest.serializerImports);
-    return `size: ${prefixManifest.serializer}`;
   }
 }

@@ -1,44 +1,32 @@
-import { LogLevel } from '../../shared/logs';
 import * as nodes from '../../nodes';
-import {
-  BaseThrowVisitor,
-  ThrowValidatorItemsVisitor,
-  visit,
-} from '../../visitors';
-import { deleteFolder } from '../utils';
+import { LogLevel } from '../../shared/logs';
+import { BaseThrowVisitor, visit } from '../../visitors';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
-/*
+import { deleteFolder } from '../utils';
 import {
   GetRustRenderMapOptions,
   GetRustRenderMapVisitor,
-} from './GetRustRenderMapVisitor._ts';
-import { GetRustValidatorBagVisitor } from './GetRustValidatorBagVisitor';
-*/
+} from './GetRustRenderMapVisitor';
 
-export type RenderRustOptions = {
+export type RenderRustOptions = GetRustRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
   throwLevel?: LogLevel;
 };
 
 export class RenderRustVisitor extends BaseThrowVisitor<void> {
-  constructor(
-    readonly path: string,
-    readonly options: RenderRustOptions = {}
-  ) {
+  constructor(readonly path: string, readonly options: RenderRustOptions = {}) {
     super();
   }
 
   visitRoot(root: nodes.RootNode): void {
-    console.log(root);
-    /*
     // Validate nodes.
-    visit(
-      root,
-      new ThrowValidatorItemsVisitor(
-        new GetRustValidatorBagVisitor(),
-        this.options.throwLevel
-      )
-    );
+    // visit(
+    //   root,
+    //   new ThrowValidatorItemsVisitor(
+    //     new GetRustValidatorBagVisitor(),
+    //     this.options.throwLevel
+    //   )
+    // );
 
     // Delete existing generated folder.
     if (this.options.deleteFolderBeforeRendering ?? true) {
@@ -53,6 +41,5 @@ export class RenderRustVisitor extends BaseThrowVisitor<void> {
         this.path
       )
     );
-    */
   }
 }

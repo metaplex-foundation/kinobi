@@ -1,14 +1,6 @@
 import type { ConfigureOptions } from 'nunjucks';
-import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import {
-  camelCase,
-  getGpaFieldsFromAccount,
-  ImportFrom,
-  InstructionDefault,
-  pascalCase,
-} from '../../shared';
-import { logWarn } from '../../shared/logs';
+import { camelCase, ImportFrom, pascalCase, snakeCase } from '../../shared';
 import {
   BaseThrowVisitor,
   GetByteSizeVisitor,
@@ -21,16 +13,15 @@ import {
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
 import {
-  GetJavaScriptTypeManifestVisitor,
-  JavaScriptTypeManifest,
+  GetRustTypeManifestVisitor,
+  RustTypeManifest,
 } from './GetRustTypeManifestVisitor';
-import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
+import { RustImportMap } from './RustImportMap';
 
 export type GetRustRenderMapOptions = {
   renderParentInstructions?: boolean;
   dependencyMap?: Record<ImportFrom, string>;
-  typeManifestVisitor?: Visitor<JavaScriptTypeManifest>;
+  typeManifestVisitor?: Visitor<RustTypeManifest>;
   byteSizeVisitor?: Visitor<number | null> & {
     registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
   };
@@ -46,26 +37,15 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     super();
     this.options = {
       renderParentInstructions: options.renderParentInstructions ?? false,
-      formatCode: options.formatCode ?? true,
-      prettierOptions: {
-        ...DEFAULT_PRETTIER_OPTIONS,
-        ...options.prettierOptions,
-      },
       dependencyMap: {
-        generated: '..',
-        hooked: '../../hooked',
-        umi: '@metaplex-foundation/umi',
-        umiSerializers: '@metaplex-foundation/umi/serializers',
-        mplEssentials: '@metaplex-foundation/mpl-toolbox',
-        mplToolbox: '@metaplex-foundation/mpl-toolbox',
+        generated: 'crate::generated',
+        hooked: 'crate::hooked',
+        mplEssentials: 'mpl_toolbox',
+        mplToolbox: 'mpl_toolbox',
         ...options.dependencyMap,
-        // Custom relative dependencies to link generated files together.
-        generatedAccounts: '../accounts',
-        generatedErrors: '../errors',
-        generatedTypes: '../types',
       },
       typeManifestVisitor:
-        options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
+        options.typeManifestVisitor ?? new GetRustTypeManifestVisitor(),
       byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
@@ -102,36 +82,29 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     };
 
     const map = new RenderMap();
-    if (hasAnythingToExport) {
-      map.add('shared/index.ts', this.render('sharedPage.njk', ctx));
-    }
     if (programsToExport.length > 0) {
       map
-        .add('programs/index.ts', this.render('programsIndex.njk', ctx))
-        .add('errors/index.ts', this.render('errorsIndex.njk', ctx));
+        .add('programs/mod.rs', this.render('programsMod.njk', ctx))
+        .add('errors/mod.rs', this.render('errorsMod.njk', ctx));
     }
     if (accountsToExport.length > 0) {
-      map.add('accounts/index.ts', this.render('accountsIndex.njk', ctx));
+      map.add('accounts/mod.rs', this.render('accountsMod.njk', ctx));
     }
     if (instructionsToExport.length > 0) {
-      map.add(
-        'instructions/index.ts',
-        this.render('instructionsIndex.njk', ctx)
-      );
+      map.add('instructions/mod.rs', this.render('instructionsMod.njk', ctx));
     }
     if (definedTypesToExport.length > 0) {
-      map.add('types/index.ts', this.render('definedTypesIndex.njk', ctx));
+      map.add('types/mod.rs', this.render('definedTypesMod.njk', ctx));
     }
 
     return map
-      .add('index.ts', this.render('rootIndex.njk', ctx))
+      .add('mod.rs', this.render('rootMod.njk', ctx))
       .mergeWith(...root.programs.map((program) => visit(program, this)));
   }
 
   visitProgram(program: nodes.ProgramNode): RenderMap {
     this.program = program;
     const { name } = program;
-    const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
       .mergeWith(...program.accounts.map((account) => visit(account, this)))
       .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
@@ -154,11 +127,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           .map((ix) => visit(ix, this))
       )
       .add(
-        `errors/${camelCase(name)}.ts`,
+        `errors/${snakeCase(name)}.rs`,
         this.render('errorsPage.njk', {
-          imports: new JavaScriptImportMap()
-            .add('umi', ['ProgramError', 'Program'])
-            .toString(this.options.dependencyMap),
+          imports: new RustImportMap().toString(this.options.dependencyMap),
           program,
           errors: program.errors.map((error) => ({
             ...error,
@@ -167,15 +138,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         })
       )
       .add(
-        `programs/${camelCase(name)}.ts`,
+        `programs/${snakeCase(name)}.rs`,
         this.render('programsPage.njk', {
-          imports: new JavaScriptImportMap()
-            .add('umi', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
-            .add('errors', [
-              `get${pascalCaseName}ErrorFromCode`,
-              `get${pascalCaseName}ErrorFromName`,
-            ])
-            .toString(this.options.dependencyMap),
+          imports: new RustImportMap().toString(this.options.dependencyMap),
           program,
         })
       );
@@ -184,350 +149,43 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
-    const isLinked = !!account.data.link;
     const typeManifest = visit(account, this.typeManifestVisitor);
-    const imports = new JavaScriptImportMap().mergeWith(
-      typeManifest.strictImports,
-      typeManifest.serializerImports
-    );
-    if (!isLinked) {
-      imports.mergeWith(typeManifest.looseImports);
-    }
-    imports
-      .add('umi', [
-        'Account',
-        'assertAccountExists',
-        'Context',
-        'deserializeAccount',
-        'Pda',
-        'PublicKey',
-        'publicKey',
-        'RpcAccount',
-        'RpcGetAccountOptions',
-        'RpcGetAccountsOptions',
-      ])
-      .add('umiSerializers', !isLinked ? ['Serializer'] : [])
-      .addAlias('umi', 'publicKey', 'toPublicKey');
-
-    // Discriminator.
-    const { discriminator } = account;
-    let resolvedDiscriminator:
-      | { kind: 'size'; value: string }
-      | { kind: 'field'; name: string; value: string }
-      | null = null;
-    if (discriminator?.kind === 'field') {
-      const discriminatorField = account.data.struct.fields.find(
-        (f) => f.name === discriminator.name
-      );
-      const discriminatorValue = discriminatorField?.defaultsTo?.value
-        ? renderJavaScriptValueNode(discriminatorField.defaultsTo.value)
-        : undefined;
-      if (discriminatorValue) {
-        imports.mergeWith(discriminatorValue.imports);
-        resolvedDiscriminator = {
-          kind: 'field',
-          name: discriminator.name,
-          value: discriminatorValue.render,
-        };
-      }
-    } else if (discriminator?.kind === 'size') {
-      resolvedDiscriminator =
-        account.size !== undefined
-          ? { kind: 'size', value: `${account.size}` }
-          : null;
-    }
-
-    // GPA Fields.
-    const gpaFields = getGpaFieldsFromAccount(
-      account,
-      this.byteSizeVisitor
-    ).map((gpaField) => {
-      const gpaFieldManifest = visit(gpaField.type, this.typeManifestVisitor);
-      imports.mergeWith(
-        gpaFieldManifest.looseImports,
-        gpaFieldManifest.serializerImports
-      );
-      return { ...gpaField, manifest: gpaFieldManifest };
-    });
-    let resolvedGpaFields: { type: string; argument: string } | null = null;
-    if (gpaFields.length > 0) {
-      imports.add('umi', ['gpaBuilder']);
-      resolvedGpaFields = {
-        type: `{ ${gpaFields
-          .map((f) => `'${f.name}': ${f.manifest.looseType}`)
-          .join(', ')} }`,
-        argument: `{ ${gpaFields
-          .map((f) => {
-            const offset = f.offset === null ? 'null' : `${f.offset}`;
-            return `'${f.name}': [${offset}, ${f.manifest.serializer}]`;
-          })
-          .join(', ')} }`,
-      };
-    }
-
-    // Seeds.
-    const seeds = account.seeds.map((seed) => {
-      if (seed.kind === 'constant') {
-        const seedManifest = visit(seed.type, this.typeManifestVisitor);
-        imports.mergeWith(seedManifest.serializerImports);
-        const seedValue = seed.value;
-        const valueManifest = renderJavaScriptValueNode(seedValue);
-        (seedValue as any).render = valueManifest.render;
-        imports.mergeWith(valueManifest.imports);
-        return { ...seed, typeManifest: seedManifest };
-      }
-      if (seed.kind === 'variable') {
-        const seedManifest = visit(seed.type, this.typeManifestVisitor);
-        imports.mergeWith(
-          seedManifest.looseImports,
-          seedManifest.serializerImports
-        );
-        return { ...seed, typeManifest: seedManifest };
-      }
-      imports
-        .add('umiSerializers', 'publicKey')
-        .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
-      return seed;
-    });
-    if (seeds.length > 0) {
-      imports.add('umi', ['Pda']);
-    }
-    const hasVariableSeeds =
-      account.seeds.filter((seed) => seed.kind === 'variable').length > 0;
+    const { imports } = typeManifest;
 
     return new RenderMap().add(
-      `accounts/${camelCase(account.name)}.ts`,
+      `accounts/${snakeCase(account.name)}.ts`,
       this.render('accountsPage.njk', {
         account,
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
         typeManifest,
-        discriminator: resolvedDiscriminator,
-        gpaFields: resolvedGpaFields,
-        seeds,
-        hasVariableSeeds,
       })
     );
   }
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
-    const imports = new JavaScriptImportMap().add('umi', [
-      'AccountMeta',
-      'Context',
-      'Signer',
-      'TransactionBuilder',
-      'transactionBuilder',
-    ]);
-
-    // Instruction helpers.
-    const hasAccounts = instruction.accounts.length > 0;
-    const hasData =
-      !!instruction.dataArgs.link ||
-      instruction.dataArgs.struct.fields.length > 0;
-    const hasDataArgs =
-      !!instruction.dataArgs.link ||
-      instruction.dataArgs.struct.fields.filter(
-        (field) => field.defaultsTo?.strategy !== 'omitted'
-      ).length > 0;
-    const hasExtraArgs =
-      !!instruction.extraArgs.link ||
-      instruction.extraArgs.struct.fields.filter(
-        (field) => field.defaultsTo?.strategy !== 'omitted'
-      ).length > 0;
-    const hasAnyArgs = hasDataArgs || hasExtraArgs;
-    const hasArgDefaults = Object.keys(instruction.argDefaults).length > 0;
-    const hasArgResolvers = Object.values(instruction.argDefaults).some(
-      ({ kind }) => kind === 'resolver'
-    );
-    const hasAccountResolvers = instruction.accounts.some(
-      ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
-    );
-    const hasByteResolver =
-      instruction.bytesCreatedOnChain?.kind === 'resolver';
-    const hasResolvers =
-      hasArgResolvers || hasAccountResolvers || hasByteResolver;
-
-    // Resolved inputs.
-    const resolvedInputs = visit(
-      instruction,
-      this.resolvedInstructionInputVisitor
-    ).map((input: ResolvedInstructionInput) => {
-      if (input.defaultsTo?.kind === 'pda') {
-        const { seeds } = input.defaultsTo;
-        Object.keys(seeds).forEach((seed: string) => {
-          const seedValue = seeds[seed];
-          if (seedValue.kind !== 'value') return;
-          const valueManifest = renderJavaScriptValueNode(seedValue.value);
-          (seedValue as any).render = valueManifest.render;
-          imports.mergeWith(valueManifest.imports);
-        });
-      } else if (input.defaultsTo?.kind === 'value') {
-        const { defaultsTo } = input;
-        const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
-        (defaultsTo as any).render = valueManifest.render;
-        imports.mergeWith(valueManifest.imports);
-      }
-      return input;
-    });
-    const resolvedInputsWithDefaults = resolvedInputs.filter(
-      (input) => input.kind !== 'account' || input.defaultsTo !== undefined
-    );
-    if (resolvedInputsWithDefaults.length > 0) {
-      imports.add('shared', 'addObjectProperty');
-    }
-    const accountsWithDefaults = resolvedInputsWithDefaults
-      .filter((input) => input.kind === 'account')
-      .map((input) => input.name);
-    const argsWithDefaults = resolvedInputsWithDefaults
-      .filter((input) => input.kind === 'arg')
-      .map((input) => input.name);
-
-    // Accounts.
-    const accounts = instruction.accounts.map((account) => {
-      const hasDefaultValue = !!account.defaultsTo;
-      const resolvedAccount = resolvedInputs.find(
-        (input) => input.kind === 'account' && input.name === account.name
-      ) as ResolvedInstructionAccount;
-      return {
-        ...resolvedAccount,
-        type: this.getInstructionAccountType(resolvedAccount),
-        optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
-        hasDefaultValue,
-      };
-    });
-    imports.mergeWith(this.getInstructionAccountImports(accounts));
-    if (accounts.length > 0) {
-      imports.add('shared', 'addAccountMeta');
-    }
-
-    // Data Args.
-    const linkedDataArgs = !!instruction.dataArgs.link;
-    const dataArgManifest = visit(
-      instruction.dataArgs,
-      this.typeManifestVisitor
-    );
-    if (linkedDataArgs || hasData) {
-      imports.mergeWith(
-        dataArgManifest.looseImports,
-        dataArgManifest.serializerImports
-      );
-    }
-    if (!linkedDataArgs) {
-      imports.mergeWith(dataArgManifest.strictImports);
-    }
-    if (!linkedDataArgs && hasData) {
-      imports.add('umiSerializers', ['Serializer']);
-    }
-
-    // Extra args.
-    const linkedExtraArgs = !!instruction.extraArgs.link;
-    const extraArgManifest = visit(
-      instruction.extraArgs,
-      this.typeManifestVisitor
-    );
-    imports.mergeWith(extraArgManifest.looseImports);
-
-    // Arg defaults.
-    Object.values(instruction.argDefaults).forEach((argDefault) => {
-      if (argDefault.kind === 'resolver') {
-        imports.add(argDefault.importFrom, camelCase(argDefault.name));
-      }
-    });
-    if (argsWithDefaults.length > 0) {
-      imports.add('shared', ['PickPartial']);
-    }
-
-    // Bytes created on chain.
-    const bytes = instruction.bytesCreatedOnChain;
-    if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
-      imports.add('umi', 'ACCOUNT_HEADER_SIZE');
-    }
-    if (bytes?.kind === 'account') {
-      const accountName = pascalCase(bytes.name);
-      const importFrom =
-        bytes.importFrom === 'generated'
-          ? 'generatedAccounts'
-          : bytes.importFrom;
-      imports.add(importFrom, `get${accountName}Size`);
-    } else if (bytes?.kind === 'resolver') {
-      imports.add(bytes.importFrom, camelCase(bytes.name));
-    }
-
-    // canMergeAccountsAndArgs
-    let canMergeAccountsAndArgs = false;
-    if (!linkedDataArgs && !linkedExtraArgs) {
-      const accountsAndArgsConflicts =
-        this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
-      if (accountsAndArgsConflicts.length > 0) {
-        logWarn(
-          `Accounts and args of instruction [${instruction.name}] have the following ` +
-            `conflicting attributes [${accountsAndArgsConflicts.join(
-              ', '
-            )}]. ` +
-            `Thus, they could not be merged into a single input object. ` +
-            'You may want to rename the conflicting attributes.'
-        );
-      }
-      canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
-    }
-
-    const hasDefaultKinds = (kinds: Array<InstructionDefault['kind']>) =>
-      resolvedInputs.some(
-        (input) => input.defaultsTo && kinds.includes(input.defaultsTo.kind)
-      );
+    const imports = new RustImportMap();
 
     return new RenderMap().add(
-      `instructions/${camelCase(instruction.name)}.ts`,
+      `instructions/${snakeCase(instruction.name)}.rs`,
       this.render('instructionsPage.njk', {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
         program: this.program,
-        resolvedInputs,
-        resolvedInputsWithDefaults,
-        accountsWithDefaults,
-        argsWithDefaults,
-        accounts,
-        needsEddsa: hasDefaultKinds(['pda']) || hasResolvers,
-        needsIdentity: hasDefaultKinds(['identity']) || hasResolvers,
-        needsPayer: hasDefaultKinds(['payer']) || hasResolvers,
-        dataArgManifest,
-        extraArgManifest,
-        canMergeAccountsAndArgs,
-        hasAccounts,
-        hasData,
-        hasDataArgs,
-        hasExtraArgs,
-        hasAnyArgs,
-        hasArgDefaults,
-        hasArgResolvers,
-        hasAccountResolvers,
-        hasByteResolver,
-        hasResolvers,
       })
     );
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
-    const pascalCaseName = pascalCase(definedType.name);
     const typeManifest = visit(definedType, this.typeManifestVisitor);
-    const imports = new JavaScriptImportMap()
-      .mergeWithManifest(typeManifest)
-      .add('umiSerializers', ['Serializer'])
-      .remove('generatedTypes', [
-        pascalCaseName,
-        `${pascalCaseName}Args`,
-        `get${pascalCaseName}Serializer`,
-      ]);
+    const imports = new RustImportMap().mergeWithManifest(typeManifest);
 
     return new RenderMap().add(
-      `types/${camelCase(definedType.name)}.ts`,
+      `types/${snakeCase(definedType.name)}.rs`,
       this.render('definedTypesPage.njk', {
         definedType,
-        imports: imports.toString({
-          ...this.options.dependencyMap,
-          generatedTypes: '.',
-        }),
+        imports: imports.toString(this.options.dependencyMap),
         typeManifest,
         isDataEnum:
           nodes.isEnumTypeNode(definedType.data) &&
@@ -558,8 +216,8 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   protected getInstructionAccountImports(
     accounts: ResolvedInstructionAccount[]
-  ): JavaScriptImportMap {
-    const imports = new JavaScriptImportMap();
+  ): RustImportMap {
+    const imports = new RustImportMap();
     accounts.forEach((account) => {
       if (account.isSigner !== true && !account.isPda)
         imports.add('umi', 'PublicKey');
@@ -613,8 +271,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       context,
       options
     );
-    return this.options.formatCode
-      ? formatCode(code, this.options.prettierOptions)
-      : code;
+    // TODO: Rust formatting happens here.
+    return code;
   }
 }
