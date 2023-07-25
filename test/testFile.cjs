@@ -221,5 +221,6 @@ const kinobiReconstructed = k.createFromJson(kinobiJson);
 
 // kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
 kinobiReconstructed.accept(
-  new k.RenderJavaScriptVisitor('./test/package/src/generated')
+  //new k.RenderJavaScriptVisitor('./test/package/src/generated')
+  new k.RenderRustVisitor('./test/package/src/generated')
 );

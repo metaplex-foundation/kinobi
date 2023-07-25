@@ -124,16 +124,6 @@ export function validate(
   // Resolved inputs.
   const resolvedAccounts = {
     ruleSet: [input.ruleSet, true] as const,
-    optRuleSigner1: [input.optRuleSigner1, false] as const,
-    optRuleSigner2: [input.optRuleSigner2, false] as const,
-    optRuleSigner3: [input.optRuleSigner3, false] as const,
-    optRuleSigner4: [input.optRuleSigner4, false] as const,
-    optRuleSigner5: [input.optRuleSigner5, false] as const,
-    optRuleNonsigner1: [input.optRuleNonsigner1, false] as const,
-    optRuleNonsigner2: [input.optRuleNonsigner2, false] as const,
-    optRuleNonsigner3: [input.optRuleNonsigner3, false] as const,
-    optRuleNonsigner4: [input.optRuleNonsigner4, false] as const,
-    optRuleNonsigner5: [input.optRuleNonsigner5, false] as const,
   };
   const resolvingArgs = {};
   addObjectProperty(
@@ -156,21 +146,91 @@ export function validate(
           false,
         ] as const)
   );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleSigner1',
+    input.optRuleSigner1
+      ? ([input.optRuleSigner1, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleSigner2',
+    input.optRuleSigner2
+      ? ([input.optRuleSigner2, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleSigner3',
+    input.optRuleSigner3
+      ? ([input.optRuleSigner3, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleSigner4',
+    input.optRuleSigner4
+      ? ([input.optRuleSigner4, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleSigner5',
+    input.optRuleSigner5
+      ? ([input.optRuleSigner5, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleNonsigner1',
+    input.optRuleNonsigner1
+      ? ([input.optRuleNonsigner1, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleNonsigner2',
+    input.optRuleNonsigner2
+      ? ([input.optRuleNonsigner2, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleNonsigner3',
+    input.optRuleNonsigner3
+      ? ([input.optRuleNonsigner3, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleNonsigner4',
+    input.optRuleNonsigner4
+      ? ([input.optRuleNonsigner4, false] as const)
+      : ([programId, false] as const)
+  );
+  addObjectProperty(
+    resolvedAccounts,
+    'optRuleNonsigner5',
+    input.optRuleNonsigner5
+      ? ([input.optRuleNonsigner5, false] as const)
+      : ([programId, false] as const)
+  );
   const resolvedArgs = { ...input, ...resolvingArgs };
 
   addAccountMeta(keys, signers, resolvedAccounts.payer, false);
   addAccountMeta(keys, signers, resolvedAccounts.ruleSet, false);
   addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner1, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner2, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner3, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner4, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner5, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner1, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner2, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner3, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner4, true);
-  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner5, true);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner1, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner2, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner3, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner4, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleSigner5, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner1, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner2, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner3, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner4, false);
+  addAccountMeta(keys, signers, resolvedAccounts.optRuleNonsigner5, false);
 
   // Data.
   const data = getValidateInstructionDataSerializer().serialize(resolvedArgs);

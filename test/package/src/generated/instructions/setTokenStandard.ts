@@ -21,7 +21,7 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta } from '../shared';
+import { addAccountMeta, addObjectProperty } from '../shared';
 
 // Accounts.
 export type SetTokenStandardInstructionAccounts = {
@@ -91,13 +91,19 @@ export function setTokenStandard(
     metadata: [input.metadata, true] as const,
     updateAuthority: [input.updateAuthority, true] as const,
     mint: [input.mint, false] as const,
-    edition: [input.edition, false] as const,
   };
+  addObjectProperty(
+    resolvedAccounts,
+    'edition',
+    input.edition
+      ? ([input.edition, false] as const)
+      : ([programId, false] as const)
+  );
 
   addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
   addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
   addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.edition, true);
+  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
 
   // Data.
   const data = getSetTokenStandardInstructionDataSerializer().serialize({});
