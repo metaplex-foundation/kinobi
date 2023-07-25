@@ -153,7 +153,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const { imports } = typeManifest;
 
     return new RenderMap().add(
-      `accounts/${snakeCase(account.name)}.ts`,
+      `accounts/${snakeCase(account.name)}.rs`,
       this.render('accountsPage.njk', {
         account,
         imports: imports.toString(this.options.dependencyMap),
@@ -187,9 +187,6 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         definedType,
         imports: imports.toString(this.options.dependencyMap),
         typeManifest,
-        isDataEnum:
-          nodes.isEnumTypeNode(definedType.data) &&
-          nodes.isDataEnum(definedType.data),
       })
     );
   }

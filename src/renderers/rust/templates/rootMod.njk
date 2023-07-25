@@ -1,0 +1,21 @@
+{% extends "layout.njk" %}
+
+{% block main %}
+{% if hasAnythingToExport %}
+  {% if accountsToExport.length > 0 %}
+    pub mod crate::accounts;
+  {% endif %}
+  {% if programsToExport.length > 0 %}
+    pub mod crate::errors;
+  {% endif %}
+  {% if instructionsToExport.length > 0 %}
+    pub mod crate::instructions;
+  {% endif %}
+  {% if programsToExport.length > 0 %}
+    pub mod crate::programs;
+  {% endif %}
+  {% if definedTypesToExport.length > 0 %}
+    pub mod crate::types;
+  {% endif %}
+{% endif %}
+{% endblock %}
