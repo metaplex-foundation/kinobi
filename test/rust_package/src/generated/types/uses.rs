@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use crate::generated::types::{ UseMethod };
 
 
-
-
+struct Uses {
+use_method: UseMethod,
+remaining: u64,
+total: u64,
+}

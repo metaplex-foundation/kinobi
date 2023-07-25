@@ -10,4 +10,15 @@
 
 /// Config line settings to allocate space for individual name + URI.
 
-
+struct ConfigLineSettings {
+/// Common name prefix
+prefix_name: String,
+/// Length of the remaining part of the name
+name_length: u32,
+/// Common URI prefix
+prefix_uri: String,
+/// Length of the remaining part of the URI
+uri_length: u32,
+/// Indicates whether to use a senquential index generator or not
+is_sequential: bool,
+}

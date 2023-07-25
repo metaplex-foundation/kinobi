@@ -6,7 +6,9 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use solana_program::{ pubkey::Pubkey };
 
 
-
-
+struct ProgrammableConfig {
+rule_set: Pubkey,
+}

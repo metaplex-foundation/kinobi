@@ -9,4 +9,6 @@
 
 
 
-
+struct MintPrintingTokensViaTokenArgs {
+supply: u64,
+}

@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use solana_program::{ pubkey::Pubkey };
 
 
-
-
+struct Reservation {
+address: Pubkey,
+spots_remaining: u64,
+total_spots: u64,
+}

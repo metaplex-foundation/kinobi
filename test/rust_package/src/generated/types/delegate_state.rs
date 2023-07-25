@@ -6,7 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use crate::generated::types::{ DelegateRole };
+use solana_program::{ pubkey::Pubkey };
 
 
-
-
+struct DelegateState {
+role: DelegateRole,
+delegate: Pubkey,
+has_data: bool,
+}

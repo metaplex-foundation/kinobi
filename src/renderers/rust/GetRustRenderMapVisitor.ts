@@ -37,13 +37,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     super();
     this.options = {
       renderParentInstructions: options.renderParentInstructions ?? false,
-      dependencyMap: {
-        generated: 'crate::generated',
-        hooked: 'crate::hooked',
-        mplEssentials: 'mpl_toolbox',
-        mplToolbox: 'mpl_toolbox',
-        ...options.dependencyMap,
-      },
+      dependencyMap: { ...options.dependencyMap },
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetRustTypeManifestVisitor(),
       byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),

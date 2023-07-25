@@ -6,7 +6,9 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use crate::generated::types::{ Payload };
 
 
-
-
+struct AuthorizationData {
+payload: Payload,
+}

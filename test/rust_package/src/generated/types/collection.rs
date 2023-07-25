@@ -6,7 +6,10 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use solana_program::{ pubkey::Pubkey };
 
 
-
-
+struct Collection {
+verified: bool,
+key: Pubkey,
+}

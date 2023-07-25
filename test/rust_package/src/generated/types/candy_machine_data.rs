@@ -6,8 +6,25 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-
+use crate::generated::types::{ CmCreator, ConfigLineSettings, HiddenSettings };
 
 /// Candy machine configuration data.
 
-
+struct CandyMachineData {
+/// Number of assets available
+items_available: u64,
+/// Symbol for the asset
+symbol: String,
+/// Secondary sales royalty basis points (0-10000)
+seller_fee_basis_points: u16,
+/// Max supply of each individual asset (default 0)
+max_supply: u64,
+/// Indicates if the asset is mutable or not (default yes)
+is_mutable: bool,
+/// List of creators
+creators: Vec<CmCreator>,
+/// Config line settings
+config_line_settings: Option<ConfigLineSettings>,
+/// Hidden setttings
+hidden_settings: Option<HiddenSettings>,
+}

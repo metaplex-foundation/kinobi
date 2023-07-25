@@ -2,9 +2,13 @@ import type { ImportFrom } from '../../shared';
 import { RustTypeManifest } from './GetRustTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
-  accounts: 'crate::generated::accounts',
-  types: 'crate::generated::types',
-  errors: 'crate::generated::errors',
+  generated: 'crate::generated',
+  generatedAccounts: 'crate::generated::accounts',
+  generatedTypes: 'crate::generated::types',
+  generatedErrors: 'crate::generated::errors',
+  hooked: 'crate::hooked',
+  mplEssentials: 'mpl_toolbox',
+  mplToolbox: 'mpl_toolbox',
 };
 
 export class RustImportMap {
@@ -89,7 +93,7 @@ export class RustImportMap {
           .sort()
           .map((i) => (aliasMap[i] ? `${i} as ${aliasMap[i]}` : i))
           .join(', ');
-        return `import { ${joinedImports} } from '${mappedModule}';`;
+        return `use ${mappedModule}::{ ${joinedImports} };`;
       });
     return importStatements.join('\n');
   }

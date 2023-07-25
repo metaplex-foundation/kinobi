@@ -9,4 +9,6 @@
 
 
 
-
+struct CreateMasterEditionArgs {
+max_supply: Option<u64>,
+}

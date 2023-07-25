@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../shared';
+import { camelCase, pascalCase, snakeCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
 
@@ -106,7 +106,15 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitLinkType(linkType: nodes.LinkTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const pascalCaseDefinedType = pascalCase(linkType.name);
+    const importFrom =
+      linkType.importFrom === 'generated'
+        ? 'generatedTypes'
+        : linkType.importFrom;
+    return {
+      imports: new RustImportMap().add(importFrom, pascalCaseDefinedType),
+      type: pascalCaseDefinedType,
+    };
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): RustTypeManifest {
@@ -136,7 +144,20 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const childManifest = visit(optionType.child, this);
+
+    if (
+      optionType.prefix.format === 'u8' &&
+      optionType.prefix.endian === 'le'
+    ) {
+      return {
+        ...childManifest,
+        type: `Option<${childManifest.type}>`,
+      };
+    }
+
+    // TODO: Add to the Rust validator.
+    throw new Error('Option size not supported by Borsh');
   }
 
   visitSetType(setType: nodes.SetTypeNode): RustTypeManifest {
@@ -144,13 +165,34 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitStructType(structType: nodes.StructTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const { parentName } = this;
+    this.parentName = null;
+
+    if (!parentName) {
+      // TODO: Add to the Rust validator.
+      throw new Error('Struct type must have a parent name.');
+    }
+
+    const fields = structType.fields.map((field) => visit(field, this));
+    const fieldTypes = fields.map((field) => field.type).join('\n');
+    const mergedManifest = this.mergeManifests(fields);
+
+    return {
+      ...mergedManifest,
+      type: `struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
+    };
   }
 
   visitStructFieldType(
     structFieldType: nodes.StructFieldTypeNode
   ): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const name = snakeCase(structFieldType.name);
+    const fieldChild = visit(structFieldType.child, this);
+    const docblock = this.createDocblock(structFieldType.docs);
+    return {
+      ...fieldChild,
+      type: `${docblock}${name}: ${fieldChild.type},`,
+    };
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): RustTypeManifest {
@@ -224,8 +266,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   protected createDocblock(docs: string[]): string {
     if (docs.length <= 0) return '';
-    if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
-    const lines = docs.map((doc) => ` * ${doc}`);
-    return `\n/**\n${lines.join('\n')}\n */\n`;
+    const lines = docs.map((doc) => `/// ${doc}`);
+    return `${lines.join('\n')}\n`;
   }
 }

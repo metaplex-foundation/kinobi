@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use solana_program::{ pubkey::Pubkey };
 
 
-
-
+struct Creator {
+address: Pubkey,
+verified: bool,
+share: u8,
+}

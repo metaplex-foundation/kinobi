@@ -9,4 +9,6 @@
 
 
 
-
+struct MintNewEditionFromMasterEditionViaTokenArgs {
+edition: u64,
+}

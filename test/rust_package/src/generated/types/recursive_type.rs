@@ -6,7 +6,10 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use crate::generated::types::{ RecursiveType };
 
 
-
-
+struct RecursiveType {
+name: String,
+children: Vec<RecursiveType>,
+}

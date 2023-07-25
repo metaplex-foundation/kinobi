@@ -6,7 +6,15 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use crate::generated::types::{ Collection, Creator, Uses };
 
 
-
-
+struct DataV2 {
+name: String,
+symbol: String,
+uri: String,
+seller_fee_basis_points: u16,
+creators: Option<Vec<Creator>>,
+collection: Option<Collection>,
+uses: Option<Uses>,
+}

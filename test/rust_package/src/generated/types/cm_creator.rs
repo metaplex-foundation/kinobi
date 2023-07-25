@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use solana_program::{ pubkey::Pubkey };
 
 
-
-
+struct CmCreator {
+/// Pubkey address
+address: Pubkey,
+/// Whether the creator is verified or not
+verified: bool,
+percentage_share: u8,
+}

@@ -10,4 +10,11 @@
 
 /// Hidden settings for large mints used with off-chain data.
 
-
+struct HiddenSettings {
+/// Asset prefix name
+name: String,
+/// Shared URI
+uri: String,
+/// Hash of the hidden settings file
+hash: ,
+}

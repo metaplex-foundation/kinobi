@@ -10,4 +10,9 @@
 
 /// Config line struct for storing asset (NFT) data pre-mint.
 
-
+struct ConfigLine {
+/// Name of the asset.
+name: String,
+/// URI to JSON metadata.
+uri: String,
+}

@@ -9,4 +9,6 @@
 
 
 
-
+struct SetCollectionSizeArgs {
+size: u64,
+}

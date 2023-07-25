@@ -9,4 +9,7 @@
 
 
 
-
+struct TaCreateArgs {
+rule_set_name: String,
+serialized_rule_set: ,
+}

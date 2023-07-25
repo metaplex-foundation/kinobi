@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+use crate::generated::types::{ ReservationV1, TmKey };
+use solana_program::{ pubkey::Pubkey };
 
 
-
-
+struct ReservationListV1AccountData {
+key: TmKey,
+master_edition: Pubkey,
+supply_snapshot: Option<u64>,
+reservations: Vec<ReservationV1>,
+}
