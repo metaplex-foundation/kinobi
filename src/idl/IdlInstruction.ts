@@ -17,6 +17,7 @@ export type IdlInstructionAccount = {
   isOptionalSigner?: boolean;
   isOptional?: boolean;
   optional?: boolean;
+  docs?: string[];
   desc?: string;
 };
 
