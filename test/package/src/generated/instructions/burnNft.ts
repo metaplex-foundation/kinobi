@@ -86,7 +86,6 @@ export function burnNft(
     mint: [input.mint, true] as const,
     tokenAccount: [input.tokenAccount, true] as const,
     masterEditionAccount: [input.masterEditionAccount, true] as const,
-    collectionMetadata: [input.collectionMetadata, true] as const,
   };
   addObjectProperty(
     resolvedAccounts,
@@ -101,6 +100,13 @@ export function burnNft(
           false,
         ] as const)
   );
+  addObjectProperty(
+    resolvedAccounts,
+    'collectionMetadata',
+    input.collectionMetadata
+      ? ([input.collectionMetadata, true] as const)
+      : ([programId, false] as const)
+  );
 
   addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
   addAccountMeta(keys, signers, resolvedAccounts.owner, false);
@@ -108,7 +114,7 @@ export function burnNft(
   addAccountMeta(keys, signers, resolvedAccounts.tokenAccount, false);
   addAccountMeta(keys, signers, resolvedAccounts.masterEditionAccount, false);
   addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, true);
+  addAccountMeta(keys, signers, resolvedAccounts.collectionMetadata, false);
 
   // Data.
   const data = getBurnNftInstructionDataSerializer().serialize({});
