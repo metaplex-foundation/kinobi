@@ -467,6 +467,15 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       imports.add(bytes.importFrom, camelCase(bytes.name));
     }
 
+    // Remaining accounts.
+    const { remainingAccounts } = instruction;
+    if (remainingAccounts?.kind === 'resolver') {
+      imports.add(
+        remainingAccounts.importFrom,
+        camelCase(remainingAccounts.name)
+      );
+    }
+
     // canMergeAccountsAndArgs
     let canMergeAccountsAndArgs = false;
     if (!linkedDataArgs && !linkedExtraArgs) {
