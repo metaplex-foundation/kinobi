@@ -5,7 +5,7 @@
 
 {% if remaining.kind === 'arg' %}
   // Remaining Accounts.
-  const remainingAccounts = {{ getArgVar(remaining.name) }}.map(address => ([address, {{ "true" if remaining.isWritable else "false" }}] as const));
+  const remainingAccounts = {{ getArgVar(remaining.name, argsObj) }}.map(address => ([address, {{ "true" if remaining.isWritable else "false" }}] as const));
   remainingAccounts.forEach((remainingAccount) => addAccountMeta(keys, signers, remainingAccount, false));
 {% elif remaining.kind === 'resolver' %}
   // Remaining Accounts.
