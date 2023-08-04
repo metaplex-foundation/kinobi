@@ -1,5 +1,5 @@
-import { prefixedSize } from '../shared';
 import { IDL_TYPE_LEAVES, IdlType } from '../idl';
+import { prefixedSize } from '../shared';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
 import { BoolTypeNode, boolTypeNode } from './BoolTypeNode';
 import { BytesTypeNode, bytesTypeNode } from './BytesTypeNode';
