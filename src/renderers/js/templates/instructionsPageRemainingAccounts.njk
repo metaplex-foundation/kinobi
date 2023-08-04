@@ -1,14 +1,14 @@
 {% set remaining = instruction.remainingAccounts %}
+{% macro getArgVar(name, argsObj) -%}
+  {{ 'resolvedArgs' if argsWithDefaults.includes(name) else argsObj }}.{{ name | camelCase }}
+{%- endmacro %}
+
 {% if remaining.kind === 'arg' %}
   // Remaining Accounts.
-  const remainingAccounts = {{ argsObj }}.{{ remaining.name }}.map(address => ([address, {{ "true" if remaining.isWritable else "false" }}]));
-  for (const remainingAccount in remainingAccounts) {
-    addAccountMeta(keys, signers, remainingAccount, false);
-  }
+  const remainingAccounts = {{ getArgVar(remaining.name) }}.map(address => ([address, {{ "true" if remaining.isWritable else "false" }}] as const));
+  remainingAccounts.forEach((remainingAccount) => addAccountMeta(keys, signers, remainingAccount, false));
 {% elif remaining.kind === 'resolver' %}
   // Remaining Accounts.
   const remainingAccounts = {{ remaining.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
-  for (const remainingAccount in remainingAccounts) {
-    addAccountMeta(keys, signers, remainingAccount, false);
-  }
+  remainingAccounts.forEach((remainingAccount) => addAccountMeta(keys, signers, remainingAccount, false));
 {% endif %}

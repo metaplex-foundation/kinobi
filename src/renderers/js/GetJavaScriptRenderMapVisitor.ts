@@ -358,8 +358,13 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     );
     const hasByteResolver =
       instruction.bytesCreatedOnChain?.kind === 'resolver';
+    const hasRemainingAccountsResolver =
+      instruction.remainingAccounts?.kind === 'resolver';
     const hasResolvers =
-      hasArgResolvers || hasAccountResolvers || hasByteResolver;
+      hasArgResolvers ||
+      hasAccountResolvers ||
+      hasByteResolver ||
+      hasRemainingAccountsResolver;
 
     // Resolved inputs.
     const resolvedInputs = visit(
@@ -525,6 +530,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         hasArgResolvers,
         hasAccountResolvers,
         hasByteResolver,
+        hasRemainingAccountsResolver,
         hasResolvers,
       })
     );
