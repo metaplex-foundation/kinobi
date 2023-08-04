@@ -5,9 +5,12 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 use borsh::{ BorshDeserialize, BorshSerialize };
+use crate::generated::types::{ PayloadKey, PayloadType };
+use std::collections::{ HashMap };
 
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
-pub struct MintPrintingTokensViaTokenArgs {
-pub supply: u64,
+pub struct ExtendedPayload {
+pub map: HashMap<PayloadKey, PayloadType>,
+pub args: (u8, String),
 }

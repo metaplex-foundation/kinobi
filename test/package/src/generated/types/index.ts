@@ -23,6 +23,7 @@ export * from './delegateArgs';
 export * from './delegateRole';
 export * from './delegateState';
 export * from './escrowAuthority';
+export * from './extendedPayload';
 export * from './hiddenSettings';
 export * from './migrateArgs';
 export * from './mintArgs';

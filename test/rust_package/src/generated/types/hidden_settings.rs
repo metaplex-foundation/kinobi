@@ -4,11 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-
-
+use borsh::{ BorshDeserialize, BorshSerialize };
 
 /// Hidden settings for large mints used with off-chain data.
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct HiddenSettings {
 /// Asset prefix name
 pub name: String,

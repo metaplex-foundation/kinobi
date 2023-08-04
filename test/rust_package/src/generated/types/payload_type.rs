@@ -4,15 +4,15 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-
-
+use borsh::{ BorshDeserialize, BorshSerialize };
 
 /// This is a union of all the possible payload types.
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum PayloadType {
 
 Seeds {
-seeds: Vec<RemainderArray<u8>>,
+seeds: Vec<Vec<u8>>,
 }
 MerkleProof {
 leaf: [u8; 32],

@@ -4,11 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-
-
+use borsh::{ BorshDeserialize, BorshSerialize };
 
 /// Config line settings to allocate space for individual name + URI.
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct ConfigLineSettings {
 /// Common name prefix
 pub prefix_name: String,

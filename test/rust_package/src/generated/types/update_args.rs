@@ -4,11 +4,12 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-
+use borsh::{ BorshDeserialize, BorshSerialize };
 use crate::generated::types::{ AuthorityType, AuthorizationData, Collection, CollectionDetails, Data, DelegateState, ProgrammableConfig, TokenStandard, Uses };
 use solana_program::{ pubkey::Pubkey };
 
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum UpdateArgs {
 V1 {
 authorization_data: Option<AuthorizationData>,

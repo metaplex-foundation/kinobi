@@ -4,11 +4,12 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-
+use borsh::{ BorshDeserialize, BorshSerialize };
 use crate::generated::types::{ Collection, CollectionDetails, Creator, DelegateState, ProgrammableConfig, TokenStandard, Uses };
 use solana_program::{ pubkey::Pubkey };
 
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct AssetData {
 pub update_authority: Pubkey,
 pub name: String,

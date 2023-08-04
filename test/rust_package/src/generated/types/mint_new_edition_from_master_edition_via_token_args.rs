@@ -4,10 +4,10 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+use borsh::{ BorshDeserialize, BorshSerialize };
 
 
-
-
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct MintNewEditionFromMasterEditionViaTokenArgs {
 pub edition: u64,
 }

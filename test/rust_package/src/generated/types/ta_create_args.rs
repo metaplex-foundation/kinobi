@@ -4,11 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+use borsh::{ BorshDeserialize, BorshSerialize };
 
 
-
-
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct TaCreateArgs {
 pub rule_set_name: String,
-pub serialized_rule_set: RemainderArray<u8>,
+pub serialized_rule_set: Vec<u8>,
 }

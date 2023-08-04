@@ -12,7 +12,6 @@ export type RustTypeManifest = {
 export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   private parentName: string | null = null;
   private inlineStruct: boolean = false;
-  private stack: string[] = [];
 
   visitRoot(): RustTypeManifest {
     throw new Error(
@@ -73,11 +72,13 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RustTypeManifest {
     this.parentName = pascalCase(definedType.name);
-    this.stack.push(this.parentName);
     const manifest = visit(definedType.data, this);
-    this.stack.pop();
     this.parentName = null;
-    return manifest;
+    manifest.imports.add('borsh', ['BorshSerialize', 'BorshDeserialize']);
+    return {
+      ...manifest,
+      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]\n${manifest.type}`,
+    };
   }
 
   visitError(): RustTypeManifest {
@@ -86,15 +87,6 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): RustTypeManifest {
     const childManifest = visit(arrayType.child, this);
-
-    const parent = this.stack.slice(-1);
-
-    if (parent[0] === 'seeds') {
-      console.log('---open seeds +++');
-      console.log(childManifest);
-      console.log(arrayType);
-      console.log('---close seeds +++');
-    }
 
     if (arrayType.size.kind === 'fixed') {
       return {
@@ -115,9 +107,10 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     }
 
     if (arrayType.size.kind === 'remainder') {
+      childManifest.imports.add('crate::types::helper', 'RemainderVec');
       return {
         ...childManifest,
-        type: `RemainderArray<${childManifest.type}>`,
+        type: `RemainderVec<${childManifest.type}>`,
       };
     }
 
@@ -187,7 +180,14 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitMapType(mapType: nodes.MapTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const key = visit(mapType.key, this);
+    const value = visit(mapType.value, this);
+    const mergedManifest = this.mergeManifests([key, value]);
+    mergedManifest.imports.add('std::collections', 'HashMap');
+    return {
+      ...mergedManifest,
+      type: `HashMap<${key.type}, ${value.type}>`,
+    };
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): RustTypeManifest {
@@ -208,7 +208,12 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitSetType(setType: nodes.SetTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const childManifest = visit(setType.child, this);
+    childManifest.imports.add('std::collections', 'HashSet');
+    return {
+      ...childManifest,
+      type: `HashSet<${childManifest.type}>`,
+    };
   }
 
   visitStructType(structType: nodes.StructTypeNode): RustTypeManifest {
@@ -237,12 +242,9 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     structFieldType: nodes.StructFieldTypeNode
   ): RustTypeManifest {
     const name = snakeCase(structFieldType.name);
-    this.stack.push(name);
     const fieldChild = visit(structFieldType.child, this);
     const docblock = this.createDocblock(structFieldType.docs);
-    this.stack.pop();
 
-    
     return {
       ...fieldChild,
       type: this.inlineStruct
@@ -252,7 +254,13 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const children = tupleType.children.map((item) => visit(item, this));
+    const mergedManifest = this.mergeManifests(children);
+
+    return {
+      ...mergedManifest,
+      type: `(${children.map((item) => item.type).join(', ')})`,
+    };
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): RustTypeManifest {
@@ -265,7 +273,6 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): RustTypeManifest {
-
     const arrayType = nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
       size: bytesType.size,
     });

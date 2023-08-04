@@ -88,7 +88,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       map.add('instructions/mod.rs', this.render('instructionsMod.njk', ctx));
     }
     if (definedTypesToExport.length > 0) {
-      map.add('types/mod.rs', this.render('definedTypesMod.njk', ctx));
+      map
+        .add('types/mod.rs', this.render('definedTypesMod.njk', ctx))
+        .add('types/helper/mod.rs', this.render('sharedPage.njk', ctx));
     }
 
     return map

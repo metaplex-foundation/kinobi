@@ -350,6 +350,36 @@
       }
     },
     {
+      "name": "ExtendedPayload",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": {
+              "hashMap": [
+                {
+                  "defined": "PayloadKey"
+                },
+                {
+                  "defined": "PayloadType"
+                }
+              ]
+            }
+          },
+          {
+            "name": "args",
+            "type": {
+              "tuple": [
+                "u8",
+                "string"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "PayloadType",
       "docs": ["This is a union of all the possible payload types."],
       "type": {

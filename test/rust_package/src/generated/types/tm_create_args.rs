@@ -4,10 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-
+use borsh::{ BorshDeserialize, BorshSerialize };
 use crate::generated::types::{ AssetData };
 
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum TmCreateArgs {
 V1 {
 asset_data: AssetData,

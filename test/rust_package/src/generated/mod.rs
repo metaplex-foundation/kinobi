@@ -4,7 +4,6 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-
       pub mod crate::accounts;
         pub mod crate::errors;
         pub mod crate::instructions;

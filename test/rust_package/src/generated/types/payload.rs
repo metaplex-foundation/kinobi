@@ -4,10 +4,12 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+use borsh::{ BorshDeserialize, BorshSerialize };
+use crate::generated::types::{ PayloadKey, PayloadType };
+use std::collections::{ HashMap };
 
 
-
-
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct Payload {
-pub map: ,
+pub map: HashMap<PayloadKey, PayloadType>,
 }
