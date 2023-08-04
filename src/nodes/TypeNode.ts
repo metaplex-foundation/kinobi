@@ -1,3 +1,4 @@
+import { prefixedSize } from '../shared';
 import { IDL_TYPE_LEAVES, IdlType } from '../idl';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
 import { BoolTypeNode, boolTypeNode } from './BoolTypeNode';
@@ -58,7 +59,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     if (idlType === 'bool') return boolTypeNode();
     if (idlType === 'string') return stringTypeNode();
     if (idlType === 'publicKey') return publicKeyTypeNode();
-    if (idlType === 'bytes') return bytesTypeNode();
+    if (idlType === 'bytes') return bytesTypeNode(prefixedSize());
     return numberTypeNode(idlType);
   }
 
