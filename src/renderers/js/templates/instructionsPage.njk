@@ -48,6 +48,8 @@ export function {{ instruction.name | camelCase }}(
 
   {% include "instructionsPageAccountMetas.njk" %}
 
+  {% include "instructionsPageRemainingAccounts.njk" %}
+
   // Data.
   {% if hasDataArgs %}
     const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize(resolvedArgs);

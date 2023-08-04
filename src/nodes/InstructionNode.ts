@@ -4,6 +4,7 @@ import {
   InstructionArgDefault,
   InvalidKinobiTreeError,
   PartialExcept,
+  RemainingAccounts,
   mainCase,
 } from '../shared';
 import {
@@ -38,6 +39,7 @@ export type InstructionNode = {
   readonly docs: string[];
   readonly internal: boolean;
   readonly bytesCreatedOnChain?: BytesCreatedOnChain;
+  readonly remainingAccounts?: RemainingAccounts;
   readonly argDefaults: Record<string, InstructionArgDefault>;
 };
 
@@ -67,6 +69,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     docs: input.docs ?? [],
     internal: input.internal ?? false,
     bytesCreatedOnChain: input.bytesCreatedOnChain,
+    remainingAccounts: input.remainingAccounts,
     argDefaults: Object.fromEntries(
       Object.entries(input.argDefaults ?? {}).map(([key, value]) => [
         mainCase(key),
