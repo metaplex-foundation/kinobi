@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.12.3
+
+### Patch Changes
+
+- [`75269c2`](https://github.com/metaplex-foundation/kinobi/commit/75269c2a504f30c5382c9eb6428ad66f2c3f7684) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix missing second arg for getArgVar macro in template
+
 ## 0.12.2
 
 ### Patch Changes
