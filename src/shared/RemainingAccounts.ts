@@ -1,26 +1,9 @@
 import { ImportFrom } from './ImportFrom';
-import { InstructionAccountDefault } from './InstructionDefault';
 import { mainCase } from './utils';
 
 export type RemainingAccounts =
-  | {
-      kind: 'list';
-      accounts: {
-        value: InstructionAccountDefault;
-        isSigner: boolean | 'either';
-        isWritable: boolean;
-      }[];
-    }
   | { kind: 'arg'; name: string; isWritable: boolean }
   | { kind: 'resolver'; name: string; importFrom: ImportFrom };
-
-export const remainingAccountsFromList = (
-  accounts: {
-    value: InstructionAccountDefault;
-    isSigner: boolean | 'either';
-    isWritable: boolean;
-  }[]
-): RemainingAccounts => ({ kind: 'list', accounts });
 
 export const remainingAccountsFromArg = (
   arg: string,
