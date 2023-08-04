@@ -17,6 +17,7 @@ import {
   publicKey as publicKeySerializer,
   struct,
   tuple,
+  u32,
   u64,
 } from '@metaplex-foundation/umi/serializers';
 
@@ -55,7 +56,7 @@ export function getPayloadTypeSerializer(
       [
         'Seeds',
         struct<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
-          ['seeds', array(bytes())],
+          ['seeds', array(bytes({ size: u32() }))],
         ]),
       ],
       [

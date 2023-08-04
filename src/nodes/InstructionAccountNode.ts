@@ -42,12 +42,13 @@ export function instructionAccountNodeFromIdl(
   useProgramIdForOptionalAccounts = true
 ): InstructionAccountNode {
   const isOptional = idl.optional ?? idl.isOptional ?? false;
+  const desc = idl.desc ? [idl.desc] : undefined;
   return instructionAccountNode({
     name: idl.name ?? '',
     isWritable: idl.isMut ?? false,
     isSigner: idl.isOptionalSigner ? 'either' : idl.isSigner ?? false,
     isOptional,
-    docs: idl.desc ? [idl.desc] : [],
+    docs: idl.docs ?? desc ?? [],
     defaultsTo:
       isOptional && useProgramIdForOptionalAccounts
         ? programIdDefault()

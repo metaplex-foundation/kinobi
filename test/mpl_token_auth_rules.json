@@ -43,6 +43,7 @@
     },
     {
       "name": "Validate",
+      "legacyOptionalAccountsStrategy": true,
       "accounts": [
         {
           "name": "payer",

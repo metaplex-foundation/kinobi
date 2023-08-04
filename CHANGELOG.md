@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.12.1
+
+### Patch Changes
+
+- [`2cde914`](https://github.com/metaplex-foundation/kinobi/commit/2cde914ca7018c84ec76d12c15ff9fde84f847f0) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support docs for account instruction IDLs
+
 ## 0.12.0
 
 ### Minor Changes
