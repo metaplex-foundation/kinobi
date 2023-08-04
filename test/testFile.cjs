@@ -200,13 +200,6 @@ kinobi.update(
   })
 );
 
-kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
-kinobi.update(
-  new k.FlattenStructVisitor({
-    'mplTokenMetadata.Metadata': ['Data'],
-  })
-);
-
 kinobi.update(
   new k.CreateSubInstructionsFromEnumArgsVisitor({
     'mplTokenMetadata.Create': 'createArgs',
@@ -216,13 +209,21 @@ kinobi.update(
 
 kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
 
+kinobi.accept(
+  new k.RenderRustVisitor('./test/rust_package/src/generated')
+);
+
+kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
+kinobi.update(
+  new k.FlattenStructVisitor({
+    'mplTokenMetadata.Metadata': ['Data'],
+  })
+);
+
 const kinobiJson = kinobi.getJson();
 const kinobiReconstructed = k.createFromJson(kinobiJson);
 
 // kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
 kinobiReconstructed.accept(
   new k.RenderJavaScriptVisitor('./test/package/src/generated')
-);
-kinobiReconstructed.accept(
-  new k.RenderRustVisitor('./test/rust_package/src/generated')
 );

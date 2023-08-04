@@ -5,9 +5,13 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use crate::generated::types::{ Creator };
 
 
-
-pub enum VerifyArgs {
-V1,
+pub struct Data {
+pub name: String,
+pub symbol: String,
+pub uri: String,
+pub seller_fee_basis_points: u16,
+pub creators: Option<Vec<Creator>>,
 }
