@@ -11,6 +11,7 @@ import {
   bytes,
   string,
   struct,
+  u32,
 } from '@metaplex-foundation/umi/serializers';
 
 export type TaCreateArgs = {
@@ -34,7 +35,7 @@ export function getTaCreateArgsSerializer(
   return struct<TaCreateArgs>(
     [
       ['ruleSetName', string()],
-      ['serializedRuleSet', bytes()],
+      ['serializedRuleSet', bytes({ size: u32() })],
     ],
     { description: 'TaCreateArgs' }
   ) as Serializer<TaCreateArgsArgs, TaCreateArgs>;
