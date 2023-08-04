@@ -67,12 +67,15 @@ export function getDummyInstructionDataSerializer(
 }
 
 // Extra Args.
-export type DummyInstructionExtraArgs = { identityArg: PublicKey };
+export type DummyInstructionExtraArgs = {
+  identityArg: PublicKey;
+  proof: Array<PublicKey>;
+};
 
 // Args.
 export type DummyInstructionArgs = PickPartial<
   DummyInstructionExtraArgs,
-  'identityArg'
+  'identityArg' | 'proof'
 >;
 
 // Instruction.
@@ -147,6 +150,8 @@ export function dummy(
     'identityArg',
     input.identityArg ?? context.identity.publicKey
   );
+  addObjectProperty(resolvingArgs, 'proof', input.proof ?? []);
+  const resolvedArgs = { ...input, ...resolvingArgs };
 
   addAccountMeta(keys, signers, resolvedAccounts.edition, true);
   addAccountMeta(keys, signers, resolvedAccounts.mint, false);
@@ -156,6 +161,14 @@ export function dummy(
   addAccountMeta(keys, signers, resolvedAccounts.foo, false);
   addAccountMeta(keys, signers, resolvedAccounts.bar, false);
   addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
+
+  // Remaining Accounts.
+  const remainingAccounts = resolvedArgs.proof.map(
+    (address) => [address, false] as const
+  );
+  remainingAccounts.forEach((remainingAccount) =>
+    addAccountMeta(keys, signers, remainingAccount, false)
+  );
 
   // Data.
   const data = getDummyInstructionDataSerializer().serialize({});
