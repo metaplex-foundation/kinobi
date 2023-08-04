@@ -11,6 +11,8 @@ export type RustTypeManifest = {
 
 export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   private parentName: string | null = null;
+  private inlineStruct: boolean = false;
+  private stack: string[] = [];
 
   visitRoot(): RustTypeManifest {
     throw new Error(
@@ -71,7 +73,9 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RustTypeManifest {
     this.parentName = pascalCase(definedType.name);
+    this.stack.push(this.parentName);
     const manifest = visit(definedType.data, this);
+    this.stack.pop();
     this.parentName = null;
     return manifest;
   }
@@ -82,6 +86,15 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): RustTypeManifest {
     const childManifest = visit(arrayType.child, this);
+
+    const parent = this.stack.slice(-1);
+
+    if (parent[0] === 'seeds') {
+      console.log('---open seeds +++');
+      console.log(childManifest);
+      console.log(arrayType);
+      console.log('---close seeds +++');
+    }
 
     if (arrayType.size.kind === 'fixed') {
       return {
@@ -98,6 +111,13 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
       return {
         ...childManifest,
         type: `Vec<${childManifest.type}>`,
+      };
+    }
+
+    if (arrayType.size.kind === 'remainder') {
+      return {
+        ...childManifest,
+        type: `RemainderArray<${childManifest.type}>`,
       };
     }
 
@@ -118,19 +138,46 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const { parentName } = this;
+    this.parentName = null;
+
+    if (!parentName) {
+      // TODO: Add to the Rust validator.
+      throw new Error('Enum type must have a parent name.');
+    }
+
+    const variants = enumType.variants.map((variant) => visit(variant, this));
+    const variantNames = variants.map((variant) => variant.type).join('\n');
+    const mergedManifest = this.mergeManifests(variants);
+
+    return {
+      ...mergedManifest,
+      type: `pub enum ${pascalCase(parentName)} {\n${variantNames}\n}`,
+    };
   }
 
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const name = pascalCase(enumEmptyVariantType.name);
+    return {
+      type: `${name},`,
+      imports: new RustImportMap(),
+    };
   }
 
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const name = pascalCase(enumStructVariantType.name);
+    this.inlineStruct = true;
+    const typeManifest = visit(enumStructVariantType.struct, this);
+    this.inlineStruct = false;
+
+    return {
+      ...typeManifest,
+      type: `${name} ${typeManifest.type}`,
+    };
   }
 
   visitEnumTupleVariantType(
@@ -168,7 +215,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     const { parentName } = this;
     this.parentName = null;
 
-    if (!parentName) {
+    if (!this.inlineStruct && !parentName) {
       // TODO: Add to the Rust validator.
       throw new Error('Struct type must have a parent name.');
     }
@@ -179,7 +226,10 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
     return {
       ...mergedManifest,
-      type: `struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
+      type:
+        this.inlineStruct || !parentName
+          ? `{\n${fieldTypes}\n}`
+          : `pub struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
     };
   }
 
@@ -187,11 +237,17 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     structFieldType: nodes.StructFieldTypeNode
   ): RustTypeManifest {
     const name = snakeCase(structFieldType.name);
+    this.stack.push(name);
     const fieldChild = visit(structFieldType.child, this);
     const docblock = this.createDocblock(structFieldType.docs);
+    this.stack.pop();
+
+    
     return {
       ...fieldChild,
-      type: `${docblock}${name}: ${fieldChild.type},`,
+      type: this.inlineStruct
+        ? `${docblock}${name}: ${fieldChild.type},`
+        : `${docblock}pub ${name}: ${fieldChild.type},`,
     };
   }
 
@@ -209,7 +265,12 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+
+    const arrayType = nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
+      size: bytesType.size,
+    });
+
+    return visit(arrayType, this);
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): RustTypeManifest {
