@@ -16,29 +16,29 @@ pub struct {{ instruction.name | pascalCase }} {
   {% else %}
     pub {{ account.name | snakeCase }}: Pubkey;
   {% endif %}
-  {% if account.isSigner === 'either' %}
-    pub {{ account.name | snakeCase }}_signer: bool;
-  {% endif %}
 {% endfor %}
 }
 
+{% set signer = '' %}
+{% for account in instruction.accounts %}
+  {% if account.isSigner === 'either' %}
+    {% set signer = signer +  ', ' + account.name | snakeCase + '_as_signer: bool' %}
+  {% endif %}
+{% endfor %}
+
 impl struct {{ instruction.name | pascalCase }} {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
+  pub fn instruction(&self{{ signer }}) -> solana_program::instruction::Instruction {
     solana_program::instruction::Instruction {
       program_id: crate::ID,
       accounts: vec![
         {% for account in instruction.accounts %}
           {% if account.isSigner === 'either' %}
-            {% set signer = "self.{{ account.name | snakeCase }}_signer" %}
+            {% set signer = account.name | snakeCase + '_as_signer' %}
           {% else %}
-            {% if account.isSigner %}
-                {% set signer = "true" %}
-            {% else %}
-                {% set signer = "false" %}
-            {% endif %}
+            {% set signer = 'true' if account.isSigner else 'false' %}
           {% endif %}
           solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-            self.{{ account.name | snakeCase }}{{ '.unwrap_or(crate::ID),' if account.isOptional else ',' }}
+            self.{{ account.name | snakeCase }}{{ '.unwrap_or(crate::ID)' if account.isOptional }},
             {{ signer }}
           ),
         {% endfor %}

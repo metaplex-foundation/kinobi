@@ -36,7 +36,7 @@ export type CreateV1InstructionAccounts = {
   /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
   masterEdition?: PublicKey | Pda;
   /** Mint of token asset */
-  mint: PublicKey | Pda;
+  mint: PublicKey | Pda | Signer;
   /** Mint authority */
   mintAuthority: Signer;
   /** Payer */

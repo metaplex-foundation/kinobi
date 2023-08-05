@@ -2362,6 +2362,7 @@
           "name": "mint",
           "isMut": true,
           "isSigner": false,
+          "isOptionalSigner": true,
           "desc": "Mint of token asset"
         },
         {
