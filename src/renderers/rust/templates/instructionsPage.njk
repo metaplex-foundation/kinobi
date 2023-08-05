@@ -1,0 +1,53 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as macros %}
+
+{% block main %}
+
+{{ imports }}
+
+/// Accounts.
+pub struct {{ instruction.name | pascalCase }} {
+{% for account in instruction.accounts %}
+  {% if account.docs.length > 0 %}
+    {{ macros.docblock(account.docs) }}
+  {% endif %}
+  {% if account.isOptional %}
+    pub {{ account.name | snakeCase }}: Option<Pubkey>;
+  {% else %}
+    pub {{ account.name | snakeCase }}: Pubkey;
+  {% endif %}
+  {% if account.isSigner === 'either' %}
+    pub {{ account.name | snakeCase }}_signer: bool;
+  {% endif %}
+{% endfor %}
+}
+
+impl struct {{ instruction.name | pascalCase }} {
+  pub fn instruction(&self) -> solana_program::instruction::Instruction {
+    solana_program::instruction::Instruction {
+      program_id: crate::ID,
+      accounts: vec![
+        {% for account in instruction.accounts %}
+          {% if account.isSigner === 'either' %}
+            {% set signer = "self.{{ account.name | snakeCase }}_signer" %}
+          {% else %}
+            {% if account.isSigner %}
+                {% set signer = "true" %}
+            {% else %}
+                {% set signer = "false" %}
+            {% endif %}
+          {% endif %}
+          solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+            self.{{ account.name | snakeCase }}{{ '.unwrap_or(crate::ID),' if account.isOptional else ',' }}
+            {{ signer }}
+          ),
+        {% endfor %}
+      ],
+      data: {{ instruction.name | pascalCase }}.try_to_vec().unwrap(),
+    }
+  }
+}
+
+{% include "instructionsPageBuilder.njk" %}
+
+{% endblock %}

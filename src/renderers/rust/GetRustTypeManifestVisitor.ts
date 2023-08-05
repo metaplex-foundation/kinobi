@@ -26,16 +26,20 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitAccount(account: nodes.AccountNode): RustTypeManifest {
-    return visit(account.data, this);
+    this.parentName = pascalCase(account.name);
+    const manifest = visit(account.data, this);
+    manifest.imports.add('borsh', ['BorshSerialize', 'BorshDeserialize']);
+    this.parentName = null;
+    return {
+      ...manifest,
+      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]\n${manifest.type}`,
+    };
   }
 
   visitAccountData(accountData: nodes.AccountDataNode): RustTypeManifest {
-    this.parentName = pascalCase(accountData.name);
-    const manifest = accountData.link
+    return accountData.link
       ? visit(accountData.link, this)
       : visit(accountData.struct, this);
-    this.parentName = null;
-    return manifest;
   }
 
   visitInstruction(instruction: nodes.InstructionNode): RustTypeManifest {
