@@ -1,7 +1,7 @@
 /// Instruction builder.
 pub struct {{ instruction.name | pascalCase }}Builder {
 {% for account in instruction.accounts %}
-  {{ account.name | snakeCase }}: Option<Pubkey>,
+  {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
   {% if account.isSigner === 'either' %}
   {{ account.name | snakeCase }}_as_signer: bool,
   {% endif %}

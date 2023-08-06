@@ -12,9 +12,9 @@ pub struct {{ instruction.name | pascalCase }} {
     {{ macros.docblock(account.docs) }}
   {% endif %}
   {% if account.isOptional %}
-    pub {{ account.name | snakeCase }}: Option<Pubkey>,
+    pub {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
   {% else %}
-    pub {{ account.name | snakeCase }}: Pubkey,
+    pub {{ account.name | snakeCase }}: solana_program::pubkey::Pubkey,
   {% endif %}
 {% endfor %}
 }
