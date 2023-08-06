@@ -37,9 +37,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   }
 
   visitAccountData(accountData: nodes.AccountDataNode): RustTypeManifest {
-    return accountData.link
-      ? visit(accountData.link, this)
-      : visit(accountData.struct, this);
+    return visit(accountData.struct, this);
   }
 
   visitInstruction(instruction: nodes.InstructionNode): RustTypeManifest {
@@ -56,9 +54,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     instructionDataArgs: nodes.InstructionDataArgsNode
   ): RustTypeManifest {
     this.parentName = pascalCase(instructionDataArgs.name);
-    const manifest = instructionDataArgs.link
-      ? visit(instructionDataArgs.link, this)
-      : visit(instructionDataArgs.struct, this);
+    const manifest = visit(instructionDataArgs.struct, this);
     this.parentName = null;
     return manifest;
   }
@@ -67,9 +63,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     instructionExtraArgs: nodes.InstructionExtraArgsNode
   ): RustTypeManifest {
     this.parentName = pascalCase(instructionExtraArgs.name);
-    const manifest = instructionExtraArgs.link
-      ? visit(instructionExtraArgs.link, this)
-      : visit(instructionExtraArgs.struct, this);
+    const manifest = visit(instructionExtraArgs.struct, this);
     this.parentName = null;
     return manifest;
   }
