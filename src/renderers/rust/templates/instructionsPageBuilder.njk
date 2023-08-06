@@ -1,9 +1,10 @@
 /// Instruction builder.
 pub struct {{ instruction.name | pascalCase }}Builder {
 {% for account in instruction.accounts %}
-  {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
   {% if account.isSigner === 'either' %}
-  {{ account.name | snakeCase }}_as_signer: bool,
+    {{ account.name | snakeCase }}: Option<(solana_program::pubkey::Pubkey, bool)>,
+  {% else %}
+    {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
   {% endif %}
 {% endfor %}
 }
@@ -11,21 +12,20 @@ pub struct {{ instruction.name | pascalCase }}Builder {
 impl {{ instruction.name | pascalCase }}Builder {
   {% for account in instruction.accounts %}
     pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: solana_program::pubkey::Pubkey{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
-      self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
-      {{ 'self.' + account.name | snakeCase + '_as_signer = as_signer;' if account.isSigner === 'either' }}
+      {% if account.isSigner === 'either' %}
+        self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
+      {% else %}
+        self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
+      {% endif %}
       self
     }
   {% endfor %}
   pub fn build(&self) -> solana_program::instruction::Instruction {
-    {% set signers = '' %}
     let accounts = {{ instruction.name | pascalCase }} {
-        {% for account in instruction.accounts %}
+        {% for account in instruction.accounts %}          
           {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if account.isOptional === false }},
-          {% if account.isSigner === 'either' %}
-            {% set signers = signers +  'self.' + account.name | snakeCase + '_as_signer,' %}
-          {% endif %}
         {% endfor %}
     };
-    accounts.instruction({{ signers.slice(0, -1) }})
+    accounts.instruction()
   }
 }

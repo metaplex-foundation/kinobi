@@ -11,23 +11,23 @@ pub struct {{ instruction.name | pascalCase }} {
   {% if account.docs.length > 0 %}
     {{ macros.docblock(account.docs) }}
   {% endif %}
-  {% if account.isOptional %}
-    pub {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
+
+  {% if account.isSigner === 'either' %}
+    {% set type = '(solana_program::pubkey::Pubkey, bool)' %}
   {% else %}
-    pub {{ account.name | snakeCase }}: solana_program::pubkey::Pubkey,
+    {% set type = 'solana_program::pubkey::Pubkey' %}
+  {% endif %}
+
+  {% if account.isOptional %}
+    pub {{ account.name | snakeCase }}: Option<{{ type }}>,
+  {% else %}
+    pub {{ account.name | snakeCase }}: {{ type }},
   {% endif %}
 {% endfor %}
 }
 
-{% set signer = '' %}
-{% for account in instruction.accounts %}
-  {% if account.isSigner === 'either' %}
-    {% set signer = signer +  ', ' + account.name | snakeCase + '_as_signer: bool' %}
-  {% endif %}
-{% endfor %}
-
 impl {{ instruction.name | pascalCase }} {
-  pub fn instruction(&self{{ signer }}) -> solana_program::instruction::Instruction {
+  pub fn instruction(&self) -> solana_program::instruction::Instruction {
     {% if hasDataArgs %}
     let data = {{ instruction.dataArgs.name | pascalCase }}(resolvedArgs).try_to_vec().unwrap();
     {% elif hasData %}
@@ -40,14 +40,44 @@ impl {{ instruction.name | pascalCase }} {
       accounts: vec![
         {% for account in instruction.accounts %}
           {% if account.isSigner === 'either' %}
-            {% set signer = account.name | snakeCase + '_as_signer' %}
+            {% if account.isOptional %}
+              if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
+                solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                  {{ account.name | snakeCase }},
+                  signer,
+                ),
+              } else {
+                solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                  crate::programs::{{ program.name | snakeCase }}::ID,
+                  false,
+                ),
+              },
+            {% else %}
+              solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                self.{{ account.name | snakeCase }}.0,
+                self.{{ account.name | snakeCase }}.1,
+              ),
+            {% endif %}
           {% else %}
-            {% set signer = 'true' if account.isSigner else 'false' %}
+            {% if account.isOptional %}
+              if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
+                solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                  {{ account.name | snakeCase }},
+                  {{ 'true' if account.isSigner else 'false' }},
+                ),
+              } else {
+                solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                  crate::programs::{{ program.name | snakeCase }}::ID,
+                  false,
+                ),
+              },
+            {% else %}
+              solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                self.{{ account.name | snakeCase }},
+                {{ 'true' if account.isSigner else 'false' }}
+              ),
+            {% endif %}
           {% endif %}
-          solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-            self.{{ account.name | snakeCase }}{{ '.unwrap_or(crate::ID)' if account.isOptional }},
-            {{ signer }}
-          ),
         {% endfor %}
       ],
       data,
