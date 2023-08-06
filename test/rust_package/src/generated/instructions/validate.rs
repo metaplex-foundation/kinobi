@@ -5,54 +5,55 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct Validate {
       /// Payer and creator of the RuleSet
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// The PDA account where the RuleSet is stored
 
-        pub rule_set: Pubkey;
+        pub rule_set: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
-          pub opt_rule_signer1: Option<Pubkey>;
+        pub system_program: Pubkey,
+          pub opt_rule_signer1: Option<Pubkey>,
         /// Optional rule validation signer 2
 
-        pub opt_rule_signer2: Option<Pubkey>;
+        pub opt_rule_signer2: Option<Pubkey>,
         /// Optional rule validation signer 3
 
-        pub opt_rule_signer3: Option<Pubkey>;
+        pub opt_rule_signer3: Option<Pubkey>,
         /// Optional rule validation signer 4
 
-        pub opt_rule_signer4: Option<Pubkey>;
+        pub opt_rule_signer4: Option<Pubkey>,
         /// Optional rule validation signer 5
 
-        pub opt_rule_signer5: Option<Pubkey>;
+        pub opt_rule_signer5: Option<Pubkey>,
         /// Optional rule validation non-signer 1
 
-        pub opt_rule_nonsigner1: Option<Pubkey>;
+        pub opt_rule_nonsigner1: Option<Pubkey>,
         /// Optional rule validation non-signer 2
 
-        pub opt_rule_nonsigner2: Option<Pubkey>;
+        pub opt_rule_nonsigner2: Option<Pubkey>,
         /// Optional rule validation non-signer 3
 
-        pub opt_rule_nonsigner3: Option<Pubkey>;
+        pub opt_rule_nonsigner3: Option<Pubkey>,
         /// Optional rule validation non-signer 4
 
-        pub opt_rule_nonsigner4: Option<Pubkey>;
+        pub opt_rule_nonsigner4: Option<Pubkey>,
         /// Optional rule validation non-signer 5
 
-        pub opt_rule_nonsigner5: Option<Pubkey>;
+        pub opt_rule_nonsigner5: Option<Pubkey>,
   }
 
                                 
-impl struct Validate {
+impl Validate {
   pub fn instruction(&self, opt_rule_signer1_as_signer: bool) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_auth_rules::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.payer,
@@ -107,34 +108,30 @@ impl struct Validate {
             false
           ),
               ],
-      data: Validate.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct ValidateBuilder {
-  payer: Option<Pubkey>;
-    rule_set: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    opt_rule_signer1: Option<Pubkey>;
-    opt_rule_signer1_as_signer: bool;
-    opt_rule_signer2: Option<Pubkey>;
-    opt_rule_signer3: Option<Pubkey>;
-    opt_rule_signer4: Option<Pubkey>;
-    opt_rule_signer5: Option<Pubkey>;
-    opt_rule_nonsigner1: Option<Pubkey>;
-    opt_rule_nonsigner2: Option<Pubkey>;
-    opt_rule_nonsigner3: Option<Pubkey>;
-    opt_rule_nonsigner4: Option<Pubkey>;
-    opt_rule_nonsigner5: Option<Pubkey>;
+  payer: Option<Pubkey>,
+    rule_set: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    opt_rule_signer1: Option<Pubkey>,
+    opt_rule_signer1_as_signer: bool,
+    opt_rule_signer2: Option<Pubkey>,
+    opt_rule_signer3: Option<Pubkey>,
+    opt_rule_signer4: Option<Pubkey>,
+    opt_rule_signer5: Option<Pubkey>,
+    opt_rule_nonsigner1: Option<Pubkey>,
+    opt_rule_nonsigner2: Option<Pubkey>,
+    opt_rule_nonsigner3: Option<Pubkey>,
+    opt_rule_nonsigner4: Option<Pubkey>,
+    opt_rule_nonsigner5: Option<Pubkey>,
   }
 
 impl ValidateBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
       self.payer = Some(payer);
       
@@ -202,19 +199,19 @@ impl ValidateBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Validate {
-                  payer: self.payer,
-                            rule_set: self.rule_set,
-                            system_program: self.system_program,
-                            opt_rule_signer1: self.opt_rule_signer1.expect("opt_rule_signer1 is not set"),
-                                                  opt_rule_signer2: self.opt_rule_signer2.expect("opt_rule_signer2 is not set"),
-                            opt_rule_signer3: self.opt_rule_signer3.expect("opt_rule_signer3 is not set"),
-                            opt_rule_signer4: self.opt_rule_signer4.expect("opt_rule_signer4 is not set"),
-                            opt_rule_signer5: self.opt_rule_signer5.expect("opt_rule_signer5 is not set"),
-                            opt_rule_nonsigner1: self.opt_rule_nonsigner1.expect("opt_rule_nonsigner1 is not set"),
-                            opt_rule_nonsigner2: self.opt_rule_nonsigner2.expect("opt_rule_nonsigner2 is not set"),
-                            opt_rule_nonsigner3: self.opt_rule_nonsigner3.expect("opt_rule_nonsigner3 is not set"),
-                            opt_rule_nonsigner4: self.opt_rule_nonsigner4.expect("opt_rule_nonsigner4 is not set"),
-                            opt_rule_nonsigner5: self.opt_rule_nonsigner5.expect("opt_rule_nonsigner5 is not set"),
+                  payer: self.payer.expect("payer is not set"),
+                            rule_set: self.rule_set.expect("rule_set is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            opt_rule_signer1: self.opt_rule_signer1,
+                                                  opt_rule_signer2: self.opt_rule_signer2,
+                            opt_rule_signer3: self.opt_rule_signer3,
+                            opt_rule_signer4: self.opt_rule_signer4,
+                            opt_rule_signer5: self.opt_rule_signer5,
+                            opt_rule_nonsigner1: self.opt_rule_nonsigner1,
+                            opt_rule_nonsigner2: self.opt_rule_nonsigner2,
+                            opt_rule_nonsigner3: self.opt_rule_nonsigner3,
+                            opt_rule_nonsigner4: self.opt_rule_nonsigner4,
+                            opt_rule_nonsigner5: self.opt_rule_nonsigner5,
                       };
     accounts.instruction(self.opt_rule_signer1_as_signer)
   }

@@ -5,26 +5,27 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct UpdatePrimarySaleHappenedViaToken {
       /// Metadata key (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Owner on the token account
 
-        pub owner: Pubkey;
+        pub owner: Pubkey,
         /// Account containing tokens from the metadata's mint
 
-        pub token: Pubkey;
+        pub token: Pubkey,
   }
 
       
-impl struct UpdatePrimarySaleHappenedViaToken {
+impl UpdatePrimarySaleHappenedViaToken {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -39,23 +40,19 @@ impl struct UpdatePrimarySaleHappenedViaToken {
             false
           ),
               ],
-      data: UpdatePrimarySaleHappenedViaToken.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
-  metadata: Option<Pubkey>;
-    owner: Option<Pubkey>;
-    token: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    owner: Option<Pubkey>,
+    token: Option<Pubkey>,
   }
 
 impl UpdatePrimarySaleHappenedViaTokenBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -73,9 +70,9 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdatePrimarySaleHappenedViaToken {
-                  metadata: self.metadata,
-                            owner: self.owner,
-                            token: self.token,
+                  metadata: self.metadata.expect("metadata is not set"),
+                            owner: self.owner.expect("owner is not set"),
+                            token: self.token.expect("token is not set"),
                       };
     accounts.instruction()
   }

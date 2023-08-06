@@ -5,6 +5,6 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-mod mpl_candy_machine_core;
-mod mpl_token_auth_rules;
-mod mpl_token_metadata;
+pub mod mpl_candy_machine_core;
+pub mod mpl_token_auth_rules;
+pub mod mpl_token_metadata;

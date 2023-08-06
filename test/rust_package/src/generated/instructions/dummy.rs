@@ -5,25 +5,26 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct Dummy {
-        pub edition: Pubkey;
-          pub mint: Option<Pubkey>;
-          pub update_authority: Pubkey;
-          pub mint_authority: Pubkey;
-          pub payer: Pubkey;
-          pub foo: Pubkey;
-          pub bar: Pubkey;
-          pub delegate_record: Pubkey;
+        pub edition: Pubkey,
+          pub mint: Option<Pubkey>,
+          pub update_authority: Pubkey,
+          pub mint_authority: Pubkey,
+          pub payer: Pubkey,
+          pub foo: Pubkey,
+          pub bar: Pubkey,
+          pub delegate_record: Pubkey,
   }
 
                 
-impl struct Dummy {
+impl Dummy {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_candy_machine_core::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.edition,
@@ -58,28 +59,24 @@ impl struct Dummy {
             false
           ),
               ],
-      data: Dummy.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct DummyBuilder {
-  edition: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    mint_authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    foo: Option<Pubkey>;
-    bar: Option<Pubkey>;
-    delegate_record: Option<Pubkey>;
+  edition: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    mint_authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    foo: Option<Pubkey>,
+    bar: Option<Pubkey>,
+    delegate_record: Option<Pubkey>,
   }
 
 impl DummyBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
       self.edition = Some(edition);
       
@@ -122,14 +119,14 @@ impl DummyBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Dummy {
-                  edition: self.edition,
-                            mint: self.mint.expect("mint is not set"),
-                            update_authority: self.update_authority,
-                            mint_authority: self.mint_authority,
-                            payer: self.payer,
-                            foo: self.foo,
-                            bar: self.bar,
-                            delegate_record: self.delegate_record,
+                  edition: self.edition.expect("edition is not set"),
+                            mint: self.mint,
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            foo: self.foo.expect("foo is not set"),
+                            bar: self.bar.expect("bar is not set"),
+                            delegate_record: self.delegate_record.expect("delegate_record is not set"),
                       };
     accounts.instruction()
   }

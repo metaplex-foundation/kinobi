@@ -5,26 +5,27 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct CreateFrequencyRule {
       /// Payer and creator of the Frequency Rule
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// The PDA account where the Frequency Rule is stored
 
-        pub frequency_pda: Pubkey;
+        pub frequency_pda: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
   }
 
       
-impl struct CreateFrequencyRule {
+impl CreateFrequencyRule {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_auth_rules::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.payer,
@@ -39,23 +40,19 @@ impl struct CreateFrequencyRule {
             false
           ),
               ],
-      data: CreateFrequencyRule.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct CreateFrequencyRuleBuilder {
-  payer: Option<Pubkey>;
-    frequency_pda: Option<Pubkey>;
-    system_program: Option<Pubkey>;
+  payer: Option<Pubkey>,
+    frequency_pda: Option<Pubkey>,
+    system_program: Option<Pubkey>,
   }
 
 impl CreateFrequencyRuleBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
       self.payer = Some(payer);
       
@@ -73,9 +70,9 @@ impl CreateFrequencyRuleBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateFrequencyRule {
-                  payer: self.payer,
-                            frequency_pda: self.frequency_pda,
-                            system_program: self.system_program,
+                  payer: self.payer.expect("payer is not set"),
+                            frequency_pda: self.frequency_pda.expect("frequency_pda is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
                       };
     accounts.instruction()
   }

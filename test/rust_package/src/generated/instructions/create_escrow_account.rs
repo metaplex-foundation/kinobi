@@ -5,44 +5,45 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct CreateEscrowAccount {
       /// Escrow account
 
-        pub escrow: Pubkey;
+        pub escrow: Pubkey,
         /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Mint account
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Token account of the token
 
-        pub token_account: Pubkey;
+        pub token_account: Pubkey,
         /// Edition account
 
-        pub edition: Pubkey;
+        pub edition: Pubkey,
         /// Wallet paying for the transaction and new account
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Instructions sysvar account
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// Authority/creator of the escrow account
 
-        pub authority: Option<Pubkey>;
+        pub authority: Option<Pubkey>,
   }
 
                   
-impl struct CreateEscrowAccount {
+impl CreateEscrowAccount {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.escrow,
@@ -81,29 +82,25 @@ impl struct CreateEscrowAccount {
             true
           ),
               ],
-      data: CreateEscrowAccount.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct CreateEscrowAccountBuilder {
-  escrow: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    token_account: Option<Pubkey>;
-    edition: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    authority: Option<Pubkey>;
+  escrow: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    token_account: Option<Pubkey>,
+    edition: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    authority: Option<Pubkey>,
   }
 
 impl CreateEscrowAccountBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn escrow(&mut self, escrow: solana_program::pubkey::Pubkey) -> &mut Self {
       self.escrow = Some(escrow);
       
@@ -151,15 +148,15 @@ impl CreateEscrowAccountBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateEscrowAccount {
-                  escrow: self.escrow,
-                            metadata: self.metadata,
-                            mint: self.mint,
-                            token_account: self.token_account,
-                            edition: self.edition,
-                            payer: self.payer,
-                            system_program: self.system_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            authority: self.authority.expect("authority is not set"),
+                  escrow: self.escrow.expect("escrow is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            token_account: self.token_account.expect("token_account is not set"),
+                            edition: self.edition.expect("edition is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            authority: self.authority,
                       };
     accounts.instruction()
   }

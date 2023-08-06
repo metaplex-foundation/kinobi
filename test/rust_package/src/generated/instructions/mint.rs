@@ -5,53 +5,54 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct Mint {
       /// Token account
 
-        pub token: Pubkey;
+        pub token: Pubkey,
         /// Metadata account key (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Master Edition account
 
-        pub master_edition: Option<Pubkey>;
+        pub master_edition: Option<Pubkey>,
         /// Mint of token asset
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// (Mint or Update) authority
 
-        pub authority: Pubkey;
+        pub authority: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Instructions sysvar account
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// SPL Token program
 
-        pub spl_token_program: Pubkey;
+        pub spl_token_program: Pubkey,
         /// SPL Associated Token Account program
 
-        pub spl_ata_program: Pubkey;
+        pub spl_ata_program: Pubkey,
         /// Token Authorization Rules program
 
-        pub authorization_rules_program: Option<Pubkey>;
+        pub authorization_rules_program: Option<Pubkey>,
         /// Token Authorization Rules account
 
-        pub authorization_rules: Option<Pubkey>;
+        pub authorization_rules: Option<Pubkey>,
   }
 
                         
-impl struct Mint {
+impl Mint {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.token,
@@ -102,32 +103,28 @@ impl struct Mint {
             false
           ),
               ],
-      data: Mint.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct MintBuilder {
-  token: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    authority: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    spl_token_program: Option<Pubkey>;
-    spl_ata_program: Option<Pubkey>;
-    authorization_rules_program: Option<Pubkey>;
-    authorization_rules: Option<Pubkey>;
+  token: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    authority: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    spl_token_program: Option<Pubkey>,
+    spl_ata_program: Option<Pubkey>,
+    authorization_rules_program: Option<Pubkey>,
+    authorization_rules: Option<Pubkey>,
   }
 
 impl MintBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
       self.token = Some(token);
       
@@ -190,18 +187,18 @@ impl MintBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Mint {
-                  token: self.token,
-                            metadata: self.metadata,
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            mint: self.mint,
-                            payer: self.payer,
-                            authority: self.authority,
-                            system_program: self.system_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            spl_token_program: self.spl_token_program,
-                            spl_ata_program: self.spl_ata_program,
-                            authorization_rules_program: self.authorization_rules_program.expect("authorization_rules_program is not set"),
-                            authorization_rules: self.authorization_rules.expect("authorization_rules is not set"),
+                  token: self.token.expect("token is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition,
+                            mint: self.mint.expect("mint is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            authority: self.authority.expect("authority is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
+                            spl_ata_program: self.spl_ata_program.expect("spl_ata_program is not set"),
+                            authorization_rules_program: self.authorization_rules_program,
+                            authorization_rules: self.authorization_rules,
                       };
     accounts.instruction()
   }

@@ -5,41 +5,42 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct CreateReservationList {
       /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
 
-        pub reservation_list: Pubkey;
+        pub reservation_list: Pubkey,
         /// Payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// Update authority
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
 
-        pub master_edition: Pubkey;
+        pub master_edition: Pubkey,
         /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
 
-        pub resource: Pubkey;
+        pub resource: Pubkey,
         /// Metadata key (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Rent info
 
-        pub rent: Pubkey;
+        pub rent: Pubkey,
   }
 
                 
-impl struct CreateReservationList {
+impl CreateReservationList {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.reservation_list,
@@ -74,28 +75,24 @@ impl struct CreateReservationList {
             false
           ),
               ],
-      data: CreateReservationList.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct CreateReservationListBuilder {
-  reservation_list: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    resource: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  reservation_list: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    resource: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl CreateReservationListBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn reservation_list(&mut self, reservation_list: solana_program::pubkey::Pubkey) -> &mut Self {
       self.reservation_list = Some(reservation_list);
       
@@ -138,14 +135,14 @@ impl CreateReservationListBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateReservationList {
-                  reservation_list: self.reservation_list,
-                            payer: self.payer,
-                            update_authority: self.update_authority,
-                            master_edition: self.master_edition,
-                            resource: self.resource,
-                            metadata: self.metadata,
-                            system_program: self.system_program,
-                            rent: self.rent,
+                  reservation_list: self.reservation_list.expect("reservation_list is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            master_edition: self.master_edition.expect("master_edition is not set"),
+                            resource: self.resource.expect("resource is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            rent: self.rent.expect("rent is not set"),
                       };
     accounts.instruction()
   }

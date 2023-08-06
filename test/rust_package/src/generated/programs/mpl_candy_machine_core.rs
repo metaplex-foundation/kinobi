@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey;
+use solana_program::{pubkey, pubkey::Pubkey};
 
-export const MPL_CANDY_MACHINE_CORE_PROGRAM_ID: Pubkey = pubkey!("CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR");
+pub const ID: Pubkey = pubkey!("CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR");
 

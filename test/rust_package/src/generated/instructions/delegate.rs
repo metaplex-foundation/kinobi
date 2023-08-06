@@ -5,56 +5,57 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct Delegate {
       /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
 
-        pub delegate_record: Pubkey;
+        pub delegate_record: Pubkey,
         /// Owner of the delegated account
 
-        pub delegate: Pubkey;
+        pub delegate: Pubkey,
         /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Master Edition account
 
-        pub master_edition: Option<Pubkey>;
+        pub master_edition: Option<Pubkey>,
         /// Mint of metadata
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Owned Token Account of mint
 
-        pub token: Option<Pubkey>;
+        pub token: Option<Pubkey>,
         /// Authority to approve the delegation
 
-        pub authority: Pubkey;
+        pub authority: Pubkey,
         /// Payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// System Program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Instructions sysvar account
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// SPL Token Program
 
-        pub spl_token_program: Option<Pubkey>;
+        pub spl_token_program: Option<Pubkey>,
         /// Token Authorization Rules Program
 
-        pub authorization_rules_program: Option<Pubkey>;
+        pub authorization_rules_program: Option<Pubkey>,
         /// Token Authorization Rules account
 
-        pub authorization_rules: Option<Pubkey>;
+        pub authorization_rules: Option<Pubkey>,
   }
 
                           
-impl struct Delegate {
+impl Delegate {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.delegate_record,
@@ -109,33 +110,29 @@ impl struct Delegate {
             false
           ),
               ],
-      data: Delegate.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct DelegateBuilder {
-  delegate_record: Option<Pubkey>;
-    delegate: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    token: Option<Pubkey>;
-    authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    spl_token_program: Option<Pubkey>;
-    authorization_rules_program: Option<Pubkey>;
-    authorization_rules: Option<Pubkey>;
+  delegate_record: Option<Pubkey>,
+    delegate: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    token: Option<Pubkey>,
+    authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    spl_token_program: Option<Pubkey>,
+    authorization_rules_program: Option<Pubkey>,
+    authorization_rules: Option<Pubkey>,
   }
 
 impl DelegateBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn delegate_record(&mut self, delegate_record: solana_program::pubkey::Pubkey) -> &mut Self {
       self.delegate_record = Some(delegate_record);
       
@@ -203,19 +200,19 @@ impl DelegateBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Delegate {
-                  delegate_record: self.delegate_record,
-                            delegate: self.delegate,
-                            metadata: self.metadata,
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            mint: self.mint,
-                            token: self.token.expect("token is not set"),
-                            authority: self.authority,
-                            payer: self.payer,
-                            system_program: self.system_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
-                            authorization_rules_program: self.authorization_rules_program.expect("authorization_rules_program is not set"),
-                            authorization_rules: self.authorization_rules.expect("authorization_rules is not set"),
+                  delegate_record: self.delegate_record.expect("delegate_record is not set"),
+                            delegate: self.delegate.expect("delegate is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition,
+                            mint: self.mint.expect("mint is not set"),
+                            token: self.token,
+                            authority: self.authority.expect("authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            spl_token_program: self.spl_token_program,
+                            authorization_rules_program: self.authorization_rules_program,
+                            authorization_rules: self.authorization_rules,
                       };
     accounts.instruction()
   }

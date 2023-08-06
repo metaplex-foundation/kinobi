@@ -5,23 +5,24 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct UpdateMetadataAccountV2 {
       /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Update authority key
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
   }
 
     
-impl struct UpdateMetadataAccountV2 {
+impl UpdateMetadataAccountV2 {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -32,22 +33,18 @@ impl struct UpdateMetadataAccountV2 {
             true
           ),
               ],
-      data: UpdateMetadataAccountV2.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct UpdateMetadataAccountV2Builder {
-  metadata: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
   }
 
 impl UpdateMetadataAccountV2Builder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -60,8 +57,8 @@ impl UpdateMetadataAccountV2Builder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateMetadataAccountV2 {
-                  metadata: self.metadata,
-                            update_authority: self.update_authority,
+                  metadata: self.metadata.expect("metadata is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
                       };
     accounts.instruction()
   }

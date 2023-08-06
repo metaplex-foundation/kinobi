@@ -5,47 +5,48 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct UpdateV1 {
       /// Update authority or delegate
 
-        pub authority: Pubkey;
+        pub authority: Pubkey,
         /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Master Edition account
 
-        pub master_edition: Option<Pubkey>;
+        pub master_edition: Option<Pubkey>,
         /// Mint account
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// System program
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// Token account
 
-        pub token: Option<Pubkey>;
+        pub token: Option<Pubkey>,
         /// Delegate record PDA
 
-        pub delegate_record: Option<Pubkey>;
+        pub delegate_record: Option<Pubkey>,
         /// Token Authorization Rules Program
 
-        pub authorization_rules_program: Option<Pubkey>;
+        pub authorization_rules_program: Option<Pubkey>,
         /// Token Authorization Rules account
 
-        pub authorization_rules: Option<Pubkey>;
+        pub authorization_rules: Option<Pubkey>,
   }
 
                     
-impl struct UpdateV1 {
+impl UpdateV1 {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new_readonly(
             self.authority,
@@ -88,30 +89,26 @@ impl struct UpdateV1 {
             false
           ),
               ],
-      data: UpdateV1.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct UpdateV1Builder {
-  authority: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    token: Option<Pubkey>;
-    delegate_record: Option<Pubkey>;
-    authorization_rules_program: Option<Pubkey>;
-    authorization_rules: Option<Pubkey>;
+  authority: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    token: Option<Pubkey>,
+    delegate_record: Option<Pubkey>,
+    authorization_rules_program: Option<Pubkey>,
+    authorization_rules: Option<Pubkey>,
   }
 
 impl UpdateV1Builder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
       self.authority = Some(authority);
       
@@ -164,16 +161,16 @@ impl UpdateV1Builder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateV1 {
-                  authority: self.authority,
-                            metadata: self.metadata,
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            mint: self.mint,
-                            system_program: self.system_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            token: self.token.expect("token is not set"),
-                            delegate_record: self.delegate_record.expect("delegate_record is not set"),
-                            authorization_rules_program: self.authorization_rules_program.expect("authorization_rules_program is not set"),
-                            authorization_rules: self.authorization_rules.expect("authorization_rules is not set"),
+                  authority: self.authority.expect("authority is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition,
+                            mint: self.mint.expect("mint is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            token: self.token,
+                            delegate_record: self.delegate_record,
+                            authorization_rules_program: self.authorization_rules_program,
+                            authorization_rules: self.authorization_rules,
                       };
     accounts.instruction()
   }

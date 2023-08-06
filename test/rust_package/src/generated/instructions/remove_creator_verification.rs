@@ -5,23 +5,24 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct RemoveCreatorVerification {
       /// Metadata (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Creator
 
-        pub creator: Pubkey;
+        pub creator: Pubkey,
   }
 
     
-impl struct RemoveCreatorVerification {
+impl RemoveCreatorVerification {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -32,22 +33,18 @@ impl struct RemoveCreatorVerification {
             true
           ),
               ],
-      data: RemoveCreatorVerification.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct RemoveCreatorVerificationBuilder {
-  metadata: Option<Pubkey>;
-    creator: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    creator: Option<Pubkey>,
   }
 
 impl RemoveCreatorVerificationBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -60,8 +57,8 @@ impl RemoveCreatorVerificationBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = RemoveCreatorVerification {
-                  metadata: self.metadata,
-                            creator: self.creator,
+                  metadata: self.metadata.expect("metadata is not set"),
+                            creator: self.creator.expect("creator is not set"),
                       };
     accounts.instruction()
   }

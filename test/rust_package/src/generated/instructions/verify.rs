@@ -5,32 +5,33 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct Verify {
       /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Collection Update authority
 
-        pub collection_authority: Pubkey;
+        pub collection_authority: Pubkey,
         /// payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// Token Authorization Rules account
 
-        pub authorization_rules: Option<Pubkey>;
+        pub authorization_rules: Option<Pubkey>,
         /// Token Authorization Rules Program
 
-        pub authorization_rules_program: Option<Pubkey>;
+        pub authorization_rules_program: Option<Pubkey>,
   }
 
           
-impl struct Verify {
+impl Verify {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -53,25 +54,21 @@ impl struct Verify {
             false
           ),
               ],
-      data: Verify.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct VerifyBuilder {
-  metadata: Option<Pubkey>;
-    collection_authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    authorization_rules: Option<Pubkey>;
-    authorization_rules_program: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    collection_authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    authorization_rules: Option<Pubkey>,
+    authorization_rules_program: Option<Pubkey>,
   }
 
 impl VerifyBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -99,11 +96,11 @@ impl VerifyBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Verify {
-                  metadata: self.metadata,
-                            collection_authority: self.collection_authority,
-                            payer: self.payer,
-                            authorization_rules: self.authorization_rules.expect("authorization_rules is not set"),
-                            authorization_rules_program: self.authorization_rules_program.expect("authorization_rules_program is not set"),
+                  metadata: self.metadata.expect("metadata is not set"),
+                            collection_authority: self.collection_authority.expect("collection_authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            authorization_rules: self.authorization_rules,
+                            authorization_rules_program: self.authorization_rules_program,
                       };
     accounts.instruction()
   }

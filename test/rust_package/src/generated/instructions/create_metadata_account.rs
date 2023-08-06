@@ -5,38 +5,39 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct CreateMetadataAccount {
       /// Metadata key (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Mint of token asset
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Mint authority
 
-        pub mint_authority: Pubkey;
+        pub mint_authority: Pubkey,
         /// payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// update authority info
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Rent info
 
-        pub rent: Pubkey;
+        pub rent: Pubkey,
   }
 
               
-impl struct CreateMetadataAccount {
+impl CreateMetadataAccount {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -67,27 +68,23 @@ impl struct CreateMetadataAccount {
             false
           ),
               ],
-      data: CreateMetadataAccount.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct CreateMetadataAccountBuilder {
-  metadata: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    mint_authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    mint_authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl CreateMetadataAccountBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -125,13 +122,13 @@ impl CreateMetadataAccountBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateMetadataAccount {
-                  metadata: self.metadata,
-                            mint: self.mint,
-                            mint_authority: self.mint_authority,
-                            payer: self.payer,
-                            update_authority: self.update_authority,
-                            system_program: self.system_program,
-                            rent: self.rent,
+                  metadata: self.metadata.expect("metadata is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            rent: self.rent.expect("rent is not set"),
                       };
     accounts.instruction()
   }

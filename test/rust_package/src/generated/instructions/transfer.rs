@@ -5,62 +5,63 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct Transfer {
       /// Transfer authority (token or delegate owner)
 
-        pub authority: Pubkey;
+        pub authority: Pubkey,
         /// Delegate record PDA
 
-        pub delegate_record: Option<Pubkey>;
+        pub delegate_record: Option<Pubkey>,
         /// Token account
 
-        pub token: Pubkey;
+        pub token: Pubkey,
         /// Token account owner
 
-        pub token_owner: Pubkey;
+        pub token_owner: Pubkey,
         /// Destination token account
 
-        pub destination: Pubkey;
+        pub destination: Pubkey,
         /// Destination token account owner
 
-        pub destination_owner: Pubkey;
+        pub destination_owner: Pubkey,
         /// Mint of token asset
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Metadata (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Master Edition of token asset
 
-        pub master_edition: Option<Pubkey>;
+        pub master_edition: Option<Pubkey>,
         /// SPL Token Program
 
-        pub spl_token_program: Pubkey;
+        pub spl_token_program: Pubkey,
         /// SPL Associated Token Account program
 
-        pub spl_ata_program: Pubkey;
+        pub spl_ata_program: Pubkey,
         /// System Program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Instructions sysvar account
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// Token Authorization Rules Program
 
-        pub authorization_rules_program: Option<Pubkey>;
+        pub authorization_rules_program: Option<Pubkey>,
         /// Token Authorization Rules account
 
-        pub authorization_rules: Option<Pubkey>;
+        pub authorization_rules: Option<Pubkey>,
   }
 
                               
-impl struct Transfer {
+impl Transfer {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.authority,
@@ -123,35 +124,31 @@ impl struct Transfer {
             false
           ),
               ],
-      data: Transfer.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct TransferBuilder {
-  authority: Option<Pubkey>;
-    delegate_record: Option<Pubkey>;
-    token: Option<Pubkey>;
-    token_owner: Option<Pubkey>;
-    destination: Option<Pubkey>;
-    destination_owner: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    spl_token_program: Option<Pubkey>;
-    spl_ata_program: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    authorization_rules_program: Option<Pubkey>;
-    authorization_rules: Option<Pubkey>;
+  authority: Option<Pubkey>,
+    delegate_record: Option<Pubkey>,
+    token: Option<Pubkey>,
+    token_owner: Option<Pubkey>,
+    destination: Option<Pubkey>,
+    destination_owner: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    spl_token_program: Option<Pubkey>,
+    spl_ata_program: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    authorization_rules_program: Option<Pubkey>,
+    authorization_rules: Option<Pubkey>,
   }
 
 impl TransferBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
       self.authority = Some(authority);
       
@@ -229,21 +226,21 @@ impl TransferBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Transfer {
-                  authority: self.authority,
-                            delegate_record: self.delegate_record.expect("delegate_record is not set"),
-                            token: self.token,
-                            token_owner: self.token_owner,
-                            destination: self.destination,
-                            destination_owner: self.destination_owner,
-                            mint: self.mint,
-                            metadata: self.metadata,
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            spl_token_program: self.spl_token_program,
-                            spl_ata_program: self.spl_ata_program,
-                            system_program: self.system_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            authorization_rules_program: self.authorization_rules_program.expect("authorization_rules_program is not set"),
-                            authorization_rules: self.authorization_rules.expect("authorization_rules is not set"),
+                  authority: self.authority.expect("authority is not set"),
+                            delegate_record: self.delegate_record,
+                            token: self.token.expect("token is not set"),
+                            token_owner: self.token_owner.expect("token_owner is not set"),
+                            destination: self.destination.expect("destination is not set"),
+                            destination_owner: self.destination_owner.expect("destination_owner is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition,
+                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
+                            spl_ata_program: self.spl_ata_program.expect("spl_ata_program is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            authorization_rules_program: self.authorization_rules_program,
+                            authorization_rules: self.authorization_rules,
                       };
     accounts.instruction()
   }

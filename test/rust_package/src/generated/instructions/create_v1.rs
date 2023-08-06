@@ -5,44 +5,45 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct CreateV1 {
       /// Metadata account key (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition']
 
-        pub master_edition: Option<Pubkey>;
+        pub master_edition: Option<Pubkey>,
         /// Mint of token asset
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Mint authority
 
-        pub mint_authority: Pubkey;
+        pub mint_authority: Pubkey,
         /// Payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// update authority info
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Instructions sysvar account
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// SPL Token program
 
-        pub spl_token_program: Pubkey;
+        pub spl_token_program: Pubkey,
   }
 
                         
-impl struct CreateV1 {
+impl CreateV1 {
   pub fn instruction(&self, mint_as_signer: bool) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -81,30 +82,26 @@ impl struct CreateV1 {
             false
           ),
               ],
-      data: CreateV1.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct CreateV1Builder {
-  metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    mint_as_signer: bool;
-    mint_authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    spl_token_program: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    mint_as_signer: bool,
+    mint_authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    spl_token_program: Option<Pubkey>,
   }
 
 impl CreateV1Builder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -152,15 +149,15 @@ impl CreateV1Builder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateV1 {
-                  metadata: self.metadata,
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            mint: self.mint,
-                                                  mint_authority: self.mint_authority,
-                            payer: self.payer,
-                            update_authority: self.update_authority,
-                            system_program: self.system_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            spl_token_program: self.spl_token_program,
+                  metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition,
+                            mint: self.mint.expect("mint is not set"),
+                                                  mint_authority: self.mint_authority.expect("mint_authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
                       };
     accounts.instruction(self.mint_as_signer)
   }

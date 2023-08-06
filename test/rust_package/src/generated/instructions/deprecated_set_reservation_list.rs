@@ -5,26 +5,27 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct DeprecatedSetReservationList {
       /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
 
-        pub master_edition: Pubkey;
+        pub master_edition: Pubkey,
         /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
 
-        pub reservation_list: Pubkey;
+        pub reservation_list: Pubkey,
         /// The resource you tied the reservation list too
 
-        pub resource: Pubkey;
+        pub resource: Pubkey,
   }
 
       
-impl struct DeprecatedSetReservationList {
+impl DeprecatedSetReservationList {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.master_edition,
@@ -39,23 +40,19 @@ impl struct DeprecatedSetReservationList {
             true
           ),
               ],
-      data: DeprecatedSetReservationList.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct DeprecatedSetReservationListBuilder {
-  master_edition: Option<Pubkey>;
-    reservation_list: Option<Pubkey>;
-    resource: Option<Pubkey>;
+  master_edition: Option<Pubkey>,
+    reservation_list: Option<Pubkey>,
+    resource: Option<Pubkey>,
   }
 
 impl DeprecatedSetReservationListBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
       self.master_edition = Some(master_edition);
       
@@ -73,9 +70,9 @@ impl DeprecatedSetReservationListBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedSetReservationList {
-                  master_edition: self.master_edition,
-                            reservation_list: self.reservation_list,
-                            resource: self.resource,
+                  master_edition: self.master_edition.expect("master_edition is not set"),
+                            reservation_list: self.reservation_list.expect("reservation_list is not set"),
+                            resource: self.resource.expect("resource is not set"),
                       };
     accounts.instruction()
   }

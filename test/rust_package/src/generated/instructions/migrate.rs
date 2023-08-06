@@ -5,47 +5,48 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct Migrate {
       /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Master edition account
 
-        pub master_edition: Pubkey;
+        pub master_edition: Pubkey,
         /// Token account
 
-        pub token_account: Pubkey;
+        pub token_account: Pubkey,
         /// Mint account
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Update authority
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         /// Collection metadata account
 
-        pub collection_metadata: Pubkey;
+        pub collection_metadata: Pubkey,
         /// Token Program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Instruction sysvar account
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// Token Authorization Rules account
 
-        pub authorization_rules: Option<Pubkey>;
+        pub authorization_rules: Option<Pubkey>,
   }
 
                     
-impl struct Migrate {
+impl Migrate {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -88,30 +89,26 @@ impl struct Migrate {
             false
           ),
               ],
-      data: Migrate.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct MigrateBuilder {
-  metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    token_account: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    collection_metadata: Option<Pubkey>;
-    token_program: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    authorization_rules: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    token_account: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    collection_metadata: Option<Pubkey>,
+    token_program: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    authorization_rules: Option<Pubkey>,
   }
 
 impl MigrateBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -164,16 +161,16 @@ impl MigrateBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Migrate {
-                  metadata: self.metadata,
-                            master_edition: self.master_edition,
-                            token_account: self.token_account,
-                            mint: self.mint,
-                            update_authority: self.update_authority,
-                            collection_metadata: self.collection_metadata,
-                            token_program: self.token_program,
-                            system_program: self.system_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            authorization_rules: self.authorization_rules.expect("authorization_rules is not set"),
+                  metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition.expect("master_edition is not set"),
+                            token_account: self.token_account.expect("token_account is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            authorization_rules: self.authorization_rules,
                       };
     accounts.instruction()
   }

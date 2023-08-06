@@ -5,56 +5,57 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct TransferOutOfEscrow {
       /// Escrow account
 
-        pub escrow: Pubkey;
+        pub escrow: Pubkey,
         /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Wallet paying for the transaction and new account
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// Mint account for the new attribute
 
-        pub attribute_mint: Pubkey;
+        pub attribute_mint: Pubkey,
         /// Token account source for the new attribute
 
-        pub attribute_src: Pubkey;
+        pub attribute_src: Pubkey,
         /// Token account, owned by TM, destination for the new attribute
 
-        pub attribute_dst: Pubkey;
+        pub attribute_dst: Pubkey,
         /// Mint account that the escrow is attached
 
-        pub escrow_mint: Pubkey;
+        pub escrow_mint: Pubkey,
         /// Token account that holds the token the escrow is attached to
 
-        pub escrow_account: Pubkey;
+        pub escrow_account: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Associated Token program
 
-        pub ata_program: Pubkey;
+        pub ata_program: Pubkey,
         /// Token program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
         /// Instructions sysvar account
 
-        pub sysvar_instructions: Pubkey;
+        pub sysvar_instructions: Pubkey,
         /// Authority/creator of the escrow account
 
-        pub authority: Option<Pubkey>;
+        pub authority: Option<Pubkey>,
   }
 
                           
-impl struct TransferOutOfEscrow {
+impl TransferOutOfEscrow {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new_readonly(
             self.escrow,
@@ -109,33 +110,29 @@ impl struct TransferOutOfEscrow {
             true
           ),
               ],
-      data: TransferOutOfEscrow.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct TransferOutOfEscrowBuilder {
-  escrow: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    attribute_mint: Option<Pubkey>;
-    attribute_src: Option<Pubkey>;
-    attribute_dst: Option<Pubkey>;
-    escrow_mint: Option<Pubkey>;
-    escrow_account: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    ata_program: Option<Pubkey>;
-    token_program: Option<Pubkey>;
-    sysvar_instructions: Option<Pubkey>;
-    authority: Option<Pubkey>;
+  escrow: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    attribute_mint: Option<Pubkey>,
+    attribute_src: Option<Pubkey>,
+    attribute_dst: Option<Pubkey>,
+    escrow_mint: Option<Pubkey>,
+    escrow_account: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    ata_program: Option<Pubkey>,
+    token_program: Option<Pubkey>,
+    sysvar_instructions: Option<Pubkey>,
+    authority: Option<Pubkey>,
   }
 
 impl TransferOutOfEscrowBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn escrow(&mut self, escrow: solana_program::pubkey::Pubkey) -> &mut Self {
       self.escrow = Some(escrow);
       
@@ -203,19 +200,19 @@ impl TransferOutOfEscrowBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = TransferOutOfEscrow {
-                  escrow: self.escrow,
-                            metadata: self.metadata,
-                            payer: self.payer,
-                            attribute_mint: self.attribute_mint,
-                            attribute_src: self.attribute_src,
-                            attribute_dst: self.attribute_dst,
-                            escrow_mint: self.escrow_mint,
-                            escrow_account: self.escrow_account,
-                            system_program: self.system_program,
-                            ata_program: self.ata_program,
-                            token_program: self.token_program,
-                            sysvar_instructions: self.sysvar_instructions,
-                            authority: self.authority.expect("authority is not set"),
+                  escrow: self.escrow.expect("escrow is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            attribute_mint: self.attribute_mint.expect("attribute_mint is not set"),
+                            attribute_src: self.attribute_src.expect("attribute_src is not set"),
+                            attribute_dst: self.attribute_dst.expect("attribute_dst is not set"),
+                            escrow_mint: self.escrow_mint.expect("escrow_mint is not set"),
+                            escrow_account: self.escrow_account.expect("escrow_account is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            ata_program: self.ata_program.expect("ata_program is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
+                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
+                            authority: self.authority,
                       };
     accounts.instruction()
   }

@@ -5,68 +5,69 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct MintNewEditionFromMasterEditionViaVaultProxy {
       /// New Metadata key (pda of ['metadata', program id, mint id])
 
-        pub new_metadata: Pubkey;
+        pub new_metadata: Pubkey,
         /// New Edition (pda of ['metadata', program id, mint id, 'edition'])
 
-        pub new_edition: Pubkey;
+        pub new_edition: Pubkey,
         /// Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition']
 
-        pub master_edition: Pubkey;
+        pub master_edition: Pubkey,
         /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
 
-        pub new_mint: Pubkey;
+        pub new_mint: Pubkey,
         /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
 
-        pub edition_mark_pda: Pubkey;
+        pub edition_mark_pda: Pubkey,
         /// Mint authority of new mint
 
-        pub new_mint_authority: Pubkey;
+        pub new_mint_authority: Pubkey,
         /// payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// Vault authority
 
-        pub vault_authority: Pubkey;
+        pub vault_authority: Pubkey,
         /// Safety deposit token store account
 
-        pub safety_deposit_store: Pubkey;
+        pub safety_deposit_store: Pubkey,
         /// Safety deposit box
 
-        pub safety_deposit_box: Pubkey;
+        pub safety_deposit_box: Pubkey,
         /// Vault
 
-        pub vault: Pubkey;
+        pub vault: Pubkey,
         /// Update authority info for new metadata
 
-        pub new_metadata_update_authority: Pubkey;
+        pub new_metadata_update_authority: Pubkey,
         /// Master record metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Token program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
         /// Token vault program
 
-        pub token_vault_program: Pubkey;
+        pub token_vault_program: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Rent info
 
-        pub rent: Option<Pubkey>;
+        pub rent: Option<Pubkey>,
   }
 
                                   
-impl struct MintNewEditionFromMasterEditionViaVaultProxy {
+impl MintNewEditionFromMasterEditionViaVaultProxy {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.new_metadata,
@@ -137,37 +138,33 @@ impl struct MintNewEditionFromMasterEditionViaVaultProxy {
             false
           ),
               ],
-      data: MintNewEditionFromMasterEditionViaVaultProxy.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct MintNewEditionFromMasterEditionViaVaultProxyBuilder {
-  new_metadata: Option<Pubkey>;
-    new_edition: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    new_mint: Option<Pubkey>;
-    edition_mark_pda: Option<Pubkey>;
-    new_mint_authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    vault_authority: Option<Pubkey>;
-    safety_deposit_store: Option<Pubkey>;
-    safety_deposit_box: Option<Pubkey>;
-    vault: Option<Pubkey>;
-    new_metadata_update_authority: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    token_program: Option<Pubkey>;
-    token_vault_program: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  new_metadata: Option<Pubkey>,
+    new_edition: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    new_mint: Option<Pubkey>,
+    edition_mark_pda: Option<Pubkey>,
+    new_mint_authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    vault_authority: Option<Pubkey>,
+    safety_deposit_store: Option<Pubkey>,
+    safety_deposit_box: Option<Pubkey>,
+    vault: Option<Pubkey>,
+    new_metadata_update_authority: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    token_program: Option<Pubkey>,
+    token_vault_program: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn new_metadata(&mut self, new_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.new_metadata = Some(new_metadata);
       
@@ -255,23 +252,23 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = MintNewEditionFromMasterEditionViaVaultProxy {
-                  new_metadata: self.new_metadata,
-                            new_edition: self.new_edition,
-                            master_edition: self.master_edition,
-                            new_mint: self.new_mint,
-                            edition_mark_pda: self.edition_mark_pda,
-                            new_mint_authority: self.new_mint_authority,
-                            payer: self.payer,
-                            vault_authority: self.vault_authority,
-                            safety_deposit_store: self.safety_deposit_store,
-                            safety_deposit_box: self.safety_deposit_box,
-                            vault: self.vault,
-                            new_metadata_update_authority: self.new_metadata_update_authority,
-                            metadata: self.metadata,
-                            token_program: self.token_program,
-                            token_vault_program: self.token_vault_program,
-                            system_program: self.system_program,
-                            rent: self.rent.expect("rent is not set"),
+                  new_metadata: self.new_metadata.expect("new_metadata is not set"),
+                            new_edition: self.new_edition.expect("new_edition is not set"),
+                            master_edition: self.master_edition.expect("master_edition is not set"),
+                            new_mint: self.new_mint.expect("new_mint is not set"),
+                            edition_mark_pda: self.edition_mark_pda.expect("edition_mark_pda is not set"),
+                            new_mint_authority: self.new_mint_authority.expect("new_mint_authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            vault_authority: self.vault_authority.expect("vault_authority is not set"),
+                            safety_deposit_store: self.safety_deposit_store.expect("safety_deposit_store is not set"),
+                            safety_deposit_box: self.safety_deposit_box.expect("safety_deposit_box is not set"),
+                            vault: self.vault.expect("vault is not set"),
+                            new_metadata_update_authority: self.new_metadata_update_authority.expect("new_metadata_update_authority is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
+                            token_vault_program: self.token_vault_program.expect("token_vault_program is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            rent: self.rent,
                       };
     accounts.instruction()
   }

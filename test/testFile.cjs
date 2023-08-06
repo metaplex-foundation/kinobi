@@ -210,7 +210,10 @@ kinobi.update(
 kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
 
 kinobi.accept(
-  new k.RenderRustVisitor('./test/rust_package/src/generated')
+  new k.RenderRustVisitor('./test/rust_package/src/generated', {
+    crateFolder: './test/rust_package',
+    formatCode: false,
+  })
 );
 
 kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));

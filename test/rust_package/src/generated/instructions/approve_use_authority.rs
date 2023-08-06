@@ -5,50 +5,51 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct ApproveUseAuthority {
       /// Use Authority Record PDA
 
-        pub use_authority_record: Pubkey;
+        pub use_authority_record: Pubkey,
         /// Owner
 
-        pub owner: Pubkey;
+        pub owner: Pubkey,
         /// Payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// A Use Authority
 
-        pub user: Pubkey;
+        pub user: Pubkey,
         /// Owned Token Account Of Mint
 
-        pub owner_token_account: Pubkey;
+        pub owner_token_account: Pubkey,
         /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Mint of Metadata
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Program As Signer (Burner)
 
-        pub burner: Pubkey;
+        pub burner: Pubkey,
         /// Token program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Rent info
 
-        pub rent: Option<Pubkey>;
+        pub rent: Option<Pubkey>,
   }
 
                       
-impl struct ApproveUseAuthority {
+impl ApproveUseAuthority {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.use_authority_record,
@@ -95,31 +96,27 @@ impl struct ApproveUseAuthority {
             false
           ),
               ],
-      data: ApproveUseAuthority.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct ApproveUseAuthorityBuilder {
-  use_authority_record: Option<Pubkey>;
-    owner: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    user: Option<Pubkey>;
-    owner_token_account: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    burner: Option<Pubkey>;
-    token_program: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  use_authority_record: Option<Pubkey>,
+    owner: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    user: Option<Pubkey>,
+    owner_token_account: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    burner: Option<Pubkey>,
+    token_program: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl ApproveUseAuthorityBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn use_authority_record(&mut self, use_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
       self.use_authority_record = Some(use_authority_record);
       
@@ -177,17 +174,17 @@ impl ApproveUseAuthorityBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ApproveUseAuthority {
-                  use_authority_record: self.use_authority_record,
-                            owner: self.owner,
-                            payer: self.payer,
-                            user: self.user,
-                            owner_token_account: self.owner_token_account,
-                            metadata: self.metadata,
-                            mint: self.mint,
-                            burner: self.burner,
-                            token_program: self.token_program,
-                            system_program: self.system_program,
-                            rent: self.rent.expect("rent is not set"),
+                  use_authority_record: self.use_authority_record.expect("use_authority_record is not set"),
+                            owner: self.owner.expect("owner is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            user: self.user.expect("user is not set"),
+                            owner_token_account: self.owner_token_account.expect("owner_token_account is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            burner: self.burner.expect("burner is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            rent: self.rent,
                       };
     accounts.instruction()
   }

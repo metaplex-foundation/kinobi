@@ -5,20 +5,21 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct SetMintAuthority {
-        pub candy_machine: Pubkey;
-          pub authority: Pubkey;
-          pub mint_authority: Pubkey;
+        pub candy_machine: Pubkey,
+          pub authority: Pubkey,
+          pub mint_authority: Pubkey,
   }
 
       
-impl struct SetMintAuthority {
+impl SetMintAuthority {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_candy_machine_core::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.candy_machine,
@@ -33,23 +34,19 @@ impl struct SetMintAuthority {
             true
           ),
               ],
-      data: SetMintAuthority.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct SetMintAuthorityBuilder {
-  candy_machine: Option<Pubkey>;
-    authority: Option<Pubkey>;
-    mint_authority: Option<Pubkey>;
+  candy_machine: Option<Pubkey>,
+    authority: Option<Pubkey>,
+    mint_authority: Option<Pubkey>,
   }
 
 impl SetMintAuthorityBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
       self.candy_machine = Some(candy_machine);
       
@@ -67,9 +64,9 @@ impl SetMintAuthorityBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetMintAuthority {
-                  candy_machine: self.candy_machine,
-                            authority: self.authority,
-                            mint_authority: self.mint_authority,
+                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
+                            authority: self.authority.expect("authority is not set"),
+                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
                       };
     accounts.instruction()
   }

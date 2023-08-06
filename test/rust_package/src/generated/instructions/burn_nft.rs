@@ -5,38 +5,39 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct BurnNft {
       /// Metadata (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// NFT owner
 
-        pub owner: Pubkey;
+        pub owner: Pubkey,
         /// Mint of the NFT
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Token account to close
 
-        pub token_account: Pubkey;
+        pub token_account: Pubkey,
         /// MasterEdition2 of the NFT
 
-        pub master_edition_account: Pubkey;
+        pub master_edition_account: Pubkey,
         /// SPL Token Program
 
-        pub spl_token_program: Pubkey;
+        pub spl_token_program: Pubkey,
         /// Metadata of the Collection
 
-        pub collection_metadata: Option<Pubkey>;
+        pub collection_metadata: Option<Pubkey>,
   }
 
               
-impl struct BurnNft {
+impl BurnNft {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -67,27 +68,23 @@ impl struct BurnNft {
             false
           ),
               ],
-      data: BurnNft.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct BurnNftBuilder {
-  metadata: Option<Pubkey>;
-    owner: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    token_account: Option<Pubkey>;
-    master_edition_account: Option<Pubkey>;
-    spl_token_program: Option<Pubkey>;
-    collection_metadata: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    owner: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    token_account: Option<Pubkey>,
+    master_edition_account: Option<Pubkey>,
+    spl_token_program: Option<Pubkey>,
+    collection_metadata: Option<Pubkey>,
   }
 
 impl BurnNftBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -125,13 +122,13 @@ impl BurnNftBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = BurnNft {
-                  metadata: self.metadata,
-                            owner: self.owner,
-                            mint: self.mint,
-                            token_account: self.token_account,
-                            master_edition_account: self.master_edition_account,
-                            spl_token_program: self.spl_token_program,
-                            collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
+                  metadata: self.metadata.expect("metadata is not set"),
+                            owner: self.owner.expect("owner is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            token_account: self.token_account.expect("token_account is not set"),
+                            master_edition_account: self.master_edition_account.expect("master_edition_account is not set"),
+                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
+                            collection_metadata: self.collection_metadata,
                       };
     accounts.instruction()
   }

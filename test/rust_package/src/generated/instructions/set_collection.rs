@@ -5,31 +5,32 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct SetCollection {
-        pub candy_machine: Pubkey;
-          pub authority: Pubkey;
-          pub authority_pda: Pubkey;
-          pub payer: Pubkey;
-          pub collection_mint: Pubkey;
-          pub collection_metadata: Pubkey;
-          pub collection_authority_record: Pubkey;
-          pub new_collection_update_authority: Pubkey;
-          pub new_collection_metadata: Pubkey;
-          pub new_collection_mint: Pubkey;
-          pub new_collection_master_edition: Pubkey;
-          pub new_collection_authority_record: Pubkey;
-          pub token_metadata_program: Pubkey;
-          pub system_program: Pubkey;
+        pub candy_machine: Pubkey,
+          pub authority: Pubkey,
+          pub authority_pda: Pubkey,
+          pub payer: Pubkey,
+          pub collection_mint: Pubkey,
+          pub collection_metadata: Pubkey,
+          pub collection_authority_record: Pubkey,
+          pub new_collection_update_authority: Pubkey,
+          pub new_collection_metadata: Pubkey,
+          pub new_collection_mint: Pubkey,
+          pub new_collection_master_edition: Pubkey,
+          pub new_collection_authority_record: Pubkey,
+          pub token_metadata_program: Pubkey,
+          pub system_program: Pubkey,
   }
 
                             
-impl struct SetCollection {
+impl SetCollection {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_candy_machine_core::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.candy_machine,
@@ -88,34 +89,30 @@ impl struct SetCollection {
             false
           ),
               ],
-      data: SetCollection.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct SetCollectionBuilder {
-  candy_machine: Option<Pubkey>;
-    authority: Option<Pubkey>;
-    authority_pda: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    collection_mint: Option<Pubkey>;
-    collection_metadata: Option<Pubkey>;
-    collection_authority_record: Option<Pubkey>;
-    new_collection_update_authority: Option<Pubkey>;
-    new_collection_metadata: Option<Pubkey>;
-    new_collection_mint: Option<Pubkey>;
-    new_collection_master_edition: Option<Pubkey>;
-    new_collection_authority_record: Option<Pubkey>;
-    token_metadata_program: Option<Pubkey>;
-    system_program: Option<Pubkey>;
+  candy_machine: Option<Pubkey>,
+    authority: Option<Pubkey>,
+    authority_pda: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    collection_mint: Option<Pubkey>,
+    collection_metadata: Option<Pubkey>,
+    collection_authority_record: Option<Pubkey>,
+    new_collection_update_authority: Option<Pubkey>,
+    new_collection_metadata: Option<Pubkey>,
+    new_collection_mint: Option<Pubkey>,
+    new_collection_master_edition: Option<Pubkey>,
+    new_collection_authority_record: Option<Pubkey>,
+    token_metadata_program: Option<Pubkey>,
+    system_program: Option<Pubkey>,
   }
 
 impl SetCollectionBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
       self.candy_machine = Some(candy_machine);
       
@@ -188,20 +185,20 @@ impl SetCollectionBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetCollection {
-                  candy_machine: self.candy_machine,
-                            authority: self.authority,
-                            authority_pda: self.authority_pda,
-                            payer: self.payer,
-                            collection_mint: self.collection_mint,
-                            collection_metadata: self.collection_metadata,
-                            collection_authority_record: self.collection_authority_record,
-                            new_collection_update_authority: self.new_collection_update_authority,
-                            new_collection_metadata: self.new_collection_metadata,
-                            new_collection_mint: self.new_collection_mint,
-                            new_collection_master_edition: self.new_collection_master_edition,
-                            new_collection_authority_record: self.new_collection_authority_record,
-                            token_metadata_program: self.token_metadata_program,
-                            system_program: self.system_program,
+                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
+                            authority: self.authority.expect("authority is not set"),
+                            authority_pda: self.authority_pda.expect("authority_pda is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            collection_mint: self.collection_mint.expect("collection_mint is not set"),
+                            collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
+                            collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
+                            new_collection_update_authority: self.new_collection_update_authority.expect("new_collection_update_authority is not set"),
+                            new_collection_metadata: self.new_collection_metadata.expect("new_collection_metadata is not set"),
+                            new_collection_mint: self.new_collection_mint.expect("new_collection_mint is not set"),
+                            new_collection_master_edition: self.new_collection_master_edition.expect("new_collection_master_edition is not set"),
+                            new_collection_authority_record: self.new_collection_authority_record.expect("new_collection_authority_record is not set"),
+                            token_metadata_program: self.token_metadata_program.expect("token_metadata_program is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
                       };
     accounts.instruction()
   }

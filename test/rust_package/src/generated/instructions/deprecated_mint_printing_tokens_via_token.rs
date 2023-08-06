@@ -5,44 +5,45 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct DeprecatedMintPrintingTokensViaToken {
       /// Destination account
 
-        pub destination: Pubkey;
+        pub destination: Pubkey,
         /// Token account containing one time authorization token
 
-        pub token: Pubkey;
+        pub token: Pubkey,
         /// One time authorization mint
 
-        pub one_time_printing_authorization_mint: Pubkey;
+        pub one_time_printing_authorization_mint: Pubkey,
         /// Printing mint
 
-        pub printing_mint: Pubkey;
+        pub printing_mint: Pubkey,
         /// Burn authority
 
-        pub burn_authority: Pubkey;
+        pub burn_authority: Pubkey,
         /// Metadata key (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
 
-        pub master_edition: Pubkey;
+        pub master_edition: Pubkey,
         /// Token program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
         /// Rent
 
-        pub rent: Pubkey;
+        pub rent: Pubkey,
   }
 
                   
-impl struct DeprecatedMintPrintingTokensViaToken {
+impl DeprecatedMintPrintingTokensViaToken {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.destination,
@@ -81,29 +82,25 @@ impl struct DeprecatedMintPrintingTokensViaToken {
             false
           ),
               ],
-      data: DeprecatedMintPrintingTokensViaToken.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct DeprecatedMintPrintingTokensViaTokenBuilder {
-  destination: Option<Pubkey>;
-    token: Option<Pubkey>;
-    one_time_printing_authorization_mint: Option<Pubkey>;
-    printing_mint: Option<Pubkey>;
-    burn_authority: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    token_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  destination: Option<Pubkey>,
+    token: Option<Pubkey>,
+    one_time_printing_authorization_mint: Option<Pubkey>,
+    printing_mint: Option<Pubkey>,
+    burn_authority: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    token_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl DeprecatedMintPrintingTokensViaTokenBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
       self.destination = Some(destination);
       
@@ -151,15 +148,15 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintPrintingTokensViaToken {
-                  destination: self.destination,
-                            token: self.token,
-                            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
-                            printing_mint: self.printing_mint,
-                            burn_authority: self.burn_authority,
-                            metadata: self.metadata,
-                            master_edition: self.master_edition,
-                            token_program: self.token_program,
-                            rent: self.rent,
+                  destination: self.destination.expect("destination is not set"),
+                            token: self.token.expect("token is not set"),
+                            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint.expect("one_time_printing_authorization_mint is not set"),
+                            printing_mint: self.printing_mint.expect("printing_mint is not set"),
+                            burn_authority: self.burn_authority.expect("burn_authority is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition.expect("master_edition is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
+                            rent: self.rent.expect("rent is not set"),
                       };
     accounts.instruction()
   }

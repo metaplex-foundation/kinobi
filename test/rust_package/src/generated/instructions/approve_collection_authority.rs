@@ -5,41 +5,42 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct ApproveCollectionAuthority {
       /// Collection Authority Record PDA
 
-        pub collection_authority_record: Pubkey;
+        pub collection_authority_record: Pubkey,
         /// A Collection Authority
 
-        pub new_collection_authority: Pubkey;
+        pub new_collection_authority: Pubkey,
         /// Update Authority of Collection NFT
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         /// Payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// Collection Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Mint of Collection Metadata
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Rent info
 
-        pub rent: Option<Pubkey>;
+        pub rent: Option<Pubkey>,
   }
 
                 
-impl struct ApproveCollectionAuthority {
+impl ApproveCollectionAuthority {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.collection_authority_record,
@@ -74,28 +75,24 @@ impl struct ApproveCollectionAuthority {
             false
           ),
               ],
-      data: ApproveCollectionAuthority.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct ApproveCollectionAuthorityBuilder {
-  collection_authority_record: Option<Pubkey>;
-    new_collection_authority: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  collection_authority_record: Option<Pubkey>,
+    new_collection_authority: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl ApproveCollectionAuthorityBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn collection_authority_record(&mut self, collection_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
       self.collection_authority_record = Some(collection_authority_record);
       
@@ -138,14 +135,14 @@ impl ApproveCollectionAuthorityBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ApproveCollectionAuthority {
-                  collection_authority_record: self.collection_authority_record,
-                            new_collection_authority: self.new_collection_authority,
-                            update_authority: self.update_authority,
-                            payer: self.payer,
-                            metadata: self.metadata,
-                            mint: self.mint,
-                            system_program: self.system_program,
-                            rent: self.rent.expect("rent is not set"),
+                  collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
+                            new_collection_authority: self.new_collection_authority.expect("new_collection_authority is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            rent: self.rent,
                       };
     accounts.instruction()
   }

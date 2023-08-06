@@ -5,29 +5,30 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct SetCollectionSize {
       /// Collection Metadata account
 
-        pub collection_metadata: Pubkey;
+        pub collection_metadata: Pubkey,
         /// Collection Update authority
 
-        pub collection_authority: Pubkey;
+        pub collection_authority: Pubkey,
         /// Mint of the Collection
 
-        pub collection_mint: Pubkey;
+        pub collection_mint: Pubkey,
         /// Collection Authority Record PDA
 
-        pub collection_authority_record: Option<Pubkey>;
+        pub collection_authority_record: Option<Pubkey>,
   }
 
         
-impl struct SetCollectionSize {
+impl SetCollectionSize {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.collection_metadata,
@@ -46,24 +47,20 @@ impl struct SetCollectionSize {
             false
           ),
               ],
-      data: SetCollectionSize.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct SetCollectionSizeBuilder {
-  collection_metadata: Option<Pubkey>;
-    collection_authority: Option<Pubkey>;
-    collection_mint: Option<Pubkey>;
-    collection_authority_record: Option<Pubkey>;
+  collection_metadata: Option<Pubkey>,
+    collection_authority: Option<Pubkey>,
+    collection_mint: Option<Pubkey>,
+    collection_authority_record: Option<Pubkey>,
   }
 
 impl SetCollectionSizeBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn collection_metadata(&mut self, collection_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.collection_metadata = Some(collection_metadata);
       
@@ -86,10 +83,10 @@ impl SetCollectionSizeBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetCollectionSize {
-                  collection_metadata: self.collection_metadata,
-                            collection_authority: self.collection_authority,
-                            collection_mint: self.collection_mint,
-                            collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
+                  collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
+                            collection_authority: self.collection_authority.expect("collection_authority is not set"),
+                            collection_mint: self.collection_mint.expect("collection_mint is not set"),
+                            collection_authority_record: self.collection_authority_record,
                       };
     accounts.instruction()
   }

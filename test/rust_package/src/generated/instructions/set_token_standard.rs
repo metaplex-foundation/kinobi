@@ -5,29 +5,30 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct SetTokenStandard {
       /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Metadata update authority
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         /// Mint account
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Edition account
 
-        pub edition: Option<Pubkey>;
+        pub edition: Option<Pubkey>,
   }
 
         
-impl struct SetTokenStandard {
+impl SetTokenStandard {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -46,24 +47,20 @@ impl struct SetTokenStandard {
             false
           ),
               ],
-      data: SetTokenStandard.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct SetTokenStandardBuilder {
-  metadata: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    edition: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    edition: Option<Pubkey>,
   }
 
 impl SetTokenStandardBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -86,10 +83,10 @@ impl SetTokenStandardBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetTokenStandard {
-                  metadata: self.metadata,
-                            update_authority: self.update_authority,
-                            mint: self.mint,
-                            edition: self.edition.expect("edition is not set"),
+                  metadata: self.metadata.expect("metadata is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            edition: self.edition,
                       };
     accounts.instruction()
   }

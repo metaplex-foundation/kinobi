@@ -5,35 +5,36 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct UnverifyCollection {
       /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Collection Authority
 
-        pub collection_authority: Pubkey;
+        pub collection_authority: Pubkey,
         /// Mint of the Collection
 
-        pub collection_mint: Pubkey;
+        pub collection_mint: Pubkey,
         /// Metadata Account of the Collection
 
-        pub collection: Pubkey;
+        pub collection: Pubkey,
         /// MasterEdition2 Account of the Collection Token
 
-        pub collection_master_edition_account: Pubkey;
+        pub collection_master_edition_account: Pubkey,
         /// Collection Authority Record PDA
 
-        pub collection_authority_record: Option<Pubkey>;
+        pub collection_authority_record: Option<Pubkey>,
   }
 
             
-impl struct UnverifyCollection {
+impl UnverifyCollection {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -60,26 +61,22 @@ impl struct UnverifyCollection {
             false
           ),
               ],
-      data: UnverifyCollection.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct UnverifyCollectionBuilder {
-  metadata: Option<Pubkey>;
-    collection_authority: Option<Pubkey>;
-    collection_mint: Option<Pubkey>;
-    collection: Option<Pubkey>;
-    collection_master_edition_account: Option<Pubkey>;
-    collection_authority_record: Option<Pubkey>;
+  metadata: Option<Pubkey>,
+    collection_authority: Option<Pubkey>,
+    collection_mint: Option<Pubkey>,
+    collection: Option<Pubkey>,
+    collection_master_edition_account: Option<Pubkey>,
+    collection_authority_record: Option<Pubkey>,
   }
 
 impl UnverifyCollectionBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
       self.metadata = Some(metadata);
       
@@ -112,12 +109,12 @@ impl UnverifyCollectionBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UnverifyCollection {
-                  metadata: self.metadata,
-                            collection_authority: self.collection_authority,
-                            collection_mint: self.collection_mint,
-                            collection: self.collection,
-                            collection_master_edition_account: self.collection_master_edition_account,
-                            collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
+                  metadata: self.metadata.expect("metadata is not set"),
+                            collection_authority: self.collection_authority.expect("collection_authority is not set"),
+                            collection_mint: self.collection_mint.expect("collection_mint is not set"),
+                            collection: self.collection.expect("collection is not set"),
+                            collection_master_edition_account: self.collection_master_edition_account.expect("collection_master_edition_account is not set"),
+                            collection_authority_record: self.collection_authority_record,
                       };
     accounts.instruction()
   }

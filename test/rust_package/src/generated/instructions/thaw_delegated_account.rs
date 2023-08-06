@@ -5,32 +5,33 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct ThawDelegatedAccount {
       /// Delegate
 
-        pub delegate: Pubkey;
+        pub delegate: Pubkey,
         /// Token account to thaw
 
-        pub token_account: Pubkey;
+        pub token_account: Pubkey,
         /// Edition
 
-        pub edition: Pubkey;
+        pub edition: Pubkey,
         /// Token mint
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Token Program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
   }
 
           
-impl struct ThawDelegatedAccount {
+impl ThawDelegatedAccount {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.delegate,
@@ -53,25 +54,21 @@ impl struct ThawDelegatedAccount {
             false
           ),
               ],
-      data: ThawDelegatedAccount.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct ThawDelegatedAccountBuilder {
-  delegate: Option<Pubkey>;
-    token_account: Option<Pubkey>;
-    edition: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    token_program: Option<Pubkey>;
+  delegate: Option<Pubkey>,
+    token_account: Option<Pubkey>,
+    edition: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    token_program: Option<Pubkey>,
   }
 
 impl ThawDelegatedAccountBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn delegate(&mut self, delegate: solana_program::pubkey::Pubkey) -> &mut Self {
       self.delegate = Some(delegate);
       
@@ -99,11 +96,11 @@ impl ThawDelegatedAccountBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ThawDelegatedAccount {
-                  delegate: self.delegate,
-                            token_account: self.token_account,
-                            edition: self.edition,
-                            mint: self.mint,
-                            token_program: self.token_program,
+                  delegate: self.delegate.expect("delegate is not set"),
+                            token_account: self.token_account.expect("token_account is not set"),
+                            edition: self.edition.expect("edition is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
                       };
     accounts.instruction()
   }

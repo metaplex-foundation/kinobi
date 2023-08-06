@@ -5,38 +5,39 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct DeprecatedMintPrintingTokens {
       /// Destination account
 
-        pub destination: Pubkey;
+        pub destination: Pubkey,
         /// Printing mint
 
-        pub printing_mint: Pubkey;
+        pub printing_mint: Pubkey,
         /// Update authority
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         /// Metadata key (pda of ['metadata', program id, mint id])
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
 
-        pub master_edition: Pubkey;
+        pub master_edition: Pubkey,
         /// Token program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
         /// Rent
 
-        pub rent: Pubkey;
+        pub rent: Pubkey,
   }
 
               
-impl struct DeprecatedMintPrintingTokens {
+impl DeprecatedMintPrintingTokens {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.destination,
@@ -67,27 +68,23 @@ impl struct DeprecatedMintPrintingTokens {
             false
           ),
               ],
-      data: DeprecatedMintPrintingTokens.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct DeprecatedMintPrintingTokensBuilder {
-  destination: Option<Pubkey>;
-    printing_mint: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    master_edition: Option<Pubkey>;
-    token_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  destination: Option<Pubkey>,
+    printing_mint: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    master_edition: Option<Pubkey>,
+    token_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl DeprecatedMintPrintingTokensBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
       self.destination = Some(destination);
       
@@ -125,13 +122,13 @@ impl DeprecatedMintPrintingTokensBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintPrintingTokens {
-                  destination: self.destination,
-                            printing_mint: self.printing_mint,
-                            update_authority: self.update_authority,
-                            metadata: self.metadata,
-                            master_edition: self.master_edition,
-                            token_program: self.token_program,
-                            rent: self.rent,
+                  destination: self.destination.expect("destination is not set"),
+                            printing_mint: self.printing_mint.expect("printing_mint is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            master_edition: self.master_edition.expect("master_edition is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
+                            rent: self.rent.expect("rent is not set"),
                       };
     accounts.instruction()
   }

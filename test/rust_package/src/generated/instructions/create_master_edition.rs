@@ -5,44 +5,45 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct CreateMasterEdition {
       /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
 
-        pub edition: Pubkey;
+        pub edition: Pubkey,
         /// Metadata mint
 
-        pub mint: Pubkey;
+        pub mint: Pubkey,
         /// Update authority
 
-        pub update_authority: Pubkey;
+        pub update_authority: Pubkey,
         /// Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
 
-        pub mint_authority: Pubkey;
+        pub mint_authority: Pubkey,
         /// payer
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// Metadata account
 
-        pub metadata: Pubkey;
+        pub metadata: Pubkey,
         /// Token program
 
-        pub token_program: Pubkey;
+        pub token_program: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
         /// Rent info
 
-        pub rent: Pubkey;
+        pub rent: Pubkey,
   }
 
                   
-impl struct CreateMasterEdition {
+impl CreateMasterEdition {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_metadata::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.edition,
@@ -81,29 +82,25 @@ impl struct CreateMasterEdition {
             false
           ),
               ],
-      data: CreateMasterEdition.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct CreateMasterEditionBuilder {
-  edition: Option<Pubkey>;
-    mint: Option<Pubkey>;
-    update_authority: Option<Pubkey>;
-    mint_authority: Option<Pubkey>;
-    payer: Option<Pubkey>;
-    metadata: Option<Pubkey>;
-    token_program: Option<Pubkey>;
-    system_program: Option<Pubkey>;
-    rent: Option<Pubkey>;
+  edition: Option<Pubkey>,
+    mint: Option<Pubkey>,
+    update_authority: Option<Pubkey>,
+    mint_authority: Option<Pubkey>,
+    payer: Option<Pubkey>,
+    metadata: Option<Pubkey>,
+    token_program: Option<Pubkey>,
+    system_program: Option<Pubkey>,
+    rent: Option<Pubkey>,
   }
 
 impl CreateMasterEditionBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
       self.edition = Some(edition);
       
@@ -151,15 +148,15 @@ impl CreateMasterEditionBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateMasterEdition {
-                  edition: self.edition,
-                            mint: self.mint,
-                            update_authority: self.update_authority,
-                            mint_authority: self.mint_authority,
-                            payer: self.payer,
-                            metadata: self.metadata,
-                            token_program: self.token_program,
-                            system_program: self.system_program,
-                            rent: self.rent,
+                  edition: self.edition.expect("edition is not set"),
+                            mint: self.mint.expect("mint is not set"),
+                            update_authority: self.update_authority.expect("update_authority is not set"),
+                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+                            payer: self.payer.expect("payer is not set"),
+                            metadata: self.metadata.expect("metadata is not set"),
+                            token_program: self.token_program.expect("token_program is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
+                            rent: self.rent.expect("rent is not set"),
                       };
     accounts.instruction()
   }

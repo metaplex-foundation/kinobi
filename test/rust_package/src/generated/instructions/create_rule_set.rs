@@ -5,26 +5,27 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
+use solana_program::pubkey::{ Pubkey };
 
 /// Accounts.
 pub struct CreateRuleSet {
       /// Payer and creator of the RuleSet
 
-        pub payer: Pubkey;
+        pub payer: Pubkey,
         /// The PDA account where the RuleSet is stored
 
-        pub rule_set_pda: Pubkey;
+        pub rule_set_pda: Pubkey,
         /// System program
 
-        pub system_program: Pubkey;
+        pub system_program: Pubkey,
   }
 
       
-impl struct CreateRuleSet {
+impl CreateRuleSet {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    solana_program::instruction::Instruction {
-      program_id: crate::ID,
+        let data = Vec::new();
+        solana_program::instruction::Instruction {
+      program_id: crate::programs::mpl_token_auth_rules::ID,
       accounts: vec![
                                                   solana_program::instruction::AccountMeta::new(
             self.payer,
@@ -39,23 +40,19 @@ impl struct CreateRuleSet {
             false
           ),
               ],
-      data: CreateRuleSet.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
 /// Instruction builder.
-#[derive(Default)]
 pub struct CreateRuleSetBuilder {
-  payer: Option<Pubkey>;
-    rule_set_pda: Option<Pubkey>;
-    system_program: Option<Pubkey>;
+  payer: Option<Pubkey>,
+    rule_set_pda: Option<Pubkey>,
+    system_program: Option<Pubkey>,
   }
 
 impl CreateRuleSetBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
       pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
       self.payer = Some(payer);
       
@@ -73,9 +70,9 @@ impl CreateRuleSetBuilder {
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateRuleSet {
-                  payer: self.payer,
-                            rule_set_pda: self.rule_set_pda,
-                            system_program: self.system_program,
+                  payer: self.payer.expect("payer is not set"),
+                            rule_set_pda: self.rule_set_pda.expect("rule_set_pda is not set"),
+                            system_program: self.system_program.expect("system_program is not set"),
                       };
     accounts.instruction()
   }
