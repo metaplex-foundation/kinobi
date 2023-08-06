@@ -1,6 +1,6 @@
 import { spawnSync } from 'child_process';
 import * as nodes from '../../nodes';
-import { LogLevel } from '../../shared/logs';
+import { LogLevel, logError, logWarn } from '../../shared/logs';
 import { BaseThrowVisitor, visit } from '../../visitors';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
 import { deleteFolder } from '../utils';
@@ -53,15 +53,19 @@ export class RenderRustVisitor extends BaseThrowVisitor<void> {
           `${this.options.crateFolder}/Cargo.toml`,
         ]);
       } else {
-        console.warn('No crate folder specified, skipping formatting.');
+        logWarn('No crate folder specified, skipping formatting.');
       }
     }
   }
 }
 
 function runFormatter(cmd: string, args: string[]) {
-  const { stdout, stderr } = spawnSync(cmd, args);
+  const { stdout, stderr, error } = spawnSync(cmd, args);
+  if (error?.message?.includes('ENOENT')) {
+    logWarn(`Could not find ${cmd}, skipping formatting.`);
+    return;
+  }
   if (stderr.length > 0) {
-    console.error(`Formatting ${stderr}`);
+    logError(`Formatting ${stderr || error}`);
   }
 }
