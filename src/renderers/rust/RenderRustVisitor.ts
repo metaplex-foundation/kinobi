@@ -1,3 +1,4 @@
+import { spawnSync } from 'child_process';
 import * as nodes from '../../nodes';
 import { LogLevel } from '../../shared/logs';
 import { BaseThrowVisitor, visit } from '../../visitors';
@@ -11,6 +12,8 @@ import {
 export type RenderRustOptions = GetRustRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
   throwLevel?: LogLevel;
+  crateFolder?: string;
+  formatCode?: boolean;
 };
 
 export class RenderRustVisitor extends BaseThrowVisitor<void> {
@@ -41,5 +44,24 @@ export class RenderRustVisitor extends BaseThrowVisitor<void> {
         this.path
       )
     );
+
+    // format the code
+    if (this.options.formatCode) {
+      if (this.options.crateFolder) {
+        runFormatter('cargo-fmt', [
+          '--manifest-path',
+          `${this.options.crateFolder}/Cargo.toml`,
+        ]);
+      } else {
+        console.warn('No crate folder specified, skipping formatting.');
+      }
+    }
+  }
+}
+
+function runFormatter(cmd: string, args: string[]) {
+  const { stdout, stderr } = spawnSync(cmd, args);
+  if (stderr.length > 0) {
+    console.error(`Formatting ${stderr}`);
   }
 }

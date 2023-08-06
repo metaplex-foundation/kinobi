@@ -265,7 +265,6 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       context,
       options
     );
-    // TODO: Rust formatting happens here.
     return code;
   }
 }
