@@ -12,9 +12,9 @@ pub struct {{ instruction.name | pascalCase }} {
     {{ macros.docblock(account.docs) }}
   {% endif %}
   {% if account.isOptional %}
-    pub {{ account.name | snakeCase }}: Option<Pubkey>;
+    pub {{ account.name | snakeCase }}: Option<Pubkey>,
   {% else %}
-    pub {{ account.name | snakeCase }}: Pubkey;
+    pub {{ account.name | snakeCase }}: Pubkey,
   {% endif %}
 {% endfor %}
 }
@@ -26,10 +26,17 @@ pub struct {{ instruction.name | pascalCase }} {
   {% endif %}
 {% endfor %}
 
-impl struct {{ instruction.name | pascalCase }} {
+impl {{ instruction.name | pascalCase }} {
   pub fn instruction(&self{{ signer }}) -> solana_program::instruction::Instruction {
+    {% if hasDataArgs %}
+    let data = {{ instruction.dataArgs.name | pascalCase }}(resolvedArgs).try_to_vec().unwrap();
+    {% elif hasData %}
+    let data = {{ instruction.dataArgs.name | pascalCase }}.try_to_vec().unwrap();
+    {% else %}
+    let data = Vec::new();
+    {% endif %}
     solana_program::instruction::Instruction {
-      program_id: crate::ID,
+      program_id: crate::programs::{{ program.name | snakeCase }}::ID,
       accounts: vec![
         {% for account in instruction.accounts %}
           {% if account.isSigner === 'either' %}
@@ -43,7 +50,7 @@ impl struct {{ instruction.name | pascalCase }} {
           ),
         {% endfor %}
       ],
-      data: {{ instruction.name | pascalCase }}.try_to_vec().unwrap(),
+      data,
     }
   }
 }

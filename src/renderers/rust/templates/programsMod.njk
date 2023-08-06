@@ -3,6 +3,6 @@
 {% block main %}
 
 {% for program in programsToExport | sort(false, false, 'name') %}
-mod {{ program.name | snakeCase }};
+pub mod {{ program.name | snakeCase }};
 {% endfor %}
 {% endblock %}

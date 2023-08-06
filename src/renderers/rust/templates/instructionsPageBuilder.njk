@@ -1,18 +1,14 @@
 /// Instruction builder.
-#[derive(Default)]
 pub struct {{ instruction.name | pascalCase }}Builder {
 {% for account in instruction.accounts %}
-  {{ account.name | snakeCase }}: Option<Pubkey>;
+  {{ account.name | snakeCase }}: Option<Pubkey>,
   {% if account.isSigner === 'either' %}
-  {{ account.name | snakeCase }}_as_signer: bool;
+  {{ account.name | snakeCase }}_as_signer: bool,
   {% endif %}
 {% endfor %}
 }
 
 impl {{ instruction.name | pascalCase }}Builder {
-  pub fn new() -> Self {
-    Self::default()
-  }
   {% for account in instruction.accounts %}
     pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: solana_program::pubkey::Pubkey{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
       self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
@@ -24,7 +20,7 @@ impl {{ instruction.name | pascalCase }}Builder {
     {% set signers = '' %}
     let accounts = {{ instruction.name | pascalCase }} {
         {% for account in instruction.accounts %}
-          {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if account.isOptional }},
+          {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if account.isOptional === false }},
           {% if account.isSigner === 'either' %}
             {% set signers = signers +  'self.' + account.name | snakeCase + '_as_signer,' %}
           {% endif %}

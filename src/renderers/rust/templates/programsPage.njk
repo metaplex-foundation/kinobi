@@ -2,8 +2,8 @@
 
 {% block main %}
 
-use solana_program::pubkey;
+use solana_program::{pubkey, pubkey::Pubkey};
 
-export const {{ program.name | snakeCase | upper }}_PROGRAM_ID: Pubkey = pubkey!("{{ program.publicKey }}");
+pub const ID: Pubkey = pubkey!("{{ program.publicKey }}");
 
 {% endblock %}

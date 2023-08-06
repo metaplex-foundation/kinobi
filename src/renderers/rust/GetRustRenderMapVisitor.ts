@@ -162,6 +162,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
     const imports = new RustImportMap();
+    imports.add('solana_program::pubkey', 'Pubkey');
 
     return new RenderMap().add(
       `instructions/${snakeCase(instruction.name)}.rs`,
