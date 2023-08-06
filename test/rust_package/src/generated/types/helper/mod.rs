@@ -68,10 +68,10 @@ where
             match reader.read(&mut buffer)? {
                 0 => break,
                 n if n == length => items.push(T::deserialize(&mut buffer.as_slice())?),
-                _ => {
+                e => {
                     return Err(borsh::maybestd::io::Error::new(
                         borsh::maybestd::io::ErrorKind::InvalidData,
-                        "Invalid data",
+                        format!("unexpected number of bytes (read {e}, expected {length})"),
                     ))
                 }
             }

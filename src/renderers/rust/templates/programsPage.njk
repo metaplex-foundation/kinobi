@@ -1,0 +1,9 @@
+{% extends "layout.njk" %}
+
+{% block main %}
+
+use solana_program::pubkey;
+
+export const {{ program.name | snakeCase | upper }}_PROGRAM_ID: Pubkey = pubkey!("{{ program.publicKey }}");
+
+{% endblock %}

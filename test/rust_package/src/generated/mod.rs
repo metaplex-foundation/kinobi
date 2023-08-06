@@ -4,9 +4,10 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-      pub mod crate::accounts;
-        pub mod crate::errors;
-        pub mod crate::instructions;
-        pub mod crate::programs;
-        pub mod crate::types;
+
+      pub mod accounts;
+        pub mod errors;
+        pub mod instructions;
+        pub mod programs;
+        pub mod types;
   
