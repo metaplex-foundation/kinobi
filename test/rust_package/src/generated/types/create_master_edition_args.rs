@@ -4,10 +4,9 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct CreateMasterEditionArgs {
-pub max_supply: Option<u64>,
+    pub max_supply: Option<u64>,
 }

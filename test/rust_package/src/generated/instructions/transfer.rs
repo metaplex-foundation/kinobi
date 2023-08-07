@@ -5,244 +5,302 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct Transfer {
-      /// Transfer authority (token or delegate owner)
+    /// Transfer authority (token or delegate owner)
+    pub authority: solana_program::pubkey::Pubkey,
+    /// Delegate record PDA
+    pub delegate_record: Option<solana_program::pubkey::Pubkey>,
+    /// Token account
+    pub token: solana_program::pubkey::Pubkey,
+    /// Token account owner
+    pub token_owner: solana_program::pubkey::Pubkey,
+    /// Destination token account
+    pub destination: solana_program::pubkey::Pubkey,
+    /// Destination token account owner
+    pub destination_owner: solana_program::pubkey::Pubkey,
+    /// Mint of token asset
+    pub mint: solana_program::pubkey::Pubkey,
+    /// Metadata (pda of ['metadata', program id, mint id])
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Master Edition of token asset
+    pub master_edition: Option<solana_program::pubkey::Pubkey>,
+    /// SPL Token Program
+    pub spl_token_program: solana_program::pubkey::Pubkey,
+    /// SPL Associated Token Account program
+    pub spl_ata_program: solana_program::pubkey::Pubkey,
+    /// System Program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// Instructions sysvar account
+    pub sysvar_instructions: solana_program::pubkey::Pubkey,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub authority: Pubkey,
-        /// Delegate record PDA
-
-        pub delegate_record: Option<Pubkey>,
-        /// Token account
-
-        pub token: Pubkey,
-        /// Token account owner
-
-        pub token_owner: Pubkey,
-        /// Destination token account
-
-        pub destination: Pubkey,
-        /// Destination token account owner
-
-        pub destination_owner: Pubkey,
-        /// Mint of token asset
-
-        pub mint: Pubkey,
-        /// Metadata (pda of ['metadata', program id, mint id])
-
-        pub metadata: Pubkey,
-        /// Master Edition of token asset
-
-        pub master_edition: Option<Pubkey>,
-        /// SPL Token Program
-
-        pub spl_token_program: Pubkey,
-        /// SPL Associated Token Account program
-
-        pub spl_ata_program: Pubkey,
-        /// System Program
-
-        pub system_program: Pubkey,
-        /// Instructions sysvar account
-
-        pub sysvar_instructions: Pubkey,
-        /// Token Authorization Rules Program
-
-        pub authorization_rules_program: Option<Pubkey>,
-        /// Token Authorization Rules account
-
-        pub authorization_rules: Option<Pubkey>,
-  }
-
-                              
 impl Transfer {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: TransferInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.delegate_record.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.token,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token_owner,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.destination,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.destination_owner,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.master_edition.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.spl_token_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.spl_ata_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.sysvar_instructions,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules_program.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.authority,
+              true
+            ),
+                                                                if let Some(delegate_record) = self.delegate_record {
+              solana_program::instruction::AccountMeta::new(
+                delegate_record,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                solana_program::instruction::AccountMeta::new(
+              self.token,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.token_owner,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.destination,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.destination_owner,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                if let Some(master_edition) = self.master_edition {
+              solana_program::instruction::AccountMeta::new_readonly(
+                master_edition,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.spl_token_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.spl_ata_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.system_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.sysvar_instructions,
+              false
+            ),
+                                                                if let Some(authorization_rules_program) = self.authorization_rules_program {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules_program,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                if let Some(authorization_rules) = self.authorization_rules {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct TransferBuilder {
-  authority: Option<Pubkey>,
-    delegate_record: Option<Pubkey>,
-    token: Option<Pubkey>,
-    token_owner: Option<Pubkey>,
-    destination: Option<Pubkey>,
-    destination_owner: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    metadata: Option<Pubkey>,
-    master_edition: Option<Pubkey>,
-    spl_token_program: Option<Pubkey>,
-    spl_ata_program: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    sysvar_instructions: Option<Pubkey>,
-    authorization_rules_program: Option<Pubkey>,
-    authorization_rules: Option<Pubkey>,
-  }
+    authority: Option<solana_program::pubkey::Pubkey>,
+    delegate_record: Option<solana_program::pubkey::Pubkey>,
+    token: Option<solana_program::pubkey::Pubkey>,
+    token_owner: Option<solana_program::pubkey::Pubkey>,
+    destination: Option<solana_program::pubkey::Pubkey>,
+    destination_owner: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    master_edition: Option<solana_program::pubkey::Pubkey>,
+    spl_token_program: Option<solana_program::pubkey::Pubkey>,
+    spl_ata_program: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    transfer_args: Option<TransferArgs>,
+}
 
 impl TransferBuilder {
-      pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority = Some(authority);
-      
-      self
+    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority = Some(authority);
+        self
     }
-      pub fn delegate_record(&mut self, delegate_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.delegate_record = Some(delegate_record);
-      
-      self
+    pub fn delegate_record(
+        &mut self,
+        delegate_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.delegate_record = Some(delegate_record);
+        self
     }
-      pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token = Some(token);
-      
-      self
+    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token = Some(token);
+        self
     }
-      pub fn token_owner(&mut self, token_owner: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_owner = Some(token_owner);
-      
-      self
+    pub fn token_owner(&mut self, token_owner: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token_owner = Some(token_owner);
+        self
     }
-      pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.destination = Some(destination);
-      
-      self
+    pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.destination = Some(destination);
+        self
     }
-      pub fn destination_owner(&mut self, destination_owner: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.destination_owner = Some(destination_owner);
-      
-      self
+    pub fn destination_owner(
+        &mut self,
+        destination_owner: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.destination_owner = Some(destination_owner);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition = Some(master_edition);
-      
-      self
+    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.master_edition = Some(master_edition);
+        self
     }
-      pub fn spl_token_program(&mut self, spl_token_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.spl_token_program = Some(spl_token_program);
-      
-      self
+    pub fn spl_token_program(
+        &mut self,
+        spl_token_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.spl_token_program = Some(spl_token_program);
+        self
     }
-      pub fn spl_ata_program(&mut self, spl_ata_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.spl_ata_program = Some(spl_ata_program);
-      
-      self
+    pub fn spl_ata_program(
+        &mut self,
+        spl_ata_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.spl_ata_program = Some(spl_ata_program);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn sysvar_instructions(&mut self, sysvar_instructions: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.sysvar_instructions = Some(sysvar_instructions);
-      
-      self
+    pub fn sysvar_instructions(
+        &mut self,
+        sysvar_instructions: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.sysvar_instructions = Some(sysvar_instructions);
+        self
     }
-      pub fn authorization_rules_program(&mut self, authorization_rules_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules_program = Some(authorization_rules_program);
-      
-      self
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules_program = Some(authorization_rules_program);
+        self
     }
-      pub fn authorization_rules(&mut self, authorization_rules: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules = Some(authorization_rules);
-      
-      self
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules = Some(authorization_rules);
+        self
+    }
+    pub fn transfer_args(&mut self, transfer_args: TransferArgs) -> &mut Self {
+        self.transfer_args = Some(transfer_args);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Transfer {
-                  authority: self.authority.expect("authority is not set"),
-                            delegate_record: self.delegate_record,
-                            token: self.token.expect("token is not set"),
-                            token_owner: self.token_owner.expect("token_owner is not set"),
-                            destination: self.destination.expect("destination is not set"),
-                            destination_owner: self.destination_owner.expect("destination_owner is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                            metadata: self.metadata.expect("metadata is not set"),
-                            master_edition: self.master_edition,
-                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
-                            spl_ata_program: self.spl_ata_program.expect("spl_ata_program is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
-                            authorization_rules_program: self.authorization_rules_program,
-                            authorization_rules: self.authorization_rules,
-                      };
-    accounts.instruction()
-  }
+            authority: self.authority.expect("authority is not set"),
+
+            delegate_record: self.delegate_record,
+
+            token: self.token.expect("token is not set"),
+
+            token_owner: self.token_owner.expect("token_owner is not set"),
+
+            destination: self.destination.expect("destination is not set"),
+
+            destination_owner: self
+                .destination_owner
+                .expect("destination_owner is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+
+            metadata: self.metadata.expect("metadata is not set"),
+
+            master_edition: self.master_edition,
+
+            spl_token_program: self
+                .spl_token_program
+                .expect("spl_token_program is not set"),
+
+            spl_ata_program: self.spl_ata_program.expect("spl_ata_program is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            sysvar_instructions: self
+                .sysvar_instructions
+                .expect("sysvar_instructions is not set"),
+
+            authorization_rules_program: self.authorization_rules_program,
+
+            authorization_rules: self.authorization_rules,
+        };
+        let args =
+            TransferInstructionArgs::new(self.transfer_args.expect("transfer_args is not set"));
+        accounts.instruction(args)
+    }
 }
 
+pub struct TransferInstructionArgs {
+    discriminator: u8,
+    pub transfer_args: TransferArgs,
+}
+
+impl TransferInstructionArgs {
+    pub fn new(transfer_args: TransferArgs) -> Self {
+        Self {
+            discriminator: 46,
+            transfer_args,
+        }
+    }
+}

@@ -5,146 +5,163 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct ApproveCollectionAuthority {
-      /// Collection Authority Record PDA
+    /// Collection Authority Record PDA
+    pub collection_authority_record: solana_program::pubkey::Pubkey,
+    /// A Collection Authority
+    pub new_collection_authority: solana_program::pubkey::Pubkey,
+    /// Update Authority of Collection NFT
+    pub update_authority: solana_program::pubkey::Pubkey,
+    /// Payer
+    pub payer: solana_program::pubkey::Pubkey,
+    /// Collection Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Mint of Collection Metadata
+    pub mint: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// Rent info
+    pub rent: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub collection_authority_record: Pubkey,
-        /// A Collection Authority
-
-        pub new_collection_authority: Pubkey,
-        /// Update Authority of Collection NFT
-
-        pub update_authority: Pubkey,
-        /// Payer
-
-        pub payer: Pubkey,
-        /// Collection Metadata account
-
-        pub metadata: Pubkey,
-        /// Mint of Collection Metadata
-
-        pub mint: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-        /// Rent info
-
-        pub rent: Option<Pubkey>,
-  }
-
-                
 impl ApproveCollectionAuthority {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = ApproveCollectionAuthorityInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_authority_record,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.new_collection_authority,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.update_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.rent.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.collection_authority_record,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.new_collection_authority,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.update_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.payer,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.system_program,
+              false
+            ),
+                                                                if let Some(rent) = self.rent {
+              solana_program::instruction::AccountMeta::new_readonly(
+                rent,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct ApproveCollectionAuthorityBuilder {
-  collection_authority_record: Option<Pubkey>,
-    new_collection_authority: Option<Pubkey>,
-    update_authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    metadata: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    rent: Option<Pubkey>,
-  }
+    collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+    new_collection_authority: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    rent: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl ApproveCollectionAuthorityBuilder {
-      pub fn collection_authority_record(&mut self, collection_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority_record = Some(collection_authority_record);
-      
-      self
+    pub fn collection_authority_record(
+        &mut self,
+        collection_authority_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority_record = Some(collection_authority_record);
+        self
     }
-      pub fn new_collection_authority(&mut self, new_collection_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.new_collection_authority = Some(new_collection_authority);
-      
-      self
+    pub fn new_collection_authority(
+        &mut self,
+        new_collection_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.new_collection_authority = Some(new_collection_authority);
+        self
     }
-      pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.update_authority = Some(update_authority);
-      
-      self
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.rent = Some(rent);
-      
-      self
+    pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.rent = Some(rent);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ApproveCollectionAuthority {
-                  collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
-                            new_collection_authority: self.new_collection_authority.expect("new_collection_authority is not set"),
-                            update_authority: self.update_authority.expect("update_authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            metadata: self.metadata.expect("metadata is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            rent: self.rent,
-                      };
-    accounts.instruction()
-  }
+            collection_authority_record: self
+                .collection_authority_record
+                .expect("collection_authority_record is not set"),
+
+            new_collection_authority: self
+                .new_collection_authority
+                .expect("new_collection_authority is not set"),
+
+            update_authority: self.update_authority.expect("update_authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            metadata: self.metadata.expect("metadata is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            rent: self.rent,
+        };
+        accounts.instruction()
+    }
 }
 
+struct ApproveCollectionAuthorityInstructionArgs {
+    discriminator: u8,
+}
+
+impl ApproveCollectionAuthorityInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 23 }
+    }
+}

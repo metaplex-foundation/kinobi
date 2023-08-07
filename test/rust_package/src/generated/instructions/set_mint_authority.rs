@@ -5,70 +5,70 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct SetMintAuthority {
-        pub candy_machine: Pubkey,
-          pub authority: Pubkey,
-          pub mint_authority: Pubkey,
-  }
+    pub candy_machine: solana_program::pubkey::Pubkey,
 
-      
+    pub authority: solana_program::pubkey::Pubkey,
+
+    pub mint_authority: solana_program::pubkey::Pubkey,
+}
+
 impl SetMintAuthority {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = SetMintAuthorityInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_candy_machine_core::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.candy_machine,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint_authority,
-            true
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_candy_machine_core::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.authority, true),
+                solana_program::instruction::AccountMeta::new_readonly(self.mint_authority, true),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct SetMintAuthorityBuilder {
-  candy_machine: Option<Pubkey>,
-    authority: Option<Pubkey>,
-    mint_authority: Option<Pubkey>,
-  }
+    candy_machine: Option<solana_program::pubkey::Pubkey>,
+    authority: Option<solana_program::pubkey::Pubkey>,
+    mint_authority: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl SetMintAuthorityBuilder {
-      pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.candy_machine = Some(candy_machine);
-      
-      self
+    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.candy_machine = Some(candy_machine);
+        self
     }
-      pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority = Some(authority);
-      
-      self
+    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority = Some(authority);
+        self
     }
-      pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint_authority = Some(mint_authority);
-      
-      self
+    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint_authority = Some(mint_authority);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetMintAuthority {
-                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
-                            authority: self.authority.expect("authority is not set"),
-                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
-                      };
-    accounts.instruction()
-  }
+            candy_machine: self.candy_machine.expect("candy_machine is not set"),
+
+            authority: self.authority.expect("authority is not set"),
+
+            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct SetMintAuthorityInstructionArgs {
+    discriminator: [u8; 8],
+}
+
+impl SetMintAuthorityInstructionArgs {
+    pub fn new() -> Self {
+        Self {
+            discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
+        }
+    }
+}

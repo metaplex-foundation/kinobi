@@ -4,12 +4,9 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum UseAssetArgs {
-V1 {
-use_count: u64,
-}
+    V1 { use_count: u64 },
 }

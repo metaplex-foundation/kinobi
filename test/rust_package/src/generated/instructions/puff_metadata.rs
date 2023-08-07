@@ -5,48 +5,50 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct PuffMetadata {
-      /// Metadata account
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+}
 
-        pub metadata: Pubkey,
-  }
-
-  
 impl PuffMetadata {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = PuffMetadataInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![solana_program::instruction::AccountMeta::new(
+                self.metadata,
+                false,
+            )],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct PuffMetadataBuilder {
-  metadata: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl PuffMetadataBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = PuffMetadata {
-                  metadata: self.metadata.expect("metadata is not set"),
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct PuffMetadataInstructionArgs {
+    discriminator: u8,
+}
+
+impl PuffMetadataInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 14 }
+    }
+}

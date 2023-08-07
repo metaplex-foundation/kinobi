@@ -5,13 +5,12 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ TmKey };
-
+use crate::generated::types::TmKey;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct UseAuthorityRecord {
-pub key: TmKey,
-pub allowed_uses: u64,
-pub bump: u8,
+    pub key: TmKey,
+    pub allowed_uses: u64,
+    pub bump: u8,
 }

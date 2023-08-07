@@ -4,11 +4,10 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use solana_program::{ pubkey::Pubkey };
-
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct ProgrammableConfig {
-pub rule_set: Pubkey,
+    pub rule_set: Pubkey,
 }

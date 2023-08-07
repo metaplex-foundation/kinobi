@@ -4,13 +4,12 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use solana_program::{ pubkey::Pubkey };
-
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct ReservationV1 {
-pub address: Pubkey,
-pub spots_remaining: u8,
-pub total_spots: u8,
+    pub address: Pubkey,
+    pub spots_remaining: u8,
+    pub total_spots: u8,
 }

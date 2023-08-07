@@ -5,132 +5,153 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct UnverifySizedCollectionItem {
-      /// Metadata account
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Collection Authority
+    pub collection_authority: solana_program::pubkey::Pubkey,
+    /// payer
+    pub payer: solana_program::pubkey::Pubkey,
+    /// Mint of the Collection
+    pub collection_mint: solana_program::pubkey::Pubkey,
+    /// Metadata Account of the Collection
+    pub collection: solana_program::pubkey::Pubkey,
+    /// MasterEdition2 Account of the Collection Token
+    pub collection_master_edition_account: solana_program::pubkey::Pubkey,
+    /// Collection Authority Record PDA
+    pub collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub metadata: Pubkey,
-        /// Collection Authority
-
-        pub collection_authority: Pubkey,
-        /// payer
-
-        pub payer: Pubkey,
-        /// Mint of the Collection
-
-        pub collection_mint: Pubkey,
-        /// Metadata Account of the Collection
-
-        pub collection: Pubkey,
-        /// MasterEdition2 Account of the Collection Token
-
-        pub collection_master_edition_account: Pubkey,
-        /// Collection Authority Record PDA
-
-        pub collection_authority_record: Option<Pubkey>,
-  }
-
-              
 impl UnverifySizedCollectionItem {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = UnverifySizedCollectionItemInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_master_edition_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_authority_record.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.collection_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.payer,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.collection_mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.collection,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.collection_master_edition_account,
+              false
+            ),
+                                                                if let Some(collection_authority_record) = self.collection_authority_record {
+              solana_program::instruction::AccountMeta::new_readonly(
+                collection_authority_record,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct UnverifySizedCollectionItemBuilder {
-  metadata: Option<Pubkey>,
-    collection_authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    collection_mint: Option<Pubkey>,
-    collection: Option<Pubkey>,
-    collection_master_edition_account: Option<Pubkey>,
-    collection_authority_record: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    collection_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    collection_mint: Option<solana_program::pubkey::Pubkey>,
+    collection: Option<solana_program::pubkey::Pubkey>,
+    collection_master_edition_account: Option<solana_program::pubkey::Pubkey>,
+    collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl UnverifySizedCollectionItemBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn collection_authority(&mut self, collection_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority = Some(collection_authority);
-      
-      self
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority = Some(collection_authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn collection_mint(&mut self, collection_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_mint = Some(collection_mint);
-      
-      self
+    pub fn collection_mint(
+        &mut self,
+        collection_mint: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_mint = Some(collection_mint);
+        self
     }
-      pub fn collection(&mut self, collection: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection = Some(collection);
-      
-      self
+    pub fn collection(&mut self, collection: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.collection = Some(collection);
+        self
     }
-      pub fn collection_master_edition_account(&mut self, collection_master_edition_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_master_edition_account = Some(collection_master_edition_account);
-      
-      self
+    pub fn collection_master_edition_account(
+        &mut self,
+        collection_master_edition_account: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_master_edition_account = Some(collection_master_edition_account);
+        self
     }
-      pub fn collection_authority_record(&mut self, collection_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority_record = Some(collection_authority_record);
-      
-      self
+    pub fn collection_authority_record(
+        &mut self,
+        collection_authority_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority_record = Some(collection_authority_record);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UnverifySizedCollectionItem {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            collection_authority: self.collection_authority.expect("collection_authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            collection_mint: self.collection_mint.expect("collection_mint is not set"),
-                            collection: self.collection.expect("collection is not set"),
-                            collection_master_edition_account: self.collection_master_edition_account.expect("collection_master_edition_account is not set"),
-                            collection_authority_record: self.collection_authority_record,
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            collection_authority: self
+                .collection_authority
+                .expect("collection_authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            collection_mint: self.collection_mint.expect("collection_mint is not set"),
+
+            collection: self.collection.expect("collection is not set"),
+
+            collection_master_edition_account: self
+                .collection_master_edition_account
+                .expect("collection_master_edition_account is not set"),
+
+            collection_authority_record: self.collection_authority_record,
+        };
+        accounts.instruction()
+    }
 }
 
+struct UnverifySizedCollectionItemInstructionArgs {
+    discriminator: u8,
+}
+
+impl UnverifySizedCollectionItemInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 31 }
+    }
+}

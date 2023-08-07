@@ -4,16 +4,16 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
+use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Hidden settings for large mints used with off-chain data.
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct HiddenSettings {
-/// Asset prefix name
-pub name: String,
-/// Shared URI
-pub uri: String,
-/// Hash of the hidden settings file
-pub hash: [u8; 32],
+    /// Asset prefix name
+    pub name: String,
+    /// Shared URI
+    pub uri: String,
+    /// Hash of the hidden settings file
+    pub hash: [u8; 32],
 }

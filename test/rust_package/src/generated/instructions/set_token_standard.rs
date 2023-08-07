@@ -5,90 +5,101 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct SetTokenStandard {
-      /// Metadata account
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Metadata update authority
+    pub update_authority: solana_program::pubkey::Pubkey,
+    /// Mint account
+    pub mint: solana_program::pubkey::Pubkey,
+    /// Edition account
+    pub edition: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub metadata: Pubkey,
-        /// Metadata update authority
-
-        pub update_authority: Pubkey,
-        /// Mint account
-
-        pub mint: Pubkey,
-        /// Edition account
-
-        pub edition: Option<Pubkey>,
-  }
-
-        
 impl SetTokenStandard {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = SetTokenStandardInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.update_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.edition.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.update_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint,
+              false
+            ),
+                                                                if let Some(edition) = self.edition {
+              solana_program::instruction::AccountMeta::new_readonly(
+                edition,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct SetTokenStandardBuilder {
-  metadata: Option<Pubkey>,
-    update_authority: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    edition: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    edition: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl SetTokenStandardBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.update_authority = Some(update_authority);
-      
-      self
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.edition = Some(edition);
-      
-      self
+    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.edition = Some(edition);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetTokenStandard {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            update_authority: self.update_authority.expect("update_authority is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                            edition: self.edition,
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            update_authority: self.update_authority.expect("update_authority is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+
+            edition: self.edition,
+        };
+        accounts.instruction()
+    }
 }
 
+struct SetTokenStandardInstructionArgs {
+    discriminator: u8,
+}
+
+impl SetTokenStandardInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 35 }
+    }
+}

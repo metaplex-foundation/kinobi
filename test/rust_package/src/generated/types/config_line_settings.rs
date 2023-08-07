@@ -4,20 +4,20 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
+use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Config line settings to allocate space for individual name + URI.
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct ConfigLineSettings {
-/// Common name prefix
-pub prefix_name: String,
-/// Length of the remaining part of the name
-pub name_length: u32,
-/// Common URI prefix
-pub prefix_uri: String,
-/// Length of the remaining part of the URI
-pub uri_length: u32,
-/// Indicates whether to use a senquential index generator or not
-pub is_sequential: bool,
+    /// Common name prefix
+    pub prefix_name: String,
+    /// Length of the remaining part of the name
+    pub name_length: u32,
+    /// Common URI prefix
+    pub prefix_uri: String,
+    /// Length of the remaining part of the URI
+    pub uri_length: u32,
+    /// Indicates whether to use a senquential index generator or not
+    pub is_sequential: bool,
 }

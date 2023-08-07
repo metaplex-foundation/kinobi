@@ -5,12 +5,11 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ TmKey };
-
+use crate::generated::types::TmKey;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct EditionMarker {
-pub key: TmKey,
-pub ledger: [u8; 31],
+    pub key: TmKey,
+    pub ledger: [u8; 31],
 }

@@ -5,76 +5,69 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct UpdatePrimarySaleHappenedViaToken {
-      /// Metadata key (pda of ['metadata', program id, mint id])
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Owner on the token account
+    pub owner: solana_program::pubkey::Pubkey,
+    /// Account containing tokens from the metadata's mint
+    pub token: solana_program::pubkey::Pubkey,
+}
 
-        pub metadata: Pubkey,
-        /// Owner on the token account
-
-        pub owner: Pubkey,
-        /// Account containing tokens from the metadata's mint
-
-        pub token: Pubkey,
-  }
-
-      
 impl UpdatePrimarySaleHappenedViaToken {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = UpdatePrimarySaleHappenedViaTokenInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.owner,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.metadata, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.owner, true),
+                solana_program::instruction::AccountMeta::new_readonly(self.token, false),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
-  metadata: Option<Pubkey>,
-    owner: Option<Pubkey>,
-    token: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    owner: Option<solana_program::pubkey::Pubkey>,
+    token: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl UpdatePrimarySaleHappenedViaTokenBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.owner = Some(owner);
-      
-      self
+    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.owner = Some(owner);
+        self
     }
-      pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token = Some(token);
-      
-      self
+    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token = Some(token);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdatePrimarySaleHappenedViaToken {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            owner: self.owner.expect("owner is not set"),
-                            token: self.token.expect("token is not set"),
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            owner: self.owner.expect("owner is not set"),
+
+            token: self.token.expect("token is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct UpdatePrimarySaleHappenedViaTokenInstructionArgs {
+    discriminator: u8,
+}
+
+impl UpdatePrimarySaleHappenedViaTokenInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 4 }
+    }
+}

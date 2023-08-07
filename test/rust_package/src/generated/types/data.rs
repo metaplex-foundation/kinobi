@@ -4,15 +4,14 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ Creator };
-
+use crate::generated::types::Creator;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct Data {
-pub name: String,
-pub symbol: String,
-pub uri: String,
-pub seller_fee_basis_points: u16,
-pub creators: Option<Vec<Creator>>,
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+    pub creators: Option<Vec<Creator>>,
 }

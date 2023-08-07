@@ -5,146 +5,125 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct CreateReservationList {
-      /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    pub reservation_list: solana_program::pubkey::Pubkey,
+    /// Payer
+    pub payer: solana_program::pubkey::Pubkey,
+    /// Update authority
+    pub update_authority: solana_program::pubkey::Pubkey,
+    ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    pub master_edition: solana_program::pubkey::Pubkey,
+    /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
+    pub resource: solana_program::pubkey::Pubkey,
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// Rent info
+    pub rent: solana_program::pubkey::Pubkey,
+}
 
-        pub reservation_list: Pubkey,
-        /// Payer
-
-        pub payer: Pubkey,
-        /// Update authority
-
-        pub update_authority: Pubkey,
-        ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-
-        pub master_edition: Pubkey,
-        /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
-
-        pub resource: Pubkey,
-        /// Metadata key (pda of ['metadata', program id, mint id])
-
-        pub metadata: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-        /// Rent info
-
-        pub rent: Pubkey,
-  }
-
-                
 impl CreateReservationList {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = CreateReservationListInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.reservation_list,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.update_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.master_edition,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.resource,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.rent,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.reservation_list, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.payer, true),
+                solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
+                solana_program::instruction::AccountMeta::new_readonly(self.master_edition, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.resource, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.metadata, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.rent, false),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct CreateReservationListBuilder {
-  reservation_list: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    update_authority: Option<Pubkey>,
-    master_edition: Option<Pubkey>,
-    resource: Option<Pubkey>,
-    metadata: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    rent: Option<Pubkey>,
-  }
+    reservation_list: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
+    master_edition: Option<solana_program::pubkey::Pubkey>,
+    resource: Option<solana_program::pubkey::Pubkey>,
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    rent: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl CreateReservationListBuilder {
-      pub fn reservation_list(&mut self, reservation_list: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.reservation_list = Some(reservation_list);
-      
-      self
+    pub fn reservation_list(
+        &mut self,
+        reservation_list: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.reservation_list = Some(reservation_list);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.update_authority = Some(update_authority);
-      
-      self
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
     }
-      pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition = Some(master_edition);
-      
-      self
+    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.master_edition = Some(master_edition);
+        self
     }
-      pub fn resource(&mut self, resource: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.resource = Some(resource);
-      
-      self
+    pub fn resource(&mut self, resource: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.resource = Some(resource);
+        self
     }
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.rent = Some(rent);
-      
-      self
+    pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.rent = Some(rent);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateReservationList {
-                  reservation_list: self.reservation_list.expect("reservation_list is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            update_authority: self.update_authority.expect("update_authority is not set"),
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            resource: self.resource.expect("resource is not set"),
-                            metadata: self.metadata.expect("metadata is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            rent: self.rent.expect("rent is not set"),
-                      };
-    accounts.instruction()
-  }
+            reservation_list: self.reservation_list.expect("reservation_list is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            update_authority: self.update_authority.expect("update_authority is not set"),
+
+            master_edition: self.master_edition.expect("master_edition is not set"),
+
+            resource: self.resource.expect("resource is not set"),
+
+            metadata: self.metadata.expect("metadata is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            rent: self.rent.expect("rent is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct CreateReservationListInstructionArgs {
+    discriminator: u8,
+}
+
+impl CreateReservationListInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 6 }
+    }
+}

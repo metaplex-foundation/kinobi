@@ -5,174 +5,347 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
+use generated::types::{payloadType, TokenStandard};
+use solana_program::pubkey;
 
 /// Accounts.
 pub struct UpdateV1 {
-      /// Update authority or delegate
+    /// Update authority or delegate
+    pub authority: solana_program::pubkey::Pubkey,
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Master Edition account
+    pub master_edition: Option<solana_program::pubkey::Pubkey>,
+    /// Mint account
+    pub mint: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// System program
+    pub sysvar_instructions: solana_program::pubkey::Pubkey,
+    /// Token account
+    pub token: Option<solana_program::pubkey::Pubkey>,
+    /// Delegate record PDA
+    pub delegate_record: Option<solana_program::pubkey::Pubkey>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub authority: Pubkey,
-        /// Metadata account
-
-        pub metadata: Pubkey,
-        /// Master Edition account
-
-        pub master_edition: Option<Pubkey>,
-        /// Mint account
-
-        pub mint: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-        /// System program
-
-        pub sysvar_instructions: Pubkey,
-        /// Token account
-
-        pub token: Option<Pubkey>,
-        /// Delegate record PDA
-
-        pub delegate_record: Option<Pubkey>,
-        /// Token Authorization Rules Program
-
-        pub authorization_rules_program: Option<Pubkey>,
-        /// Token Authorization Rules account
-
-        pub authorization_rules: Option<Pubkey>,
-  }
-
-                    
 impl UpdateV1 {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: UpdateV1InstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.master_edition.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.sysvar_instructions,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.delegate_record.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules_program.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new_readonly(
+              self.authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                if let Some(master_edition) = self.master_edition {
+              solana_program::instruction::AccountMeta::new(
+                master_edition,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.system_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.sysvar_instructions,
+              false
+            ),
+                                                                if let Some(token) = self.token {
+              solana_program::instruction::AccountMeta::new_readonly(
+                token,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                if let Some(delegate_record) = self.delegate_record {
+              solana_program::instruction::AccountMeta::new_readonly(
+                delegate_record,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                if let Some(authorization_rules_program) = self.authorization_rules_program {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules_program,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                if let Some(authorization_rules) = self.authorization_rules {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct UpdateV1Builder {
-  authority: Option<Pubkey>,
-    metadata: Option<Pubkey>,
-    master_edition: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    sysvar_instructions: Option<Pubkey>,
-    token: Option<Pubkey>,
-    delegate_record: Option<Pubkey>,
-    authorization_rules_program: Option<Pubkey>,
-    authorization_rules: Option<Pubkey>,
-  }
+    authority: Option<solana_program::pubkey::Pubkey>,
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    master_edition: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
+    token: Option<solana_program::pubkey::Pubkey>,
+    delegate_record: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    authorization_data: Option<AuthorizationData>,
+    new_update_authority: Option<Pubkey>,
+    data: Option<Data>,
+    primary_sale_happened: Option<bool>,
+    is_mutable: Option<bool>,
+    token_standard: Option<TokenStandard>,
+    collection: Option<Collection>,
+    uses: Option<Uses>,
+    collection_details: Option<CollectionDetails>,
+    programmable_config: Option<ProgrammableConfig>,
+    delegate_state: Option<DelegateState>,
+    authority_type: Option<AuthorityType>,
+}
 
 impl UpdateV1Builder {
-      pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority = Some(authority);
-      
-      self
+    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority = Some(authority);
+        self
     }
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition = Some(master_edition);
-      
-      self
+    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.master_edition = Some(master_edition);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn sysvar_instructions(&mut self, sysvar_instructions: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.sysvar_instructions = Some(sysvar_instructions);
-      
-      self
+    pub fn sysvar_instructions(
+        &mut self,
+        sysvar_instructions: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.sysvar_instructions = Some(sysvar_instructions);
+        self
     }
-      pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token = Some(token);
-      
-      self
+    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token = Some(token);
+        self
     }
-      pub fn delegate_record(&mut self, delegate_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.delegate_record = Some(delegate_record);
-      
-      self
+    pub fn delegate_record(
+        &mut self,
+        delegate_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.delegate_record = Some(delegate_record);
+        self
     }
-      pub fn authorization_rules_program(&mut self, authorization_rules_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules_program = Some(authorization_rules_program);
-      
-      self
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules_program = Some(authorization_rules_program);
+        self
     }
-      pub fn authorization_rules(&mut self, authorization_rules: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules = Some(authorization_rules);
-      
-      self
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules = Some(authorization_rules);
+        self
+    }
+    pub fn authorization_data(
+        &mut self,
+        authorization_data: Option<AuthorizationData>,
+    ) -> &mut Self {
+        self.authorization_data = Some(authorization_data);
+        self
+    }
+    pub fn new_update_authority(&mut self, new_update_authority: Option<Pubkey>) -> &mut Self {
+        self.new_update_authority = Some(new_update_authority);
+        self
+    }
+    pub fn data(&mut self, data: Option<Data>) -> &mut Self {
+        self.data = Some(data);
+        self
+    }
+    pub fn primary_sale_happened(&mut self, primary_sale_happened: Option<bool>) -> &mut Self {
+        self.primary_sale_happened = Some(primary_sale_happened);
+        self
+    }
+    pub fn is_mutable(&mut self, is_mutable: Option<bool>) -> &mut Self {
+        self.is_mutable = Some(is_mutable);
+        self
+    }
+    pub fn token_standard(&mut self, token_standard: Option<TokenStandard>) -> &mut Self {
+        self.token_standard = Some(token_standard);
+        self
+    }
+    pub fn collection(&mut self, collection: Option<Collection>) -> &mut Self {
+        self.collection = Some(collection);
+        self
+    }
+    pub fn uses(&mut self, uses: Option<Uses>) -> &mut Self {
+        self.uses = Some(uses);
+        self
+    }
+    pub fn collection_details(
+        &mut self,
+        collection_details: Option<CollectionDetails>,
+    ) -> &mut Self {
+        self.collection_details = Some(collection_details);
+        self
+    }
+    pub fn programmable_config(
+        &mut self,
+        programmable_config: Option<ProgrammableConfig>,
+    ) -> &mut Self {
+        self.programmable_config = Some(programmable_config);
+        self
+    }
+    pub fn delegate_state(&mut self, delegate_state: Option<DelegateState>) -> &mut Self {
+        self.delegate_state = Some(delegate_state);
+        self
+    }
+    pub fn authority_type(&mut self, authority_type: AuthorityType) -> &mut Self {
+        self.authority_type = Some(authority_type);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateV1 {
-                  authority: self.authority.expect("authority is not set"),
-                            metadata: self.metadata.expect("metadata is not set"),
-                            master_edition: self.master_edition,
-                            mint: self.mint.expect("mint is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
-                            token: self.token,
-                            delegate_record: self.delegate_record,
-                            authorization_rules_program: self.authorization_rules_program,
-                            authorization_rules: self.authorization_rules,
-                      };
-    accounts.instruction()
-  }
+            authority: self.authority.expect("authority is not set"),
+
+            metadata: self.metadata.expect("metadata is not set"),
+
+            master_edition: self.master_edition,
+
+            mint: self.mint.expect("mint is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            sysvar_instructions: self
+                .sysvar_instructions
+                .expect("sysvar_instructions is not set"),
+
+            token: self.token,
+
+            delegate_record: self.delegate_record,
+
+            authorization_rules_program: self.authorization_rules_program,
+
+            authorization_rules: self.authorization_rules,
+        };
+        let args = UpdateV1InstructionArgs::new(
+            self.authorization_data,
+            self.new_update_authority,
+            self.data,
+            self.primary_sale_happened,
+            self.is_mutable,
+            self.token_standard,
+            self.collection,
+            self.uses,
+            self.collection_details,
+            self.programmable_config,
+            self.delegate_state,
+            self.authority_type.expect("authority_type is not set"),
+        );
+        accounts.instruction(args)
+    }
 }
 
+pub struct UpdateV1InstructionArgs {
+    discriminator: u8,
+    update_v1_discriminator: u8,
+    pub authorization_data: Option<AuthorizationData>,
+    pub new_update_authority: Option<Pubkey>,
+    pub data: Option<Data>,
+    pub primary_sale_happened: Option<bool>,
+    pub is_mutable: Option<bool>,
+    pub token_standard: Option<TokenStandard>,
+    pub collection: Option<Collection>,
+    pub uses: Option<Uses>,
+    pub collection_details: Option<CollectionDetails>,
+    pub programmable_config: Option<ProgrammableConfig>,
+    pub delegate_state: Option<DelegateState>,
+    pub authority_type: AuthorityType,
+}
+
+impl UpdateV1InstructionArgs {
+    pub fn new(
+        authorization_data: Option<AuthorizationData>,
+        new_update_authority: Option<Pubkey>,
+        data: Option<Data>,
+        primary_sale_happened: Option<bool>,
+        is_mutable: Option<bool>,
+        token_standard: Option<TokenStandard>,
+        collection: Option<Collection>,
+        uses: Option<Uses>,
+        collection_details: Option<CollectionDetails>,
+        programmable_config: Option<ProgrammableConfig>,
+        delegate_state: Option<DelegateState>,
+        authority_type: AuthorityType,
+    ) -> Self {
+        Self {
+            discriminator: 43,
+            update_v1_discriminator: 0,
+            authorization_data,
+            new_update_authority,
+            data,
+            primary_sale_happened,
+            is_mutable,
+            token_standard,
+            collection,
+            uses,
+            collection_details,
+            programmable_config,
+            delegate_state,
+            authority_type,
+        }
+    }
+}

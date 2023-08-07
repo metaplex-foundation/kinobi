@@ -5,58 +5,70 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct UpdateCandyMachine {
-        pub candy_machine: Pubkey,
-          pub authority: Pubkey,
-  }
+    pub candy_machine: solana_program::pubkey::Pubkey,
 
-    
+    pub authority: solana_program::pubkey::Pubkey,
+}
+
 impl UpdateCandyMachine {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: UpdateCandyMachineInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_candy_machine_core::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.candy_machine,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authority,
-            true
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_candy_machine_core::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.authority, true),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct UpdateCandyMachineBuilder {
-  candy_machine: Option<Pubkey>,
-    authority: Option<Pubkey>,
-  }
+    candy_machine: Option<solana_program::pubkey::Pubkey>,
+    authority: Option<solana_program::pubkey::Pubkey>,
+    data: Option<CandyMachineData>,
+}
 
 impl UpdateCandyMachineBuilder {
-      pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.candy_machine = Some(candy_machine);
-      
-      self
+    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.candy_machine = Some(candy_machine);
+        self
     }
-      pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority = Some(authority);
-      
-      self
+    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority = Some(authority);
+        self
+    }
+    pub fn data(&mut self, data: CandyMachineData) -> &mut Self {
+        self.data = Some(data);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateCandyMachine {
-                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
-                            authority: self.authority.expect("authority is not set"),
-                      };
-    accounts.instruction()
-  }
+            candy_machine: self.candy_machine.expect("candy_machine is not set"),
+
+            authority: self.authority.expect("authority is not set"),
+        };
+        let args = UpdateCandyMachineInstructionArgs::new(self.data.expect("data is not set"));
+        accounts.instruction(args)
+    }
 }
 
+pub struct UpdateCandyMachineInstructionArgs {
+    discriminator: [u8; 8],
+    pub data: CandyMachineData,
+}
+
+impl UpdateCandyMachineInstructionArgs {
+    pub fn new(data: CandyMachineData) -> Self {
+        Self {
+            discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
+            data,
+        }
+    }
+}

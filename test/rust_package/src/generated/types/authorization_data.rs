@@ -4,11 +4,10 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ Payload };
-
+use crate::generated::types::Payload;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct AuthorizationData {
-pub payload: Payload,
+    pub payload: Payload,
 }

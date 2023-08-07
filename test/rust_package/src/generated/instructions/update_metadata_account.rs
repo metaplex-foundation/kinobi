@@ -5,62 +5,96 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct UpdateMetadataAccount {
-      /// Metadata account
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Update authority key
+    pub update_authority: solana_program::pubkey::Pubkey,
+}
 
-        pub metadata: Pubkey,
-        /// Update authority key
-
-        pub update_authority: Pubkey,
-  }
-
-    
 impl UpdateMetadataAccount {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: UpdateMetadataAccountInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.update_authority,
-            true
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.metadata, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct UpdateMetadataAccountBuilder {
-  metadata: Option<Pubkey>,
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
+    data: Option<Data>,
     update_authority: Option<Pubkey>,
-  }
+    primary_sale_happened: Option<bool>,
+}
 
 impl UpdateMetadataAccountBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.update_authority = Some(update_authority);
-      
-      self
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
+    }
+    pub fn data(&mut self, data: Option<Data>) -> &mut Self {
+        self.data = Some(data);
+        self
+    }
+    pub fn update_authority(&mut self, update_authority: Option<Pubkey>) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
+    }
+    pub fn primary_sale_happened(&mut self, primary_sale_happened: Option<bool>) -> &mut Self {
+        self.primary_sale_happened = Some(primary_sale_happened);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateMetadataAccount {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            update_authority: self.update_authority.expect("update_authority is not set"),
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            update_authority: self.update_authority.expect("update_authority is not set"),
+        };
+        let args = UpdateMetadataAccountInstructionArgs::new(
+            self.data,
+            self.update_authority,
+            self.primary_sale_happened,
+        );
+        accounts.instruction(args)
+    }
 }
 
+pub struct UpdateMetadataAccountInstructionArgs {
+    discriminator: u8,
+    pub data: Option<Data>,
+    pub update_authority: Option<Pubkey>,
+    pub primary_sale_happened: Option<bool>,
+}
+
+impl UpdateMetadataAccountInstructionArgs {
+    pub fn new(
+        data: Option<Data>,
+        update_authority: Option<Pubkey>,
+        primary_sale_happened: Option<bool>,
+    ) -> Self {
+        Self {
+            discriminator: 1,
+            data,
+            update_authority,
+            primary_sale_happened,
+        }
+    }
+}

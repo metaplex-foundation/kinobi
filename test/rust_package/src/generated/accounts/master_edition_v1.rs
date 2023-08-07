@@ -5,16 +5,15 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ TmKey };
-use solana_program::{ pubkey::Pubkey };
-
+use crate::generated::types::TmKey;
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct MasterEditionV1 {
-pub key: TmKey,
-pub supply: u64,
-pub max_supply: Option<u64>,
-pub printing_mint: Pubkey,
-pub one_time_printing_authorization_mint: Pubkey,
+    pub key: TmKey,
+    pub supply: u64,
+    pub max_supply: Option<u64>,
+    pub printing_mint: Pubkey,
+    pub one_time_printing_authorization_mint: Pubkey,
 }

@@ -5,14 +5,13 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ TmKey };
-use solana_program::{ pubkey::Pubkey };
-
+use crate::generated::types::TmKey;
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct CollectionAuthorityRecord {
-pub key: TmKey,
-pub bump: u8,
-pub update_authority: Option<Pubkey>,
+    pub key: TmKey,
+    pub bump: u8,
+    pub update_authority: Option<Pubkey>,
 }

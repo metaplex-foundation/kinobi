@@ -5,104 +5,105 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct RevokeCollectionAuthority {
-      /// Collection Authority Record PDA
+    /// Collection Authority Record PDA
+    pub collection_authority_record: solana_program::pubkey::Pubkey,
+    /// Delegated Collection Authority
+    pub delegate_authority: solana_program::pubkey::Pubkey,
+    /// Update Authority, or Delegated Authority, of Collection NFT
+    pub revoke_authority: solana_program::pubkey::Pubkey,
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Mint of Metadata
+    pub mint: solana_program::pubkey::Pubkey,
+}
 
-        pub collection_authority_record: Pubkey,
-        /// Delegated Collection Authority
-
-        pub delegate_authority: Pubkey,
-        /// Update Authority, or Delegated Authority, of Collection NFT
-
-        pub revoke_authority: Pubkey,
-        /// Metadata account
-
-        pub metadata: Pubkey,
-        /// Mint of Metadata
-
-        pub mint: Pubkey,
-  }
-
-          
 impl RevokeCollectionAuthority {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = RevokeCollectionAuthorityInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_authority_record,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.delegate_authority,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.revoke_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(
+                    self.collection_authority_record,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new(self.delegate_authority, false),
+                solana_program::instruction::AccountMeta::new(self.revoke_authority, true),
+                solana_program::instruction::AccountMeta::new_readonly(self.metadata, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct RevokeCollectionAuthorityBuilder {
-  collection_authority_record: Option<Pubkey>,
-    delegate_authority: Option<Pubkey>,
-    revoke_authority: Option<Pubkey>,
-    metadata: Option<Pubkey>,
-    mint: Option<Pubkey>,
-  }
+    collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+    delegate_authority: Option<solana_program::pubkey::Pubkey>,
+    revoke_authority: Option<solana_program::pubkey::Pubkey>,
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl RevokeCollectionAuthorityBuilder {
-      pub fn collection_authority_record(&mut self, collection_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority_record = Some(collection_authority_record);
-      
-      self
+    pub fn collection_authority_record(
+        &mut self,
+        collection_authority_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority_record = Some(collection_authority_record);
+        self
     }
-      pub fn delegate_authority(&mut self, delegate_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.delegate_authority = Some(delegate_authority);
-      
-      self
+    pub fn delegate_authority(
+        &mut self,
+        delegate_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.delegate_authority = Some(delegate_authority);
+        self
     }
-      pub fn revoke_authority(&mut self, revoke_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.revoke_authority = Some(revoke_authority);
-      
-      self
+    pub fn revoke_authority(
+        &mut self,
+        revoke_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.revoke_authority = Some(revoke_authority);
+        self
     }
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = RevokeCollectionAuthority {
-                  collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
-                            delegate_authority: self.delegate_authority.expect("delegate_authority is not set"),
-                            revoke_authority: self.revoke_authority.expect("revoke_authority is not set"),
-                            metadata: self.metadata.expect("metadata is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                      };
-    accounts.instruction()
-  }
+            collection_authority_record: self
+                .collection_authority_record
+                .expect("collection_authority_record is not set"),
+
+            delegate_authority: self
+                .delegate_authority
+                .expect("delegate_authority is not set"),
+
+            revoke_authority: self.revoke_authority.expect("revoke_authority is not set"),
+
+            metadata: self.metadata.expect("metadata is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct RevokeCollectionAuthorityInstructionArgs {
+    discriminator: u8,
+}
+
+impl RevokeCollectionAuthorityInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 24 }
+    }
+}

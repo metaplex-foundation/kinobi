@@ -5,58 +5,80 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct AddConfigLines {
-        pub candy_machine: Pubkey,
-          pub authority: Pubkey,
-  }
+    pub candy_machine: solana_program::pubkey::Pubkey,
 
-    
+    pub authority: solana_program::pubkey::Pubkey,
+}
+
 impl AddConfigLines {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: AddConfigLinesInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_candy_machine_core::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.candy_machine,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authority,
-            true
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_candy_machine_core::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.authority, true),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct AddConfigLinesBuilder {
-  candy_machine: Option<Pubkey>,
-    authority: Option<Pubkey>,
-  }
+    candy_machine: Option<solana_program::pubkey::Pubkey>,
+    authority: Option<solana_program::pubkey::Pubkey>,
+    index: Option<u32>,
+    config_lines: Option<Vec<ConfigLine>>,
+}
 
 impl AddConfigLinesBuilder {
-      pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.candy_machine = Some(candy_machine);
-      
-      self
+    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.candy_machine = Some(candy_machine);
+        self
     }
-      pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority = Some(authority);
-      
-      self
+    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority = Some(authority);
+        self
+    }
+    pub fn index(&mut self, index: u32) -> &mut Self {
+        self.index = Some(index);
+        self
+    }
+    pub fn config_lines(&mut self, config_lines: Vec<ConfigLine>) -> &mut Self {
+        self.config_lines = Some(config_lines);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = AddConfigLines {
-                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
-                            authority: self.authority.expect("authority is not set"),
-                      };
-    accounts.instruction()
-  }
+            candy_machine: self.candy_machine.expect("candy_machine is not set"),
+
+            authority: self.authority.expect("authority is not set"),
+        };
+        let args = AddConfigLinesInstructionArgs::new(
+            self.index.expect("index is not set"),
+            self.config_lines.expect("config_lines is not set"),
+        );
+        accounts.instruction(args)
+    }
 }
 
+pub struct AddConfigLinesInstructionArgs {
+    discriminator: [u8; 8],
+    pub index: u32,
+    pub config_lines: Vec<ConfigLine>,
+}
+
+impl AddConfigLinesInstructionArgs {
+    pub fn new(index: u32, config_lines: Vec<ConfigLine>) -> Self {
+        Self {
+            discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
+            index,
+            config_lines,
+        }
+    }
+}

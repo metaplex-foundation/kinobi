@@ -5,13 +5,12 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ TmKey };
-
+use crate::generated::types::TmKey;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct MasterEditionV2 {
-pub key: TmKey,
-pub supply: u64,
-pub max_supply: Option<u64>,
+    pub key: TmKey,
+    pub supply: u64,
+    pub max_supply: Option<u64>,
 }

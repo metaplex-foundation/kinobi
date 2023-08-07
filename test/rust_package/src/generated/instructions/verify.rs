@@ -5,104 +5,141 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct Verify {
-      /// Metadata account
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Collection Update authority
+    pub collection_authority: solana_program::pubkey::Pubkey,
+    /// payer
+    pub payer: solana_program::pubkey::Pubkey,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub metadata: Pubkey,
-        /// Collection Update authority
-
-        pub collection_authority: Pubkey,
-        /// payer
-
-        pub payer: Pubkey,
-        /// Token Authorization Rules account
-
-        pub authorization_rules: Option<Pubkey>,
-        /// Token Authorization Rules Program
-
-        pub authorization_rules_program: Option<Pubkey>,
-  }
-
-          
 impl Verify {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: VerifyInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules_program.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.collection_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.payer,
+              true
+            ),
+                                                                if let Some(authorization_rules) = self.authorization_rules {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                if let Some(authorization_rules_program) = self.authorization_rules_program {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules_program,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct VerifyBuilder {
-  metadata: Option<Pubkey>,
-    collection_authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    authorization_rules: Option<Pubkey>,
-    authorization_rules_program: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    collection_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    verify_args: Option<VerifyArgs>,
+}
 
 impl VerifyBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn collection_authority(&mut self, collection_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority = Some(collection_authority);
-      
-      self
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority = Some(collection_authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn authorization_rules(&mut self, authorization_rules: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules = Some(authorization_rules);
-      
-      self
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules = Some(authorization_rules);
+        self
     }
-      pub fn authorization_rules_program(&mut self, authorization_rules_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules_program = Some(authorization_rules_program);
-      
-      self
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules_program = Some(authorization_rules_program);
+        self
+    }
+    pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
+        self.verify_args = Some(verify_args);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Verify {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            collection_authority: self.collection_authority.expect("collection_authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            authorization_rules: self.authorization_rules,
-                            authorization_rules_program: self.authorization_rules_program,
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            collection_authority: self
+                .collection_authority
+                .expect("collection_authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            authorization_rules: self.authorization_rules,
+
+            authorization_rules_program: self.authorization_rules_program,
+        };
+        let args = VerifyInstructionArgs::new(self.verify_args.expect("verify_args is not set"));
+        accounts.instruction(args)
+    }
 }
 
+pub struct VerifyInstructionArgs {
+    discriminator: u8,
+    pub verify_args: VerifyArgs,
+}
+
+impl VerifyInstructionArgs {
+    pub fn new(verify_args: VerifyArgs) -> Self {
+        Self {
+            discriminator: 47,
+            verify_args,
+        }
+    }
+}

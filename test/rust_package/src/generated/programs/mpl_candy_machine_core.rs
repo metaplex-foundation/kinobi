@@ -8,4 +8,3 @@
 use solana_program::{pubkey, pubkey::Pubkey};
 
 pub const ID: Pubkey = pubkey!("CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR");
-

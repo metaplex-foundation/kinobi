@@ -4,15 +4,14 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use solana_program::{ pubkey::Pubkey };
-
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct CmCreator {
-/// Pubkey address
-pub address: Pubkey,
-/// Whether the creator is verified or not
-pub verified: bool,
-pub percentage_share: u8,
+    /// Pubkey address
+    pub address: Pubkey,
+    /// Whether the creator is verified or not
+    pub verified: bool,
+    pub percentage_share: u8,
 }

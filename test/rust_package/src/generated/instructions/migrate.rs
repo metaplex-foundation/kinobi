@@ -5,174 +5,204 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct Migrate {
-      /// Metadata account
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Master edition account
+    pub master_edition: solana_program::pubkey::Pubkey,
+    /// Token account
+    pub token_account: solana_program::pubkey::Pubkey,
+    /// Mint account
+    pub mint: solana_program::pubkey::Pubkey,
+    /// Update authority
+    pub update_authority: solana_program::pubkey::Pubkey,
+    /// Collection metadata account
+    pub collection_metadata: solana_program::pubkey::Pubkey,
+    /// Token Program
+    pub token_program: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// Instruction sysvar account
+    pub sysvar_instructions: solana_program::pubkey::Pubkey,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub metadata: Pubkey,
-        /// Master edition account
-
-        pub master_edition: Pubkey,
-        /// Token account
-
-        pub token_account: Pubkey,
-        /// Mint account
-
-        pub mint: Pubkey,
-        /// Update authority
-
-        pub update_authority: Pubkey,
-        /// Collection metadata account
-
-        pub collection_metadata: Pubkey,
-        /// Token Program
-
-        pub token_program: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-        /// Instruction sysvar account
-
-        pub sysvar_instructions: Pubkey,
-        /// Token Authorization Rules account
-
-        pub authorization_rules: Option<Pubkey>,
-  }
-
-                    
 impl Migrate {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: MigrateInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.master_edition,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.token_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.update_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.sysvar_instructions,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.master_edition,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.token_account,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.update_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.collection_metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.token_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.system_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.sysvar_instructions,
+              false
+            ),
+                                                                if let Some(authorization_rules) = self.authorization_rules {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct MigrateBuilder {
-  metadata: Option<Pubkey>,
-    master_edition: Option<Pubkey>,
-    token_account: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    update_authority: Option<Pubkey>,
-    collection_metadata: Option<Pubkey>,
-    token_program: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    sysvar_instructions: Option<Pubkey>,
-    authorization_rules: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    master_edition: Option<solana_program::pubkey::Pubkey>,
+    token_account: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
+    collection_metadata: Option<solana_program::pubkey::Pubkey>,
+    token_program: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    migrate_args: Option<MigrateArgs>,
+}
 
 impl MigrateBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition = Some(master_edition);
-      
-      self
+    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.master_edition = Some(master_edition);
+        self
     }
-      pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_account = Some(token_account);
-      
-      self
+    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token_account = Some(token_account);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.update_authority = Some(update_authority);
-      
-      self
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
     }
-      pub fn collection_metadata(&mut self, collection_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_metadata = Some(collection_metadata);
-      
-      self
+    pub fn collection_metadata(
+        &mut self,
+        collection_metadata: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_metadata = Some(collection_metadata);
+        self
     }
-      pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_program = Some(token_program);
-      
-      self
+    pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token_program = Some(token_program);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn sysvar_instructions(&mut self, sysvar_instructions: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.sysvar_instructions = Some(sysvar_instructions);
-      
-      self
+    pub fn sysvar_instructions(
+        &mut self,
+        sysvar_instructions: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.sysvar_instructions = Some(sysvar_instructions);
+        self
     }
-      pub fn authorization_rules(&mut self, authorization_rules: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules = Some(authorization_rules);
-      
-      self
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules = Some(authorization_rules);
+        self
+    }
+    pub fn migrate_args(&mut self, migrate_args: MigrateArgs) -> &mut Self {
+        self.migrate_args = Some(migrate_args);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Migrate {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            token_account: self.token_account.expect("token_account is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                            update_authority: self.update_authority.expect("update_authority is not set"),
-                            collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
-                            token_program: self.token_program.expect("token_program is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            sysvar_instructions: self.sysvar_instructions.expect("sysvar_instructions is not set"),
-                            authorization_rules: self.authorization_rules,
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            master_edition: self.master_edition.expect("master_edition is not set"),
+
+            token_account: self.token_account.expect("token_account is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+
+            update_authority: self.update_authority.expect("update_authority is not set"),
+
+            collection_metadata: self
+                .collection_metadata
+                .expect("collection_metadata is not set"),
+
+            token_program: self.token_program.expect("token_program is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            sysvar_instructions: self
+                .sysvar_instructions
+                .expect("sysvar_instructions is not set"),
+
+            authorization_rules: self.authorization_rules,
+        };
+        let args = MigrateInstructionArgs::new(self.migrate_args.expect("migrate_args is not set"));
+        accounts.instruction(args)
+    }
 }
 
+pub struct MigrateInstructionArgs {
+    discriminator: u8,
+    pub migrate_args: MigrateArgs,
+}
+
+impl MigrateInstructionArgs {
+    pub fn new(migrate_args: MigrateArgs) -> Self {
+        Self {
+            discriminator: 50,
+            migrate_args,
+        }
+    }
+}

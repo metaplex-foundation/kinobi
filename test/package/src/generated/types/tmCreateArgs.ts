@@ -19,19 +19,27 @@ import {
 } from '@metaplex-foundation/umi/serializers';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 
-export type TmCreateArgs = {
-  __kind: 'V1';
-  assetData: AssetData;
-  decimals: Option<number>;
-  maxSupply: Option<bigint>;
-};
+export type TmCreateArgs =
+  | {
+      __kind: 'V1';
+      assetData: AssetData;
+      decimals: Option<number>;
+      maxSupply: Option<bigint>;
+    }
+  | { __kind: 'V2'; assetData: AssetData; maxSupply: Option<bigint> };
 
-export type TmCreateArgsArgs = {
-  __kind: 'V1';
-  assetData: AssetDataArgs;
-  decimals: OptionOrNullable<number>;
-  maxSupply: OptionOrNullable<number | bigint>;
-};
+export type TmCreateArgsArgs =
+  | {
+      __kind: 'V1';
+      assetData: AssetDataArgs;
+      decimals: OptionOrNullable<number>;
+      maxSupply: OptionOrNullable<number | bigint>;
+    }
+  | {
+      __kind: 'V2';
+      assetData: AssetDataArgs;
+      maxSupply: OptionOrNullable<number | bigint>;
+    };
 
 /** @deprecated Use `getTmCreateArgsSerializer()` without any argument instead. */
 export function getTmCreateArgsSerializer(
@@ -54,6 +62,13 @@ export function getTmCreateArgsSerializer(
           ['maxSupply', option(u64())],
         ]),
       ],
+      [
+        'V2',
+        struct<GetDataEnumKindContent<TmCreateArgs, 'V2'>>([
+          ['assetData', getAssetDataSerializer()],
+          ['maxSupply', option(u64())],
+        ]),
+      ],
     ],
     { description: 'TmCreateArgs' }
   ) as Serializer<TmCreateArgsArgs, TmCreateArgs>;
@@ -64,6 +79,10 @@ export function tmCreateArgs(
   kind: 'V1',
   data: GetDataEnumKindContent<TmCreateArgsArgs, 'V1'>
 ): GetDataEnumKind<TmCreateArgsArgs, 'V1'>;
+export function tmCreateArgs(
+  kind: 'V2',
+  data: GetDataEnumKindContent<TmCreateArgsArgs, 'V2'>
+): GetDataEnumKind<TmCreateArgsArgs, 'V2'>;
 export function tmCreateArgs<K extends TmCreateArgsArgs['__kind']>(
   kind: K,
   data?: any

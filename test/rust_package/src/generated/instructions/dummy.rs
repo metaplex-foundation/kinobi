@@ -5,130 +5,157 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct Dummy {
-        pub edition: Pubkey,
-          pub mint: Option<Pubkey>,
-          pub update_authority: Pubkey,
-          pub mint_authority: Pubkey,
-          pub payer: Pubkey,
-          pub foo: Pubkey,
-          pub bar: Pubkey,
-          pub delegate_record: Pubkey,
-  }
+    pub edition: solana_program::pubkey::Pubkey,
 
-                
+    pub mint: Option<solana_program::pubkey::Pubkey>,
+
+    pub update_authority: solana_program::pubkey::Pubkey,
+
+    pub mint_authority: solana_program::pubkey::Pubkey,
+
+    pub payer: solana_program::pubkey::Pubkey,
+
+    pub foo: solana_program::pubkey::Pubkey,
+
+    pub bar: solana_program::pubkey::Pubkey,
+
+    pub delegate_record: solana_program::pubkey::Pubkey,
+}
+
 impl Dummy {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = DummyInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_candy_machine_core::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.edition,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.mint.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.update_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.mint_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.foo,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.bar,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.delegate_record,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_candy_machine_core::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.edition,
+              true
+            ),
+                                                                if let Some(mint) = self.mint {
+              solana_program::instruction::AccountMeta::new(
+                mint,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new(
+                crate::programs::mpl_candy_machine_core::ID,
+                false,
+              ),
+            },
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.update_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.mint_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.payer,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.foo,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.bar,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.delegate_record,
+              false
+            ),
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct DummyBuilder {
-  edition: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    update_authority: Option<Pubkey>,
-    mint_authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    foo: Option<Pubkey>,
-    bar: Option<Pubkey>,
-    delegate_record: Option<Pubkey>,
-  }
+    edition: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
+    mint_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    foo: Option<solana_program::pubkey::Pubkey>,
+    bar: Option<solana_program::pubkey::Pubkey>,
+    delegate_record: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl DummyBuilder {
-      pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.edition = Some(edition);
-      
-      self
+    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.edition = Some(edition);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.update_authority = Some(update_authority);
-      
-      self
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
     }
-      pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint_authority = Some(mint_authority);
-      
-      self
+    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint_authority = Some(mint_authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn foo(&mut self, foo: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.foo = Some(foo);
-      
-      self
+    pub fn foo(&mut self, foo: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.foo = Some(foo);
+        self
     }
-      pub fn bar(&mut self, bar: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.bar = Some(bar);
-      
-      self
+    pub fn bar(&mut self, bar: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.bar = Some(bar);
+        self
     }
-      pub fn delegate_record(&mut self, delegate_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.delegate_record = Some(delegate_record);
-      
-      self
+    pub fn delegate_record(
+        &mut self,
+        delegate_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.delegate_record = Some(delegate_record);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Dummy {
-                  edition: self.edition.expect("edition is not set"),
-                            mint: self.mint,
-                            update_authority: self.update_authority.expect("update_authority is not set"),
-                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            foo: self.foo.expect("foo is not set"),
-                            bar: self.bar.expect("bar is not set"),
-                            delegate_record: self.delegate_record.expect("delegate_record is not set"),
-                      };
-    accounts.instruction()
-  }
+            edition: self.edition.expect("edition is not set"),
+
+            mint: self.mint,
+
+            update_authority: self.update_authority.expect("update_authority is not set"),
+
+            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            foo: self.foo.expect("foo is not set"),
+
+            bar: self.bar.expect("bar is not set"),
+
+            delegate_record: self.delegate_record.expect("delegate_record is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct DummyInstructionArgs {
+    discriminator: [u8; 8],
+}
+
+impl DummyInstructionArgs {
+    pub fn new() -> Self {
+        Self {
+            discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
+        }
+    }
+}

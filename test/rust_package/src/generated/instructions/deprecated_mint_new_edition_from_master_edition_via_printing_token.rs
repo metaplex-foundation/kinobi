@@ -5,258 +5,270 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
-      /// New Metadata key (pda of ['metadata', program id, mint id])
+    /// New Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// New Edition V1 (pda of ['metadata', program id, mint id, 'edition'])
+    pub edition: solana_program::pubkey::Pubkey,
+    /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])
+    pub master_edition: solana_program::pubkey::Pubkey,
+    /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
+    pub mint: solana_program::pubkey::Pubkey,
+    /// Mint authority of new mint
+    pub mint_authority: solana_program::pubkey::Pubkey,
+    /// Printing Mint of master record edition
+    pub printing_mint: solana_program::pubkey::Pubkey,
+    /// Token account containing Printing mint token to be transferred
+    pub master_token_account: solana_program::pubkey::Pubkey,
+    /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number])
+    pub edition_marker: solana_program::pubkey::Pubkey,
+    /// Burn authority for this token
+    pub burn_authority: solana_program::pubkey::Pubkey,
+    /// payer
+    pub payer: solana_program::pubkey::Pubkey,
+    /// update authority info for new metadata account
+    pub master_update_authority: solana_program::pubkey::Pubkey,
+    /// Master record metadata account
+    pub master_metadata: solana_program::pubkey::Pubkey,
+    /// Token program
+    pub token_program: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// Rent info
+    pub rent: solana_program::pubkey::Pubkey,
+    /// Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
+    pub reservation_list: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub metadata: Pubkey,
-        /// New Edition V1 (pda of ['metadata', program id, mint id, 'edition'])
-
-        pub edition: Pubkey,
-        /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])
-
-        pub master_edition: Pubkey,
-        /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
-
-        pub mint: Pubkey,
-        /// Mint authority of new mint
-
-        pub mint_authority: Pubkey,
-        /// Printing Mint of master record edition
-
-        pub printing_mint: Pubkey,
-        /// Token account containing Printing mint token to be transferred
-
-        pub master_token_account: Pubkey,
-        /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number])
-
-        pub edition_marker: Pubkey,
-        /// Burn authority for this token
-
-        pub burn_authority: Pubkey,
-        /// payer
-
-        pub payer: Pubkey,
-        /// update authority info for new metadata account
-
-        pub master_update_authority: Pubkey,
-        /// Master record metadata account
-
-        pub master_metadata: Pubkey,
-        /// Token program
-
-        pub token_program: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-        /// Rent info
-
-        pub rent: Pubkey,
-        /// Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
-
-        pub reservation_list: Option<Pubkey>,
-  }
-
-                                
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.edition,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.master_edition,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.printing_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.master_token_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.edition_marker,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.burn_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.master_update_authority,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.master_metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.rent,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.reservation_list.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.edition,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.master_edition,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.printing_mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.master_token_account,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.edition_marker,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.burn_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.payer,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.master_update_authority,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.master_metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.token_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.system_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.rent,
+              false
+            ),
+                                                                if let Some(reservation_list) = self.reservation_list {
+              solana_program::instruction::AccountMeta::new(
+                reservation_list,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
-  metadata: Option<Pubkey>,
-    edition: Option<Pubkey>,
-    master_edition: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    mint_authority: Option<Pubkey>,
-    printing_mint: Option<Pubkey>,
-    master_token_account: Option<Pubkey>,
-    edition_marker: Option<Pubkey>,
-    burn_authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    master_update_authority: Option<Pubkey>,
-    master_metadata: Option<Pubkey>,
-    token_program: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    rent: Option<Pubkey>,
-    reservation_list: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    edition: Option<solana_program::pubkey::Pubkey>,
+    master_edition: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    mint_authority: Option<solana_program::pubkey::Pubkey>,
+    printing_mint: Option<solana_program::pubkey::Pubkey>,
+    master_token_account: Option<solana_program::pubkey::Pubkey>,
+    edition_marker: Option<solana_program::pubkey::Pubkey>,
+    burn_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    master_update_authority: Option<solana_program::pubkey::Pubkey>,
+    master_metadata: Option<solana_program::pubkey::Pubkey>,
+    token_program: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    rent: Option<solana_program::pubkey::Pubkey>,
+    reservation_list: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.edition = Some(edition);
-      
-      self
+    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.edition = Some(edition);
+        self
     }
-      pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition = Some(master_edition);
-      
-      self
+    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.master_edition = Some(master_edition);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint_authority = Some(mint_authority);
-      
-      self
+    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint_authority = Some(mint_authority);
+        self
     }
-      pub fn printing_mint(&mut self, printing_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.printing_mint = Some(printing_mint);
-      
-      self
+    pub fn printing_mint(&mut self, printing_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.printing_mint = Some(printing_mint);
+        self
     }
-      pub fn master_token_account(&mut self, master_token_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_token_account = Some(master_token_account);
-      
-      self
+    pub fn master_token_account(
+        &mut self,
+        master_token_account: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.master_token_account = Some(master_token_account);
+        self
     }
-      pub fn edition_marker(&mut self, edition_marker: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.edition_marker = Some(edition_marker);
-      
-      self
+    pub fn edition_marker(&mut self, edition_marker: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.edition_marker = Some(edition_marker);
+        self
     }
-      pub fn burn_authority(&mut self, burn_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.burn_authority = Some(burn_authority);
-      
-      self
+    pub fn burn_authority(&mut self, burn_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.burn_authority = Some(burn_authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn master_update_authority(&mut self, master_update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_update_authority = Some(master_update_authority);
-      
-      self
+    pub fn master_update_authority(
+        &mut self,
+        master_update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.master_update_authority = Some(master_update_authority);
+        self
     }
-      pub fn master_metadata(&mut self, master_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_metadata = Some(master_metadata);
-      
-      self
+    pub fn master_metadata(
+        &mut self,
+        master_metadata: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.master_metadata = Some(master_metadata);
+        self
     }
-      pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_program = Some(token_program);
-      
-      self
+    pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token_program = Some(token_program);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.rent = Some(rent);
-      
-      self
+    pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.rent = Some(rent);
+        self
     }
-      pub fn reservation_list(&mut self, reservation_list: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.reservation_list = Some(reservation_list);
-      
-      self
+    pub fn reservation_list(
+        &mut self,
+        reservation_list: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.reservation_list = Some(reservation_list);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            edition: self.edition.expect("edition is not set"),
-                            master_edition: self.master_edition.expect("master_edition is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
-                            printing_mint: self.printing_mint.expect("printing_mint is not set"),
-                            master_token_account: self.master_token_account.expect("master_token_account is not set"),
-                            edition_marker: self.edition_marker.expect("edition_marker is not set"),
-                            burn_authority: self.burn_authority.expect("burn_authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            master_update_authority: self.master_update_authority.expect("master_update_authority is not set"),
-                            master_metadata: self.master_metadata.expect("master_metadata is not set"),
-                            token_program: self.token_program.expect("token_program is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            rent: self.rent.expect("rent is not set"),
-                            reservation_list: self.reservation_list,
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            edition: self.edition.expect("edition is not set"),
+
+            master_edition: self.master_edition.expect("master_edition is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+
+            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+
+            printing_mint: self.printing_mint.expect("printing_mint is not set"),
+
+            master_token_account: self
+                .master_token_account
+                .expect("master_token_account is not set"),
+
+            edition_marker: self.edition_marker.expect("edition_marker is not set"),
+
+            burn_authority: self.burn_authority.expect("burn_authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            master_update_authority: self
+                .master_update_authority
+                .expect("master_update_authority is not set"),
+
+            master_metadata: self.master_metadata.expect("master_metadata is not set"),
+
+            token_program: self.token_program.expect("token_program is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            rent: self.rent.expect("rent is not set"),
+
+            reservation_list: self.reservation_list,
+        };
+        accounts.instruction()
+    }
 }
 
+struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs {
+    discriminator: u8,
+}
+
+impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 3 }
+    }
+}

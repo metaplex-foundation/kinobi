@@ -5,76 +5,112 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct CreateFrequencyRule {
-      /// Payer and creator of the Frequency Rule
+    /// Payer and creator of the Frequency Rule
+    pub payer: solana_program::pubkey::Pubkey,
+    /// The PDA account where the Frequency Rule is stored
+    pub frequency_pda: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+}
 
-        pub payer: Pubkey,
-        /// The PDA account where the Frequency Rule is stored
-
-        pub frequency_pda: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-  }
-
-      
 impl CreateFrequencyRule {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: CreateFrequencyRuleInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_auth_rules::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.frequency_pda,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_auth_rules::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.payer, true),
+                solana_program::instruction::AccountMeta::new(self.frequency_pda, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct CreateFrequencyRuleBuilder {
-  payer: Option<Pubkey>,
-    frequency_pda: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-  }
+    payer: Option<solana_program::pubkey::Pubkey>,
+    frequency_pda: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    rule_set_name: Option<String>,
+    freq_rule_name: Option<String>,
+    last_update: Option<i64>,
+    period: Option<i64>,
+}
 
 impl CreateFrequencyRuleBuilder {
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn frequency_pda(&mut self, frequency_pda: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.frequency_pda = Some(frequency_pda);
-      
-      self
+    pub fn frequency_pda(&mut self, frequency_pda: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.frequency_pda = Some(frequency_pda);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
+    }
+    pub fn rule_set_name(&mut self, rule_set_name: String) -> &mut Self {
+        self.rule_set_name = Some(rule_set_name);
+        self
+    }
+    pub fn freq_rule_name(&mut self, freq_rule_name: String) -> &mut Self {
+        self.freq_rule_name = Some(freq_rule_name);
+        self
+    }
+    pub fn last_update(&mut self, last_update: i64) -> &mut Self {
+        self.last_update = Some(last_update);
+        self
+    }
+    pub fn period(&mut self, period: i64) -> &mut Self {
+        self.period = Some(period);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateFrequencyRule {
-                  payer: self.payer.expect("payer is not set"),
-                            frequency_pda: self.frequency_pda.expect("frequency_pda is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                      };
-    accounts.instruction()
-  }
+            payer: self.payer.expect("payer is not set"),
+
+            frequency_pda: self.frequency_pda.expect("frequency_pda is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+        };
+        let args = CreateFrequencyRuleInstructionArgs::new(
+            self.rule_set_name.expect("rule_set_name is not set"),
+            self.freq_rule_name.expect("freq_rule_name is not set"),
+            self.last_update.expect("last_update is not set"),
+            self.period.expect("period is not set"),
+        );
+        accounts.instruction(args)
+    }
 }
 
+pub struct CreateFrequencyRuleInstructionArgs {
+    discriminator: u8,
+    pub rule_set_name: String,
+    pub freq_rule_name: String,
+    pub last_update: i64,
+    pub period: i64,
+}
+
+impl CreateFrequencyRuleInstructionArgs {
+    pub fn new(
+        rule_set_name: String,
+        freq_rule_name: String,
+        last_update: i64,
+        period: i64,
+    ) -> Self {
+        Self {
+            discriminator: 2,
+            rule_set_name,
+            freq_rule_name,
+            last_update,
+            period,
+        }
+    }
+}

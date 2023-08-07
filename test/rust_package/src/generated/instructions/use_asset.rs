@@ -5,188 +5,230 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct UseAsset {
-      /// Metadata account
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Token Account Of NFT
+    pub token_account: solana_program::pubkey::Pubkey,
+    /// Mint of the Metadata
+    pub mint: solana_program::pubkey::Pubkey,
+    /// Use authority or current owner of the asset
+    pub use_authority: solana_program::pubkey::Pubkey,
+    /// Owner
+    pub owner: solana_program::pubkey::Pubkey,
+    /// SPL Token program
+    pub spl_token_program: solana_program::pubkey::Pubkey,
+    /// Associated Token program
+    pub ata_program: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// Use Authority Record PDA (if present the program assumes a delegated use authority)
+    pub use_authority_record: Option<solana_program::pubkey::Pubkey>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub metadata: Pubkey,
-        /// Token Account Of NFT
-
-        pub token_account: Pubkey,
-        /// Mint of the Metadata
-
-        pub mint: Pubkey,
-        /// Use authority or current owner of the asset
-
-        pub use_authority: Pubkey,
-        /// Owner
-
-        pub owner: Pubkey,
-        /// SPL Token program
-
-        pub spl_token_program: Pubkey,
-        /// Associated Token program
-
-        pub ata_program: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-        /// Use Authority Record PDA (if present the program assumes a delegated use authority)
-
-        pub use_authority_record: Option<Pubkey>,
-        /// Token Authorization Rules account
-
-        pub authorization_rules: Option<Pubkey>,
-        /// Token Authorization Rules Program
-
-        pub authorization_rules_program: Option<Pubkey>,
-  }
-
-                      
 impl UseAsset {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: UseAssetInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.token_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.use_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.owner,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.spl_token_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.ata_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.use_authority_record.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules.unwrap_or(crate::ID),
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authorization_rules_program.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.token_account,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.use_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.owner,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.spl_token_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.ata_program,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.system_program,
+              false
+            ),
+                                                                if let Some(use_authority_record) = self.use_authority_record {
+              solana_program::instruction::AccountMeta::new(
+                use_authority_record,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                if let Some(authorization_rules) = self.authorization_rules {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                                                if let Some(authorization_rules_program) = self.authorization_rules_program {
+              solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules_program,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct UseAssetBuilder {
-  metadata: Option<Pubkey>,
-    token_account: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    use_authority: Option<Pubkey>,
-    owner: Option<Pubkey>,
-    spl_token_program: Option<Pubkey>,
-    ata_program: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    use_authority_record: Option<Pubkey>,
-    authorization_rules: Option<Pubkey>,
-    authorization_rules_program: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    token_account: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    use_authority: Option<solana_program::pubkey::Pubkey>,
+    owner: Option<solana_program::pubkey::Pubkey>,
+    spl_token_program: Option<solana_program::pubkey::Pubkey>,
+    ata_program: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    use_authority_record: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    use_asset_args: Option<UseAssetArgs>,
+}
 
 impl UseAssetBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_account = Some(token_account);
-      
-      self
+    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token_account = Some(token_account);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn use_authority(&mut self, use_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.use_authority = Some(use_authority);
-      
-      self
+    pub fn use_authority(&mut self, use_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.use_authority = Some(use_authority);
+        self
     }
-      pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.owner = Some(owner);
-      
-      self
+    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.owner = Some(owner);
+        self
     }
-      pub fn spl_token_program(&mut self, spl_token_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.spl_token_program = Some(spl_token_program);
-      
-      self
+    pub fn spl_token_program(
+        &mut self,
+        spl_token_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.spl_token_program = Some(spl_token_program);
+        self
     }
-      pub fn ata_program(&mut self, ata_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.ata_program = Some(ata_program);
-      
-      self
+    pub fn ata_program(&mut self, ata_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.ata_program = Some(ata_program);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn use_authority_record(&mut self, use_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.use_authority_record = Some(use_authority_record);
-      
-      self
+    pub fn use_authority_record(
+        &mut self,
+        use_authority_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.use_authority_record = Some(use_authority_record);
+        self
     }
-      pub fn authorization_rules(&mut self, authorization_rules: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules = Some(authorization_rules);
-      
-      self
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules = Some(authorization_rules);
+        self
     }
-      pub fn authorization_rules_program(&mut self, authorization_rules_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authorization_rules_program = Some(authorization_rules_program);
-      
-      self
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.authorization_rules_program = Some(authorization_rules_program);
+        self
+    }
+    pub fn use_asset_args(&mut self, use_asset_args: UseAssetArgs) -> &mut Self {
+        self.use_asset_args = Some(use_asset_args);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UseAsset {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            token_account: self.token_account.expect("token_account is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                            use_authority: self.use_authority.expect("use_authority is not set"),
-                            owner: self.owner.expect("owner is not set"),
-                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
-                            ata_program: self.ata_program.expect("ata_program is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            use_authority_record: self.use_authority_record,
-                            authorization_rules: self.authorization_rules,
-                            authorization_rules_program: self.authorization_rules_program,
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            token_account: self.token_account.expect("token_account is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+
+            use_authority: self.use_authority.expect("use_authority is not set"),
+
+            owner: self.owner.expect("owner is not set"),
+
+            spl_token_program: self
+                .spl_token_program
+                .expect("spl_token_program is not set"),
+
+            ata_program: self.ata_program.expect("ata_program is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            use_authority_record: self.use_authority_record,
+
+            authorization_rules: self.authorization_rules,
+
+            authorization_rules_program: self.authorization_rules_program,
+        };
+        let args =
+            UseAssetInstructionArgs::new(self.use_asset_args.expect("use_asset_args is not set"));
+        accounts.instruction(args)
+    }
 }
 
+pub struct UseAssetInstructionArgs {
+    discriminator: u8,
+    pub use_asset_args: UseAssetArgs,
+}
+
+impl UseAssetInstructionArgs {
+    pub fn new(use_asset_args: UseAssetArgs) -> Self {
+        Self {
+            discriminator: 45,
+            use_asset_args,
+        }
+    }
+}

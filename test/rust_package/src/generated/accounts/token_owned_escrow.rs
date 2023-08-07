@@ -5,15 +5,14 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ EscrowAuthority, TmKey };
-use solana_program::{ pubkey::Pubkey };
-
+use crate::generated::types::{EscrowAuthority, TmKey};
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct TokenOwnedEscrow {
-pub key: TmKey,
-pub base_token: Pubkey,
-pub authority: EscrowAuthority,
-pub bump: u8,
+    pub key: TmKey,
+    pub base_token: Pubkey,
+    pub authority: EscrowAuthority,
+    pub bump: u8,
 }

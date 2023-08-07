@@ -5,104 +5,148 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct BubblegumSetCollectionSize {
-      /// Collection Metadata account
+    /// Collection Metadata account
+    pub collection_metadata: solana_program::pubkey::Pubkey,
+    /// Collection Update authority
+    pub collection_authority: solana_program::pubkey::Pubkey,
+    /// Mint of the Collection
+    pub collection_mint: solana_program::pubkey::Pubkey,
+    /// Signing PDA of Bubblegum program
+    pub bubblegum_signer: solana_program::pubkey::Pubkey,
+    /// Collection Authority Record PDA
+    pub collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub collection_metadata: Pubkey,
-        /// Collection Update authority
-
-        pub collection_authority: Pubkey,
-        /// Mint of the Collection
-
-        pub collection_mint: Pubkey,
-        /// Signing PDA of Bubblegum program
-
-        pub bubblegum_signer: Pubkey,
-        /// Collection Authority Record PDA
-
-        pub collection_authority_record: Option<Pubkey>,
-  }
-
-          
 impl BubblegumSetCollectionSize {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: BubblegumSetCollectionSizeInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.bubblegum_signer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_authority_record.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.collection_metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.collection_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.collection_mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.bubblegum_signer,
+              true
+            ),
+                                                                if let Some(collection_authority_record) = self.collection_authority_record {
+              solana_program::instruction::AccountMeta::new_readonly(
+                collection_authority_record,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct BubblegumSetCollectionSizeBuilder {
-  collection_metadata: Option<Pubkey>,
-    collection_authority: Option<Pubkey>,
-    collection_mint: Option<Pubkey>,
-    bubblegum_signer: Option<Pubkey>,
-    collection_authority_record: Option<Pubkey>,
-  }
+    collection_metadata: Option<solana_program::pubkey::Pubkey>,
+    collection_authority: Option<solana_program::pubkey::Pubkey>,
+    collection_mint: Option<solana_program::pubkey::Pubkey>,
+    bubblegum_signer: Option<solana_program::pubkey::Pubkey>,
+    collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+    set_collection_size_args: Option<SetCollectionSizeArgs>,
+}
 
 impl BubblegumSetCollectionSizeBuilder {
-      pub fn collection_metadata(&mut self, collection_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_metadata = Some(collection_metadata);
-      
-      self
+    pub fn collection_metadata(
+        &mut self,
+        collection_metadata: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_metadata = Some(collection_metadata);
+        self
     }
-      pub fn collection_authority(&mut self, collection_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority = Some(collection_authority);
-      
-      self
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority = Some(collection_authority);
+        self
     }
-      pub fn collection_mint(&mut self, collection_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_mint = Some(collection_mint);
-      
-      self
+    pub fn collection_mint(
+        &mut self,
+        collection_mint: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_mint = Some(collection_mint);
+        self
     }
-      pub fn bubblegum_signer(&mut self, bubblegum_signer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.bubblegum_signer = Some(bubblegum_signer);
-      
-      self
+    pub fn bubblegum_signer(
+        &mut self,
+        bubblegum_signer: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.bubblegum_signer = Some(bubblegum_signer);
+        self
     }
-      pub fn collection_authority_record(&mut self, collection_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority_record = Some(collection_authority_record);
-      
-      self
+    pub fn collection_authority_record(
+        &mut self,
+        collection_authority_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority_record = Some(collection_authority_record);
+        self
+    }
+    pub fn set_collection_size_args(
+        &mut self,
+        set_collection_size_args: SetCollectionSizeArgs,
+    ) -> &mut Self {
+        self.set_collection_size_args = Some(set_collection_size_args);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = BubblegumSetCollectionSize {
-                  collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
-                            collection_authority: self.collection_authority.expect("collection_authority is not set"),
-                            collection_mint: self.collection_mint.expect("collection_mint is not set"),
-                            bubblegum_signer: self.bubblegum_signer.expect("bubblegum_signer is not set"),
-                            collection_authority_record: self.collection_authority_record,
-                      };
-    accounts.instruction()
-  }
+            collection_metadata: self
+                .collection_metadata
+                .expect("collection_metadata is not set"),
+
+            collection_authority: self
+                .collection_authority
+                .expect("collection_authority is not set"),
+
+            collection_mint: self.collection_mint.expect("collection_mint is not set"),
+
+            bubblegum_signer: self.bubblegum_signer.expect("bubblegum_signer is not set"),
+
+            collection_authority_record: self.collection_authority_record,
+        };
+        let args = BubblegumSetCollectionSizeInstructionArgs::new(
+            self.set_collection_size_args
+                .expect("set_collection_size_args is not set"),
+        );
+        accounts.instruction(args)
+    }
 }
 
+pub struct BubblegumSetCollectionSizeInstructionArgs {
+    discriminator: u8,
+    pub set_collection_size_args: SetCollectionSizeArgs,
+}
+
+impl BubblegumSetCollectionSizeInstructionArgs {
+    pub fn new(set_collection_size_args: SetCollectionSizeArgs) -> Self {
+        Self {
+            discriminator: 36,
+            set_collection_size_args,
+        }
+    }
+}

@@ -5,166 +5,203 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct Initialize {
-        pub candy_machine: Pubkey,
-          pub authority_pda: Pubkey,
-          pub authority: Pubkey,
-          pub payer: Pubkey,
-          pub collection_metadata: Pubkey,
-          pub collection_mint: Pubkey,
-          pub collection_master_edition: Pubkey,
-          pub collection_update_authority: Pubkey,
-          pub collection_authority_record: Pubkey,
-          pub token_metadata_program: Pubkey,
-          pub system_program: Pubkey,
-  }
+    pub candy_machine: solana_program::pubkey::Pubkey,
 
-                      
+    pub authority_pda: solana_program::pubkey::Pubkey,
+
+    pub authority: solana_program::pubkey::Pubkey,
+
+    pub payer: solana_program::pubkey::Pubkey,
+
+    pub collection_metadata: solana_program::pubkey::Pubkey,
+
+    pub collection_mint: solana_program::pubkey::Pubkey,
+
+    pub collection_master_edition: solana_program::pubkey::Pubkey,
+
+    pub collection_update_authority: solana_program::pubkey::Pubkey,
+
+    pub collection_authority_record: solana_program::pubkey::Pubkey,
+
+    pub token_metadata_program: solana_program::pubkey::Pubkey,
+
+    pub system_program: solana_program::pubkey::Pubkey,
+}
+
 impl Initialize {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: InitializeInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_candy_machine_core::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.candy_machine,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.authority_pda,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.authority,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_master_edition,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_update_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_authority_record,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token_metadata_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_candy_machine_core::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
+                solana_program::instruction::AccountMeta::new(self.authority_pda, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.authority, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.payer, true),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.collection_metadata,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(self.collection_mint, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.collection_master_edition,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new(
+                    self.collection_update_authority,
+                    true,
+                ),
+                solana_program::instruction::AccountMeta::new(
+                    self.collection_authority_record,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.token_metadata_program,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct InitializeBuilder {
-  candy_machine: Option<Pubkey>,
-    authority_pda: Option<Pubkey>,
-    authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    collection_metadata: Option<Pubkey>,
-    collection_mint: Option<Pubkey>,
-    collection_master_edition: Option<Pubkey>,
-    collection_update_authority: Option<Pubkey>,
-    collection_authority_record: Option<Pubkey>,
-    token_metadata_program: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-  }
+    candy_machine: Option<solana_program::pubkey::Pubkey>,
+    authority_pda: Option<solana_program::pubkey::Pubkey>,
+    authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    collection_metadata: Option<solana_program::pubkey::Pubkey>,
+    collection_mint: Option<solana_program::pubkey::Pubkey>,
+    collection_master_edition: Option<solana_program::pubkey::Pubkey>,
+    collection_update_authority: Option<solana_program::pubkey::Pubkey>,
+    collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+    token_metadata_program: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    data: Option<CandyMachineData>,
+}
 
 impl InitializeBuilder {
-      pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.candy_machine = Some(candy_machine);
-      
-      self
+    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.candy_machine = Some(candy_machine);
+        self
     }
-      pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority_pda = Some(authority_pda);
-      
-      self
+    pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority_pda = Some(authority_pda);
+        self
     }
-      pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority = Some(authority);
-      
-      self
+    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority = Some(authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn collection_metadata(&mut self, collection_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_metadata = Some(collection_metadata);
-      
-      self
+    pub fn collection_metadata(
+        &mut self,
+        collection_metadata: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_metadata = Some(collection_metadata);
+        self
     }
-      pub fn collection_mint(&mut self, collection_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_mint = Some(collection_mint);
-      
-      self
+    pub fn collection_mint(
+        &mut self,
+        collection_mint: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_mint = Some(collection_mint);
+        self
     }
-      pub fn collection_master_edition(&mut self, collection_master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_master_edition = Some(collection_master_edition);
-      
-      self
+    pub fn collection_master_edition(
+        &mut self,
+        collection_master_edition: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_master_edition = Some(collection_master_edition);
+        self
     }
-      pub fn collection_update_authority(&mut self, collection_update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_update_authority = Some(collection_update_authority);
-      
-      self
+    pub fn collection_update_authority(
+        &mut self,
+        collection_update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_update_authority = Some(collection_update_authority);
+        self
     }
-      pub fn collection_authority_record(&mut self, collection_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority_record = Some(collection_authority_record);
-      
-      self
+    pub fn collection_authority_record(
+        &mut self,
+        collection_authority_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority_record = Some(collection_authority_record);
+        self
     }
-      pub fn token_metadata_program(&mut self, token_metadata_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_metadata_program = Some(token_metadata_program);
-      
-      self
+    pub fn token_metadata_program(
+        &mut self,
+        token_metadata_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.token_metadata_program = Some(token_metadata_program);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
+    }
+    pub fn data(&mut self, data: CandyMachineData) -> &mut Self {
+        self.data = Some(data);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Initialize {
-                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
-                            authority_pda: self.authority_pda.expect("authority_pda is not set"),
-                            authority: self.authority.expect("authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
-                            collection_mint: self.collection_mint.expect("collection_mint is not set"),
-                            collection_master_edition: self.collection_master_edition.expect("collection_master_edition is not set"),
-                            collection_update_authority: self.collection_update_authority.expect("collection_update_authority is not set"),
-                            collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
-                            token_metadata_program: self.token_metadata_program.expect("token_metadata_program is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                      };
-    accounts.instruction()
-  }
+            candy_machine: self.candy_machine.expect("candy_machine is not set"),
+
+            authority_pda: self.authority_pda.expect("authority_pda is not set"),
+
+            authority: self.authority.expect("authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            collection_metadata: self
+                .collection_metadata
+                .expect("collection_metadata is not set"),
+
+            collection_mint: self.collection_mint.expect("collection_mint is not set"),
+
+            collection_master_edition: self
+                .collection_master_edition
+                .expect("collection_master_edition is not set"),
+
+            collection_update_authority: self
+                .collection_update_authority
+                .expect("collection_update_authority is not set"),
+
+            collection_authority_record: self
+                .collection_authority_record
+                .expect("collection_authority_record is not set"),
+
+            token_metadata_program: self
+                .token_metadata_program
+                .expect("token_metadata_program is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+        };
+        let args = InitializeInstructionArgs::new(self.data.expect("data is not set"));
+        accounts.instruction(args)
+    }
 }
 
+pub struct InitializeInstructionArgs {
+    discriminator: [u8; 8],
+    pub data: CandyMachineData,
+}
+
+impl InitializeInstructionArgs {
+    pub fn new(data: CandyMachineData) -> Self {
+        Self {
+            discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
+            data,
+        }
+    }
+}

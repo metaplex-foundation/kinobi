@@ -4329,6 +4329,23 @@
                 }
               }
             ]
+          },
+          {
+            "name": "V2",
+            "fields": [
+              {
+                "name": "asset_data",
+                "type": {
+                  "defined": "AssetData"
+                }
+              },
+              {
+                "name": "max_supply",
+                "type": {
+                  "option": "u64"
+                }
+              }
+            ]
           }
         ]
       }

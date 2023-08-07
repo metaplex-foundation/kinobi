@@ -4,12 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum UseMethod {
-Burn,
-Multiple,
-Single,
+    Burn,
+    Multiple,
+    Single,
 }

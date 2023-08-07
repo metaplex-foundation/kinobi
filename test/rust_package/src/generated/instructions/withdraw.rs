@@ -5,58 +5,60 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct Withdraw {
-        pub candy_machine: Pubkey,
-          pub authority: Pubkey,
-  }
+    pub candy_machine: solana_program::pubkey::Pubkey,
 
-    
+    pub authority: solana_program::pubkey::Pubkey,
+}
+
 impl Withdraw {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = WithdrawInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_candy_machine_core::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.candy_machine,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.authority,
-            true
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_candy_machine_core::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
+                solana_program::instruction::AccountMeta::new(self.authority, true),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct WithdrawBuilder {
-  candy_machine: Option<Pubkey>,
-    authority: Option<Pubkey>,
-  }
+    candy_machine: Option<solana_program::pubkey::Pubkey>,
+    authority: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl WithdrawBuilder {
-      pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.candy_machine = Some(candy_machine);
-      
-      self
+    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.candy_machine = Some(candy_machine);
+        self
     }
-      pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority = Some(authority);
-      
-      self
+    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority = Some(authority);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Withdraw {
-                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
-                            authority: self.authority.expect("authority is not set"),
-                      };
-    accounts.instruction()
-  }
+            candy_machine: self.candy_machine.expect("candy_machine is not set"),
+
+            authority: self.authority.expect("authority is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct WithdrawInstructionArgs {
+    discriminator: [u8; 8],
+}
+
+impl WithdrawInstructionArgs {
+    pub fn new() -> Self {
+        Self {
+            discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
+        }
+    }
+}

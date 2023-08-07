@@ -4,14 +4,13 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ AuthorizationData };
-
+use crate::generated::types::AuthorizationData;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum MintArgs {
-V1 {
-amount: u64,
-authorization_data: Option<AuthorizationData>,
-}
+    V1 {
+        amount: u64,
+        authorization_data: Option<AuthorizationData>,
+    },
 }

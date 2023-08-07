@@ -4,16 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum DelegateArgs {
-CollectionV1,
-SaleV1 {
-amount: u64,
-}
-TransferV1 {
-amount: u64,
-}
+    CollectionV1,
+    SaleV1 { amount: u64 },
+    TransferV1 { amount: u64 },
 }

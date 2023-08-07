@@ -212,7 +212,7 @@ kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
 kinobi.accept(
   new k.RenderRustVisitor('./test/rust_package/src/generated', {
     crateFolder: './test/rust_package',
-    formatCode: false,
+    formatCode: true,
   })
 );
 

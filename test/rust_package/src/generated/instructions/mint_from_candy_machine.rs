@@ -5,238 +5,271 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct MintFromCandyMachine {
-        pub candy_machine: Pubkey,
-          pub authority_pda: Pubkey,
-          pub mint_authority: Pubkey,
-          pub payer: Pubkey,
-          pub nft_mint: Pubkey,
-          pub nft_mint_authority: Pubkey,
-          pub nft_metadata: Pubkey,
-          pub nft_master_edition: Pubkey,
-          pub collection_authority_record: Pubkey,
-          pub collection_mint: Pubkey,
-          pub collection_metadata: Pubkey,
-          pub collection_master_edition: Pubkey,
-          pub collection_update_authority: Pubkey,
-          pub token_metadata_program: Pubkey,
-          pub token_program: Pubkey,
-          pub system_program: Pubkey,
-          pub recent_slothashes: Pubkey,
-  }
+    pub candy_machine: solana_program::pubkey::Pubkey,
 
-                                  
+    pub authority_pda: solana_program::pubkey::Pubkey,
+
+    pub mint_authority: solana_program::pubkey::Pubkey,
+
+    pub payer: solana_program::pubkey::Pubkey,
+
+    pub nft_mint: solana_program::pubkey::Pubkey,
+
+    pub nft_mint_authority: solana_program::pubkey::Pubkey,
+
+    pub nft_metadata: solana_program::pubkey::Pubkey,
+
+    pub nft_master_edition: solana_program::pubkey::Pubkey,
+
+    pub collection_authority_record: solana_program::pubkey::Pubkey,
+
+    pub collection_mint: solana_program::pubkey::Pubkey,
+
+    pub collection_metadata: solana_program::pubkey::Pubkey,
+
+    pub collection_master_edition: solana_program::pubkey::Pubkey,
+
+    pub collection_update_authority: solana_program::pubkey::Pubkey,
+
+    pub token_metadata_program: solana_program::pubkey::Pubkey,
+
+    pub token_program: solana_program::pubkey::Pubkey,
+
+    pub system_program: solana_program::pubkey::Pubkey,
+
+    pub recent_slothashes: solana_program::pubkey::Pubkey,
+}
+
 impl MintFromCandyMachine {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = MintFromCandyMachineInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_candy_machine_core::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.candy_machine,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.authority_pda,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.nft_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.nft_mint_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.nft_metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.nft_master_edition,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_authority_record,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.collection_metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_master_edition,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.collection_update_authority,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token_metadata_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.token_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.recent_slothashes,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_candy_machine_core::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
+                solana_program::instruction::AccountMeta::new(self.authority_pda, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.mint_authority, true),
+                solana_program::instruction::AccountMeta::new(self.payer, true),
+                solana_program::instruction::AccountMeta::new(self.nft_mint, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.nft_mint_authority,
+                    true,
+                ),
+                solana_program::instruction::AccountMeta::new(self.nft_metadata, false),
+                solana_program::instruction::AccountMeta::new(self.nft_master_edition, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.collection_authority_record,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(self.collection_mint, false),
+                solana_program::instruction::AccountMeta::new(self.collection_metadata, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.collection_master_edition,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.collection_update_authority,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.token_metadata_program,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(self.token_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.recent_slothashes,
+                    false,
+                ),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct MintFromCandyMachineBuilder {
-  candy_machine: Option<Pubkey>,
-    authority_pda: Option<Pubkey>,
-    mint_authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    nft_mint: Option<Pubkey>,
-    nft_mint_authority: Option<Pubkey>,
-    nft_metadata: Option<Pubkey>,
-    nft_master_edition: Option<Pubkey>,
-    collection_authority_record: Option<Pubkey>,
-    collection_mint: Option<Pubkey>,
-    collection_metadata: Option<Pubkey>,
-    collection_master_edition: Option<Pubkey>,
-    collection_update_authority: Option<Pubkey>,
-    token_metadata_program: Option<Pubkey>,
-    token_program: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    recent_slothashes: Option<Pubkey>,
-  }
+    candy_machine: Option<solana_program::pubkey::Pubkey>,
+    authority_pda: Option<solana_program::pubkey::Pubkey>,
+    mint_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    nft_mint: Option<solana_program::pubkey::Pubkey>,
+    nft_mint_authority: Option<solana_program::pubkey::Pubkey>,
+    nft_metadata: Option<solana_program::pubkey::Pubkey>,
+    nft_master_edition: Option<solana_program::pubkey::Pubkey>,
+    collection_authority_record: Option<solana_program::pubkey::Pubkey>,
+    collection_mint: Option<solana_program::pubkey::Pubkey>,
+    collection_metadata: Option<solana_program::pubkey::Pubkey>,
+    collection_master_edition: Option<solana_program::pubkey::Pubkey>,
+    collection_update_authority: Option<solana_program::pubkey::Pubkey>,
+    token_metadata_program: Option<solana_program::pubkey::Pubkey>,
+    token_program: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    recent_slothashes: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl MintFromCandyMachineBuilder {
-      pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.candy_machine = Some(candy_machine);
-      
-      self
+    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.candy_machine = Some(candy_machine);
+        self
     }
-      pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.authority_pda = Some(authority_pda);
-      
-      self
+    pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.authority_pda = Some(authority_pda);
+        self
     }
-      pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint_authority = Some(mint_authority);
-      
-      self
+    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint_authority = Some(mint_authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn nft_mint(&mut self, nft_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.nft_mint = Some(nft_mint);
-      
-      self
+    pub fn nft_mint(&mut self, nft_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.nft_mint = Some(nft_mint);
+        self
     }
-      pub fn nft_mint_authority(&mut self, nft_mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.nft_mint_authority = Some(nft_mint_authority);
-      
-      self
+    pub fn nft_mint_authority(
+        &mut self,
+        nft_mint_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.nft_mint_authority = Some(nft_mint_authority);
+        self
     }
-      pub fn nft_metadata(&mut self, nft_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.nft_metadata = Some(nft_metadata);
-      
-      self
+    pub fn nft_metadata(&mut self, nft_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.nft_metadata = Some(nft_metadata);
+        self
     }
-      pub fn nft_master_edition(&mut self, nft_master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.nft_master_edition = Some(nft_master_edition);
-      
-      self
+    pub fn nft_master_edition(
+        &mut self,
+        nft_master_edition: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.nft_master_edition = Some(nft_master_edition);
+        self
     }
-      pub fn collection_authority_record(&mut self, collection_authority_record: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_authority_record = Some(collection_authority_record);
-      
-      self
+    pub fn collection_authority_record(
+        &mut self,
+        collection_authority_record: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority_record = Some(collection_authority_record);
+        self
     }
-      pub fn collection_mint(&mut self, collection_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_mint = Some(collection_mint);
-      
-      self
+    pub fn collection_mint(
+        &mut self,
+        collection_mint: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_mint = Some(collection_mint);
+        self
     }
-      pub fn collection_metadata(&mut self, collection_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_metadata = Some(collection_metadata);
-      
-      self
+    pub fn collection_metadata(
+        &mut self,
+        collection_metadata: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_metadata = Some(collection_metadata);
+        self
     }
-      pub fn collection_master_edition(&mut self, collection_master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_master_edition = Some(collection_master_edition);
-      
-      self
+    pub fn collection_master_edition(
+        &mut self,
+        collection_master_edition: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_master_edition = Some(collection_master_edition);
+        self
     }
-      pub fn collection_update_authority(&mut self, collection_update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.collection_update_authority = Some(collection_update_authority);
-      
-      self
+    pub fn collection_update_authority(
+        &mut self,
+        collection_update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_update_authority = Some(collection_update_authority);
+        self
     }
-      pub fn token_metadata_program(&mut self, token_metadata_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_metadata_program = Some(token_metadata_program);
-      
-      self
+    pub fn token_metadata_program(
+        &mut self,
+        token_metadata_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.token_metadata_program = Some(token_metadata_program);
+        self
     }
-      pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.token_program = Some(token_program);
-      
-      self
+    pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.token_program = Some(token_program);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn recent_slothashes(&mut self, recent_slothashes: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.recent_slothashes = Some(recent_slothashes);
-      
-      self
+    pub fn recent_slothashes(
+        &mut self,
+        recent_slothashes: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.recent_slothashes = Some(recent_slothashes);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = MintFromCandyMachine {
-                  candy_machine: self.candy_machine.expect("candy_machine is not set"),
-                            authority_pda: self.authority_pda.expect("authority_pda is not set"),
-                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            nft_mint: self.nft_mint.expect("nft_mint is not set"),
-                            nft_mint_authority: self.nft_mint_authority.expect("nft_mint_authority is not set"),
-                            nft_metadata: self.nft_metadata.expect("nft_metadata is not set"),
-                            nft_master_edition: self.nft_master_edition.expect("nft_master_edition is not set"),
-                            collection_authority_record: self.collection_authority_record.expect("collection_authority_record is not set"),
-                            collection_mint: self.collection_mint.expect("collection_mint is not set"),
-                            collection_metadata: self.collection_metadata.expect("collection_metadata is not set"),
-                            collection_master_edition: self.collection_master_edition.expect("collection_master_edition is not set"),
-                            collection_update_authority: self.collection_update_authority.expect("collection_update_authority is not set"),
-                            token_metadata_program: self.token_metadata_program.expect("token_metadata_program is not set"),
-                            token_program: self.token_program.expect("token_program is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            recent_slothashes: self.recent_slothashes.expect("recent_slothashes is not set"),
-                      };
-    accounts.instruction()
-  }
+            candy_machine: self.candy_machine.expect("candy_machine is not set"),
+
+            authority_pda: self.authority_pda.expect("authority_pda is not set"),
+
+            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            nft_mint: self.nft_mint.expect("nft_mint is not set"),
+
+            nft_mint_authority: self
+                .nft_mint_authority
+                .expect("nft_mint_authority is not set"),
+
+            nft_metadata: self.nft_metadata.expect("nft_metadata is not set"),
+
+            nft_master_edition: self
+                .nft_master_edition
+                .expect("nft_master_edition is not set"),
+
+            collection_authority_record: self
+                .collection_authority_record
+                .expect("collection_authority_record is not set"),
+
+            collection_mint: self.collection_mint.expect("collection_mint is not set"),
+
+            collection_metadata: self
+                .collection_metadata
+                .expect("collection_metadata is not set"),
+
+            collection_master_edition: self
+                .collection_master_edition
+                .expect("collection_master_edition is not set"),
+
+            collection_update_authority: self
+                .collection_update_authority
+                .expect("collection_update_authority is not set"),
+
+            token_metadata_program: self
+                .token_metadata_program
+                .expect("token_metadata_program is not set"),
+
+            token_program: self.token_program.expect("token_program is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            recent_slothashes: self
+                .recent_slothashes
+                .expect("recent_slothashes is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct MintFromCandyMachineInstructionArgs {
+    discriminator: [u8; 8],
+}
+
+impl MintFromCandyMachineInstructionArgs {
+    pub fn new() -> Self {
+        Self {
+            discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
+        }
+    }
+}

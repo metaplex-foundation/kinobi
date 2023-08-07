@@ -4,13 +4,12 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ UseMethod };
-
+use crate::generated::types::UseMethod;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct Uses {
-pub use_method: UseMethod,
-pub remaining: u64,
-pub total: u64,
+    pub use_method: UseMethod,
+    pub remaining: u64,
+    pub total: u64,
 }

@@ -5,25 +5,25 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ CandyMachineData };
-use solana_program::{ pubkey::Pubkey };
+use crate::generated::types::CandyMachineData;
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 /// Candy machine state and config data.
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct CandyMachine {
-pub discriminator: [u8; 8],
-/// Features versioning flags.
-pub features: u64,
-/// Authority address.
-pub authority: Pubkey,
-/// Authority address allowed to mint from the candy machine.
-pub mint_authority: Pubkey,
-/// The collection mint for the candy machine.
-pub collection_mint: Pubkey,
-/// Number of assets redeemed.
-pub items_redeemed: u64,
-/// Candy machine configuration data.
-pub data: CandyMachineData,
+    pub discriminator: [u8; 8],
+    /// Features versioning flags.
+    pub features: u64,
+    /// Authority address.
+    pub authority: Pubkey,
+    /// Authority address allowed to mint from the candy machine.
+    pub mint_authority: Pubkey,
+    /// The collection mint for the candy machine.
+    pub collection_mint: Pubkey,
+    /// Number of assets redeemed.
+    pub items_redeemed: u64,
+    /// Candy machine configuration data.
+    pub data: CandyMachineData,
 }

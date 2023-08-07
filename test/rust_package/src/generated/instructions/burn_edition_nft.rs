@@ -5,174 +5,191 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct BurnEditionNft {
-      /// Metadata (pda of ['metadata', program id, mint id])
+    /// Metadata (pda of ['metadata', program id, mint id])
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// NFT owner
+    pub owner: solana_program::pubkey::Pubkey,
+    /// Mint of the print edition NFT
+    pub print_edition_mint: solana_program::pubkey::Pubkey,
+    /// Mint of the original/master NFT
+    pub master_edition_mint: solana_program::pubkey::Pubkey,
+    /// Token account the print edition NFT is in
+    pub print_edition_token_account: solana_program::pubkey::Pubkey,
+    /// Token account the Master Edition NFT is in
+    pub master_edition_token_account: solana_program::pubkey::Pubkey,
+    /// MasterEdition2 of the original NFT
+    pub master_edition_account: solana_program::pubkey::Pubkey,
+    /// Print Edition account of the NFT
+    pub print_edition_account: solana_program::pubkey::Pubkey,
+    /// Edition Marker PDA of the NFT
+    pub edition_marker_account: solana_program::pubkey::Pubkey,
+    /// SPL Token Program
+    pub spl_token_program: solana_program::pubkey::Pubkey,
+}
 
-        pub metadata: Pubkey,
-        /// NFT owner
-
-        pub owner: Pubkey,
-        /// Mint of the print edition NFT
-
-        pub print_edition_mint: Pubkey,
-        /// Mint of the original/master NFT
-
-        pub master_edition_mint: Pubkey,
-        /// Token account the print edition NFT is in
-
-        pub print_edition_token_account: Pubkey,
-        /// Token account the Master Edition NFT is in
-
-        pub master_edition_token_account: Pubkey,
-        /// MasterEdition2 of the original NFT
-
-        pub master_edition_account: Pubkey,
-        /// Print Edition account of the NFT
-
-        pub print_edition_account: Pubkey,
-        /// Edition Marker PDA of the NFT
-
-        pub edition_marker_account: Pubkey,
-        /// SPL Token Program
-
-        pub spl_token_program: Pubkey,
-  }
-
-                    
 impl BurnEditionNft {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = BurnEditionNftInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.owner,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.print_edition_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.master_edition_mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.print_edition_token_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.master_edition_token_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.master_edition_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.print_edition_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.edition_marker_account,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.spl_token_program,
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.metadata, false),
+                solana_program::instruction::AccountMeta::new(self.owner, true),
+                solana_program::instruction::AccountMeta::new(self.print_edition_mint, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.master_edition_mint,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new(
+                    self.print_edition_token_account,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.master_edition_token_account,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new(self.master_edition_account, false),
+                solana_program::instruction::AccountMeta::new(self.print_edition_account, false),
+                solana_program::instruction::AccountMeta::new(self.edition_marker_account, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.spl_token_program,
+                    false,
+                ),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct BurnEditionNftBuilder {
-  metadata: Option<Pubkey>,
-    owner: Option<Pubkey>,
-    print_edition_mint: Option<Pubkey>,
-    master_edition_mint: Option<Pubkey>,
-    print_edition_token_account: Option<Pubkey>,
-    master_edition_token_account: Option<Pubkey>,
-    master_edition_account: Option<Pubkey>,
-    print_edition_account: Option<Pubkey>,
-    edition_marker_account: Option<Pubkey>,
-    spl_token_program: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    owner: Option<solana_program::pubkey::Pubkey>,
+    print_edition_mint: Option<solana_program::pubkey::Pubkey>,
+    master_edition_mint: Option<solana_program::pubkey::Pubkey>,
+    print_edition_token_account: Option<solana_program::pubkey::Pubkey>,
+    master_edition_token_account: Option<solana_program::pubkey::Pubkey>,
+    master_edition_account: Option<solana_program::pubkey::Pubkey>,
+    print_edition_account: Option<solana_program::pubkey::Pubkey>,
+    edition_marker_account: Option<solana_program::pubkey::Pubkey>,
+    spl_token_program: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl BurnEditionNftBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.owner = Some(owner);
-      
-      self
+    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.owner = Some(owner);
+        self
     }
-      pub fn print_edition_mint(&mut self, print_edition_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.print_edition_mint = Some(print_edition_mint);
-      
-      self
+    pub fn print_edition_mint(
+        &mut self,
+        print_edition_mint: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.print_edition_mint = Some(print_edition_mint);
+        self
     }
-      pub fn master_edition_mint(&mut self, master_edition_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition_mint = Some(master_edition_mint);
-      
-      self
+    pub fn master_edition_mint(
+        &mut self,
+        master_edition_mint: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.master_edition_mint = Some(master_edition_mint);
+        self
     }
-      pub fn print_edition_token_account(&mut self, print_edition_token_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.print_edition_token_account = Some(print_edition_token_account);
-      
-      self
+    pub fn print_edition_token_account(
+        &mut self,
+        print_edition_token_account: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.print_edition_token_account = Some(print_edition_token_account);
+        self
     }
-      pub fn master_edition_token_account(&mut self, master_edition_token_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition_token_account = Some(master_edition_token_account);
-      
-      self
+    pub fn master_edition_token_account(
+        &mut self,
+        master_edition_token_account: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.master_edition_token_account = Some(master_edition_token_account);
+        self
     }
-      pub fn master_edition_account(&mut self, master_edition_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.master_edition_account = Some(master_edition_account);
-      
-      self
+    pub fn master_edition_account(
+        &mut self,
+        master_edition_account: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.master_edition_account = Some(master_edition_account);
+        self
     }
-      pub fn print_edition_account(&mut self, print_edition_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.print_edition_account = Some(print_edition_account);
-      
-      self
+    pub fn print_edition_account(
+        &mut self,
+        print_edition_account: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.print_edition_account = Some(print_edition_account);
+        self
     }
-      pub fn edition_marker_account(&mut self, edition_marker_account: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.edition_marker_account = Some(edition_marker_account);
-      
-      self
+    pub fn edition_marker_account(
+        &mut self,
+        edition_marker_account: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.edition_marker_account = Some(edition_marker_account);
+        self
     }
-      pub fn spl_token_program(&mut self, spl_token_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.spl_token_program = Some(spl_token_program);
-      
-      self
+    pub fn spl_token_program(
+        &mut self,
+        spl_token_program: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.spl_token_program = Some(spl_token_program);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = BurnEditionNft {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            owner: self.owner.expect("owner is not set"),
-                            print_edition_mint: self.print_edition_mint.expect("print_edition_mint is not set"),
-                            master_edition_mint: self.master_edition_mint.expect("master_edition_mint is not set"),
-                            print_edition_token_account: self.print_edition_token_account.expect("print_edition_token_account is not set"),
-                            master_edition_token_account: self.master_edition_token_account.expect("master_edition_token_account is not set"),
-                            master_edition_account: self.master_edition_account.expect("master_edition_account is not set"),
-                            print_edition_account: self.print_edition_account.expect("print_edition_account is not set"),
-                            edition_marker_account: self.edition_marker_account.expect("edition_marker_account is not set"),
-                            spl_token_program: self.spl_token_program.expect("spl_token_program is not set"),
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            owner: self.owner.expect("owner is not set"),
+
+            print_edition_mint: self
+                .print_edition_mint
+                .expect("print_edition_mint is not set"),
+
+            master_edition_mint: self
+                .master_edition_mint
+                .expect("master_edition_mint is not set"),
+
+            print_edition_token_account: self
+                .print_edition_token_account
+                .expect("print_edition_token_account is not set"),
+
+            master_edition_token_account: self
+                .master_edition_token_account
+                .expect("master_edition_token_account is not set"),
+
+            master_edition_account: self
+                .master_edition_account
+                .expect("master_edition_account is not set"),
+
+            print_edition_account: self
+                .print_edition_account
+                .expect("print_edition_account is not set"),
+
+            edition_marker_account: self
+                .edition_marker_account
+                .expect("edition_marker_account is not set"),
+
+            spl_token_program: self
+                .spl_token_program
+                .expect("spl_token_program is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct BurnEditionNftInstructionArgs {
+    discriminator: u8,
+}
+
+impl BurnEditionNftInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 37 }
+    }
+}

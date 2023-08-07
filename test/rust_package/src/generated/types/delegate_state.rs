@@ -4,14 +4,13 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ DelegateRole };
-use solana_program::{ pubkey::Pubkey };
-
+use crate::generated::types::DelegateRole;
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct DelegateState {
-pub role: DelegateRole,
-pub delegate: Pubkey,
-pub has_data: bool,
+    pub role: DelegateRole,
+    pub delegate: Pubkey,
+    pub has_data: bool,
 }

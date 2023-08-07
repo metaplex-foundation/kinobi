@@ -5,132 +5,162 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct CreateMetadataAccountV2 {
-      /// Metadata key (pda of ['metadata', program id, mint id])
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Mint of token asset
+    pub mint: solana_program::pubkey::Pubkey,
+    /// Mint authority
+    pub mint_authority: solana_program::pubkey::Pubkey,
+    /// payer
+    pub payer: solana_program::pubkey::Pubkey,
+    /// update authority info
+    pub update_authority: solana_program::pubkey::Pubkey,
+    /// System program
+    pub system_program: solana_program::pubkey::Pubkey,
+    /// Rent info
+    pub rent: Option<solana_program::pubkey::Pubkey>,
+}
 
-        pub metadata: Pubkey,
-        /// Mint of token asset
-
-        pub mint: Pubkey,
-        /// Mint authority
-
-        pub mint_authority: Pubkey,
-        /// payer
-
-        pub payer: Pubkey,
-        /// update authority info
-
-        pub update_authority: Pubkey,
-        /// System program
-
-        pub system_program: Pubkey,
-        /// Rent info
-
-        pub rent: Option<Pubkey>,
-  }
-
-              
 impl CreateMetadataAccountV2 {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(
+        &self,
+        args: CreateMetadataAccountV2InstructionArgs,
+    ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.mint_authority,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.update_authority,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.system_program,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.rent.unwrap_or(crate::ID),
-            false
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                                          solana_program::instruction::AccountMeta::new(
+              self.metadata,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint_authority,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new(
+              self.payer,
+              true
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.update_authority,
+              false
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.system_program,
+              false
+            ),
+                                                                if let Some(rent) = self.rent {
+              solana_program::instruction::AccountMeta::new_readonly(
+                rent,
+                false,
+              ),
+            } else {
+              solana_program::instruction::AccountMeta::new_readonly(
+                crate::programs::mpl_token_metadata::ID,
+                false,
+              ),
+            },
+                                  ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct CreateMetadataAccountV2Builder {
-  metadata: Option<Pubkey>,
-    mint: Option<Pubkey>,
-    mint_authority: Option<Pubkey>,
-    payer: Option<Pubkey>,
-    update_authority: Option<Pubkey>,
-    system_program: Option<Pubkey>,
-    rent: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<solana_program::pubkey::Pubkey>,
+    mint_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
+    system_program: Option<solana_program::pubkey::Pubkey>,
+    rent: Option<solana_program::pubkey::Pubkey>,
+    data: Option<DataV2>,
+    is_mutable: Option<bool>,
+}
 
 impl CreateMetadataAccountV2Builder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint = Some(mint);
-      
-      self
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint = Some(mint);
+        self
     }
-      pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.mint_authority = Some(mint_authority);
-      
-      self
+    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint_authority = Some(mint_authority);
+        self
     }
-      pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.payer = Some(payer);
-      
-      self
+    pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.payer = Some(payer);
+        self
     }
-      pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.update_authority = Some(update_authority);
-      
-      self
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
+        self
     }
-      pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.system_program = Some(system_program);
-      
-      self
+    pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.system_program = Some(system_program);
+        self
     }
-      pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.rent = Some(rent);
-      
-      self
+    pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.rent = Some(rent);
+        self
+    }
+    pub fn data(&mut self, data: DataV2) -> &mut Self {
+        self.data = Some(data);
+        self
+    }
+    pub fn is_mutable(&mut self, is_mutable: bool) -> &mut Self {
+        self.is_mutable = Some(is_mutable);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateMetadataAccountV2 {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            mint: self.mint.expect("mint is not set"),
-                            mint_authority: self.mint_authority.expect("mint_authority is not set"),
-                            payer: self.payer.expect("payer is not set"),
-                            update_authority: self.update_authority.expect("update_authority is not set"),
-                            system_program: self.system_program.expect("system_program is not set"),
-                            rent: self.rent,
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            mint: self.mint.expect("mint is not set"),
+
+            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+
+            payer: self.payer.expect("payer is not set"),
+
+            update_authority: self.update_authority.expect("update_authority is not set"),
+
+            system_program: self.system_program.expect("system_program is not set"),
+
+            rent: self.rent,
+        };
+        let args = CreateMetadataAccountV2InstructionArgs::new(
+            self.data.expect("data is not set"),
+            self.is_mutable.expect("is_mutable is not set"),
+        );
+        accounts.instruction(args)
+    }
 }
 
+pub struct CreateMetadataAccountV2InstructionArgs {
+    discriminator: u8,
+    pub data: DataV2,
+    pub is_mutable: bool,
+}
+
+impl CreateMetadataAccountV2InstructionArgs {
+    pub fn new(data: DataV2, is_mutable: bool) -> Self {
+        Self {
+            discriminator: 16,
+            data,
+            is_mutable,
+        }
+    }
+}

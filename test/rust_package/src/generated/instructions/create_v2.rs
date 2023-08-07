@@ -6,71 +6,65 @@
 //!
 
 /// Accounts.
-pub struct Mint {
-    /// Token account
-    pub token: solana_program::pubkey::Pubkey,
+pub struct CreateV2 {
     /// Metadata account key (pda of ['metadata', program id, mint id])
     pub metadata: solana_program::pubkey::Pubkey,
-    /// Master Edition account
+    /// Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition']
     pub master_edition: Option<solana_program::pubkey::Pubkey>,
     /// Mint of token asset
-    pub mint: solana_program::pubkey::Pubkey,
+    pub mint: (solana_program::pubkey::Pubkey, bool),
+    /// Mint authority
+    pub mint_authority: solana_program::pubkey::Pubkey,
     /// Payer
     pub payer: solana_program::pubkey::Pubkey,
-    /// (Mint or Update) authority
-    pub authority: solana_program::pubkey::Pubkey,
+    /// update authority info
+    pub update_authority: solana_program::pubkey::Pubkey,
     /// System program
     pub system_program: solana_program::pubkey::Pubkey,
     /// Instructions sysvar account
     pub sysvar_instructions: solana_program::pubkey::Pubkey,
     /// SPL Token program
     pub spl_token_program: solana_program::pubkey::Pubkey,
-    /// SPL Associated Token Account program
-    pub spl_ata_program: solana_program::pubkey::Pubkey,
-    /// Token Authorization Rules program
-    pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
-    /// Token Authorization Rules account
-    pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
 }
 
-impl Mint {
+impl CreateV2 {
     pub fn instruction(
         &self,
-        args: MintInstructionArgs,
+        args: CreateV2InstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
             program_id: crate::programs::mpl_token_metadata::ID,
             accounts: vec![
                                           solana_program::instruction::AccountMeta::new(
-              self.token,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
               self.metadata,
               false
             ),
                                                                 if let Some(master_edition) = self.master_edition {
-              solana_program::instruction::AccountMeta::new_readonly(
+              solana_program::instruction::AccountMeta::new(
                 master_edition,
                 false,
               ),
             } else {
-              solana_program::instruction::AccountMeta::new_readonly(
+              solana_program::instruction::AccountMeta::new(
                 crate::programs::mpl_token_metadata::ID,
                 false,
               ),
             },
                                                                 solana_program::instruction::AccountMeta::new(
-              self.mint,
-              false
+              self.mint.0,
+              self.mint.1,
+            ),
+                                                                solana_program::instruction::AccountMeta::new_readonly(
+              self.mint_authority,
+              true
             ),
                                                                 solana_program::instruction::AccountMeta::new(
               self.payer,
               true
             ),
                                                                 solana_program::instruction::AccountMeta::new_readonly(
-              self.authority,
-              true
+              self.update_authority,
+              false
             ),
                                                                 solana_program::instruction::AccountMeta::new_readonly(
               self.system_program,
@@ -84,32 +78,6 @@ impl Mint {
               self.spl_token_program,
               false
             ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.spl_ata_program,
-              false
-            ),
-                                                                if let Some(authorization_rules_program) = self.authorization_rules_program {
-              solana_program::instruction::AccountMeta::new_readonly(
-                authorization_rules_program,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_metadata::ID,
-                false,
-              ),
-            },
-                                                                if let Some(authorization_rules) = self.authorization_rules {
-              solana_program::instruction::AccountMeta::new_readonly(
-                authorization_rules,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_metadata::ID,
-                false,
-              ),
-            },
                                   ],
             data: args.try_to_vec().unwrap(),
         }
@@ -117,27 +85,21 @@ impl Mint {
 }
 
 /// Instruction builder.
-pub struct MintBuilder {
-    token: Option<solana_program::pubkey::Pubkey>,
+pub struct CreateV2Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
-    mint: Option<solana_program::pubkey::Pubkey>,
+    mint: Option<(solana_program::pubkey::Pubkey, bool)>,
+    mint_authority: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
-    authority: Option<solana_program::pubkey::Pubkey>,
+    update_authority: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
     spl_token_program: Option<solana_program::pubkey::Pubkey>,
-    spl_ata_program: Option<solana_program::pubkey::Pubkey>,
-    authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
-    authorization_rules: Option<solana_program::pubkey::Pubkey>,
-    mint_args: Option<MintArgs>,
+    asset_data: Option<AssetData>,
+    max_supply: Option<u64>,
 }
 
-impl MintBuilder {
-    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.token = Some(token);
-        self
-    }
+impl CreateV2Builder {
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
@@ -146,16 +108,23 @@ impl MintBuilder {
         self.master_edition = Some(master_edition);
         self
     }
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.mint = Some(mint);
+    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey, as_signer: bool) -> &mut Self {
+        self.mint = Some((mint, as_signer));
+        self
+    }
+    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.mint_authority = Some(mint_authority);
         self
     }
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
-    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.authority = Some(authority);
+    pub fn update_authority(
+        &mut self,
+        update_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.update_authority = Some(update_authority);
         self
     }
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -176,44 +145,27 @@ impl MintBuilder {
         self.spl_token_program = Some(spl_token_program);
         self
     }
-    pub fn spl_ata_program(
-        &mut self,
-        spl_ata_program: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
-        self.spl_ata_program = Some(spl_ata_program);
+    pub fn asset_data(&mut self, asset_data: AssetData) -> &mut Self {
+        self.asset_data = Some(asset_data);
         self
     }
-    pub fn authorization_rules_program(
-        &mut self,
-        authorization_rules_program: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
-        self.authorization_rules_program = Some(authorization_rules_program);
-        self
-    }
-    pub fn authorization_rules(
-        &mut self,
-        authorization_rules: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
-        self.authorization_rules = Some(authorization_rules);
-        self
-    }
-    pub fn mint_args(&mut self, mint_args: MintArgs) -> &mut Self {
-        self.mint_args = Some(mint_args);
+    pub fn max_supply(&mut self, max_supply: Option<u64>) -> &mut Self {
+        self.max_supply = Some(max_supply);
         self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
-        let accounts = Mint {
-            token: self.token.expect("token is not set"),
-
+        let accounts = CreateV2 {
             metadata: self.metadata.expect("metadata is not set"),
 
             master_edition: self.master_edition,
 
             mint: self.mint.expect("mint is not set"),
 
+            mint_authority: self.mint_authority.expect("mint_authority is not set"),
+
             payer: self.payer.expect("payer is not set"),
 
-            authority: self.authority.expect("authority is not set"),
+            update_authority: self.update_authority.expect("update_authority is not set"),
 
             system_program: self.system_program.expect("system_program is not set"),
 
@@ -224,28 +176,29 @@ impl MintBuilder {
             spl_token_program: self
                 .spl_token_program
                 .expect("spl_token_program is not set"),
-
-            spl_ata_program: self.spl_ata_program.expect("spl_ata_program is not set"),
-
-            authorization_rules_program: self.authorization_rules_program,
-
-            authorization_rules: self.authorization_rules,
         };
-        let args = MintInstructionArgs::new(self.mint_args.expect("mint_args is not set"));
+        let args = CreateV2InstructionArgs::new(
+            self.asset_data.expect("asset_data is not set"),
+            self.max_supply,
+        );
         accounts.instruction(args)
     }
 }
 
-pub struct MintInstructionArgs {
+pub struct CreateV2InstructionArgs {
     discriminator: u8,
-    pub mint_args: MintArgs,
+    create_v2_discriminator: u8,
+    pub asset_data: AssetData,
+    pub max_supply: Option<u64>,
 }
 
-impl MintInstructionArgs {
-    pub fn new(mint_args: MintArgs) -> Self {
+impl CreateV2InstructionArgs {
+    pub fn new(asset_data: AssetData, max_supply: Option<u64>) -> Self {
         Self {
-            discriminator: 42,
-            mint_args,
+            discriminator: 41,
+            create_v2_discriminator: 1,
+            asset_data,
+            max_supply,
         }
     }
 }

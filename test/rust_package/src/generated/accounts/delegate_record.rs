@@ -5,13 +5,12 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ DelegateRole, TmKey };
-
+use crate::generated::types::{DelegateRole, TmKey};
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub struct DelegateRecord {
-pub key: TmKey,
-pub role: DelegateRole,
-pub bump: u8,
+    pub key: TmKey,
+    pub role: DelegateRole,
+    pub bump: u8,
 }

@@ -4,25 +4,27 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ AuthorityType, AuthorizationData, Collection, CollectionDetails, Data, DelegateState, ProgrammableConfig, TokenStandard, Uses };
-use solana_program::{ pubkey::Pubkey };
-
+use crate::generated::types::{
+    AuthorityType, AuthorizationData, Collection, CollectionDetails, Data, DelegateState,
+    ProgrammableConfig, TokenStandard, Uses,
+};
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum UpdateArgs {
-V1 {
-authorization_data: Option<AuthorizationData>,
-new_update_authority: Option<Pubkey>,
-data: Option<Data>,
-primary_sale_happened: Option<bool>,
-is_mutable: Option<bool>,
-token_standard: Option<TokenStandard>,
-collection: Option<Collection>,
-uses: Option<Uses>,
-collection_details: Option<CollectionDetails>,
-programmable_config: Option<ProgrammableConfig>,
-delegate_state: Option<DelegateState>,
-authority_type: AuthorityType,
-}
+    V1 {
+        authorization_data: Option<AuthorizationData>,
+        new_update_authority: Option<Pubkey>,
+        data: Option<Data>,
+        primary_sale_happened: Option<bool>,
+        is_mutable: Option<bool>,
+        token_standard: Option<TokenStandard>,
+        collection: Option<Collection>,
+        uses: Option<Uses>,
+        collection_details: Option<CollectionDetails>,
+        programmable_config: Option<ProgrammableConfig>,
+        delegate_state: Option<DelegateState>,
+        authority_type: AuthorityType,
+    },
 }

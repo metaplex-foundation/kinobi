@@ -4,16 +4,15 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
-use borsh::{ BorshDeserialize, BorshSerialize };
-
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
 pub enum DelegateRole {
-Authority,
-Collection,
-Transfer,
-Use,
-Utility,
-Sale,
-Update,
+    Authority,
+    Collection,
+    Transfer,
+    Use,
+    Utility,
+    Sale,
+    Update,
 }

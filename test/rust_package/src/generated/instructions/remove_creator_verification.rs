@@ -5,62 +5,59 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::{ Pubkey };
-
 /// Accounts.
 pub struct RemoveCreatorVerification {
-      /// Metadata (pda of ['metadata', program id, mint id])
+    /// Metadata (pda of ['metadata', program id, mint id])
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Creator
+    pub creator: solana_program::pubkey::Pubkey,
+}
 
-        pub metadata: Pubkey,
-        /// Creator
-
-        pub creator: Pubkey,
-  }
-
-    
 impl RemoveCreatorVerification {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let data = Vec::new();
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let args = RemoveCreatorVerificationInstructionArgs::new();
         solana_program::instruction::Instruction {
-      program_id: crate::programs::mpl_token_metadata::ID,
-      accounts: vec![
-                                                  solana_program::instruction::AccountMeta::new(
-            self.metadata,
-            false
-          ),
-                                                  solana_program::instruction::AccountMeta::new_readonly(
-            self.creator,
-            true
-          ),
-              ],
-      data,
+            program_id: crate::programs::mpl_token_metadata::ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(self.metadata, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.creator, true),
+            ],
+            data: args.try_to_vec().unwrap(),
+        }
     }
-  }
 }
 
 /// Instruction builder.
 pub struct RemoveCreatorVerificationBuilder {
-  metadata: Option<Pubkey>,
-    creator: Option<Pubkey>,
-  }
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    creator: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl RemoveCreatorVerificationBuilder {
-      pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.metadata = Some(metadata);
-      
-      self
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.metadata = Some(metadata);
+        self
     }
-      pub fn creator(&mut self, creator: solana_program::pubkey::Pubkey) -> &mut Self {
-      self.creator = Some(creator);
-      
-      self
+    pub fn creator(&mut self, creator: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.creator = Some(creator);
+        self
     }
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = RemoveCreatorVerification {
-                  metadata: self.metadata.expect("metadata is not set"),
-                            creator: self.creator.expect("creator is not set"),
-                      };
-    accounts.instruction()
-  }
+            metadata: self.metadata.expect("metadata is not set"),
+
+            creator: self.creator.expect("creator is not set"),
+        };
+        accounts.instruction()
+    }
 }
 
+struct RemoveCreatorVerificationInstructionArgs {
+    discriminator: u8,
+}
+
+impl RemoveCreatorVerificationInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 28 }
+    }
+}
