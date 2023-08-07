@@ -1,0 +1,12 @@
+{% extends "layout.njk" %}
+
+{% block main %}
+
+{% for program in programsToExport | sort(false, false, 'name') %}
+mod {{ program.name | snakeCase }};
+{% endfor %}
+
+{% for program in programsToExport | sort(false, false, 'name') %}
+pub use {{ program.name | snakeCase }}::{{ program.name | pascalCase }}Error;
+{% endfor %}
+{% endblock %}
