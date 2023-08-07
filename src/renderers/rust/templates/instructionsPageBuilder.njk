@@ -8,8 +8,8 @@ pub struct {{ instruction.name | pascalCase }}Builder {
   {% endif %}
 {% endfor %}
 {% for arg in instructionArgs %}
-  {% if arg.default === false %}
-    {{ arg.name | snakeCase }}: {{ 'Option<' if arg.optionType === false }}{{ arg.type }}{{ '>' if arg.optionType === false }},
+  {% if not arg.default %}
+    {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
   {% endif %}
 {% endfor %}
 }
@@ -26,8 +26,8 @@ impl {{ instruction.name | pascalCase }}Builder {
     }
   {% endfor %}
   {% for arg in instructionArgs %}
-    {% if arg.default === false %}
-      pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.type }}) -> &mut Self {
+    {% if not arg.default %}
+      pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> &mut Self {
         self.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
         self
       }
@@ -36,14 +36,14 @@ impl {{ instruction.name | pascalCase }}Builder {
   pub fn build(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {
         {% for account in instruction.accounts %}          
-          {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if account.isOptional === false }},
+          {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional }},
         {% endfor %}
     };
     {% if hasArgs %}
     let args = {{ instruction.name | pascalCase }}InstructionArgs::new(
       {% for arg in instructionArgs %}
-        {% if arg.default === false %}
-          self.{{ arg.name | snakeCase }}{{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if arg.optionType === false }},
+        {% if not arg.default %}
+          self.{{ arg.name | snakeCase }}{{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
         {% endif %}
       {% endfor %}
     );

@@ -169,7 +169,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     instruction.dataArgs.struct.fields.forEach((field) => {
       const manifest = visit(field.child, this.typeManifestVisitor);
-      const optionType = manifest.type.startsWith('Option');
+      const innerOptionType = nodes.isOptionTypeNode(field.child)
+        ? visit(field.child.child, this.typeManifestVisitor).type
+        : null;
 
       if (field.defaultsTo) {
         const { imports: argImports, render: value } = renderRustValueNode(
@@ -182,7 +184,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           type: manifest.type,
           default: field.defaultsTo.strategy === 'omitted',
           optional: field.defaultsTo.strategy === 'optional',
-          optionType,
+          innerOptionType,
           value,
         });
       } else {
@@ -191,7 +193,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           type: manifest.type,
           default: false,
           optional: false,
-          optionType,
+          innerOptionType,
           value: null,
         });
         hasArgs = true;
