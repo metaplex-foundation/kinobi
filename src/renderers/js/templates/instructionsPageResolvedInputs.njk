@@ -92,7 +92,7 @@
       addObjectProperty({{ inputPrefix }} {{ inputDefault }});
     {% endif -%}
   {% endfor %}
-  {% if hasDataArgs or hasByteResolver %}
+  {% if hasDataArgs or hasByteResolver or instruction.remainingAccounts %}
     const resolvedArgs = { ...{{ argsObj }}, ...resolvingArgs };
   {% endif %}
 {% endif %}

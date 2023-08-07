@@ -116,7 +116,14 @@ kinobi.update(
           type: k.publicKeyTypeNode(),
           defaultsTo: k.identityDefault(),
         },
+        proof: {
+          type: k.arrayTypeNode(k.publicKeyTypeNode(), {
+            size: k.remainderSize(),
+          }),
+          defaultsTo: k.valueDefault(k.vList([])),
+        },
       },
+      remainingAccounts: k.remainingAccountsFromArg('proof'),
     },
     DeprecatedCreateReservationList: { name: 'CreateReservationList' },
     Transfer: {

@@ -5,6 +5,7 @@ export * from './BytesCreatedOnChain';
 export * from './GpaField';
 export * from './ImportFrom';
 export * from './InstructionDefault';
+export * from './RemainingAccounts';
 export * from './SizeStrategy';
 export * from './errors';
 export * from './logs';

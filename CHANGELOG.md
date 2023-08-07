@@ -1,5 +1,19 @@
 # @metaplex-foundation/kinobi
 
+## 0.12.3
+
+### Patch Changes
+
+- [`75269c2`](https://github.com/metaplex-foundation/kinobi/commit/75269c2a504f30c5382c9eb6428ad66f2c3f7684) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix missing second arg for getArgVar macro in template
+
+## 0.12.2
+
+### Patch Changes
+
+- [#56](https://github.com/metaplex-foundation/kinobi/pull/56) [`f8f57ac`](https://github.com/metaplex-foundation/kinobi/commit/f8f57aca0f98e86528cb663941184796d1816d1d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix bytes size when parsing from IDL
+
+- [#55](https://github.com/metaplex-foundation/kinobi/pull/55) [`f669542`](https://github.com/metaplex-foundation/kinobi/commit/f669542899edc8d6dbdbf0d1309195c361fbb9a4) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add support for remaining accounts resolution
+
 ## 0.12.1
 
 ### Patch Changes
