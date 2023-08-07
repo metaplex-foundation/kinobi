@@ -143,6 +143,7 @@ impl BurnNftBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct BurnNftInstructionArgs {
     discriminator: u8,
 }

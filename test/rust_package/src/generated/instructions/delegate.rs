@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Delegate {
     /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
@@ -262,6 +264,7 @@ impl DelegateBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct DelegateInstructionArgs {
     discriminator: u8,
     pub delegate_args: DelegateArgs,

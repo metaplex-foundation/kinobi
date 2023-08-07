@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Mint {
     /// Token account
@@ -236,6 +238,7 @@ impl MintBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct MintInstructionArgs {
     discriminator: u8,
     pub mint_args: MintArgs,

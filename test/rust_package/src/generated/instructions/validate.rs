@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Validate {
     /// Payer and creator of the RuleSet
@@ -324,6 +326,7 @@ impl ValidateBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct ValidateInstructionArgs {
     discriminator: u8,
     pub rule_set_name: String,

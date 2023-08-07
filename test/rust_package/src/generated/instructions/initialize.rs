@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Initialize {
     pub candy_machine: solana_program::pubkey::Pubkey,
@@ -192,6 +194,7 @@ impl InitializeBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct InitializeInstructionArgs {
     discriminator: [u8; 8],
     pub data: CandyMachineData,

@@ -120,6 +120,7 @@ impl CloseEscrowAccountBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct CloseEscrowAccountInstructionArgs {
     discriminator: u8,
 }

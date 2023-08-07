@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct MintNewEditionFromMasterEditionViaToken {
     /// New Metadata key (pda of ['metadata', program id, mint id])
@@ -255,6 +257,7 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct MintNewEditionFromMasterEditionViaTokenInstructionArgs {
     discriminator: u8,
     pub mint_new_edition_from_master_edition_via_token_args:

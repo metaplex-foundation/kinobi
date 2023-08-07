@@ -118,6 +118,7 @@ impl CreateReservationListBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct CreateReservationListInstructionArgs {
     discriminator: u8,
 }

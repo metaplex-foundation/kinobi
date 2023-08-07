@@ -61,6 +61,7 @@ impl SetMintAuthorityBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct SetMintAuthorityInstructionArgs {
     discriminator: [u8; 8],
 }

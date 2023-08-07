@@ -52,6 +52,7 @@ impl SignMetadataBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct SignMetadataInstructionArgs {
     discriminator: u8,
 }

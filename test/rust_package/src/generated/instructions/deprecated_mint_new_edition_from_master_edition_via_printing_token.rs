@@ -263,6 +263,7 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgs {
     discriminator: u8,
 }

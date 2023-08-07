@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct CreateFrequencyRule {
     /// Payer and creator of the Frequency Rule
@@ -90,6 +92,7 @@ impl CreateFrequencyRuleBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateFrequencyRuleInstructionArgs {
     discriminator: u8,
     pub rule_set_name: String,

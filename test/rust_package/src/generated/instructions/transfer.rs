@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Transfer {
     /// Transfer authority (token or delegate owner)
@@ -291,6 +293,7 @@ impl TransferBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct TransferInstructionArgs {
     discriminator: u8,
     pub transfer_args: TransferArgs,

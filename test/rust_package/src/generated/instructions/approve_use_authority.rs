@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct ApproveUseAuthority {
     /// Use Authority Record PDA
@@ -202,6 +204,7 @@ impl ApproveUseAuthorityBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct ApproveUseAuthorityInstructionArgs {
     discriminator: u8,
     pub number_of_uses: u64,

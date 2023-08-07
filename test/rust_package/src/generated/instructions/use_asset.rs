@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct UseAsset {
     /// Metadata account
@@ -219,6 +221,7 @@ impl UseAssetBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UseAssetInstructionArgs {
     discriminator: u8,
     pub use_asset_args: UseAssetArgs,

@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct MintNewEditionFromMasterEditionViaVaultProxy {
     /// New Metadata key (pda of ['metadata', program id, mint id])
@@ -307,6 +309,7 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs {
     discriminator: u8,
     pub mint_new_edition_from_master_edition_via_token_args:

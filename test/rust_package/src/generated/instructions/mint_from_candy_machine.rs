@@ -262,6 +262,7 @@ impl MintFromCandyMachineBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct MintFromCandyMachineInstructionArgs {
     discriminator: [u8; 8],
 }

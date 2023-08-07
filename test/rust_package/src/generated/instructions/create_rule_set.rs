@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct CreateRuleSet {
     /// Payer and creator of the RuleSet
@@ -78,6 +80,7 @@ impl CreateRuleSetBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateRuleSetInstructionArgs {
     discriminator: u8,
     pub create_args: TaCreateArgs,

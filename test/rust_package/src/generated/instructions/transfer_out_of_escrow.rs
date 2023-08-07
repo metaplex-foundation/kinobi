@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct TransferOutOfEscrow {
     /// Escrow account
@@ -221,6 +223,7 @@ impl TransferOutOfEscrowBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct TransferOutOfEscrowInstructionArgs {
     discriminator: u8,
     pub amount: u64,

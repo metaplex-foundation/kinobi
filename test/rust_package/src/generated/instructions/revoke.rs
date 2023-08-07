@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Revoke {
     /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
@@ -261,6 +263,7 @@ impl RevokeBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct RevokeInstructionArgs {
     discriminator: u8,
     pub revoke_args: RevokeArgs,

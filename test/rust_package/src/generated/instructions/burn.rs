@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Burn {
     /// Metadata (pda of ['metadata', program id, mint id])
@@ -197,6 +199,7 @@ impl BurnBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct BurnInstructionArgs {
     discriminator: u8,
     pub burn_args: BurnArgs,

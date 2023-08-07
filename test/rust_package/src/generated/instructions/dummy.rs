@@ -148,6 +148,7 @@ impl DummyBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct DummyInstructionArgs {
     discriminator: [u8; 8],
 }

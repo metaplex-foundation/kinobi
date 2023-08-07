@@ -108,6 +108,7 @@ impl VerifyCollectionBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct VerifyCollectionInstructionArgs {
     discriminator: u8,
 }

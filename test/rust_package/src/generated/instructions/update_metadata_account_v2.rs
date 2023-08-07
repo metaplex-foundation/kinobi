@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct UpdateMetadataAccountV2 {
     /// Metadata account
@@ -83,6 +85,7 @@ impl UpdateMetadataAccountV2Builder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UpdateMetadataAccountV2InstructionArgs {
     discriminator: u8,
     pub data: Option<DataV2>,

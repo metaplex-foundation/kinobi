@@ -161,6 +161,7 @@ impl CreateEscrowAccountBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct CreateEscrowAccountInstructionArgs {
     discriminator: u8,
 }

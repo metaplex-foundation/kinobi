@@ -162,6 +162,7 @@ impl SetAndVerifySizedCollectionItemBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct SetAndVerifySizedCollectionItemInstructionArgs {
     discriminator: u8,
 }

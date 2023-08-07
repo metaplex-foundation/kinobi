@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
 use generated::types::{payloadType, TokenStandard};
 use solana_program::pubkey;
 
@@ -299,6 +300,7 @@ impl UpdateV1Builder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UpdateV1InstructionArgs {
     discriminator: u8,
     update_v1_discriminator: u8,

@@ -82,6 +82,7 @@ impl ThawDelegatedAccountBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct ThawDelegatedAccountInstructionArgs {
     discriminator: u8,
 }

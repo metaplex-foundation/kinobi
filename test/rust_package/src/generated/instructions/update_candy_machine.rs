@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct UpdateCandyMachine {
     pub candy_machine: solana_program::pubkey::Pubkey,
@@ -59,6 +61,7 @@ impl UpdateCandyMachineBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UpdateCandyMachineInstructionArgs {
     discriminator: [u8; 8],
     pub data: CandyMachineData,

@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct SetAuthority {
     pub candy_machine: solana_program::pubkey::Pubkey,
@@ -60,6 +62,7 @@ impl SetAuthorityBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct SetAuthorityInstructionArgs {
     discriminator: [u8; 8],
     pub new_authority: Pubkey,

@@ -62,6 +62,7 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct UpdatePrimarySaleHappenedViaTokenInstructionArgs {
     discriminator: u8,
 }

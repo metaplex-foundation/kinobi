@@ -166,6 +166,7 @@ impl RevokeUseAuthorityBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct RevokeUseAuthorityInstructionArgs {
     discriminator: u8,
 }

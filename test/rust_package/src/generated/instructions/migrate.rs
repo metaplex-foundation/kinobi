@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Migrate {
     /// Metadata account
@@ -193,6 +195,7 @@ impl MigrateBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct MigrateInstructionArgs {
     discriminator: u8,
     pub migrate_args: MigrateArgs,

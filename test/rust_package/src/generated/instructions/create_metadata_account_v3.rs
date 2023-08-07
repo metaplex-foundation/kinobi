@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct CreateMetadataAccountV3 {
     /// Metadata key (pda of ['metadata', program id, mint id])
@@ -158,6 +160,7 @@ impl CreateMetadataAccountV3Builder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateMetadataAccountV3InstructionArgs {
     discriminator: u8,
     pub data: DataV2,

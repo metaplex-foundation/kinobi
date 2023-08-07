@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct DeprecatedSetReservationList {
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
@@ -94,6 +96,7 @@ impl DeprecatedSetReservationListBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct DeprecatedSetReservationListInstructionArgs {
     discriminator: u8,
     pub reservations: Vec<Reservation>,

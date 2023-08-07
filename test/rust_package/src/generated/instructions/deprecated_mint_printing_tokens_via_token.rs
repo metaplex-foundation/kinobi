@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct DeprecatedMintPrintingTokensViaToken {
     /// Destination account
@@ -144,6 +146,7 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct DeprecatedMintPrintingTokensViaTokenInstructionArgs {
     discriminator: u8,
     pub mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,

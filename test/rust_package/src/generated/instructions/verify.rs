@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Verify {
     /// Metadata account
@@ -130,6 +132,7 @@ impl VerifyBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct VerifyInstructionArgs {
     discriminator: u8,
     pub verify_args: VerifyArgs,

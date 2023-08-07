@@ -238,6 +238,7 @@ impl SetCollectionBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct SetCollectionInstructionArgs {
     discriminator: [u8; 8],
 }

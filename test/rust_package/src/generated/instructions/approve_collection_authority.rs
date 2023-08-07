@@ -156,6 +156,7 @@ impl ApproveCollectionAuthorityBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct ApproveCollectionAuthorityInstructionArgs {
     discriminator: u8,
 }

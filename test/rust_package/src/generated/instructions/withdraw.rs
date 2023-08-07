@@ -51,6 +51,7 @@ impl WithdrawBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct WithdrawInstructionArgs {
     discriminator: [u8; 8],
 }

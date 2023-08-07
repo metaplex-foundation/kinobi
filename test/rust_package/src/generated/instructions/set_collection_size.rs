@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct SetCollectionSize {
     /// Collection Metadata account
@@ -121,6 +123,7 @@ impl SetCollectionSizeBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct SetCollectionSizeInstructionArgs {
     discriminator: u8,
     pub set_collection_size_args: SetCollectionSizeArgs,

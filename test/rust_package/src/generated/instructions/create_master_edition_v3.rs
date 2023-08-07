@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct CreateMasterEditionV3 {
     /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
@@ -173,6 +175,7 @@ impl CreateMasterEditionV3Builder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateMasterEditionV3InstructionArgs {
     discriminator: u8,
     pub create_master_edition_args: CreateMasterEditionArgs,

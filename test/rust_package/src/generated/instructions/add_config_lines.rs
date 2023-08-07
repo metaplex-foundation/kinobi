@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct AddConfigLines {
     pub candy_machine: solana_program::pubkey::Pubkey,
@@ -67,6 +69,7 @@ impl AddConfigLinesBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct AddConfigLinesInstructionArgs {
     discriminator: [u8; 8],
     pub index: u32,

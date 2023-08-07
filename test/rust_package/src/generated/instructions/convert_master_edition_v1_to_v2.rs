@@ -62,6 +62,7 @@ impl ConvertMasterEditionV1ToV2Builder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct ConvertMasterEditionV1ToV2InstructionArgs {
     discriminator: u8,
 }

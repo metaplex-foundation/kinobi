@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct CreateV1 {
     /// Metadata account key (pda of ['metadata', program id, mint id])
@@ -191,6 +193,7 @@ impl CreateV1Builder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateV1InstructionArgs {
     discriminator: u8,
     create_v1_discriminator: u8,

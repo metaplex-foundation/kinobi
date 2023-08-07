@@ -133,6 +133,7 @@ impl UnverifyCollectionBuilder {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 struct UnverifyCollectionInstructionArgs {
     discriminator: u8,
 }
