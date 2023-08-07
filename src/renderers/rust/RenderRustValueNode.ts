@@ -59,28 +59,18 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       const rawImportFrom = value.importFrom ?? 'generated';
       const importFrom =
         rawImportFrom === 'generated' ? 'generated::types' : rawImportFrom;
-
-      if (value.value === 'scalar') {
+      if (value.value === 'scalar' || value.value === 'empty') {
         return {
           imports: imports.add(importFrom, enumName),
           render: `${enumName}.${variantName}`,
         };
       }
-
-      const enumFn = camelCase(value.enumType);
-      imports.add(importFrom, enumFn);
-
-      if (value.value === 'empty') {
-        return { imports, render: `${enumFn}('${variantName}')` };
-      }
-
       const enumValue = renderRustValueNode(value.value);
       const fields = enumValue.render;
       imports.mergeWith(enumValue.imports);
-      // TODO: Revise generated rust syntax
       return {
         imports,
-        render: `${enumFn}('${variantName}', ${fields})`,
+        render: `${enumName}.${variantName} ${fields}`,
       };
     case 'optionSome':
       const child = renderRustValueNode(value.value);
