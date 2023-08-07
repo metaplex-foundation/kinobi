@@ -64,8 +64,7 @@
   },
   "ava": {
     "files": [
-      "!test/package",
-      "!test/rust_package",
+      "!test/packages/**",
       "test/**/*.test.ts"
     ],
     "typescript": {
