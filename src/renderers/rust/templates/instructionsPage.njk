@@ -83,6 +83,7 @@ impl {{ instruction.name | pascalCase }} {
 
 {% include "instructionsPageBuilder.njk" %}
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 {{ 'pub ' if hasArgs }}struct {{ instruction.name | pascalCase }}InstructionArgs {
   {% for arg in instructionArgs %}
     {{ 'pub ' if arg.default === false }}{{ arg.name | snakeCase }}: {{ arg.type }},

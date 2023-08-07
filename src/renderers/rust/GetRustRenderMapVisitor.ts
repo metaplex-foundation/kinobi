@@ -198,6 +198,10 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       }
     });
 
+    if (hasArgs) {
+      imports.add('borsh', ['BorshDeserialize', 'BorshSerialize']);
+    }
+
     return new RenderMap().add(
       `instructions/${snakeCase(instruction.name)}.rs`,
       this.render('instructionsPage.njk', {
