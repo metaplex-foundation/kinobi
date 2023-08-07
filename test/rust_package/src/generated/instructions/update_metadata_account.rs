@@ -52,15 +52,15 @@ impl UpdateMetadataAccountBuilder {
         self.update_authority = Some(update_authority);
         self
     }
-    pub fn data(&mut self, data: Option<Data>) -> &mut Self {
+    pub fn data(&mut self, data: Data) -> &mut Self {
         self.data = Some(data);
         self
     }
-    pub fn update_authority(&mut self, update_authority: Option<Pubkey>) -> &mut Self {
+    pub fn update_authority(&mut self, update_authority: Pubkey) -> &mut Self {
         self.update_authority = Some(update_authority);
         self
     }
-    pub fn primary_sale_happened(&mut self, primary_sale_happened: Option<bool>) -> &mut Self {
+    pub fn primary_sale_happened(&mut self, primary_sale_happened: bool) -> &mut Self {
         self.primary_sale_happened = Some(primary_sale_happened);
         self
     }

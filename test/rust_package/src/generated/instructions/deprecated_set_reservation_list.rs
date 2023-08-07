@@ -65,7 +65,7 @@ impl DeprecatedSetReservationListBuilder {
         self.reservations = Some(reservations);
         self
     }
-    pub fn total_reservation_spots(&mut self, total_reservation_spots: Option<u64>) -> &mut Self {
+    pub fn total_reservation_spots(&mut self, total_reservation_spots: u64) -> &mut Self {
         self.total_reservation_spots = Some(total_reservation_spots);
         self
     }

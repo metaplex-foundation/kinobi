@@ -6,7 +6,7 @@
 //!
 
 use borsh::{BorshDeserialize, BorshSerialize};
-use generated::types::{payloadType, TokenStandard};
+use generated::types::TokenStandard;
 use solana_program::pubkey;
 
 /// Accounts.
@@ -201,56 +201,47 @@ impl UpdateV1Builder {
         self.authorization_rules = Some(authorization_rules);
         self
     }
-    pub fn authorization_data(
-        &mut self,
-        authorization_data: Option<AuthorizationData>,
-    ) -> &mut Self {
+    pub fn authorization_data(&mut self, authorization_data: AuthorizationData) -> &mut Self {
         self.authorization_data = Some(authorization_data);
         self
     }
-    pub fn new_update_authority(&mut self, new_update_authority: Option<Pubkey>) -> &mut Self {
+    pub fn new_update_authority(&mut self, new_update_authority: Pubkey) -> &mut Self {
         self.new_update_authority = Some(new_update_authority);
         self
     }
-    pub fn data(&mut self, data: Option<Data>) -> &mut Self {
+    pub fn data(&mut self, data: Data) -> &mut Self {
         self.data = Some(data);
         self
     }
-    pub fn primary_sale_happened(&mut self, primary_sale_happened: Option<bool>) -> &mut Self {
+    pub fn primary_sale_happened(&mut self, primary_sale_happened: bool) -> &mut Self {
         self.primary_sale_happened = Some(primary_sale_happened);
         self
     }
-    pub fn is_mutable(&mut self, is_mutable: Option<bool>) -> &mut Self {
+    pub fn is_mutable(&mut self, is_mutable: bool) -> &mut Self {
         self.is_mutable = Some(is_mutable);
         self
     }
-    pub fn token_standard(&mut self, token_standard: Option<TokenStandard>) -> &mut Self {
+    pub fn token_standard(&mut self, token_standard: TokenStandard) -> &mut Self {
         self.token_standard = Some(token_standard);
         self
     }
-    pub fn collection(&mut self, collection: Option<Collection>) -> &mut Self {
+    pub fn collection(&mut self, collection: Collection) -> &mut Self {
         self.collection = Some(collection);
         self
     }
-    pub fn uses(&mut self, uses: Option<Uses>) -> &mut Self {
+    pub fn uses(&mut self, uses: Uses) -> &mut Self {
         self.uses = Some(uses);
         self
     }
-    pub fn collection_details(
-        &mut self,
-        collection_details: Option<CollectionDetails>,
-    ) -> &mut Self {
+    pub fn collection_details(&mut self, collection_details: CollectionDetails) -> &mut Self {
         self.collection_details = Some(collection_details);
         self
     }
-    pub fn programmable_config(
-        &mut self,
-        programmable_config: Option<ProgrammableConfig>,
-    ) -> &mut Self {
+    pub fn programmable_config(&mut self, programmable_config: ProgrammableConfig) -> &mut Self {
         self.programmable_config = Some(programmable_config);
         self
     }
-    pub fn delegate_state(&mut self, delegate_state: Option<DelegateState>) -> &mut Self {
+    pub fn delegate_state(&mut self, delegate_state: DelegateState) -> &mut Self {
         self.delegate_state = Some(delegate_state);
         self
     }

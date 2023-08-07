@@ -151,7 +151,7 @@ impl CreateV2Builder {
         self.asset_data = Some(asset_data);
         self
     }
-    pub fn max_supply(&mut self, max_supply: Option<u64>) -> &mut Self {
+    pub fn max_supply(&mut self, max_supply: u64) -> &mut Self {
         self.max_supply = Some(max_supply);
         self
     }

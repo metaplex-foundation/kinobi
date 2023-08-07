@@ -128,10 +128,7 @@ impl CreateMetadataAccountV3Builder {
         self.is_mutable = Some(is_mutable);
         self
     }
-    pub fn collection_details(
-        &mut self,
-        collection_details: Option<CollectionDetails>,
-    ) -> &mut Self {
+    pub fn collection_details(&mut self, collection_details: CollectionDetails) -> &mut Self {
         self.collection_details = Some(collection_details);
         self
     }

@@ -152,11 +152,11 @@ impl CreateV1Builder {
         self.asset_data = Some(asset_data);
         self
     }
-    pub fn decimals(&mut self, decimals: Option<u8>) -> &mut Self {
+    pub fn decimals(&mut self, decimals: u8) -> &mut Self {
         self.decimals = Some(decimals);
         self
     }
-    pub fn max_supply(&mut self, max_supply: Option<u64>) -> &mut Self {
+    pub fn max_supply(&mut self, max_supply: u64) -> &mut Self {
         self.max_supply = Some(max_supply);
         self
     }
