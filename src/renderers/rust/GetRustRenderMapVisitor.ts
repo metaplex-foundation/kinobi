@@ -17,6 +17,7 @@ import {
   RustTypeManifest,
 } from './GetRustTypeManifestVisitor';
 import { RustImportMap } from './RustImportMap';
+import { renderRustValueNode } from './RenderRustValueNode';
 
 export type GetRustRenderMapOptions = {
   renderParentInstructions?: boolean;
@@ -162,12 +163,48 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
     const imports = new RustImportMap();
+    // Instruction args.
+    const instructionArgs: any[] = [];
+    let hasArgs = false;
+
+    instruction.dataArgs.struct.fields.forEach((field) => {
+      const manifest = visit(field.child, this.typeManifestVisitor);
+      const optionType = manifest.type.startsWith('Option');
+
+      if (field.defaultsTo) {
+        const { imports: argImports, render: value } = renderRustValueNode(
+          field.defaultsTo.value
+        );
+        imports.mergeWith(argImports);
+
+        instructionArgs.push({
+          name: field.name,
+          type: manifest.type,
+          default: field.defaultsTo.strategy === 'omitted',
+          optional: field.defaultsTo.strategy === 'optional',
+          optionType,
+          value,
+        });
+      } else {
+        instructionArgs.push({
+          name: field.name,
+          type: manifest.type,
+          default: false,
+          optional: false,
+          optionType,
+          value: null,
+        });
+        hasArgs = true;
+      }
+    });
 
     return new RenderMap().add(
       `instructions/${snakeCase(instruction.name)}.rs`,
       this.render('instructionsPage.njk', {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
+        instructionArgs,
+        hasArgs,
         program: this.program,
       })
     );

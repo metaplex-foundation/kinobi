@@ -167,7 +167,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
     return {
       ...typeManifest,
-      type: `${name} ${typeManifest.type}`,
+      type: `${name} ${typeManifest.type},`,
     };
   }
 

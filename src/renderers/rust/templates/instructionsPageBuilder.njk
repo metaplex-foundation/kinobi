@@ -7,6 +7,11 @@ pub struct {{ instruction.name | pascalCase }}Builder {
     {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
   {% endif %}
 {% endfor %}
+{% for arg in instructionArgs %}
+  {% if arg.default === false %}
+    {{ arg.name | snakeCase }}: {{ 'Option<' if arg.optionType === false }}{{ arg.type }}{{ '>' if arg.optionType === false }},
+  {% endif %}
+{% endfor %}
 }
 
 impl {{ instruction.name | pascalCase }}Builder {
@@ -20,12 +25,29 @@ impl {{ instruction.name | pascalCase }}Builder {
       self
     }
   {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if arg.default === false %}
+      pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.type }}) -> &mut Self {
+        self.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
+        self
+      }
+    {% endif %}
+  {% endfor %}
   pub fn build(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {
         {% for account in instruction.accounts %}          
           {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if account.isOptional === false }},
         {% endfor %}
     };
-    accounts.instruction()
+    {% if hasArgs %}
+    let args = {{ instruction.name | pascalCase }}InstructionArgs::new(
+      {% for arg in instructionArgs %}
+        {% if arg.default === false %}
+          self.{{ arg.name | snakeCase }}{{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if arg.optionType === false }},
+        {% endif %}
+      {% endfor %}
+    );
+    {% endif %}
+    accounts.instruction({{ 'args' if hasArgs }})
   }
 }

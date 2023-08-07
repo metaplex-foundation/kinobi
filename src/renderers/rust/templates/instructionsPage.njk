@@ -27,13 +27,9 @@ pub struct {{ instruction.name | pascalCase }} {
 }
 
 impl {{ instruction.name | pascalCase }} {
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    {% if hasDataArgs %}
-    let data = {{ instruction.dataArgs.name | pascalCase }}(resolvedArgs).try_to_vec().unwrap();
-    {% elif hasData %}
-    let data = {{ instruction.dataArgs.name | pascalCase }}.try_to_vec().unwrap();
-    {% else %}
-    let data = Vec::new();
+  pub fn instruction(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}) -> solana_program::instruction::Instruction {
+    {% if hasArgs === false %}
+    let args = {{ instruction.name | pascalCase }}InstructionArgs::new();
     {% endif %}
     solana_program::instruction::Instruction {
       program_id: crate::programs::{{ program.name | snakeCase }}::ID,
@@ -80,11 +76,37 @@ impl {{ instruction.name | pascalCase }} {
           {% endif %}
         {% endfor %}
       ],
-      data,
+      data: args.try_to_vec().unwrap(),
     }
   }
 }
 
 {% include "instructionsPageBuilder.njk" %}
+
+{{ 'pub ' if hasArgs }}struct {{ instruction.name | pascalCase }}InstructionArgs {
+  {% for arg in instructionArgs %}
+    {{ 'pub ' if arg.default === false }}{{ arg.name | snakeCase }}: {{ arg.type }},
+  {% endfor %}
+}
+
+impl {{ instruction.name | pascalCase }}InstructionArgs {
+  pub fn new(
+    {% for arg in instructionArgs %}
+      {% if arg.default === false %}
+        {{ arg.name | snakeCase }}: {{ arg.type }},
+      {% endif %}
+    {% endfor %}
+  ) -> Self {
+    Self {
+      {% for arg in instructionArgs %}
+        {% if arg.default %}
+          {{ arg.name | snakeCase }}: {{ arg.value }},
+        {% else %}
+          {{ arg.name | snakeCase }},
+        {% endif %}
+      {% endfor %}
+    }
+  }
+}
 
 {% endblock %}
