@@ -40,7 +40,7 @@ impl Dummy {
                 false,
               ),
             } else {
-              solana_program::instruction::AccountMeta::new(
+              solana_program::instruction::AccountMeta::new_readonly(
                 crate::programs::mpl_candy_machine_core::ID,
                 false,
               ),

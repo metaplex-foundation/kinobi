@@ -83,7 +83,7 @@ impl Utilize {
                 false,
               ),
             } else {
-              solana_program::instruction::AccountMeta::new(
+              solana_program::instruction::AccountMeta::new_readonly(
                 crate::programs::mpl_token_metadata::ID,
                 false,
               ),
