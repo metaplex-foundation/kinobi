@@ -60,7 +60,7 @@ export class RenderRustVisitor extends BaseThrowVisitor<void> {
 }
 
 function runFormatter(cmd: string, args: string[]) {
-  const { stdout, stderr, error } = spawnSync(cmd, args);
+  const { stderr, error } = spawnSync(cmd, args);
   if (error?.message?.includes('ENOENT')) {
     logWarn(`Could not find ${cmd}, skipping formatting.`);
     return;

@@ -11,6 +11,7 @@ export type RustTypeManifest = {
 
 export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   private parentName: string | null = null;
+
   private inlineStruct: boolean = false;
 
   visitRoot(): RustTypeManifest {

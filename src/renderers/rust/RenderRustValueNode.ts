@@ -1,5 +1,5 @@
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../shared';
+import { pascalCase } from '../../shared';
 import { RustImportMap } from './RustImportMap';
 
 export function renderRustValueNode(value: nodes.ValueNode): {
