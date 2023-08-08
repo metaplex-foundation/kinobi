@@ -1,21 +1,17 @@
-{% extends "layout.njk" %}
-{% import "macros.njk" as macros %}
+use super::*;
 
-{% block main %}
-
-{{ imports }}
-
-/// Accounts.
-pub struct {{ instruction.name | pascalCase }} {
+/// `{{ instruction.name | snakeCase }}` CPI instruction.
+pub struct {{ instruction.name | pascalCase }}<'a> {
+  pub program: &'a solana_program::account_info::AccountInfo<'a>,
 {% for account in instruction.accounts %}
   {% if account.docs.length > 0 %}
     {{ macros.docblock(account.docs) }}
   {% endif %}
 
   {% if account.isSigner === 'either' %}
-    {% set type = '(solana_program::pubkey::Pubkey, bool)' %}
+    {% set type = '(&\'a solana_program::account_info::AccountInfo<\'a>, bool)' %}
   {% else %}
-    {% set type = 'solana_program::pubkey::Pubkey' %}
+    {% set type = '&\'a solana_program::account_info::AccountInfo<\'a>' %}
   {% endif %}
 
   {% if account.isOptional %}
@@ -24,14 +20,19 @@ pub struct {{ instruction.name | pascalCase }} {
     pub {{ account.name | snakeCase }}: {{ type }},
   {% endif %}
 {% endfor %}
+  {{ 'pub args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}
 }
 
-impl {{ instruction.name | pascalCase }} {
-  pub fn instruction(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}) -> solana_program::instruction::Instruction {
+impl<'a> {{ instruction.name | pascalCase }}<'a> {
+  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed(&[])
+  }
+  #[allow(clippy::vec_init_then_push)]
+  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
     {% if hasArgs === false %}
     let args = {{ instruction.name | pascalCase }}InstructionArgs::new();
     {% endif %}
-    solana_program::instruction::Instruction {
+    let instruction = solana_program::instruction::Instruction {
       program_id: crate::{{ program.name | snakeCase | upper }}_ID,
       accounts: vec![
         {% for account in instruction.accounts %}
@@ -39,7 +40,7 @@ impl {{ instruction.name | pascalCase }} {
             {% if account.isOptional %}
               if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
                 solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                  {{ account.name | snakeCase }},
+                  *{{ account.name | snakeCase }}.key,
                   signer,
                 ),
               } else {
@@ -50,7 +51,7 @@ impl {{ instruction.name | pascalCase }} {
               },
             {% else %}
               solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                self.{{ account.name | snakeCase }}.0,
+                *self.{{ account.name | snakeCase }}.0.key,
                 self.{{ account.name | snakeCase }}.1,
               ),
             {% endif %}
@@ -58,7 +59,7 @@ impl {{ instruction.name | pascalCase }} {
             {% if account.isOptional %}
               if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
                 solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                  {{ account.name | snakeCase }},
+                  *{{ account.name | snakeCase }}.key,
                   {{ 'true' if account.isSigner else 'false' }},
                 ),
               } else {
@@ -69,49 +70,33 @@ impl {{ instruction.name | pascalCase }} {
               },
             {% else %}
               solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                self.{{ account.name | snakeCase }},
+                *self.{{ account.name | snakeCase }}.key,
                 {{ 'true' if account.isSigner else 'false' }}
               ),
             {% endif %}
           {% endif %}
         {% endfor %}
       ],
-      data: args.try_to_vec().unwrap(),
-    }
-  }
-}
-
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-{{ 'pub ' if hasArgs }}struct {{ instruction.name | pascalCase }}InstructionArgs {
-  {% for arg in instructionArgs %}
-    {{ 'pub ' if arg.default === false }}{{ arg.name | snakeCase }}: {{ arg.type }},
-  {% endfor %}
-}
-
-impl {{ instruction.name | pascalCase }}InstructionArgs {
-  pub fn new(
-    {% for arg in instructionArgs %}
-      {% if arg.default === false %}
-        {{ arg.name | snakeCase }}: {{ arg.type }},
+      data: {{ 'self.' if hasArgs }}args.try_to_vec().unwrap(),
+    };
+    let mut account_infos = Vec::with_capacity({{ instruction.accounts.length }} + 1);
+    account_infos.push(self.program.clone());
+    {% for account in instruction.accounts %}
+      {% if account.isOptional %}
+        if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
+          account_infos.push({{ account.name | snakeCase }}.clone());
+        }
+      {% else %}
+        account_infos.push(self.{{ account.name | snakeCase }}.clone());
       {% endif %}
     {% endfor %}
-  ) -> Self {
-    Self {
-      {% for arg in instructionArgs %}
-        {% if arg.default %}
-          {{ arg.name | snakeCase }}: {{ arg.value }},
-        {% else %}
-          {{ arg.name | snakeCase }},
-        {% endif %}
-      {% endfor %}
+
+    if signers_seeds.is_empty() {
+      solana_program::program::invoke(&instruction, &account_infos)
+    } else {
+      solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
     }
   }
 }
 
-{% include "instructionsPageBuilder.njk" %}
-
-pub mod cpi {
-  {% include "instructionsCpiPage.njk" %}
-}
-
-{% endblock %}
+{% include "instructionsCpiPageBuilder.njk" %}

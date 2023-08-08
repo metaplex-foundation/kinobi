@@ -1,0 +1,67 @@
+/// `{{ instruction.name | snakeCase }}` CPI instruction builder.
+pub struct {{ instruction.name | pascalCase }}Builder<'a> {
+  program: &'a solana_program::account_info::AccountInfo<'a>,
+{% for account in instruction.accounts %}
+  {% if account.isSigner === 'either' %}
+    {{ account.name | snakeCase }}: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+  {% else %}
+    {{ account.name | snakeCase }}: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+  {% endif %}
+{% endfor %}
+{% for arg in instructionArgs %}
+  {% if not arg.default %}
+    {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
+  {% endif %}
+{% endfor %}
+}
+
+impl<'a> {{ instruction.name | pascalCase }}Builder<'a> {
+  pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+    Self {
+      program,
+      {% for account in instruction.accounts %}
+        {{ account.name | snakeCase }}: None,
+      {% endfor %}
+      {% for arg in instructionArgs %}
+        {% if not arg.default %}
+          {{ arg.name | snakeCase }}: None,
+        {% endif %}
+      {% endfor %}
+    }
+  }
+  {% for account in instruction.accounts %}
+    pub fn {{ account.name | snakeCase }}(&'a mut self, {{ account.name | snakeCase }}: &'a solana_program::account_info::AccountInfo<'a>{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
+      {% if account.isSigner === 'either' %}
+        self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
+      {% else %}
+        self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
+      {% endif %}
+      self
+    }
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default %}
+      pub fn {{ arg.name | snakeCase }}(&'a mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> &mut Self {
+        self.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
+        self
+      }
+    {% endif %}
+  {% endfor %}
+  pub fn build(&'a self) -> {{ instruction.name | pascalCase }} {
+    {{ instruction.name | pascalCase }} {
+        program: self.program,
+        {% for account in instruction.accounts %}          
+          {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional }},
+        {% endfor %}
+        {% if hasArgs %}
+          args: {{ instruction.name | pascalCase }}InstructionArgs::new(
+            {% for arg in instructionArgs %}
+              {% if not arg.default %}
+                self.{{ arg.name | snakeCase }}{{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
+              {% endif %}
+            {% endfor %}
+          ),
+        {% endif %}
+    }
+  }
+}
