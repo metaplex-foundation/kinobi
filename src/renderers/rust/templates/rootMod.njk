@@ -19,7 +19,8 @@
     pub mod types;
   {% endif %}
 {% endif %}
-  {% if programsToExport.length > 0 %}
-    pub use programs::*;
-  {% endif %}
+
+{% if programsToExport.length > 0 %}
+  pub use programs::*;
+{% endif %}
 {% endblock %}

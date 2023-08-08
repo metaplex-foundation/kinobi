@@ -79,7 +79,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const map = new RenderMap();
     if (programsToExport.length > 0) {
       map
-        .add('programs/mod.rs', this.render('programsMod.njk', ctx))
+        .add('programs.rs', this.render('programsMod.njk', ctx))
         .add('errors/mod.rs', this.render('errorsMod.njk', ctx));
     }
     if (accountsToExport.length > 0) {
@@ -132,13 +132,6 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
             ...error,
             prefixedName: pascalCase(program.prefix) + pascalCase(error.name),
           })),
-        })
-      )
-      .add(
-        `programs/${snakeCase(name)}.rs`,
-        this.render('programsPage.njk', {
-          imports: new RustImportMap().toString(this.options.dependencyMap),
-          program,
         })
       );
     this.program = null;
