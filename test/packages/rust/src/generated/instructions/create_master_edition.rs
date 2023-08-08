@@ -35,7 +35,7 @@ impl CreateMasterEdition {
         args: CreateMasterEditionInstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.edition, false),
                 solana_program::instruction::AccountMeta::new(self.mint, false),
@@ -52,7 +52,23 @@ impl CreateMasterEdition {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct CreateMasterEditionInstructionArgs {
+    discriminator: u8,
+    pub create_master_edition_args: CreateMasterEditionArgs,
+}
+
+impl CreateMasterEditionInstructionArgs {
+    pub fn new(create_master_edition_args: CreateMasterEditionArgs) -> Self {
+        Self {
+            discriminator: 10,
+            create_master_edition_args,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct CreateMasterEditionBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -67,6 +83,9 @@ pub struct CreateMasterEditionBuilder {
 }
 
 impl CreateMasterEditionBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.edition = Some(edition);
         self
@@ -141,17 +160,219 @@ impl CreateMasterEditionBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct CreateMasterEditionInstructionArgs {
-    discriminator: u8,
-    pub create_master_edition_args: CreateMasterEditionArgs,
-}
+pub mod cpi {
+    use super::*;
 
-impl CreateMasterEditionInstructionArgs {
-    pub fn new(create_master_edition_args: CreateMasterEditionArgs) -> Self {
-        Self {
-            discriminator: 10,
-            create_master_edition_args,
+    /// `create_master_edition` CPI instruction.
+    pub struct CreateMasterEdition<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
+        pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata mint
+        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Update authority
+        pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
+        pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// payer
+        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata account
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Token program
+        pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// System program
+        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Rent info
+        pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+        pub args: CreateMasterEditionInstructionArgs,
+    }
+
+    impl<'a> CreateMasterEdition<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.edition.key, false),
+                    solana_program::instruction::AccountMeta::new(*self.mint.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.update_authority.key,
+                        true,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.mint_authority.key,
+                        true,
+                    ),
+                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.metadata.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.token_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.system_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.rent.key, false),
+                ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(9 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.edition.clone());
+            account_infos.push(self.mint.clone());
+            account_infos.push(self.update_authority.clone());
+            account_infos.push(self.mint_authority.clone());
+            account_infos.push(self.payer.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.token_program.clone());
+            account_infos.push(self.system_program.clone());
+            account_infos.push(self.rent.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `create_master_edition` CPI instruction builder.
+    pub struct CreateMasterEditionBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        create_master_edition_args: Option<CreateMasterEditionArgs>,
+    }
+
+    impl<'a> CreateMasterEditionBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                edition: None,
+                mint: None,
+                update_authority: None,
+                mint_authority: None,
+                payer: None,
+                metadata: None,
+                token_program: None,
+                system_program: None,
+                rent: None,
+                create_master_edition_args: None,
+            }
+        }
+        pub fn edition(
+            &'a mut self,
+            edition: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.edition = Some(edition);
+            self
+        }
+        pub fn mint(
+            &'a mut self,
+            mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.mint = Some(mint);
+            self
+        }
+        pub fn update_authority(
+            &'a mut self,
+            update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.update_authority = Some(update_authority);
+            self
+        }
+        pub fn mint_authority(
+            &'a mut self,
+            mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.mint_authority = Some(mint_authority);
+            self
+        }
+        pub fn payer(
+            &'a mut self,
+            payer: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.payer = Some(payer);
+            self
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn token_program(
+            &'a mut self,
+            token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.token_program = Some(token_program);
+            self
+        }
+        pub fn system_program(
+            &'a mut self,
+            system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.system_program = Some(system_program);
+            self
+        }
+        pub fn rent(
+            &'a mut self,
+            rent: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.rent = Some(rent);
+            self
+        }
+        pub fn create_master_edition_args(
+            &'a mut self,
+            create_master_edition_args: CreateMasterEditionArgs,
+        ) -> &mut Self {
+            self.create_master_edition_args = Some(create_master_edition_args);
+            self
+        }
+        pub fn build(&'a self) -> CreateMasterEdition {
+            CreateMasterEdition {
+                program: self.program,
+
+                edition: self.edition.expect("edition is not set"),
+
+                mint: self.mint.expect("mint is not set"),
+
+                update_authority: self.update_authority.expect("update_authority is not set"),
+
+                mint_authority: self.mint_authority.expect("mint_authority is not set"),
+
+                payer: self.payer.expect("payer is not set"),
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                token_program: self.token_program.expect("token_program is not set"),
+
+                system_program: self.system_program.expect("system_program is not set"),
+
+                rent: self.rent.expect("rent is not set"),
+                args: CreateMasterEditionInstructionArgs::new(
+                    self.create_master_edition_args
+                        .expect("create_master_edition_args is not set"),
+                ),
+            }
         }
     }
 }

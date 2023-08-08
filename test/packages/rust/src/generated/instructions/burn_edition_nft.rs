@@ -33,7 +33,7 @@ impl BurnEditionNft {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = BurnEditionNftInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.metadata, false),
                 solana_program::instruction::AccountMeta::new(self.owner, true),
@@ -63,7 +63,19 @@ impl BurnEditionNft {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct BurnEditionNftInstructionArgs {
+    discriminator: u8,
+}
+
+impl BurnEditionNftInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 37 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct BurnEditionNftBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -78,6 +90,9 @@ pub struct BurnEditionNftBuilder {
 }
 
 impl BurnEditionNftBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
@@ -184,13 +199,246 @@ impl BurnEditionNftBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct BurnEditionNftInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl BurnEditionNftInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 37 }
+    /// `burn_edition_nft` CPI instruction.
+    pub struct BurnEditionNft<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata (pda of ['metadata', program id, mint id])
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// NFT owner
+        pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Mint of the print edition NFT
+        pub print_edition_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Mint of the original/master NFT
+        pub master_edition_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Token account the print edition NFT is in
+        pub print_edition_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Token account the Master Edition NFT is in
+        pub master_edition_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// MasterEdition2 of the original NFT
+        pub master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Print Edition account of the NFT
+        pub print_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Edition Marker PDA of the NFT
+        pub edition_marker_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// SPL Token Program
+        pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    }
+
+    impl<'a> BurnEditionNft<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = BurnEditionNftInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                    solana_program::instruction::AccountMeta::new(*self.owner.key, true),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.print_edition_mint.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.master_edition_mint.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.print_edition_token_account.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.master_edition_token_account.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.master_edition_account.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.print_edition_account.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.edition_marker_account.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.spl_token_program.key,
+                        false,
+                    ),
+                ],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(10 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.owner.clone());
+            account_infos.push(self.print_edition_mint.clone());
+            account_infos.push(self.master_edition_mint.clone());
+            account_infos.push(self.print_edition_token_account.clone());
+            account_infos.push(self.master_edition_token_account.clone());
+            account_infos.push(self.master_edition_account.clone());
+            account_infos.push(self.print_edition_account.clone());
+            account_infos.push(self.edition_marker_account.clone());
+            account_infos.push(self.spl_token_program.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `burn_edition_nft` CPI instruction builder.
+    pub struct BurnEditionNftBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        print_edition_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        master_edition_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        print_edition_token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        master_edition_token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        print_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        edition_marker_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> BurnEditionNftBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                metadata: None,
+                owner: None,
+                print_edition_mint: None,
+                master_edition_mint: None,
+                print_edition_token_account: None,
+                master_edition_token_account: None,
+                master_edition_account: None,
+                print_edition_account: None,
+                edition_marker_account: None,
+                spl_token_program: None,
+            }
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn owner(
+            &'a mut self,
+            owner: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.owner = Some(owner);
+            self
+        }
+        pub fn print_edition_mint(
+            &'a mut self,
+            print_edition_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.print_edition_mint = Some(print_edition_mint);
+            self
+        }
+        pub fn master_edition_mint(
+            &'a mut self,
+            master_edition_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.master_edition_mint = Some(master_edition_mint);
+            self
+        }
+        pub fn print_edition_token_account(
+            &'a mut self,
+            print_edition_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.print_edition_token_account = Some(print_edition_token_account);
+            self
+        }
+        pub fn master_edition_token_account(
+            &'a mut self,
+            master_edition_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.master_edition_token_account = Some(master_edition_token_account);
+            self
+        }
+        pub fn master_edition_account(
+            &'a mut self,
+            master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.master_edition_account = Some(master_edition_account);
+            self
+        }
+        pub fn print_edition_account(
+            &'a mut self,
+            print_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.print_edition_account = Some(print_edition_account);
+            self
+        }
+        pub fn edition_marker_account(
+            &'a mut self,
+            edition_marker_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.edition_marker_account = Some(edition_marker_account);
+            self
+        }
+        pub fn spl_token_program(
+            &'a mut self,
+            spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.spl_token_program = Some(spl_token_program);
+            self
+        }
+        pub fn build(&'a self) -> BurnEditionNft {
+            BurnEditionNft {
+                program: self.program,
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                owner: self.owner.expect("owner is not set"),
+
+                print_edition_mint: self
+                    .print_edition_mint
+                    .expect("print_edition_mint is not set"),
+
+                master_edition_mint: self
+                    .master_edition_mint
+                    .expect("master_edition_mint is not set"),
+
+                print_edition_token_account: self
+                    .print_edition_token_account
+                    .expect("print_edition_token_account is not set"),
+
+                master_edition_token_account: self
+                    .master_edition_token_account
+                    .expect("master_edition_token_account is not set"),
+
+                master_edition_account: self
+                    .master_edition_account
+                    .expect("master_edition_account is not set"),
+
+                print_edition_account: self
+                    .print_edition_account
+                    .expect("print_edition_account is not set"),
+
+                edition_marker_account: self
+                    .edition_marker_account
+                    .expect("edition_marker_account is not set"),
+
+                spl_token_program: self
+                    .spl_token_program
+                    .expect("spl_token_program is not set"),
+            }
+        }
     }
 }

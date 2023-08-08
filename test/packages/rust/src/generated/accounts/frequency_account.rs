@@ -7,7 +7,7 @@
 
 use borsh::{BorshDeserialize, BorshSerialize};
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct FrequencyAccount {
     /// Test with only one line.
     pub key: u64,

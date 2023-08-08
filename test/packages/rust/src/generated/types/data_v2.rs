@@ -4,10 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+
 use crate::generated::types::{Collection, Creator, Uses};
 use borsh::{BorshDeserialize, BorshSerialize};
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct DataV2 {
     pub name: String,
     pub symbol: String,

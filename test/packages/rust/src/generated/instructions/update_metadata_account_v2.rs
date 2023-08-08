@@ -21,7 +21,7 @@ impl UpdateMetadataAccountV2 {
         args: UpdateMetadataAccountV2InstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.metadata, false),
                 solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
@@ -31,7 +31,34 @@ impl UpdateMetadataAccountV2 {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct UpdateMetadataAccountV2InstructionArgs {
+    discriminator: u8,
+    pub data: Option<DataV2>,
+    pub update_authority: Option<Pubkey>,
+    pub primary_sale_happened: Option<bool>,
+    pub is_mutable: Option<bool>,
+}
+
+impl UpdateMetadataAccountV2InstructionArgs {
+    pub fn new(
+        data: Option<DataV2>,
+        update_authority: Option<Pubkey>,
+        primary_sale_happened: Option<bool>,
+        is_mutable: Option<bool>,
+    ) -> Self {
+        Self {
+            discriminator: 15,
+            data,
+            update_authority,
+            primary_sale_happened,
+            is_mutable,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct UpdateMetadataAccountV2Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -42,6 +69,9 @@ pub struct UpdateMetadataAccountV2Builder {
 }
 
 impl UpdateMetadataAccountV2Builder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
@@ -85,28 +115,119 @@ impl UpdateMetadataAccountV2Builder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct UpdateMetadataAccountV2InstructionArgs {
-    discriminator: u8,
-    pub data: Option<DataV2>,
-    pub update_authority: Option<Pubkey>,
-    pub primary_sale_happened: Option<bool>,
-    pub is_mutable: Option<bool>,
-}
+pub mod cpi {
+    use super::*;
 
-impl UpdateMetadataAccountV2InstructionArgs {
-    pub fn new(
+    /// `update_metadata_account_v2` CPI instruction.
+    pub struct UpdateMetadataAccountV2<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata account
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Update authority key
+        pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        pub args: UpdateMetadataAccountV2InstructionArgs,
+    }
+
+    impl<'a> UpdateMetadataAccountV2<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.update_authority.key,
+                        true,
+                    ),
+                ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(2 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.update_authority.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `update_metadata_account_v2` CPI instruction builder.
+    pub struct UpdateMetadataAccountV2Builder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
         data: Option<DataV2>,
         update_authority: Option<Pubkey>,
         primary_sale_happened: Option<bool>,
         is_mutable: Option<bool>,
-    ) -> Self {
-        Self {
-            discriminator: 15,
-            data,
-            update_authority,
-            primary_sale_happened,
-            is_mutable,
+    }
+
+    impl<'a> UpdateMetadataAccountV2Builder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                metadata: None,
+                update_authority: None,
+                data: None,
+                update_authority: None,
+                primary_sale_happened: None,
+                is_mutable: None,
+            }
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn update_authority(
+            &'a mut self,
+            update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.update_authority = Some(update_authority);
+            self
+        }
+        pub fn data(&'a mut self, data: DataV2) -> &mut Self {
+            self.data = Some(data);
+            self
+        }
+        pub fn update_authority(&'a mut self, update_authority: Pubkey) -> &mut Self {
+            self.update_authority = Some(update_authority);
+            self
+        }
+        pub fn primary_sale_happened(&'a mut self, primary_sale_happened: bool) -> &mut Self {
+            self.primary_sale_happened = Some(primary_sale_happened);
+            self
+        }
+        pub fn is_mutable(&'a mut self, is_mutable: bool) -> &mut Self {
+            self.is_mutable = Some(is_mutable);
+            self
+        }
+        pub fn build(&'a self) -> UpdateMetadataAccountV2 {
+            UpdateMetadataAccountV2 {
+                program: self.program,
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                update_authority: self.update_authority.expect("update_authority is not set"),
+                args: UpdateMetadataAccountV2InstructionArgs::new(
+                    self.data,
+                    self.update_authority,
+                    self.primary_sale_happened,
+                    self.is_mutable,
+                ),
+            }
         }
     }
 }

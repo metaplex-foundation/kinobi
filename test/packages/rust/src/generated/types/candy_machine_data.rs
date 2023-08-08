@@ -4,12 +4,13 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+
 use crate::generated::types::{CmCreator, ConfigLineSettings, HiddenSettings};
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Candy machine configuration data.
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct CandyMachineData {
     /// Number of assets available
     pub items_available: u64,

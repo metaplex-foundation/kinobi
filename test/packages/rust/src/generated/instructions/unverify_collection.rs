@@ -25,7 +25,7 @@ impl UnverifyCollection {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = UnverifyCollectionInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                                           solana_program::instruction::AccountMeta::new(
               self.metadata,
@@ -54,7 +54,7 @@ impl UnverifyCollection {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_metadata::ID,
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
               ),
             },
@@ -64,7 +64,19 @@ impl UnverifyCollection {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct UnverifyCollectionInstructionArgs {
+    discriminator: u8,
+}
+
+impl UnverifyCollectionInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 22 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct UnverifyCollectionBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
@@ -75,6 +87,9 @@ pub struct UnverifyCollectionBuilder {
 }
 
 impl UnverifyCollectionBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
@@ -133,13 +148,178 @@ impl UnverifyCollectionBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct UnverifyCollectionInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl UnverifyCollectionInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 22 }
+    /// `unverify_collection` CPI instruction.
+    pub struct UnverifyCollection<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata account
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Collection Authority
+        pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Mint of the Collection
+        pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata Account of the Collection
+        pub collection: &'a solana_program::account_info::AccountInfo<'a>,
+        /// MasterEdition2 Account of the Collection Token
+        pub collection_master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Collection Authority Record PDA
+        pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> UnverifyCollection<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = UnverifyCollectionInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                                              solana_program::instruction::AccountMeta::new(
+                  *self.metadata.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new(
+                  *self.collection_authority.key,
+                  true
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.collection_mint.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.collection.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.collection_master_edition_account.key,
+                  false
+                ),
+                                                                    if let Some(collection_authority_record) = self.collection_authority_record {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *collection_authority_record.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_METADATA_ID,
+                    false,
+                  ),
+                },
+                                      ],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(6 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.collection_authority.clone());
+            account_infos.push(self.collection_mint.clone());
+            account_infos.push(self.collection.clone());
+            account_infos.push(self.collection_master_edition_account.clone());
+            if let Some(collection_authority_record) = self.collection_authority_record {
+                account_infos.push(collection_authority_record.clone());
+            }
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `unverify_collection` CPI instruction builder.
+    pub struct UnverifyCollectionBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_master_edition_account:
+            Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> UnverifyCollectionBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                metadata: None,
+                collection_authority: None,
+                collection_mint: None,
+                collection: None,
+                collection_master_edition_account: None,
+                collection_authority_record: None,
+            }
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn collection_authority(
+            &'a mut self,
+            collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_authority = Some(collection_authority);
+            self
+        }
+        pub fn collection_mint(
+            &'a mut self,
+            collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_mint = Some(collection_mint);
+            self
+        }
+        pub fn collection(
+            &'a mut self,
+            collection: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection = Some(collection);
+            self
+        }
+        pub fn collection_master_edition_account(
+            &'a mut self,
+            collection_master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_master_edition_account = Some(collection_master_edition_account);
+            self
+        }
+        pub fn collection_authority_record(
+            &'a mut self,
+            collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_authority_record = Some(collection_authority_record);
+            self
+        }
+        pub fn build(&'a self) -> UnverifyCollection {
+            UnverifyCollection {
+                program: self.program,
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                collection_authority: self
+                    .collection_authority
+                    .expect("collection_authority is not set"),
+
+                collection_mint: self.collection_mint.expect("collection_mint is not set"),
+
+                collection: self.collection.expect("collection is not set"),
+
+                collection_master_edition_account: self
+                    .collection_master_edition_account
+                    .expect("collection_master_edition_account is not set"),
+
+                collection_authority_record: self.collection_authority_record,
+            }
+        }
     }
 }

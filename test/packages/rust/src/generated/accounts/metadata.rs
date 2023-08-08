@@ -12,7 +12,7 @@ use crate::generated::types::{
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::pubkey::Pubkey;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct Metadata {
     pub key: TmKey,
     pub update_authority: Pubkey,

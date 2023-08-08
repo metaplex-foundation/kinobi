@@ -29,7 +29,7 @@ impl CreateReservationList {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = CreateReservationListInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.reservation_list, false),
                 solana_program::instruction::AccountMeta::new_readonly(self.payer, true),
@@ -45,7 +45,19 @@ impl CreateReservationList {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct CreateReservationListInstructionArgs {
+    discriminator: u8,
+}
+
+impl CreateReservationListInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 6 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct CreateReservationListBuilder {
     reservation_list: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -58,6 +70,9 @@ pub struct CreateReservationListBuilder {
 }
 
 impl CreateReservationListBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn reservation_list(
         &mut self,
         reservation_list: solana_program::pubkey::Pubkey,
@@ -118,13 +133,194 @@ impl CreateReservationListBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct CreateReservationListInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl CreateReservationListInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 6 }
+    /// `create_reservation_list` CPI instruction.
+    pub struct CreateReservationList<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+        pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Payer
+        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Update authority
+        pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+        pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
+        pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata key (pda of ['metadata', program id, mint id])
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// System program
+        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Rent info
+        pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    }
+
+    impl<'a> CreateReservationList<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = CreateReservationListInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(
+                        *self.reservation_list.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.payer.key, true),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.update_authority.key,
+                        true,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.master_edition.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.resource.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.metadata.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.system_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.rent.key, false),
+                ],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(8 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.reservation_list.clone());
+            account_infos.push(self.payer.clone());
+            account_infos.push(self.update_authority.clone());
+            account_infos.push(self.master_edition.clone());
+            account_infos.push(self.resource.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.system_program.clone());
+            account_infos.push(self.rent.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `create_reservation_list` CPI instruction builder.
+    pub struct CreateReservationListBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        resource: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> CreateReservationListBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                reservation_list: None,
+                payer: None,
+                update_authority: None,
+                master_edition: None,
+                resource: None,
+                metadata: None,
+                system_program: None,
+                rent: None,
+            }
+        }
+        pub fn reservation_list(
+            &'a mut self,
+            reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.reservation_list = Some(reservation_list);
+            self
+        }
+        pub fn payer(
+            &'a mut self,
+            payer: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.payer = Some(payer);
+            self
+        }
+        pub fn update_authority(
+            &'a mut self,
+            update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.update_authority = Some(update_authority);
+            self
+        }
+        pub fn master_edition(
+            &'a mut self,
+            master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.master_edition = Some(master_edition);
+            self
+        }
+        pub fn resource(
+            &'a mut self,
+            resource: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.resource = Some(resource);
+            self
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn system_program(
+            &'a mut self,
+            system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.system_program = Some(system_program);
+            self
+        }
+        pub fn rent(
+            &'a mut self,
+            rent: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.rent = Some(rent);
+            self
+        }
+        pub fn build(&'a self) -> CreateReservationList {
+            CreateReservationList {
+                program: self.program,
+
+                reservation_list: self.reservation_list.expect("reservation_list is not set"),
+
+                payer: self.payer.expect("payer is not set"),
+
+                update_authority: self.update_authority.expect("update_authority is not set"),
+
+                master_edition: self.master_edition.expect("master_edition is not set"),
+
+                resource: self.resource.expect("resource is not set"),
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                system_program: self.system_program.expect("system_program is not set"),
+
+                rent: self.rent.expect("rent is not set"),
+            }
+        }
     }
 }

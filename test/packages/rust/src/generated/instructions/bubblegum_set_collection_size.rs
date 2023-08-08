@@ -27,7 +27,7 @@ impl BubblegumSetCollectionSize {
         args: BubblegumSetCollectionSizeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                                           solana_program::instruction::AccountMeta::new(
               self.collection_metadata,
@@ -52,7 +52,7 @@ impl BubblegumSetCollectionSize {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_metadata::ID,
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
               ),
             },
@@ -62,7 +62,23 @@ impl BubblegumSetCollectionSize {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct BubblegumSetCollectionSizeInstructionArgs {
+    discriminator: u8,
+    pub set_collection_size_args: SetCollectionSizeArgs,
+}
+
+impl BubblegumSetCollectionSizeInstructionArgs {
+    pub fn new(set_collection_size_args: SetCollectionSizeArgs) -> Self {
+        Self {
+            discriminator: 36,
+            set_collection_size_args,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct BubblegumSetCollectionSizeBuilder {
     collection_metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
@@ -73,6 +89,9 @@ pub struct BubblegumSetCollectionSizeBuilder {
 }
 
 impl BubblegumSetCollectionSizeBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn collection_metadata(
         &mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
@@ -139,17 +158,172 @@ impl BubblegumSetCollectionSizeBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct BubblegumSetCollectionSizeInstructionArgs {
-    discriminator: u8,
-    pub set_collection_size_args: SetCollectionSizeArgs,
-}
+pub mod cpi {
+    use super::*;
 
-impl BubblegumSetCollectionSizeInstructionArgs {
-    pub fn new(set_collection_size_args: SetCollectionSizeArgs) -> Self {
-        Self {
-            discriminator: 36,
-            set_collection_size_args,
+    /// `bubblegum_set_collection_size` CPI instruction.
+    pub struct BubblegumSetCollectionSize<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Collection Metadata account
+        pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Collection Update authority
+        pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Mint of the Collection
+        pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Signing PDA of Bubblegum program
+        pub bubblegum_signer: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Collection Authority Record PDA
+        pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        pub args: BubblegumSetCollectionSizeInstructionArgs,
+    }
+
+    impl<'a> BubblegumSetCollectionSize<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                                              solana_program::instruction::AccountMeta::new(
+                  *self.collection_metadata.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new(
+                  *self.collection_authority.key,
+                  true
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.collection_mint.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.bubblegum_signer.key,
+                  true
+                ),
+                                                                    if let Some(collection_authority_record) = self.collection_authority_record {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *collection_authority_record.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_METADATA_ID,
+                    false,
+                  ),
+                },
+                                      ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(5 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.collection_metadata.clone());
+            account_infos.push(self.collection_authority.clone());
+            account_infos.push(self.collection_mint.clone());
+            account_infos.push(self.bubblegum_signer.clone());
+            if let Some(collection_authority_record) = self.collection_authority_record {
+                account_infos.push(collection_authority_record.clone());
+            }
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `bubblegum_set_collection_size` CPI instruction builder.
+    pub struct BubblegumSetCollectionSizeBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        bubblegum_signer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        set_collection_size_args: Option<SetCollectionSizeArgs>,
+    }
+
+    impl<'a> BubblegumSetCollectionSizeBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                collection_metadata: None,
+                collection_authority: None,
+                collection_mint: None,
+                bubblegum_signer: None,
+                collection_authority_record: None,
+                set_collection_size_args: None,
+            }
+        }
+        pub fn collection_metadata(
+            &'a mut self,
+            collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_metadata = Some(collection_metadata);
+            self
+        }
+        pub fn collection_authority(
+            &'a mut self,
+            collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_authority = Some(collection_authority);
+            self
+        }
+        pub fn collection_mint(
+            &'a mut self,
+            collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_mint = Some(collection_mint);
+            self
+        }
+        pub fn bubblegum_signer(
+            &'a mut self,
+            bubblegum_signer: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.bubblegum_signer = Some(bubblegum_signer);
+            self
+        }
+        pub fn collection_authority_record(
+            &'a mut self,
+            collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_authority_record = Some(collection_authority_record);
+            self
+        }
+        pub fn set_collection_size_args(
+            &'a mut self,
+            set_collection_size_args: SetCollectionSizeArgs,
+        ) -> &mut Self {
+            self.set_collection_size_args = Some(set_collection_size_args);
+            self
+        }
+        pub fn build(&'a self) -> BubblegumSetCollectionSize {
+            BubblegumSetCollectionSize {
+                program: self.program,
+
+                collection_metadata: self
+                    .collection_metadata
+                    .expect("collection_metadata is not set"),
+
+                collection_authority: self
+                    .collection_authority
+                    .expect("collection_authority is not set"),
+
+                collection_mint: self.collection_mint.expect("collection_mint is not set"),
+
+                bubblegum_signer: self.bubblegum_signer.expect("bubblegum_signer is not set"),
+
+                collection_authority_record: self.collection_authority_record,
+                args: BubblegumSetCollectionSizeInstructionArgs::new(
+                    self.set_collection_size_args
+                        .expect("set_collection_size_args is not set"),
+                ),
+            }
         }
     }
 }

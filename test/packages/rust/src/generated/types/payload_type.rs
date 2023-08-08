@@ -4,11 +4,12 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// This is a union of all the possible payload types.
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub enum PayloadType {
     Seeds {
         seeds: Vec<Vec<u8>>,

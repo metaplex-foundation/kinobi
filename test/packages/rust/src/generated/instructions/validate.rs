@@ -43,7 +43,7 @@ impl Validate {
         args: ValidateInstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_auth_rules::ID,
+            program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts: vec![
                                           solana_program::instruction::AccountMeta::new(
               self.payer,
@@ -64,7 +64,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -75,7 +75,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -86,7 +86,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -97,7 +97,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -108,7 +108,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -119,7 +119,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -130,7 +130,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -141,7 +141,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -152,7 +152,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -163,7 +163,7 @@ impl Validate {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_auth_rules::ID,
+                crate::MPL_TOKEN_AUTH_RULES_ID,
                 false,
               ),
             },
@@ -173,7 +173,27 @@ impl Validate {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct ValidateInstructionArgs {
+    discriminator: u8,
+    pub rule_set_name: String,
+    pub operation: Operation,
+    pub payload: Payload,
+}
+
+impl ValidateInstructionArgs {
+    pub fn new(rule_set_name: String, operation: Operation, payload: Payload) -> Self {
+        Self {
+            discriminator: 1,
+            rule_set_name,
+            operation,
+            payload,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct ValidateBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
     rule_set: Option<solana_program::pubkey::Pubkey>,
@@ -194,6 +214,9 @@ pub struct ValidateBuilder {
 }
 
 impl ValidateBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
@@ -326,21 +349,404 @@ impl ValidateBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct ValidateInstructionArgs {
-    discriminator: u8,
-    pub rule_set_name: String,
-    pub operation: Operation,
-    pub payload: Payload,
-}
+pub mod cpi {
+    use super::*;
 
-impl ValidateInstructionArgs {
-    pub fn new(rule_set_name: String, operation: Operation, payload: Payload) -> Self {
-        Self {
-            discriminator: 1,
-            rule_set_name,
-            operation,
-            payload,
+    /// `validate` CPI instruction.
+    pub struct Validate<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Payer and creator of the RuleSet
+        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+        /// The PDA account where the RuleSet is stored
+        pub rule_set: &'a solana_program::account_info::AccountInfo<'a>,
+        /// System program
+        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+
+        pub opt_rule_signer1: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+        /// Optional rule validation signer 2
+        pub opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation signer 3
+        pub opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation signer 4
+        pub opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation signer 5
+        pub opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation non-signer 1
+        pub opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation non-signer 2
+        pub opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation non-signer 3
+        pub opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation non-signer 4
+        pub opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Optional rule validation non-signer 5
+        pub opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        pub args: ValidateInstructionArgs,
+    }
+
+    impl<'a> Validate<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
+                accounts: vec![
+                                              solana_program::instruction::AccountMeta::new(
+                  *self.payer.key,
+                  true
+                ),
+                                                                    solana_program::instruction::AccountMeta::new(
+                  *self.rule_set.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.system_program.key,
+                  false
+                ),
+                                                                    if let Some((opt_rule_signer1, signer)) = self.opt_rule_signer1 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_signer1.key,
+                    signer,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_signer2) = self.opt_rule_signer2 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_signer2.key,
+                    true,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_signer3) = self.opt_rule_signer3 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_signer3.key,
+                    true,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_signer4) = self.opt_rule_signer4 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_signer4.key,
+                    true,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_signer5) = self.opt_rule_signer5 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_signer5.key,
+                    true,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_nonsigner1) = self.opt_rule_nonsigner1 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_nonsigner1.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_nonsigner2) = self.opt_rule_nonsigner2 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_nonsigner2.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_nonsigner3) = self.opt_rule_nonsigner3 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_nonsigner3.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_nonsigner4) = self.opt_rule_nonsigner4 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_nonsigner4.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                                                    if let Some(opt_rule_nonsigner5) = self.opt_rule_nonsigner5 {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *opt_rule_nonsigner5.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_AUTH_RULES_ID,
+                    false,
+                  ),
+                },
+                                      ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(13 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.payer.clone());
+            account_infos.push(self.rule_set.clone());
+            account_infos.push(self.system_program.clone());
+            if let Some(opt_rule_signer1) = self.opt_rule_signer1 {
+                account_infos.push(opt_rule_signer1.clone());
+            }
+            if let Some(opt_rule_signer2) = self.opt_rule_signer2 {
+                account_infos.push(opt_rule_signer2.clone());
+            }
+            if let Some(opt_rule_signer3) = self.opt_rule_signer3 {
+                account_infos.push(opt_rule_signer3.clone());
+            }
+            if let Some(opt_rule_signer4) = self.opt_rule_signer4 {
+                account_infos.push(opt_rule_signer4.clone());
+            }
+            if let Some(opt_rule_signer5) = self.opt_rule_signer5 {
+                account_infos.push(opt_rule_signer5.clone());
+            }
+            if let Some(opt_rule_nonsigner1) = self.opt_rule_nonsigner1 {
+                account_infos.push(opt_rule_nonsigner1.clone());
+            }
+            if let Some(opt_rule_nonsigner2) = self.opt_rule_nonsigner2 {
+                account_infos.push(opt_rule_nonsigner2.clone());
+            }
+            if let Some(opt_rule_nonsigner3) = self.opt_rule_nonsigner3 {
+                account_infos.push(opt_rule_nonsigner3.clone());
+            }
+            if let Some(opt_rule_nonsigner4) = self.opt_rule_nonsigner4 {
+                account_infos.push(opt_rule_nonsigner4.clone());
+            }
+            if let Some(opt_rule_nonsigner5) = self.opt_rule_nonsigner5 {
+                account_infos.push(opt_rule_nonsigner5.clone());
+            }
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `validate` CPI instruction builder.
+    pub struct ValidateBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rule_set: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer1: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+        opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rule_set_name: Option<String>,
+        operation: Option<Operation>,
+        payload: Option<Payload>,
+    }
+
+    impl<'a> ValidateBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                payer: None,
+                rule_set: None,
+                system_program: None,
+                opt_rule_signer1: None,
+                opt_rule_signer2: None,
+                opt_rule_signer3: None,
+                opt_rule_signer4: None,
+                opt_rule_signer5: None,
+                opt_rule_nonsigner1: None,
+                opt_rule_nonsigner2: None,
+                opt_rule_nonsigner3: None,
+                opt_rule_nonsigner4: None,
+                opt_rule_nonsigner5: None,
+                rule_set_name: None,
+                operation: None,
+                payload: None,
+            }
+        }
+        pub fn payer(
+            &'a mut self,
+            payer: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.payer = Some(payer);
+            self
+        }
+        pub fn rule_set(
+            &'a mut self,
+            rule_set: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.rule_set = Some(rule_set);
+            self
+        }
+        pub fn system_program(
+            &'a mut self,
+            system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.system_program = Some(system_program);
+            self
+        }
+        pub fn opt_rule_signer1(
+            &'a mut self,
+            opt_rule_signer1: &'a solana_program::account_info::AccountInfo<'a>,
+            as_signer: bool,
+        ) -> &mut Self {
+            self.opt_rule_signer1 = Some((opt_rule_signer1, as_signer));
+            self
+        }
+        pub fn opt_rule_signer2(
+            &'a mut self,
+            opt_rule_signer2: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_signer2 = Some(opt_rule_signer2);
+            self
+        }
+        pub fn opt_rule_signer3(
+            &'a mut self,
+            opt_rule_signer3: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_signer3 = Some(opt_rule_signer3);
+            self
+        }
+        pub fn opt_rule_signer4(
+            &'a mut self,
+            opt_rule_signer4: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_signer4 = Some(opt_rule_signer4);
+            self
+        }
+        pub fn opt_rule_signer5(
+            &'a mut self,
+            opt_rule_signer5: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_signer5 = Some(opt_rule_signer5);
+            self
+        }
+        pub fn opt_rule_nonsigner1(
+            &'a mut self,
+            opt_rule_nonsigner1: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_nonsigner1 = Some(opt_rule_nonsigner1);
+            self
+        }
+        pub fn opt_rule_nonsigner2(
+            &'a mut self,
+            opt_rule_nonsigner2: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_nonsigner2 = Some(opt_rule_nonsigner2);
+            self
+        }
+        pub fn opt_rule_nonsigner3(
+            &'a mut self,
+            opt_rule_nonsigner3: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_nonsigner3 = Some(opt_rule_nonsigner3);
+            self
+        }
+        pub fn opt_rule_nonsigner4(
+            &'a mut self,
+            opt_rule_nonsigner4: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_nonsigner4 = Some(opt_rule_nonsigner4);
+            self
+        }
+        pub fn opt_rule_nonsigner5(
+            &'a mut self,
+            opt_rule_nonsigner5: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.opt_rule_nonsigner5 = Some(opt_rule_nonsigner5);
+            self
+        }
+        pub fn rule_set_name(&'a mut self, rule_set_name: String) -> &mut Self {
+            self.rule_set_name = Some(rule_set_name);
+            self
+        }
+        pub fn operation(&'a mut self, operation: Operation) -> &mut Self {
+            self.operation = Some(operation);
+            self
+        }
+        pub fn payload(&'a mut self, payload: Payload) -> &mut Self {
+            self.payload = Some(payload);
+            self
+        }
+        pub fn build(&'a self) -> Validate {
+            Validate {
+                program: self.program,
+
+                payer: self.payer.expect("payer is not set"),
+
+                rule_set: self.rule_set.expect("rule_set is not set"),
+
+                system_program: self.system_program.expect("system_program is not set"),
+
+                opt_rule_signer1: self.opt_rule_signer1,
+
+                opt_rule_signer2: self.opt_rule_signer2,
+
+                opt_rule_signer3: self.opt_rule_signer3,
+
+                opt_rule_signer4: self.opt_rule_signer4,
+
+                opt_rule_signer5: self.opt_rule_signer5,
+
+                opt_rule_nonsigner1: self.opt_rule_nonsigner1,
+
+                opt_rule_nonsigner2: self.opt_rule_nonsigner2,
+
+                opt_rule_nonsigner3: self.opt_rule_nonsigner3,
+
+                opt_rule_nonsigner4: self.opt_rule_nonsigner4,
+
+                opt_rule_nonsigner5: self.opt_rule_nonsigner5,
+                args: ValidateInstructionArgs::new(
+                    self.rule_set_name.expect("rule_set_name is not set"),
+                    self.operation.expect("operation is not set"),
+                    self.payload.expect("payload is not set"),
+                ),
+            }
         }
     }
 }

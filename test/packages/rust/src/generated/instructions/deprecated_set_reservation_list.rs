@@ -23,7 +23,7 @@ impl DeprecatedSetReservationList {
         args: DeprecatedSetReservationListInstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.master_edition, false),
                 solana_program::instruction::AccountMeta::new(self.reservation_list, false),
@@ -34,7 +34,34 @@ impl DeprecatedSetReservationList {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct DeprecatedSetReservationListInstructionArgs {
+    discriminator: u8,
+    pub reservations: Vec<Reservation>,
+    pub total_reservation_spots: Option<u64>,
+    pub offset: u64,
+    pub total_spot_offset: u64,
+}
+
+impl DeprecatedSetReservationListInstructionArgs {
+    pub fn new(
+        reservations: Vec<Reservation>,
+        total_reservation_spots: Option<u64>,
+        offset: u64,
+        total_spot_offset: u64,
+    ) -> Self {
+        Self {
+            discriminator: 5,
+            reservations,
+            total_reservation_spots,
+            offset,
+            total_spot_offset,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct DeprecatedSetReservationListBuilder {
     master_edition: Option<solana_program::pubkey::Pubkey>,
     reservation_list: Option<solana_program::pubkey::Pubkey>,
@@ -46,6 +73,9 @@ pub struct DeprecatedSetReservationListBuilder {
 }
 
 impl DeprecatedSetReservationListBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.master_edition = Some(master_edition);
         self
@@ -96,28 +126,138 @@ impl DeprecatedSetReservationListBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct DeprecatedSetReservationListInstructionArgs {
-    discriminator: u8,
-    pub reservations: Vec<Reservation>,
-    pub total_reservation_spots: Option<u64>,
-    pub offset: u64,
-    pub total_spot_offset: u64,
-}
+pub mod cpi {
+    use super::*;
 
-impl DeprecatedSetReservationListInstructionArgs {
-    pub fn new(
-        reservations: Vec<Reservation>,
+    /// `deprecated_set_reservation_list` CPI instruction.
+    pub struct DeprecatedSetReservationList<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+        pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+        pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+        /// The resource you tied the reservation list too
+        pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+        pub args: DeprecatedSetReservationListInstructionArgs,
+    }
+
+    impl<'a> DeprecatedSetReservationList<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.master_edition.key, false),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.reservation_list.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.resource.key,
+                        true,
+                    ),
+                ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(3 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.master_edition.clone());
+            account_infos.push(self.reservation_list.clone());
+            account_infos.push(self.resource.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `deprecated_set_reservation_list` CPI instruction builder.
+    pub struct DeprecatedSetReservationListBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        resource: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        reservations: Option<Vec<Reservation>>,
         total_reservation_spots: Option<u64>,
-        offset: u64,
-        total_spot_offset: u64,
-    ) -> Self {
-        Self {
-            discriminator: 5,
-            reservations,
-            total_reservation_spots,
-            offset,
-            total_spot_offset,
+        offset: Option<u64>,
+        total_spot_offset: Option<u64>,
+    }
+
+    impl<'a> DeprecatedSetReservationListBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                master_edition: None,
+                reservation_list: None,
+                resource: None,
+                reservations: None,
+                total_reservation_spots: None,
+                offset: None,
+                total_spot_offset: None,
+            }
+        }
+        pub fn master_edition(
+            &'a mut self,
+            master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.master_edition = Some(master_edition);
+            self
+        }
+        pub fn reservation_list(
+            &'a mut self,
+            reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.reservation_list = Some(reservation_list);
+            self
+        }
+        pub fn resource(
+            &'a mut self,
+            resource: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.resource = Some(resource);
+            self
+        }
+        pub fn reservations(&'a mut self, reservations: Vec<Reservation>) -> &mut Self {
+            self.reservations = Some(reservations);
+            self
+        }
+        pub fn total_reservation_spots(&'a mut self, total_reservation_spots: u64) -> &mut Self {
+            self.total_reservation_spots = Some(total_reservation_spots);
+            self
+        }
+        pub fn offset(&'a mut self, offset: u64) -> &mut Self {
+            self.offset = Some(offset);
+            self
+        }
+        pub fn total_spot_offset(&'a mut self, total_spot_offset: u64) -> &mut Self {
+            self.total_spot_offset = Some(total_spot_offset);
+            self
+        }
+        pub fn build(&'a self) -> DeprecatedSetReservationList {
+            DeprecatedSetReservationList {
+                program: self.program,
+
+                master_edition: self.master_edition.expect("master_edition is not set"),
+
+                reservation_list: self.reservation_list.expect("reservation_list is not set"),
+
+                resource: self.resource.expect("resource is not set"),
+                args: DeprecatedSetReservationListInstructionArgs::new(
+                    self.reservations.expect("reservations is not set"),
+                    self.total_reservation_spots,
+                    self.offset.expect("offset is not set"),
+                    self.total_spot_offset
+                        .expect("total_spot_offset is not set"),
+                ),
+            }
         }
     }
 }

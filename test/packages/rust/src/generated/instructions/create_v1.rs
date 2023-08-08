@@ -35,7 +35,7 @@ impl CreateV1 {
         args: CreateV1InstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                                           solana_program::instruction::AccountMeta::new(
               self.metadata,
@@ -48,7 +48,7 @@ impl CreateV1 {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_metadata::ID,
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
               ),
             },
@@ -86,7 +86,29 @@ impl CreateV1 {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct CreateV1InstructionArgs {
+    discriminator: u8,
+    create_v1_discriminator: u8,
+    pub asset_data: AssetData,
+    pub decimals: Option<u8>,
+    pub max_supply: Option<u64>,
+}
+
+impl CreateV1InstructionArgs {
+    pub fn new(asset_data: AssetData, decimals: Option<u8>, max_supply: Option<u64>) -> Self {
+        Self {
+            discriminator: 41,
+            create_v1_discriminator: 0,
+            asset_data,
+            decimals,
+            max_supply,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct CreateV1Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
@@ -103,6 +125,9 @@ pub struct CreateV1Builder {
 }
 
 impl CreateV1Builder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
@@ -193,23 +218,255 @@ impl CreateV1Builder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct CreateV1InstructionArgs {
-    discriminator: u8,
-    create_v1_discriminator: u8,
-    pub asset_data: AssetData,
-    pub decimals: Option<u8>,
-    pub max_supply: Option<u64>,
-}
+pub mod cpi {
+    use super::*;
 
-impl CreateV1InstructionArgs {
-    pub fn new(asset_data: AssetData, decimals: Option<u8>, max_supply: Option<u64>) -> Self {
-        Self {
-            discriminator: 41,
-            create_v1_discriminator: 0,
-            asset_data,
-            decimals,
-            max_supply,
+    /// `create_v1` CPI instruction.
+    pub struct CreateV1<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata account key (pda of ['metadata', program id, mint id])
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition']
+        pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        /// Mint of token asset
+        pub mint: (&'a solana_program::account_info::AccountInfo<'a>, bool),
+        /// Mint authority
+        pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Payer
+        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+        /// update authority info
+        pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// System program
+        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Instructions sysvar account
+        pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+        /// SPL Token program
+        pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        pub args: CreateV1InstructionArgs,
+    }
+
+    impl<'a> CreateV1<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                                              solana_program::instruction::AccountMeta::new(
+                  *self.metadata.key,
+                  false
+                ),
+                                                                    if let Some(master_edition) = self.master_edition {
+                  solana_program::instruction::AccountMeta::new(
+                    *master_edition.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_METADATA_ID,
+                    false,
+                  ),
+                },
+                                                                    solana_program::instruction::AccountMeta::new(
+                  *self.mint.0.key,
+                  self.mint.1,
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.mint_authority.key,
+                  true
+                ),
+                                                                    solana_program::instruction::AccountMeta::new(
+                  *self.payer.key,
+                  true
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.update_authority.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.system_program.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.sysvar_instructions.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.spl_token_program.key,
+                  false
+                ),
+                                      ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(9 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.metadata.clone());
+            if let Some(master_edition) = self.master_edition {
+                account_infos.push(master_edition.clone());
+            }
+            account_infos.push(self.mint.clone());
+            account_infos.push(self.mint_authority.clone());
+            account_infos.push(self.payer.clone());
+            account_infos.push(self.update_authority.clone());
+            account_infos.push(self.system_program.clone());
+            account_infos.push(self.sysvar_instructions.clone());
+            account_infos.push(self.spl_token_program.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `create_v1` CPI instruction builder.
+    pub struct CreateV1Builder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        mint: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+        mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        asset_data: Option<AssetData>,
+        decimals: Option<u8>,
+        max_supply: Option<u64>,
+    }
+
+    impl<'a> CreateV1Builder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                metadata: None,
+                master_edition: None,
+                mint: None,
+                mint_authority: None,
+                payer: None,
+                update_authority: None,
+                system_program: None,
+                sysvar_instructions: None,
+                spl_token_program: None,
+                asset_data: None,
+                decimals: None,
+                max_supply: None,
+            }
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn master_edition(
+            &'a mut self,
+            master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.master_edition = Some(master_edition);
+            self
+        }
+        pub fn mint(
+            &'a mut self,
+            mint: &'a solana_program::account_info::AccountInfo<'a>,
+            as_signer: bool,
+        ) -> &mut Self {
+            self.mint = Some((mint, as_signer));
+            self
+        }
+        pub fn mint_authority(
+            &'a mut self,
+            mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.mint_authority = Some(mint_authority);
+            self
+        }
+        pub fn payer(
+            &'a mut self,
+            payer: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.payer = Some(payer);
+            self
+        }
+        pub fn update_authority(
+            &'a mut self,
+            update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.update_authority = Some(update_authority);
+            self
+        }
+        pub fn system_program(
+            &'a mut self,
+            system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.system_program = Some(system_program);
+            self
+        }
+        pub fn sysvar_instructions(
+            &'a mut self,
+            sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.sysvar_instructions = Some(sysvar_instructions);
+            self
+        }
+        pub fn spl_token_program(
+            &'a mut self,
+            spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.spl_token_program = Some(spl_token_program);
+            self
+        }
+        pub fn asset_data(&'a mut self, asset_data: AssetData) -> &mut Self {
+            self.asset_data = Some(asset_data);
+            self
+        }
+        pub fn decimals(&'a mut self, decimals: u8) -> &mut Self {
+            self.decimals = Some(decimals);
+            self
+        }
+        pub fn max_supply(&'a mut self, max_supply: u64) -> &mut Self {
+            self.max_supply = Some(max_supply);
+            self
+        }
+        pub fn build(&'a self) -> CreateV1 {
+            CreateV1 {
+                program: self.program,
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                master_edition: self.master_edition,
+
+                mint: self.mint.expect("mint is not set"),
+
+                mint_authority: self.mint_authority.expect("mint_authority is not set"),
+
+                payer: self.payer.expect("payer is not set"),
+
+                update_authority: self.update_authority.expect("update_authority is not set"),
+
+                system_program: self.system_program.expect("system_program is not set"),
+
+                sysvar_instructions: self
+                    .sysvar_instructions
+                    .expect("sysvar_instructions is not set"),
+
+                spl_token_program: self
+                    .spl_token_program
+                    .expect("spl_token_program is not set"),
+                args: CreateV1InstructionArgs::new(
+                    self.asset_data.expect("asset_data is not set"),
+                    self.decimals,
+                    self.max_supply,
+                ),
+            }
         }
     }
 }

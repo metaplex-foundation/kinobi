@@ -9,7 +9,7 @@ use crate::generated::types::{EscrowAuthority, TmKey};
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::pubkey::Pubkey;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct TokenOwnedEscrow {
     pub key: TmKey,
     pub base_token: Pubkey,

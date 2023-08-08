@@ -23,7 +23,7 @@ impl RevokeCollectionAuthority {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = RevokeCollectionAuthorityInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(
                     self.collection_authority_record,
@@ -39,7 +39,19 @@ impl RevokeCollectionAuthority {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct RevokeCollectionAuthorityInstructionArgs {
+    discriminator: u8,
+}
+
+impl RevokeCollectionAuthorityInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 24 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct RevokeCollectionAuthorityBuilder {
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     delegate_authority: Option<solana_program::pubkey::Pubkey>,
@@ -49,6 +61,9 @@ pub struct RevokeCollectionAuthorityBuilder {
 }
 
 impl RevokeCollectionAuthorityBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn collection_authority_record(
         &mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
@@ -98,13 +113,144 @@ impl RevokeCollectionAuthorityBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct RevokeCollectionAuthorityInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl RevokeCollectionAuthorityInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 24 }
+    /// `revoke_collection_authority` CPI instruction.
+    pub struct RevokeCollectionAuthority<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Collection Authority Record PDA
+        pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Delegated Collection Authority
+        pub delegate_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Update Authority, or Delegated Authority, of Collection NFT
+        pub revoke_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata account
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Mint of Metadata
+        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    }
+
+    impl<'a> RevokeCollectionAuthority<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = RevokeCollectionAuthorityInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(
+                        *self.collection_authority_record.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.delegate_authority.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new(*self.revoke_authority.key, true),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.metadata.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
+                ],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(5 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.collection_authority_record.clone());
+            account_infos.push(self.delegate_authority.clone());
+            account_infos.push(self.revoke_authority.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.mint.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `revoke_collection_authority` CPI instruction builder.
+    pub struct RevokeCollectionAuthorityBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        delegate_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        revoke_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> RevokeCollectionAuthorityBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                collection_authority_record: None,
+                delegate_authority: None,
+                revoke_authority: None,
+                metadata: None,
+                mint: None,
+            }
+        }
+        pub fn collection_authority_record(
+            &'a mut self,
+            collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.collection_authority_record = Some(collection_authority_record);
+            self
+        }
+        pub fn delegate_authority(
+            &'a mut self,
+            delegate_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.delegate_authority = Some(delegate_authority);
+            self
+        }
+        pub fn revoke_authority(
+            &'a mut self,
+            revoke_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.revoke_authority = Some(revoke_authority);
+            self
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn mint(
+            &'a mut self,
+            mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.mint = Some(mint);
+            self
+        }
+        pub fn build(&'a self) -> RevokeCollectionAuthority {
+            RevokeCollectionAuthority {
+                program: self.program,
+
+                collection_authority_record: self
+                    .collection_authority_record
+                    .expect("collection_authority_record is not set"),
+
+                delegate_authority: self
+                    .delegate_authority
+                    .expect("delegate_authority is not set"),
+
+                revoke_authority: self.revoke_authority.expect("revoke_authority is not set"),
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                mint: self.mint.expect("mint is not set"),
+            }
+        }
     }
 }

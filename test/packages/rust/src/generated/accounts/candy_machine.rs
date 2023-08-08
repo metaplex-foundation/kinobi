@@ -11,7 +11,7 @@ use solana_program::pubkey::Pubkey;
 
 /// Candy machine state and config data.
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct CandyMachine {
     pub discriminator: [u8; 8],
     /// Features versioning flags.

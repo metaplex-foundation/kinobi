@@ -15,7 +15,7 @@ impl PuffMetadata {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = PuffMetadataInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![solana_program::instruction::AccountMeta::new(
                 self.metadata,
                 false,
@@ -25,12 +25,27 @@ impl PuffMetadata {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct PuffMetadataInstructionArgs {
+    discriminator: u8,
+}
+
+impl PuffMetadataInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 14 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct PuffMetadataBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
 }
 
 impl PuffMetadataBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
@@ -43,13 +58,72 @@ impl PuffMetadataBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct PuffMetadataInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl PuffMetadataInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 14 }
+    /// `puff_metadata` CPI instruction.
+    pub struct PuffMetadata<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata account
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    }
+
+    impl<'a> PuffMetadata<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = PuffMetadataInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![solana_program::instruction::AccountMeta::new(
+                    *self.metadata.key,
+                    false,
+                )],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(1 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.metadata.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `puff_metadata` CPI instruction builder.
+    pub struct PuffMetadataBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> PuffMetadataBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                metadata: None,
+            }
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn build(&'a self) -> PuffMetadata {
+            PuffMetadata {
+                program: self.program,
+
+                metadata: self.metadata.expect("metadata is not set"),
+            }
+        }
     }
 }

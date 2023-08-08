@@ -4,10 +4,11 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+
 use crate::generated::types::AuthorizationData;
 use borsh::{BorshDeserialize, BorshSerialize};
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub enum TransferArgs {
     V1 {
         authorization_data: Option<AuthorizationData>,

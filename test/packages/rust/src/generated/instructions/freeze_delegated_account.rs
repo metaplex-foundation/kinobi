@@ -23,7 +23,7 @@ impl FreezeDelegatedAccount {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = FreezeDelegatedAccountInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.delegate, true),
                 solana_program::instruction::AccountMeta::new(self.token_account, false),
@@ -36,7 +36,19 @@ impl FreezeDelegatedAccount {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct FreezeDelegatedAccountInstructionArgs {
+    discriminator: u8,
+}
+
+impl FreezeDelegatedAccountInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 26 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct FreezeDelegatedAccountBuilder {
     delegate: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
@@ -46,6 +58,9 @@ pub struct FreezeDelegatedAccountBuilder {
 }
 
 impl FreezeDelegatedAccountBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn delegate(&mut self, delegate: solana_program::pubkey::Pubkey) -> &mut Self {
         self.delegate = Some(delegate);
         self
@@ -82,13 +97,137 @@ impl FreezeDelegatedAccountBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct FreezeDelegatedAccountInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl FreezeDelegatedAccountInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 26 }
+    /// `freeze_delegated_account` CPI instruction.
+    pub struct FreezeDelegatedAccount<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Delegate
+        pub delegate: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Token account to freeze
+        pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Edition
+        pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Token mint
+        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Token Program
+        pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    }
+
+    impl<'a> FreezeDelegatedAccount<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = FreezeDelegatedAccountInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.delegate.key, true),
+                    solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.edition.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.token_program.key,
+                        false,
+                    ),
+                ],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(5 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.delegate.clone());
+            account_infos.push(self.token_account.clone());
+            account_infos.push(self.edition.clone());
+            account_infos.push(self.mint.clone());
+            account_infos.push(self.token_program.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `freeze_delegated_account` CPI instruction builder.
+    pub struct FreezeDelegatedAccountBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> FreezeDelegatedAccountBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                delegate: None,
+                token_account: None,
+                edition: None,
+                mint: None,
+                token_program: None,
+            }
+        }
+        pub fn delegate(
+            &'a mut self,
+            delegate: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.delegate = Some(delegate);
+            self
+        }
+        pub fn token_account(
+            &'a mut self,
+            token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.token_account = Some(token_account);
+            self
+        }
+        pub fn edition(
+            &'a mut self,
+            edition: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.edition = Some(edition);
+            self
+        }
+        pub fn mint(
+            &'a mut self,
+            mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.mint = Some(mint);
+            self
+        }
+        pub fn token_program(
+            &'a mut self,
+            token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.token_program = Some(token_program);
+            self
+        }
+        pub fn build(&'a self) -> FreezeDelegatedAccount {
+            FreezeDelegatedAccount {
+                program: self.program,
+
+                delegate: self.delegate.expect("delegate is not set"),
+
+                token_account: self.token_account.expect("token_account is not set"),
+
+                edition: self.edition.expect("edition is not set"),
+
+                mint: self.mint.expect("mint is not set"),
+
+                token_program: self.token_program.expect("token_program is not set"),
+            }
+        }
     }
 }

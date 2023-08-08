@@ -4,6 +4,7 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+
 use crate::generated::types::{
     AuthorityType, AuthorizationData, Collection, CollectionDetails, Data, DelegateState,
     ProgrammableConfig, TokenStandard, Uses,
@@ -11,7 +12,7 @@ use crate::generated::types::{
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::pubkey::Pubkey;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateArgs {
     V1 {
         authorization_data: Option<AuthorizationData>,

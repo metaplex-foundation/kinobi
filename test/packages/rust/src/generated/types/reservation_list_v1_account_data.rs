@@ -4,12 +4,13 @@
 //!
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
+
 use borsh::{ BorshDeserialize, BorshSerialize };
 use crate::generated::types::{ ReservationV1, TmKey };
 use solana_program::{ pubkey::Pubkey };
 
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct ReservationListV1AccountData {
 pub key: TmKey,
 pub master_edition: Pubkey,

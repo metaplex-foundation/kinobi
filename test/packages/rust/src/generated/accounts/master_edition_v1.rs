@@ -9,7 +9,7 @@ use crate::generated::types::TmKey;
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::pubkey::Pubkey;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct MasterEditionV1 {
     pub key: TmKey,
     pub supply: u64,

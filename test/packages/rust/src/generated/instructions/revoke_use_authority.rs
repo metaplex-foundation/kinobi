@@ -31,7 +31,7 @@ impl RevokeUseAuthority {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = RevokeUseAuthorityInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                                           solana_program::instruction::AccountMeta::new(
               self.use_authority_record,
@@ -72,7 +72,7 @@ impl RevokeUseAuthority {
               ),
             } else {
               solana_program::instruction::AccountMeta::new_readonly(
-                crate::programs::mpl_token_metadata::ID,
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
               ),
             },
@@ -82,7 +82,19 @@ impl RevokeUseAuthority {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct RevokeUseAuthorityInstructionArgs {
+    discriminator: u8,
+}
+
+impl RevokeUseAuthorityInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 21 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct RevokeUseAuthorityBuilder {
     use_authority_record: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -96,6 +108,9 @@ pub struct RevokeUseAuthorityBuilder {
 }
 
 impl RevokeUseAuthorityBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn use_authority_record(
         &mut self,
         use_authority_record: solana_program::pubkey::Pubkey,
@@ -166,13 +181,231 @@ impl RevokeUseAuthorityBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct RevokeUseAuthorityInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl RevokeUseAuthorityInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 21 }
+    /// `revoke_use_authority` CPI instruction.
+    pub struct RevokeUseAuthority<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Use Authority Record PDA
+        pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Owner
+        pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+        /// A Use Authority
+        pub user: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Owned Token Account Of Mint
+        pub owner_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Mint of Metadata
+        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata account
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Token program
+        pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// System program
+        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Rent info
+        pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> RevokeUseAuthority<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = RevokeUseAuthorityInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                                              solana_program::instruction::AccountMeta::new(
+                  *self.use_authority_record.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new(
+                  *self.owner.key,
+                  true
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.user.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new(
+                  *self.owner_token_account.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.mint.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.metadata.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.token_program.key,
+                  false
+                ),
+                                                                    solana_program::instruction::AccountMeta::new_readonly(
+                  *self.system_program.key,
+                  false
+                ),
+                                                                    if let Some(rent) = self.rent {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    *rent.key,
+                    false,
+                  ),
+                } else {
+                  solana_program::instruction::AccountMeta::new_readonly(
+                    crate::MPL_TOKEN_METADATA_ID,
+                    false,
+                  ),
+                },
+                                      ],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(9 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.use_authority_record.clone());
+            account_infos.push(self.owner.clone());
+            account_infos.push(self.user.clone());
+            account_infos.push(self.owner_token_account.clone());
+            account_infos.push(self.mint.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.token_program.clone());
+            account_infos.push(self.system_program.clone());
+            if let Some(rent) = self.rent {
+                account_infos.push(rent.clone());
+            }
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `revoke_use_authority` CPI instruction builder.
+    pub struct RevokeUseAuthorityBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        user: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        owner_token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> RevokeUseAuthorityBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                use_authority_record: None,
+                owner: None,
+                user: None,
+                owner_token_account: None,
+                mint: None,
+                metadata: None,
+                token_program: None,
+                system_program: None,
+                rent: None,
+            }
+        }
+        pub fn use_authority_record(
+            &'a mut self,
+            use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.use_authority_record = Some(use_authority_record);
+            self
+        }
+        pub fn owner(
+            &'a mut self,
+            owner: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.owner = Some(owner);
+            self
+        }
+        pub fn user(
+            &'a mut self,
+            user: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.user = Some(user);
+            self
+        }
+        pub fn owner_token_account(
+            &'a mut self,
+            owner_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.owner_token_account = Some(owner_token_account);
+            self
+        }
+        pub fn mint(
+            &'a mut self,
+            mint: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.mint = Some(mint);
+            self
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn token_program(
+            &'a mut self,
+            token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.token_program = Some(token_program);
+            self
+        }
+        pub fn system_program(
+            &'a mut self,
+            system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.system_program = Some(system_program);
+            self
+        }
+        pub fn rent(
+            &'a mut self,
+            rent: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.rent = Some(rent);
+            self
+        }
+        pub fn build(&'a self) -> RevokeUseAuthority {
+            RevokeUseAuthority {
+                program: self.program,
+
+                use_authority_record: self
+                    .use_authority_record
+                    .expect("use_authority_record is not set"),
+
+                owner: self.owner.expect("owner is not set"),
+
+                user: self.user.expect("user is not set"),
+
+                owner_token_account: self
+                    .owner_token_account
+                    .expect("owner_token_account is not set"),
+
+                mint: self.mint.expect("mint is not set"),
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                token_program: self.token_program.expect("token_program is not set"),
+
+                system_program: self.system_program.expect("system_program is not set"),
+
+                rent: self.rent,
+            }
+        }
     }
 }

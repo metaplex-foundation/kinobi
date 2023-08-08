@@ -8,7 +8,7 @@
 use crate::generated::types::TmKey;
 use borsh::{BorshDeserialize, BorshSerialize};
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct UseAuthorityRecord {
     pub key: TmKey,
     pub allowed_uses: u64,

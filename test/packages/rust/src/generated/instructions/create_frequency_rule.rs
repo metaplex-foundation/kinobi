@@ -23,7 +23,7 @@ impl CreateFrequencyRule {
         args: CreateFrequencyRuleInstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_auth_rules::ID,
+            program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.payer, true),
                 solana_program::instruction::AccountMeta::new(self.frequency_pda, false),
@@ -34,7 +34,34 @@ impl CreateFrequencyRule {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct CreateFrequencyRuleInstructionArgs {
+    discriminator: u8,
+    pub rule_set_name: String,
+    pub freq_rule_name: String,
+    pub last_update: i64,
+    pub period: i64,
+}
+
+impl CreateFrequencyRuleInstructionArgs {
+    pub fn new(
+        rule_set_name: String,
+        freq_rule_name: String,
+        last_update: i64,
+        period: i64,
+    ) -> Self {
+        Self {
+            discriminator: 2,
+            rule_set_name,
+            freq_rule_name,
+            last_update,
+            period,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct CreateFrequencyRuleBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
     frequency_pda: Option<solana_program::pubkey::Pubkey>,
@@ -46,6 +73,9 @@ pub struct CreateFrequencyRuleBuilder {
 }
 
 impl CreateFrequencyRuleBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
@@ -92,28 +122,134 @@ impl CreateFrequencyRuleBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct CreateFrequencyRuleInstructionArgs {
-    discriminator: u8,
-    pub rule_set_name: String,
-    pub freq_rule_name: String,
-    pub last_update: i64,
-    pub period: i64,
-}
+pub mod cpi {
+    use super::*;
 
-impl CreateFrequencyRuleInstructionArgs {
-    pub fn new(
-        rule_set_name: String,
-        freq_rule_name: String,
-        last_update: i64,
-        period: i64,
-    ) -> Self {
-        Self {
-            discriminator: 2,
-            rule_set_name,
-            freq_rule_name,
-            last_update,
-            period,
+    /// `create_frequency_rule` CPI instruction.
+    pub struct CreateFrequencyRule<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Payer and creator of the Frequency Rule
+        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+        /// The PDA account where the Frequency Rule is stored
+        pub frequency_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        /// System program
+        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        pub args: CreateFrequencyRuleInstructionArgs,
+    }
+
+    impl<'a> CreateFrequencyRule<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                    solana_program::instruction::AccountMeta::new(*self.frequency_pda.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.system_program.key,
+                        false,
+                    ),
+                ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(3 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.payer.clone());
+            account_infos.push(self.frequency_pda.clone());
+            account_infos.push(self.system_program.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `create_frequency_rule` CPI instruction builder.
+    pub struct CreateFrequencyRuleBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        frequency_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rule_set_name: Option<String>,
+        freq_rule_name: Option<String>,
+        last_update: Option<i64>,
+        period: Option<i64>,
+    }
+
+    impl<'a> CreateFrequencyRuleBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                payer: None,
+                frequency_pda: None,
+                system_program: None,
+                rule_set_name: None,
+                freq_rule_name: None,
+                last_update: None,
+                period: None,
+            }
+        }
+        pub fn payer(
+            &'a mut self,
+            payer: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.payer = Some(payer);
+            self
+        }
+        pub fn frequency_pda(
+            &'a mut self,
+            frequency_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.frequency_pda = Some(frequency_pda);
+            self
+        }
+        pub fn system_program(
+            &'a mut self,
+            system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.system_program = Some(system_program);
+            self
+        }
+        pub fn rule_set_name(&'a mut self, rule_set_name: String) -> &mut Self {
+            self.rule_set_name = Some(rule_set_name);
+            self
+        }
+        pub fn freq_rule_name(&'a mut self, freq_rule_name: String) -> &mut Self {
+            self.freq_rule_name = Some(freq_rule_name);
+            self
+        }
+        pub fn last_update(&'a mut self, last_update: i64) -> &mut Self {
+            self.last_update = Some(last_update);
+            self
+        }
+        pub fn period(&'a mut self, period: i64) -> &mut Self {
+            self.period = Some(period);
+            self
+        }
+        pub fn build(&'a self) -> CreateFrequencyRule {
+            CreateFrequencyRule {
+                program: self.program,
+
+                payer: self.payer.expect("payer is not set"),
+
+                frequency_pda: self.frequency_pda.expect("frequency_pda is not set"),
+
+                system_program: self.system_program.expect("system_program is not set"),
+                args: CreateFrequencyRuleInstructionArgs::new(
+                    self.rule_set_name.expect("rule_set_name is not set"),
+                    self.freq_rule_name.expect("freq_rule_name is not set"),
+                    self.last_update.expect("last_update is not set"),
+                    self.period.expect("period is not set"),
+                ),
+            }
         }
     }
 }

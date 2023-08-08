@@ -20,7 +20,7 @@ impl AddConfigLines {
         args: AddConfigLinesInstructionArgs,
     ) -> solana_program::instruction::Instruction {
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_candy_machine_core::ID,
+            program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.candy_machine, false),
                 solana_program::instruction::AccountMeta::new_readonly(self.authority, true),
@@ -30,7 +30,25 @@ impl AddConfigLines {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct AddConfigLinesInstructionArgs {
+    discriminator: [u8; 8],
+    pub index: u32,
+    pub config_lines: Vec<ConfigLine>,
+}
+
+impl AddConfigLinesInstructionArgs {
+    pub fn new(index: u32, config_lines: Vec<ConfigLine>) -> Self {
+        Self {
+            discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
+            index,
+            config_lines,
+        }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct AddConfigLinesBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
@@ -39,6 +57,9 @@ pub struct AddConfigLinesBuilder {
 }
 
 impl AddConfigLinesBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
@@ -69,19 +90,105 @@ impl AddConfigLinesBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct AddConfigLinesInstructionArgs {
-    discriminator: [u8; 8],
-    pub index: u32,
-    pub config_lines: Vec<ConfigLine>,
-}
+pub mod cpi {
+    use super::*;
 
-impl AddConfigLinesInstructionArgs {
-    pub fn new(index: u32, config_lines: Vec<ConfigLine>) -> Self {
-        Self {
-            discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
-            index,
-            config_lines,
+    /// `add_config_lines` CPI instruction.
+    pub struct AddConfigLines<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+
+        pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+
+        pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+        pub args: AddConfigLinesInstructionArgs,
+    }
+
+    impl<'a> AddConfigLines<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.candy_machine.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.authority.key,
+                        true,
+                    ),
+                ],
+                data: self.args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(2 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.candy_machine.clone());
+            account_infos.push(self.authority.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `add_config_lines` CPI instruction builder.
+    pub struct AddConfigLinesBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        index: Option<u32>,
+        config_lines: Option<Vec<ConfigLine>>,
+    }
+
+    impl<'a> AddConfigLinesBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                candy_machine: None,
+                authority: None,
+                index: None,
+                config_lines: None,
+            }
+        }
+        pub fn candy_machine(
+            &'a mut self,
+            candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.candy_machine = Some(candy_machine);
+            self
+        }
+        pub fn authority(
+            &'a mut self,
+            authority: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.authority = Some(authority);
+            self
+        }
+        pub fn index(&'a mut self, index: u32) -> &mut Self {
+            self.index = Some(index);
+            self
+        }
+        pub fn config_lines(&'a mut self, config_lines: Vec<ConfigLine>) -> &mut Self {
+            self.config_lines = Some(config_lines);
+            self
+        }
+        pub fn build(&'a self) -> AddConfigLines {
+            AddConfigLines {
+                program: self.program,
+
+                candy_machine: self.candy_machine.expect("candy_machine is not set"),
+
+                authority: self.authority.expect("authority is not set"),
+                args: AddConfigLinesInstructionArgs::new(
+                    self.index.expect("index is not set"),
+                    self.config_lines.expect("config_lines is not set"),
+                ),
+            }
         }
     }
 }

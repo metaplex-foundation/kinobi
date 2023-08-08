@@ -19,7 +19,7 @@ impl UpdatePrimarySaleHappenedViaToken {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = UpdatePrimarySaleHappenedViaTokenInstructionArgs::new();
         solana_program::instruction::Instruction {
-            program_id: crate::programs::mpl_token_metadata::ID,
+            program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
                 solana_program::instruction::AccountMeta::new(self.metadata, false),
                 solana_program::instruction::AccountMeta::new_readonly(self.owner, true),
@@ -30,7 +30,19 @@ impl UpdatePrimarySaleHappenedViaToken {
     }
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+struct UpdatePrimarySaleHappenedViaTokenInstructionArgs {
+    discriminator: u8,
+}
+
+impl UpdatePrimarySaleHappenedViaTokenInstructionArgs {
+    pub fn new() -> Self {
+        Self { discriminator: 4 }
+    }
+}
+
 /// Instruction builder.
+#[derive(Default)]
 pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -38,6 +50,9 @@ pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
 }
 
 impl UpdatePrimarySaleHappenedViaTokenBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
@@ -62,13 +77,101 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct UpdatePrimarySaleHappenedViaTokenInstructionArgs {
-    discriminator: u8,
-}
+pub mod cpi {
+    use super::*;
 
-impl UpdatePrimarySaleHappenedViaTokenInstructionArgs {
-    pub fn new() -> Self {
-        Self { discriminator: 4 }
+    /// `update_primary_sale_happened_via_token` CPI instruction.
+    pub struct UpdatePrimarySaleHappenedViaToken<'a> {
+        pub program: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Metadata key (pda of ['metadata', program id, mint id])
+        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Owner on the token account
+        pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+        /// Account containing tokens from the metadata's mint
+        pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    }
+
+    impl<'a> UpdatePrimarySaleHappenedViaToken<'a> {
+        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+            self.invoke_signed(&[])
+        }
+        #[allow(clippy::vec_init_then_push)]
+        pub fn invoke_signed(
+            &self,
+            signers_seeds: &[&[&[u8]]],
+        ) -> solana_program::entrypoint::ProgramResult {
+            let args = UpdatePrimarySaleHappenedViaTokenInstructionArgs::new();
+            let instruction = solana_program::instruction::Instruction {
+                program_id: crate::MPL_TOKEN_METADATA_ID,
+                accounts: vec![
+                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.owner.key, true),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.token.key, false),
+                ],
+                data: args.try_to_vec().unwrap(),
+            };
+            let mut account_infos = Vec::with_capacity(3 + 1);
+            account_infos.push(self.program.clone());
+            account_infos.push(self.metadata.clone());
+            account_infos.push(self.owner.clone());
+            account_infos.push(self.token.clone());
+
+            if signers_seeds.is_empty() {
+                solana_program::program::invoke(&instruction, &account_infos)
+            } else {
+                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+            }
+        }
+    }
+
+    /// `update_primary_sale_happened_via_token` CPI instruction builder.
+    pub struct UpdatePrimarySaleHappenedViaTokenBuilder<'a> {
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    }
+
+    impl<'a> UpdatePrimarySaleHappenedViaTokenBuilder<'a> {
+        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+            Self {
+                program,
+                metadata: None,
+                owner: None,
+                token: None,
+            }
+        }
+        pub fn metadata(
+            &'a mut self,
+            metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.metadata = Some(metadata);
+            self
+        }
+        pub fn owner(
+            &'a mut self,
+            owner: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.owner = Some(owner);
+            self
+        }
+        pub fn token(
+            &'a mut self,
+            token: &'a solana_program::account_info::AccountInfo<'a>,
+        ) -> &mut Self {
+            self.token = Some(token);
+            self
+        }
+        pub fn build(&'a self) -> UpdatePrimarySaleHappenedViaToken {
+            UpdatePrimarySaleHappenedViaToken {
+                program: self.program,
+
+                metadata: self.metadata.expect("metadata is not set"),
+
+                owner: self.owner.expect("owner is not set"),
+
+                token: self.token.expect("token is not set"),
+            }
+        }
     }
 }

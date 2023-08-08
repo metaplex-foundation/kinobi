@@ -8,7 +8,7 @@
 use crate::generated::types::TmKey;
 use borsh::{BorshDeserialize, BorshSerialize};
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct EditionMarker {
     pub key: TmKey,
     pub ledger: [u8; 31],

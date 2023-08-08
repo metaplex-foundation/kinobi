@@ -8,7 +8,7 @@
 use crate::generated::types::{DelegateRole, TmKey};
 use borsh::{BorshDeserialize, BorshSerialize};
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct DelegateRecord {
     pub key: TmKey,
     pub role: DelegateRole,
