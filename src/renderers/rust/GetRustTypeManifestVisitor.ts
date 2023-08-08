@@ -33,7 +33,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     this.parentName = null;
     return {
       ...manifest,
-      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]\n${manifest.type}`,
+      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n${manifest.type}`,
     };
   }
 
@@ -76,7 +76,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     manifest.imports.add('borsh', ['BorshSerialize', 'BorshDeserialize']);
     return {
       ...manifest,
-      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq)]\n${manifest.type}`,
+      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n${manifest.type}`,
     };
   }
 
