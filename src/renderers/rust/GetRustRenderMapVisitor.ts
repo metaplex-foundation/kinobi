@@ -156,12 +156,15 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
     const imports = new RustImportMap();
+    imports.add('borsh', ['BorshDeserialize', 'BorshSerialize']);
+
     // Instruction args.
     const instructionArgs: any[] = [];
     let hasArgs = false;
 
     instruction.dataArgs.struct.fields.forEach((field) => {
       const manifest = visit(field.child, this.typeManifestVisitor);
+      imports.mergeWith(manifest.imports);
       const innerOptionType = nodes.isOptionTypeNode(field.child)
         ? visit(field.child.child, this.typeManifestVisitor).type
         : null;
@@ -192,10 +195,6 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         hasArgs = true;
       }
     });
-
-    if (hasArgs) {
-      imports.add('borsh', ['BorshDeserialize', 'BorshSerialize']);
-    }
 
     return new RenderMap().add(
       `instructions/${snakeCase(instruction.name)}.rs`,
