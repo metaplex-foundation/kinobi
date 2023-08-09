@@ -1,0 +1,90 @@
+   Compiling kinobi-dummy-generated v0.1.0 (/Users/febo/Developer/metaplex-foundation/kinobi/test/packages/rust)
+error[E0252]: the name `TokenStandard` is defined multiple times
+  --> src/generated/instructions/update_v1.rs:11:25
+   |
+8  | use crate::generated::types::TokenStandard;
+   |     -------------------------------------- previous import of the type `TokenStandard` here
+...
+11 |     ProgrammableConfig, TokenStandard, Uses,
+   |                         ^^^^^^^^^^^^^--
+   |                         |
+   |                         `TokenStandard` reimported here
+   |                         help: remove unnecessary import
+   |
+   = note: `TokenStandard` must be defined only once in the type namespace of this module
+
+error[E0255]: the name `RecursiveType` is defined multiple times
+  --> src/generated/types/recursive_type.rs:12:1
+   |
+8  | use crate::generated::types::RecursiveType;
+   |     -------------------------------------- previous import of the type `RecursiveType` here
+...
+12 | pub struct RecursiveType {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^ `RecursiveType` redefined here
+   |
+   = note: `RecursiveType` must be defined only once in the type namespace of this module
+help: you can use `as` to change the binding name of the import
+   |
+8  | use crate::generated::types::RecursiveType as OtherRecursiveType;
+   |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+warning: unused import: `TokenStandard`
+  --> src/generated/instructions/update_v1.rs:11:25
+   |
+11 |     ProgrammableConfig, TokenStandard, Uses,
+   |                         ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `pubkey`
+  --> src/generated/instructions/update_v1.rs:14:22
+   |
+14 | use solana_program::{pubkey, pubkey::Pubkey};
+   |                      ^^^^^^
+
+warning: unused import: `crate::generated::types::RecursiveType`
+ --> src/generated/types/recursive_type.rs:8:5
+  |
+8 | use crate::generated::types::RecursiveType;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0124]: field `update_authority` is already declared
+  --> src/generated/instructions/update_metadata_account.rs:65:5
+   |
+63 |     update_authority: Option<solana_program::pubkey::Pubkey>,
+   |     -------------------------------------------------------- `update_authority` first declared here
+64 |     data: Option<Data>,
+65 |     update_authority: Option<Pubkey>,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field already declared
+
+error[E0124]: field `update_authority` is already declared
+   --> src/generated/instructions/update_metadata_account.rs:163:9
+    |
+161 |         update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    |         --------------------------------------------------------------------------- `update_authority` first declared here
+162 |         data: Option<Data>,
+163 |         update_authority: Option<Pubkey>,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field already declared
+
+error[E0124]: field `update_authority` is already declared
+  --> src/generated/instructions/update_metadata_account_v2.rs:68:5
+   |
+66 |     update_authority: Option<solana_program::pubkey::Pubkey>,
+   |     -------------------------------------------------------- `update_authority` first declared here
+67 |     data: Option<DataV2>,
+68 |     update_authority: Option<Pubkey>,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field already declared
+
+error[E0124]: field `update_authority` is already declared
+   --> src/generated/instructions/update_metadata_account_v2.rs:172:9
+    |
+170 |         update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    |         --------------------------------------------------------------------------- `update_authority` first declared here
+171 |         data: Option<DataV2>,
+172 |         update_authority: Option<Pubkey>,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field already declared
+
+Some errors have detailed explanations: E0124, E0252, E0255.
+For more information about an error, try `rustc --explain E0124`.
+warning: `kinobi-dummy-generated` (lib) generated 3 warnings
+error: could not compile `kinobi-dummy-generated` due to 6 previous errors; 3 warnings emitted

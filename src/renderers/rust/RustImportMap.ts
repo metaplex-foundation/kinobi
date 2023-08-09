@@ -23,7 +23,12 @@ export class RustImportMap {
   ): RustImportMap {
     const currentImports = this._imports.get(module) ?? new Set();
     const newImports = typeof imports === 'string' ? [imports] : imports;
-    newImports.forEach((i) => currentImports.add(i));
+    newImports.forEach((i) => {
+      if (i.includes('::')) {
+        throw new Error("Can't add import with `::`: " + i);
+      }
+      return currentImports.add(i)
+    });
     this._imports.set(module, currentImports);
     return this;
   }

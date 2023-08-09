@@ -5,13 +5,13 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::TokenStandard;
 use crate::generated::types::{
     AuthorityType, AuthorizationData, Collection, CollectionDetails, Data, DelegateState,
     ProgrammableConfig, TokenStandard, Uses,
 };
 use borsh::{BorshDeserialize, BorshSerialize};
-use solana_program::{pubkey, pubkey::Pubkey};
+use solana_program::pubkey;
+use solana_program::pubkey::Pubkey;
 
 /// Accounts.
 pub struct UpdateV1 {

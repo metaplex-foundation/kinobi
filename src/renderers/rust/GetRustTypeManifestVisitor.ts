@@ -297,7 +297,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   visitPublicKeyType(): RustTypeManifest {
     return {
       type: 'Pubkey',
-      imports: new RustImportMap().add('solana_program', 'pubkey::Pubkey'),
+      imports: new RustImportMap().add('solana_program::pubkey', 'Pubkey'),
     };
   }
 

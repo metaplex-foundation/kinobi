@@ -59,7 +59,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       const rawImportFrom = value.importFrom ?? 'generated';
       const importFrom =
         rawImportFrom === 'generated'
-          ? 'crate::generated::types'
+          ? 'generatedTypes'
           : rawImportFrom;
       if (value.value === 'scalar' || value.value === 'empty') {
         return {
