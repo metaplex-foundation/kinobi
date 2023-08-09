@@ -41,12 +41,12 @@ impl {{ instruction.name | pascalCase }} {
                 solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
                   {{ account.name | snakeCase }},
                   signer,
-                ),
+                )
               } else {
                 solana_program::instruction::AccountMeta::new_readonly(
                   crate::{{ program.name | snakeCase | upper }}_ID,
                   false,
-                ),
+                )
               },
             {% else %}
               solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
@@ -60,12 +60,12 @@ impl {{ instruction.name | pascalCase }} {
                 solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
                   {{ account.name | snakeCase }},
                   {{ 'true' if account.isSigner else 'false' }},
-                ),
+                )
               } else {
                 solana_program::instruction::AccountMeta::new_readonly(
                   crate::{{ program.name | snakeCase | upper }}_ID,
                   false,
-                ),
+                )
               },
             {% else %}
               solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
