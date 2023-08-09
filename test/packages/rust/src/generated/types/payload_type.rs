@@ -10,7 +10,7 @@ use borsh::BorshSerialize;
 
 /// This is a union of all the possible payload types.
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
 pub enum PayloadType {
     Seeds {
         seeds: Vec<Vec<u8>>,

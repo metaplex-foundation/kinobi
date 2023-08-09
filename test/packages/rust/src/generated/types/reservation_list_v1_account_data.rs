@@ -12,7 +12,7 @@ use borsh::BorshSerialize;
 use borsh::BorshDeserialize;
 
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
 pub struct ReservationListV1AccountData {
 pub key: TmKey,
 pub master_edition: Pubkey,
