@@ -74,9 +74,23 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     const manifest = visit(definedType.data, this);
     this.parentName = null;
     manifest.imports.add(['borsh::BorshSerialize', 'borsh::BorshDeserialize']);
+    const traits = [
+      'BorshSerialize',
+      'BorshDeserialize',
+      'Clone',
+      'Debug',
+      'Eq',
+      'PartialEq',
+    ];
+    const isScalarEnum =
+      nodes.isEnumTypeNode(definedType.data) &&
+      nodes.isScalarEnum(definedType.data);
+    if (isScalarEnum) {
+      traits.push('PartialOrd', 'Hash');
+    }
     return {
       ...manifest,
-      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]\n${manifest.type}`,
+      type: `#[derive(${traits.join(', ')})]\n${manifest.type}`,
     };
   }
 

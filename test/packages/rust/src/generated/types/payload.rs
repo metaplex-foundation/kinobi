@@ -11,7 +11,7 @@ use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 use std::collections::HashMap;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct Payload {
     pub map: HashMap<PayloadKey, PayloadType>,
 }

@@ -8,7 +8,7 @@
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct SetCollectionSizeArgs {
     pub size: u64,
 }

@@ -9,7 +9,7 @@ use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct CmCreator {
     /// Pubkey address
     pub address: Pubkey,

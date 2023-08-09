@@ -9,7 +9,7 @@ use crate::generated::types::AssetData;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub enum TmCreateArgs {
     V1 {
         asset_data: AssetData,

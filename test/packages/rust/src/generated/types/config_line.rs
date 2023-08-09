@@ -10,7 +10,7 @@ use borsh::BorshSerialize;
 
 /// Config line struct for storing asset (NFT) data pre-mint.
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct ConfigLine {
     /// Name of the asset.
     pub name: String,

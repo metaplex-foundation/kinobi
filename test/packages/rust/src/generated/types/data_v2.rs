@@ -11,7 +11,7 @@ use crate::generated::types::Uses;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct DataV2 {
     pub name: String,
     pub symbol: String,

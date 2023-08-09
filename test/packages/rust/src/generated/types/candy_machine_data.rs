@@ -13,7 +13,7 @@ use borsh::BorshSerialize;
 
 /// Candy machine configuration data.
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct CandyMachineData {
     /// Number of assets available
     pub items_available: u64,

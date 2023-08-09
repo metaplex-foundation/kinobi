@@ -34,7 +34,6 @@ export * from './payload';
 export * from './payloadKey';
 export * from './payloadType';
 export * from './programmableConfig';
-export * from './recursiveType';
 export * from './reservation';
 export * from './reservationV1';
 export * from './revokeArgs';

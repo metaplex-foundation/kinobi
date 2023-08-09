@@ -9,7 +9,7 @@ use crate::generated::types::AuthorizationData;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub enum TransferArgs {
     V1 {
         authorization_data: Option<AuthorizationData>,
