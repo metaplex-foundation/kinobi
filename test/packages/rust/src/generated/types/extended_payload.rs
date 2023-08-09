@@ -5,8 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::PayloadKey;
-use crate::generatedTypes::PayloadType;
+use crate::generated::types::PayloadKey;
+use crate::generated::types::PayloadType;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 use std::collections::HashMap;

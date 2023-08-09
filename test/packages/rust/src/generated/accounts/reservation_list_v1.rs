@@ -5,8 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::ReservationV1;
-use crate::generatedTypes::TmKey;
+use crate::generated::types::ReservationV1;
+use crate::generated::types::TmKey;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;

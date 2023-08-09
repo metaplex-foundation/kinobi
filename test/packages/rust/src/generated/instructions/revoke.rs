@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::RevokeArgs;
+use crate::generated::types::RevokeArgs;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

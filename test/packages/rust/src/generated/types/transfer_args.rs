@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::AuthorizationData;
+use crate::generated::types::AuthorizationData;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

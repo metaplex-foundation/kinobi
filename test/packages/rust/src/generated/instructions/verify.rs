@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::VerifyArgs;
+use crate::generated::types::VerifyArgs;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

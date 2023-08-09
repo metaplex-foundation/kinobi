@@ -66,7 +66,7 @@ export class RustImportMap {
     const newImportMap = new RustImportMap();
     const resolveDependency = (i: string): string => {
       const dependencyKey = Object.keys(dependencyMap).find((key) =>
-        i.startsWith(key)
+        i.startsWith(`${key}::`)
       );
       if (!dependencyKey) return i;
       const dependencyValue = dependencyMap[dependencyKey];

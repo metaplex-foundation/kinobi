@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::ConfigLine;
+use crate::generated::types::ConfigLine;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

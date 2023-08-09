@@ -5,8 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::DelegateRole;
-use crate::generatedTypes::TmKey;
+use crate::generated::types::DelegateRole;
+use crate::generated::types::TmKey;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

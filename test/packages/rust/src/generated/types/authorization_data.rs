@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::Payload;
+use crate::generated::types::Payload;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

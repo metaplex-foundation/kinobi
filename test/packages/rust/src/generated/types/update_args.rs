@@ -5,15 +5,15 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::AuthorityType;
-use crate::generatedTypes::AuthorizationData;
-use crate::generatedTypes::Collection;
-use crate::generatedTypes::CollectionDetails;
-use crate::generatedTypes::Data;
-use crate::generatedTypes::DelegateState;
-use crate::generatedTypes::ProgrammableConfig;
-use crate::generatedTypes::TokenStandard;
-use crate::generatedTypes::Uses;
+use crate::generated::types::AuthorityType;
+use crate::generated::types::AuthorizationData;
+use crate::generated::types::Collection;
+use crate::generated::types::CollectionDetails;
+use crate::generated::types::Data;
+use crate::generated::types::DelegateState;
+use crate::generated::types::ProgrammableConfig;
+use crate::generated::types::TokenStandard;
+use crate::generated::types::Uses;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;

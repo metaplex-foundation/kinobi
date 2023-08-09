@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::RecursiveType;
+use crate::generated::types::RecursiveType;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

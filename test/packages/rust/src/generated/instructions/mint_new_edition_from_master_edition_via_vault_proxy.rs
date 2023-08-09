@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::MintNewEditionFromMasterEditionViaTokenArgs;
+use crate::generated::types::MintNewEditionFromMasterEditionViaTokenArgs;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

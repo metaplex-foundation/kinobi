@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::SetCollectionSizeArgs;
+use crate::generated::types::SetCollectionSizeArgs;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 

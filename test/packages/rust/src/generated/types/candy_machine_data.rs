@@ -5,9 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generatedTypes::CmCreator;
-use crate::generatedTypes::ConfigLineSettings;
-use crate::generatedTypes::HiddenSettings;
+use crate::generated::types::CmCreator;
+use crate::generated::types::ConfigLineSettings;
+use crate::generated::types::HiddenSettings;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
