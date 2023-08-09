@@ -136,8 +136,6 @@ impl UpdateV1InstructionArgs {
         data: Option<Data>,
         primary_sale_happened: Option<bool>,
         is_mutable: Option<bool>,
-        token_standard: Option<TokenStandard>,
-        collection: Option<Collection>,
         uses: Option<Uses>,
         collection_details: Option<CollectionDetails>,
         programmable_config: Option<ProgrammableConfig>,
@@ -152,8 +150,10 @@ impl UpdateV1InstructionArgs {
             data,
             primary_sale_happened,
             is_mutable,
-            token_standard,
-            collection,
+            token_standard: Some(TokenStandard::NonFungible),
+            collection: Some(PayloadType::Pubkey(pubkey!(
+                "11111111111111111111111111111111"
+            ))),
             uses,
             collection_details,
             programmable_config,

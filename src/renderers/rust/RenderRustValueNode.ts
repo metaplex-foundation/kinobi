@@ -62,7 +62,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       if (value.value === 'scalar' || value.value === 'empty') {
         return {
           imports: imports.add(`${importFrom}::${enumName}`),
-          render: `${enumName}.${variantName}`,
+          render: `${enumName}::${variantName}`,
         };
       }
       const enumValue = renderRustValueNode(value.value);
@@ -70,7 +70,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       imports.mergeWith(enumValue.imports);
       return {
         imports,
-        render: `${enumName}.${variantName} ${fields}`,
+        render: `${enumName}::${variantName} ${fields}`,
       };
     case 'optionSome':
       const child = renderRustValueNode(value.value);

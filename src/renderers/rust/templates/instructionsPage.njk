@@ -91,14 +91,14 @@ impl {{ instruction.name | pascalCase }} {
 impl {{ instruction.name | pascalCase }}InstructionArgs {
   pub fn new(
     {% for arg in instructionArgs %}
-      {% if arg.default === false %}
+      {% if not arg.default and not arg.optional %}
         {{ arg.name | snakeCase }}: {{ arg.type }},
       {% endif %}
     {% endfor %}
   ) -> Self {
     Self {
       {% for arg in instructionArgs %}
-        {% if arg.default %}
+        {% if arg.default or arg.optional %}
           {{ arg.name | snakeCase }}: {{ arg.value }},
         {% else %}
           {{ arg.name | snakeCase }},
