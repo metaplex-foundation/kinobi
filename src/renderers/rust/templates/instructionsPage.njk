@@ -84,7 +84,7 @@ impl {{ instruction.name | pascalCase }} {
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 {{ 'pub ' if hasArgs }}struct {{ instruction.name | pascalCase }}InstructionArgs {
   {% for arg in instructionArgs %}
-    {{ 'pub ' if arg.default === false }}{{ arg.name | snakeCase }}: {{ arg.type }},
+    {{ 'pub ' if not arg.default }}{{ arg.name | snakeCase }}: {{ arg.type }},
   {% endfor %}
 }
 

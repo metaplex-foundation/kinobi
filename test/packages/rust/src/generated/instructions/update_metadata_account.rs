@@ -38,20 +38,20 @@ impl UpdateMetadataAccount {
 pub struct UpdateMetadataAccountInstructionArgs {
     discriminator: u8,
     pub data: Option<Data>,
-    pub update_authority: Option<Pubkey>,
+    pub update_authority_arg: Option<Pubkey>,
     pub primary_sale_happened: Option<bool>,
 }
 
 impl UpdateMetadataAccountInstructionArgs {
     pub fn new(
         data: Option<Data>,
-        update_authority: Option<Pubkey>,
+        update_authority_arg: Option<Pubkey>,
         primary_sale_happened: Option<bool>,
     ) -> Self {
         Self {
             discriminator: 1,
             data,
-            update_authority,
+            update_authority_arg,
             primary_sale_happened,
         }
     }
@@ -63,7 +63,7 @@ pub struct UpdateMetadataAccountBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
     data: Option<Data>,
-    update_authority: Option<Pubkey>,
+    update_authority_arg: Option<Pubkey>,
     primary_sale_happened: Option<bool>,
 }
 
@@ -86,8 +86,8 @@ impl UpdateMetadataAccountBuilder {
         self.data = Some(data);
         self
     }
-    pub fn update_authority(&mut self, update_authority: Pubkey) -> &mut Self {
-        self.update_authority = Some(update_authority);
+    pub fn update_authority_arg(&mut self, update_authority_arg: Pubkey) -> &mut Self {
+        self.update_authority_arg = Some(update_authority_arg);
         self
     }
     pub fn primary_sale_happened(&mut self, primary_sale_happened: bool) -> &mut Self {
@@ -102,7 +102,7 @@ impl UpdateMetadataAccountBuilder {
         };
         let args = UpdateMetadataAccountInstructionArgs::new(
             self.data,
-            self.update_authority,
+            self.update_authority_arg,
             self.primary_sale_happened,
         );
         accounts.instruction(args)
@@ -161,7 +161,7 @@ pub mod cpi {
         metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
         update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
         data: Option<Data>,
-        update_authority: Option<Pubkey>,
+        update_authority_arg: Option<Pubkey>,
         primary_sale_happened: Option<bool>,
     }
 
@@ -172,7 +172,7 @@ pub mod cpi {
                 metadata: None,
                 update_authority: None,
                 data: None,
-                update_authority: None,
+                update_authority_arg: None,
                 primary_sale_happened: None,
             }
         }
@@ -194,8 +194,8 @@ pub mod cpi {
             self.data = Some(data);
             self
         }
-        pub fn update_authority(&'a mut self, update_authority: Pubkey) -> &mut Self {
-            self.update_authority = Some(update_authority);
+        pub fn update_authority_arg(&'a mut self, update_authority_arg: Pubkey) -> &mut Self {
+            self.update_authority_arg = Some(update_authority_arg);
             self
         }
         pub fn primary_sale_happened(&'a mut self, primary_sale_happened: bool) -> &mut Self {
@@ -211,7 +211,7 @@ pub mod cpi {
                 update_authority: self.update_authority.expect("update_authority is not set"),
                 args: UpdateMetadataAccountInstructionArgs::new(
                     self.data,
-                    self.update_authority,
+                    self.update_authority_arg,
                     self.primary_sale_happened,
                 ),
             }

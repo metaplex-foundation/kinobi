@@ -59,17 +59,14 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       const rawImportFrom = value.importFrom ?? 'generated';
       const importFrom =
         rawImportFrom === 'generated' ? 'generatedTypes' : rawImportFrom;
+      imports.add(`${importFrom}::${enumName}`);
       if (value.value === 'scalar' || value.value === 'empty') {
-        return {
-          imports: imports.add(`${importFrom}::${enumName}`),
-          render: `${enumName}::${variantName}`,
-        };
+        return { imports, render: `${enumName}::${variantName}` };
       }
       const enumValue = renderRustValueNode(value.value);
       const fields = enumValue.render;
-      imports.mergeWith(enumValue.imports);
       return {
-        imports,
+        imports: imports.mergeWith(enumValue.imports),
         render: `${enumName}::${variantName} ${fields}`,
       };
     case 'optionSome':

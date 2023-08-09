@@ -38,7 +38,7 @@ impl UpdateMetadataAccountV2 {
 pub struct UpdateMetadataAccountV2InstructionArgs {
     discriminator: u8,
     pub data: Option<DataV2>,
-    pub update_authority: Option<Pubkey>,
+    pub update_authority_arg: Option<Pubkey>,
     pub primary_sale_happened: Option<bool>,
     pub is_mutable: Option<bool>,
 }
@@ -46,14 +46,14 @@ pub struct UpdateMetadataAccountV2InstructionArgs {
 impl UpdateMetadataAccountV2InstructionArgs {
     pub fn new(
         data: Option<DataV2>,
-        update_authority: Option<Pubkey>,
+        update_authority_arg: Option<Pubkey>,
         primary_sale_happened: Option<bool>,
         is_mutable: Option<bool>,
     ) -> Self {
         Self {
             discriminator: 15,
             data,
-            update_authority,
+            update_authority_arg,
             primary_sale_happened,
             is_mutable,
         }
@@ -66,7 +66,7 @@ pub struct UpdateMetadataAccountV2Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
     data: Option<DataV2>,
-    update_authority: Option<Pubkey>,
+    update_authority_arg: Option<Pubkey>,
     primary_sale_happened: Option<bool>,
     is_mutable: Option<bool>,
 }
@@ -90,8 +90,8 @@ impl UpdateMetadataAccountV2Builder {
         self.data = Some(data);
         self
     }
-    pub fn update_authority(&mut self, update_authority: Pubkey) -> &mut Self {
-        self.update_authority = Some(update_authority);
+    pub fn update_authority_arg(&mut self, update_authority_arg: Pubkey) -> &mut Self {
+        self.update_authority_arg = Some(update_authority_arg);
         self
     }
     pub fn primary_sale_happened(&mut self, primary_sale_happened: bool) -> &mut Self {
@@ -110,7 +110,7 @@ impl UpdateMetadataAccountV2Builder {
         };
         let args = UpdateMetadataAccountV2InstructionArgs::new(
             self.data,
-            self.update_authority,
+            self.update_authority_arg,
             self.primary_sale_happened,
             self.is_mutable,
         );
@@ -170,7 +170,7 @@ pub mod cpi {
         metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
         update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
         data: Option<DataV2>,
-        update_authority: Option<Pubkey>,
+        update_authority_arg: Option<Pubkey>,
         primary_sale_happened: Option<bool>,
         is_mutable: Option<bool>,
     }
@@ -182,7 +182,7 @@ pub mod cpi {
                 metadata: None,
                 update_authority: None,
                 data: None,
-                update_authority: None,
+                update_authority_arg: None,
                 primary_sale_happened: None,
                 is_mutable: None,
             }
@@ -205,8 +205,8 @@ pub mod cpi {
             self.data = Some(data);
             self
         }
-        pub fn update_authority(&'a mut self, update_authority: Pubkey) -> &mut Self {
-            self.update_authority = Some(update_authority);
+        pub fn update_authority_arg(&'a mut self, update_authority_arg: Pubkey) -> &mut Self {
+            self.update_authority_arg = Some(update_authority_arg);
             self
         }
         pub fn primary_sale_happened(&'a mut self, primary_sale_happened: bool) -> &mut Self {
@@ -226,7 +226,7 @@ pub mod cpi {
                 update_authority: self.update_authority.expect("update_authority is not set"),
                 args: UpdateMetadataAccountV2InstructionArgs::new(
                     self.data,
-                    self.update_authority,
+                    self.update_authority_arg,
                     self.primary_sale_happened,
                     self.is_mutable,
                 ),

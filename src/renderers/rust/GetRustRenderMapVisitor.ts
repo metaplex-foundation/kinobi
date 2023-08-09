@@ -1,6 +1,6 @@
 import type { ConfigureOptions } from 'nunjucks';
 import * as nodes from '../../nodes';
-import { ImportFrom, pascalCase, snakeCase } from '../../shared';
+import { ImportFrom, logWarn, pascalCase, snakeCase } from '../../shared';
 import {
   BaseThrowVisitor,
   GetByteSizeVisitor,
@@ -145,7 +145,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       `accounts/${snakeCase(account.name)}.rs`,
       this.render('accountsPage.njk', {
         account,
-        imports: imports.toString(this.options.dependencyMap),
+        imports: imports
+          .remove(`generatedAccounts::${pascalCase(account.name)}`)
+          .toString(this.options.dependencyMap),
         program: this.program,
         typeManifest,
       })
@@ -156,6 +158,18 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Imports.
     const imports = new RustImportMap();
     imports.add(['borsh::BorshDeserialize', 'borsh::BorshSerialize']);
+
+    // canMergeAccountsAndArgs
+    const accountsAndArgsConflicts =
+      this.getConflictsForInstructionAccountsAndArgs(instruction);
+    if (accountsAndArgsConflicts.length > 0) {
+      logWarn(
+        `[Rust] Accounts and args of instruction [${instruction.name}] have the following ` +
+          `conflicting attributes [${accountsAndArgsConflicts.join(', ')}]. ` +
+          `Thus, the conflicting arguments will be suffixed with "_arg". ` +
+          'You may want to rename the conflicting attributes.'
+      );
+    }
 
     // Instruction args.
     const instructionArgs: any[] = [];
@@ -168,38 +182,38 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         ? visit(field.child.child, this.typeManifestVisitor).type
         : null;
 
+      let renderValue: string | null = null;
       if (field.defaultsTo) {
         const { imports: argImports, render: value } = renderRustValueNode(
           field.defaultsTo.value
         );
         imports.mergeWith(argImports);
-
-        instructionArgs.push({
-          name: field.name,
-          type: manifest.type,
-          default: field.defaultsTo.strategy === 'omitted',
-          optional: field.defaultsTo.strategy === 'optional',
-          innerOptionType,
-          value,
-        });
+        renderValue = value;
       } else {
-        instructionArgs.push({
-          name: field.name,
-          type: manifest.type,
-          default: false,
-          optional: false,
-          innerOptionType,
-          value: null,
-        });
         hasArgs = true;
       }
+
+      const name = accountsAndArgsConflicts.includes(field.name)
+        ? `${field.name}_arg`
+        : field.name;
+
+      instructionArgs.push({
+        name,
+        type: manifest.type,
+        default: field.defaultsTo?.strategy === 'omitted',
+        optional: field.defaultsTo?.strategy === 'optional',
+        innerOptionType,
+        value: renderValue,
+      });
     });
 
     return new RenderMap().add(
       `instructions/${snakeCase(instruction.name)}.rs`,
       this.render('instructionsPage.njk', {
         instruction,
-        imports: imports.toString(this.options.dependencyMap),
+        imports: imports
+          .remove(`generatedInstructions::${pascalCase(instruction.name)}`)
+          .toString(this.options.dependencyMap),
         instructionArgs,
         hasArgs,
         program: this.program,
@@ -215,7 +229,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       `types/${snakeCase(definedType.name)}.rs`,
       this.render('definedTypesPage.njk', {
         definedType,
-        imports: imports.toString(this.options.dependencyMap),
+        imports: imports
+          .remove(`generatedTypes::${pascalCase(definedType.name)}`)
+          .toString(this.options.dependencyMap),
         typeManifest,
       })
     );
@@ -231,6 +247,17 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   get resolvedInstructionInputVisitor() {
     return this.options.resolvedInstructionInputVisitor;
+  }
+
+  protected getConflictsForInstructionAccountsAndArgs(
+    instruction: nodes.InstructionNode
+  ): string[] {
+    const allNames = [
+      ...instruction.accounts.map((account) => account.name),
+      ...instruction.dataArgs.struct.fields.map((field) => field.name),
+    ];
+    const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
+    return [...new Set(duplicates)];
   }
 
   protected render(

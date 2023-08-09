@@ -11,6 +11,7 @@ use crate::generated::types::Collection;
 use crate::generated::types::CollectionDetails;
 use crate::generated::types::Data;
 use crate::generated::types::DelegateState;
+use crate::generated::types::PayloadType;
 use crate::generated::types::ProgrammableConfig;
 use crate::generated::types::TokenStandard;
 use crate::generated::types::Uses;
