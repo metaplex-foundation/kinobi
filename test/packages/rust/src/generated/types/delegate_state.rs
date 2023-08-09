@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::DelegateRole;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::DelegateRole;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]

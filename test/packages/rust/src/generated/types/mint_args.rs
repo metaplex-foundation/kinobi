@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::AuthorizationData;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::AuthorizationData;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub enum MintArgs {

@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::RecursiveType;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::RecursiveType;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct RecursiveType {

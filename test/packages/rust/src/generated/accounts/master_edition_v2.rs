@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::TmKey;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::TmKey;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct MasterEditionV2 {

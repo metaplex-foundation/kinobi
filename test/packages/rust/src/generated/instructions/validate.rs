@@ -5,8 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::{Operation, Payload};
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::Operation;
+use crate::generatedTypes::Payload;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct Validate {

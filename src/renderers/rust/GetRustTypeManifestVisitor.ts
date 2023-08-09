@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase, snakeCase } from '../../shared';
+import { pascalCase, snakeCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
 
@@ -29,7 +29,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   visitAccount(account: nodes.AccountNode): RustTypeManifest {
     this.parentName = pascalCase(account.name);
     const manifest = visit(account.data, this);
-    manifest.imports.add('borsh', ['BorshSerialize', 'BorshDeserialize']);
+    manifest.imports.add(['borsh::BorshSerialize', 'borsh::BorshDeserialize']);
     this.parentName = null;
     return {
       ...manifest,
@@ -73,7 +73,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     this.parentName = pascalCase(definedType.name);
     const manifest = visit(definedType.data, this);
     this.parentName = null;
-    manifest.imports.add('borsh', ['BorshSerialize', 'BorshDeserialize']);
+    manifest.imports.add(['borsh::BorshSerialize', 'borsh::BorshDeserialize']);
     return {
       ...manifest,
       type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n${manifest.type}`,
@@ -106,7 +106,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     }
 
     if (arrayType.size.kind === 'remainder') {
-      childManifest.imports.add('crate::types::helper', 'RemainderVec');
+      childManifest.imports.add('crate::types::helper::RemainderVec');
       return {
         ...childManifest,
         type: `RemainderVec<${childManifest.type}>`,
@@ -124,7 +124,9 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
         ? 'generatedTypes'
         : linkType.importFrom;
     return {
-      imports: new RustImportMap().add(importFrom, pascalCaseDefinedType),
+      imports: new RustImportMap().add(
+        `${importFrom}::${pascalCaseDefinedType}`
+      ),
       type: pascalCaseDefinedType,
     };
   }
@@ -182,7 +184,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     const key = visit(mapType.key, this);
     const value = visit(mapType.value, this);
     const mergedManifest = this.mergeManifests([key, value]);
-    mergedManifest.imports.add('std::collections', 'HashMap');
+    mergedManifest.imports.add('std::collections::HashMap');
     return {
       ...mergedManifest,
       type: `HashMap<${key.type}, ${value.type}>`,
@@ -208,7 +210,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitSetType(setType: nodes.SetTypeNode): RustTypeManifest {
     const childManifest = visit(setType.child, this);
-    childManifest.imports.add('std::collections', 'HashSet');
+    childManifest.imports.add('std::collections::HashSet');
     return {
       ...childManifest,
       type: `HashSet<${childManifest.type}>`,
@@ -297,7 +299,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   visitPublicKeyType(): RustTypeManifest {
     return {
       type: 'Pubkey',
-      imports: new RustImportMap().add('solana_program::pubkey', 'Pubkey'),
+      imports: new RustImportMap().add('solana_program::pubkey::Pubkey'),
     };
   }
 

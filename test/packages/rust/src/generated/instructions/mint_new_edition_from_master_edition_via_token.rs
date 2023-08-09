@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::MintNewEditionFromMasterEditionViaTokenArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::MintNewEditionFromMasterEditionViaTokenArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct MintNewEditionFromMasterEditionViaToken {

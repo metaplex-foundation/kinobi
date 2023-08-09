@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::MintArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::MintArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct Mint {

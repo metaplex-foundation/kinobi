@@ -5,7 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{BorshDeserialize, BorshSerialize};
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct FrequencyAccount {

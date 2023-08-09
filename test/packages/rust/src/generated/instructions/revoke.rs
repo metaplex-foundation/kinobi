@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::RevokeArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::RevokeArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct Revoke {

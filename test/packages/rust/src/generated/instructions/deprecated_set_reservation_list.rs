@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::Reservation;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::Reservation;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct DeprecatedSetReservationList {

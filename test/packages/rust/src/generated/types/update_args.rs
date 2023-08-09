@@ -5,11 +5,17 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::{
-    AuthorityType, AuthorizationData, Collection, CollectionDetails, Data, DelegateState,
-    ProgrammableConfig, TokenStandard, Uses,
-};
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::AuthorityType;
+use crate::generatedTypes::AuthorizationData;
+use crate::generatedTypes::Collection;
+use crate::generatedTypes::CollectionDetails;
+use crate::generatedTypes::Data;
+use crate::generatedTypes::DelegateState;
+use crate::generatedTypes::ProgrammableConfig;
+use crate::generatedTypes::TokenStandard;
+use crate::generatedTypes::Uses;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]

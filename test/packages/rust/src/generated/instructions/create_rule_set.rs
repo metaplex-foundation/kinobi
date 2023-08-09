@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::TaCreateArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::TaCreateArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct CreateRuleSet {

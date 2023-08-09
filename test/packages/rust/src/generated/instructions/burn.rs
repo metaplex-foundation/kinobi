@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::BurnArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::BurnArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct Burn {

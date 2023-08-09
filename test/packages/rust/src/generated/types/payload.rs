@@ -5,8 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::{PayloadKey, PayloadType};
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::PayloadKey;
+use crate::generatedTypes::PayloadType;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 use std::collections::HashMap;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]

@@ -5,8 +5,11 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::{CmCreator, ConfigLineSettings, HiddenSettings};
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::CmCreator;
+use crate::generatedTypes::ConfigLineSettings;
+use crate::generatedTypes::HiddenSettings;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Candy machine configuration data.
 

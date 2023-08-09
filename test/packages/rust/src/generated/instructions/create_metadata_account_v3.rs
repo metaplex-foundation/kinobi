@@ -5,8 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::{CollectionDetails, DataV2};
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::CollectionDetails;
+use crate::generatedTypes::DataV2;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct CreateMetadataAccountV3 {

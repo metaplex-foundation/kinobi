@@ -5,9 +5,11 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{ BorshDeserialize, BorshSerialize };
-use crate::generated::types::{ ReservationV1, TmKey };
-use solana_program::pubkey::{ Pubkey };
+use crate::generatedTypes::TmKey;
+use solana_program::pubkey::Pubkey;
+use crate::generatedTypes::ReservationV1;
+use borsh::BorshSerialize;
+use borsh::BorshDeserialize;
 
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]

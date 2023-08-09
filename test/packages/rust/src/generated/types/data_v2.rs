@@ -5,8 +5,11 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::{Collection, Creator, Uses};
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::Collection;
+use crate::generatedTypes::Creator;
+use crate::generatedTypes::Uses;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct DataV2 {

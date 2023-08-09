@@ -5,7 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{BorshDeserialize, BorshSerialize};
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Config line struct for storing asset (NFT) data pre-mint.
 

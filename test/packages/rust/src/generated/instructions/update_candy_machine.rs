@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::CandyMachineData;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::CandyMachineData;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct UpdateCandyMachine {

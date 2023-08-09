@@ -5,7 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{BorshDeserialize, BorshSerialize};
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Config line settings to allocate space for individual name + URI.
 

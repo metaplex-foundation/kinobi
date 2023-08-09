@@ -1,14 +1,13 @@
 import type { ConfigureOptions } from 'nunjucks';
 import * as nodes from '../../nodes';
-import { camelCase, ImportFrom, pascalCase, snakeCase } from '../../shared';
+import { ImportFrom, pascalCase, snakeCase } from '../../shared';
 import {
   BaseThrowVisitor,
   GetByteSizeVisitor,
   GetResolvedInstructionInputsVisitor,
-  ResolvedInstructionAccount,
   ResolvedInstructionInput,
-  visit,
   Visitor,
+  visit,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
@@ -16,8 +15,8 @@ import {
   GetRustTypeManifestVisitor,
   RustTypeManifest,
 } from './GetRustTypeManifestVisitor';
-import { RustImportMap } from './RustImportMap';
 import { renderRustValueNode } from './RenderRustValueNode';
+import { RustImportMap } from './RustImportMap';
 
 export type GetRustRenderMapOptions = {
   renderParentInstructions?: boolean;
@@ -156,7 +155,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
     const imports = new RustImportMap();
-    imports.add('borsh', ['BorshDeserialize', 'BorshSerialize']);
+    imports.add(['borsh::BorshDeserialize', 'borsh::BorshSerialize']);
 
     // Instruction args.
     const instructionArgs: any[] = [];
@@ -232,60 +231,6 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   get resolvedInstructionInputVisitor() {
     return this.options.resolvedInstructionInputVisitor;
-  }
-
-  protected getInstructionAccountType(
-    account: ResolvedInstructionAccount
-  ): string {
-    if (account.isPda && account.isSigner === false) return 'Pda';
-    if (account.isSigner === 'either') return 'PublicKey | Pda | Signer';
-    return account.isSigner ? 'Signer' : 'PublicKey | Pda';
-  }
-
-  protected getInstructionAccountImports(
-    accounts: ResolvedInstructionAccount[]
-  ): RustImportMap {
-    const imports = new RustImportMap();
-    accounts.forEach((account) => {
-      if (account.isSigner !== true && !account.isPda)
-        imports.add('umi', 'PublicKey');
-      if (account.isSigner !== true) imports.add('umi', 'Pda');
-      if (account.isSigner !== false) imports.add('umi', 'Signer');
-
-      if (account.defaultsTo?.kind === 'publicKey') {
-        imports.add('umi', 'publicKey');
-      } else if (account.defaultsTo?.kind === 'pda') {
-        const pdaAccount = pascalCase(account.defaultsTo.pdaAccount);
-        const importFrom =
-          account.defaultsTo.importFrom === 'generated'
-            ? 'generatedAccounts'
-            : account.defaultsTo.importFrom;
-        imports.add(importFrom, `find${pdaAccount}Pda`);
-        Object.values(account.defaultsTo.seeds).forEach((seed) => {
-          if (seed.kind === 'account') {
-            imports.add('umi', 'publicKey');
-          }
-        });
-      } else if (account.defaultsTo?.kind === 'resolver') {
-        imports.add(
-          account.defaultsTo.importFrom,
-          camelCase(account.defaultsTo.name)
-        );
-      }
-    });
-    return imports;
-  }
-
-  protected getMergeConflictsForInstructionAccountsAndArgs(
-    instruction: nodes.InstructionNode
-  ): string[] {
-    const allNames = [
-      ...instruction.accounts.map((account) => account.name),
-      ...instruction.dataArgs.struct.fields.map((field) => field.name),
-      ...instruction.extraArgs.struct.fields.map((field) => field.name),
-    ];
-    const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
-    return [...new Set(duplicates)];
   }
 
   protected render(

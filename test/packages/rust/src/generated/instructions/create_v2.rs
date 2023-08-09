@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::AssetData;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::AssetData;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct CreateV2 {

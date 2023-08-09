@@ -22,7 +22,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       };
     case 'set':
       const set = value.values.map((v) => renderRustValueNode(v));
-      imports.add('std::collections', 'HashSet');
+      imports.add('std::collection::HashSet');
       return {
         imports: imports.mergeWith(...set.map((c) => c.imports)),
         render: `HashSet::from([${set.map((c) => c.render).join(', ')}])`,
@@ -36,7 +36,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
           render: `[${mapKey.render}, ${mapValue.render}]`,
         };
       });
-      imports.add('std::collections', 'HashMap');
+      imports.add('std::collection::HashMap');
       return {
         imports: imports.mergeWith(...map.map((c) => c.imports)),
         render: `HashMap::from([${map.map((c) => c.render).join(', ')}])`,
@@ -58,12 +58,10 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       const variantName = pascalCase(value.variant);
       const rawImportFrom = value.importFrom ?? 'generated';
       const importFrom =
-        rawImportFrom === 'generated'
-          ? 'generatedTypes'
-          : rawImportFrom;
+        rawImportFrom === 'generated' ? 'generatedTypes' : rawImportFrom;
       if (value.value === 'scalar' || value.value === 'empty') {
         return {
-          imports: imports.add(importFrom, enumName),
+          imports: imports.add(`${importFrom}::${enumName}`),
           render: `${enumName}.${variantName}`,
         };
       }
@@ -87,7 +85,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       };
     case 'publicKey':
       return {
-        imports: new RustImportMap().add('solana_program', 'pubkey'),
+        imports: new RustImportMap().add('solana_program::pubkey'),
         render: `pubkey!("${value.value}")`,
       };
     case 'string':

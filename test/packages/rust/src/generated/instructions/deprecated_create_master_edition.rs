@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::CreateMasterEditionArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::CreateMasterEditionArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct DeprecatedCreateMasterEdition {

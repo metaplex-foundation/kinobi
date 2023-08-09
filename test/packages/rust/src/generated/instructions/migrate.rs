@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::MigrateArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::MigrateArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct Migrate {

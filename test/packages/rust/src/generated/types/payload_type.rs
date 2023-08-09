@@ -5,7 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::{BorshDeserialize, BorshSerialize};
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// This is a union of all the possible payload types.
 

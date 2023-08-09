@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::SetCollectionSizeArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::SetCollectionSizeArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct BubblegumSetCollectionSize {

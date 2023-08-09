@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::ConfigLine;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::ConfigLine;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct AddConfigLines {

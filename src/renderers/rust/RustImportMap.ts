@@ -12,52 +12,36 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
 };
 
 export class RustImportMap {
-  protected readonly _imports: Map<ImportFrom, Set<string>> = new Map();
+  protected readonly _imports: Set<string> = new Set();
 
-  protected readonly _aliases: Map<ImportFrom, Record<string, string>> =
-    new Map();
+  protected readonly _aliases: Map<string, string> = new Map();
 
-  add(
-    module: ImportFrom,
-    imports: string | string[] | Set<string>
-  ): RustImportMap {
-    const currentImports = this._imports.get(module) ?? new Set();
+  get imports(): Set<string> {
+    return this._imports;
+  }
+
+  get aliases(): Map<string, string> {
+    return this._aliases;
+  }
+
+  add(imports: string | string[] | Set<string>): RustImportMap {
     const newImports = typeof imports === 'string' ? [imports] : imports;
-    newImports.forEach((i) => {
-      if (i.includes('::')) {
-        throw new Error("Can't add import with `::`: " + i);
-      }
-      return currentImports.add(i)
-    });
-    this._imports.set(module, currentImports);
+    newImports.forEach((i) => this._imports.add(i));
     return this;
   }
 
-  remove(
-    module: ImportFrom,
-    imports: string | string[] | Set<string>
-  ): RustImportMap {
-    const currentImports = this._imports.get(module) ?? new Set();
+  remove(imports: string | string[] | Set<string>): RustImportMap {
     const importsToRemove = typeof imports === 'string' ? [imports] : imports;
-    importsToRemove.forEach((i) => currentImports.delete(i));
-    if (currentImports.size === 0) {
-      this._imports.delete(module);
-    } else {
-      this._imports.set(module, currentImports);
-    }
+    importsToRemove.forEach((i) => this._imports.delete(i));
     return this;
   }
 
   mergeWith(...others: RustImportMap[]): RustImportMap {
     others.forEach((other) => {
-      other._imports.forEach((imports, module) => {
-        this.add(module, imports);
-      });
-      other._aliases.forEach((aliases, module) => {
-        Object.entries(aliases).forEach(([name, alias]) => {
-          this.addAlias(module, name, alias);
-        });
-      });
+      this.add(other._imports);
+      other._aliases.forEach((alias, importName) =>
+        this.addAlias(importName, alias)
+      );
     });
     return this;
   }
@@ -66,10 +50,8 @@ export class RustImportMap {
     return this.mergeWith(manifest.imports);
   }
 
-  addAlias(module: ImportFrom, name: string, alias: string): RustImportMap {
-    const currentAliases = this._aliases.get(module) ?? {};
-    currentAliases[name] = alias;
-    this._aliases.set(module, currentAliases);
+  addAlias(importName: string, alias: string): RustImportMap {
+    this._aliases.set(importName, alias);
     return this;
   }
 
@@ -77,29 +59,33 @@ export class RustImportMap {
     return this._imports.size === 0;
   }
 
-  toString(dependencies: Record<ImportFrom, string>): string {
-    // TODO: Rustify this.
+  resolveDependencyMap(
+    dependencies: Record<ImportFrom, string>
+  ): RustImportMap {
     const dependencyMap = { ...DEFAULT_MODULE_MAP, ...dependencies };
-    const importStatements = [...this._imports.entries()]
-      .map(([module, imports]) => {
-        const mappedModule: string = dependencyMap[module] ?? module;
-        return [mappedModule, module, imports] as const;
-      })
-      .sort(([a], [b]) => {
-        const aIsRelative = a.startsWith('.');
-        const bIsRelative = b.startsWith('.');
-        if (aIsRelative && !bIsRelative) return 1;
-        if (!aIsRelative && bIsRelative) return -1;
-        return a.localeCompare(b);
-      })
-      .map(([mappedModule, module, imports]) => {
-        const aliasMap = this._aliases.get(module) ?? {};
-        const joinedImports = [...imports]
-          .sort()
-          .map((i) => (aliasMap[i] ? `${i} as ${aliasMap[i]}` : i))
-          .join(', ');
-        return `use ${mappedModule}::{ ${joinedImports} };`;
-      });
+    const newImportMap = new RustImportMap();
+    const resolveDependency = (i: string): string => {
+      const dependencyKey = Object.keys(dependencyMap).find((key) =>
+        i.startsWith(key)
+      );
+      if (!dependencyKey) return i;
+      const dependencyValue = dependencyMap[dependencyKey];
+      return dependencyValue + i.slice(dependencyKey.length);
+    };
+    this._imports.forEach((i) => newImportMap.add(resolveDependency(i)));
+    this._aliases.forEach((alias, i) =>
+      newImportMap.addAlias(resolveDependency(i), alias)
+    );
+    return newImportMap;
+  }
+
+  toString(dependencies: Record<ImportFrom, string>): string {
+    const resolvedMap = this.resolveDependencyMap(dependencies);
+    const importStatements = [...resolvedMap.imports].map((i) => {
+      const alias = resolvedMap.aliases.get(i);
+      if (alias) return `use ${i} as ${alias};`;
+      return `use ${i};`;
+    });
     return importStatements.join('\n');
   }
 }

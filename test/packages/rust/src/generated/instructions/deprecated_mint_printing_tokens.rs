@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::MintPrintingTokensViaTokenArgs;
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::generatedTypes::MintPrintingTokensViaTokenArgs;
+use borsh::BorshDeserialize;
+use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct DeprecatedMintPrintingTokens {
