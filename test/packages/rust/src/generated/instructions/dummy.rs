@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct Dummy {
     pub edition: solana_program::pubkey::Pubkey,
@@ -30,46 +32,22 @@ impl Dummy {
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts: vec![
-                                          solana_program::instruction::AccountMeta::new(
-              self.edition,
-              true
-            ),
-                                                                if let Some(mint) = self.mint {
-              solana_program::instruction::AccountMeta::new(
-                mint,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_CANDY_MACHINE_CORE_ID,
-                false,
-              ),
-            },
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.update_authority,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.mint_authority,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.payer,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.foo,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.bar,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.delegate_record,
-              false
-            ),
-                                  ],
+                solana_program::instruction::AccountMeta::new(self.edition, true),
+                if let Some(mint) = self.mint {
+                    solana_program::instruction::AccountMeta::new(mint, false)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_CANDY_MACHINE_CORE_ID,
+                        false,
+                    )
+                },
+                solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
+                solana_program::instruction::AccountMeta::new(self.mint_authority, true),
+                solana_program::instruction::AccountMeta::new(self.payer, true),
+                solana_program::instruction::AccountMeta::new(self.foo, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.bar, true),
+                solana_program::instruction::AccountMeta::new(self.delegate_record, false),
+            ],
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -202,46 +180,25 @@ pub mod cpi {
             let instruction = solana_program::instruction::Instruction {
                 program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
                 accounts: vec![
-                                              solana_program::instruction::AccountMeta::new(
-                  *self.edition.key,
-                  true
-                ),
-                                                                    if let Some(mint) = self.mint {
-                  solana_program::instruction::AccountMeta::new(
-                    *mint.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_CANDY_MACHINE_CORE_ID,
-                    false,
-                  ),
-                },
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.update_authority.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.mint_authority.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.payer.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.foo.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.bar.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.delegate_record.key,
-                  false
-                ),
-                                      ],
+                    solana_program::instruction::AccountMeta::new(*self.edition.key, true),
+                    if let Some(mint) = self.mint {
+                        solana_program::instruction::AccountMeta::new(*mint.key, false)
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_CANDY_MACHINE_CORE_ID,
+                            false,
+                        )
+                    },
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.update_authority.key,
+                        true,
+                    ),
+                    solana_program::instruction::AccountMeta::new(*self.mint_authority.key, true),
+                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                    solana_program::instruction::AccountMeta::new(*self.foo.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.bar.key, true),
+                    solana_program::instruction::AccountMeta::new(*self.delegate_record.key, false),
+                ],
                 data: args.try_to_vec().unwrap(),
             };
             let mut account_infos = Vec::with_capacity(8 + 1);

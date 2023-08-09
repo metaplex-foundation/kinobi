@@ -5,7 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use crate::generated::types::DataV2;
 use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 /// Accounts.
 pub struct UpdateMetadataAccountV2 {

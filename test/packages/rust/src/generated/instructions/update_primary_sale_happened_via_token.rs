@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct UpdatePrimarySaleHappenedViaToken {
     /// Metadata key (pda of ['metadata', program id, mint id])

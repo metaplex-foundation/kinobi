@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct CreateReservationList {
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]

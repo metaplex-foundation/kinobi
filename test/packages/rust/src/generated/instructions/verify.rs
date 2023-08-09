@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use crate::generated::types::VerifyArgs;
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Accounts.
@@ -29,41 +30,32 @@ impl Verify {
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
-                                          solana_program::instruction::AccountMeta::new(
-              self.metadata,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.collection_authority,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.payer,
-              true
-            ),
-                                                                if let Some(authorization_rules) = self.authorization_rules {
-              solana_program::instruction::AccountMeta::new_readonly(
-                authorization_rules,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-              ),
-            },
-                                                                if let Some(authorization_rules_program) = self.authorization_rules_program {
-              solana_program::instruction::AccountMeta::new_readonly(
-                authorization_rules_program,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-              ),
-            },
-                                  ],
+                solana_program::instruction::AccountMeta::new(self.metadata, false),
+                solana_program::instruction::AccountMeta::new(self.collection_authority, true),
+                solana_program::instruction::AccountMeta::new(self.payer, true),
+                if let Some(authorization_rules) = self.authorization_rules {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        authorization_rules,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+                if let Some(authorization_rules_program) = self.authorization_rules_program {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        authorization_rules_program,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -182,41 +174,35 @@ pub mod cpi {
             let instruction = solana_program::instruction::Instruction {
                 program_id: crate::MPL_TOKEN_METADATA_ID,
                 accounts: vec![
-                                              solana_program::instruction::AccountMeta::new(
-                  *self.metadata.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.collection_authority.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.payer.key,
-                  true
-                ),
-                                                                    if let Some(authorization_rules) = self.authorization_rules {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *authorization_rules.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_METADATA_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(authorization_rules_program) = self.authorization_rules_program {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *authorization_rules_program.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_METADATA_ID,
-                    false,
-                  ),
-                },
-                                      ],
+                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.collection_authority.key,
+                        true,
+                    ),
+                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                    if let Some(authorization_rules) = self.authorization_rules {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *authorization_rules.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_METADATA_ID,
+                            false,
+                        )
+                    },
+                    if let Some(authorization_rules_program) = self.authorization_rules_program {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *authorization_rules_program.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_METADATA_ID,
+                            false,
+                        )
+                    },
+                ],
                 data: self.args.try_to_vec().unwrap(),
             };
             let mut account_infos = Vec::with_capacity(5 + 1);

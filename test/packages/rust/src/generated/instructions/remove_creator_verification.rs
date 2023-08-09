@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct RemoveCreatorVerification {
     /// Metadata (pda of ['metadata', program id, mint id])

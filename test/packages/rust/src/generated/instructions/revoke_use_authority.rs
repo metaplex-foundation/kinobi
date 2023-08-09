@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct RevokeUseAuthority {
     /// Use Authority Record PDA
@@ -33,50 +35,23 @@ impl RevokeUseAuthority {
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
-                                          solana_program::instruction::AccountMeta::new(
-              self.use_authority_record,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.owner,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.user,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.owner_token_account,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.mint,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.metadata,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.token_program,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.system_program,
-              false
-            ),
-                                                                if let Some(rent) = self.rent {
-              solana_program::instruction::AccountMeta::new_readonly(
-                rent,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-              ),
-            },
-                                  ],
+                solana_program::instruction::AccountMeta::new(self.use_authority_record, false),
+                solana_program::instruction::AccountMeta::new(self.owner, true),
+                solana_program::instruction::AccountMeta::new_readonly(self.user, false),
+                solana_program::instruction::AccountMeta::new(self.owner_token_account, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.metadata, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.token_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+                if let Some(rent) = self.rent {
+                    solana_program::instruction::AccountMeta::new_readonly(rent, false)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -220,50 +195,38 @@ pub mod cpi {
             let instruction = solana_program::instruction::Instruction {
                 program_id: crate::MPL_TOKEN_METADATA_ID,
                 accounts: vec![
-                                              solana_program::instruction::AccountMeta::new(
-                  *self.use_authority_record.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.owner.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.user.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.owner_token_account.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.mint.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.metadata.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.token_program.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.system_program.key,
-                  false
-                ),
-                                                                    if let Some(rent) = self.rent {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *rent.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_METADATA_ID,
-                    false,
-                  ),
-                },
-                                      ],
+                    solana_program::instruction::AccountMeta::new(
+                        *self.use_authority_record.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new(*self.owner.key, true),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.user.key, false),
+                    solana_program::instruction::AccountMeta::new(
+                        *self.owner_token_account.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.metadata.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.token_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.system_program.key,
+                        false,
+                    ),
+                    if let Some(rent) = self.rent {
+                        solana_program::instruction::AccountMeta::new_readonly(*rent.key, false)
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_METADATA_ID,
+                            false,
+                        )
+                    },
+                ],
                 data: args.try_to_vec().unwrap(),
             };
             let mut account_infos = Vec::with_capacity(9 + 1);

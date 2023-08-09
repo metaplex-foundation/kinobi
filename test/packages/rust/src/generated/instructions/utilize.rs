@@ -41,65 +41,32 @@ impl Utilize {
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
-                                          solana_program::instruction::AccountMeta::new(
-              self.metadata,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.token_account,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.mint,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.use_authority,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.owner,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.token_program,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.ata_program,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.system_program,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.rent,
-              false
-            ),
-                                                                if let Some(use_authority_record) = self.use_authority_record {
-              solana_program::instruction::AccountMeta::new(
-                use_authority_record,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-              ),
-            },
-                                                                if let Some(burner) = self.burner {
-              solana_program::instruction::AccountMeta::new_readonly(
-                burner,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-              ),
-            },
-                                  ],
+                solana_program::instruction::AccountMeta::new(self.metadata, false),
+                solana_program::instruction::AccountMeta::new(self.token_account, false),
+                solana_program::instruction::AccountMeta::new(self.mint, false),
+                solana_program::instruction::AccountMeta::new(self.use_authority, true),
+                solana_program::instruction::AccountMeta::new_readonly(self.owner, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.token_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.ata_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.rent, false),
+                if let Some(use_authority_record) = self.use_authority_record {
+                    solana_program::instruction::AccountMeta::new(use_authority_record, false)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+                if let Some(burner) = self.burner {
+                    solana_program::instruction::AccountMeta::new_readonly(burner, false)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -265,65 +232,44 @@ pub mod cpi {
             let instruction = solana_program::instruction::Instruction {
                 program_id: crate::MPL_TOKEN_METADATA_ID,
                 accounts: vec![
-                                              solana_program::instruction::AccountMeta::new(
-                  *self.metadata.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.token_account.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.mint.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.use_authority.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.owner.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.token_program.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.ata_program.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.system_program.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.rent.key,
-                  false
-                ),
-                                                                    if let Some(use_authority_record) = self.use_authority_record {
-                  solana_program::instruction::AccountMeta::new(
-                    *use_authority_record.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_METADATA_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(burner) = self.burner {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *burner.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_METADATA_ID,
-                    false,
-                  ),
-                },
-                                      ],
+                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                    solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
+                    solana_program::instruction::AccountMeta::new(*self.mint.key, false),
+                    solana_program::instruction::AccountMeta::new(*self.use_authority.key, true),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.owner.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.token_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.ata_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.system_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(*self.rent.key, false),
+                    if let Some(use_authority_record) = self.use_authority_record {
+                        solana_program::instruction::AccountMeta::new(
+                            *use_authority_record.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_METADATA_ID,
+                            false,
+                        )
+                    },
+                    if let Some(burner) = self.burner {
+                        solana_program::instruction::AccountMeta::new_readonly(*burner.key, false)
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_METADATA_ID,
+                            false,
+                        )
+                    },
+                ],
                 data: self.args.try_to_vec().unwrap(),
             };
             let mut account_infos = Vec::with_capacity(11 + 1);

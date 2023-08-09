@@ -6,6 +6,7 @@
 //!
 
 use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 /// Accounts.
 pub struct SetAuthority {

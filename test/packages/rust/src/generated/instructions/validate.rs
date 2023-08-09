@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use crate::generated::types::{Operation, Payload};
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Accounts.
@@ -45,129 +46,105 @@ impl Validate {
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts: vec![
-                                          solana_program::instruction::AccountMeta::new(
-              self.payer,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.rule_set,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.system_program,
-              false
-            ),
-                                                                if let Some((opt_rule_signer1, signer)) = self.opt_rule_signer1 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_signer1,
-                signer,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_signer2) = self.opt_rule_signer2 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_signer2,
-                true,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_signer3) = self.opt_rule_signer3 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_signer3,
-                true,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_signer4) = self.opt_rule_signer4 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_signer4,
-                true,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_signer5) = self.opt_rule_signer5 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_signer5,
-                true,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_nonsigner1) = self.opt_rule_nonsigner1 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_nonsigner1,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_nonsigner2) = self.opt_rule_nonsigner2 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_nonsigner2,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_nonsigner3) = self.opt_rule_nonsigner3 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_nonsigner3,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_nonsigner4) = self.opt_rule_nonsigner4 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_nonsigner4,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                                                if let Some(opt_rule_nonsigner5) = self.opt_rule_nonsigner5 {
-              solana_program::instruction::AccountMeta::new_readonly(
-                opt_rule_nonsigner5,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_AUTH_RULES_ID,
-                false,
-              ),
-            },
-                                  ],
+                solana_program::instruction::AccountMeta::new(self.payer, true),
+                solana_program::instruction::AccountMeta::new(self.rule_set, false),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+                if let Some((opt_rule_signer1, signer)) = self.opt_rule_signer1 {
+                    solana_program::instruction::AccountMeta::new_readonly(opt_rule_signer1, signer)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_signer2) = self.opt_rule_signer2 {
+                    solana_program::instruction::AccountMeta::new_readonly(opt_rule_signer2, true)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_signer3) = self.opt_rule_signer3 {
+                    solana_program::instruction::AccountMeta::new_readonly(opt_rule_signer3, true)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_signer4) = self.opt_rule_signer4 {
+                    solana_program::instruction::AccountMeta::new_readonly(opt_rule_signer4, true)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_signer5) = self.opt_rule_signer5 {
+                    solana_program::instruction::AccountMeta::new_readonly(opt_rule_signer5, true)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_nonsigner1) = self.opt_rule_nonsigner1 {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        opt_rule_nonsigner1,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_nonsigner2) = self.opt_rule_nonsigner2 {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        opt_rule_nonsigner2,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_nonsigner3) = self.opt_rule_nonsigner3 {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        opt_rule_nonsigner3,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_nonsigner4) = self.opt_rule_nonsigner4 {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        opt_rule_nonsigner4,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+                if let Some(opt_rule_nonsigner5) = self.opt_rule_nonsigner5 {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        opt_rule_nonsigner5,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_AUTH_RULES_ID,
+                        false,
+                    )
+                },
+            ],
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -396,129 +373,123 @@ pub mod cpi {
             let instruction = solana_program::instruction::Instruction {
                 program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
                 accounts: vec![
-                                              solana_program::instruction::AccountMeta::new(
-                  *self.payer.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.rule_set.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.system_program.key,
-                  false
-                ),
-                                                                    if let Some((opt_rule_signer1, signer)) = self.opt_rule_signer1 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_signer1.key,
-                    signer,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_signer2) = self.opt_rule_signer2 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_signer2.key,
-                    true,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_signer3) = self.opt_rule_signer3 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_signer3.key,
-                    true,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_signer4) = self.opt_rule_signer4 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_signer4.key,
-                    true,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_signer5) = self.opt_rule_signer5 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_signer5.key,
-                    true,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_nonsigner1) = self.opt_rule_nonsigner1 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_nonsigner1.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_nonsigner2) = self.opt_rule_nonsigner2 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_nonsigner2.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_nonsigner3) = self.opt_rule_nonsigner3 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_nonsigner3.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_nonsigner4) = self.opt_rule_nonsigner4 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_nonsigner4.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                                                    if let Some(opt_rule_nonsigner5) = self.opt_rule_nonsigner5 {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    *opt_rule_nonsigner5.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_AUTH_RULES_ID,
-                    false,
-                  ),
-                },
-                                      ],
+                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                    solana_program::instruction::AccountMeta::new(*self.rule_set.key, false),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.system_program.key,
+                        false,
+                    ),
+                    if let Some((opt_rule_signer1, signer)) = self.opt_rule_signer1 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_signer1.key,
+                            signer,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_signer2) = self.opt_rule_signer2 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_signer2.key,
+                            true,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_signer3) = self.opt_rule_signer3 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_signer3.key,
+                            true,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_signer4) = self.opt_rule_signer4 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_signer4.key,
+                            true,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_signer5) = self.opt_rule_signer5 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_signer5.key,
+                            true,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_nonsigner1) = self.opt_rule_nonsigner1 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_nonsigner1.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_nonsigner2) = self.opt_rule_nonsigner2 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_nonsigner2.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_nonsigner3) = self.opt_rule_nonsigner3 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_nonsigner3.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_nonsigner4) = self.opt_rule_nonsigner4 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_nonsigner4.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                    if let Some(opt_rule_nonsigner5) = self.opt_rule_nonsigner5 {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            *opt_rule_nonsigner5.key,
+                            false,
+                        )
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_AUTH_RULES_ID,
+                            false,
+                        )
+                    },
+                ],
                 data: self.args.try_to_vec().unwrap(),
             };
             let mut account_infos = Vec::with_capacity(13 + 1);

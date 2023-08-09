@@ -5,6 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use borsh::{BorshDeserialize, BorshSerialize};
+
 /// Accounts.
 pub struct ConvertMasterEditionV1ToV2 {
     /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])

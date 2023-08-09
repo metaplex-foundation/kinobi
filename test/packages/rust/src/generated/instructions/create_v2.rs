@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use crate::generated::types::AssetData;
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Accounts.
@@ -37,50 +38,32 @@ impl CreateV2 {
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts: vec![
-                                          solana_program::instruction::AccountMeta::new(
-              self.metadata,
-              false
-            ),
-                                                                if let Some(master_edition) = self.master_edition {
-              solana_program::instruction::AccountMeta::new(
-                master_edition,
-                false,
-              ),
-            } else {
-              solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-              ),
-            },
-                                                                solana_program::instruction::AccountMeta::new(
-              self.mint.0,
-              self.mint.1,
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.mint_authority,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new(
-              self.payer,
-              true
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.update_authority,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.system_program,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.sysvar_instructions,
-              false
-            ),
-                                                                solana_program::instruction::AccountMeta::new_readonly(
-              self.spl_token_program,
-              false
-            ),
-                                  ],
+                solana_program::instruction::AccountMeta::new(self.metadata, false),
+                if let Some(master_edition) = self.master_edition {
+                    solana_program::instruction::AccountMeta::new(master_edition, false)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+                solana_program::instruction::AccountMeta::new(self.mint.0, self.mint.1),
+                solana_program::instruction::AccountMeta::new_readonly(self.mint_authority, true),
+                solana_program::instruction::AccountMeta::new(self.payer, true),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.update_authority,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.sysvar_instructions,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    self.spl_token_program,
+                    false,
+                ),
+            ],
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -249,50 +232,38 @@ pub mod cpi {
             let instruction = solana_program::instruction::Instruction {
                 program_id: crate::MPL_TOKEN_METADATA_ID,
                 accounts: vec![
-                                              solana_program::instruction::AccountMeta::new(
-                  *self.metadata.key,
-                  false
-                ),
-                                                                    if let Some(master_edition) = self.master_edition {
-                  solana_program::instruction::AccountMeta::new(
-                    *master_edition.key,
-                    false,
-                  ),
-                } else {
-                  solana_program::instruction::AccountMeta::new_readonly(
-                    crate::MPL_TOKEN_METADATA_ID,
-                    false,
-                  ),
-                },
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.mint.0.key,
-                  self.mint.1,
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.mint_authority.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new(
-                  *self.payer.key,
-                  true
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.update_authority.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.system_program.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.sysvar_instructions.key,
-                  false
-                ),
-                                                                    solana_program::instruction::AccountMeta::new_readonly(
-                  *self.spl_token_program.key,
-                  false
-                ),
-                                      ],
+                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                    if let Some(master_edition) = self.master_edition {
+                        solana_program::instruction::AccountMeta::new(*master_edition.key, false)
+                    } else {
+                        solana_program::instruction::AccountMeta::new_readonly(
+                            crate::MPL_TOKEN_METADATA_ID,
+                            false,
+                        )
+                    },
+                    solana_program::instruction::AccountMeta::new(*self.mint.0.key, self.mint.1),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.mint_authority.key,
+                        true,
+                    ),
+                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.update_authority.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.system_program.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.sysvar_instructions.key,
+                        false,
+                    ),
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *self.spl_token_program.key,
+                        false,
+                    ),
+                ],
                 data: self.args.try_to_vec().unwrap(),
             };
             let mut account_infos = Vec::with_capacity(9 + 1);
