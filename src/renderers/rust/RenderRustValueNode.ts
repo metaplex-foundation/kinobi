@@ -58,7 +58,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
       const variantName = pascalCase(value.variant);
       const rawImportFrom = value.importFrom ?? 'generated';
       const importFrom =
-        rawImportFrom === 'generated' ? 'generated::types' : rawImportFrom;
+        rawImportFrom === 'generated' ? 'crate::generated::types' : rawImportFrom;
       if (value.value === 'scalar' || value.value === 'empty') {
         return {
           imports: imports.add(importFrom, enumName),
