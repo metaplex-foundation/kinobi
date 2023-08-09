@@ -281,7 +281,7 @@ pub mod cpi {
             if let Some(master_edition) = self.master_edition {
                 account_infos.push(master_edition.clone());
             }
-            account_infos.push(self.mint.clone());
+            account_infos.push(self.mint.0.clone());
             account_infos.push(self.mint_authority.clone());
             account_infos.push(self.payer.clone());
             account_infos.push(self.update_authority.clone());

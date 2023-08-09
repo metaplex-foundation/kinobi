@@ -84,10 +84,10 @@ impl<'a> {{ instruction.name | pascalCase }}<'a> {
     {% for account in instruction.accounts %}
       {% if account.isOptional %}
         if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
-          account_infos.push({{ account.name | snakeCase }}.clone());
+          account_infos.push({{ account.name | snakeCase }}{{ '.0' if account.isSigner === 'either' }}.clone());
         }
       {% else %}
-        account_infos.push(self.{{ account.name | snakeCase }}.clone());
+        account_infos.push(self.{{ account.name | snakeCase }}{{ '.0' if account.isSigner === 'either' }}.clone());
       {% endif %}
     {% endfor %}
 

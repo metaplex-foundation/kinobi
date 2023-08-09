@@ -500,7 +500,7 @@ pub mod cpi {
             account_infos.push(self.rule_set.clone());
             account_infos.push(self.system_program.clone());
             if let Some(opt_rule_signer1) = self.opt_rule_signer1 {
-                account_infos.push(opt_rule_signer1.clone());
+                account_infos.push(opt_rule_signer1.0.clone());
             }
             if let Some(opt_rule_signer2) = self.opt_rule_signer2 {
                 account_infos.push(opt_rule_signer2.clone());
