@@ -191,7 +191,12 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): RustTypeManifest {
-    return { type: '', imports: new RustImportMap() };
+    const name = pascalCase(enumTupleVariantType.name);
+    const childManifest = visit(enumTupleVariantType.tuple, this);
+    return {
+      ...childManifest,
+      type: `${name}${childManifest.type},`,
+    };
   }
 
   visitMapType(mapType: nodes.MapTypeNode): RustTypeManifest {
