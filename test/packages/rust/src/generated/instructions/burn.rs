@@ -173,6 +173,7 @@ impl BurnBuilder {
         self.burn_args = Some(burn_args);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Burn {
             metadata: self.metadata.expect("metadata is not set"),
@@ -197,249 +198,253 @@ impl BurnBuilder {
 
             authorization_rules_program: self.authorization_rules_program,
         };
-        let args = BurnInstructionArgs::new(self.burn_args.expect("burn_args is not set"));
+        let args = BurnInstructionArgs::new(self.burn_args.clone().expect("burn_args is not set"));
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `burn` CPI instruction.
+pub struct BurnCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Asset owner
+    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of token asset
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account to close
+    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// MasterEdition of the asset
+    pub master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// SPL Token Program
+    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata of the Collection
+    pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub args: BurnInstructionArgs,
+}
 
-    /// `burn` CPI instruction.
-    pub struct Burn<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata (pda of ['metadata', program id, mint id])
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Asset owner
-        pub owner: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Mint of token asset
-        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token account to close
-        pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
-        /// MasterEdition of the asset
-        pub master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
-        /// SPL Token Program
-        pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata of the Collection
-        pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        /// Token Authorization Rules account
-        pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        /// Token Authorization Rules Program
-        pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        pub args: BurnInstructionArgs,
+impl<'a> BurnCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> Burn<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.owner.key, true),
-                    solana_program::instruction::AccountMeta::new(*self.mint.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
-                    solana_program::instruction::AccountMeta::new(
-                        *self.master_edition_account.key,
-                        false,
-                    ),
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new(*self.owner.key, true),
+                solana_program::instruction::AccountMeta::new(*self.mint.key, false),
+                solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
+                solana_program::instruction::AccountMeta::new(
+                    *self.master_edition_account.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.spl_token_program.key,
+                    false,
+                ),
+                if let Some(collection_metadata) = self.collection_metadata {
+                    solana_program::instruction::AccountMeta::new(*collection_metadata.key, false)
+                } else {
                     solana_program::instruction::AccountMeta::new_readonly(
-                        *self.spl_token_program.key,
+                        crate::MPL_TOKEN_METADATA_ID,
                         false,
-                    ),
-                    if let Some(collection_metadata) = self.collection_metadata {
-                        solana_program::instruction::AccountMeta::new(
-                            *collection_metadata.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                    if let Some(authorization_rules) = self.authorization_rules {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *authorization_rules.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                    if let Some(authorization_rules_program) = self.authorization_rules_program {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *authorization_rules_program.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(9 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.owner.clone());
-            account_infos.push(self.mint.clone());
-            account_infos.push(self.token_account.clone());
-            account_infos.push(self.master_edition_account.clone());
-            account_infos.push(self.spl_token_program.clone());
-            if let Some(collection_metadata) = self.collection_metadata {
-                account_infos.push(collection_metadata.clone());
-            }
-            if let Some(authorization_rules) = self.authorization_rules {
-                account_infos.push(authorization_rules.clone());
-            }
-            if let Some(authorization_rules_program) = self.authorization_rules_program {
-                account_infos.push(authorization_rules_program.clone());
-            }
+                    )
+                },
+                if let Some(authorization_rules) = self.authorization_rules {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *authorization_rules.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+                if let Some(authorization_rules_program) = self.authorization_rules_program {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *authorization_rules_program.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(9 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.owner.clone());
+        account_infos.push(self.mint.clone());
+        account_infos.push(self.token_account.clone());
+        account_infos.push(self.master_edition_account.clone());
+        account_infos.push(self.spl_token_program.clone());
+        if let Some(collection_metadata) = self.collection_metadata {
+            account_infos.push(collection_metadata.clone());
+        }
+        if let Some(authorization_rules) = self.authorization_rules {
+            account_infos.push(authorization_rules.clone());
+        }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            account_infos.push(authorization_rules_program.clone());
+        }
 
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `burn` CPI instruction builder.
-    pub struct BurnBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        burn_args: Option<BurnArgs>,
+/// `burn` CPI instruction builder.
+pub struct BurnCpiBuilder<'a> {
+    instruction: Box<BurnCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> BurnCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(BurnCpiBuilderInstruction {
+            program,
+            metadata: None,
+            owner: None,
+            mint: None,
+            token_account: None,
+            master_edition_account: None,
+            spl_token_program: None,
+            collection_metadata: None,
+            authorization_rules: None,
+            authorization_rules_program: None,
+            burn_args: None,
+        });
+        Self { instruction }
     }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn owner(&mut self, owner: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.owner = Some(owner);
+        self
+    }
+    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.mint = Some(mint);
+        self
+    }
+    pub fn token_account(
+        &mut self,
+        token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.token_account = Some(token_account);
+        self
+    }
+    pub fn master_edition_account(
+        &mut self,
+        master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.master_edition_account = Some(master_edition_account);
+        self
+    }
+    pub fn spl_token_program(
+        &mut self,
+        spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.spl_token_program = Some(spl_token_program);
+        self
+    }
+    pub fn collection_metadata(
+        &mut self,
+        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_metadata = Some(collection_metadata);
+        self
+    }
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules = Some(authorization_rules);
+        self
+    }
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules_program = Some(authorization_rules_program);
+        self
+    }
+    pub fn burn_args(&mut self, burn_args: BurnArgs) -> &mut Self {
+        self.instruction.burn_args = Some(burn_args);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> BurnCpi<'a> {
+        BurnCpi {
+            program: self.instruction.program,
 
-    impl<'a> BurnBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-                owner: None,
-                mint: None,
-                token_account: None,
-                master_edition_account: None,
-                spl_token_program: None,
-                collection_metadata: None,
-                authorization_rules: None,
-                authorization_rules_program: None,
-                burn_args: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn owner(
-            &'a mut self,
-            owner: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.owner = Some(owner);
-            self
-        }
-        pub fn mint(
-            &'a mut self,
-            mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.mint = Some(mint);
-            self
-        }
-        pub fn token_account(
-            &'a mut self,
-            token_account: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.token_account = Some(token_account);
-            self
-        }
-        pub fn master_edition_account(
-            &'a mut self,
-            master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.master_edition_account = Some(master_edition_account);
-            self
-        }
-        pub fn spl_token_program(
-            &'a mut self,
-            spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.spl_token_program = Some(spl_token_program);
-            self
-        }
-        pub fn collection_metadata(
-            &'a mut self,
-            collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_metadata = Some(collection_metadata);
-            self
-        }
-        pub fn authorization_rules(
-            &'a mut self,
-            authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authorization_rules = Some(authorization_rules);
-            self
-        }
-        pub fn authorization_rules_program(
-            &'a mut self,
-            authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authorization_rules_program = Some(authorization_rules_program);
-            self
-        }
-        pub fn burn_args(&'a mut self, burn_args: BurnArgs) -> &mut Self {
-            self.burn_args = Some(burn_args);
-            self
-        }
-        pub fn build(&'a self) -> Burn {
-            Burn {
-                program: self.program,
+            metadata: self.instruction.metadata.expect("metadata is not set"),
 
-                metadata: self.metadata.expect("metadata is not set"),
+            owner: self.instruction.owner.expect("owner is not set"),
 
-                owner: self.owner.expect("owner is not set"),
+            mint: self.instruction.mint.expect("mint is not set"),
 
-                mint: self.mint.expect("mint is not set"),
+            token_account: self
+                .instruction
+                .token_account
+                .expect("token_account is not set"),
 
-                token_account: self.token_account.expect("token_account is not set"),
+            master_edition_account: self
+                .instruction
+                .master_edition_account
+                .expect("master_edition_account is not set"),
 
-                master_edition_account: self
-                    .master_edition_account
-                    .expect("master_edition_account is not set"),
+            spl_token_program: self
+                .instruction
+                .spl_token_program
+                .expect("spl_token_program is not set"),
 
-                spl_token_program: self
-                    .spl_token_program
-                    .expect("spl_token_program is not set"),
+            collection_metadata: self.instruction.collection_metadata,
 
-                collection_metadata: self.collection_metadata,
+            authorization_rules: self.instruction.authorization_rules,
 
-                authorization_rules: self.authorization_rules,
-
-                authorization_rules_program: self.authorization_rules_program,
-                args: BurnInstructionArgs::new(self.burn_args.expect("burn_args is not set")),
-            }
+            authorization_rules_program: self.instruction.authorization_rules_program,
+            args: BurnInstructionArgs::new(
+                self.instruction
+                    .burn_args
+                    .clone()
+                    .expect("burn_args is not set"),
+            ),
         }
     }
+}
+
+struct BurnCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    burn_args: Option<BurnArgs>,
 }

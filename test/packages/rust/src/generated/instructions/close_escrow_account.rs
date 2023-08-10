@@ -114,6 +114,7 @@ impl CloseEscrowAccountBuilder {
         self.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CloseEscrowAccount {
             escrow: self.escrow.expect("escrow is not set"),
@@ -138,190 +139,191 @@ impl CloseEscrowAccountBuilder {
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `close_escrow_account` CPI instruction.
+pub struct CloseEscrowAccountCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Escrow account
+    pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint account
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account
+    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Edition account
+    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Wallet paying for the transaction and new account
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Instructions sysvar account
+    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+}
 
-    /// `close_escrow_account` CPI instruction.
-    pub struct CloseEscrowAccount<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Escrow account
-        pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Mint account
-        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token account
-        pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Edition account
-        pub edition: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Wallet paying for the transaction and new account
-        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
-        /// System program
-        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Instructions sysvar account
-        pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+impl<'a> CloseEscrowAccountCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let args = CloseEscrowAccountInstructionArgs::new();
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.escrow.key, false),
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.token_account.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(*self.edition.key, false),
+                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.system_program.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.sysvar_instructions.key,
+                    false,
+                ),
+            ],
+            data: args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(8 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.escrow.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.mint.clone());
+        account_infos.push(self.token_account.clone());
+        account_infos.push(self.edition.clone());
+        account_infos.push(self.payer.clone());
+        account_infos.push(self.system_program.clone());
+        account_infos.push(self.sysvar_instructions.clone());
 
-    impl<'a> CloseEscrowAccount<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let args = CloseEscrowAccountInstructionArgs::new();
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.escrow.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.token_account.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.edition.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.system_program.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.sysvar_instructions.key,
-                        false,
-                    ),
-                ],
-                data: args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(8 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.escrow.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.mint.clone());
-            account_infos.push(self.token_account.clone());
-            account_infos.push(self.edition.clone());
-            account_infos.push(self.payer.clone());
-            account_infos.push(self.system_program.clone());
-            account_infos.push(self.sysvar_instructions.clone());
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `close_escrow_account` CPI instruction builder.
-    pub struct CloseEscrowAccountBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        escrow: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+/// `close_escrow_account` CPI instruction builder.
+pub struct CloseEscrowAccountCpiBuilder<'a> {
+    instruction: Box<CloseEscrowAccountCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> CloseEscrowAccountCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(CloseEscrowAccountCpiBuilderInstruction {
+            program,
+            escrow: None,
+            metadata: None,
+            mint: None,
+            token_account: None,
+            edition: None,
+            payer: None,
+            system_program: None,
+            sysvar_instructions: None,
+        });
+        Self { instruction }
     }
+    pub fn escrow(
+        &mut self,
+        escrow: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.escrow = Some(escrow);
+        self
+    }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.mint = Some(mint);
+        self
+    }
+    pub fn token_account(
+        &mut self,
+        token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.token_account = Some(token_account);
+        self
+    }
+    pub fn edition(
+        &mut self,
+        edition: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.edition = Some(edition);
+        self
+    }
+    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.payer = Some(payer);
+        self
+    }
+    pub fn system_program(
+        &mut self,
+        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.system_program = Some(system_program);
+        self
+    }
+    pub fn sysvar_instructions(
+        &mut self,
+        sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.sysvar_instructions = Some(sysvar_instructions);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> CloseEscrowAccountCpi<'a> {
+        CloseEscrowAccountCpi {
+            program: self.instruction.program,
 
-    impl<'a> CloseEscrowAccountBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                escrow: None,
-                metadata: None,
-                mint: None,
-                token_account: None,
-                edition: None,
-                payer: None,
-                system_program: None,
-                sysvar_instructions: None,
-            }
-        }
-        pub fn escrow(
-            &'a mut self,
-            escrow: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.escrow = Some(escrow);
-            self
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn mint(
-            &'a mut self,
-            mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.mint = Some(mint);
-            self
-        }
-        pub fn token_account(
-            &'a mut self,
-            token_account: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.token_account = Some(token_account);
-            self
-        }
-        pub fn edition(
-            &'a mut self,
-            edition: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.edition = Some(edition);
-            self
-        }
-        pub fn payer(
-            &'a mut self,
-            payer: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.payer = Some(payer);
-            self
-        }
-        pub fn system_program(
-            &'a mut self,
-            system_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.system_program = Some(system_program);
-            self
-        }
-        pub fn sysvar_instructions(
-            &'a mut self,
-            sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.sysvar_instructions = Some(sysvar_instructions);
-            self
-        }
-        pub fn build(&'a self) -> CloseEscrowAccount {
-            CloseEscrowAccount {
-                program: self.program,
+            escrow: self.instruction.escrow.expect("escrow is not set"),
 
-                escrow: self.escrow.expect("escrow is not set"),
+            metadata: self.instruction.metadata.expect("metadata is not set"),
 
-                metadata: self.metadata.expect("metadata is not set"),
+            mint: self.instruction.mint.expect("mint is not set"),
 
-                mint: self.mint.expect("mint is not set"),
+            token_account: self
+                .instruction
+                .token_account
+                .expect("token_account is not set"),
 
-                token_account: self.token_account.expect("token_account is not set"),
+            edition: self.instruction.edition.expect("edition is not set"),
 
-                edition: self.edition.expect("edition is not set"),
+            payer: self.instruction.payer.expect("payer is not set"),
 
-                payer: self.payer.expect("payer is not set"),
+            system_program: self
+                .instruction
+                .system_program
+                .expect("system_program is not set"),
 
-                system_program: self.system_program.expect("system_program is not set"),
-
-                sysvar_instructions: self
-                    .sysvar_instructions
-                    .expect("sysvar_instructions is not set"),
-            }
+            sysvar_instructions: self
+                .instruction
+                .sysvar_instructions
+                .expect("sysvar_instructions is not set"),
         }
     }
+}
+
+struct CloseEscrowAccountCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    escrow: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

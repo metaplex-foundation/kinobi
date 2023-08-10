@@ -53,6 +53,7 @@ impl PuffMetadataBuilder {
         self.metadata = Some(metadata);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = PuffMetadata {
             metadata: self.metadata.expect("metadata is not set"),
@@ -61,72 +62,75 @@ impl PuffMetadataBuilder {
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `puff_metadata` CPI instruction.
+pub struct PuffMetadataCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+}
 
-    /// `puff_metadata` CPI instruction.
-    pub struct PuffMetadata<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+impl<'a> PuffMetadataCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let args = PuffMetadataInstructionArgs::new();
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![solana_program::instruction::AccountMeta::new(
+                *self.metadata.key,
+                false,
+            )],
+            data: args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(1 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
 
-    impl<'a> PuffMetadata<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let args = PuffMetadataInstructionArgs::new();
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![solana_program::instruction::AccountMeta::new(
-                    *self.metadata.key,
-                    false,
-                )],
-                data: args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(1 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `puff_metadata` CPI instruction builder.
-    pub struct PuffMetadataBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+/// `puff_metadata` CPI instruction builder.
+pub struct PuffMetadataCpiBuilder<'a> {
+    instruction: Box<PuffMetadataCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> PuffMetadataCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(PuffMetadataCpiBuilderInstruction {
+            program,
+            metadata: None,
+        });
+        Self { instruction }
     }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> PuffMetadataCpi<'a> {
+        PuffMetadataCpi {
+            program: self.instruction.program,
 
-    impl<'a> PuffMetadataBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn build(&'a self) -> PuffMetadata {
-            PuffMetadata {
-                program: self.program,
-
-                metadata: self.metadata.expect("metadata is not set"),
-            }
+            metadata: self.instruction.metadata.expect("metadata is not set"),
         }
     }
+}
+
+struct PuffMetadataCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

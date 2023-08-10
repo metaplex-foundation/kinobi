@@ -119,6 +119,7 @@ impl BurnNftBuilder {
         self.collection_metadata = Some(collection_metadata);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = BurnNft {
             metadata: self.metadata.expect("metadata is not set"),
@@ -143,183 +144,182 @@ impl BurnNftBuilder {
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `burn_nft` CPI instruction.
+pub struct BurnNftCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// NFT owner
+    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of the NFT
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account to close
+    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// MasterEdition2 of the NFT
+    pub master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// SPL Token Program
+    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata of the Collection
+    pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+}
 
-    /// `burn_nft` CPI instruction.
-    pub struct BurnNft<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata (pda of ['metadata', program id, mint id])
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// NFT owner
-        pub owner: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Mint of the NFT
-        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token account to close
-        pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
-        /// MasterEdition2 of the NFT
-        pub master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
-        /// SPL Token Program
-        pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata of the Collection
-        pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+impl<'a> BurnNftCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> BurnNft<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let args = BurnNftInstructionArgs::new();
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.owner.key, true),
-                    solana_program::instruction::AccountMeta::new(*self.mint.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
-                    solana_program::instruction::AccountMeta::new(
-                        *self.master_edition_account.key,
-                        false,
-                    ),
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let args = BurnNftInstructionArgs::new();
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new(*self.owner.key, true),
+                solana_program::instruction::AccountMeta::new(*self.mint.key, false),
+                solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
+                solana_program::instruction::AccountMeta::new(
+                    *self.master_edition_account.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.spl_token_program.key,
+                    false,
+                ),
+                if let Some(collection_metadata) = self.collection_metadata {
+                    solana_program::instruction::AccountMeta::new(*collection_metadata.key, false)
+                } else {
                     solana_program::instruction::AccountMeta::new_readonly(
-                        *self.spl_token_program.key,
+                        crate::MPL_TOKEN_METADATA_ID,
                         false,
-                    ),
-                    if let Some(collection_metadata) = self.collection_metadata {
-                        solana_program::instruction::AccountMeta::new(
-                            *collection_metadata.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                ],
-                data: args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(7 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.owner.clone());
-            account_infos.push(self.mint.clone());
-            account_infos.push(self.token_account.clone());
-            account_infos.push(self.master_edition_account.clone());
-            account_infos.push(self.spl_token_program.clone());
-            if let Some(collection_metadata) = self.collection_metadata {
-                account_infos.push(collection_metadata.clone());
-            }
+                    )
+                },
+            ],
+            data: args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(7 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.owner.clone());
+        account_infos.push(self.mint.clone());
+        account_infos.push(self.token_account.clone());
+        account_infos.push(self.master_edition_account.clone());
+        account_infos.push(self.spl_token_program.clone());
+        if let Some(collection_metadata) = self.collection_metadata {
+            account_infos.push(collection_metadata.clone());
+        }
 
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `burn_nft` CPI instruction builder.
-    pub struct BurnNftBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+/// `burn_nft` CPI instruction builder.
+pub struct BurnNftCpiBuilder<'a> {
+    instruction: Box<BurnNftCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> BurnNftCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(BurnNftCpiBuilderInstruction {
+            program,
+            metadata: None,
+            owner: None,
+            mint: None,
+            token_account: None,
+            master_edition_account: None,
+            spl_token_program: None,
+            collection_metadata: None,
+        });
+        Self { instruction }
     }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn owner(&mut self, owner: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.owner = Some(owner);
+        self
+    }
+    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.mint = Some(mint);
+        self
+    }
+    pub fn token_account(
+        &mut self,
+        token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.token_account = Some(token_account);
+        self
+    }
+    pub fn master_edition_account(
+        &mut self,
+        master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.master_edition_account = Some(master_edition_account);
+        self
+    }
+    pub fn spl_token_program(
+        &mut self,
+        spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.spl_token_program = Some(spl_token_program);
+        self
+    }
+    pub fn collection_metadata(
+        &mut self,
+        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_metadata = Some(collection_metadata);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> BurnNftCpi<'a> {
+        BurnNftCpi {
+            program: self.instruction.program,
 
-    impl<'a> BurnNftBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-                owner: None,
-                mint: None,
-                token_account: None,
-                master_edition_account: None,
-                spl_token_program: None,
-                collection_metadata: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn owner(
-            &'a mut self,
-            owner: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.owner = Some(owner);
-            self
-        }
-        pub fn mint(
-            &'a mut self,
-            mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.mint = Some(mint);
-            self
-        }
-        pub fn token_account(
-            &'a mut self,
-            token_account: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.token_account = Some(token_account);
-            self
-        }
-        pub fn master_edition_account(
-            &'a mut self,
-            master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.master_edition_account = Some(master_edition_account);
-            self
-        }
-        pub fn spl_token_program(
-            &'a mut self,
-            spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.spl_token_program = Some(spl_token_program);
-            self
-        }
-        pub fn collection_metadata(
-            &'a mut self,
-            collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_metadata = Some(collection_metadata);
-            self
-        }
-        pub fn build(&'a self) -> BurnNft {
-            BurnNft {
-                program: self.program,
+            metadata: self.instruction.metadata.expect("metadata is not set"),
 
-                metadata: self.metadata.expect("metadata is not set"),
+            owner: self.instruction.owner.expect("owner is not set"),
 
-                owner: self.owner.expect("owner is not set"),
+            mint: self.instruction.mint.expect("mint is not set"),
 
-                mint: self.mint.expect("mint is not set"),
+            token_account: self
+                .instruction
+                .token_account
+                .expect("token_account is not set"),
 
-                token_account: self.token_account.expect("token_account is not set"),
+            master_edition_account: self
+                .instruction
+                .master_edition_account
+                .expect("master_edition_account is not set"),
 
-                master_edition_account: self
-                    .master_edition_account
-                    .expect("master_edition_account is not set"),
+            spl_token_program: self
+                .instruction
+                .spl_token_program
+                .expect("spl_token_program is not set"),
 
-                spl_token_program: self
-                    .spl_token_program
-                    .expect("spl_token_program is not set"),
-
-                collection_metadata: self.collection_metadata,
-            }
+            collection_metadata: self.instruction.collection_metadata,
         }
     }
+}
+
+struct BurnNftCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

@@ -172,6 +172,7 @@ impl TransferOutOfEscrowBuilder {
         self.amount = Some(amount);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = TransferOutOfEscrow {
             escrow: self.escrow.expect("escrow is not set"),
@@ -202,297 +203,324 @@ impl TransferOutOfEscrowBuilder {
 
             authority: self.authority,
         };
-        let args = TransferOutOfEscrowInstructionArgs::new(self.amount.expect("amount is not set"));
+        let args = TransferOutOfEscrowInstructionArgs::new(
+            self.amount.clone().expect("amount is not set"),
+        );
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `transfer_out_of_escrow` CPI instruction.
+pub struct TransferOutOfEscrowCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Escrow account
+    pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Wallet paying for the transaction and new account
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint account for the new attribute
+    pub attribute_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account source for the new attribute
+    pub attribute_src: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account, owned by TM, destination for the new attribute
+    pub attribute_dst: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint account that the escrow is attached
+    pub escrow_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account that holds the token the escrow is attached to
+    pub escrow_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Associated Token program
+    pub ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Instructions sysvar account
+    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Authority/creator of the escrow account
+    pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub args: TransferOutOfEscrowInstructionArgs,
+}
 
-    /// `transfer_out_of_escrow` CPI instruction.
-    pub struct TransferOutOfEscrow<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Escrow account
-        pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Wallet paying for the transaction and new account
-        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Mint account for the new attribute
-        pub attribute_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token account source for the new attribute
-        pub attribute_src: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token account, owned by TM, destination for the new attribute
-        pub attribute_dst: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Mint account that the escrow is attached
-        pub escrow_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token account that holds the token the escrow is attached to
-        pub escrow_account: &'a solana_program::account_info::AccountInfo<'a>,
-        /// System program
-        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Associated Token program
-        pub ata_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token program
-        pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Instructions sysvar account
-        pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Authority/creator of the escrow account
-        pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        pub args: TransferOutOfEscrowInstructionArgs,
+impl<'a> TransferOutOfEscrowCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> TransferOutOfEscrow<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new_readonly(*self.escrow.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.attribute_mint.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new(*self.attribute_src.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.attribute_dst.key, false),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.escrow_mint.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.escrow_account.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.system_program.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.ata_program.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.token_program.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.sysvar_instructions.key,
-                        false,
-                    ),
-                    if let Some(authority) = self.authority {
-                        solana_program::instruction::AccountMeta::new_readonly(*authority.key, true)
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(13 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.escrow.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.payer.clone());
-            account_infos.push(self.attribute_mint.clone());
-            account_infos.push(self.attribute_src.clone());
-            account_infos.push(self.attribute_dst.clone());
-            account_infos.push(self.escrow_mint.clone());
-            account_infos.push(self.escrow_account.clone());
-            account_infos.push(self.system_program.clone());
-            account_infos.push(self.ata_program.clone());
-            account_infos.push(self.token_program.clone());
-            account_infos.push(self.sysvar_instructions.clone());
-            if let Some(authority) = self.authority {
-                account_infos.push(authority.clone());
-            }
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
-        }
-    }
-
-    /// `transfer_out_of_escrow` CPI instruction builder.
-    pub struct TransferOutOfEscrowBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        escrow: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        attribute_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        attribute_src: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        attribute_dst: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        escrow_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        escrow_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        ata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        amount: Option<u64>,
-    }
-
-    impl<'a> TransferOutOfEscrowBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                escrow: None,
-                metadata: None,
-                payer: None,
-                attribute_mint: None,
-                attribute_src: None,
-                attribute_dst: None,
-                escrow_mint: None,
-                escrow_account: None,
-                system_program: None,
-                ata_program: None,
-                token_program: None,
-                sysvar_instructions: None,
-                authority: None,
-                amount: None,
-            }
-        }
-        pub fn escrow(
-            &'a mut self,
-            escrow: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.escrow = Some(escrow);
-            self
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn payer(
-            &'a mut self,
-            payer: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.payer = Some(payer);
-            self
-        }
-        pub fn attribute_mint(
-            &'a mut self,
-            attribute_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.attribute_mint = Some(attribute_mint);
-            self
-        }
-        pub fn attribute_src(
-            &'a mut self,
-            attribute_src: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.attribute_src = Some(attribute_src);
-            self
-        }
-        pub fn attribute_dst(
-            &'a mut self,
-            attribute_dst: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.attribute_dst = Some(attribute_dst);
-            self
-        }
-        pub fn escrow_mint(
-            &'a mut self,
-            escrow_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.escrow_mint = Some(escrow_mint);
-            self
-        }
-        pub fn escrow_account(
-            &'a mut self,
-            escrow_account: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.escrow_account = Some(escrow_account);
-            self
-        }
-        pub fn system_program(
-            &'a mut self,
-            system_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.system_program = Some(system_program);
-            self
-        }
-        pub fn ata_program(
-            &'a mut self,
-            ata_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.ata_program = Some(ata_program);
-            self
-        }
-        pub fn token_program(
-            &'a mut self,
-            token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.token_program = Some(token_program);
-            self
-        }
-        pub fn sysvar_instructions(
-            &'a mut self,
-            sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.sysvar_instructions = Some(sysvar_instructions);
-            self
-        }
-        pub fn authority(
-            &'a mut self,
-            authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authority = Some(authority);
-            self
-        }
-        pub fn amount(&'a mut self, amount: u64) -> &mut Self {
-            self.amount = Some(amount);
-            self
-        }
-        pub fn build(&'a self) -> TransferOutOfEscrow {
-            TransferOutOfEscrow {
-                program: self.program,
-
-                escrow: self.escrow.expect("escrow is not set"),
-
-                metadata: self.metadata.expect("metadata is not set"),
-
-                payer: self.payer.expect("payer is not set"),
-
-                attribute_mint: self.attribute_mint.expect("attribute_mint is not set"),
-
-                attribute_src: self.attribute_src.expect("attribute_src is not set"),
-
-                attribute_dst: self.attribute_dst.expect("attribute_dst is not set"),
-
-                escrow_mint: self.escrow_mint.expect("escrow_mint is not set"),
-
-                escrow_account: self.escrow_account.expect("escrow_account is not set"),
-
-                system_program: self.system_program.expect("system_program is not set"),
-
-                ata_program: self.ata_program.expect("ata_program is not set"),
-
-                token_program: self.token_program.expect("token_program is not set"),
-
-                sysvar_instructions: self
-                    .sysvar_instructions
-                    .expect("sysvar_instructions is not set"),
-
-                authority: self.authority,
-                args: TransferOutOfEscrowInstructionArgs::new(
-                    self.amount.expect("amount is not set"),
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new_readonly(*self.escrow.key, false),
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.attribute_mint.key,
+                    false,
                 ),
-            }
+                solana_program::instruction::AccountMeta::new(*self.attribute_src.key, false),
+                solana_program::instruction::AccountMeta::new(*self.attribute_dst.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.escrow_mint.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.escrow_account.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.system_program.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.ata_program.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.token_program.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.sysvar_instructions.key,
+                    false,
+                ),
+                if let Some(authority) = self.authority {
+                    solana_program::instruction::AccountMeta::new_readonly(*authority.key, true)
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(13 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.escrow.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.payer.clone());
+        account_infos.push(self.attribute_mint.clone());
+        account_infos.push(self.attribute_src.clone());
+        account_infos.push(self.attribute_dst.clone());
+        account_infos.push(self.escrow_mint.clone());
+        account_infos.push(self.escrow_account.clone());
+        account_infos.push(self.system_program.clone());
+        account_infos.push(self.ata_program.clone());
+        account_infos.push(self.token_program.clone());
+        account_infos.push(self.sysvar_instructions.clone());
+        if let Some(authority) = self.authority {
+            account_infos.push(authority.clone());
+        }
+
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
+
+/// `transfer_out_of_escrow` CPI instruction builder.
+pub struct TransferOutOfEscrowCpiBuilder<'a> {
+    instruction: Box<TransferOutOfEscrowCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(TransferOutOfEscrowCpiBuilderInstruction {
+            program,
+            escrow: None,
+            metadata: None,
+            payer: None,
+            attribute_mint: None,
+            attribute_src: None,
+            attribute_dst: None,
+            escrow_mint: None,
+            escrow_account: None,
+            system_program: None,
+            ata_program: None,
+            token_program: None,
+            sysvar_instructions: None,
+            authority: None,
+            amount: None,
+        });
+        Self { instruction }
+    }
+    pub fn escrow(
+        &mut self,
+        escrow: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.escrow = Some(escrow);
+        self
+    }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.payer = Some(payer);
+        self
+    }
+    pub fn attribute_mint(
+        &mut self,
+        attribute_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.attribute_mint = Some(attribute_mint);
+        self
+    }
+    pub fn attribute_src(
+        &mut self,
+        attribute_src: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.attribute_src = Some(attribute_src);
+        self
+    }
+    pub fn attribute_dst(
+        &mut self,
+        attribute_dst: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.attribute_dst = Some(attribute_dst);
+        self
+    }
+    pub fn escrow_mint(
+        &mut self,
+        escrow_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.escrow_mint = Some(escrow_mint);
+        self
+    }
+    pub fn escrow_account(
+        &mut self,
+        escrow_account: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.escrow_account = Some(escrow_account);
+        self
+    }
+    pub fn system_program(
+        &mut self,
+        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.system_program = Some(system_program);
+        self
+    }
+    pub fn ata_program(
+        &mut self,
+        ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.ata_program = Some(ata_program);
+        self
+    }
+    pub fn token_program(
+        &mut self,
+        token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.token_program = Some(token_program);
+        self
+    }
+    pub fn sysvar_instructions(
+        &mut self,
+        sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.sysvar_instructions = Some(sysvar_instructions);
+        self
+    }
+    pub fn authority(
+        &mut self,
+        authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authority = Some(authority);
+        self
+    }
+    pub fn amount(&mut self, amount: u64) -> &mut Self {
+        self.instruction.amount = Some(amount);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> TransferOutOfEscrowCpi<'a> {
+        TransferOutOfEscrowCpi {
+            program: self.instruction.program,
+
+            escrow: self.instruction.escrow.expect("escrow is not set"),
+
+            metadata: self.instruction.metadata.expect("metadata is not set"),
+
+            payer: self.instruction.payer.expect("payer is not set"),
+
+            attribute_mint: self
+                .instruction
+                .attribute_mint
+                .expect("attribute_mint is not set"),
+
+            attribute_src: self
+                .instruction
+                .attribute_src
+                .expect("attribute_src is not set"),
+
+            attribute_dst: self
+                .instruction
+                .attribute_dst
+                .expect("attribute_dst is not set"),
+
+            escrow_mint: self
+                .instruction
+                .escrow_mint
+                .expect("escrow_mint is not set"),
+
+            escrow_account: self
+                .instruction
+                .escrow_account
+                .expect("escrow_account is not set"),
+
+            system_program: self
+                .instruction
+                .system_program
+                .expect("system_program is not set"),
+
+            ata_program: self
+                .instruction
+                .ata_program
+                .expect("ata_program is not set"),
+
+            token_program: self
+                .instruction
+                .token_program
+                .expect("token_program is not set"),
+
+            sysvar_instructions: self
+                .instruction
+                .sysvar_instructions
+                .expect("sysvar_instructions is not set"),
+
+            authority: self.instruction.authority,
+            args: TransferOutOfEscrowInstructionArgs::new(
+                self.instruction.amount.clone().expect("amount is not set"),
+            ),
+        }
+    }
+}
+
+struct TransferOutOfEscrowCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    escrow: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    attribute_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    attribute_src: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    attribute_dst: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    escrow_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    escrow_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    ata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    amount: Option<u64>,
 }

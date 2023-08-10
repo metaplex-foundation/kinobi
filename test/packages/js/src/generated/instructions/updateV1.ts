@@ -60,7 +60,6 @@ import {
   getProgrammableConfigSerializer,
   getTokenStandardSerializer,
   getUsesSerializer,
-  payloadType,
 } from '../types';
 
 // Accounts.
@@ -124,7 +123,7 @@ export type UpdateV1InstructionDataArgs = {
   primarySaleHappened: OptionOrNullable<boolean>;
   isMutable: OptionOrNullable<boolean>;
   tokenStandard?: OptionOrNullable<TokenStandardArgs>;
-  collection?: OptionOrNullable<CollectionArgs>;
+  collection: OptionOrNullable<CollectionArgs>;
   uses: OptionOrNullable<UsesArgs>;
   collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
   programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
@@ -183,11 +182,6 @@ export function getUpdateV1InstructionDataSerializer(
       discriminator: 43,
       updateV1Discriminator: 0,
       tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
-      collection:
-        value.collection ??
-        some(
-          payloadType('Pubkey', [publicKey('11111111111111111111111111111111')])
-        ),
     })
   ) as Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData>;
 }

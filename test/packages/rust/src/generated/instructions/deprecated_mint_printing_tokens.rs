@@ -118,6 +118,7 @@ impl DeprecatedMintPrintingTokensBuilder {
         self.mint_printing_tokens_via_token_args = Some(mint_printing_tokens_via_token_args);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintPrintingTokens {
             destination: self.destination.expect("destination is not set"),
@@ -136,192 +137,208 @@ impl DeprecatedMintPrintingTokensBuilder {
         };
         let args = DeprecatedMintPrintingTokensInstructionArgs::new(
             self.mint_printing_tokens_via_token_args
+                .clone()
                 .expect("mint_printing_tokens_via_token_args is not set"),
         );
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `deprecated_mint_printing_tokens` CPI instruction.
+pub struct DeprecatedMintPrintingTokensCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Destination account
+    pub destination: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Printing mint
+    pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Update authority
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent
+    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    pub args: DeprecatedMintPrintingTokensInstructionArgs,
+}
 
-    /// `deprecated_mint_printing_tokens` CPI instruction.
-    pub struct DeprecatedMintPrintingTokens<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Destination account
-        pub destination: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Printing mint
-        pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Update authority
-        pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata key (pda of ['metadata', program id, mint id])
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-        pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token program
-        pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Rent
-        pub rent: &'a solana_program::account_info::AccountInfo<'a>,
-        pub args: DeprecatedMintPrintingTokensInstructionArgs,
+impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> DeprecatedMintPrintingTokens<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.destination.key, false),
-                    solana_program::instruction::AccountMeta::new(*self.printing_mint.key, false),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.update_authority.key,
-                        true,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.metadata.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.master_edition.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.token_program.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(*self.rent.key, false),
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(7 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.destination.clone());
-            account_infos.push(self.printing_mint.clone());
-            account_infos.push(self.update_authority.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.master_edition.clone());
-            account_infos.push(self.token_program.clone());
-            account_infos.push(self.rent.clone());
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
-        }
-    }
-
-    /// `deprecated_mint_printing_tokens` CPI instruction builder.
-    pub struct DeprecatedMintPrintingTokensBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        destination: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        printing_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        mint_printing_tokens_via_token_args: Option<MintPrintingTokensViaTokenArgs>,
-    }
-
-    impl<'a> DeprecatedMintPrintingTokensBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                destination: None,
-                printing_mint: None,
-                update_authority: None,
-                metadata: None,
-                master_edition: None,
-                token_program: None,
-                rent: None,
-                mint_printing_tokens_via_token_args: None,
-            }
-        }
-        pub fn destination(
-            &'a mut self,
-            destination: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.destination = Some(destination);
-            self
-        }
-        pub fn printing_mint(
-            &'a mut self,
-            printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.printing_mint = Some(printing_mint);
-            self
-        }
-        pub fn update_authority(
-            &'a mut self,
-            update_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.update_authority = Some(update_authority);
-            self
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn master_edition(
-            &'a mut self,
-            master_edition: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.master_edition = Some(master_edition);
-            self
-        }
-        pub fn token_program(
-            &'a mut self,
-            token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.token_program = Some(token_program);
-            self
-        }
-        pub fn rent(
-            &'a mut self,
-            rent: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.rent = Some(rent);
-            self
-        }
-        pub fn mint_printing_tokens_via_token_args(
-            &'a mut self,
-            mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
-        ) -> &mut Self {
-            self.mint_printing_tokens_via_token_args = Some(mint_printing_tokens_via_token_args);
-            self
-        }
-        pub fn build(&'a self) -> DeprecatedMintPrintingTokens {
-            DeprecatedMintPrintingTokens {
-                program: self.program,
-
-                destination: self.destination.expect("destination is not set"),
-
-                printing_mint: self.printing_mint.expect("printing_mint is not set"),
-
-                update_authority: self.update_authority.expect("update_authority is not set"),
-
-                metadata: self.metadata.expect("metadata is not set"),
-
-                master_edition: self.master_edition.expect("master_edition is not set"),
-
-                token_program: self.token_program.expect("token_program is not set"),
-
-                rent: self.rent.expect("rent is not set"),
-                args: DeprecatedMintPrintingTokensInstructionArgs::new(
-                    self.mint_printing_tokens_via_token_args
-                        .expect("mint_printing_tokens_via_token_args is not set"),
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.destination.key, false),
+                solana_program::instruction::AccountMeta::new(*self.printing_mint.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.update_authority.key,
+                    true,
                 ),
-            }
+                solana_program::instruction::AccountMeta::new_readonly(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.master_edition.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.token_program.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(*self.rent.key, false),
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(7 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.destination.clone());
+        account_infos.push(self.printing_mint.clone());
+        account_infos.push(self.update_authority.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.master_edition.clone());
+        account_infos.push(self.token_program.clone());
+        account_infos.push(self.rent.clone());
+
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
+
+/// `deprecated_mint_printing_tokens` CPI instruction builder.
+pub struct DeprecatedMintPrintingTokensCpiBuilder<'a> {
+    instruction: Box<DeprecatedMintPrintingTokensCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(DeprecatedMintPrintingTokensCpiBuilderInstruction {
+            program,
+            destination: None,
+            printing_mint: None,
+            update_authority: None,
+            metadata: None,
+            master_edition: None,
+            token_program: None,
+            rent: None,
+            mint_printing_tokens_via_token_args: None,
+        });
+        Self { instruction }
+    }
+    pub fn destination(
+        &mut self,
+        destination: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.destination = Some(destination);
+        self
+    }
+    pub fn printing_mint(
+        &mut self,
+        printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.printing_mint = Some(printing_mint);
+        self
+    }
+    pub fn update_authority(
+        &mut self,
+        update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.update_authority = Some(update_authority);
+        self
+    }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn master_edition(
+        &mut self,
+        master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.master_edition = Some(master_edition);
+        self
+    }
+    pub fn token_program(
+        &mut self,
+        token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.token_program = Some(token_program);
+        self
+    }
+    pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.rent = Some(rent);
+        self
+    }
+    pub fn mint_printing_tokens_via_token_args(
+        &mut self,
+        mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
+    ) -> &mut Self {
+        self.instruction.mint_printing_tokens_via_token_args =
+            Some(mint_printing_tokens_via_token_args);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> DeprecatedMintPrintingTokensCpi<'a> {
+        DeprecatedMintPrintingTokensCpi {
+            program: self.instruction.program,
+
+            destination: self
+                .instruction
+                .destination
+                .expect("destination is not set"),
+
+            printing_mint: self
+                .instruction
+                .printing_mint
+                .expect("printing_mint is not set"),
+
+            update_authority: self
+                .instruction
+                .update_authority
+                .expect("update_authority is not set"),
+
+            metadata: self.instruction.metadata.expect("metadata is not set"),
+
+            master_edition: self
+                .instruction
+                .master_edition
+                .expect("master_edition is not set"),
+
+            token_program: self
+                .instruction
+                .token_program
+                .expect("token_program is not set"),
+
+            rent: self.instruction.rent.expect("rent is not set"),
+            args: DeprecatedMintPrintingTokensInstructionArgs::new(
+                self.instruction
+                    .mint_printing_tokens_via_token_args
+                    .clone()
+                    .expect("mint_printing_tokens_via_token_args is not set"),
+            ),
+        }
+    }
+}
+
+struct DeprecatedMintPrintingTokensCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    destination: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    printing_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    mint_printing_tokens_via_token_args: Option<MintPrintingTokensViaTokenArgs>,
 }

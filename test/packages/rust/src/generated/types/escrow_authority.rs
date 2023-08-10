@@ -7,8 +7,10 @@
 
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub enum EscrowAuthority {
     TokenOwner,
+    Creator(Pubkey),
 }

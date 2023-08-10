@@ -125,6 +125,7 @@ impl VerifyBuilder {
         self.verify_args = Some(verify_args);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Verify {
             metadata: self.metadata.expect("metadata is not set"),
@@ -139,172 +140,176 @@ impl VerifyBuilder {
 
             authorization_rules_program: self.authorization_rules_program,
         };
-        let args = VerifyInstructionArgs::new(self.verify_args.expect("verify_args is not set"));
+        let args =
+            VerifyInstructionArgs::new(self.verify_args.clone().expect("verify_args is not set"));
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `verify` CPI instruction.
+pub struct VerifyCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Update authority
+    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub args: VerifyInstructionArgs,
+}
 
-    /// `verify` CPI instruction.
-    pub struct Verify<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Collection Update authority
-        pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        /// payer
-        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Token Authorization Rules account
-        pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        /// Token Authorization Rules Program
-        pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        pub args: VerifyInstructionArgs,
+impl<'a> VerifyCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> Verify<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new(*self.collection_authority.key, true),
+                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                if let Some(authorization_rules) = self.authorization_rules {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *authorization_rules.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+                if let Some(authorization_rules_program) = self.authorization_rules_program {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *authorization_rules_program.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(5 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.collection_authority.clone());
+        account_infos.push(self.payer.clone());
+        if let Some(authorization_rules) = self.authorization_rules {
+            account_infos.push(authorization_rules.clone());
         }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new(
-                        *self.collection_authority.key,
-                        true,
-                    ),
-                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                    if let Some(authorization_rules) = self.authorization_rules {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *authorization_rules.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                    if let Some(authorization_rules_program) = self.authorization_rules_program {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *authorization_rules_program.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(5 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.collection_authority.clone());
-            account_infos.push(self.payer.clone());
-            if let Some(authorization_rules) = self.authorization_rules {
-                account_infos.push(authorization_rules.clone());
-            }
-            if let Some(authorization_rules_program) = self.authorization_rules_program {
-                account_infos.push(authorization_rules_program.clone());
-            }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            account_infos.push(authorization_rules_program.clone());
+        }
 
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `verify` CPI instruction builder.
-    pub struct VerifyBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        verify_args: Option<VerifyArgs>,
+/// `verify` CPI instruction builder.
+pub struct VerifyCpiBuilder<'a> {
+    instruction: Box<VerifyCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> VerifyCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(VerifyCpiBuilderInstruction {
+            program,
+            metadata: None,
+            collection_authority: None,
+            payer: None,
+            authorization_rules: None,
+            authorization_rules_program: None,
+            verify_args: None,
+        });
+        Self { instruction }
     }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_authority = Some(collection_authority);
+        self
+    }
+    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.payer = Some(payer);
+        self
+    }
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules = Some(authorization_rules);
+        self
+    }
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules_program = Some(authorization_rules_program);
+        self
+    }
+    pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
+        self.instruction.verify_args = Some(verify_args);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> VerifyCpi<'a> {
+        VerifyCpi {
+            program: self.instruction.program,
 
-    impl<'a> VerifyBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-                collection_authority: None,
-                payer: None,
-                authorization_rules: None,
-                authorization_rules_program: None,
-                verify_args: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn collection_authority(
-            &'a mut self,
-            collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_authority = Some(collection_authority);
-            self
-        }
-        pub fn payer(
-            &'a mut self,
-            payer: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.payer = Some(payer);
-            self
-        }
-        pub fn authorization_rules(
-            &'a mut self,
-            authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authorization_rules = Some(authorization_rules);
-            self
-        }
-        pub fn authorization_rules_program(
-            &'a mut self,
-            authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authorization_rules_program = Some(authorization_rules_program);
-            self
-        }
-        pub fn verify_args(&'a mut self, verify_args: VerifyArgs) -> &mut Self {
-            self.verify_args = Some(verify_args);
-            self
-        }
-        pub fn build(&'a self) -> Verify {
-            Verify {
-                program: self.program,
+            metadata: self.instruction.metadata.expect("metadata is not set"),
 
-                metadata: self.metadata.expect("metadata is not set"),
+            collection_authority: self
+                .instruction
+                .collection_authority
+                .expect("collection_authority is not set"),
 
-                collection_authority: self
-                    .collection_authority
-                    .expect("collection_authority is not set"),
+            payer: self.instruction.payer.expect("payer is not set"),
 
-                payer: self.payer.expect("payer is not set"),
+            authorization_rules: self.instruction.authorization_rules,
 
-                authorization_rules: self.authorization_rules,
-
-                authorization_rules_program: self.authorization_rules_program,
-                args: VerifyInstructionArgs::new(self.verify_args.expect("verify_args is not set")),
-            }
+            authorization_rules_program: self.instruction.authorization_rules_program,
+            args: VerifyInstructionArgs::new(
+                self.instruction
+                    .verify_args
+                    .clone()
+                    .expect("verify_args is not set"),
+            ),
         }
     }
+}
+
+struct VerifyCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    verify_args: Option<VerifyArgs>,
 }

@@ -60,6 +60,7 @@ impl RemoveCreatorVerificationBuilder {
         self.creator = Some(creator);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = RemoveCreatorVerification {
             metadata: self.metadata.expect("metadata is not set"),
@@ -70,86 +71,89 @@ impl RemoveCreatorVerificationBuilder {
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `remove_creator_verification` CPI instruction.
+pub struct RemoveCreatorVerificationCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Creator
+    pub creator: &'a solana_program::account_info::AccountInfo<'a>,
+}
 
-    /// `remove_creator_verification` CPI instruction.
-    pub struct RemoveCreatorVerification<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata (pda of ['metadata', program id, mint id])
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Creator
-        pub creator: &'a solana_program::account_info::AccountInfo<'a>,
+impl<'a> RemoveCreatorVerificationCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let args = RemoveCreatorVerificationInstructionArgs::new();
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(*self.creator.key, true),
+            ],
+            data: args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(2 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.creator.clone());
 
-    impl<'a> RemoveCreatorVerification<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let args = RemoveCreatorVerificationInstructionArgs::new();
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new_readonly(*self.creator.key, true),
-                ],
-                data: args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(2 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.creator.clone());
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `remove_creator_verification` CPI instruction builder.
-    pub struct RemoveCreatorVerificationBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        creator: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+/// `remove_creator_verification` CPI instruction builder.
+pub struct RemoveCreatorVerificationCpiBuilder<'a> {
+    instruction: Box<RemoveCreatorVerificationCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> RemoveCreatorVerificationCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(RemoveCreatorVerificationCpiBuilderInstruction {
+            program,
+            metadata: None,
+            creator: None,
+        });
+        Self { instruction }
     }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn creator(
+        &mut self,
+        creator: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.creator = Some(creator);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> RemoveCreatorVerificationCpi<'a> {
+        RemoveCreatorVerificationCpi {
+            program: self.instruction.program,
 
-    impl<'a> RemoveCreatorVerificationBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-                creator: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn creator(
-            &'a mut self,
-            creator: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.creator = Some(creator);
-            self
-        }
-        pub fn build(&'a self) -> RemoveCreatorVerification {
-            RemoveCreatorVerification {
-                program: self.program,
+            metadata: self.instruction.metadata.expect("metadata is not set"),
 
-                metadata: self.metadata.expect("metadata is not set"),
-
-                creator: self.creator.expect("creator is not set"),
-            }
+            creator: self.instruction.creator.expect("creator is not set"),
         }
     }
+}
+
+struct RemoveCreatorVerificationCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    creator: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

@@ -94,6 +94,7 @@ impl UpdateMetadataAccountBuilder {
         self.primary_sale_happened = Some(primary_sale_happened);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateMetadataAccount {
             metadata: self.metadata.expect("metadata is not set"),
@@ -101,120 +102,126 @@ impl UpdateMetadataAccountBuilder {
             update_authority: self.update_authority.expect("update_authority is not set"),
         };
         let args = UpdateMetadataAccountInstructionArgs::new(
-            self.data,
-            self.update_authority_arg,
-            self.primary_sale_happened,
+            self.data.clone(),
+            self.update_authority_arg.clone(),
+            self.primary_sale_happened.clone(),
         );
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `update_metadata_account` CPI instruction.
+pub struct UpdateMetadataAccountCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Update authority key
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub args: UpdateMetadataAccountInstructionArgs,
+}
 
-    /// `update_metadata_account` CPI instruction.
-    pub struct UpdateMetadataAccount<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Update authority key
-        pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        pub args: UpdateMetadataAccountInstructionArgs,
+impl<'a> UpdateMetadataAccountCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> UpdateMetadataAccount<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.update_authority.key,
-                        true,
-                    ),
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(2 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.update_authority.clone());
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
-        }
-    }
-
-    /// `update_metadata_account` CPI instruction builder.
-    pub struct UpdateMetadataAccountBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        data: Option<Data>,
-        update_authority_arg: Option<Pubkey>,
-        primary_sale_happened: Option<bool>,
-    }
-
-    impl<'a> UpdateMetadataAccountBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-                update_authority: None,
-                data: None,
-                update_authority_arg: None,
-                primary_sale_happened: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn update_authority(
-            &'a mut self,
-            update_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.update_authority = Some(update_authority);
-            self
-        }
-        pub fn data(&'a mut self, data: Data) -> &mut Self {
-            self.data = Some(data);
-            self
-        }
-        pub fn update_authority_arg(&'a mut self, update_authority_arg: Pubkey) -> &mut Self {
-            self.update_authority_arg = Some(update_authority_arg);
-            self
-        }
-        pub fn primary_sale_happened(&'a mut self, primary_sale_happened: bool) -> &mut Self {
-            self.primary_sale_happened = Some(primary_sale_happened);
-            self
-        }
-        pub fn build(&'a self) -> UpdateMetadataAccount {
-            UpdateMetadataAccount {
-                program: self.program,
-
-                metadata: self.metadata.expect("metadata is not set"),
-
-                update_authority: self.update_authority.expect("update_authority is not set"),
-                args: UpdateMetadataAccountInstructionArgs::new(
-                    self.data,
-                    self.update_authority_arg,
-                    self.primary_sale_happened,
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.update_authority.key,
+                    true,
                 ),
-            }
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(2 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.update_authority.clone());
+
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
+
+/// `update_metadata_account` CPI instruction builder.
+pub struct UpdateMetadataAccountCpiBuilder<'a> {
+    instruction: Box<UpdateMetadataAccountCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(UpdateMetadataAccountCpiBuilderInstruction {
+            program,
+            metadata: None,
+            update_authority: None,
+            data: None,
+            update_authority_arg: None,
+            primary_sale_happened: None,
+        });
+        Self { instruction }
+    }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn update_authority(
+        &mut self,
+        update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.update_authority = Some(update_authority);
+        self
+    }
+    pub fn data(&mut self, data: Data) -> &mut Self {
+        self.instruction.data = Some(data);
+        self
+    }
+    pub fn update_authority_arg(&mut self, update_authority_arg: Pubkey) -> &mut Self {
+        self.instruction.update_authority_arg = Some(update_authority_arg);
+        self
+    }
+    pub fn primary_sale_happened(&mut self, primary_sale_happened: bool) -> &mut Self {
+        self.instruction.primary_sale_happened = Some(primary_sale_happened);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> UpdateMetadataAccountCpi<'a> {
+        UpdateMetadataAccountCpi {
+            program: self.instruction.program,
+
+            metadata: self.instruction.metadata.expect("metadata is not set"),
+
+            update_authority: self
+                .instruction
+                .update_authority
+                .expect("update_authority is not set"),
+            args: UpdateMetadataAccountInstructionArgs::new(
+                self.instruction.data.clone(),
+                self.instruction.update_authority_arg.clone(),
+                self.instruction.primary_sale_happened.clone(),
+            ),
+        }
+    }
+}
+
+struct UpdateMetadataAccountCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    data: Option<Data>,
+    update_authority_arg: Option<Pubkey>,
+    primary_sale_happened: Option<bool>,
 }

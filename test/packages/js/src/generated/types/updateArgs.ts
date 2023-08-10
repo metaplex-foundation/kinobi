@@ -10,7 +10,6 @@ import {
   Option,
   OptionOrNullable,
   PublicKey,
-  publicKey,
   some,
 } from '@metaplex-foundation/umi';
 import {
@@ -55,7 +54,6 @@ import {
   getProgrammableConfigSerializer,
   getTokenStandardSerializer,
   getUsesSerializer,
-  payloadType,
 } from '.';
 
 export type UpdateArgs = {
@@ -94,7 +92,7 @@ export type UpdateArgsArgs = {
   primarySaleHappened: OptionOrNullable<boolean>;
   isMutable: OptionOrNullable<boolean>;
   tokenStandard?: OptionOrNullable<TokenStandardArgs>;
-  collection?: OptionOrNullable<CollectionArgs>;
+  collection: OptionOrNullable<CollectionArgs>;
   uses: OptionOrNullable<UsesArgs>;
   collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
   programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
@@ -151,13 +149,6 @@ export function getUpdateArgsSerializer(
             ...value,
             tokenStandard:
               value.tokenStandard ?? some(TokenStandard.NonFungible),
-            collection:
-              value.collection ??
-              some(
-                payloadType('Pubkey', [
-                  publicKey('11111111111111111111111111111111'),
-                ])
-              ),
           })
         ),
       ],

@@ -102,6 +102,7 @@ impl UpdateMetadataAccountV2Builder {
         self.is_mutable = Some(is_mutable);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateMetadataAccountV2 {
             metadata: self.metadata.expect("metadata is not set"),
@@ -109,128 +110,134 @@ impl UpdateMetadataAccountV2Builder {
             update_authority: self.update_authority.expect("update_authority is not set"),
         };
         let args = UpdateMetadataAccountV2InstructionArgs::new(
-            self.data,
-            self.update_authority_arg,
-            self.primary_sale_happened,
-            self.is_mutable,
+            self.data.clone(),
+            self.update_authority_arg.clone(),
+            self.primary_sale_happened.clone(),
+            self.is_mutable.clone(),
         );
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `update_metadata_account_v2` CPI instruction.
+pub struct UpdateMetadataAccountV2Cpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Update authority key
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub args: UpdateMetadataAccountV2InstructionArgs,
+}
 
-    /// `update_metadata_account_v2` CPI instruction.
-    pub struct UpdateMetadataAccountV2<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Update authority key
-        pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        pub args: UpdateMetadataAccountV2InstructionArgs,
+impl<'a> UpdateMetadataAccountV2Cpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> UpdateMetadataAccountV2<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.update_authority.key,
-                        true,
-                    ),
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(2 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.update_authority.clone());
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
-        }
-    }
-
-    /// `update_metadata_account_v2` CPI instruction builder.
-    pub struct UpdateMetadataAccountV2Builder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        data: Option<DataV2>,
-        update_authority_arg: Option<Pubkey>,
-        primary_sale_happened: Option<bool>,
-        is_mutable: Option<bool>,
-    }
-
-    impl<'a> UpdateMetadataAccountV2Builder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-                update_authority: None,
-                data: None,
-                update_authority_arg: None,
-                primary_sale_happened: None,
-                is_mutable: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn update_authority(
-            &'a mut self,
-            update_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.update_authority = Some(update_authority);
-            self
-        }
-        pub fn data(&'a mut self, data: DataV2) -> &mut Self {
-            self.data = Some(data);
-            self
-        }
-        pub fn update_authority_arg(&'a mut self, update_authority_arg: Pubkey) -> &mut Self {
-            self.update_authority_arg = Some(update_authority_arg);
-            self
-        }
-        pub fn primary_sale_happened(&'a mut self, primary_sale_happened: bool) -> &mut Self {
-            self.primary_sale_happened = Some(primary_sale_happened);
-            self
-        }
-        pub fn is_mutable(&'a mut self, is_mutable: bool) -> &mut Self {
-            self.is_mutable = Some(is_mutable);
-            self
-        }
-        pub fn build(&'a self) -> UpdateMetadataAccountV2 {
-            UpdateMetadataAccountV2 {
-                program: self.program,
-
-                metadata: self.metadata.expect("metadata is not set"),
-
-                update_authority: self.update_authority.expect("update_authority is not set"),
-                args: UpdateMetadataAccountV2InstructionArgs::new(
-                    self.data,
-                    self.update_authority_arg,
-                    self.primary_sale_happened,
-                    self.is_mutable,
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.update_authority.key,
+                    true,
                 ),
-            }
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(2 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.update_authority.clone());
+
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
+
+/// `update_metadata_account_v2` CPI instruction builder.
+pub struct UpdateMetadataAccountV2CpiBuilder<'a> {
+    instruction: Box<UpdateMetadataAccountV2CpiBuilderInstruction<'a>>,
+}
+
+impl<'a> UpdateMetadataAccountV2CpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(UpdateMetadataAccountV2CpiBuilderInstruction {
+            program,
+            metadata: None,
+            update_authority: None,
+            data: None,
+            update_authority_arg: None,
+            primary_sale_happened: None,
+            is_mutable: None,
+        });
+        Self { instruction }
+    }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn update_authority(
+        &mut self,
+        update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.update_authority = Some(update_authority);
+        self
+    }
+    pub fn data(&mut self, data: DataV2) -> &mut Self {
+        self.instruction.data = Some(data);
+        self
+    }
+    pub fn update_authority_arg(&mut self, update_authority_arg: Pubkey) -> &mut Self {
+        self.instruction.update_authority_arg = Some(update_authority_arg);
+        self
+    }
+    pub fn primary_sale_happened(&mut self, primary_sale_happened: bool) -> &mut Self {
+        self.instruction.primary_sale_happened = Some(primary_sale_happened);
+        self
+    }
+    pub fn is_mutable(&mut self, is_mutable: bool) -> &mut Self {
+        self.instruction.is_mutable = Some(is_mutable);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> UpdateMetadataAccountV2Cpi<'a> {
+        UpdateMetadataAccountV2Cpi {
+            program: self.instruction.program,
+
+            metadata: self.instruction.metadata.expect("metadata is not set"),
+
+            update_authority: self
+                .instruction
+                .update_authority
+                .expect("update_authority is not set"),
+            args: UpdateMetadataAccountV2InstructionArgs::new(
+                self.instruction.data.clone(),
+                self.instruction.update_authority_arg.clone(),
+                self.instruction.primary_sale_happened.clone(),
+                self.instruction.is_mutable.clone(),
+            ),
+        }
+    }
+}
+
+struct UpdateMetadataAccountV2CpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    data: Option<DataV2>,
+    update_authority_arg: Option<Pubkey>,
+    primary_sale_happened: Option<bool>,
+    is_mutable: Option<bool>,
 }

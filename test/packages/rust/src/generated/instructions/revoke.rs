@@ -219,6 +219,7 @@ impl RevokeBuilder {
         self.revoke_args = Some(revoke_args);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Revoke {
             delegate_record: self.delegate_record.expect("delegate_record is not set"),
@@ -249,334 +250,335 @@ impl RevokeBuilder {
 
             authorization_rules: self.authorization_rules,
         };
-        let args = RevokeInstructionArgs::new(self.revoke_args.expect("revoke_args is not set"));
+        let args =
+            RevokeInstructionArgs::new(self.revoke_args.clone().expect("revoke_args is not set"));
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `revoke` CPI instruction.
+pub struct RevokeCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
+    pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Owner of the delegated account
+    pub delegate: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Master Edition account
+    pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Mint of metadata
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Owned Token Account of mint
+    pub token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Authority to approve the delegation
+    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System Program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Instructions sysvar account
+    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    /// SPL Token Program
+    pub spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub args: RevokeInstructionArgs,
+}
 
-    /// `revoke` CPI instruction.
-    pub struct Revoke<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
-        pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Owner of the delegated account
-        pub delegate: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Master Edition account
-        pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        /// Mint of metadata
-        pub mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Owned Token Account of mint
-        pub token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        /// Authority to approve the delegation
-        pub authority: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Payer
-        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
-        /// System Program
-        pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Instructions sysvar account
-        pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
-        /// SPL Token Program
-        pub spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        /// Token Authorization Rules Program
-        pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        /// Token Authorization Rules account
-        pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        pub args: RevokeInstructionArgs,
+impl<'a> RevokeCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> Revoke<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.delegate_record.key, false),
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.delegate_record.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(*self.delegate.key, false),
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                if let Some(master_edition) = self.master_edition {
                     solana_program::instruction::AccountMeta::new_readonly(
-                        *self.delegate.key,
+                        *master_edition.key,
                         false,
-                    ),
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    if let Some(master_edition) = self.master_edition {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *master_edition.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                    solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                    if let Some(token) = self.token {
-                        solana_program::instruction::AccountMeta::new(*token.key, false)
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
+                    )
+                } else {
                     solana_program::instruction::AccountMeta::new_readonly(
-                        *self.authority.key,
-                        true,
-                    ),
-                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.system_program.key,
+                        crate::MPL_TOKEN_METADATA_ID,
                         false,
-                    ),
+                    )
+                },
+                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
+                if let Some(token) = self.token {
+                    solana_program::instruction::AccountMeta::new(*token.key, false)
+                } else {
                     solana_program::instruction::AccountMeta::new_readonly(
-                        *self.sysvar_instructions.key,
+                        crate::MPL_TOKEN_METADATA_ID,
                         false,
-                    ),
-                    if let Some(spl_token_program) = self.spl_token_program {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *spl_token_program.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                    if let Some(authorization_rules_program) = self.authorization_rules_program {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *authorization_rules_program.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                    if let Some(authorization_rules) = self.authorization_rules {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *authorization_rules.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(13 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.delegate_record.clone());
-            account_infos.push(self.delegate.clone());
-            account_infos.push(self.metadata.clone());
-            if let Some(master_edition) = self.master_edition {
-                account_infos.push(master_edition.clone());
-            }
-            account_infos.push(self.mint.clone());
-            if let Some(token) = self.token {
-                account_infos.push(token.clone());
-            }
-            account_infos.push(self.authority.clone());
-            account_infos.push(self.payer.clone());
-            account_infos.push(self.system_program.clone());
-            account_infos.push(self.sysvar_instructions.clone());
-            if let Some(spl_token_program) = self.spl_token_program {
-                account_infos.push(spl_token_program.clone());
-            }
-            if let Some(authorization_rules_program) = self.authorization_rules_program {
-                account_infos.push(authorization_rules_program.clone());
-            }
-            if let Some(authorization_rules) = self.authorization_rules {
-                account_infos.push(authorization_rules.clone());
-            }
+                    )
+                },
+                solana_program::instruction::AccountMeta::new_readonly(*self.authority.key, true),
+                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.system_program.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.sysvar_instructions.key,
+                    false,
+                ),
+                if let Some(spl_token_program) = self.spl_token_program {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *spl_token_program.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+                if let Some(authorization_rules_program) = self.authorization_rules_program {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *authorization_rules_program.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+                if let Some(authorization_rules) = self.authorization_rules {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *authorization_rules.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(13 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.delegate_record.clone());
+        account_infos.push(self.delegate.clone());
+        account_infos.push(self.metadata.clone());
+        if let Some(master_edition) = self.master_edition {
+            account_infos.push(master_edition.clone());
+        }
+        account_infos.push(self.mint.clone());
+        if let Some(token) = self.token {
+            account_infos.push(token.clone());
+        }
+        account_infos.push(self.authority.clone());
+        account_infos.push(self.payer.clone());
+        account_infos.push(self.system_program.clone());
+        account_infos.push(self.sysvar_instructions.clone());
+        if let Some(spl_token_program) = self.spl_token_program {
+            account_infos.push(spl_token_program.clone());
+        }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            account_infos.push(authorization_rules_program.clone());
+        }
+        if let Some(authorization_rules) = self.authorization_rules {
+            account_infos.push(authorization_rules.clone());
+        }
 
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `revoke` CPI instruction builder.
-    pub struct RevokeBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        revoke_args: Option<RevokeArgs>,
+/// `revoke` CPI instruction builder.
+pub struct RevokeCpiBuilder<'a> {
+    instruction: Box<RevokeCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> RevokeCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(RevokeCpiBuilderInstruction {
+            program,
+            delegate_record: None,
+            delegate: None,
+            metadata: None,
+            master_edition: None,
+            mint: None,
+            token: None,
+            authority: None,
+            payer: None,
+            system_program: None,
+            sysvar_instructions: None,
+            spl_token_program: None,
+            authorization_rules_program: None,
+            authorization_rules: None,
+            revoke_args: None,
+        });
+        Self { instruction }
     }
+    pub fn delegate_record(
+        &mut self,
+        delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.delegate_record = Some(delegate_record);
+        self
+    }
+    pub fn delegate(
+        &mut self,
+        delegate: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.delegate = Some(delegate);
+        self
+    }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn master_edition(
+        &mut self,
+        master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.master_edition = Some(master_edition);
+        self
+    }
+    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.mint = Some(mint);
+        self
+    }
+    pub fn token(&mut self, token: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.token = Some(token);
+        self
+    }
+    pub fn authority(
+        &mut self,
+        authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authority = Some(authority);
+        self
+    }
+    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.payer = Some(payer);
+        self
+    }
+    pub fn system_program(
+        &mut self,
+        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.system_program = Some(system_program);
+        self
+    }
+    pub fn sysvar_instructions(
+        &mut self,
+        sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.sysvar_instructions = Some(sysvar_instructions);
+        self
+    }
+    pub fn spl_token_program(
+        &mut self,
+        spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.spl_token_program = Some(spl_token_program);
+        self
+    }
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules_program = Some(authorization_rules_program);
+        self
+    }
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules = Some(authorization_rules);
+        self
+    }
+    pub fn revoke_args(&mut self, revoke_args: RevokeArgs) -> &mut Self {
+        self.instruction.revoke_args = Some(revoke_args);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> RevokeCpi<'a> {
+        RevokeCpi {
+            program: self.instruction.program,
 
-    impl<'a> RevokeBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                delegate_record: None,
-                delegate: None,
-                metadata: None,
-                master_edition: None,
-                mint: None,
-                token: None,
-                authority: None,
-                payer: None,
-                system_program: None,
-                sysvar_instructions: None,
-                spl_token_program: None,
-                authorization_rules_program: None,
-                authorization_rules: None,
-                revoke_args: None,
-            }
-        }
-        pub fn delegate_record(
-            &'a mut self,
-            delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.delegate_record = Some(delegate_record);
-            self
-        }
-        pub fn delegate(
-            &'a mut self,
-            delegate: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.delegate = Some(delegate);
-            self
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn master_edition(
-            &'a mut self,
-            master_edition: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.master_edition = Some(master_edition);
-            self
-        }
-        pub fn mint(
-            &'a mut self,
-            mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.mint = Some(mint);
-            self
-        }
-        pub fn token(
-            &'a mut self,
-            token: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.token = Some(token);
-            self
-        }
-        pub fn authority(
-            &'a mut self,
-            authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authority = Some(authority);
-            self
-        }
-        pub fn payer(
-            &'a mut self,
-            payer: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.payer = Some(payer);
-            self
-        }
-        pub fn system_program(
-            &'a mut self,
-            system_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.system_program = Some(system_program);
-            self
-        }
-        pub fn sysvar_instructions(
-            &'a mut self,
-            sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.sysvar_instructions = Some(sysvar_instructions);
-            self
-        }
-        pub fn spl_token_program(
-            &'a mut self,
-            spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.spl_token_program = Some(spl_token_program);
-            self
-        }
-        pub fn authorization_rules_program(
-            &'a mut self,
-            authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authorization_rules_program = Some(authorization_rules_program);
-            self
-        }
-        pub fn authorization_rules(
-            &'a mut self,
-            authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.authorization_rules = Some(authorization_rules);
-            self
-        }
-        pub fn revoke_args(&'a mut self, revoke_args: RevokeArgs) -> &mut Self {
-            self.revoke_args = Some(revoke_args);
-            self
-        }
-        pub fn build(&'a self) -> Revoke {
-            Revoke {
-                program: self.program,
+            delegate_record: self
+                .instruction
+                .delegate_record
+                .expect("delegate_record is not set"),
 
-                delegate_record: self.delegate_record.expect("delegate_record is not set"),
+            delegate: self.instruction.delegate.expect("delegate is not set"),
 
-                delegate: self.delegate.expect("delegate is not set"),
+            metadata: self.instruction.metadata.expect("metadata is not set"),
 
-                metadata: self.metadata.expect("metadata is not set"),
+            master_edition: self.instruction.master_edition,
 
-                master_edition: self.master_edition,
+            mint: self.instruction.mint.expect("mint is not set"),
 
-                mint: self.mint.expect("mint is not set"),
+            token: self.instruction.token,
 
-                token: self.token,
+            authority: self.instruction.authority.expect("authority is not set"),
 
-                authority: self.authority.expect("authority is not set"),
+            payer: self.instruction.payer.expect("payer is not set"),
 
-                payer: self.payer.expect("payer is not set"),
+            system_program: self
+                .instruction
+                .system_program
+                .expect("system_program is not set"),
 
-                system_program: self.system_program.expect("system_program is not set"),
+            sysvar_instructions: self
+                .instruction
+                .sysvar_instructions
+                .expect("sysvar_instructions is not set"),
 
-                sysvar_instructions: self
-                    .sysvar_instructions
-                    .expect("sysvar_instructions is not set"),
+            spl_token_program: self.instruction.spl_token_program,
 
-                spl_token_program: self.spl_token_program,
+            authorization_rules_program: self.instruction.authorization_rules_program,
 
-                authorization_rules_program: self.authorization_rules_program,
-
-                authorization_rules: self.authorization_rules,
-                args: RevokeInstructionArgs::new(self.revoke_args.expect("revoke_args is not set")),
-            }
+            authorization_rules: self.instruction.authorization_rules,
+            args: RevokeInstructionArgs::new(
+                self.instruction
+                    .revoke_args
+                    .clone()
+                    .expect("revoke_args is not set"),
+            ),
         }
     }
+}
+
+struct RevokeCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    revoke_args: Option<RevokeArgs>,
 }

@@ -113,6 +113,7 @@ impl SetCollectionSizeBuilder {
         self.set_collection_size_args = Some(set_collection_size_args);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetCollectionSize {
             collection_metadata: self
@@ -129,160 +130,165 @@ impl SetCollectionSizeBuilder {
         };
         let args = SetCollectionSizeInstructionArgs::new(
             self.set_collection_size_args
+                .clone()
                 .expect("set_collection_size_args is not set"),
         );
         accounts.instruction(args)
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `set_collection_size` CPI instruction.
+pub struct SetCollectionSizeCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Metadata account
+    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Update authority
+    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of the Collection
+    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Authority Record PDA
+    pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub args: SetCollectionSizeInstructionArgs,
+}
 
-    /// `set_collection_size` CPI instruction.
-    pub struct SetCollectionSize<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Collection Metadata account
-        pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Collection Update authority
-        pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Mint of the Collection
-        pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Collection Authority Record PDA
-        pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        pub args: SetCollectionSizeInstructionArgs,
+impl<'a> SetCollectionSizeCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
-
-    impl<'a> SetCollectionSize<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(
-                        *self.collection_metadata.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new(
-                        *self.collection_authority.key,
-                        true,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.collection_mint.key,
-                        false,
-                    ),
-                    if let Some(collection_authority_record) = self.collection_authority_record {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            *collection_authority_record.key,
-                            false,
-                        )
-                    } else {
-                        solana_program::instruction::AccountMeta::new_readonly(
-                            crate::MPL_TOKEN_METADATA_ID,
-                            false,
-                        )
-                    },
-                ],
-                data: self.args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(4 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.collection_metadata.clone());
-            account_infos.push(self.collection_authority.clone());
-            account_infos.push(self.collection_mint.clone());
-            if let Some(collection_authority_record) = self.collection_authority_record {
-                account_infos.push(collection_authority_record.clone());
-            }
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
-        }
-    }
-
-    /// `set_collection_size` CPI instruction builder.
-    pub struct SetCollectionSizeBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        set_collection_size_args: Option<SetCollectionSizeArgs>,
-    }
-
-    impl<'a> SetCollectionSizeBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                collection_metadata: None,
-                collection_authority: None,
-                collection_mint: None,
-                collection_authority_record: None,
-                set_collection_size_args: None,
-            }
-        }
-        pub fn collection_metadata(
-            &'a mut self,
-            collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_metadata = Some(collection_metadata);
-            self
-        }
-        pub fn collection_authority(
-            &'a mut self,
-            collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_authority = Some(collection_authority);
-            self
-        }
-        pub fn collection_mint(
-            &'a mut self,
-            collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_mint = Some(collection_mint);
-            self
-        }
-        pub fn collection_authority_record(
-            &'a mut self,
-            collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_authority_record = Some(collection_authority_record);
-            self
-        }
-        pub fn set_collection_size_args(
-            &'a mut self,
-            set_collection_size_args: SetCollectionSizeArgs,
-        ) -> &mut Self {
-            self.set_collection_size_args = Some(set_collection_size_args);
-            self
-        }
-        pub fn build(&'a self) -> SetCollectionSize {
-            SetCollectionSize {
-                program: self.program,
-
-                collection_metadata: self
-                    .collection_metadata
-                    .expect("collection_metadata is not set"),
-
-                collection_authority: self
-                    .collection_authority
-                    .expect("collection_authority is not set"),
-
-                collection_mint: self.collection_mint.expect("collection_mint is not set"),
-
-                collection_authority_record: self.collection_authority_record,
-                args: SetCollectionSizeInstructionArgs::new(
-                    self.set_collection_size_args
-                        .expect("set_collection_size_args is not set"),
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.collection_metadata.key, false),
+                solana_program::instruction::AccountMeta::new(*self.collection_authority.key, true),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.collection_mint.key,
+                    false,
                 ),
-            }
+                if let Some(collection_authority_record) = self.collection_authority_record {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        *collection_authority_record.key,
+                        false,
+                    )
+                } else {
+                    solana_program::instruction::AccountMeta::new_readonly(
+                        crate::MPL_TOKEN_METADATA_ID,
+                        false,
+                    )
+                },
+            ],
+            data: self.args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(4 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.collection_metadata.clone());
+        account_infos.push(self.collection_authority.clone());
+        account_infos.push(self.collection_mint.clone());
+        if let Some(collection_authority_record) = self.collection_authority_record {
+            account_infos.push(collection_authority_record.clone());
+        }
+
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
+
+/// `set_collection_size` CPI instruction builder.
+pub struct SetCollectionSizeCpiBuilder<'a> {
+    instruction: Box<SetCollectionSizeCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> SetCollectionSizeCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(SetCollectionSizeCpiBuilderInstruction {
+            program,
+            collection_metadata: None,
+            collection_authority: None,
+            collection_mint: None,
+            collection_authority_record: None,
+            set_collection_size_args: None,
+        });
+        Self { instruction }
+    }
+    pub fn collection_metadata(
+        &mut self,
+        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_metadata = Some(collection_metadata);
+        self
+    }
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_authority = Some(collection_authority);
+        self
+    }
+    pub fn collection_mint(
+        &mut self,
+        collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_mint = Some(collection_mint);
+        self
+    }
+    pub fn collection_authority_record(
+        &mut self,
+        collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_authority_record = Some(collection_authority_record);
+        self
+    }
+    pub fn set_collection_size_args(
+        &mut self,
+        set_collection_size_args: SetCollectionSizeArgs,
+    ) -> &mut Self {
+        self.instruction.set_collection_size_args = Some(set_collection_size_args);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> SetCollectionSizeCpi<'a> {
+        SetCollectionSizeCpi {
+            program: self.instruction.program,
+
+            collection_metadata: self
+                .instruction
+                .collection_metadata
+                .expect("collection_metadata is not set"),
+
+            collection_authority: self
+                .instruction
+                .collection_authority
+                .expect("collection_authority is not set"),
+
+            collection_mint: self
+                .instruction
+                .collection_mint
+                .expect("collection_mint is not set"),
+
+            collection_authority_record: self.instruction.collection_authority_record,
+            args: SetCollectionSizeInstructionArgs::new(
+                self.instruction
+                    .set_collection_size_args
+                    .clone()
+                    .expect("set_collection_size_args is not set"),
+            ),
+        }
+    }
+}
+
+struct SetCollectionSizeCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    set_collection_size_args: Option<SetCollectionSizeArgs>,
 }

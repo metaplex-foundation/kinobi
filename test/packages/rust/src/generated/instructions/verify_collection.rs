@@ -104,6 +104,7 @@ impl VerifyCollectionBuilder {
         self.collection_master_edition_account = Some(collection_master_edition_account);
         self
     }
+    #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = VerifyCollection {
             metadata: self.metadata.expect("metadata is not set"),
@@ -126,163 +127,162 @@ impl VerifyCollectionBuilder {
     }
 }
 
-pub mod cpi {
-    use super::*;
+/// `verify_collection` CPI instruction.
+pub struct VerifyCollectionCpi<'a> {
+    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Update authority
+    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of the Collection
+    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata Account of the Collection
+    pub collection: &'a solana_program::account_info::AccountInfo<'a>,
+    /// MasterEdition2 Account of the Collection Token
+    pub collection_master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+}
 
-    /// `verify_collection` CPI instruction.
-    pub struct VerifyCollection<'a> {
-        pub program: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata account
-        pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Collection Update authority
-        pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        /// payer
-        pub payer: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Mint of the Collection
-        pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        /// Metadata Account of the Collection
-        pub collection: &'a solana_program::account_info::AccountInfo<'a>,
-        /// MasterEdition2 Account of the Collection Token
-        pub collection_master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+impl<'a> VerifyCollectionCpi<'a> {
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
     }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let args = VerifyCollectionInstructionArgs::new();
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts: vec![
+                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
+                solana_program::instruction::AccountMeta::new(*self.collection_authority.key, true),
+                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.collection_mint.key,
+                    false,
+                ),
+                solana_program::instruction::AccountMeta::new_readonly(*self.collection.key, false),
+                solana_program::instruction::AccountMeta::new_readonly(
+                    *self.collection_master_edition_account.key,
+                    false,
+                ),
+            ],
+            data: args.try_to_vec().unwrap(),
+        };
+        let mut account_infos = Vec::with_capacity(6 + 1);
+        account_infos.push(self.program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.collection_authority.clone());
+        account_infos.push(self.payer.clone());
+        account_infos.push(self.collection_mint.clone());
+        account_infos.push(self.collection.clone());
+        account_infos.push(self.collection_master_edition_account.clone());
 
-    impl<'a> VerifyCollection<'a> {
-        pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-            self.invoke_signed(&[])
-        }
-        #[allow(clippy::vec_init_then_push)]
-        pub fn invoke_signed(
-            &self,
-            signers_seeds: &[&[&[u8]]],
-        ) -> solana_program::entrypoint::ProgramResult {
-            let args = VerifyCollectionInstructionArgs::new();
-            let instruction = solana_program::instruction::Instruction {
-                program_id: crate::MPL_TOKEN_METADATA_ID,
-                accounts: vec![
-                    solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                    solana_program::instruction::AccountMeta::new(
-                        *self.collection_authority.key,
-                        true,
-                    ),
-                    solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.collection_mint.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.collection.key,
-                        false,
-                    ),
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *self.collection_master_edition_account.key,
-                        false,
-                    ),
-                ],
-                data: args.try_to_vec().unwrap(),
-            };
-            let mut account_infos = Vec::with_capacity(6 + 1);
-            account_infos.push(self.program.clone());
-            account_infos.push(self.metadata.clone());
-            account_infos.push(self.collection_authority.clone());
-            account_infos.push(self.payer.clone());
-            account_infos.push(self.collection_mint.clone());
-            account_infos.push(self.collection.clone());
-            account_infos.push(self.collection_master_edition_account.clone());
-
-            if signers_seeds.is_empty() {
-                solana_program::program::invoke(&instruction, &account_infos)
-            } else {
-                solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-            }
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
         }
     }
+}
 
-    /// `verify_collection` CPI instruction builder.
-    pub struct VerifyCollectionBuilder<'a> {
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-        collection_master_edition_account:
-            Option<&'a solana_program::account_info::AccountInfo<'a>>,
+/// `verify_collection` CPI instruction builder.
+pub struct VerifyCollectionCpiBuilder<'a> {
+    instruction: Box<VerifyCollectionCpiBuilderInstruction<'a>>,
+}
+
+impl<'a> VerifyCollectionCpiBuilder<'a> {
+    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(VerifyCollectionCpiBuilderInstruction {
+            program,
+            metadata: None,
+            collection_authority: None,
+            payer: None,
+            collection_mint: None,
+            collection: None,
+            collection_master_edition_account: None,
+        });
+        Self { instruction }
     }
+    pub fn metadata(
+        &mut self,
+        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
+    }
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_authority = Some(collection_authority);
+        self
+    }
+    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+        self.instruction.payer = Some(payer);
+        self
+    }
+    pub fn collection_mint(
+        &mut self,
+        collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_mint = Some(collection_mint);
+        self
+    }
+    pub fn collection(
+        &mut self,
+        collection: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection = Some(collection);
+        self
+    }
+    pub fn collection_master_edition_account(
+        &mut self,
+        collection_master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_master_edition_account =
+            Some(collection_master_edition_account);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn build(&self) -> VerifyCollectionCpi<'a> {
+        VerifyCollectionCpi {
+            program: self.instruction.program,
 
-    impl<'a> VerifyCollectionBuilder<'a> {
-        pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
-            Self {
-                program,
-                metadata: None,
-                collection_authority: None,
-                payer: None,
-                collection_mint: None,
-                collection: None,
-                collection_master_edition_account: None,
-            }
-        }
-        pub fn metadata(
-            &'a mut self,
-            metadata: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.metadata = Some(metadata);
-            self
-        }
-        pub fn collection_authority(
-            &'a mut self,
-            collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_authority = Some(collection_authority);
-            self
-        }
-        pub fn payer(
-            &'a mut self,
-            payer: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.payer = Some(payer);
-            self
-        }
-        pub fn collection_mint(
-            &'a mut self,
-            collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_mint = Some(collection_mint);
-            self
-        }
-        pub fn collection(
-            &'a mut self,
-            collection: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection = Some(collection);
-            self
-        }
-        pub fn collection_master_edition_account(
-            &'a mut self,
-            collection_master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
-        ) -> &mut Self {
-            self.collection_master_edition_account = Some(collection_master_edition_account);
-            self
-        }
-        pub fn build(&'a self) -> VerifyCollection {
-            VerifyCollection {
-                program: self.program,
+            metadata: self.instruction.metadata.expect("metadata is not set"),
 
-                metadata: self.metadata.expect("metadata is not set"),
+            collection_authority: self
+                .instruction
+                .collection_authority
+                .expect("collection_authority is not set"),
 
-                collection_authority: self
-                    .collection_authority
-                    .expect("collection_authority is not set"),
+            payer: self.instruction.payer.expect("payer is not set"),
 
-                payer: self.payer.expect("payer is not set"),
+            collection_mint: self
+                .instruction
+                .collection_mint
+                .expect("collection_mint is not set"),
 
-                collection_mint: self.collection_mint.expect("collection_mint is not set"),
+            collection: self.instruction.collection.expect("collection is not set"),
 
-                collection: self.collection.expect("collection is not set"),
-
-                collection_master_edition_account: self
-                    .collection_master_edition_account
-                    .expect("collection_master_edition_account is not set"),
-            }
+            collection_master_edition_account: self
+                .instruction
+                .collection_master_edition_account
+                .expect("collection_master_edition_account is not set"),
         }
     }
+}
+
+struct VerifyCollectionCpiBuilderInstruction<'a> {
+    program: &'a solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    collection_master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

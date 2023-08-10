@@ -185,13 +185,6 @@ kinobi.update(
     },
     'mplTokenMetadata.UpdateArgs.V1': {
       tokenStandard: k.vSome(k.vEnum('TokenStandard', 'NonFungible')),
-      collection: k.vSome(
-        k.vEnum(
-          'PayloadType',
-          'Pubkey',
-          k.vTuple([k.vPublicKey('1'.repeat(32))])
-        )
-      ),
     },
   })
 );
