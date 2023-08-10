@@ -37,6 +37,7 @@ impl {{ instruction.name | pascalCase }}Builder {
       }
     {% endif %}
   {% endfor %}
+  #[allow(clippy::clone_on_copy)]
   pub fn build(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {
         {% for account in instruction.accounts %}          

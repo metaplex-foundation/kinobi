@@ -1,7 +1,5 @@
-use super::*;
-
 /// `{{ instruction.name | snakeCase }}` CPI instruction.
-pub struct {{ instruction.name | pascalCase }}<'a> {
+pub struct {{ instruction.name | pascalCase }}Cpi<'a> {
   pub program: &'a solana_program::account_info::AccountInfo<'a>,
 {% for account in instruction.accounts %}
   {% if account.docs.length > 0 %}
@@ -23,10 +21,11 @@ pub struct {{ instruction.name | pascalCase }}<'a> {
   {{ 'pub args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}
 }
 
-impl<'a> {{ instruction.name | pascalCase }}<'a> {
+impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
   pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
     self.invoke_signed(&[])
   }
+  #[allow(clippy::clone_on_copy)]
   #[allow(clippy::vec_init_then_push)]
   pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
     {% if hasArgs === false %}
