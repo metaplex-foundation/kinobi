@@ -7,4 +7,10 @@
 
 {{ macros.docblock(account.docs) }}
 {{ typeManifest.type }}
+
+{% if account.size !== undefined %}
+impl {{ account.name | pascalCase }} {
+    pub const LEN: usize = {{ account.size }};
+}
+{% endif %}
 {% endblock %}

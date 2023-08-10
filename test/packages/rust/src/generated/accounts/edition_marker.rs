@@ -14,3 +14,7 @@ pub struct EditionMarker {
     pub key: TmKey,
     pub ledger: [u8; 31],
 }
+
+impl EditionMarker {
+    pub const LEN: usize = 32;
+}

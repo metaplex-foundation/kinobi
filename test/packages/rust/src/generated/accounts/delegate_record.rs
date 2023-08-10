@@ -16,3 +16,7 @@ pub struct DelegateRecord {
     pub role: DelegateRole,
     pub bump: u8,
 }
+
+impl DelegateRecord {
+    pub const LEN: usize = 282;
+}

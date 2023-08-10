@@ -16,3 +16,7 @@ pub struct Edition {
     pub parent: Pubkey,
     pub edition: u64,
 }
+
+impl Edition {
+    pub const LEN: usize = 41;
+}

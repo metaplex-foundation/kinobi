@@ -33,3 +33,7 @@ pub struct Metadata {
     pub programmable_config: Option<ProgrammableConfig>,
     pub delegate_state: Option<DelegateState>,
 }
+
+impl Metadata {
+    pub const LEN: usize = 679;
+}

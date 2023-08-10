@@ -15,3 +15,7 @@ pub struct MasterEditionV2 {
     pub supply: u64,
     pub max_supply: Option<u64>,
 }
+
+impl MasterEditionV2 {
+    pub const LEN: usize = 282;
+}

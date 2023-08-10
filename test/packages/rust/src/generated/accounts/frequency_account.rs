@@ -17,3 +17,7 @@ pub struct FrequencyAccount {
     pub last_update: i64,
     pub period: i64,
 }
+
+impl FrequencyAccount {
+    pub const LEN: usize = 24;
+}

@@ -15,3 +15,7 @@ pub struct UseAuthorityRecord {
     pub allowed_uses: u64,
     pub bump: u8,
 }
+
+impl UseAuthorityRecord {
+    pub const LEN: usize = 10;
+}
