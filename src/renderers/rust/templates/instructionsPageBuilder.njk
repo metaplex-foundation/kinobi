@@ -47,7 +47,7 @@ impl {{ instruction.name | pascalCase }}Builder {
     let args = {{ instruction.name | pascalCase }}InstructionArgs::new(
       {% for arg in instructionArgs %}
         {% if not arg.default and not arg.optional %}
-          self.{{ arg.name | snakeCase }}{{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
+          self.{{ arg.name | snakeCase }}.clone(){{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
         {% endif %}
       {% endfor %}
     );
