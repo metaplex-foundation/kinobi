@@ -86,6 +86,10 @@ export function renderRustValueNode(value: nodes.ValueNode): {
         render: `pubkey!("${value.value}")`,
       };
     case 'string':
+      return {
+        imports,
+        render: 'String::from(' + JSON.stringify(value.value) + ')',
+      };
     case 'number':
     case 'boolean':
       return { imports, render: JSON.stringify(value.value) };
