@@ -88,7 +88,7 @@ export function renderRustValueNode(value: nodes.ValueNode): {
     case 'string':
       return {
         imports,
-        render: 'String::from(' + JSON.stringify(value.value) + ')',
+        render: `String::from(${JSON.stringify(value.value)})`,
       };
     case 'number':
     case 'boolean':
