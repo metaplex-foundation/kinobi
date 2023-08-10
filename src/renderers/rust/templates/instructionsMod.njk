@@ -3,7 +3,7 @@
 {% block main %}
 
 {% for instruction in instructionsToExport | sort(false, false, 'name') %}
-mod {{ instruction.name | snakeCase }};
+pub mod {{ instruction.name | snakeCase }};
 {% endfor %}
 
 {% for instruction in instructionsToExport | sort(false, false, 'name') %}

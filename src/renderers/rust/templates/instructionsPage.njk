@@ -110,8 +110,6 @@ impl {{ instruction.name | pascalCase }}InstructionArgs {
 
 {% include "instructionsPageBuilder.njk" %}
 
-pub mod cpi {
-  {% include "instructionsCpiPage.njk" %}
-}
+{% include "instructionsCpiPage.njk" %}
 
 {% endblock %}
