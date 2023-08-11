@@ -7,6 +7,7 @@ import { RustImportMap } from './RustImportMap';
 export type RustTypeManifest = {
   type: string;
   imports: RustImportMap;
+  nestedStructs: string[];
 };
 
 export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
@@ -142,6 +143,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
         `${importFrom}::${pascalCaseDefinedType}`
       ),
       type: pascalCaseDefinedType,
+      nestedStructs: [],
     };
   }
 
@@ -171,6 +173,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     return {
       type: `${name},`,
       imports: new RustImportMap(),
+      nestedStructs: [],
     };
   }
 
@@ -238,7 +241,6 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitStructType(structType: nodes.StructTypeNode): RustTypeManifest {
     const { parentName } = this;
-    this.parentName = null;
 
     if (!this.inlineStruct && !parentName) {
       // TODO: Add to the Rust validator.
@@ -248,6 +250,8 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     const fields = structType.fields.map((field) => visit(field, this));
     const fieldTypes = fields.map((field) => field.type).join('\n');
     const mergedManifest = this.mergeManifests(fields);
+
+    this.parentName = null;
 
     return {
       ...mergedManifest,
@@ -261,15 +265,37 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   visitStructFieldType(
     structFieldType: nodes.StructFieldTypeNode
   ): RustTypeManifest {
-    const name = snakeCase(structFieldType.name);
-    const fieldChild = visit(structFieldType.child, this);
+    const originalParentName = this.parentName;
+    const originalInlineStruct = this.inlineStruct;
+    const isNestedStruct = nodes.isStructTypeNode(structFieldType.child);
+    const nestedStructName =
+      pascalCase(originalParentName ?? '') + pascalCase(structFieldType.name);
+
+    if (isNestedStruct) {
+      if (!originalParentName) {
+        throw new Error('Struct field type must have a parent name.');
+      }
+      this.parentName = nestedStructName;
+      this.inlineStruct = false;
+    }
+
+    const fieldManifest = visit(structFieldType.child, this);
+
+    if (isNestedStruct) {
+      fieldManifest.nestedStructs.push(fieldManifest.type);
+      fieldManifest.type = nestedStructName;
+      this.parentName = originalParentName;
+      this.inlineStruct = originalInlineStruct;
+    }
+
+    const fieldName = snakeCase(structFieldType.name);
     const docblock = this.createDocblock(structFieldType.docs);
 
     return {
-      ...fieldChild,
+      ...fieldManifest,
       type: this.inlineStruct
-        ? `${docblock}${name}: ${fieldChild.type},`
-        : `${docblock}pub ${name}: ${fieldChild.type},`,
+        ? `${docblock}${fieldName}: ${fieldManifest.type},`
+        : `${docblock}pub ${fieldName}: ${fieldManifest.type},`,
     };
   }
 
@@ -285,7 +311,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitBoolType(boolType: nodes.BoolTypeNode): RustTypeManifest {
     if (boolType.size.format === 'u8' && boolType.size.endian === 'le') {
-      return { type: 'bool', imports: new RustImportMap() };
+      return { type: 'bool', imports: new RustImportMap(), nestedStructs: [] };
     }
 
     // TODO: Add to the Rust validator.
@@ -302,7 +328,11 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitNumberType(numberType: nodes.NumberTypeNode): RustTypeManifest {
     if (numberType.endian === 'le') {
-      return { type: numberType.format, imports: new RustImportMap() };
+      return {
+        type: numberType.format,
+        imports: new RustImportMap(),
+        nestedStructs: [],
+      };
     }
 
     // TODO: Add to the Rust validator.
@@ -319,6 +349,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     return {
       type: 'Pubkey',
       imports: new RustImportMap().add('solana_program::pubkey::Pubkey'),
+      nestedStructs: [],
     };
   }
 
@@ -328,13 +359,18 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
       stringType.size.prefix.format === 'u32' &&
       stringType.size.prefix.endian === 'le'
     ) {
-      return { type: 'String', imports: new RustImportMap() };
+      return {
+        type: 'String',
+        imports: new RustImportMap(),
+        nestedStructs: [],
+      };
     }
 
     if (stringType.size.kind === 'fixed') {
       return {
         type: `[u8; ${stringType.size.value}]`,
         imports: new RustImportMap(),
+        nestedStructs: [],
       };
     }
 
@@ -344,11 +380,12 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   protected mergeManifests(
     manifests: RustTypeManifest[]
-  ): Pick<RustTypeManifest, 'imports'> {
+  ): Pick<RustTypeManifest, 'imports' | 'nestedStructs'> {
     return {
       imports: new RustImportMap().mergeWith(
         ...manifests.map((td) => td.imports)
       ),
+      nestedStructs: manifests.flatMap((m) => m.nestedStructs),
     };
   }
 
