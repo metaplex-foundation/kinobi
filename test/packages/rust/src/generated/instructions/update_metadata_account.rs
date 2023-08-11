@@ -42,6 +42,7 @@ pub struct UpdateMetadataAccountInstructionArgs {
     pub primary_sale_happened: Option<bool>,
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct UpdateMetadataAccountInstructionDataData {
     pub name: String,
     pub symbol: String,

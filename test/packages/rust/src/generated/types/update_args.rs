@@ -36,6 +36,7 @@ pub enum UpdateArgs {
     },
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct UpdateArgsV1Data {
     pub name: String,
     pub symbol: String,

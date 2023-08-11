@@ -59,6 +59,7 @@ pub struct CreateMetadataAccountInstructionArgs {
     pub metadata_bump: u8,
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct CreateMetadataAccountInstructionDataData {
     pub name: String,
     pub symbol: String,

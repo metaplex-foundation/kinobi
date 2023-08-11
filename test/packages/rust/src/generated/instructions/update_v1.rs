@@ -128,6 +128,7 @@ pub struct UpdateV1InstructionArgs {
     pub authority_type: AuthorityType,
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct UpdateV1InstructionDataData {
     pub name: String,
     pub symbol: String,

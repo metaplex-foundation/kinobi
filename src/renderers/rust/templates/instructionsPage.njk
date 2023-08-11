@@ -89,6 +89,7 @@ impl {{ instruction.name | pascalCase }} {
 }
 
 {% for nestedStruct in typeManifest.nestedStructs %}
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 {{ nestedStruct }}
 {% endfor %}
 

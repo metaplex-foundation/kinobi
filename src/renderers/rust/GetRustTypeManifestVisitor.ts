@@ -94,6 +94,9 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     return {
       ...manifest,
       type: `#[derive(${traits.join(', ')})]\n${manifest.type}`,
+      nestedStructs: manifest.nestedStructs.map(
+        (struct) => `#[derive(${traits.join(', ')})]\n${struct}`
+      ),
     };
   }
 
