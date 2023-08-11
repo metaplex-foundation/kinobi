@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::Data;
+use crate::generated::types::Creator;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;
@@ -37,14 +37,22 @@ impl UpdateMetadataAccount {
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UpdateMetadataAccountInstructionArgs {
     discriminator: u8,
-    pub data: Option<Data>,
+    pub data: Option<UpdateMetadataAccountInstructionDataData>,
     pub update_authority_arg: Option<Pubkey>,
     pub primary_sale_happened: Option<bool>,
 }
 
+pub struct UpdateMetadataAccountInstructionDataData {
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+    pub creators: Option<Vec<Creator>>,
+}
+
 impl UpdateMetadataAccountInstructionArgs {
     pub fn new(
-        data: Option<Data>,
+        data: Option<UpdateMetadataAccountInstructionDataData>,
         update_authority_arg: Option<Pubkey>,
         primary_sale_happened: Option<bool>,
     ) -> Self {
@@ -62,7 +70,7 @@ impl UpdateMetadataAccountInstructionArgs {
 pub struct UpdateMetadataAccountBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
-    data: Option<Data>,
+    data: Option<UpdateMetadataAccountInstructionDataData>,
     update_authority_arg: Option<Pubkey>,
     primary_sale_happened: Option<bool>,
 }
@@ -82,7 +90,7 @@ impl UpdateMetadataAccountBuilder {
         self.update_authority = Some(update_authority);
         self
     }
-    pub fn data(&mut self, data: Data) -> &mut Self {
+    pub fn data(&mut self, data: UpdateMetadataAccountInstructionDataData) -> &mut Self {
         self.data = Some(data);
         self
     }
@@ -185,7 +193,7 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
-    pub fn data(&mut self, data: Data) -> &mut Self {
+    pub fn data(&mut self, data: UpdateMetadataAccountInstructionDataData) -> &mut Self {
         self.instruction.data = Some(data);
         self
     }
@@ -221,7 +229,7 @@ struct UpdateMetadataAccountCpiBuilderInstruction<'a> {
     program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    data: Option<Data>,
+    data: Option<UpdateMetadataAccountInstructionDataData>,
     update_authority_arg: Option<Pubkey>,
     primary_sale_happened: Option<bool>,
 }

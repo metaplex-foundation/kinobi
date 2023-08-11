@@ -209,13 +209,6 @@ kinobi.update(
 
 kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
 
-kinobi.accept(
-  new k.RenderRustVisitor('./test/packages/rust/src/generated', {
-    crateFolder: './test/packages/rust',
-    formatCode: true,
-  })
-);
-
 kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
   new k.FlattenStructVisitor({
@@ -227,6 +220,18 @@ const kinobiJson = kinobi.getJson();
 const kinobiReconstructed = k.createFromJson(kinobiJson);
 
 // kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
+
+/**
+ * Render clients.
+ */
+
 kinobiReconstructed.accept(
   new k.RenderJavaScriptVisitor('./test/packages/js/src/generated')
+);
+
+kinobiReconstructed.accept(
+  new k.RenderRustVisitor('./test/packages/rust/src/generated', {
+    crateFolder: './test/packages/rust',
+    formatCode: true,
+  })
 );

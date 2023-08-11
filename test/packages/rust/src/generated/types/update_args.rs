@@ -9,7 +9,7 @@ use crate::generated::types::AuthorityType;
 use crate::generated::types::AuthorizationData;
 use crate::generated::types::Collection;
 use crate::generated::types::CollectionDetails;
-use crate::generated::types::Data;
+use crate::generated::types::Creator;
 use crate::generated::types::DelegateState;
 use crate::generated::types::ProgrammableConfig;
 use crate::generated::types::TokenStandard;
@@ -23,7 +23,7 @@ pub enum UpdateArgs {
     V1 {
         authorization_data: Option<AuthorizationData>,
         new_update_authority: Option<Pubkey>,
-        data: Option<Data>,
+        data: Option<UpdateArgsV1Data>,
         primary_sale_happened: Option<bool>,
         is_mutable: Option<bool>,
         token_standard: Option<TokenStandard>,
@@ -34,4 +34,12 @@ pub enum UpdateArgs {
         delegate_state: Option<DelegateState>,
         authority_type: AuthorityType,
     },
+}
+
+pub struct UpdateArgsV1Data {
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+    pub creators: Option<Vec<Creator>>,
 }

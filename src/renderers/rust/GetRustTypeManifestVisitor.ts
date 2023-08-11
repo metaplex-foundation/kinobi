@@ -11,7 +11,9 @@ export type RustTypeManifest = {
 };
 
 export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
-  private parentName: string | null = null;
+  public parentName: string | null = null;
+
+  public nestedStruct: boolean = false;
 
   private inlineStruct: boolean = false;
 
@@ -149,7 +151,6 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
   visitEnumType(enumType: nodes.EnumTypeNode): RustTypeManifest {
     const { parentName } = this;
-    this.parentName = null;
 
     if (!parentName) {
       // TODO: Add to the Rust validator.
@@ -181,9 +182,17 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): RustTypeManifest {
     const name = pascalCase(enumStructVariantType.name);
+    const originalParentName = this.parentName;
+
+    if (!originalParentName) {
+      throw new Error('Enum struct variant type must have a parent name.');
+    }
+
     this.inlineStruct = true;
+    this.parentName = pascalCase(originalParentName) + name;
     const typeManifest = visit(enumStructVariantType.struct, this);
     this.inlineStruct = false;
+    this.parentName = originalParentName;
 
     return {
       ...typeManifest,
@@ -195,7 +204,16 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): RustTypeManifest {
     const name = pascalCase(enumTupleVariantType.name);
+    const originalParentName = this.parentName;
+
+    if (!originalParentName) {
+      throw new Error('Enum struct variant type must have a parent name.');
+    }
+
+    this.parentName = pascalCase(originalParentName) + name;
     const childManifest = visit(enumTupleVariantType.tuple, this);
+    this.parentName = originalParentName;
+
     return {
       ...childManifest,
       type: `${name}${childManifest.type},`,
@@ -242,7 +260,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   visitStructType(structType: nodes.StructTypeNode): RustTypeManifest {
     const { parentName } = this;
 
-    if (!this.inlineStruct && !parentName) {
+    if (!parentName) {
       // TODO: Add to the Rust validator.
       throw new Error('Struct type must have a parent name.');
     }
@@ -251,14 +269,24 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     const fieldTypes = fields.map((field) => field.type).join('\n');
     const mergedManifest = this.mergeManifests(fields);
 
-    this.parentName = null;
+    if (this.nestedStruct) {
+      return {
+        ...mergedManifest,
+        type: pascalCase(parentName),
+        nestedStructs: [
+          ...mergedManifest.nestedStructs,
+          `pub struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
+        ],
+      };
+    }
+
+    if (this.inlineStruct) {
+      return { ...mergedManifest, type: `{\n${fieldTypes}\n}` };
+    }
 
     return {
       ...mergedManifest,
-      type:
-        this.inlineStruct || !parentName
-          ? `{\n${fieldTypes}\n}`
-          : `pub struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
+      type: `pub struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
     };
   }
 
@@ -267,26 +295,22 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   ): RustTypeManifest {
     const originalParentName = this.parentName;
     const originalInlineStruct = this.inlineStruct;
-    const isNestedStruct = nodes.isStructTypeNode(structFieldType.child);
-    const nestedStructName =
-      pascalCase(originalParentName ?? '') + pascalCase(structFieldType.name);
+    const originalNestedStruct = this.nestedStruct;
 
-    if (isNestedStruct) {
-      if (!originalParentName) {
-        throw new Error('Struct field type must have a parent name.');
-      }
-      this.parentName = nestedStructName;
-      this.inlineStruct = false;
+    if (!originalParentName) {
+      throw new Error('Struct field type must have a parent name.');
     }
+
+    this.parentName =
+      pascalCase(originalParentName) + pascalCase(structFieldType.name);
+    this.nestedStruct = true;
+    this.inlineStruct = false;
 
     const fieldManifest = visit(structFieldType.child, this);
 
-    if (isNestedStruct) {
-      fieldManifest.nestedStructs.push(fieldManifest.type);
-      fieldManifest.type = nestedStructName;
-      this.parentName = originalParentName;
-      this.inlineStruct = originalInlineStruct;
-    }
+    this.parentName = originalParentName;
+    this.inlineStruct = originalInlineStruct;
+    this.nestedStruct = originalNestedStruct;
 
     const fieldName = snakeCase(structFieldType.name);
     const docblock = this.createDocblock(structFieldType.docs);

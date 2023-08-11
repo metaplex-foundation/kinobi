@@ -5,7 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::Data;
+use crate::generated::types::Creator;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
@@ -54,13 +54,25 @@ impl CreateMetadataAccount {
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateMetadataAccountInstructionArgs {
     discriminator: u8,
-    pub data: Data,
+    pub data: CreateMetadataAccountInstructionDataData,
     pub is_mutable: bool,
     pub metadata_bump: u8,
 }
 
+pub struct CreateMetadataAccountInstructionDataData {
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+    pub creators: Option<Vec<Creator>>,
+}
+
 impl CreateMetadataAccountInstructionArgs {
-    pub fn new(data: Data, is_mutable: bool, metadata_bump: u8) -> Self {
+    pub fn new(
+        data: CreateMetadataAccountInstructionDataData,
+        is_mutable: bool,
+        metadata_bump: u8,
+    ) -> Self {
         Self {
             discriminator: 0,
             data,
@@ -80,7 +92,7 @@ pub struct CreateMetadataAccountBuilder {
     update_authority: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
-    data: Option<Data>,
+    data: Option<CreateMetadataAccountInstructionDataData>,
     is_mutable: Option<bool>,
     metadata_bump: Option<u8>,
 }
@@ -120,7 +132,7 @@ impl CreateMetadataAccountBuilder {
         self.rent = Some(rent);
         self
     }
-    pub fn data(&mut self, data: Data) -> &mut Self {
+    pub fn data(&mut self, data: CreateMetadataAccountInstructionDataData) -> &mut Self {
         self.data = Some(data);
         self
     }
@@ -292,7 +304,7 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
         self.instruction.rent = Some(rent);
         self
     }
-    pub fn data(&mut self, data: Data) -> &mut Self {
+    pub fn data(&mut self, data: CreateMetadataAccountInstructionDataData) -> &mut Self {
         self.instruction.data = Some(data);
         self
     }
@@ -355,7 +367,7 @@ struct CreateMetadataAccountCpiBuilderInstruction<'a> {
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    data: Option<Data>,
+    data: Option<CreateMetadataAccountInstructionDataData>,
     is_mutable: Option<bool>,
     metadata_bump: Option<u8>,
 }

@@ -8,6 +8,10 @@
 {{ macros.docblock(account.docs) }}
 {{ typeManifest.type }}
 
+{% for nestedStruct in typeManifest.nestedStructs %}
+{{ nestedStruct }}
+{% endfor %}
+
 {% if account.size !== undefined %}
 impl {{ account.name | pascalCase }} {
     pub const LEN: usize = {{ account.size }};

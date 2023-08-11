@@ -7,7 +7,7 @@
 
 use crate::generated::types::Collection;
 use crate::generated::types::CollectionDetails;
-use crate::generated::types::Data;
+use crate::generated::types::Creator;
 use crate::generated::types::DelegateState;
 use crate::generated::types::ProgrammableConfig;
 use crate::generated::types::TmKey;
@@ -22,7 +22,11 @@ pub struct Metadata {
     pub key: TmKey,
     pub update_authority: Pubkey,
     pub mint: Pubkey,
-    pub data: Data,
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+    pub creators: Option<Vec<Creator>>,
     pub primary_sale_happened: bool,
     pub is_mutable: bool,
     pub edition_nonce: Option<u8>,

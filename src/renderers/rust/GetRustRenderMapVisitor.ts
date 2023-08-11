@@ -21,7 +21,10 @@ import { RustImportMap } from './RustImportMap';
 export type GetRustRenderMapOptions = {
   renderParentInstructions?: boolean;
   dependencyMap?: Record<ImportFrom, string>;
-  typeManifestVisitor?: Visitor<RustTypeManifest>;
+  typeManifestVisitor?: Visitor<RustTypeManifest> & {
+    parentName: string | null;
+    nestedStruct: boolean;
+  };
   byteSizeVisitor?: Visitor<number | null> & {
     registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
   };
@@ -172,15 +175,27 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Instruction args.
-    const instructionArgs: any[] = [];
+    const instructionArgs: {
+      name: string;
+      type: string;
+      default: boolean;
+      optional: boolean;
+      innerOptionType: string | null;
+      value: string | null;
+    }[] = [];
     let hasArgs = false;
 
     instruction.dataArgs.struct.fields.forEach((field) => {
+      this.typeManifestVisitor.parentName =
+        pascalCase(instruction.dataArgs.name) + pascalCase(field.name);
+      this.typeManifestVisitor.nestedStruct = true;
       const manifest = visit(field.child, this.typeManifestVisitor);
       imports.mergeWith(manifest.imports);
       const innerOptionType = nodes.isOptionTypeNode(field.child)
-        ? visit(field.child.child, this.typeManifestVisitor).type
+        ? manifest.type.slice('Option<'.length, -1)
         : null;
+      this.typeManifestVisitor.parentName = null;
+      this.typeManifestVisitor.nestedStruct = false;
 
       let renderValue: string | null = null;
       if (field.defaultsTo) {
@@ -207,6 +222,8 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       });
     });
 
+    const typeManifest = visit(instruction, this.typeManifestVisitor);
+
     return new RenderMap().add(
       `instructions/${snakeCase(instruction.name)}.rs`,
       this.render('instructionsPage.njk', {
@@ -217,6 +234,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionArgs,
         hasArgs,
         program: this.program,
+        typeManifest,
       })
     );
   }

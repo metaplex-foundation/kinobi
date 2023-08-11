@@ -9,7 +9,7 @@ use crate::generated::types::AuthorityType;
 use crate::generated::types::AuthorizationData;
 use crate::generated::types::Collection;
 use crate::generated::types::CollectionDetails;
-use crate::generated::types::Data;
+use crate::generated::types::Creator;
 use crate::generated::types::DelegateState;
 use crate::generated::types::ProgrammableConfig;
 use crate::generated::types::TokenStandard;
@@ -116,7 +116,7 @@ pub struct UpdateV1InstructionArgs {
     update_v1_discriminator: u8,
     pub authorization_data: Option<AuthorizationData>,
     pub new_update_authority: Option<Pubkey>,
-    pub data: Option<Data>,
+    pub data: Option<UpdateV1InstructionDataData>,
     pub primary_sale_happened: Option<bool>,
     pub is_mutable: Option<bool>,
     pub token_standard: Option<TokenStandard>,
@@ -128,11 +128,19 @@ pub struct UpdateV1InstructionArgs {
     pub authority_type: AuthorityType,
 }
 
+pub struct UpdateV1InstructionDataData {
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+    pub creators: Option<Vec<Creator>>,
+}
+
 impl UpdateV1InstructionArgs {
     pub fn new(
         authorization_data: Option<AuthorizationData>,
         new_update_authority: Option<Pubkey>,
-        data: Option<Data>,
+        data: Option<UpdateV1InstructionDataData>,
         primary_sale_happened: Option<bool>,
         is_mutable: Option<bool>,
         collection: Option<Collection>,
@@ -176,7 +184,7 @@ pub struct UpdateV1Builder {
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     authorization_data: Option<AuthorizationData>,
     new_update_authority: Option<Pubkey>,
-    data: Option<Data>,
+    data: Option<UpdateV1InstructionDataData>,
     primary_sale_happened: Option<bool>,
     is_mutable: Option<bool>,
     token_standard: Option<TokenStandard>,
@@ -252,7 +260,7 @@ impl UpdateV1Builder {
         self.new_update_authority = Some(new_update_authority);
         self
     }
-    pub fn data(&mut self, data: Data) -> &mut Self {
+    pub fn data(&mut self, data: UpdateV1InstructionDataData) -> &mut Self {
         self.data = Some(data);
         self
     }
@@ -575,7 +583,7 @@ impl<'a> UpdateV1CpiBuilder<'a> {
         self.instruction.new_update_authority = Some(new_update_authority);
         self
     }
-    pub fn data(&mut self, data: Data) -> &mut Self {
+    pub fn data(&mut self, data: UpdateV1InstructionDataData) -> &mut Self {
         self.instruction.data = Some(data);
         self
     }
@@ -679,7 +687,7 @@ struct UpdateV1CpiBuilderInstruction<'a> {
     authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authorization_data: Option<AuthorizationData>,
     new_update_authority: Option<Pubkey>,
-    data: Option<Data>,
+    data: Option<UpdateV1InstructionDataData>,
     primary_sale_happened: Option<bool>,
     is_mutable: Option<bool>,
     token_standard: Option<TokenStandard>,

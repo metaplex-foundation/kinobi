@@ -88,6 +88,10 @@ impl {{ instruction.name | pascalCase }} {
   {% endfor %}
 }
 
+{% for nestedStruct in typeManifest.nestedStructs %}
+{{ nestedStruct }}
+{% endfor %}
+
 impl {{ instruction.name | pascalCase }}InstructionArgs {
   pub fn new(
     {% for arg in instructionArgs %}
