@@ -184,6 +184,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       value: string | null;
     }[] = [];
     let hasArgs = false;
+    let hasOptional = false;
 
     instruction.dataArgs.struct.fields.forEach((field) => {
       this.typeManifestVisitor.parentName =
@@ -207,6 +208,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       } else {
         hasArgs = true;
       }
+      hasOptional = hasOptional || field.defaultsTo?.strategy === 'optional';
 
       const name = accountsAndArgsConflicts.includes(field.name)
         ? `${field.name}_arg`
@@ -233,6 +235,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           .toString(this.options.dependencyMap),
         instructionArgs,
         hasArgs,
+        hasOptional,
         program: this.program,
         typeManifest,
       })

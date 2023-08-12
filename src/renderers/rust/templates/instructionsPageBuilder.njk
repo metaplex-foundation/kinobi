@@ -45,14 +45,26 @@ impl {{ instruction.name | pascalCase }}Builder {
         {% endfor %}
     };
     {% if hasArgs %}
-    let args = {{ instruction.name | pascalCase }}InstructionArgs::new(
+      let {{ 'mut' if hasOptional }} args = {{ instruction.name | pascalCase }}InstructionArgs::new(
+        {% for arg in instructionArgs %}
+          {% if not arg.default and not arg.optional %}
+            self.{{ arg.name | snakeCase }}.clone(){{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
+          {% endif %}
+        {% endfor %}
+      );
       {% for arg in instructionArgs %}
-        {% if not arg.default and not arg.optional %}
-          self.{{ arg.name | snakeCase }}.clone(){{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
+        {% if arg.optional %}
+          {% if arg.innerOptionType %}
+            args.{{ arg.name | snakeCase }} = self.{{ arg.name | snakeCase }}.clone();
+          {% else %}
+            if let Some({{ arg.name | snakeCase }}) = &self.{{ arg.name | snakeCase }} {
+              args.{{ arg.name | snakeCase }} = {{ arg.name | snakeCase }}.clone();
+            }
+          {% endif %}
         {% endif %}
       {% endfor %}
-    );
     {% endif %}
+
     accounts.instruction({{ 'args' if hasArgs }})
   }
 }
