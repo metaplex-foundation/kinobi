@@ -160,12 +160,14 @@ impl CreateMasterEditionBuilder {
                 .clone()
                 .expect("create_master_edition_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `create_master_edition` CPI instruction.
 pub struct CreateMasterEditionCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
     pub edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -185,6 +187,7 @@ pub struct CreateMasterEditionCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent info
     pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: CreateMasterEditionInstructionArgs,
 }
 

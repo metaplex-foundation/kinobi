@@ -140,12 +140,14 @@ impl BurnNftBuilder {
 
             collection_metadata: self.collection_metadata,
         };
+
         accounts.instruction()
     }
 }
 
 /// `burn_nft` CPI instruction.
 pub struct BurnNftCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

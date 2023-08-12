@@ -140,12 +140,14 @@ impl DeprecatedMintPrintingTokensBuilder {
                 .clone()
                 .expect("mint_printing_tokens_via_token_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `deprecated_mint_printing_tokens` CPI instruction.
 pub struct DeprecatedMintPrintingTokensCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Destination account
     pub destination: &'a solana_program::account_info::AccountInfo<'a>,
@@ -161,6 +163,7 @@ pub struct DeprecatedMintPrintingTokensCpi<'a> {
     pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent
     pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: DeprecatedMintPrintingTokensInstructionArgs,
 }
 

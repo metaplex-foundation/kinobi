@@ -136,12 +136,14 @@ impl UnverifyCollectionBuilder {
 
             collection_authority_record: self.collection_authority_record,
         };
+
         accounts.instruction()
     }
 }
 
 /// `unverify_collection` CPI instruction.
 pub struct UnverifyCollectionCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

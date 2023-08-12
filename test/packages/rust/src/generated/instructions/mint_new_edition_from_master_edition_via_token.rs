@@ -246,12 +246,14 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
                 .clone()
                 .expect("mint_new_edition_from_master_edition_via_token_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `mint_new_edition_from_master_edition_via_token` CPI instruction.
 pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// New Metadata key (pda of ['metadata', program id, mint id])
     pub new_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -281,6 +283,7 @@ pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent info
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
 }
 

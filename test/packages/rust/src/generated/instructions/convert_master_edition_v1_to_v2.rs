@@ -77,12 +77,14 @@ impl ConvertMasterEditionV1ToV2Builder {
 
             printing_mint: self.printing_mint.expect("printing_mint is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `convert_master_edition_v1_to_v2` CPI instruction.
 pub struct ConvertMasterEditionV1ToV2Cpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])
     pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,

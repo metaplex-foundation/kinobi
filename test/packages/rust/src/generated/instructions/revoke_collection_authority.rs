@@ -113,12 +113,14 @@ impl RevokeCollectionAuthorityBuilder {
 
             mint: self.mint.expect("mint is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `revoke_collection_authority` CPI instruction.
 pub struct RevokeCollectionAuthorityCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority Record PDA
     pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,

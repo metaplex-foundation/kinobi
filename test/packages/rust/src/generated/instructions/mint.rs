@@ -232,12 +232,14 @@ impl MintBuilder {
             authorization_rules: self.authorization_rules,
         };
         let args = MintInstructionArgs::new(self.mint_args.clone().expect("mint_args is not set"));
+
         accounts.instruction(args)
     }
 }
 
 /// `mint` CPI instruction.
 pub struct MintCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token account
     pub token: &'a solana_program::account_info::AccountInfo<'a>,
@@ -263,6 +265,7 @@ pub struct MintCpi<'a> {
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: MintInstructionArgs,
 }
 

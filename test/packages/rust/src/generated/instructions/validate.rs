@@ -327,12 +327,14 @@ impl ValidateBuilder {
             self.operation.clone().expect("operation is not set"),
             self.payload.clone().expect("payload is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `validate` CPI instruction.
 pub struct ValidateCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the RuleSet
     pub payer: &'a solana_program::account_info::AccountInfo<'a>,
@@ -360,6 +362,7 @@ pub struct ValidateCpi<'a> {
     pub opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 5
     pub opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: ValidateInstructionArgs,
 }
 

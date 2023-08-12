@@ -152,12 +152,14 @@ impl CreateEscrowAccountBuilder {
 
             authority: self.authority,
         };
+
         accounts.instruction()
     }
 }
 
 /// `create_escrow_account` CPI instruction.
 pub struct CreateEscrowAccountCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Escrow account
     pub escrow: &'a solana_program::account_info::AccountInfo<'a>,

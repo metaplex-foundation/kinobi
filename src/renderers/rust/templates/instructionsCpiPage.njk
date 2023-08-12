@@ -1,24 +1,28 @@
 /// `{{ instruction.name | snakeCase }}` CPI instruction.
 pub struct {{ instruction.name | pascalCase }}Cpi<'a> {
+  /// The program to invoke.
   pub program: &'a solana_program::account_info::AccountInfo<'a>,
-{% for account in instruction.accounts %}
-  {% if account.docs.length > 0 %}
-    {{ macros.docblock(account.docs) }}
-  {% endif %}
+  {% for account in instruction.accounts %}
+    {% if account.docs.length > 0 %}
+      {{ macros.docblock(account.docs) }}
+    {% endif %}
 
-  {% if account.isSigner === 'either' %}
-    {% set type = '(&\'a solana_program::account_info::AccountInfo<\'a>, bool)' %}
-  {% else %}
-    {% set type = '&\'a solana_program::account_info::AccountInfo<\'a>' %}
-  {% endif %}
+    {% if account.isSigner === 'either' %}
+      {% set type = '(&\'a solana_program::account_info::AccountInfo<\'a>, bool)' %}
+    {% else %}
+      {% set type = '&\'a solana_program::account_info::AccountInfo<\'a>' %}
+    {% endif %}
 
-  {% if account.isOptional %}
-    pub {{ account.name | snakeCase }}: Option<{{ type }}>,
-  {% else %}
-    pub {{ account.name | snakeCase }}: {{ type }},
+    {% if account.isOptional %}
+      pub {{ account.name | snakeCase }}: Option<{{ type }}>,
+    {% else %}
+      pub {{ account.name | snakeCase }}: {{ type }},
+    {% endif %}
+  {% endfor %}
+  {% if hasArgs %}
+    /// The arguments for the instruction.
+    pub args: {{ instruction.name | pascalCase }}InstructionArgs,
   {% endif %}
-{% endfor %}
-  {{ 'pub args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}
 }
 
 impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {

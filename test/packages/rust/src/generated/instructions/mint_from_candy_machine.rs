@@ -279,12 +279,14 @@ impl MintFromCandyMachineBuilder {
                 .recent_slothashes
                 .expect("recent_slothashes is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `mint_from_candy_machine` CPI instruction.
 pub struct MintFromCandyMachineCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,

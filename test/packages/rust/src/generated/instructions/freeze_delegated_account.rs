@@ -97,12 +97,14 @@ impl FreezeDelegatedAccountBuilder {
 
             token_program: self.token_program.expect("token_program is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `freeze_delegated_account` CPI instruction.
 pub struct FreezeDelegatedAccountCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Delegate
     pub delegate: &'a solana_program::account_info::AccountInfo<'a>,

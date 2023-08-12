@@ -166,12 +166,14 @@ impl CreateMetadataAccountV3Builder {
             self.is_mutable.clone().expect("is_mutable is not set"),
             self.collection_details.clone(),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `create_metadata_account_v3` CPI instruction.
 pub struct CreateMetadataAccountV3Cpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -187,6 +189,7 @@ pub struct CreateMetadataAccountV3Cpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent info
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: CreateMetadataAccountV3InstructionArgs,
 }
 

@@ -212,12 +212,14 @@ impl InitializeBuilder {
             system_program: self.system_program.expect("system_program is not set"),
         };
         let args = InitializeInstructionArgs::new(self.data.clone().expect("data is not set"));
+
         accounts.instruction(args)
     }
 }
 
 /// `initialize` CPI instruction.
 pub struct InitializeCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -241,6 +243,7 @@ pub struct InitializeCpi<'a> {
     pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: InitializeInstructionArgs,
 }
 

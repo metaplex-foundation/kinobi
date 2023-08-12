@@ -146,12 +146,14 @@ impl BubblegumSetCollectionSizeBuilder {
                 .clone()
                 .expect("set_collection_size_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `bubblegum_set_collection_size` CPI instruction.
 pub struct BubblegumSetCollectionSizeCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Metadata account
     pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -163,6 +165,7 @@ pub struct BubblegumSetCollectionSizeCpi<'a> {
     pub bubblegum_signer: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority Record PDA
     pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: BubblegumSetCollectionSizeInstructionArgs,
 }
 

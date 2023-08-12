@@ -194,12 +194,14 @@ impl MigrateBuilder {
         let args = MigrateInstructionArgs::new(
             self.migrate_args.clone().expect("migrate_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `migrate` CPI instruction.
 pub struct MigrateCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -221,6 +223,7 @@ pub struct MigrateCpi<'a> {
     pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: MigrateInstructionArgs,
 }
 

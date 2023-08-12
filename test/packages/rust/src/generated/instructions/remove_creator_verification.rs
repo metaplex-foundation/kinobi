@@ -67,12 +67,14 @@ impl RemoveCreatorVerificationBuilder {
 
             creator: self.creator.expect("creator is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `remove_creator_verification` CPI instruction.
 pub struct RemoveCreatorVerificationCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

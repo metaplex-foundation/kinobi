@@ -83,17 +83,20 @@ impl SetAuthorityBuilder {
                 .clone()
                 .expect("new_authority is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `set_authority` CPI instruction.
 pub struct SetAuthorityCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: SetAuthorityInstructionArgs,
 }
 

@@ -58,12 +58,14 @@ impl PuffMetadataBuilder {
         let accounts = PuffMetadata {
             metadata: self.metadata.expect("metadata is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `puff_metadata` CPI instruction.
 pub struct PuffMetadataCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

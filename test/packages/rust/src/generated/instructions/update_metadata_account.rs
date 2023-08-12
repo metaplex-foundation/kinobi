@@ -115,17 +115,20 @@ impl UpdateMetadataAccountBuilder {
             self.update_authority_arg.clone(),
             self.primary_sale_happened.clone(),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `update_metadata_account` CPI instruction.
 pub struct UpdateMetadataAccountCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Update authority key
     pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: UpdateMetadataAccountInstructionArgs,
 }
 

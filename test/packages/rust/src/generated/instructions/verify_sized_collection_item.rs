@@ -149,12 +149,14 @@ impl VerifySizedCollectionItemBuilder {
 
             collection_authority_record: self.collection_authority_record,
         };
+
         accounts.instruction()
     }
 }
 
 /// `verify_sized_collection_item` CPI instruction.
 pub struct VerifySizedCollectionItemCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

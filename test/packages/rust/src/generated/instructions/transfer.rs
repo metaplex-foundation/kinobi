@@ -284,12 +284,14 @@ impl TransferBuilder {
                 .clone()
                 .expect("transfer_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `transfer` CPI instruction.
 pub struct TransferCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Transfer authority (token or delegate owner)
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -321,6 +323,7 @@ pub struct TransferCpi<'a> {
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: TransferInstructionArgs,
 }
 

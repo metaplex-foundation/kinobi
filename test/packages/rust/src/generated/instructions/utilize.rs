@@ -190,12 +190,14 @@ impl UtilizeBuilder {
                 .clone()
                 .expect("number_of_uses is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `utilize` CPI instruction.
 pub struct UtilizeCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -219,6 +221,7 @@ pub struct UtilizeCpi<'a> {
     pub use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Program As Signer (Burner)
     pub burner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: UtilizeInstructionArgs,
 }
 

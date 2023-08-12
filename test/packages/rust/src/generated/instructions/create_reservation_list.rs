@@ -133,12 +133,14 @@ impl CreateReservationListBuilder {
 
             rent: self.rent.expect("rent is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `create_reservation_list` CPI instruction.
 pub struct CreateReservationListCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
     pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,

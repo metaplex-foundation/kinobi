@@ -255,12 +255,14 @@ impl SetCollectionBuilder {
 
             system_program: self.system_program.expect("system_program is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `set_collection` CPI instruction.
 pub struct SetCollectionCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,

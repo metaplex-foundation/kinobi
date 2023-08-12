@@ -199,12 +199,14 @@ impl BurnEditionNftBuilder {
                 .spl_token_program
                 .expect("spl_token_program is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `burn_edition_nft` CPI instruction.
 pub struct BurnEditionNftCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

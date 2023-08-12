@@ -67,12 +67,14 @@ impl SignMetadataBuilder {
 
             creator: self.creator.expect("creator is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `sign_metadata` CPI instruction.
 pub struct SignMetadataCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

@@ -206,12 +206,14 @@ impl TransferOutOfEscrowBuilder {
         let args = TransferOutOfEscrowInstructionArgs::new(
             self.amount.clone().expect("amount is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `transfer_out_of_escrow` CPI instruction.
 pub struct TransferOutOfEscrowCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Escrow account
     pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
@@ -239,6 +241,7 @@ pub struct TransferOutOfEscrowCpi<'a> {
     pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
     /// Authority/creator of the escrow account
     pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: TransferOutOfEscrowInstructionArgs,
 }
 

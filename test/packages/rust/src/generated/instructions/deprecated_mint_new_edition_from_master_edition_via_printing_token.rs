@@ -233,12 +233,14 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
 
             reservation_list: self.reservation_list,
         };
+
         accounts.instruction()
     }
 }
 
 /// `deprecated_mint_new_edition_from_master_edition_via_printing_token` CPI instruction.
 pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// New Metadata key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

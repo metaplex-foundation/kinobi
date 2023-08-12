@@ -124,12 +124,14 @@ impl CreateFrequencyRuleBuilder {
             self.last_update.clone().expect("last_update is not set"),
             self.period.clone().expect("period is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `create_frequency_rule` CPI instruction.
 pub struct CreateFrequencyRuleCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the Frequency Rule
     pub payer: &'a solana_program::account_info::AccountInfo<'a>,
@@ -137,6 +139,7 @@ pub struct CreateFrequencyRuleCpi<'a> {
     pub frequency_pda: &'a solana_program::account_info::AccountInfo<'a>,
     /// System program
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: CreateFrequencyRuleInstructionArgs,
 }
 

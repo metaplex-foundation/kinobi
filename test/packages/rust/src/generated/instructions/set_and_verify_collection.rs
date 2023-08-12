@@ -162,12 +162,14 @@ impl SetAndVerifyCollectionBuilder {
 
             collection_authority_record: self.collection_authority_record,
         };
+
         accounts.instruction()
     }
 }
 
 /// `set_and_verify_collection` CPI instruction.
 pub struct SetAndVerifyCollectionCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

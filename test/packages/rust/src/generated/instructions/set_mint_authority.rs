@@ -78,12 +78,14 @@ impl SetMintAuthorityBuilder {
 
             mint_authority: self.mint_authority.expect("mint_authority is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `set_mint_authority` CPI instruction.
 pub struct SetMintAuthorityCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,

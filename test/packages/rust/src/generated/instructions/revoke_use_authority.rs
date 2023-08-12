@@ -154,12 +154,14 @@ impl RevokeUseAuthorityBuilder {
 
             rent: self.rent,
         };
+
         accounts.instruction()
     }
 }
 
 /// `revoke_use_authority` CPI instruction.
 pub struct RevokeUseAuthorityCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Use Authority Record PDA
     pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,

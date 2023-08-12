@@ -133,12 +133,14 @@ impl SetCollectionSizeBuilder {
                 .clone()
                 .expect("set_collection_size_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `set_collection_size` CPI instruction.
 pub struct SetCollectionSizeCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Metadata account
     pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -148,6 +150,7 @@ pub struct SetCollectionSizeCpi<'a> {
     pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority Record PDA
     pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: SetCollectionSizeInstructionArgs,
 }
 

@@ -102,12 +102,14 @@ impl CreateRuleSetBuilder {
                 .clone()
                 .expect("rule_set_bump is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `create_rule_set` CPI instruction.
 pub struct CreateRuleSetCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the RuleSet
     pub payer: &'a solana_program::account_info::AccountInfo<'a>,
@@ -115,6 +117,7 @@ pub struct CreateRuleSetCpi<'a> {
     pub rule_set_pda: &'a solana_program::account_info::AccountInfo<'a>,
     /// System program
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: CreateRuleSetInstructionArgs,
 }
 

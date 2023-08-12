@@ -135,12 +135,14 @@ impl CloseEscrowAccountBuilder {
                 .sysvar_instructions
                 .expect("sysvar_instructions is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `close_escrow_account` CPI instruction.
 pub struct CloseEscrowAccountCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Escrow account
     pub escrow: &'a solana_program::account_info::AccountInfo<'a>,

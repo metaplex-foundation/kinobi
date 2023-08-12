@@ -89,17 +89,20 @@ impl AddConfigLinesBuilder {
             self.index.clone().expect("index is not set"),
             self.config_lines.clone().expect("config_lines is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `add_config_lines` CPI instruction.
 pub struct AddConfigLinesCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: AddConfigLinesInstructionArgs,
 }
 

@@ -252,12 +252,14 @@ impl RevokeBuilder {
         };
         let args =
             RevokeInstructionArgs::new(self.revoke_args.clone().expect("revoke_args is not set"));
+
         accounts.instruction(args)
     }
 }
 
 /// `revoke` CPI instruction.
 pub struct RevokeCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
     pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
@@ -285,6 +287,7 @@ pub struct RevokeCpi<'a> {
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: RevokeInstructionArgs,
 }
 

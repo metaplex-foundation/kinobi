@@ -190,12 +190,14 @@ impl ApproveUseAuthorityBuilder {
                 .clone()
                 .expect("number_of_uses is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `approve_use_authority` CPI instruction.
 pub struct ApproveUseAuthorityCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Use Authority Record PDA
     pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
@@ -219,6 +221,7 @@ pub struct ApproveUseAuthorityCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent info
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: ApproveUseAuthorityInstructionArgs,
 }
 

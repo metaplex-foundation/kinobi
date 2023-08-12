@@ -191,12 +191,14 @@ impl CreateV2Builder {
             self.asset_data.clone().expect("asset_data is not set"),
             self.max_supply.clone(),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `create_v2` CPI instruction.
 pub struct CreateV2Cpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -216,6 +218,7 @@ pub struct CreateV2Cpi<'a> {
     pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
     /// SPL Token program
     pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: CreateV2InstructionArgs,
 }
 

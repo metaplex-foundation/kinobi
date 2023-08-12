@@ -80,17 +80,20 @@ impl UpdateCandyMachineBuilder {
         };
         let args =
             UpdateCandyMachineInstructionArgs::new(self.data.clone().expect("data is not set"));
+
         accounts.instruction(args)
     }
 }
 
 /// `update_candy_machine` CPI instruction.
 pub struct UpdateCandyMachineCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: UpdateCandyMachineInstructionArgs,
 }
 

@@ -142,12 +142,14 @@ impl VerifyBuilder {
         };
         let args =
             VerifyInstructionArgs::new(self.verify_args.clone().expect("verify_args is not set"));
+
         accounts.instruction(args)
     }
 }
 
 /// `verify` CPI instruction.
 pub struct VerifyCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -159,6 +161,7 @@ pub struct VerifyCpi<'a> {
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules Program
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: VerifyInstructionArgs,
 }
 

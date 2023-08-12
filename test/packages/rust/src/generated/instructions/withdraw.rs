@@ -68,12 +68,14 @@ impl WithdrawBuilder {
 
             authority: self.authority.expect("authority is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `withdraw` CPI instruction.
 pub struct WithdrawCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,

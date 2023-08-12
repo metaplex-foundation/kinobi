@@ -199,12 +199,14 @@ impl CreateV1Builder {
             self.decimals.clone(),
             self.max_supply.clone(),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `create_v1` CPI instruction.
 pub struct CreateV1Cpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -224,6 +226,7 @@ pub struct CreateV1Cpi<'a> {
     pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
     /// SPL Token program
     pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: CreateV1InstructionArgs,
 }
 

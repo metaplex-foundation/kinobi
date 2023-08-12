@@ -97,12 +97,14 @@ impl SetTokenStandardBuilder {
 
             edition: self.edition,
         };
+
         accounts.instruction()
     }
 }
 
 /// `set_token_standard` CPI instruction.
 pub struct SetTokenStandardCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

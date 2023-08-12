@@ -326,7 +326,7 @@ impl UpdateV1Builder {
 
             authorization_rules: self.authorization_rules,
         };
-        let args = UpdateV1InstructionArgs::new(
+        let mut args = UpdateV1InstructionArgs::new(
             self.authorization_data.clone(),
             self.new_update_authority.clone(),
             self.data.clone(),
@@ -341,12 +341,15 @@ impl UpdateV1Builder {
                 .clone()
                 .expect("authority_type is not set"),
         );
+        args.token_standard = self.token_standard.clone();
+
         accounts.instruction(args)
     }
 }
 
 /// `update_v1` CPI instruction.
 pub struct UpdateV1Cpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Update authority or delegate
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -368,6 +371,7 @@ pub struct UpdateV1Cpi<'a> {
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub args: UpdateV1InstructionArgs,
 }
 

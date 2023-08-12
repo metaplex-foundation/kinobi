@@ -169,12 +169,14 @@ impl CreateMetadataAccountBuilder {
                 .clone()
                 .expect("metadata_bump is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `create_metadata_account` CPI instruction.
 pub struct CreateMetadataAccountCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -190,6 +192,7 @@ pub struct CreateMetadataAccountCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent info
     pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: CreateMetadataAccountInstructionArgs,
 }
 

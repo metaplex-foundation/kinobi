@@ -126,12 +126,14 @@ impl DeprecatedSetReservationListBuilder {
                 .clone()
                 .expect("total_spot_offset is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `deprecated_set_reservation_list` CPI instruction.
 pub struct DeprecatedSetReservationListCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
     pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -139,6 +141,7 @@ pub struct DeprecatedSetReservationListCpi<'a> {
     pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
     /// The resource you tied the reservation list too
     pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: DeprecatedSetReservationListInstructionArgs,
 }
 

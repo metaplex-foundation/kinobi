@@ -123,12 +123,14 @@ impl VerifyCollectionBuilder {
                 .collection_master_edition_account
                 .expect("collection_master_edition_account is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `verify_collection` CPI instruction.
 pub struct VerifyCollectionCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,

@@ -141,12 +141,14 @@ impl DummyBuilder {
 
             delegate_record: self.delegate_record.expect("delegate_record is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `dummy` CPI instruction.
 pub struct DummyCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub edition: &'a solana_program::account_info::AccountInfo<'a>,

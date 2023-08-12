@@ -225,12 +225,14 @@ impl DeprecatedCreateMasterEditionBuilder {
                 .clone()
                 .expect("create_master_edition_args is not set"),
         );
+
         accounts.instruction(args)
     }
 }
 
 /// `deprecated_create_master_edition` CPI instruction.
 pub struct DeprecatedCreateMasterEditionCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition']
     pub edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -259,6 +261,7 @@ pub struct DeprecatedCreateMasterEditionCpi<'a> {
     /// One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY.
     pub one_time_printing_authorization_mint_authority:
         &'a solana_program::account_info::AccountInfo<'a>,
+    /// The arguments for the instruction.
     pub args: DeprecatedCreateMasterEditionInstructionArgs,
 }
 

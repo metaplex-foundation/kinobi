@@ -77,12 +77,14 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
 
             token: self.token.expect("token is not set"),
         };
+
         accounts.instruction()
     }
 }
 
 /// `update_primary_sale_happened_via_token` CPI instruction.
 pub struct UpdatePrimarySaleHappenedViaTokenCpi<'a> {
+    /// The program to invoke.
     pub program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
