@@ -21,12 +21,19 @@ impl UpdateCandyMachine {
         &self,
         args: UpdateCandyMachineInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.candy_machine,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.authority,
+            true,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.authority, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -75,7 +82,6 @@ impl UpdateCandyMachineBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateCandyMachine {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
-
             authority: self.authority.expect("authority is not set"),
         };
         let args =
@@ -107,12 +113,19 @@ impl<'a> UpdateCandyMachineCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.candy_machine.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.authority.key,
+            true,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.candy_machine.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.authority.key, true),
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);

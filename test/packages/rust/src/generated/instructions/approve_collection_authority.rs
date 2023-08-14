@@ -31,31 +31,48 @@ pub struct ApproveCollectionAuthority {
 impl ApproveCollectionAuthority {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = ApproveCollectionAuthorityInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.collection_authority_record,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.new_collection_authority,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.update_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.payer, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+        if let Some(rent) = self.rent {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                rent, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(
-                    self.collection_authority_record,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.new_collection_authority,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(self.update_authority, true),
-                solana_program::instruction::AccountMeta::new(self.payer, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-                if let Some(rent) = self.rent {
-                    solana_program::instruction::AccountMeta::new_readonly(rent, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -136,21 +153,16 @@ impl ApproveCollectionAuthorityBuilder {
             collection_authority_record: self
                 .collection_authority_record
                 .expect("collection_authority_record is not set"),
-
             new_collection_authority: self
                 .new_collection_authority
                 .expect("new_collection_authority is not set"),
-
             update_authority: self.update_authority.expect("update_authority is not set"),
-
             payer: self.payer.expect("payer is not set"),
-
             metadata: self.metadata.expect("metadata is not set"),
-
             mint: self.mint.expect("mint is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
-
+            system_program: self
+                .system_program
+                .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
         };
 
@@ -191,34 +203,50 @@ impl<'a> ApproveCollectionAuthorityCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = ApproveCollectionAuthorityInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.collection_authority_record.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.new_collection_authority.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.update_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.payer.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+        if let Some(rent) = self.rent {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *rent.key, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(
-                    *self.collection_authority_record.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.new_collection_authority.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(*self.update_authority.key, true),
-                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-                if let Some(rent) = self.rent {
-                    solana_program::instruction::AccountMeta::new_readonly(*rent.key, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);

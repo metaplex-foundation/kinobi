@@ -13,7 +13,7 @@ pub struct {{ instruction.name | pascalCase }}Cpi<'a> {
       {% set type = '&\'a solana_program::account_info::AccountInfo<\'a>' %}
     {% endif %}
 
-    {% if account.isOptional %}
+    {% if account.isOptional or account.defaultsTo.kind === 'programId' %}
       pub {{ account.name | snakeCase }}: Option<{{ type }}>,
     {% else %}
       pub {{ account.name | snakeCase }}: {{ type }},
@@ -35,57 +35,73 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
     {% if hasArgs === false %}
     let args = {{ instruction.name | pascalCase }}InstructionArgs::new();
     {% endif %}
+
+    let mut accounts = Vec::with_capacity({{ instruction.accounts.length }});
+    {% for account in instruction.accounts %}
+      {% if account.isSigner === 'either' %}
+        {% if account.isOptional %}
+          if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
+            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+              *{{ account.name | snakeCase }}.key,
+              signer,
+            ));
+          }
+        {% elif account.defaultsTo.kind === 'programId' %}
+          if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
+            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+              *{{ account.name | snakeCase }}.key,
+              signer,
+            ));
+          } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+              crate::{{ program.name | snakeCase | upper }}_ID,
+              false,
+            ));
+          }
+        {% else %}
+          accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+            *self.{{ account.name | snakeCase }}.0.key,
+            self.{{ account.name | snakeCase }}.1,
+          ));
+        {% endif %}
+      {% else %}
+        {% if account.isOptional %}
+          if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
+            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+              *{{ account.name | snakeCase }}.key,
+              {{ 'true' if account.isSigner else 'false' }},
+            ));
+          }
+        {% elif account.defaultsTo.kind === 'programId' %}
+          if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
+            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+              *{{ account.name | snakeCase }}.key,
+              {{ 'true' if account.isSigner else 'false' }},
+            ));
+          } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+              crate::{{ program.name | snakeCase | upper }}_ID,
+              false,
+            ));
+          }
+        {% else %}
+          accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+            *self.{{ account.name | snakeCase }}.key,
+            {{ 'true' if account.isSigner else 'false' }}
+          ));
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
     let instruction = solana_program::instruction::Instruction {
       program_id: crate::{{ program.name | snakeCase | upper }}_ID,
-      accounts: vec![
-        {% for account in instruction.accounts %}
-          {% if account.isSigner === 'either' %}
-            {% if account.isOptional %}
-              if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
-                solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                  *{{ account.name | snakeCase }}.key,
-                  signer,
-                )
-              } else {
-                solana_program::instruction::AccountMeta::new_readonly(
-                  crate::{{ program.name | snakeCase | upper }}_ID,
-                  false,
-                )
-              },
-            {% else %}
-              solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                *self.{{ account.name | snakeCase }}.0.key,
-                self.{{ account.name | snakeCase }}.1,
-              ),
-            {% endif %}
-          {% else %}
-            {% if account.isOptional %}
-              if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
-                solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                  *{{ account.name | snakeCase }}.key,
-                  {{ 'true' if account.isSigner else 'false' }},
-                )
-              } else {
-                solana_program::instruction::AccountMeta::new_readonly(
-                  crate::{{ program.name | snakeCase | upper }}_ID,
-                  false,
-                )
-              },
-            {% else %}
-              solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-                *self.{{ account.name | snakeCase }}.key,
-                {{ 'true' if account.isSigner else 'false' }}
-              ),
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      ],
+      accounts,
       data: {{ 'self.' if hasArgs }}args.try_to_vec().unwrap(),
     };
     let mut account_infos = Vec::with_capacity({{ instruction.accounts.length }} + 1);
     account_infos.push(self.program.clone());
     {% for account in instruction.accounts %}
-      {% if account.isOptional %}
+      {% if account.isOptional or account.defaultsTo.kind === 'programId' %}
         if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
           account_infos.push({{ account.name | snakeCase }}{{ '.0' if account.isSigner === 'either' }}.clone());
         }

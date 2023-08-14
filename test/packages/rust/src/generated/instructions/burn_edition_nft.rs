@@ -35,32 +35,51 @@ pub struct BurnEditionNft {
 impl BurnEditionNft {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = BurnEditionNftInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(10);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.owner, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.print_edition_mint,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.master_edition_mint,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.print_edition_token_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.master_edition_token_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.master_edition_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.print_edition_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.edition_marker_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.spl_token_program,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                solana_program::instruction::AccountMeta::new(self.owner, true),
-                solana_program::instruction::AccountMeta::new(self.print_edition_mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.master_edition_mint,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    self.print_edition_token_account,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.master_edition_token_account,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(self.master_edition_account, false),
-                solana_program::instruction::AccountMeta::new(self.print_edition_account, false),
-                solana_program::instruction::AccountMeta::new(self.edition_marker_account, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.spl_token_program,
-                    false,
-                ),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -164,40 +183,31 @@ impl BurnEditionNftBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = BurnEditionNft {
             metadata: self.metadata.expect("metadata is not set"),
-
             owner: self.owner.expect("owner is not set"),
-
             print_edition_mint: self
                 .print_edition_mint
                 .expect("print_edition_mint is not set"),
-
             master_edition_mint: self
                 .master_edition_mint
                 .expect("master_edition_mint is not set"),
-
             print_edition_token_account: self
                 .print_edition_token_account
                 .expect("print_edition_token_account is not set"),
-
             master_edition_token_account: self
                 .master_edition_token_account
                 .expect("master_edition_token_account is not set"),
-
             master_edition_account: self
                 .master_edition_account
                 .expect("master_edition_account is not set"),
-
             print_edition_account: self
                 .print_edition_account
                 .expect("print_edition_account is not set"),
-
             edition_marker_account: self
                 .edition_marker_account
                 .expect("edition_marker_account is not set"),
-
-            spl_token_program: self
-                .spl_token_program
-                .expect("spl_token_program is not set"),
+            spl_token_program: self.spl_token_program.unwrap_or(solana_program::pubkey!(
+                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+            )),
         };
 
         accounts.instruction()
@@ -241,41 +251,52 @@ impl<'a> BurnEditionNftCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = BurnEditionNftInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(10);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.owner.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.print_edition_mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.master_edition_mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.print_edition_token_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.master_edition_token_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.master_edition_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.print_edition_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.edition_marker_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.spl_token_program.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new(*self.owner.key, true),
-                solana_program::instruction::AccountMeta::new(*self.print_edition_mint.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.master_edition_mint.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    *self.print_edition_token_account.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.master_edition_token_account.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    *self.master_edition_account.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    *self.print_edition_account.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    *self.edition_marker_account.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.spl_token_program.key,
-                    false,
-                ),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(10 + 1);

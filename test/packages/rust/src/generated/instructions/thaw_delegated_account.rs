@@ -25,15 +25,31 @@ pub struct ThawDelegatedAccount {
 impl ThawDelegatedAccount {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = ThawDelegatedAccountInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(5);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.delegate,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.token_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.token_program,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.delegate, true),
-                solana_program::instruction::AccountMeta::new(self.token_account, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.edition, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.token_program, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -88,14 +104,12 @@ impl ThawDelegatedAccountBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ThawDelegatedAccount {
             delegate: self.delegate.expect("delegate is not set"),
-
             token_account: self.token_account.expect("token_account is not set"),
-
             edition: self.edition.expect("edition is not set"),
-
             mint: self.mint.expect("mint is not set"),
-
-            token_program: self.token_program.expect("token_program is not set"),
+            token_program: self.token_program.unwrap_or(solana_program::pubkey!(
+                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+            )),
         };
 
         accounts.instruction()
@@ -129,18 +143,32 @@ impl<'a> ThawDelegatedAccountCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = ThawDelegatedAccountInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(5);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.delegate.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.token_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.token_program.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.delegate.key, true),
-                solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.edition.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.token_program.key,
-                    false,
-                ),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(5 + 1);

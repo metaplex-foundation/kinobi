@@ -36,22 +36,45 @@ impl DeprecatedMintPrintingTokensViaToken {
         &self,
         args: DeprecatedMintPrintingTokensViaTokenInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(9);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.destination,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.token, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.one_time_printing_authorization_mint,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.printing_mint,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.burn_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.master_edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.token_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.rent, false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.destination, false),
-                solana_program::instruction::AccountMeta::new(self.token, false),
-                solana_program::instruction::AccountMeta::new(
-                    self.one_time_printing_authorization_mint,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(self.printing_mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.burn_authority, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.master_edition, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.token_program, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.rent, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -141,24 +164,20 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintPrintingTokensViaToken {
             destination: self.destination.expect("destination is not set"),
-
             token: self.token.expect("token is not set"),
-
             one_time_printing_authorization_mint: self
                 .one_time_printing_authorization_mint
                 .expect("one_time_printing_authorization_mint is not set"),
-
             printing_mint: self.printing_mint.expect("printing_mint is not set"),
-
             burn_authority: self.burn_authority.expect("burn_authority is not set"),
-
             metadata: self.metadata.expect("metadata is not set"),
-
             master_edition: self.master_edition.expect("master_edition is not set"),
-
-            token_program: self.token_program.expect("token_program is not set"),
-
-            rent: self.rent.expect("rent is not set"),
+            token_program: self.token_program.unwrap_or(solana_program::pubkey!(
+                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+            )),
+            rent: self.rent.unwrap_or(solana_program::pubkey!(
+                "SysvarRent111111111111111111111111111111111"
+            )),
         };
         let args = DeprecatedMintPrintingTokensViaTokenInstructionArgs::new(
             self.mint_printing_tokens_via_token_args
@@ -206,31 +225,47 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(9);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.destination.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.token.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.one_time_printing_authorization_mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.printing_mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.burn_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.master_edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.token_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.rent.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.destination.key, false),
-                solana_program::instruction::AccountMeta::new(*self.token.key, false),
-                solana_program::instruction::AccountMeta::new(
-                    *self.one_time_printing_authorization_mint.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(*self.printing_mint.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.burn_authority.key,
-                    true,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.master_edition.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.token_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(*self.rent.key, false),
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(9 + 1);

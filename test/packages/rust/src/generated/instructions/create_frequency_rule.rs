@@ -23,13 +23,22 @@ impl CreateFrequencyRule {
         &self,
         args: CreateFrequencyRuleInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.payer, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.frequency_pda,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.payer, true),
-                solana_program::instruction::AccountMeta::new(self.frequency_pda, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -109,10 +118,10 @@ impl CreateFrequencyRuleBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateFrequencyRule {
             payer: self.payer.expect("payer is not set"),
-
             frequency_pda: self.frequency_pda.expect("frequency_pda is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
+            system_program: self
+                .system_program
+                .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
         };
         let args = CreateFrequencyRuleInstructionArgs::new(
             self.rule_set_name
@@ -153,16 +162,23 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.payer.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.frequency_pda.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                solana_program::instruction::AccountMeta::new(*self.frequency_pda.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);

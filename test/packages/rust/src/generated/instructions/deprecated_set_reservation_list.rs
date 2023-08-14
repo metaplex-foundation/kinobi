@@ -24,13 +24,23 @@ impl DeprecatedSetReservationList {
         &self,
         args: DeprecatedSetReservationListInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.master_edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.reservation_list,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.resource,
+            true,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.master_edition, false),
-                solana_program::instruction::AccountMeta::new(self.reservation_list, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.resource, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -113,9 +123,7 @@ impl DeprecatedSetReservationListBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedSetReservationList {
             master_edition: self.master_edition.expect("master_edition is not set"),
-
             reservation_list: self.reservation_list.expect("reservation_list is not set"),
-
             resource: self.resource.expect("resource is not set"),
         };
         let args = DeprecatedSetReservationListInstructionArgs::new(
@@ -155,13 +163,23 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.master_edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.reservation_list.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.resource.key,
+            true,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.master_edition.key, false),
-                solana_program::instruction::AccountMeta::new(*self.reservation_list.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.resource.key, true),
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);

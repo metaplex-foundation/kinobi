@@ -22,7 +22,7 @@ pub struct Dummy {
 
     pub foo: solana_program::pubkey::Pubkey,
 
-    pub bar: solana_program::pubkey::Pubkey,
+    pub bar: Option<solana_program::pubkey::Pubkey>,
 
     pub delegate_record: solana_program::pubkey::Pubkey,
 }
@@ -30,25 +30,52 @@ pub struct Dummy {
 impl Dummy {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = DummyInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.edition,
+            true,
+        ));
+        if let Some(mint) = self.mint {
+            accounts.push(solana_program::instruction::AccountMeta::new(mint, false));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.update_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.mint_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.payer, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.foo, false,
+        ));
+        if let Some(bar) = self.bar {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                bar, true,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.delegate_record,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.edition, true),
-                if let Some(mint) = self.mint {
-                    solana_program::instruction::AccountMeta::new(mint, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_CANDY_MACHINE_CORE_ID,
-                        false,
-                    )
-                },
-                solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
-                solana_program::instruction::AccountMeta::new(self.mint_authority, true),
-                solana_program::instruction::AccountMeta::new(self.payer, true),
-                solana_program::instruction::AccountMeta::new(self.foo, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.bar, true),
-                solana_program::instruction::AccountMeta::new(self.delegate_record, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -126,19 +153,12 @@ impl DummyBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Dummy {
             edition: self.edition.expect("edition is not set"),
-
             mint: self.mint,
-
             update_authority: self.update_authority.expect("update_authority is not set"),
-
             mint_authority: self.mint_authority.expect("mint_authority is not set"),
-
             payer: self.payer.expect("payer is not set"),
-
             foo: self.foo.expect("foo is not set"),
-
-            bar: self.bar.expect("bar is not set"),
-
+            bar: self.bar,
             delegate_record: self.delegate_record.expect("delegate_record is not set"),
         };
 
@@ -163,7 +183,7 @@ pub struct DummyCpi<'a> {
 
     pub foo: &'a solana_program::account_info::AccountInfo<'a>,
 
-    pub bar: &'a solana_program::account_info::AccountInfo<'a>,
+    pub bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 
     pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
 }
@@ -179,28 +199,56 @@ impl<'a> DummyCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = DummyInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.edition.key,
+            true,
+        ));
+        if let Some(mint) = self.mint {
+            accounts.push(solana_program::instruction::AccountMeta::new(
+                *mint.key, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.update_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.mint_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.payer.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.foo.key,
+            false,
+        ));
+        if let Some(bar) = self.bar {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *bar.key, true,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.delegate_record.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.edition.key, true),
-                if let Some(mint) = self.mint {
-                    solana_program::instruction::AccountMeta::new(*mint.key, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_CANDY_MACHINE_CORE_ID,
-                        false,
-                    )
-                },
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.update_authority.key,
-                    true,
-                ),
-                solana_program::instruction::AccountMeta::new(*self.mint_authority.key, true),
-                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                solana_program::instruction::AccountMeta::new(*self.foo.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.bar.key, true),
-                solana_program::instruction::AccountMeta::new(*self.delegate_record.key, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
@@ -213,7 +261,9 @@ impl<'a> DummyCpi<'a> {
         account_infos.push(self.mint_authority.clone());
         account_infos.push(self.payer.clone());
         account_infos.push(self.foo.clone());
-        account_infos.push(self.bar.clone());
+        if let Some(bar) = self.bar {
+            account_infos.push(bar.clone());
+        }
         account_infos.push(self.delegate_record.clone());
 
         if signers_seeds.is_empty() {
@@ -311,7 +361,7 @@ impl<'a> DummyCpiBuilder<'a> {
 
             foo: self.instruction.foo.expect("foo is not set"),
 
-            bar: self.instruction.bar.expect("bar is not set"),
+            bar: self.instruction.bar,
 
             delegate_record: self
                 .instruction

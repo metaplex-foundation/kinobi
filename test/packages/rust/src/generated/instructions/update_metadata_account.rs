@@ -23,12 +23,19 @@ impl UpdateMetadataAccount {
         &self,
         args: UpdateMetadataAccountInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.update_authority,
+            true,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -107,7 +114,6 @@ impl UpdateMetadataAccountBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateMetadataAccount {
             metadata: self.metadata.expect("metadata is not set"),
-
             update_authority: self.update_authority.expect("update_authority is not set"),
         };
         let args = UpdateMetadataAccountInstructionArgs::new(
@@ -142,15 +148,19 @@ impl<'a> UpdateMetadataAccountCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.update_authority.key,
+            true,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.update_authority.key,
-                    true,
-                ),
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);

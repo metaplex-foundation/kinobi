@@ -28,25 +28,38 @@ impl BubblegumSetCollectionSize {
         &self,
         args: BubblegumSetCollectionSizeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(5);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.collection_metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.collection_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.collection_mint,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.bubblegum_signer,
+            true,
+        ));
+        if let Some(collection_authority_record) = self.collection_authority_record {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                collection_authority_record,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.collection_metadata, false),
-                solana_program::instruction::AccountMeta::new(self.collection_authority, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.collection_mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.bubblegum_signer, true),
-                if let Some(collection_authority_record) = self.collection_authority_record {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        collection_authority_record,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -130,15 +143,11 @@ impl BubblegumSetCollectionSizeBuilder {
             collection_metadata: self
                 .collection_metadata
                 .expect("collection_metadata is not set"),
-
             collection_authority: self
                 .collection_authority
                 .expect("collection_authority is not set"),
-
             collection_mint: self.collection_mint.expect("collection_mint is not set"),
-
             bubblegum_signer: self.bubblegum_signer.expect("bubblegum_signer is not set"),
-
             collection_authority_record: self.collection_authority_record,
         };
         let args = BubblegumSetCollectionSizeInstructionArgs::new(
@@ -179,31 +188,38 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(5);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.collection_metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.collection_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.collection_mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.bubblegum_signer.key,
+            true,
+        ));
+        if let Some(collection_authority_record) = self.collection_authority_record {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *collection_authority_record.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.collection_metadata.key, false),
-                solana_program::instruction::AccountMeta::new(*self.collection_authority.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.collection_mint.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.bubblegum_signer.key,
-                    true,
-                ),
-                if let Some(collection_authority_record) = self.collection_authority_record {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *collection_authority_record.key,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(5 + 1);

@@ -18,12 +18,20 @@ pub struct Withdraw {
 impl Withdraw {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = WithdrawInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.candy_machine,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.authority,
+            true,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
-                solana_program::instruction::AccountMeta::new(self.authority, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -65,7 +73,6 @@ impl WithdrawBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Withdraw {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
-
             authority: self.authority.expect("authority is not set"),
         };
 
@@ -94,12 +101,20 @@ impl<'a> WithdrawCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = WithdrawInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.candy_machine.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.authority.key,
+            true,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.candy_machine.key, false),
-                solana_program::instruction::AccountMeta::new(*self.authority.key, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);

@@ -39,36 +39,54 @@ impl Initialize {
         &self,
         args: InitializeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(11);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.candy_machine,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.authority_pda,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.authority,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.payer, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.collection_metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.collection_mint,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.collection_master_edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.collection_update_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.collection_authority_record,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.token_metadata_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
-                solana_program::instruction::AccountMeta::new(self.authority_pda, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.authority, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.payer, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.collection_metadata,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(self.collection_mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.collection_master_edition,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    self.collection_update_authority,
-                    true,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    self.collection_authority_record,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.token_metadata_program,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -178,39 +196,32 @@ impl InitializeBuilder {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
-        let accounts = Initialize {
-            candy_machine: self.candy_machine.expect("candy_machine is not set"),
-
-            authority_pda: self.authority_pda.expect("authority_pda is not set"),
-
-            authority: self.authority.expect("authority is not set"),
-
-            payer: self.payer.expect("payer is not set"),
-
-            collection_metadata: self
-                .collection_metadata
-                .expect("collection_metadata is not set"),
-
-            collection_mint: self.collection_mint.expect("collection_mint is not set"),
-
-            collection_master_edition: self
-                .collection_master_edition
-                .expect("collection_master_edition is not set"),
-
-            collection_update_authority: self
-                .collection_update_authority
-                .expect("collection_update_authority is not set"),
-
-            collection_authority_record: self
-                .collection_authority_record
-                .expect("collection_authority_record is not set"),
-
-            token_metadata_program: self
-                .token_metadata_program
-                .expect("token_metadata_program is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
-        };
+        let accounts =
+            Initialize {
+                candy_machine: self.candy_machine.expect("candy_machine is not set"),
+                authority_pda: self.authority_pda.expect("authority_pda is not set"),
+                authority: self.authority.expect("authority is not set"),
+                payer: self.payer.expect("payer is not set"),
+                collection_metadata: self
+                    .collection_metadata
+                    .expect("collection_metadata is not set"),
+                collection_mint: self.collection_mint.expect("collection_mint is not set"),
+                collection_master_edition: self
+                    .collection_master_edition
+                    .expect("collection_master_edition is not set"),
+                collection_update_authority: self
+                    .collection_update_authority
+                    .expect("collection_update_authority is not set"),
+                collection_authority_record: self
+                    .collection_authority_record
+                    .expect("collection_authority_record is not set"),
+                token_metadata_program: self.token_metadata_program.unwrap_or(
+                    solana_program::pubkey!("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"),
+                ),
+                system_program: self
+                    .system_program
+                    .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+            };
         let args = InitializeInstructionArgs::new(self.data.clone().expect("data is not set"));
 
         accounts.instruction(args)
@@ -257,42 +268,55 @@ impl<'a> InitializeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(11);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.candy_machine.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.authority_pda.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.authority.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.payer.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.collection_metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.collection_mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.collection_master_edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.collection_update_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.collection_authority_record.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.token_metadata_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.candy_machine.key, false),
-                solana_program::instruction::AccountMeta::new(*self.authority_pda.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.authority.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.payer.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.collection_metadata.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.collection_mint.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.collection_master_edition.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    *self.collection_update_authority.key,
-                    true,
-                ),
-                solana_program::instruction::AccountMeta::new(
-                    *self.collection_authority_record.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.token_metadata_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(11 + 1);

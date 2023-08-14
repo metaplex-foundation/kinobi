@@ -193,7 +193,10 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
         if (!rule) {
           return account;
         }
-        if ((rule.ignoreIfOptional ?? false) && account.isOptional) {
+        if (
+          (rule.ignoreIfOptional ?? false) &&
+          (account.isOptional || !!account.defaultsTo)
+        ) {
           return account;
         }
         if (rule.kind === 'pda') {

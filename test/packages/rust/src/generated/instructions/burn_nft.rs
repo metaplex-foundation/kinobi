@@ -29,27 +29,45 @@ pub struct BurnNft {
 impl BurnNft {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = BurnNftInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(7);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.owner, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.mint, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.token_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.master_edition_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.spl_token_program,
+            false,
+        ));
+        if let Some(collection_metadata) = self.collection_metadata {
+            accounts.push(solana_program::instruction::AccountMeta::new(
+                collection_metadata,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                solana_program::instruction::AccountMeta::new(self.owner, true),
-                solana_program::instruction::AccountMeta::new(self.mint, false),
-                solana_program::instruction::AccountMeta::new(self.token_account, false),
-                solana_program::instruction::AccountMeta::new(self.master_edition_account, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.spl_token_program,
-                    false,
-                ),
-                if let Some(collection_metadata) = self.collection_metadata {
-                    solana_program::instruction::AccountMeta::new(collection_metadata, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -123,21 +141,15 @@ impl BurnNftBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = BurnNft {
             metadata: self.metadata.expect("metadata is not set"),
-
             owner: self.owner.expect("owner is not set"),
-
             mint: self.mint.expect("mint is not set"),
-
             token_account: self.token_account.expect("token_account is not set"),
-
             master_edition_account: self
                 .master_edition_account
                 .expect("master_edition_account is not set"),
-
-            spl_token_program: self
-                .spl_token_program
-                .expect("spl_token_program is not set"),
-
+            spl_token_program: self.spl_token_program.unwrap_or(solana_program::pubkey!(
+                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+            )),
             collection_metadata: self.collection_metadata,
         };
 
@@ -176,30 +188,47 @@ impl<'a> BurnNftCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = BurnNftInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(7);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.owner.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.token_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.master_edition_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.spl_token_program.key,
+            false,
+        ));
+        if let Some(collection_metadata) = self.collection_metadata {
+            accounts.push(solana_program::instruction::AccountMeta::new(
+                *collection_metadata.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new(*self.owner.key, true),
-                solana_program::instruction::AccountMeta::new(*self.mint.key, false),
-                solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
-                solana_program::instruction::AccountMeta::new(
-                    *self.master_edition_account.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.spl_token_program.key,
-                    false,
-                ),
-                if let Some(collection_metadata) = self.collection_metadata {
-                    solana_program::instruction::AccountMeta::new(*collection_metadata.key, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(7 + 1);

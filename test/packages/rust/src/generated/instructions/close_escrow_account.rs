@@ -31,21 +31,42 @@ pub struct CloseEscrowAccount {
 impl CloseEscrowAccount {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = CloseEscrowAccountInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.escrow,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.token_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.payer, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.sysvar_instructions,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.escrow, false),
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.token_account, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.edition, false),
-                solana_program::instruction::AccountMeta::new(self.payer, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.sysvar_instructions,
-                    false,
-                ),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -118,22 +139,17 @@ impl CloseEscrowAccountBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CloseEscrowAccount {
             escrow: self.escrow.expect("escrow is not set"),
-
             metadata: self.metadata.expect("metadata is not set"),
-
             mint: self.mint.expect("mint is not set"),
-
             token_account: self.token_account.expect("token_account is not set"),
-
             edition: self.edition.expect("edition is not set"),
-
             payer: self.payer.expect("payer is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
-
-            sysvar_instructions: self
-                .sysvar_instructions
-                .expect("sysvar_instructions is not set"),
+            system_program: self
+                .system_program
+                .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+            sysvar_instructions: self.sysvar_instructions.unwrap_or(solana_program::pubkey!(
+                "Sysvar1nstructions1111111111111111111111111"
+            )),
         };
 
         accounts.instruction()
@@ -173,27 +189,44 @@ impl<'a> CloseEscrowAccountCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = CloseEscrowAccountInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.escrow.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.token_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.payer.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.sysvar_instructions.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.escrow.key, false),
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.token_account.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(*self.edition.key, false),
-                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.sysvar_instructions.key,
-                    false,
-                ),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);

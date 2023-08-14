@@ -47,7 +47,7 @@ export function instructionAccountNodeFromIdl(
     name: idl.name ?? '',
     isWritable: idl.isMut ?? false,
     isSigner: idl.isOptionalSigner ? 'either' : idl.isSigner ?? false,
-    isOptional,
+    isOptional: useProgramIdForOptionalAccounts ? false : isOptional,
     docs: idl.docs ?? desc ?? [],
     defaultsTo:
       isOptional && useProgramIdForOptionalAccounts

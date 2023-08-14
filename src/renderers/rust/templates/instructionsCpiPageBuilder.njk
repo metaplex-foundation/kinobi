@@ -41,7 +41,7 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     {{ instruction.name | pascalCase }}Cpi {
         program: self.instruction.program,
         {% for account in instruction.accounts %}          
-          {{ account.name | snakeCase }}: self.instruction.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional }},
+          {{ account.name | snakeCase }}: self.instruction.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional and account.defaultsTo.kind !== "programId" }},
         {% endfor %}
         {% if hasArgs %}
           args: {{ instruction.name | pascalCase }}InstructionArgs::new(

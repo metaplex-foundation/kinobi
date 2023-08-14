@@ -19,12 +19,20 @@ pub struct SignMetadata {
 impl SignMetadata {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = SignMetadataInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.creator,
+            true,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.creator, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -64,7 +72,6 @@ impl SignMetadataBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SignMetadata {
             metadata: self.metadata.expect("metadata is not set"),
-
             creator: self.creator.expect("creator is not set"),
         };
 
@@ -93,12 +100,20 @@ impl<'a> SignMetadataCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = SignMetadataInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(2);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.creator.key,
+            true,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.creator.key, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);

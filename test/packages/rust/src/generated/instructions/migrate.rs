@@ -38,36 +38,57 @@ impl Migrate {
         &self,
         args: MigrateInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(10);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.master_edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.token_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.update_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.collection_metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.token_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.sysvar_instructions,
+            false,
+        ));
+        if let Some(authorization_rules) = self.authorization_rules {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.master_edition, false),
-                solana_program::instruction::AccountMeta::new(self.token_account, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.collection_metadata,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(self.token_program, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.sysvar_instructions,
-                    false,
-                ),
-                if let Some(authorization_rules) = self.authorization_rules {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        authorization_rules,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -168,27 +189,22 @@ impl MigrateBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Migrate {
             metadata: self.metadata.expect("metadata is not set"),
-
             master_edition: self.master_edition.expect("master_edition is not set"),
-
             token_account: self.token_account.expect("token_account is not set"),
-
             mint: self.mint.expect("mint is not set"),
-
             update_authority: self.update_authority.expect("update_authority is not set"),
-
             collection_metadata: self
                 .collection_metadata
                 .expect("collection_metadata is not set"),
-
-            token_program: self.token_program.expect("token_program is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
-
-            sysvar_instructions: self
-                .sysvar_instructions
-                .expect("sysvar_instructions is not set"),
-
+            token_program: self.token_program.unwrap_or(solana_program::pubkey!(
+                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+            )),
+            system_program: self
+                .system_program
+                .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+            sysvar_instructions: self.sysvar_instructions.unwrap_or(solana_program::pubkey!(
+                "Sysvar1nstructions1111111111111111111111111"
+            )),
             authorization_rules: self.authorization_rules,
         };
         let args = MigrateInstructionArgs::new(
@@ -237,48 +253,58 @@ impl<'a> MigrateCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(10);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.master_edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.token_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.update_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.collection_metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.token_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.sysvar_instructions.key,
+            false,
+        ));
+        if let Some(authorization_rules) = self.authorization_rules {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *authorization_rules.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.master_edition.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(*self.token_account.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.update_authority.key,
-                    true,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.collection_metadata.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.token_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.sysvar_instructions.key,
-                    false,
-                ),
-                if let Some(authorization_rules) = self.authorization_rules {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *authorization_rules.key,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(10 + 1);

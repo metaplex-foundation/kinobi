@@ -33,26 +33,51 @@ pub struct RevokeUseAuthority {
 impl RevokeUseAuthority {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = RevokeUseAuthorityInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(9);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.use_authority_record,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.owner, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.user, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.owner_token_account,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint, false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.token_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+        if let Some(rent) = self.rent {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                rent, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.use_authority_record, false),
-                solana_program::instruction::AccountMeta::new(self.owner, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.user, false),
-                solana_program::instruction::AccountMeta::new(self.owner_token_account, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.token_program, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-                if let Some(rent) = self.rent {
-                    solana_program::instruction::AccountMeta::new_readonly(rent, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -135,23 +160,19 @@ impl RevokeUseAuthorityBuilder {
             use_authority_record: self
                 .use_authority_record
                 .expect("use_authority_record is not set"),
-
             owner: self.owner.expect("owner is not set"),
-
             user: self.user.expect("user is not set"),
-
             owner_token_account: self
                 .owner_token_account
                 .expect("owner_token_account is not set"),
-
             mint: self.mint.expect("mint is not set"),
-
             metadata: self.metadata.expect("metadata is not set"),
-
-            token_program: self.token_program.expect("token_program is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
-
+            token_program: self.token_program.unwrap_or(solana_program::pubkey!(
+                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+            )),
+            system_program: self
+                .system_program
+                .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
         };
 
@@ -194,35 +215,54 @@ impl<'a> RevokeUseAuthorityCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = RevokeUseAuthorityInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(9);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.use_authority_record.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.owner.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.user.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.owner_token_account.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.token_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+        if let Some(rent) = self.rent {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *rent.key, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(
-                    *self.use_authority_record.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new(*self.owner.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(*self.user.key, false),
-                solana_program::instruction::AccountMeta::new(*self.owner_token_account.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.token_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-                if let Some(rent) = self.rent {
-                    solana_program::instruction::AccountMeta::new_readonly(*rent.key, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(9 + 1);

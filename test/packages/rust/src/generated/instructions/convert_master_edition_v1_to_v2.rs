@@ -21,13 +21,24 @@ pub struct ConvertMasterEditionV1ToV2 {
 impl ConvertMasterEditionV1ToV2 {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = ConvertMasterEditionV1ToV2InstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.master_edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.one_time_auth,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.printing_mint,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.master_edition, false),
-                solana_program::instruction::AccountMeta::new(self.one_time_auth, false),
-                solana_program::instruction::AccountMeta::new(self.printing_mint, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -72,9 +83,7 @@ impl ConvertMasterEditionV1ToV2Builder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ConvertMasterEditionV1ToV2 {
             master_edition: self.master_edition.expect("master_edition is not set"),
-
             one_time_auth: self.one_time_auth.expect("one_time_auth is not set"),
-
             printing_mint: self.printing_mint.expect("printing_mint is not set"),
         };
 
@@ -105,13 +114,24 @@ impl<'a> ConvertMasterEditionV1ToV2Cpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = ConvertMasterEditionV1ToV2InstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.master_edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.one_time_auth.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.printing_mint.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.master_edition.key, false),
-                solana_program::instruction::AccountMeta::new(*self.one_time_auth.key, false),
-                solana_program::instruction::AccountMeta::new(*self.printing_mint.key, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);

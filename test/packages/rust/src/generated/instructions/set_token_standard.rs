@@ -23,21 +23,33 @@ pub struct SetTokenStandard {
 impl SetTokenStandard {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = SetTokenStandardInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(4);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.update_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint, false,
+        ));
+        if let Some(edition) = self.edition {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                edition, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                solana_program::instruction::AccountMeta::new(self.update_authority, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
-                if let Some(edition) = self.edition {
-                    solana_program::instruction::AccountMeta::new_readonly(edition, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -90,11 +102,8 @@ impl SetTokenStandardBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetTokenStandard {
             metadata: self.metadata.expect("metadata is not set"),
-
             update_authority: self.update_authority.expect("update_authority is not set"),
-
             mint: self.mint.expect("mint is not set"),
-
             edition: self.edition,
         };
 
@@ -127,21 +136,35 @@ impl<'a> SetTokenStandardCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = SetTokenStandardInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(4);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.update_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint.key,
+            false,
+        ));
+        if let Some(edition) = self.edition {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *edition.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new(*self.update_authority.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                if let Some(edition) = self.edition {
-                    solana_program::instruction::AccountMeta::new_readonly(*edition.key, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(4 + 1);

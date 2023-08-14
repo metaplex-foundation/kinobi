@@ -44,67 +44,93 @@ impl Revoke {
         &self,
         args: RevokeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(13);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.delegate_record,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.delegate,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+        if let Some(master_edition) = self.master_edition {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                master_edition,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint, false,
+        ));
+        if let Some(token) = self.token {
+            accounts.push(solana_program::instruction::AccountMeta::new(token, false));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.payer, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.sysvar_instructions,
+            false,
+        ));
+        if let Some(spl_token_program) = self.spl_token_program {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                spl_token_program,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules_program,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        if let Some(authorization_rules) = self.authorization_rules {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                authorization_rules,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.delegate_record, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.delegate, false),
-                solana_program::instruction::AccountMeta::new(self.metadata, false),
-                if let Some(master_edition) = self.master_edition {
-                    solana_program::instruction::AccountMeta::new_readonly(master_edition, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                solana_program::instruction::AccountMeta::new_readonly(self.mint, false),
-                if let Some(token) = self.token {
-                    solana_program::instruction::AccountMeta::new(token, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                solana_program::instruction::AccountMeta::new_readonly(self.authority, true),
-                solana_program::instruction::AccountMeta::new(self.payer, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    self.sysvar_instructions,
-                    false,
-                ),
-                if let Some(spl_token_program) = self.spl_token_program {
-                    solana_program::instruction::AccountMeta::new_readonly(spl_token_program, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                if let Some(authorization_rules_program) = self.authorization_rules_program {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        authorization_rules_program,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                if let Some(authorization_rules) = self.authorization_rules {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        authorization_rules,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -223,31 +249,21 @@ impl RevokeBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Revoke {
             delegate_record: self.delegate_record.expect("delegate_record is not set"),
-
             delegate: self.delegate.expect("delegate is not set"),
-
             metadata: self.metadata.expect("metadata is not set"),
-
             master_edition: self.master_edition,
-
             mint: self.mint.expect("mint is not set"),
-
             token: self.token,
-
             authority: self.authority.expect("authority is not set"),
-
             payer: self.payer.expect("payer is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
-
-            sysvar_instructions: self
-                .sysvar_instructions
-                .expect("sysvar_instructions is not set"),
-
+            system_program: self
+                .system_program
+                .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+            sysvar_instructions: self.sysvar_instructions.unwrap_or(solana_program::pubkey!(
+                "Sysvar1nstructions1111111111111111111111111"
+            )),
             spl_token_program: self.spl_token_program,
-
             authorization_rules_program: self.authorization_rules_program,
-
             authorization_rules: self.authorization_rules,
         };
         let args =
@@ -301,76 +317,97 @@ impl<'a> RevokeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(13);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.delegate_record.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.delegate.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        if let Some(master_edition) = self.master_edition {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *master_edition.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint.key,
+            false,
+        ));
+        if let Some(token) = self.token {
+            accounts.push(solana_program::instruction::AccountMeta::new(
+                *token.key, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.payer.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.sysvar_instructions.key,
+            false,
+        ));
+        if let Some(spl_token_program) = self.spl_token_program {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *spl_token_program.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *authorization_rules_program.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        if let Some(authorization_rules) = self.authorization_rules {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *authorization_rules.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.delegate_record.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.delegate.key, false),
-                solana_program::instruction::AccountMeta::new(*self.metadata.key, false),
-                if let Some(master_edition) = self.master_edition {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *master_edition.key,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                solana_program::instruction::AccountMeta::new_readonly(*self.mint.key, false),
-                if let Some(token) = self.token {
-                    solana_program::instruction::AccountMeta::new(*token.key, false)
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                solana_program::instruction::AccountMeta::new_readonly(*self.authority.key, true),
-                solana_program::instruction::AccountMeta::new(*self.payer.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.sysvar_instructions.key,
-                    false,
-                ),
-                if let Some(spl_token_program) = self.spl_token_program {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *spl_token_program.key,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                if let Some(authorization_rules_program) = self.authorization_rules_program {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *authorization_rules_program.key,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-                if let Some(authorization_rules) = self.authorization_rules {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        *authorization_rules.key,
-                        false,
-                    )
-                } else {
-                    solana_program::instruction::AccountMeta::new_readonly(
-                        crate::MPL_TOKEN_METADATA_ID,
-                        false,
-                    )
-                },
-            ],
+            accounts,
             data: self.args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(13 + 1);

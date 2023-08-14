@@ -17,12 +17,16 @@ pub struct PuffMetadata {
 impl PuffMetadata {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = PuffMetadataInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(1);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.metadata,
+            false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![solana_program::instruction::AccountMeta::new(
-                self.metadata,
-                false,
-            )],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -82,12 +86,16 @@ impl<'a> PuffMetadataCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = PuffMetadataInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(1);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![solana_program::instruction::AccountMeta::new(
-                *self.metadata.key,
-                false,
-            )],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(1 + 1);

@@ -20,13 +20,24 @@ pub struct SetMintAuthority {
 impl SetMintAuthority {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = SetMintAuthorityInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.candy_machine,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.mint_authority,
+            true,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.candy_machine, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.authority, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.mint_authority, true),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -73,9 +84,7 @@ impl SetMintAuthorityBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetMintAuthority {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
-
             authority: self.authority.expect("authority is not set"),
-
             mint_authority: self.mint_authority.expect("mint_authority is not set"),
         };
 
@@ -106,16 +115,24 @@ impl<'a> SetMintAuthorityCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = SetMintAuthorityInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(3);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.candy_machine.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.mint_authority.key,
+            true,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.candy_machine.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.authority.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.mint_authority.key,
-                    true,
-                ),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);

@@ -31,18 +31,42 @@ pub struct CreateReservationList {
 impl CreateReservationList {
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = CreateReservationListInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.reservation_list,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.payer, true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.update_authority,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.master_edition,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.resource,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.metadata,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.system_program,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.rent, false,
+        ));
+
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(self.reservation_list, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.payer, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.update_authority, true),
-                solana_program::instruction::AccountMeta::new_readonly(self.master_edition, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.resource, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.metadata, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.system_program, false),
-                solana_program::instruction::AccountMeta::new_readonly(self.rent, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         }
     }
@@ -118,20 +142,17 @@ impl CreateReservationListBuilder {
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateReservationList {
             reservation_list: self.reservation_list.expect("reservation_list is not set"),
-
             payer: self.payer.expect("payer is not set"),
-
             update_authority: self.update_authority.expect("update_authority is not set"),
-
             master_edition: self.master_edition.expect("master_edition is not set"),
-
             resource: self.resource.expect("resource is not set"),
-
             metadata: self.metadata.expect("metadata is not set"),
-
-            system_program: self.system_program.expect("system_program is not set"),
-
-            rent: self.rent.expect("rent is not set"),
+            system_program: self
+                .system_program
+                .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+            rent: self.rent.unwrap_or(solana_program::pubkey!(
+                "SysvarRent111111111111111111111111111111111"
+            )),
         };
 
         accounts.instruction()
@@ -171,27 +192,44 @@ impl<'a> CreateReservationListCpi<'a> {
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
         let args = CreateReservationListInstructionArgs::new();
+
+        let mut accounts = Vec::with_capacity(8);
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.reservation_list.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.payer.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.update_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.master_edition.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.resource.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.system_program.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.rent.key,
+            false,
+        ));
+
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
-            accounts: vec![
-                solana_program::instruction::AccountMeta::new(*self.reservation_list.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.payer.key, true),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.update_authority.key,
-                    true,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.master_edition.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(*self.resource.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(*self.metadata.key, false),
-                solana_program::instruction::AccountMeta::new_readonly(
-                    *self.system_program.key,
-                    false,
-                ),
-                solana_program::instruction::AccountMeta::new_readonly(*self.rent.key, false),
-            ],
+            accounts,
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
