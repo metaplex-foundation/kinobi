@@ -27,6 +27,7 @@ pub struct {{ instruction.name | pascalCase }} {
 }
 
 impl {{ instruction.name | pascalCase }} {
+  #[allow(clippy::vec_init_then_push)]
   pub fn instruction(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}) -> solana_program::instruction::Instruction {
     {% if hasArgs === false %}
     let args = {{ instruction.name | pascalCase }}InstructionArgs::new();
