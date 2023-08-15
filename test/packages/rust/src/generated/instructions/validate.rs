@@ -41,6 +41,7 @@ pub struct Validate {
 }
 
 impl Validate {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: ValidateInstructionArgs,
@@ -594,6 +595,21 @@ impl<'a> ValidateCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ValidateCpi<'a> {
+        let args = ValidateInstructionArgs::new(
+            self.instruction
+                .rule_set_name
+                .clone()
+                .expect("rule_set_name is not set"),
+            self.instruction
+                .operation
+                .clone()
+                .expect("operation is not set"),
+            self.instruction
+                .payload
+                .clone()
+                .expect("payload is not set"),
+        );
+
         ValidateCpi {
             program: self.instruction.program,
 
@@ -625,20 +641,7 @@ impl<'a> ValidateCpiBuilder<'a> {
             opt_rule_nonsigner4: self.instruction.opt_rule_nonsigner4,
 
             opt_rule_nonsigner5: self.instruction.opt_rule_nonsigner5,
-            args: ValidateInstructionArgs::new(
-                self.instruction
-                    .rule_set_name
-                    .clone()
-                    .expect("rule_set_name is not set"),
-                self.instruction
-                    .operation
-                    .clone()
-                    .expect("operation is not set"),
-                self.instruction
-                    .payload
-                    .clone()
-                    .expect("payload is not set"),
-            ),
+            args,
         }
     }
 }

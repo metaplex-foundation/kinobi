@@ -27,6 +27,7 @@ pub struct VerifySizedCollectionItem {
 }
 
 impl VerifySizedCollectionItem {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = VerifySizedCollectionItemInstructionArgs::new();
 

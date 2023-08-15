@@ -32,6 +32,7 @@ pub struct CreateMasterEditionV3 {
 }
 
 impl CreateMasterEditionV3 {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: CreateMasterEditionV3InstructionArgs,
@@ -385,6 +386,13 @@ impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateMasterEditionV3Cpi<'a> {
+        let args = CreateMasterEditionV3InstructionArgs::new(
+            self.instruction
+                .create_master_edition_args
+                .clone()
+                .expect("create_master_edition_args is not set"),
+        );
+
         CreateMasterEditionV3Cpi {
             program: self.instruction.program,
 
@@ -417,12 +425,7 @@ impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-            args: CreateMasterEditionV3InstructionArgs::new(
-                self.instruction
-                    .create_master_edition_args
-                    .clone()
-                    .expect("create_master_edition_args is not set"),
-            ),
+            args,
         }
     }
 }

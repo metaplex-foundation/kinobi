@@ -35,6 +35,7 @@ pub struct Initialize {
 }
 
 impl Initialize {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: InitializeInstructionArgs,
@@ -445,6 +446,9 @@ impl<'a> InitializeCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> InitializeCpi<'a> {
+        let args =
+            InitializeInstructionArgs::new(self.instruction.data.clone().expect("data is not set"));
+
         InitializeCpi {
             program: self.instruction.program,
 
@@ -496,9 +500,7 @@ impl<'a> InitializeCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
-            args: InitializeInstructionArgs::new(
-                self.instruction.data.clone().expect("data is not set"),
-            ),
+            args,
         }
     }
 }

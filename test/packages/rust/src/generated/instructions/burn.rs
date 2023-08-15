@@ -32,6 +32,7 @@ pub struct Burn {
 }
 
 impl Burn {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: BurnInstructionArgs,
@@ -424,6 +425,13 @@ impl<'a> BurnCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> BurnCpi<'a> {
+        let args = BurnInstructionArgs::new(
+            self.instruction
+                .burn_args
+                .clone()
+                .expect("burn_args is not set"),
+        );
+
         BurnCpi {
             program: self.instruction.program,
 
@@ -453,12 +461,7 @@ impl<'a> BurnCpiBuilder<'a> {
             authorization_rules: self.instruction.authorization_rules,
 
             authorization_rules_program: self.instruction.authorization_rules_program,
-            args: BurnInstructionArgs::new(
-                self.instruction
-                    .burn_args
-                    .clone()
-                    .expect("burn_args is not set"),
-            ),
+            args,
         }
     }
 }

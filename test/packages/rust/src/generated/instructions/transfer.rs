@@ -44,6 +44,7 @@ pub struct Transfer {
 }
 
 impl Transfer {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: TransferInstructionArgs,
@@ -602,6 +603,13 @@ impl<'a> TransferCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> TransferCpi<'a> {
+        let args = TransferInstructionArgs::new(
+            self.instruction
+                .transfer_args
+                .clone()
+                .expect("transfer_args is not set"),
+        );
+
         TransferCpi {
             program: self.instruction.program,
 
@@ -658,12 +666,7 @@ impl<'a> TransferCpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args: TransferInstructionArgs::new(
-                self.instruction
-                    .transfer_args
-                    .clone()
-                    .expect("transfer_args is not set"),
-            ),
+            args,
         }
     }
 }

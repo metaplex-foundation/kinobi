@@ -38,6 +38,7 @@ pub struct Mint {
 }
 
 impl Mint {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: MintInstructionArgs,
@@ -505,6 +506,13 @@ impl<'a> MintCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> MintCpi<'a> {
+        let args = MintInstructionArgs::new(
+            self.instruction
+                .mint_args
+                .clone()
+                .expect("mint_args is not set"),
+        );
+
         MintCpi {
             program: self.instruction.program,
 
@@ -543,12 +551,7 @@ impl<'a> MintCpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args: MintInstructionArgs::new(
-                self.instruction
-                    .mint_args
-                    .clone()
-                    .expect("mint_args is not set"),
-            ),
+            args,
         }
     }
 }

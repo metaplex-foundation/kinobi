@@ -40,6 +40,7 @@ pub struct Revoke {
 }
 
 impl Revoke {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: RevokeInstructionArgs,
@@ -558,6 +559,13 @@ impl<'a> RevokeCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> RevokeCpi<'a> {
+        let args = RevokeInstructionArgs::new(
+            self.instruction
+                .revoke_args
+                .clone()
+                .expect("revoke_args is not set"),
+        );
+
         RevokeCpi {
             program: self.instruction.program,
 
@@ -595,12 +603,7 @@ impl<'a> RevokeCpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args: RevokeInstructionArgs::new(
-                self.instruction
-                    .revoke_args
-                    .clone()
-                    .expect("revoke_args is not set"),
-            ),
+            args,
         }
     }
 }

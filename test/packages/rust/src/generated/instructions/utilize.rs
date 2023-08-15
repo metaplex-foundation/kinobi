@@ -35,6 +35,7 @@ pub struct Utilize {
 }
 
 impl Utilize {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: UtilizeInstructionArgs,
@@ -452,6 +453,13 @@ impl<'a> UtilizeCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UtilizeCpi<'a> {
+        let args = UtilizeInstructionArgs::new(
+            self.instruction
+                .number_of_uses
+                .clone()
+                .expect("number_of_uses is not set"),
+        );
+
         UtilizeCpi {
             program: self.instruction.program,
 
@@ -491,12 +499,7 @@ impl<'a> UtilizeCpiBuilder<'a> {
             use_authority_record: self.instruction.use_authority_record,
 
             burner: self.instruction.burner,
-            args: UtilizeInstructionArgs::new(
-                self.instruction
-                    .number_of_uses
-                    .clone()
-                    .expect("number_of_uses is not set"),
-            ),
+            args,
         }
     }
 }

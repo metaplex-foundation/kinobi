@@ -20,6 +20,7 @@ pub struct CreateRuleSet {
 }
 
 impl CreateRuleSet {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: CreateRuleSetInstructionArgs,
@@ -218,6 +219,17 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateRuleSetCpi<'a> {
+        let args = CreateRuleSetInstructionArgs::new(
+            self.instruction
+                .create_args
+                .clone()
+                .expect("create_args is not set"),
+            self.instruction
+                .rule_set_bump
+                .clone()
+                .expect("rule_set_bump is not set"),
+        );
+
         CreateRuleSetCpi {
             program: self.instruction.program,
 
@@ -232,16 +244,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
-            args: CreateRuleSetInstructionArgs::new(
-                self.instruction
-                    .create_args
-                    .clone()
-                    .expect("create_args is not set"),
-                self.instruction
-                    .rule_set_bump
-                    .clone()
-                    .expect("rule_set_bump is not set"),
-            ),
+            args,
         }
     }
 }

@@ -42,6 +42,7 @@ pub struct MintNewEditionFromMasterEditionViaToken {
 }
 
 impl MintNewEditionFromMasterEditionViaToken {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
@@ -548,6 +549,13 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
+        let args = MintNewEditionFromMasterEditionViaTokenInstructionArgs::new(
+            self.instruction
+                .mint_new_edition_from_master_edition_via_token_args
+                .clone()
+                .expect("mint_new_edition_from_master_edition_via_token_args is not set"),
+        );
+
         MintNewEditionFromMasterEditionViaTokenCpi {
             program: self.instruction.program,
 
@@ -608,12 +616,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-            args: MintNewEditionFromMasterEditionViaTokenInstructionArgs::new(
-                self.instruction
-                    .mint_new_edition_from_master_edition_via_token_args
-                    .clone()
-                    .expect("mint_new_edition_from_master_edition_via_token_args is not set"),
-            ),
+            args,
         }
     }
 }

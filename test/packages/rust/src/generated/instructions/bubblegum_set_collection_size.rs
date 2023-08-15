@@ -24,6 +24,7 @@ pub struct BubblegumSetCollectionSize {
 }
 
 impl BubblegumSetCollectionSize {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: BubblegumSetCollectionSizeInstructionArgs,
@@ -302,6 +303,13 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> BubblegumSetCollectionSizeCpi<'a> {
+        let args = BubblegumSetCollectionSizeInstructionArgs::new(
+            self.instruction
+                .set_collection_size_args
+                .clone()
+                .expect("set_collection_size_args is not set"),
+        );
+
         BubblegumSetCollectionSizeCpi {
             program: self.instruction.program,
 
@@ -326,12 +334,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
                 .expect("bubblegum_signer is not set"),
 
             collection_authority_record: self.instruction.collection_authority_record,
-            args: BubblegumSetCollectionSizeInstructionArgs::new(
-                self.instruction
-                    .set_collection_size_args
-                    .clone()
-                    .expect("set_collection_size_args is not set"),
-            ),
+            args,
         }
     }
 }

@@ -32,6 +32,7 @@ pub struct CreateV1 {
 }
 
 impl CreateV1 {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: CreateV1InstructionArgs,
@@ -423,6 +424,15 @@ impl<'a> CreateV1CpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateV1Cpi<'a> {
+        let args = CreateV1InstructionArgs::new(
+            self.instruction
+                .asset_data
+                .clone()
+                .expect("asset_data is not set"),
+            self.instruction.decimals.clone(),
+            self.instruction.max_supply.clone(),
+        );
+
         CreateV1Cpi {
             program: self.instruction.program,
 
@@ -458,14 +468,7 @@ impl<'a> CreateV1CpiBuilder<'a> {
                 .instruction
                 .spl_token_program
                 .expect("spl_token_program is not set"),
-            args: CreateV1InstructionArgs::new(
-                self.instruction
-                    .asset_data
-                    .clone()
-                    .expect("asset_data is not set"),
-                self.instruction.decimals.clone(),
-                self.instruction.max_supply.clone(),
-            ),
+            args,
         }
     }
 }

@@ -20,6 +20,7 @@ pub struct DeprecatedSetReservationList {
 }
 
 impl DeprecatedSetReservationList {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: DeprecatedSetReservationListInstructionArgs,
@@ -254,6 +255,19 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedSetReservationListCpi<'a> {
+        let args = DeprecatedSetReservationListInstructionArgs::new(
+            self.instruction
+                .reservations
+                .clone()
+                .expect("reservations is not set"),
+            self.instruction.total_reservation_spots.clone(),
+            self.instruction.offset.clone().expect("offset is not set"),
+            self.instruction
+                .total_spot_offset
+                .clone()
+                .expect("total_spot_offset is not set"),
+        );
+
         DeprecatedSetReservationListCpi {
             program: self.instruction.program,
 
@@ -268,18 +282,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
                 .expect("reservation_list is not set"),
 
             resource: self.instruction.resource.expect("resource is not set"),
-            args: DeprecatedSetReservationListInstructionArgs::new(
-                self.instruction
-                    .reservations
-                    .clone()
-                    .expect("reservations is not set"),
-                self.instruction.total_reservation_spots.clone(),
-                self.instruction.offset.clone().expect("offset is not set"),
-                self.instruction
-                    .total_spot_offset
-                    .clone()
-                    .expect("total_spot_offset is not set"),
-            ),
+            args,
         }
     }
 }

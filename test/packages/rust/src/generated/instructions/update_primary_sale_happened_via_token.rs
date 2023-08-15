@@ -19,6 +19,7 @@ pub struct UpdatePrimarySaleHappenedViaToken {
 }
 
 impl UpdatePrimarySaleHappenedViaToken {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = UpdatePrimarySaleHappenedViaTokenInstructionArgs::new();
 

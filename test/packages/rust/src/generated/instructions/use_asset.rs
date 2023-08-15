@@ -36,6 +36,7 @@ pub struct UseAsset {
 }
 
 impl UseAsset {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: UseAssetInstructionArgs,
@@ -481,6 +482,13 @@ impl<'a> UseAssetCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UseAssetCpi<'a> {
+        let args = UseAssetInstructionArgs::new(
+            self.instruction
+                .use_asset_args
+                .clone()
+                .expect("use_asset_args is not set"),
+        );
+
         UseAssetCpi {
             program: self.instruction.program,
 
@@ -520,12 +528,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
             authorization_rules: self.instruction.authorization_rules,
 
             authorization_rules_program: self.instruction.authorization_rules_program,
-            args: UseAssetInstructionArgs::new(
-                self.instruction
-                    .use_asset_args
-                    .clone()
-                    .expect("use_asset_args is not set"),
-            ),
+            args,
         }
     }
 }

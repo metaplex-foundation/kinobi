@@ -39,6 +39,7 @@ pub struct TransferOutOfEscrow {
 }
 
 impl TransferOutOfEscrow {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: TransferOutOfEscrowInstructionArgs,
@@ -496,6 +497,10 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> TransferOutOfEscrowCpi<'a> {
+        let args = TransferOutOfEscrowInstructionArgs::new(
+            self.instruction.amount.clone().expect("amount is not set"),
+        );
+
         TransferOutOfEscrowCpi {
             program: self.instruction.program,
 
@@ -551,9 +556,7 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
                 .expect("sysvar_instructions is not set"),
 
             authority: self.instruction.authority,
-            args: TransferOutOfEscrowInstructionArgs::new(
-                self.instruction.amount.clone().expect("amount is not set"),
-            ),
+            args,
         }
     }
 }

@@ -35,6 +35,7 @@ pub struct ApproveUseAuthority {
 }
 
 impl ApproveUseAuthority {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: ApproveUseAuthorityInstructionArgs,
@@ -431,6 +432,13 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ApproveUseAuthorityCpi<'a> {
+        let args = ApproveUseAuthorityInstructionArgs::new(
+            self.instruction
+                .number_of_uses
+                .clone()
+                .expect("number_of_uses is not set"),
+        );
+
         ApproveUseAuthorityCpi {
             program: self.instruction.program,
 
@@ -467,12 +475,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-            args: ApproveUseAuthorityInstructionArgs::new(
-                self.instruction
-                    .number_of_uses
-                    .clone()
-                    .expect("number_of_uses is not set"),
-            ),
+            args,
         }
     }
 }

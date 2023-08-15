@@ -17,6 +17,7 @@ pub struct AddConfigLines {
 }
 
 impl AddConfigLines {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: AddConfigLinesInstructionArgs,
@@ -190,6 +191,14 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> AddConfigLinesCpi<'a> {
+        let args = AddConfigLinesInstructionArgs::new(
+            self.instruction.index.clone().expect("index is not set"),
+            self.instruction
+                .config_lines
+                .clone()
+                .expect("config_lines is not set"),
+        );
+
         AddConfigLinesCpi {
             program: self.instruction.program,
 
@@ -199,13 +208,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
                 .expect("candy_machine is not set"),
 
             authority: self.instruction.authority.expect("authority is not set"),
-            args: AddConfigLinesInstructionArgs::new(
-                self.instruction.index.clone().expect("index is not set"),
-                self.instruction
-                    .config_lines
-                    .clone()
-                    .expect("config_lines is not set"),
-            ),
+            args,
         }
     }
 }

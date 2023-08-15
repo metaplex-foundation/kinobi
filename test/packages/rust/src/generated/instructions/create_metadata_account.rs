@@ -28,6 +28,7 @@ pub struct CreateMetadataAccount {
 }
 
 impl CreateMetadataAccount {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: CreateMetadataAccountInstructionArgs,
@@ -349,6 +350,18 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateMetadataAccountCpi<'a> {
+        let args = CreateMetadataAccountInstructionArgs::new(
+            self.instruction.data.clone().expect("data is not set"),
+            self.instruction
+                .is_mutable
+                .clone()
+                .expect("is_mutable is not set"),
+            self.instruction
+                .metadata_bump
+                .clone()
+                .expect("metadata_bump is not set"),
+        );
+
         CreateMetadataAccountCpi {
             program: self.instruction.program,
 
@@ -374,17 +387,7 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent.expect("rent is not set"),
-            args: CreateMetadataAccountInstructionArgs::new(
-                self.instruction.data.clone().expect("data is not set"),
-                self.instruction
-                    .is_mutable
-                    .clone()
-                    .expect("is_mutable is not set"),
-                self.instruction
-                    .metadata_bump
-                    .clone()
-                    .expect("metadata_bump is not set"),
-            ),
+            args,
         }
     }
 }

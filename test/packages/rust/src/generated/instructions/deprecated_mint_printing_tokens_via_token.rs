@@ -32,6 +32,7 @@ pub struct DeprecatedMintPrintingTokensViaToken {
 }
 
 impl DeprecatedMintPrintingTokensViaToken {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: DeprecatedMintPrintingTokensViaTokenInstructionArgs,
@@ -378,6 +379,13 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
+        let args = DeprecatedMintPrintingTokensViaTokenInstructionArgs::new(
+            self.instruction
+                .mint_printing_tokens_via_token_args
+                .clone()
+                .expect("mint_printing_tokens_via_token_args is not set"),
+        );
+
         DeprecatedMintPrintingTokensViaTokenCpi {
             program: self.instruction.program,
 
@@ -416,12 +424,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
                 .expect("token_program is not set"),
 
             rent: self.instruction.rent.expect("rent is not set"),
-            args: DeprecatedMintPrintingTokensViaTokenInstructionArgs::new(
-                self.instruction
-                    .mint_printing_tokens_via_token_args
-                    .clone()
-                    .expect("mint_printing_tokens_via_token_args is not set"),
-            ),
+            args,
         }
     }
 }

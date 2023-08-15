@@ -40,6 +40,7 @@ pub struct Delegate {
 }
 
 impl Delegate {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: DelegateInstructionArgs,
@@ -561,6 +562,13 @@ impl<'a> DelegateCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DelegateCpi<'a> {
+        let args = DelegateInstructionArgs::new(
+            self.instruction
+                .delegate_args
+                .clone()
+                .expect("delegate_args is not set"),
+        );
+
         DelegateCpi {
             program: self.instruction.program,
 
@@ -598,12 +606,7 @@ impl<'a> DelegateCpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args: DelegateInstructionArgs::new(
-                self.instruction
-                    .delegate_args
-                    .clone()
-                    .expect("delegate_args is not set"),
-            ),
+            args,
         }
     }
 }

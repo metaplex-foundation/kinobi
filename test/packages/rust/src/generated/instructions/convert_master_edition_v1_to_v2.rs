@@ -19,6 +19,7 @@ pub struct ConvertMasterEditionV1ToV2 {
 }
 
 impl ConvertMasterEditionV1ToV2 {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = ConvertMasterEditionV1ToV2InstructionArgs::new();
 

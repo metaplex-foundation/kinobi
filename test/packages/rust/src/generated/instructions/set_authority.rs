@@ -17,6 +17,7 @@ pub struct SetAuthority {
 }
 
 impl SetAuthority {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: SetAuthorityInstructionArgs,
@@ -179,6 +180,13 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetAuthorityCpi<'a> {
+        let args = SetAuthorityInstructionArgs::new(
+            self.instruction
+                .new_authority
+                .clone()
+                .expect("new_authority is not set"),
+        );
+
         SetAuthorityCpi {
             program: self.instruction.program,
 
@@ -188,12 +196,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
                 .expect("candy_machine is not set"),
 
             authority: self.instruction.authority.expect("authority is not set"),
-            args: SetAuthorityInstructionArgs::new(
-                self.instruction
-                    .new_authority
-                    .clone()
-                    .expect("new_authority is not set"),
-            ),
+            args,
         }
     }
 }

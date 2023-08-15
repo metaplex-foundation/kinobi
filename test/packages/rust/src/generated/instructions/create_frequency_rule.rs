@@ -19,6 +19,7 @@ pub struct CreateFrequencyRule {
 }
 
 impl CreateFrequencyRule {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: CreateFrequencyRuleInstructionArgs,
@@ -250,6 +251,22 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateFrequencyRuleCpi<'a> {
+        let args = CreateFrequencyRuleInstructionArgs::new(
+            self.instruction
+                .rule_set_name
+                .clone()
+                .expect("rule_set_name is not set"),
+            self.instruction
+                .freq_rule_name
+                .clone()
+                .expect("freq_rule_name is not set"),
+            self.instruction
+                .last_update
+                .clone()
+                .expect("last_update is not set"),
+            self.instruction.period.clone().expect("period is not set"),
+        );
+
         CreateFrequencyRuleCpi {
             program: self.instruction.program,
 
@@ -264,21 +281,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
-            args: CreateFrequencyRuleInstructionArgs::new(
-                self.instruction
-                    .rule_set_name
-                    .clone()
-                    .expect("rule_set_name is not set"),
-                self.instruction
-                    .freq_rule_name
-                    .clone()
-                    .expect("freq_rule_name is not set"),
-                self.instruction
-                    .last_update
-                    .clone()
-                    .expect("last_update is not set"),
-                self.instruction.period.clone().expect("period is not set"),
-            ),
+            args,
         }
     }
 }

@@ -40,6 +40,7 @@ pub struct DeprecatedCreateMasterEdition {
 }
 
 impl DeprecatedCreateMasterEdition {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: DeprecatedCreateMasterEditionInstructionArgs,
@@ -500,6 +501,13 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedCreateMasterEditionCpi<'a> {
+        let args = DeprecatedCreateMasterEditionInstructionArgs::new(
+            self.instruction
+                .create_master_edition_args
+                .clone()
+                .expect("create_master_edition_args is not set"),
+        );
+
         DeprecatedCreateMasterEditionCpi {
             program: self.instruction.program,
 
@@ -552,12 +560,7 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
                 .instruction
                 .one_time_printing_authorization_mint_authority
                 .expect("one_time_printing_authorization_mint_authority is not set"),
-            args: DeprecatedCreateMasterEditionInstructionArgs::new(
-                self.instruction
-                    .create_master_edition_args
-                    .clone()
-                    .expect("create_master_edition_args is not set"),
-            ),
+            args,
         }
     }
 }

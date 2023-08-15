@@ -22,6 +22,7 @@ pub struct SetCollectionSize {
 }
 
 impl SetCollectionSize {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: SetCollectionSizeInstructionArgs,
@@ -272,6 +273,13 @@ impl<'a> SetCollectionSizeCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetCollectionSizeCpi<'a> {
+        let args = SetCollectionSizeInstructionArgs::new(
+            self.instruction
+                .set_collection_size_args
+                .clone()
+                .expect("set_collection_size_args is not set"),
+        );
+
         SetCollectionSizeCpi {
             program: self.instruction.program,
 
@@ -291,12 +299,7 @@ impl<'a> SetCollectionSizeCpiBuilder<'a> {
                 .expect("collection_mint is not set"),
 
             collection_authority_record: self.instruction.collection_authority_record,
-            args: SetCollectionSizeInstructionArgs::new(
-                self.instruction
-                    .set_collection_size_args
-                    .clone()
-                    .expect("set_collection_size_args is not set"),
-            ),
+            args,
         }
     }
 }

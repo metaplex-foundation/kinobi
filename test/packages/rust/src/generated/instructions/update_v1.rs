@@ -43,6 +43,7 @@ pub struct UpdateV1 {
 }
 
 impl UpdateV1 {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: UpdateV1InstructionArgs,
@@ -658,6 +659,24 @@ impl<'a> UpdateV1CpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateV1Cpi<'a> {
+        let mut args = UpdateV1InstructionArgs::new(
+            self.instruction.authorization_data.clone(),
+            self.instruction.new_update_authority.clone(),
+            self.instruction.data.clone(),
+            self.instruction.primary_sale_happened.clone(),
+            self.instruction.is_mutable.clone(),
+            self.instruction.collection.clone(),
+            self.instruction.uses.clone(),
+            self.instruction.collection_details.clone(),
+            self.instruction.programmable_config.clone(),
+            self.instruction.delegate_state.clone(),
+            self.instruction
+                .authority_type
+                .clone()
+                .expect("authority_type is not set"),
+        );
+        args.token_standard = self.instruction.token_standard.clone();
+
         UpdateV1Cpi {
             program: self.instruction.program,
 
@@ -686,22 +705,7 @@ impl<'a> UpdateV1CpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args: UpdateV1InstructionArgs::new(
-                self.instruction.authorization_data.clone(),
-                self.instruction.new_update_authority.clone(),
-                self.instruction.data.clone(),
-                self.instruction.primary_sale_happened.clone(),
-                self.instruction.is_mutable.clone(),
-                self.instruction.collection.clone(),
-                self.instruction.uses.clone(),
-                self.instruction.collection_details.clone(),
-                self.instruction.programmable_config.clone(),
-                self.instruction.delegate_state.clone(),
-                self.instruction
-                    .authority_type
-                    .clone()
-                    .expect("authority_type is not set"),
-            ),
+            args,
         }
     }
 }

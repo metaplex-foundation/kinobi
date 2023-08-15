@@ -17,6 +17,7 @@ pub struct RemoveCreatorVerification {
 }
 
 impl RemoveCreatorVerification {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let args = RemoveCreatorVerificationInstructionArgs::new();
 

@@ -38,19 +38,34 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
   {% endfor %}
   #[allow(clippy::clone_on_copy)]
   pub fn build(&self) -> {{ instruction.name | pascalCase }}Cpi<'a> {
+    {% if hasArgs %}
+      let {{ 'mut' if hasOptional }} args = {{ instruction.name | pascalCase }}InstructionArgs::new(
+        {% for arg in instructionArgs %}
+          {% if not arg.default and not arg.optional %}
+            self.instruction.{{ arg.name | snakeCase }}.clone(){{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
+          {% endif %}
+        {% endfor %}
+      );
+      {% for arg in instructionArgs %}
+        {% if arg.optional %}
+          {% if arg.innerOptionType %}
+            args.{{ arg.name | snakeCase }} = self.instruction.{{ arg.name | snakeCase }}.clone();
+          {% else %}
+            if let Some({{ arg.name | snakeCase }}) = &self.instruction.{{ arg.name | snakeCase }} {
+              args.{{ arg.name | snakeCase }} = {{ arg.name | snakeCase }}.clone();
+            }
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
     {{ instruction.name | pascalCase }}Cpi {
         program: self.instruction.program,
         {% for account in instruction.accounts %}          
           {{ account.name | snakeCase }}: self.instruction.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional and account.defaultsTo.kind !== "programId" }},
         {% endfor %}
         {% if hasArgs %}
-          args: {{ instruction.name | pascalCase }}InstructionArgs::new(
-            {% for arg in instructionArgs %}
-              {% if not arg.default and not arg.optional %}
-                self.instruction.{{ arg.name | snakeCase }}.clone(){{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
-              {% endif %}
-            {% endfor %}
-          ),
+          args,
         {% endif %}
     }
   }

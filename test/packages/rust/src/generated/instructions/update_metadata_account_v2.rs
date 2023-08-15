@@ -19,6 +19,7 @@ pub struct UpdateMetadataAccountV2 {
 }
 
 impl UpdateMetadataAccountV2 {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: UpdateMetadataAccountV2InstructionArgs,
@@ -226,6 +227,13 @@ impl<'a> UpdateMetadataAccountV2CpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateMetadataAccountV2Cpi<'a> {
+        let args = UpdateMetadataAccountV2InstructionArgs::new(
+            self.instruction.data.clone(),
+            self.instruction.update_authority_arg.clone(),
+            self.instruction.primary_sale_happened.clone(),
+            self.instruction.is_mutable.clone(),
+        );
+
         UpdateMetadataAccountV2Cpi {
             program: self.instruction.program,
 
@@ -235,12 +243,7 @@ impl<'a> UpdateMetadataAccountV2CpiBuilder<'a> {
                 .instruction
                 .update_authority
                 .expect("update_authority is not set"),
-            args: UpdateMetadataAccountV2InstructionArgs::new(
-                self.instruction.data.clone(),
-                self.instruction.update_authority_arg.clone(),
-                self.instruction.primary_sale_happened.clone(),
-                self.instruction.is_mutable.clone(),
-            ),
+            args,
         }
     }
 }

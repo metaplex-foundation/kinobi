@@ -48,6 +48,7 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxy {
 }
 
 impl MintNewEditionFromMasterEditionViaVaultProxy {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
@@ -638,6 +639,13 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
+        let args = MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs::new(
+            self.instruction
+                .mint_new_edition_from_master_edition_via_token_args
+                .clone()
+                .expect("mint_new_edition_from_master_edition_via_token_args is not set"),
+        );
+
         MintNewEditionFromMasterEditionViaVaultProxyCpi {
             program: self.instruction.program,
 
@@ -710,12 +718,7 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-            args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs::new(
-                self.instruction
-                    .mint_new_edition_from_master_edition_via_token_args
-                    .clone()
-                    .expect("mint_new_edition_from_master_edition_via_token_args is not set"),
-            ),
+            args,
         }
     }
 }

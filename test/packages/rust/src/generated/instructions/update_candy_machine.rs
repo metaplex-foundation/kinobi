@@ -17,6 +17,7 @@ pub struct UpdateCandyMachine {
 }
 
 impl UpdateCandyMachine {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: UpdateCandyMachineInstructionArgs,
@@ -176,6 +177,10 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateCandyMachineCpi<'a> {
+        let args = UpdateCandyMachineInstructionArgs::new(
+            self.instruction.data.clone().expect("data is not set"),
+        );
+
         UpdateCandyMachineCpi {
             program: self.instruction.program,
 
@@ -185,9 +190,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
                 .expect("candy_machine is not set"),
 
             authority: self.instruction.authority.expect("authority is not set"),
-            args: UpdateCandyMachineInstructionArgs::new(
-                self.instruction.data.clone().expect("data is not set"),
-            ),
+            args,
         }
     }
 }

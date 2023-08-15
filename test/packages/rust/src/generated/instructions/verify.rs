@@ -24,6 +24,7 @@ pub struct Verify {
 }
 
 impl Verify {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: VerifyInstructionArgs,
@@ -297,6 +298,13 @@ impl<'a> VerifyCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> VerifyCpi<'a> {
+        let args = VerifyInstructionArgs::new(
+            self.instruction
+                .verify_args
+                .clone()
+                .expect("verify_args is not set"),
+        );
+
         VerifyCpi {
             program: self.instruction.program,
 
@@ -312,12 +320,7 @@ impl<'a> VerifyCpiBuilder<'a> {
             authorization_rules: self.instruction.authorization_rules,
 
             authorization_rules_program: self.instruction.authorization_rules_program,
-            args: VerifyInstructionArgs::new(
-                self.instruction
-                    .verify_args
-                    .clone()
-                    .expect("verify_args is not set"),
-            ),
+            args,
         }
     }
 }

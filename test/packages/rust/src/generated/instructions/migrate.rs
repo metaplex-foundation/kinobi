@@ -34,6 +34,7 @@ pub struct Migrate {
 }
 
 impl Migrate {
+    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: MigrateInstructionArgs,
@@ -426,6 +427,13 @@ impl<'a> MigrateCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> MigrateCpi<'a> {
+        let args = MigrateInstructionArgs::new(
+            self.instruction
+                .migrate_args
+                .clone()
+                .expect("migrate_args is not set"),
+        );
+
         MigrateCpi {
             program: self.instruction.program,
 
@@ -469,12 +477,7 @@ impl<'a> MigrateCpiBuilder<'a> {
                 .expect("sysvar_instructions is not set"),
 
             authorization_rules: self.instruction.authorization_rules,
-            args: MigrateInstructionArgs::new(
-                self.instruction
-                    .migrate_args
-                    .clone()
-                    .expect("migrate_args is not set"),
-            ),
+            args,
         }
     }
 }
