@@ -6,7 +6,7 @@ pub struct {{ instruction.name | pascalCase }}CpiBuilder<'a> {
 impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
   pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
     let instruction = Box::new({{ instruction.name | pascalCase }}CpiBuilderInstruction {
-      program,
+      __program: program,
       {% for account in instruction.accounts %}
         {{ account.name | snakeCase }}: None,
       {% endfor %}
@@ -60,19 +60,19 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     {% endif %}
 
     {{ instruction.name | pascalCase }}Cpi {
-        program: self.instruction.program,
+        __program: self.instruction.__program,
         {% for account in instruction.accounts %}          
           {{ account.name | snakeCase }}: self.instruction.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional and account.defaultsTo.kind !== "programId" }},
         {% endfor %}
         {% if hasArgs %}
-          args,
+          __args: args,
         {% endif %}
     }
   }
 }
 
 struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a> {
-  program: &'a solana_program::account_info::AccountInfo<'a>,
+  __program: &'a solana_program::account_info::AccountInfo<'a>,
 {% for account in instruction.accounts %}
   {% if account.isSigner === 'either' %}
     {{ account.name | snakeCase }}: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,

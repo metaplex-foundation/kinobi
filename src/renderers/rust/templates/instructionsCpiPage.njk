@@ -1,7 +1,7 @@
 /// `{{ instruction.name | snakeCase }}` CPI instruction.
 pub struct {{ instruction.name | pascalCase }}Cpi<'a> {
   /// The program to invoke.
-  pub program: &'a solana_program::account_info::AccountInfo<'a>,
+  pub __program: &'a solana_program::account_info::AccountInfo<'a>,
   {% for account in instruction.accounts %}
     {% if account.docs.length > 0 %}
       {{ macros.docblock(account.docs) }}
@@ -21,7 +21,7 @@ pub struct {{ instruction.name | pascalCase }}Cpi<'a> {
   {% endfor %}
   {% if hasArgs %}
     /// The arguments for the instruction.
-    pub args: {{ instruction.name | pascalCase }}InstructionArgs,
+    pub __args: {{ instruction.name | pascalCase }}InstructionArgs,
   {% endif %}
 }
 
@@ -96,10 +96,10 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
     let instruction = solana_program::instruction::Instruction {
       program_id: crate::{{ program.name | snakeCase | upper }}_ID,
       accounts,
-      data: {{ 'self.' if hasArgs }}args.try_to_vec().unwrap(),
+      data: {{ 'self.__' if hasArgs }}args.try_to_vec().unwrap(),
     };
     let mut account_infos = Vec::with_capacity({{ instruction.accounts.length }} + 1);
-    account_infos.push(self.program.clone());
+    account_infos.push(self.__program.clone());
     {% for account in instruction.accounts %}
       {% if account.isOptional or account.defaultsTo.kind === 'programId' %}
         if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
