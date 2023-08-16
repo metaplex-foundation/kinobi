@@ -2,7 +2,10 @@ import * as nodes from '../../nodes';
 import { pascalCase } from '../../shared';
 import { RustImportMap } from './RustImportMap';
 
-export function renderRustValueNode(value: nodes.ValueNode): {
+export function renderRustValueNode(
+  value: nodes.ValueNode,
+  useStr: boolean = false
+): {
   imports: RustImportMap;
   render: string;
 } {
@@ -88,7 +91,9 @@ export function renderRustValueNode(value: nodes.ValueNode): {
     case 'string':
       return {
         imports,
-        render: `String::from(${JSON.stringify(value.value)})`,
+        render: useStr
+          ? `${JSON.stringify(value.value)}`
+          : `String::from(${JSON.stringify(value.value)})`,
       };
     case 'number':
     case 'boolean':

@@ -401,6 +401,14 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
       };
     }
 
+    if (stringType.size.kind === 'remainder') {
+      return {
+        type: `&str`,
+        imports: new RustImportMap(),
+        nestedStructs: [],
+      };
+    }
+
     // TODO: Add to the Rust validator.
     throw new Error('String size not supported by Borsh');
   }
