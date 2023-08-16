@@ -22,7 +22,9 @@ impl {{ account.name | pascalCase }} {
     pub fn find_pda(
     {% if hasVariableSeeds %}
         {% for seed in seeds %}
-          {% if seed.kind === 'variable' %}
+          {% if seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
+            {{ seed.name | snakeCase }}: &{{ seed.typeManifest.type }},
+          {% elif seed.kind === 'variable' %}
             {{ seed.name | snakeCase }}: {{ seed.typeManifest.type }},
           {% endif %}
         {% endfor %}
