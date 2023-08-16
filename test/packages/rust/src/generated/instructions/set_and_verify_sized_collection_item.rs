@@ -180,7 +180,7 @@ impl SetAndVerifySizedCollectionItemBuilder {
 /// `set_and_verify_sized_collection_item` CPI instruction.
 pub struct SetAndVerifySizedCollectionItemCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Update authority
@@ -258,7 +258,7 @@ impl<'a> SetAndVerifySizedCollectionItemCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.collection_authority.clone());
         account_infos.push(self.payer.clone());
@@ -286,7 +286,7 @@ pub struct SetAndVerifySizedCollectionItemCpiBuilder<'a> {
 impl<'a> SetAndVerifySizedCollectionItemCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(SetAndVerifySizedCollectionItemCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             collection_authority: None,
             payer: None,
@@ -355,7 +355,7 @@ impl<'a> SetAndVerifySizedCollectionItemCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetAndVerifySizedCollectionItemCpi<'a> {
         SetAndVerifySizedCollectionItemCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -389,7 +389,7 @@ impl<'a> SetAndVerifySizedCollectionItemCpiBuilder<'a> {
 }
 
 struct SetAndVerifySizedCollectionItemCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,

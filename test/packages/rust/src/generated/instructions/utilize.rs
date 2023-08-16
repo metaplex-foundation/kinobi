@@ -227,7 +227,7 @@ impl UtilizeBuilder {
 /// `utilize` CPI instruction.
 pub struct UtilizeCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token Account Of NFT
@@ -251,7 +251,7 @@ pub struct UtilizeCpi<'a> {
     /// Program As Signer (Burner)
     pub burner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: UtilizeInstructionArgs,
+    pub __args: UtilizeInstructionArgs,
 }
 
 impl<'a> UtilizeCpi<'a> {
@@ -327,10 +327,10 @@ impl<'a> UtilizeCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(11 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.token_account.clone());
         account_infos.push(self.mint.clone());
@@ -363,7 +363,7 @@ pub struct UtilizeCpiBuilder<'a> {
 impl<'a> UtilizeCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UtilizeCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             token_account: None,
             mint: None,
@@ -461,7 +461,7 @@ impl<'a> UtilizeCpiBuilder<'a> {
         );
 
         UtilizeCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -499,13 +499,13 @@ impl<'a> UtilizeCpiBuilder<'a> {
             use_authority_record: self.instruction.use_authority_record,
 
             burner: self.instruction.burner,
-            args,
+            __args: args,
         }
     }
 }
 
 struct UtilizeCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

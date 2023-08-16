@@ -170,7 +170,7 @@ impl DummyBuilder {
 /// `dummy` CPI instruction.
 pub struct DummyCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub edition: &'a solana_program::account_info::AccountInfo<'a>,
 
@@ -253,7 +253,7 @@ impl<'a> DummyCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.edition.clone());
         if let Some(mint) = self.mint {
             account_infos.push(mint.clone());
@@ -283,7 +283,7 @@ pub struct DummyCpiBuilder<'a> {
 impl<'a> DummyCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(DummyCpiBuilderInstruction {
-            program,
+            __program: program,
             edition: None,
             mint: None,
             update_authority: None,
@@ -342,7 +342,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DummyCpi<'a> {
         DummyCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             edition: self.instruction.edition.expect("edition is not set"),
 
@@ -373,7 +373,7 @@ impl<'a> DummyCpiBuilder<'a> {
 }
 
 struct DummyCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,

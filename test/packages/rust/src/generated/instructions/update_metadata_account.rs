@@ -130,13 +130,13 @@ impl UpdateMetadataAccountBuilder {
 /// `update_metadata_account` CPI instruction.
 pub struct UpdateMetadataAccountCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Update authority key
     pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: UpdateMetadataAccountInstructionArgs,
+    pub __args: UpdateMetadataAccountInstructionArgs,
 }
 
 impl<'a> UpdateMetadataAccountCpi<'a> {
@@ -162,10 +162,10 @@ impl<'a> UpdateMetadataAccountCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.update_authority.clone());
 
@@ -185,7 +185,7 @@ pub struct UpdateMetadataAccountCpiBuilder<'a> {
 impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UpdateMetadataAccountCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             update_authority: None,
             data: None,
@@ -229,7 +229,7 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
         );
 
         UpdateMetadataAccountCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -237,13 +237,13 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
                 .instruction
                 .update_authority
                 .expect("update_authority is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct UpdateMetadataAccountCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     data: Option<UpdateMetadataAccountInstructionDataData>,

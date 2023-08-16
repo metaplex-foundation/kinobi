@@ -219,7 +219,7 @@ impl MigrateBuilder {
 /// `migrate` CPI instruction.
 pub struct MigrateCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Master edition account
@@ -241,7 +241,7 @@ pub struct MigrateCpi<'a> {
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: MigrateInstructionArgs,
+    pub __args: MigrateInstructionArgs,
 }
 
 impl<'a> MigrateCpi<'a> {
@@ -306,10 +306,10 @@ impl<'a> MigrateCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(10 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.master_edition.clone());
         account_infos.push(self.token_account.clone());
@@ -339,7 +339,7 @@ pub struct MigrateCpiBuilder<'a> {
 impl<'a> MigrateCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(MigrateCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             master_edition: None,
             token_account: None,
@@ -435,7 +435,7 @@ impl<'a> MigrateCpiBuilder<'a> {
         );
 
         MigrateCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -477,13 +477,13 @@ impl<'a> MigrateCpiBuilder<'a> {
                 .expect("sysvar_instructions is not set"),
 
             authorization_rules: self.instruction.authorization_rules,
-            args,
+            __args: args,
         }
     }
 }
 
 struct MigrateCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,

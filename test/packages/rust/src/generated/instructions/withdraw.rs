@@ -84,7 +84,7 @@ impl WithdrawBuilder {
 /// `withdraw` CPI instruction.
 pub struct WithdrawCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
@@ -119,7 +119,7 @@ impl<'a> WithdrawCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority.clone());
 
@@ -139,7 +139,7 @@ pub struct WithdrawCpiBuilder<'a> {
 impl<'a> WithdrawCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(WithdrawCpiBuilderInstruction {
-            program,
+            __program: program,
             candy_machine: None,
             authority: None,
         });
@@ -162,7 +162,7 @@ impl<'a> WithdrawCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> WithdrawCpi<'a> {
         WithdrawCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             candy_machine: self
                 .instruction
@@ -175,7 +175,7 @@ impl<'a> WithdrawCpiBuilder<'a> {
 }
 
 struct WithdrawCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

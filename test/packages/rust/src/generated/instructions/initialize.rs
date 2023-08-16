@@ -232,7 +232,7 @@ impl InitializeBuilder {
 /// `initialize` CPI instruction.
 pub struct InitializeCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
@@ -256,7 +256,7 @@ pub struct InitializeCpi<'a> {
 
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: InitializeInstructionArgs,
+    pub __args: InitializeInstructionArgs,
 }
 
 impl<'a> InitializeCpi<'a> {
@@ -318,10 +318,10 @@ impl<'a> InitializeCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(11 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority_pda.clone());
         account_infos.push(self.authority.clone());
@@ -350,7 +350,7 @@ pub struct InitializeCpiBuilder<'a> {
 impl<'a> InitializeCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(InitializeCpiBuilderInstruction {
-            program,
+            __program: program,
             candy_machine: None,
             authority_pda: None,
             authority: None,
@@ -450,7 +450,7 @@ impl<'a> InitializeCpiBuilder<'a> {
             InitializeInstructionArgs::new(self.instruction.data.clone().expect("data is not set"));
 
         InitializeCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             candy_machine: self
                 .instruction
@@ -500,13 +500,13 @@ impl<'a> InitializeCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct InitializeCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,

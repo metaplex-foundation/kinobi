@@ -244,7 +244,7 @@ impl TransferOutOfEscrowBuilder {
 /// `transfer_out_of_escrow` CPI instruction.
 pub struct TransferOutOfEscrowCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Escrow account
     pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
@@ -272,7 +272,7 @@ pub struct TransferOutOfEscrowCpi<'a> {
     /// Authority/creator of the escrow account
     pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: TransferOutOfEscrowInstructionArgs,
+    pub __args: TransferOutOfEscrowInstructionArgs,
 }
 
 impl<'a> TransferOutOfEscrowCpi<'a> {
@@ -349,10 +349,10 @@ impl<'a> TransferOutOfEscrowCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.escrow.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.payer.clone());
@@ -385,7 +385,7 @@ pub struct TransferOutOfEscrowCpiBuilder<'a> {
 impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(TransferOutOfEscrowCpiBuilderInstruction {
-            program,
+            __program: program,
             escrow: None,
             metadata: None,
             payer: None,
@@ -502,7 +502,7 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
         );
 
         TransferOutOfEscrowCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             escrow: self.instruction.escrow.expect("escrow is not set"),
 
@@ -556,13 +556,13 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
                 .expect("sysvar_instructions is not set"),
 
             authority: self.instruction.authority,
-            args,
+            __args: args,
         }
     }
 }
 
 struct TransferOutOfEscrowCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     escrow: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,

@@ -256,7 +256,7 @@ impl MintBuilder {
 /// `mint` CPI instruction.
 pub struct MintCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token account
     pub token: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account key (pda of ['metadata', program id, mint id])
@@ -282,7 +282,7 @@ pub struct MintCpi<'a> {
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: MintInstructionArgs,
+    pub __args: MintInstructionArgs,
 }
 
 impl<'a> MintCpi<'a> {
@@ -369,10 +369,10 @@ impl<'a> MintCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(12 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.token.clone());
         account_infos.push(self.metadata.clone());
         if let Some(master_edition) = self.master_edition {
@@ -408,7 +408,7 @@ pub struct MintCpiBuilder<'a> {
 impl<'a> MintCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(MintCpiBuilderInstruction {
-            program,
+            __program: program,
             token: None,
             metadata: None,
             master_edition: None,
@@ -514,7 +514,7 @@ impl<'a> MintCpiBuilder<'a> {
         );
 
         MintCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             token: self.instruction.token.expect("token is not set"),
 
@@ -551,13 +551,13 @@ impl<'a> MintCpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args,
+            __args: args,
         }
     }
 }
 
 struct MintCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,

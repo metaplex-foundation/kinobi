@@ -273,7 +273,7 @@ impl SetCollectionBuilder {
 /// `set_collection` CPI instruction.
 pub struct SetCollectionCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
@@ -380,7 +380,7 @@ impl<'a> SetCollectionCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(14 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority.clone());
         account_infos.push(self.authority_pda.clone());
@@ -412,7 +412,7 @@ pub struct SetCollectionCpiBuilder<'a> {
 impl<'a> SetCollectionCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(SetCollectionCpiBuilderInstruction {
-            program,
+            __program: program,
             candy_machine: None,
             authority: None,
             authority_pda: None,
@@ -528,7 +528,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetCollectionCpi<'a> {
         SetCollectionCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             candy_machine: self
                 .instruction
@@ -598,7 +598,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
 }
 
 struct SetCollectionCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,

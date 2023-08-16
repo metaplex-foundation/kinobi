@@ -83,7 +83,7 @@ impl RemoveCreatorVerificationBuilder {
 /// `remove_creator_verification` CPI instruction.
 pub struct RemoveCreatorVerificationCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Creator
@@ -118,7 +118,7 @@ impl<'a> RemoveCreatorVerificationCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.creator.clone());
 
@@ -138,7 +138,7 @@ pub struct RemoveCreatorVerificationCpiBuilder<'a> {
 impl<'a> RemoveCreatorVerificationCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(RemoveCreatorVerificationCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             creator: None,
         });
@@ -161,7 +161,7 @@ impl<'a> RemoveCreatorVerificationCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> RemoveCreatorVerificationCpi<'a> {
         RemoveCreatorVerificationCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -171,7 +171,7 @@ impl<'a> RemoveCreatorVerificationCpiBuilder<'a> {
 }
 
 struct RemoveCreatorVerificationCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     creator: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

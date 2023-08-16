@@ -364,7 +364,7 @@ impl UpdateV1Builder {
 /// `update_v1` CPI instruction.
 pub struct UpdateV1Cpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Update authority or delegate
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
@@ -386,7 +386,7 @@ pub struct UpdateV1Cpi<'a> {
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: UpdateV1InstructionArgs,
+    pub __args: UpdateV1InstructionArgs,
 }
 
 impl<'a> UpdateV1Cpi<'a> {
@@ -478,10 +478,10 @@ impl<'a> UpdateV1Cpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(10 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.authority.clone());
         account_infos.push(self.metadata.clone());
         if let Some(master_edition) = self.master_edition {
@@ -519,7 +519,7 @@ pub struct UpdateV1CpiBuilder<'a> {
 impl<'a> UpdateV1CpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UpdateV1CpiBuilderInstruction {
-            program,
+            __program: program,
             authority: None,
             metadata: None,
             master_edition: None,
@@ -678,7 +678,7 @@ impl<'a> UpdateV1CpiBuilder<'a> {
         args.token_standard = self.instruction.token_standard.clone();
 
         UpdateV1Cpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             authority: self.instruction.authority.expect("authority is not set"),
 
@@ -705,13 +705,13 @@ impl<'a> UpdateV1CpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args,
+            __args: args,
         }
     }
 }
 
 struct UpdateV1CpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,

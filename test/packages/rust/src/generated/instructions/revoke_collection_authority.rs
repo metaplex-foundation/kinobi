@@ -131,7 +131,7 @@ impl RevokeCollectionAuthorityBuilder {
 /// `revoke_collection_authority` CPI instruction.
 pub struct RevokeCollectionAuthorityCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority Record PDA
     pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
     /// Delegated Collection Authority
@@ -184,7 +184,7 @@ impl<'a> RevokeCollectionAuthorityCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(5 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.collection_authority_record.clone());
         account_infos.push(self.delegate_authority.clone());
         account_infos.push(self.revoke_authority.clone());
@@ -207,7 +207,7 @@ pub struct RevokeCollectionAuthorityCpiBuilder<'a> {
 impl<'a> RevokeCollectionAuthorityCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(RevokeCollectionAuthorityCpiBuilderInstruction {
-            program,
+            __program: program,
             collection_authority_record: None,
             delegate_authority: None,
             revoke_authority: None,
@@ -251,7 +251,7 @@ impl<'a> RevokeCollectionAuthorityCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> RevokeCollectionAuthorityCpi<'a> {
         RevokeCollectionAuthorityCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             collection_authority_record: self
                 .instruction
@@ -276,7 +276,7 @@ impl<'a> RevokeCollectionAuthorityCpiBuilder<'a> {
 }
 
 struct RevokeCollectionAuthorityCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     revoke_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,

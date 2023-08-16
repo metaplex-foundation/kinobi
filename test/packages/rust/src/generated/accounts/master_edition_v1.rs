@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use crate::generated::types::DelegateRole;
 use crate::generated::types::TmKey;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
@@ -17,4 +18,31 @@ pub struct MasterEditionV1 {
     pub max_supply: Option<u64>,
     pub printing_mint: Pubkey,
     pub one_time_printing_authorization_mint: Pubkey,
+}
+
+impl MasterEditionV1 {
+    pub fn find_pda(delegate_role: DelegateRole) -> (solana_program::pubkey::Pubkey, u8) {
+        solana_program::pubkey::Pubkey::find_program_address(
+            &[
+                "metadata".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                delegate_role.to_string().as_ref(),
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
+    pub fn create_pda(
+        delegate_role: DelegateRole,
+        bump: u8,
+    ) -> Result<solana_program::pubkey::Pubkey, solana_program::pubkey::PubkeyError> {
+        solana_program::pubkey::Pubkey::create_program_address(
+            &[
+                "metadata".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                delegate_role.to_string().as_ref(),
+                &[bump],
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
 }

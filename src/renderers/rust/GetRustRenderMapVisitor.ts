@@ -142,7 +142,33 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitAccount(account: nodes.AccountNode): RenderMap {
     const typeManifest = visit(account, this.typeManifestVisitor);
+
+    // Seeds.
+    const seedsImports = new RustImportMap();
+    const seeds = account.seeds.map((seed) => {
+      if (seed.kind === 'constant') {
+        const seedManifest = visit(seed.type, this.typeManifestVisitor);
+        const seedValue = seed.value;
+        const valueManifest = renderRustValueNode(seedValue, true);
+        (seedValue as any).render = valueManifest.render;
+        seedsImports.mergeWith(valueManifest.imports);
+        return { ...seed, typeManifest: seedManifest };
+      }
+      if (seed.kind === 'variable') {
+        const seedManifest = visit(seed.type, this.typeManifestVisitor);
+        seedsImports.mergeWith(seedManifest.imports);
+        return { ...seed, typeManifest: seedManifest };
+      }
+      return seed;
+    });
+    const hasVariableSeeds =
+      account.seeds.filter((seed) => seed.kind === 'variable').length > 0;
+
     const { imports } = typeManifest;
+
+    if (hasVariableSeeds) {
+      imports.mergeWith(seedsImports);
+    }
 
     return new RenderMap().add(
       `accounts/${snakeCase(account.name)}.rs`,
@@ -153,6 +179,8 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           .toString(this.options.dependencyMap),
         program: this.program,
         typeManifest,
+        seeds,
+        hasVariableSeeds,
       })
     );
   }

@@ -222,7 +222,7 @@ impl ApproveUseAuthorityBuilder {
 /// `approve_use_authority` CPI instruction.
 pub struct ApproveUseAuthorityCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Use Authority Record PDA
     pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
     /// Owner
@@ -246,7 +246,7 @@ pub struct ApproveUseAuthorityCpi<'a> {
     /// Rent info
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: ApproveUseAuthorityInstructionArgs,
+    pub __args: ApproveUseAuthorityInstructionArgs,
 }
 
 impl<'a> ApproveUseAuthorityCpi<'a> {
@@ -314,10 +314,10 @@ impl<'a> ApproveUseAuthorityCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(11 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.use_authority_record.clone());
         account_infos.push(self.owner.clone());
         account_infos.push(self.payer.clone());
@@ -348,7 +348,7 @@ pub struct ApproveUseAuthorityCpiBuilder<'a> {
 impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(ApproveUseAuthorityCpiBuilderInstruction {
-            program,
+            __program: program,
             use_authority_record: None,
             owner: None,
             payer: None,
@@ -440,7 +440,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
         );
 
         ApproveUseAuthorityCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             use_authority_record: self
                 .instruction
@@ -475,13 +475,13 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-            args,
+            __args: args,
         }
     }
 }
 
 struct ApproveUseAuthorityCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,

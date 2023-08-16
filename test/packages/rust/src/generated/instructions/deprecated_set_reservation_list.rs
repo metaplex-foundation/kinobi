@@ -143,7 +143,7 @@ impl DeprecatedSetReservationListBuilder {
 /// `deprecated_set_reservation_list` CPI instruction.
 pub struct DeprecatedSetReservationListCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
     pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
@@ -151,7 +151,7 @@ pub struct DeprecatedSetReservationListCpi<'a> {
     /// The resource you tied the reservation list too
     pub resource: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: DeprecatedSetReservationListInstructionArgs,
+    pub __args: DeprecatedSetReservationListInstructionArgs,
 }
 
 impl<'a> DeprecatedSetReservationListCpi<'a> {
@@ -181,10 +181,10 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.master_edition.clone());
         account_infos.push(self.reservation_list.clone());
         account_infos.push(self.resource.clone());
@@ -205,7 +205,7 @@ pub struct DeprecatedSetReservationListCpiBuilder<'a> {
 impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(DeprecatedSetReservationListCpiBuilderInstruction {
-            program,
+            __program: program,
             master_edition: None,
             reservation_list: None,
             resource: None,
@@ -269,7 +269,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
         );
 
         DeprecatedSetReservationListCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             master_edition: self
                 .instruction
@@ -282,13 +282,13 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
                 .expect("reservation_list is not set"),
 
             resource: self.instruction.resource.expect("resource is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct DeprecatedSetReservationListCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     resource: Option<&'a solana_program::account_info::AccountInfo<'a>>,

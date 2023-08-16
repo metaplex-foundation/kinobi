@@ -244,7 +244,7 @@ impl UseAssetBuilder {
 /// `use_asset` CPI instruction.
 pub struct UseAssetCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token Account Of NFT
@@ -268,7 +268,7 @@ pub struct UseAssetCpi<'a> {
     /// Token Authorization Rules Program
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: UseAssetInstructionArgs,
+    pub __args: UseAssetInstructionArgs,
 }
 
 impl<'a> UseAssetCpi<'a> {
@@ -351,10 +351,10 @@ impl<'a> UseAssetCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(11 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.token_account.clone());
         account_infos.push(self.mint.clone());
@@ -389,7 +389,7 @@ pub struct UseAssetCpiBuilder<'a> {
 impl<'a> UseAssetCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UseAssetCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             token_account: None,
             mint: None,
@@ -490,7 +490,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
         );
 
         UseAssetCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -528,13 +528,13 @@ impl<'a> UseAssetCpiBuilder<'a> {
             authorization_rules: self.instruction.authorization_rules,
 
             authorization_rules_program: self.instruction.authorization_rules_program,
-            args,
+            __args: args,
         }
     }
 }
 
 struct UseAssetCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

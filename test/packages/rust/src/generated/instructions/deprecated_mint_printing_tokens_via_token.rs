@@ -193,7 +193,7 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
 /// `deprecated_mint_printing_tokens_via_token` CPI instruction.
 pub struct DeprecatedMintPrintingTokensViaTokenCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Destination account
     pub destination: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token account containing one time authorization token
@@ -213,7 +213,7 @@ pub struct DeprecatedMintPrintingTokensViaTokenCpi<'a> {
     /// Rent
     pub rent: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: DeprecatedMintPrintingTokensViaTokenInstructionArgs,
+    pub __args: DeprecatedMintPrintingTokensViaTokenInstructionArgs,
 }
 
 impl<'a> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
@@ -267,10 +267,10 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.destination.clone());
         account_infos.push(self.token.clone());
         account_infos.push(self.one_time_printing_authorization_mint.clone());
@@ -297,7 +297,7 @@ pub struct DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
 impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction {
-            program,
+            __program: program,
             destination: None,
             token: None,
             one_time_printing_authorization_mint: None,
@@ -387,7 +387,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         );
 
         DeprecatedMintPrintingTokensViaTokenCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             destination: self
                 .instruction
@@ -424,13 +424,13 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
                 .expect("token_program is not set"),
 
             rent: self.instruction.rent.expect("rent is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     destination: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     one_time_printing_authorization_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

@@ -163,7 +163,7 @@ impl CreateReservationListBuilder {
 /// `create_reservation_list` CPI instruction.
 pub struct CreateReservationListCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
     pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
     /// Payer
@@ -234,7 +234,7 @@ impl<'a> CreateReservationListCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.reservation_list.clone());
         account_infos.push(self.payer.clone());
         account_infos.push(self.update_authority.clone());
@@ -260,7 +260,7 @@ pub struct CreateReservationListCpiBuilder<'a> {
 impl<'a> CreateReservationListCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateReservationListCpiBuilderInstruction {
-            program,
+            __program: program,
             reservation_list: None,
             payer: None,
             update_authority: None,
@@ -325,7 +325,7 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateReservationListCpi<'a> {
         CreateReservationListCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             reservation_list: self
                 .instruction
@@ -359,7 +359,7 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
 }
 
 struct CreateReservationListCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,

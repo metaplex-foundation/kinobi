@@ -300,7 +300,7 @@ impl ValidateBuilder {
 /// `validate` CPI instruction.
 pub struct ValidateCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the RuleSet
     pub payer: &'a solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the RuleSet is stored
@@ -328,7 +328,7 @@ pub struct ValidateCpi<'a> {
     /// Optional rule validation non-signer 5
     pub opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: ValidateInstructionArgs,
+    pub __args: ValidateInstructionArgs,
 }
 
 impl<'a> ValidateCpi<'a> {
@@ -418,10 +418,10 @@ impl<'a> ValidateCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.payer.clone());
         account_infos.push(self.rule_set.clone());
         account_infos.push(self.system_program.clone());
@@ -472,7 +472,7 @@ pub struct ValidateCpiBuilder<'a> {
 impl<'a> ValidateCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(ValidateCpiBuilderInstruction {
-            program,
+            __program: program,
             payer: None,
             rule_set: None,
             system_program: None,
@@ -611,7 +611,7 @@ impl<'a> ValidateCpiBuilder<'a> {
         );
 
         ValidateCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             payer: self.instruction.payer.expect("payer is not set"),
 
@@ -641,13 +641,13 @@ impl<'a> ValidateCpiBuilder<'a> {
             opt_rule_nonsigner4: self.instruction.opt_rule_nonsigner4,
 
             opt_rule_nonsigner5: self.instruction.opt_rule_nonsigner5,
-            args,
+            __args: args,
         }
     }
 }
 
 struct ValidateCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rule_set: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,

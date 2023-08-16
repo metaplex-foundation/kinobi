@@ -104,13 +104,13 @@ impl AddConfigLinesBuilder {
 /// `add_config_lines` CPI instruction.
 pub struct AddConfigLinesCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: AddConfigLinesInstructionArgs,
+    pub __args: AddConfigLinesInstructionArgs,
 }
 
 impl<'a> AddConfigLinesCpi<'a> {
@@ -136,10 +136,10 @@ impl<'a> AddConfigLinesCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority.clone());
 
@@ -159,7 +159,7 @@ pub struct AddConfigLinesCpiBuilder<'a> {
 impl<'a> AddConfigLinesCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(AddConfigLinesCpiBuilderInstruction {
-            program,
+            __program: program,
             candy_machine: None,
             authority: None,
             index: None,
@@ -200,7 +200,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
         );
 
         AddConfigLinesCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             candy_machine: self
                 .instruction
@@ -208,13 +208,13 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
                 .expect("candy_machine is not set"),
 
             authority: self.instruction.authority.expect("authority is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct AddConfigLinesCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     index: Option<u32>,

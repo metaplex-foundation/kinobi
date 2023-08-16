@@ -174,7 +174,7 @@ impl ApproveCollectionAuthorityBuilder {
 /// `approve_collection_authority` CPI instruction.
 pub struct ApproveCollectionAuthorityCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority Record PDA
     pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
     /// A Collection Authority
@@ -251,7 +251,7 @@ impl<'a> ApproveCollectionAuthorityCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.collection_authority_record.clone());
         account_infos.push(self.new_collection_authority.clone());
         account_infos.push(self.update_authority.clone());
@@ -279,7 +279,7 @@ pub struct ApproveCollectionAuthorityCpiBuilder<'a> {
 impl<'a> ApproveCollectionAuthorityCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(ApproveCollectionAuthorityCpiBuilderInstruction {
-            program,
+            __program: program,
             collection_authority_record: None,
             new_collection_authority: None,
             update_authority: None,
@@ -341,7 +341,7 @@ impl<'a> ApproveCollectionAuthorityCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ApproveCollectionAuthorityCpi<'a> {
         ApproveCollectionAuthorityCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             collection_authority_record: self
                 .instruction
@@ -375,7 +375,7 @@ impl<'a> ApproveCollectionAuthorityCpiBuilder<'a> {
 }
 
 struct ApproveCollectionAuthorityCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     new_collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,

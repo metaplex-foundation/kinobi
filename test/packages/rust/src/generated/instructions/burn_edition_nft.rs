@@ -218,7 +218,7 @@ impl BurnEditionNftBuilder {
 /// `burn_edition_nft` CPI instruction.
 pub struct BurnEditionNftCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// NFT owner
@@ -301,7 +301,7 @@ impl<'a> BurnEditionNftCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(10 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.owner.clone());
         account_infos.push(self.print_edition_mint.clone());
@@ -329,7 +329,7 @@ pub struct BurnEditionNftCpiBuilder<'a> {
 impl<'a> BurnEditionNftCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(BurnEditionNftCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             owner: None,
             print_edition_mint: None,
@@ -413,7 +413,7 @@ impl<'a> BurnEditionNftCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> BurnEditionNftCpi<'a> {
         BurnEditionNftCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -463,7 +463,7 @@ impl<'a> BurnEditionNftCpiBuilder<'a> {
 }
 
 struct BurnEditionNftCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     print_edition_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

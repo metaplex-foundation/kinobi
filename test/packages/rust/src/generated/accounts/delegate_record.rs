@@ -19,4 +19,29 @@ pub struct DelegateRecord {
 
 impl DelegateRecord {
     pub const LEN: usize = 282;
+
+    pub fn find_pda(role: DelegateRole) -> (solana_program::pubkey::Pubkey, u8) {
+        solana_program::pubkey::Pubkey::find_program_address(
+            &[
+                "delegate_record".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                role.to_string().as_ref(),
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
+    pub fn create_pda(
+        role: DelegateRole,
+        bump: u8,
+    ) -> Result<solana_program::pubkey::Pubkey, solana_program::pubkey::PubkeyError> {
+        solana_program::pubkey::Pubkey::create_program_address(
+            &[
+                "delegate_record".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                role.to_string().as_ref(),
+                &[bump],
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
 }

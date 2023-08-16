@@ -164,7 +164,7 @@ impl BubblegumSetCollectionSizeBuilder {
 /// `bubblegum_set_collection_size` CPI instruction.
 pub struct BubblegumSetCollectionSizeCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Metadata account
     pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Update authority
@@ -176,7 +176,7 @@ pub struct BubblegumSetCollectionSizeCpi<'a> {
     /// Collection Authority Record PDA
     pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: BubblegumSetCollectionSizeInstructionArgs,
+    pub __args: BubblegumSetCollectionSizeInstructionArgs,
 }
 
 impl<'a> BubblegumSetCollectionSizeCpi<'a> {
@@ -221,10 +221,10 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(5 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.collection_metadata.clone());
         account_infos.push(self.collection_authority.clone());
         account_infos.push(self.collection_mint.clone());
@@ -249,7 +249,7 @@ pub struct BubblegumSetCollectionSizeCpiBuilder<'a> {
 impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(BubblegumSetCollectionSizeCpiBuilderInstruction {
-            program,
+            __program: program,
             collection_metadata: None,
             collection_authority: None,
             collection_mint: None,
@@ -311,7 +311,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
         );
 
         BubblegumSetCollectionSizeCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             collection_metadata: self
                 .instruction
@@ -334,13 +334,13 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
                 .expect("bubblegum_signer is not set"),
 
             collection_authority_record: self.instruction.collection_authority_record,
-            args,
+            __args: args,
         }
     }
 }
 
 struct BubblegumSetCollectionSizeCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

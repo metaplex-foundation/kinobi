@@ -192,7 +192,7 @@ impl CreateMetadataAccountBuilder {
 /// `create_metadata_account` CPI instruction.
 pub struct CreateMetadataAccountCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Mint of token asset
@@ -208,7 +208,7 @@ pub struct CreateMetadataAccountCpi<'a> {
     /// Rent info
     pub rent: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: CreateMetadataAccountInstructionArgs,
+    pub __args: CreateMetadataAccountInstructionArgs,
 }
 
 impl<'a> CreateMetadataAccountCpi<'a> {
@@ -254,10 +254,10 @@ impl<'a> CreateMetadataAccountCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(7 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.mint.clone());
         account_infos.push(self.mint_authority.clone());
@@ -282,7 +282,7 @@ pub struct CreateMetadataAccountCpiBuilder<'a> {
 impl<'a> CreateMetadataAccountCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateMetadataAccountCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             mint: None,
             mint_authority: None,
@@ -363,7 +363,7 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
         );
 
         CreateMetadataAccountCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -387,13 +387,13 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent.expect("rent is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct CreateMetadataAccountCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,

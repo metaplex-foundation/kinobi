@@ -212,7 +212,7 @@ impl CreateV2Builder {
 /// `create_v2` CPI instruction.
 pub struct CreateV2Cpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition']
@@ -232,7 +232,7 @@ pub struct CreateV2Cpi<'a> {
     /// SPL Token program
     pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: CreateV2InstructionArgs,
+    pub __args: CreateV2InstructionArgs,
 }
 
 impl<'a> CreateV2Cpi<'a> {
@@ -293,10 +293,10 @@ impl<'a> CreateV2Cpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         if let Some(master_edition) = self.master_edition {
             account_infos.push(master_edition.clone());
@@ -325,7 +325,7 @@ pub struct CreateV2CpiBuilder<'a> {
 impl<'a> CreateV2CpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateV2CpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             master_edition: None,
             mint: None,
@@ -420,7 +420,7 @@ impl<'a> CreateV2CpiBuilder<'a> {
         );
 
         CreateV2Cpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -454,13 +454,13 @@ impl<'a> CreateV2CpiBuilder<'a> {
                 .instruction
                 .spl_token_program
                 .expect("spl_token_program is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct CreateV2CpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,

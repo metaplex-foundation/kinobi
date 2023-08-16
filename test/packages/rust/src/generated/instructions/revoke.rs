@@ -277,7 +277,7 @@ impl RevokeBuilder {
 /// `revoke` CPI instruction.
 pub struct RevokeCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
     pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
     /// Owner of the delegated account
@@ -305,7 +305,7 @@ pub struct RevokeCpi<'a> {
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: RevokeInstructionArgs,
+    pub __args: RevokeInstructionArgs,
 }
 
 impl<'a> RevokeCpi<'a> {
@@ -409,10 +409,10 @@ impl<'a> RevokeCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.delegate_record.clone());
         account_infos.push(self.delegate.clone());
         account_infos.push(self.metadata.clone());
@@ -453,7 +453,7 @@ pub struct RevokeCpiBuilder<'a> {
 impl<'a> RevokeCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(RevokeCpiBuilderInstruction {
-            program,
+            __program: program,
             delegate_record: None,
             delegate: None,
             metadata: None,
@@ -567,7 +567,7 @@ impl<'a> RevokeCpiBuilder<'a> {
         );
 
         RevokeCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             delegate_record: self
                 .instruction
@@ -603,13 +603,13 @@ impl<'a> RevokeCpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args,
+            __args: args,
         }
     }
 }
 
 struct RevokeCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,

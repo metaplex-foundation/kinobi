@@ -8,6 +8,7 @@
 use crate::generated::types::TmKey;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
+use solana_program::pubkey::Pubkey;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct MasterEditionV2 {
@@ -18,4 +19,31 @@ pub struct MasterEditionV2 {
 
 impl MasterEditionV2 {
     pub const LEN: usize = 282;
+
+    pub fn find_pda(mint: Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
+        solana_program::pubkey::Pubkey::find_program_address(
+            &[
+                "metadata".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                mint.as_ref(),
+                "edition".as_bytes(),
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
+    pub fn create_pda(
+        mint: Pubkey,
+        bump: u8,
+    ) -> Result<solana_program::pubkey::Pubkey, solana_program::pubkey::PubkeyError> {
+        solana_program::pubkey::Pubkey::create_program_address(
+            &[
+                "metadata".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                mint.as_ref(),
+                "edition".as_bytes(),
+                &[bump],
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
 }

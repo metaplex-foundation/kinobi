@@ -278,7 +278,7 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
 /// `mint_new_edition_from_master_edition_via_token` CPI instruction.
 pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// New Metadata key (pda of ['metadata', program id, mint id])
     pub new_metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// New Edition (pda of ['metadata', program id, mint id, 'edition'])
@@ -308,7 +308,7 @@ pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a> {
     /// Rent info
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
+    pub __args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
 }
 
 impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
@@ -388,10 +388,10 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(14 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.new_metadata.clone());
         account_infos.push(self.new_edition.clone());
         account_infos.push(self.master_edition.clone());
@@ -426,7 +426,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(
             MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction {
-                program,
+                __program: program,
                 new_metadata: None,
                 new_edition: None,
                 master_edition: None,
@@ -557,7 +557,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
         );
 
         MintNewEditionFromMasterEditionViaTokenCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             new_metadata: self
                 .instruction
@@ -616,13 +616,13 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-            args,
+            __args: args,
         }
     }
 }
 
 struct MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     new_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     new_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,

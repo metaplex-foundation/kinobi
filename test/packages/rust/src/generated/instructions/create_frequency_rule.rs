@@ -142,7 +142,7 @@ impl CreateFrequencyRuleBuilder {
 /// `create_frequency_rule` CPI instruction.
 pub struct CreateFrequencyRuleCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the Frequency Rule
     pub payer: &'a solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the Frequency Rule is stored
@@ -150,7 +150,7 @@ pub struct CreateFrequencyRuleCpi<'a> {
     /// System program
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: CreateFrequencyRuleInstructionArgs,
+    pub __args: CreateFrequencyRuleInstructionArgs,
 }
 
 impl<'a> CreateFrequencyRuleCpi<'a> {
@@ -180,10 +180,10 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.payer.clone());
         account_infos.push(self.frequency_pda.clone());
         account_infos.push(self.system_program.clone());
@@ -204,7 +204,7 @@ pub struct CreateFrequencyRuleCpiBuilder<'a> {
 impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateFrequencyRuleCpiBuilderInstruction {
-            program,
+            __program: program,
             payer: None,
             frequency_pda: None,
             system_program: None,
@@ -268,7 +268,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
         );
 
         CreateFrequencyRuleCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             payer: self.instruction.payer.expect("payer is not set"),
 
@@ -281,13 +281,13 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct CreateFrequencyRuleCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     frequency_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,

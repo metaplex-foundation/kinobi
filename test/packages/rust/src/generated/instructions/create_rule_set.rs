@@ -120,7 +120,7 @@ impl CreateRuleSetBuilder {
 /// `create_rule_set` CPI instruction.
 pub struct CreateRuleSetCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the RuleSet
     pub payer: &'a solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the RuleSet is stored
@@ -128,7 +128,7 @@ pub struct CreateRuleSetCpi<'a> {
     /// System program
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: CreateRuleSetInstructionArgs,
+    pub __args: CreateRuleSetInstructionArgs,
 }
 
 impl<'a> CreateRuleSetCpi<'a> {
@@ -158,10 +158,10 @@ impl<'a> CreateRuleSetCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.payer.clone());
         account_infos.push(self.rule_set_pda.clone());
         account_infos.push(self.system_program.clone());
@@ -182,7 +182,7 @@ pub struct CreateRuleSetCpiBuilder<'a> {
 impl<'a> CreateRuleSetCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateRuleSetCpiBuilderInstruction {
-            program,
+            __program: program,
             payer: None,
             rule_set_pda: None,
             system_program: None,
@@ -231,7 +231,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
         );
 
         CreateRuleSetCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             payer: self.instruction.payer.expect("payer is not set"),
 
@@ -244,13 +244,13 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct CreateRuleSetCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rule_set_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,

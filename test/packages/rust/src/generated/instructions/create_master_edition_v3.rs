@@ -197,7 +197,7 @@ impl CreateMasterEditionV3Builder {
 /// `create_master_edition_v3` CPI instruction.
 pub struct CreateMasterEditionV3Cpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
     pub edition: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata mint
@@ -217,7 +217,7 @@ pub struct CreateMasterEditionV3Cpi<'a> {
     /// Rent info
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: CreateMasterEditionV3InstructionArgs,
+    pub __args: CreateMasterEditionV3InstructionArgs,
 }
 
 impl<'a> CreateMasterEditionV3Cpi<'a> {
@@ -277,10 +277,10 @@ impl<'a> CreateMasterEditionV3Cpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.edition.clone());
         account_infos.push(self.mint.clone());
         account_infos.push(self.update_authority.clone());
@@ -309,7 +309,7 @@ pub struct CreateMasterEditionV3CpiBuilder<'a> {
 impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateMasterEditionV3CpiBuilderInstruction {
-            program,
+            __program: program,
             edition: None,
             mint: None,
             update_authority: None,
@@ -394,7 +394,7 @@ impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
         );
 
         CreateMasterEditionV3Cpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             edition: self.instruction.edition.expect("edition is not set"),
 
@@ -425,13 +425,13 @@ impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-            args,
+            __args: args,
         }
     }
 }
 
 struct CreateMasterEditionV3CpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,

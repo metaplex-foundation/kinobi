@@ -120,7 +120,7 @@ impl ThawDelegatedAccountBuilder {
 /// `thaw_delegated_account` CPI instruction.
 pub struct ThawDelegatedAccountCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Delegate
     pub delegate: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token account to thaw
@@ -173,7 +173,7 @@ impl<'a> ThawDelegatedAccountCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(5 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.delegate.clone());
         account_infos.push(self.token_account.clone());
         account_infos.push(self.edition.clone());
@@ -196,7 +196,7 @@ pub struct ThawDelegatedAccountCpiBuilder<'a> {
 impl<'a> ThawDelegatedAccountCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(ThawDelegatedAccountCpiBuilderInstruction {
-            program,
+            __program: program,
             delegate: None,
             token_account: None,
             edition: None,
@@ -240,7 +240,7 @@ impl<'a> ThawDelegatedAccountCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ThawDelegatedAccountCpi<'a> {
         ThawDelegatedAccountCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             delegate: self.instruction.delegate.expect("delegate is not set"),
 
@@ -262,7 +262,7 @@ impl<'a> ThawDelegatedAccountCpiBuilder<'a> {
 }
 
 struct ThawDelegatedAccountCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,

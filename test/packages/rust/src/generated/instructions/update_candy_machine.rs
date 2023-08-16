@@ -95,13 +95,13 @@ impl UpdateCandyMachineBuilder {
 /// `update_candy_machine` CPI instruction.
 pub struct UpdateCandyMachineCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
-    pub args: UpdateCandyMachineInstructionArgs,
+    pub __args: UpdateCandyMachineInstructionArgs,
 }
 
 impl<'a> UpdateCandyMachineCpi<'a> {
@@ -127,10 +127,10 @@ impl<'a> UpdateCandyMachineCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority.clone());
 
@@ -150,7 +150,7 @@ pub struct UpdateCandyMachineCpiBuilder<'a> {
 impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UpdateCandyMachineCpiBuilderInstruction {
-            program,
+            __program: program,
             candy_machine: None,
             authority: None,
             data: None,
@@ -182,7 +182,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
         );
 
         UpdateCandyMachineCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             candy_machine: self
                 .instruction
@@ -190,13 +190,13 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
                 .expect("candy_machine is not set"),
 
             authority: self.instruction.authority.expect("authority is not set"),
-            args,
+            __args: args,
         }
     }
 }
 
 struct UpdateCandyMachineCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     data: Option<CandyMachineData>,

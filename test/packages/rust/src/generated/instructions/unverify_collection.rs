@@ -154,7 +154,7 @@ impl UnverifyCollectionBuilder {
 /// `unverify_collection` CPI instruction.
 pub struct UnverifyCollectionCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority
@@ -220,7 +220,7 @@ impl<'a> UnverifyCollectionCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(6 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.collection_authority.clone());
         account_infos.push(self.collection_mint.clone());
@@ -246,7 +246,7 @@ pub struct UnverifyCollectionCpiBuilder<'a> {
 impl<'a> UnverifyCollectionCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UnverifyCollectionCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             collection_authority: None,
             collection_mint: None,
@@ -302,7 +302,7 @@ impl<'a> UnverifyCollectionCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UnverifyCollectionCpi<'a> {
         UnverifyCollectionCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -329,7 +329,7 @@ impl<'a> UnverifyCollectionCpiBuilder<'a> {
 }
 
 struct UnverifyCollectionCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

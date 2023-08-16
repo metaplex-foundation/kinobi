@@ -184,7 +184,7 @@ impl RevokeUseAuthorityBuilder {
 /// `revoke_use_authority` CPI instruction.
 pub struct RevokeUseAuthorityCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Use Authority Record PDA
     pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
     /// Owner
@@ -267,7 +267,7 @@ impl<'a> RevokeUseAuthorityCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.use_authority_record.clone());
         account_infos.push(self.owner.clone());
         account_infos.push(self.user.clone());
@@ -296,7 +296,7 @@ pub struct RevokeUseAuthorityCpiBuilder<'a> {
 impl<'a> RevokeUseAuthorityCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(RevokeUseAuthorityCpiBuilderInstruction {
-            program,
+            __program: program,
             use_authority_record: None,
             owner: None,
             user: None,
@@ -363,7 +363,7 @@ impl<'a> RevokeUseAuthorityCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> RevokeUseAuthorityCpi<'a> {
         RevokeUseAuthorityCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             use_authority_record: self
                 .instruction
@@ -399,7 +399,7 @@ impl<'a> RevokeUseAuthorityCpiBuilder<'a> {
 }
 
 struct RevokeUseAuthorityCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     user: Option<&'a solana_program::account_info::AccountInfo<'a>>,

@@ -217,7 +217,7 @@ impl BurnBuilder {
 /// `burn` CPI instruction.
 pub struct BurnCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Asset owner
@@ -237,7 +237,7 @@ pub struct BurnCpi<'a> {
     /// Token Authorization Rules Program
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: BurnInstructionArgs,
+    pub __args: BurnInstructionArgs,
 }
 
 impl<'a> BurnCpi<'a> {
@@ -312,10 +312,10 @@ impl<'a> BurnCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.owner.clone());
         account_infos.push(self.mint.clone());
@@ -348,7 +348,7 @@ pub struct BurnCpiBuilder<'a> {
 impl<'a> BurnCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(BurnCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             owner: None,
             mint: None,
@@ -433,7 +433,7 @@ impl<'a> BurnCpiBuilder<'a> {
         );
 
         BurnCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -461,13 +461,13 @@ impl<'a> BurnCpiBuilder<'a> {
             authorization_rules: self.instruction.authorization_rules,
 
             authorization_rules_program: self.instruction.authorization_rules_program,
-            args,
+            __args: args,
         }
     }
 }
 
 struct BurnCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

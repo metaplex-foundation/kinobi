@@ -93,7 +93,7 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
 /// `update_primary_sale_happened_via_token` CPI instruction.
 pub struct UpdatePrimarySaleHappenedViaTokenCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Owner on the token account
@@ -134,7 +134,7 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.owner.clone());
         account_infos.push(self.token.clone());
@@ -155,7 +155,7 @@ pub struct UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
 impl<'a> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UpdatePrimarySaleHappenedViaTokenCpiBuilderInstruction {
-            program,
+            __program: program,
             metadata: None,
             owner: None,
             token: None,
@@ -180,7 +180,7 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
         UpdatePrimarySaleHappenedViaTokenCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -192,7 +192,7 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
 }
 
 struct UpdatePrimarySaleHappenedViaTokenCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token: Option<&'a solana_program::account_info::AccountInfo<'a>>,

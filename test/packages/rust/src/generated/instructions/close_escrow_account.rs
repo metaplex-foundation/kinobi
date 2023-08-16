@@ -160,7 +160,7 @@ impl CloseEscrowAccountBuilder {
 /// `close_escrow_account` CPI instruction.
 pub struct CloseEscrowAccountCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Escrow account
     pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
@@ -231,7 +231,7 @@ impl<'a> CloseEscrowAccountCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.escrow.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.mint.clone());
@@ -257,7 +257,7 @@ pub struct CloseEscrowAccountCpiBuilder<'a> {
 impl<'a> CloseEscrowAccountCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CloseEscrowAccountCpiBuilderInstruction {
-            program,
+            __program: program,
             escrow: None,
             metadata: None,
             mint: None,
@@ -322,7 +322,7 @@ impl<'a> CloseEscrowAccountCpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CloseEscrowAccountCpi<'a> {
         CloseEscrowAccountCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             escrow: self.instruction.escrow.expect("escrow is not set"),
 
@@ -353,7 +353,7 @@ impl<'a> CloseEscrowAccountCpiBuilder<'a> {
 }
 
 struct CloseEscrowAccountCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     escrow: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

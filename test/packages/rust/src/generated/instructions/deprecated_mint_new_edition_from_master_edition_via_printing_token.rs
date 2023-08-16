@@ -277,7 +277,7 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
 /// `deprecated_mint_new_edition_from_master_edition_via_printing_token` CPI instruction.
 pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// New Metadata key (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// New Edition V1 (pda of ['metadata', program id, mint id, 'edition'])
@@ -403,7 +403,7 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(16 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.edition.clone());
         account_infos.push(self.master_edition.clone());
@@ -441,7 +441,7 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(
             DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilderInstruction {
-                program,
+                __program: program,
                 metadata: None,
                 edition: None,
                 master_edition: None,
@@ -568,7 +568,7 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
         DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
@@ -636,7 +636,7 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
 }
 
 struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,

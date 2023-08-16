@@ -95,7 +95,7 @@ impl ConvertMasterEditionV1ToV2Builder {
 /// `convert_master_edition_v1_to_v2` CPI instruction.
 pub struct ConvertMasterEditionV1ToV2Cpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])
     pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
     /// One time authorization mint
@@ -136,7 +136,7 @@ impl<'a> ConvertMasterEditionV1ToV2Cpi<'a> {
             data: args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.master_edition.clone());
         account_infos.push(self.one_time_auth.clone());
         account_infos.push(self.printing_mint.clone());
@@ -157,7 +157,7 @@ pub struct ConvertMasterEditionV1ToV2CpiBuilder<'a> {
 impl<'a> ConvertMasterEditionV1ToV2CpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(ConvertMasterEditionV1ToV2CpiBuilderInstruction {
-            program,
+            __program: program,
             master_edition: None,
             one_time_auth: None,
             printing_mint: None,
@@ -188,7 +188,7 @@ impl<'a> ConvertMasterEditionV1ToV2CpiBuilder<'a> {
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ConvertMasterEditionV1ToV2Cpi<'a> {
         ConvertMasterEditionV1ToV2Cpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             master_edition: self
                 .instruction
@@ -209,7 +209,7 @@ impl<'a> ConvertMasterEditionV1ToV2CpiBuilder<'a> {
 }
 
 struct ConvertMasterEditionV1ToV2CpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     one_time_auth: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     printing_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,

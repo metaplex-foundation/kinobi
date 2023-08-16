@@ -305,7 +305,7 @@ impl TransferBuilder {
 /// `transfer` CPI instruction.
 pub struct TransferCpi<'a> {
     /// The program to invoke.
-    pub program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Transfer authority (token or delegate owner)
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// Delegate record PDA
@@ -337,7 +337,7 @@ pub struct TransferCpi<'a> {
     /// Token Authorization Rules account
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
-    pub args: TransferInstructionArgs,
+    pub __args: TransferInstructionArgs,
 }
 
 impl<'a> TransferCpi<'a> {
@@ -436,10 +436,10 @@ impl<'a> TransferCpi<'a> {
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.args.try_to_vec().unwrap(),
+            data: self.__args.try_to_vec().unwrap(),
         };
         let mut account_infos = Vec::with_capacity(15 + 1);
-        account_infos.push(self.program.clone());
+        account_infos.push(self.__program.clone());
         account_infos.push(self.authority.clone());
         if let Some(delegate_record) = self.delegate_record {
             account_infos.push(delegate_record.clone());
@@ -478,7 +478,7 @@ pub struct TransferCpiBuilder<'a> {
 impl<'a> TransferCpiBuilder<'a> {
     pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(TransferCpiBuilderInstruction {
-            program,
+            __program: program,
             authority: None,
             delegate_record: None,
             token: None,
@@ -611,7 +611,7 @@ impl<'a> TransferCpiBuilder<'a> {
         );
 
         TransferCpi {
-            program: self.instruction.program,
+            __program: self.instruction.__program,
 
             authority: self.instruction.authority.expect("authority is not set"),
 
@@ -666,13 +666,13 @@ impl<'a> TransferCpiBuilder<'a> {
             authorization_rules_program: self.instruction.authorization_rules_program,
 
             authorization_rules: self.instruction.authorization_rules,
-            args,
+            __args: args,
         }
     }
 }
 
 struct TransferCpiBuilderInstruction<'a> {
-    program: &'a solana_program::account_info::AccountInfo<'a>,
+    __program: &'a solana_program::account_info::AccountInfo<'a>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
