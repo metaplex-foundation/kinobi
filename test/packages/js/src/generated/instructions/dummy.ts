@@ -153,12 +153,12 @@ export function dummy(
   addObjectProperty(resolvingArgs, 'proof', input.proof ?? []);
   const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
+  addAccountMeta(keys, signers, resolvedAccounts.edition, true);
   addAccountMeta(keys, signers, resolvedAccounts.mint, false);
   addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
   addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
   addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.foo, false);
+  addAccountMeta(keys, signers, resolvedAccounts.foo, true);
   addAccountMeta(keys, signers, resolvedAccounts.bar, false);
   addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
 

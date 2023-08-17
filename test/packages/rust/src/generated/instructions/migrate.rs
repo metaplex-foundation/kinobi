@@ -80,11 +80,6 @@ impl Migrate {
                 authorization_rules,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
 
         solana_program::instruction::Instruction {
@@ -294,11 +289,6 @@ impl<'a> MigrateCpi<'a> {
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules.key,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

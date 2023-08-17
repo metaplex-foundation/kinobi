@@ -62,11 +62,6 @@ impl UpdateV1 {
                 master_edition,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.mint, false,
@@ -83,20 +78,10 @@ impl UpdateV1 {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 token, false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(delegate_record) = self.delegate_record {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 delegate_record,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -105,20 +90,10 @@ impl UpdateV1 {
                 authorization_rules_program,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -413,11 +388,6 @@ impl<'a> UpdateV1Cpi<'a> {
                 *master_edition.key,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.mint.key,
@@ -435,20 +405,10 @@ impl<'a> UpdateV1Cpi<'a> {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *token.key, false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(delegate_record) = self.delegate_record {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *delegate_record.key,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -457,20 +417,10 @@ impl<'a> UpdateV1Cpi<'a> {
                 *authorization_rules_program.key,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules.key,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

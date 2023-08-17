@@ -77,31 +77,16 @@ impl UseAsset {
                 use_authority_record,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules_program) = self.authorization_rules_program {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules_program,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -319,31 +304,16 @@ impl<'a> UseAssetCpi<'a> {
                 *use_authority_record.key,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules.key,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules_program) = self.authorization_rules_program {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules_program.key,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

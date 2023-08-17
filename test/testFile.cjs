@@ -102,7 +102,11 @@ kinobi.update(
         mintAuthority: { defaultsTo: k.accountDefault('updateAuthority') },
         edition: { defaultsTo: k.accountDefault('mint') },
         foo: { defaultsTo: k.accountDefault('bar') },
-        bar: { defaultsTo: k.programIdDefault() },
+        bar: {
+          defaultsTo: k.programIdDefault(),
+          isOptional: true,
+          isOptionalStrategy: 'programId',
+        },
         delegateRecord: {
           defaultsTo: k.pdaDefault('delegateRecord', {
             seeds: {

@@ -41,11 +41,6 @@ impl SetTokenStandard {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 edition, false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
 
         solana_program::instruction::Instruction {
@@ -154,11 +149,6 @@ impl<'a> SetTokenStandardCpi<'a> {
         if let Some(edition) = self.edition {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *edition.key,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

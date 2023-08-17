@@ -112,11 +112,6 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
                 reservation_list,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
 
         solana_program::instruction::Instruction {
@@ -388,11 +383,6 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
         if let Some(reservation_list) = self.reservation_list {
             accounts.push(solana_program::instruction::AccountMeta::new(
                 *reservation_list.key,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

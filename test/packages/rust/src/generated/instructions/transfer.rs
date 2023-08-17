@@ -28,7 +28,7 @@ pub struct Transfer {
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: solana_program::pubkey::Pubkey,
     /// Master Edition of token asset
-    pub master_edition: solana_program::pubkey::Pubkey,
+    pub master_edition: Option<solana_program::pubkey::Pubkey>,
     /// SPL Token Program
     pub spl_token_program: solana_program::pubkey::Pubkey,
     /// SPL Associated Token Account program
@@ -59,11 +59,6 @@ impl Transfer {
                 delegate_record,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.token, false,
@@ -87,10 +82,12 @@ impl Transfer {
             self.metadata,
             false,
         ));
-        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.master_edition,
-            false,
-        ));
+        if let Some(master_edition) = self.master_edition {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                master_edition,
+                false,
+            ));
+        }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.spl_token_program,
             false,
@@ -112,20 +109,10 @@ impl Transfer {
                 authorization_rules_program,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -276,7 +263,7 @@ impl TransferBuilder {
                 .expect("destination_owner is not set"),
             mint: self.mint.expect("mint is not set"),
             metadata: self.metadata.expect("metadata is not set"),
-            master_edition: self.master_edition.expect("master_edition is not set"),
+            master_edition: self.master_edition,
             spl_token_program: self.spl_token_program.unwrap_or(solana_program::pubkey!(
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
@@ -323,7 +310,7 @@ pub struct TransferCpi<'a> {
     /// Metadata (pda of ['metadata', program id, mint id])
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Master Edition of token asset
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// SPL Token Program
     pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// SPL Associated Token Account program
@@ -360,11 +347,6 @@ impl<'a> TransferCpi<'a> {
                 *delegate_record.key,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.token.key,
@@ -390,10 +372,12 @@ impl<'a> TransferCpi<'a> {
             *self.metadata.key,
             false,
         ));
-        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.master_edition.key,
-            false,
-        ));
+        if let Some(master_edition) = self.master_edition {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *master_edition.key,
+                false,
+            ));
+        }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.spl_token_program.key,
             false,
@@ -415,20 +399,10 @@ impl<'a> TransferCpi<'a> {
                 *authorization_rules_program.key,
                 false,
             ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
-                false,
-            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules.key,
-                false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -450,7 +424,9 @@ impl<'a> TransferCpi<'a> {
         account_infos.push(self.destination_owner.clone());
         account_infos.push(self.mint.clone());
         account_infos.push(self.metadata.clone());
-        account_infos.push(self.master_edition.clone());
+        if let Some(master_edition) = self.master_edition {
+            account_infos.push(master_edition.clone());
+        }
         account_infos.push(self.spl_token_program.clone());
         account_infos.push(self.spl_ata_program.clone());
         account_infos.push(self.system_program.clone());
@@ -638,10 +614,7 @@ impl<'a> TransferCpiBuilder<'a> {
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
-            master_edition: self
-                .instruction
-                .master_edition
-                .expect("master_edition is not set"),
+            master_edition: self.instruction.master_edition,
 
             spl_token_program: self
                 .instruction

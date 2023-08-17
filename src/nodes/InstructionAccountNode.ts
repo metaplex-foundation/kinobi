@@ -14,6 +14,7 @@ export type InstructionAccountNode = {
   readonly isWritable: boolean;
   readonly isSigner: boolean | 'either';
   readonly isOptional: boolean;
+  readonly isOptionalStrategy: 'omitted' | 'programId';
   readonly docs: string[];
   readonly defaultsTo?: InstructionAccountDefault;
 };
@@ -32,6 +33,7 @@ export function instructionAccountNode(
     isWritable: input.isWritable,
     isSigner: input.isSigner,
     isOptional: input.isOptional ?? false,
+    isOptionalStrategy: input.isOptionalStrategy ?? 'programId',
     docs: input.docs ?? [],
     defaultsTo: input.defaultsTo,
   } as InstructionAccountNode;
@@ -47,7 +49,10 @@ export function instructionAccountNodeFromIdl(
     name: idl.name ?? '',
     isWritable: idl.isMut ?? false,
     isSigner: idl.isOptionalSigner ? 'either' : idl.isSigner ?? false,
-    isOptional: useProgramIdForOptionalAccounts ? false : isOptional,
+    isOptional,
+    isOptionalStrategy: useProgramIdForOptionalAccounts
+      ? 'programId'
+      : 'omitted',
     docs: idl.docs ?? desc ?? [],
     defaultsTo:
       isOptional && useProgramIdForOptionalAccounts
