@@ -19,6 +19,9 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     Self { instruction }
   }
   {% for account in instruction.accounts %}
+    {{'/// `[optional account]`\n' if account.isOptional }}
+    {{- macros.docblock(account.docs) -}}
+    #[inline(always)]
     pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: &'a solana_program::account_info::AccountInfo<'a>{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
       {% if account.isSigner === 'either' %}
         self.instruction.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
@@ -30,6 +33,9 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
   {% endfor %}
   {% for arg in instructionArgs %}
     {% if not arg.default %}
+      {{'/// `[optional argument]`\n' if arg.innerOptionType }}
+      {{- macros.docblock(arg.docs) -}}
+      #[inline(always)]
       pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> &mut Self {
         self.instruction.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
         self

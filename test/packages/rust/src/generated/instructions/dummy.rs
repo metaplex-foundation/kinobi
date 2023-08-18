@@ -112,14 +112,18 @@ impl DummyBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.edition = Some(edition);
         self
     }
+    /// `[optional account]`
+    #[inline(always)]
     pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint = Some(mint);
         self
     }
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: solana_program::pubkey::Pubkey,
@@ -127,22 +131,28 @@ impl DummyBuilder {
         self.update_authority = Some(update_authority);
         self
     }
+    #[inline(always)]
     pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint_authority = Some(mint_authority);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn foo(&mut self, foo: solana_program::pubkey::Pubkey) -> &mut Self {
         self.foo = Some(foo);
         self
     }
+    /// `[optional account]`
+    #[inline(always)]
     pub fn bar(&mut self, bar: solana_program::pubkey::Pubkey) -> &mut Self {
         self.bar = Some(bar);
         self
     }
+    #[inline(always)]
     pub fn delegate_record(
         &mut self,
         delegate_record: solana_program::pubkey::Pubkey,
@@ -295,6 +305,7 @@ impl<'a> DummyCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn edition(
         &mut self,
         edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -302,10 +313,13 @@ impl<'a> DummyCpiBuilder<'a> {
         self.instruction.edition = Some(edition);
         self
     }
+    /// `[optional account]`
+    #[inline(always)]
     pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -313,6 +327,7 @@ impl<'a> DummyCpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
+    #[inline(always)]
     pub fn mint_authority(
         &mut self,
         mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -320,18 +335,23 @@ impl<'a> DummyCpiBuilder<'a> {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn foo(&mut self, foo: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.foo = Some(foo);
         self
     }
+    /// `[optional account]`
+    #[inline(always)]
     pub fn bar(&mut self, bar: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.bar = Some(bar);
         self
     }
+    #[inline(always)]
     pub fn delegate_record(
         &mut self,
         delegate_record: &'a solana_program::account_info::AccountInfo<'a>,

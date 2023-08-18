@@ -150,26 +150,38 @@ impl UseAssetBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Token Account Of NFT
+    #[inline(always)]
     pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_account = Some(token_account);
         self
     }
+    /// Mint of the Metadata
+    #[inline(always)]
     pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint = Some(mint);
         self
     }
+    /// Use authority or current owner of the asset
+    #[inline(always)]
     pub fn use_authority(&mut self, use_authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.use_authority = Some(use_authority);
         self
     }
+    /// Owner
+    #[inline(always)]
     pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
         self.owner = Some(owner);
         self
     }
+    /// SPL Token program
+    #[inline(always)]
     pub fn spl_token_program(
         &mut self,
         spl_token_program: solana_program::pubkey::Pubkey,
@@ -177,14 +189,21 @@ impl UseAssetBuilder {
         self.spl_token_program = Some(spl_token_program);
         self
     }
+    /// Associated Token program
+    #[inline(always)]
     pub fn ata_program(&mut self, ata_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.ata_program = Some(ata_program);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// `[optional account]`
+    /// Use Authority Record PDA (if present the program assumes a delegated use authority)
+    #[inline(always)]
     pub fn use_authority_record(
         &mut self,
         use_authority_record: solana_program::pubkey::Pubkey,
@@ -192,6 +211,9 @@ impl UseAssetBuilder {
         self.use_authority_record = Some(use_authority_record);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: solana_program::pubkey::Pubkey,
@@ -199,6 +221,9 @@ impl UseAssetBuilder {
         self.authorization_rules = Some(authorization_rules);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
         authorization_rules_program: solana_program::pubkey::Pubkey,
@@ -206,6 +231,7 @@ impl UseAssetBuilder {
         self.authorization_rules_program = Some(authorization_rules_program);
         self
     }
+    #[inline(always)]
     pub fn use_asset_args(&mut self, use_asset_args: UseAssetArgs) -> &mut Self {
         self.use_asset_args = Some(use_asset_args);
         self
@@ -405,6 +431,8 @@ impl<'a> UseAssetCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -412,6 +440,8 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Token Account Of NFT
+    #[inline(always)]
     pub fn token_account(
         &mut self,
         token_account: &'a solana_program::account_info::AccountInfo<'a>,
@@ -419,10 +449,14 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.token_account = Some(token_account);
         self
     }
+    /// Mint of the Metadata
+    #[inline(always)]
     pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
+    /// Use authority or current owner of the asset
+    #[inline(always)]
     pub fn use_authority(
         &mut self,
         use_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -430,10 +464,14 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.use_authority = Some(use_authority);
         self
     }
+    /// Owner
+    #[inline(always)]
     pub fn owner(&mut self, owner: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.owner = Some(owner);
         self
     }
+    /// SPL Token program
+    #[inline(always)]
     pub fn spl_token_program(
         &mut self,
         spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -441,6 +479,8 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.spl_token_program = Some(spl_token_program);
         self
     }
+    /// Associated Token program
+    #[inline(always)]
     pub fn ata_program(
         &mut self,
         ata_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -448,6 +488,8 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.ata_program = Some(ata_program);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -455,6 +497,9 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    /// `[optional account]`
+    /// Use Authority Record PDA (if present the program assumes a delegated use authority)
+    #[inline(always)]
     pub fn use_authority_record(
         &mut self,
         use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
@@ -462,6 +507,9 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.use_authority_record = Some(use_authority_record);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
@@ -469,6 +517,9 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.authorization_rules = Some(authorization_rules);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
         authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -476,6 +527,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
         self.instruction.authorization_rules_program = Some(authorization_rules_program);
         self
     }
+    #[inline(always)]
     pub fn use_asset_args(&mut self, use_asset_args: UseAssetArgs) -> &mut Self {
         self.instruction.use_asset_args = Some(use_asset_args);
         self

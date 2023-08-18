@@ -62,10 +62,12 @@ impl WithdrawBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority = Some(authority);
         self
@@ -145,6 +147,7 @@ impl<'a> WithdrawCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn candy_machine(
         &mut self,
         candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -152,6 +155,7 @@ impl<'a> WithdrawCpiBuilder<'a> {
         self.instruction.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(
         &mut self,
         authority: &'a solana_program::account_info::AccountInfo<'a>,

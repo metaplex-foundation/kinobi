@@ -67,14 +67,17 @@ impl UpdateCandyMachineBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn data(&mut self, data: CandyMachineData) -> &mut Self {
         self.data = Some(data);
         self
@@ -157,6 +160,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn candy_machine(
         &mut self,
         candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -164,6 +168,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
         self.instruction.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(
         &mut self,
         authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -171,6 +176,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
         self.instruction.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn data(&mut self, data: CandyMachineData) -> &mut Self {
         self.instruction.data = Some(data);
         self

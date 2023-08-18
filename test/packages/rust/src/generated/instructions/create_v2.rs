@@ -128,26 +128,39 @@ impl CreateV2Builder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Metadata account key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// `[optional account]`
+    /// Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition']
+    #[inline(always)]
     pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.master_edition = Some(master_edition);
         self
     }
+    /// Mint of token asset
+    #[inline(always)]
     pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey, as_signer: bool) -> &mut Self {
         self.mint = Some((mint, as_signer));
         self
     }
+    /// Mint authority
+    #[inline(always)]
     pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint_authority = Some(mint_authority);
         self
     }
+    /// Payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    /// update authority info
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: solana_program::pubkey::Pubkey,
@@ -155,10 +168,14 @@ impl CreateV2Builder {
         self.update_authority = Some(update_authority);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// Instructions sysvar account
+    #[inline(always)]
     pub fn sysvar_instructions(
         &mut self,
         sysvar_instructions: solana_program::pubkey::Pubkey,
@@ -166,6 +183,8 @@ impl CreateV2Builder {
         self.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    /// SPL Token program
+    #[inline(always)]
     pub fn spl_token_program(
         &mut self,
         spl_token_program: solana_program::pubkey::Pubkey,
@@ -173,10 +192,13 @@ impl CreateV2Builder {
         self.spl_token_program = Some(spl_token_program);
         self
     }
+    #[inline(always)]
     pub fn asset_data(&mut self, asset_data: AssetData) -> &mut Self {
         self.asset_data = Some(asset_data);
         self
     }
+    /// `[optional argument]`
+    #[inline(always)]
     pub fn max_supply(&mut self, max_supply: u64) -> &mut Self {
         self.max_supply = Some(max_supply);
         self
@@ -340,6 +362,8 @@ impl<'a> CreateV2CpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Metadata account key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -347,6 +371,9 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// `[optional account]`
+    /// Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition']
+    #[inline(always)]
     pub fn master_edition(
         &mut self,
         master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -354,6 +381,8 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.master_edition = Some(master_edition);
         self
     }
+    /// Mint of token asset
+    #[inline(always)]
     pub fn mint(
         &mut self,
         mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -362,6 +391,8 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.mint = Some((mint, as_signer));
         self
     }
+    /// Mint authority
+    #[inline(always)]
     pub fn mint_authority(
         &mut self,
         mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -369,10 +400,14 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
+    /// Payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    /// update authority info
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -380,6 +415,8 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -387,6 +424,8 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    /// Instructions sysvar account
+    #[inline(always)]
     pub fn sysvar_instructions(
         &mut self,
         sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
@@ -394,6 +433,8 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    /// SPL Token program
+    #[inline(always)]
     pub fn spl_token_program(
         &mut self,
         spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -401,10 +442,13 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self.instruction.spl_token_program = Some(spl_token_program);
         self
     }
+    #[inline(always)]
     pub fn asset_data(&mut self, asset_data: AssetData) -> &mut Self {
         self.instruction.asset_data = Some(asset_data);
         self
     }
+    /// `[optional argument]`
+    #[inline(always)]
     pub fn max_supply(&mut self, max_supply: u64) -> &mut Self {
         self.instruction.max_supply = Some(max_supply);
         self

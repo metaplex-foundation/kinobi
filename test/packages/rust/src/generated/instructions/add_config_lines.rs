@@ -70,18 +70,22 @@ impl AddConfigLinesBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn index(&mut self, index: u32) -> &mut Self {
         self.index = Some(index);
         self
     }
+    #[inline(always)]
     pub fn config_lines(&mut self, config_lines: Vec<ConfigLine>) -> &mut Self {
         self.config_lines = Some(config_lines);
         self
@@ -167,6 +171,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn candy_machine(
         &mut self,
         candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -174,6 +179,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
         self.instruction.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(
         &mut self,
         authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -181,10 +187,12 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
         self.instruction.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn index(&mut self, index: u32) -> &mut Self {
         self.instruction.index = Some(index);
         self
     }
+    #[inline(always)]
     pub fn config_lines(&mut self, config_lines: Vec<ConfigLine>) -> &mut Self {
         self.instruction.config_lines = Some(config_lines);
         self

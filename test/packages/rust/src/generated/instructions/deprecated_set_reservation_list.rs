@@ -89,10 +89,14 @@ impl DeprecatedSetReservationListBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.master_edition = Some(master_edition);
         self
     }
+    /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    #[inline(always)]
     pub fn reservation_list(
         &mut self,
         reservation_list: solana_program::pubkey::Pubkey,
@@ -100,22 +104,29 @@ impl DeprecatedSetReservationListBuilder {
         self.reservation_list = Some(reservation_list);
         self
     }
+    /// The resource you tied the reservation list too
+    #[inline(always)]
     pub fn resource(&mut self, resource: solana_program::pubkey::Pubkey) -> &mut Self {
         self.resource = Some(resource);
         self
     }
+    #[inline(always)]
     pub fn reservations(&mut self, reservations: Vec<Reservation>) -> &mut Self {
         self.reservations = Some(reservations);
         self
     }
+    /// `[optional argument]`
+    #[inline(always)]
     pub fn total_reservation_spots(&mut self, total_reservation_spots: u64) -> &mut Self {
         self.total_reservation_spots = Some(total_reservation_spots);
         self
     }
+    #[inline(always)]
     pub fn offset(&mut self, offset: u64) -> &mut Self {
         self.offset = Some(offset);
         self
     }
+    #[inline(always)]
     pub fn total_spot_offset(&mut self, total_spot_offset: u64) -> &mut Self {
         self.total_spot_offset = Some(total_spot_offset);
         self
@@ -216,6 +227,8 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(
         &mut self,
         master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -223,6 +236,8 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
         self.instruction.master_edition = Some(master_edition);
         self
     }
+    /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    #[inline(always)]
     pub fn reservation_list(
         &mut self,
         reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
@@ -230,6 +245,8 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
         self.instruction.reservation_list = Some(reservation_list);
         self
     }
+    /// The resource you tied the reservation list too
+    #[inline(always)]
     pub fn resource(
         &mut self,
         resource: &'a solana_program::account_info::AccountInfo<'a>,
@@ -237,18 +254,23 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
         self.instruction.resource = Some(resource);
         self
     }
+    #[inline(always)]
     pub fn reservations(&mut self, reservations: Vec<Reservation>) -> &mut Self {
         self.instruction.reservations = Some(reservations);
         self
     }
+    /// `[optional argument]`
+    #[inline(always)]
     pub fn total_reservation_spots(&mut self, total_reservation_spots: u64) -> &mut Self {
         self.instruction.total_reservation_spots = Some(total_reservation_spots);
         self
     }
+    #[inline(always)]
     pub fn offset(&mut self, offset: u64) -> &mut Self {
         self.instruction.offset = Some(offset);
         self
     }
+    #[inline(always)]
     pub fn total_spot_offset(&mut self, total_spot_offset: u64) -> &mut Self {
         self.instruction.total_spot_offset = Some(total_spot_offset);
         self

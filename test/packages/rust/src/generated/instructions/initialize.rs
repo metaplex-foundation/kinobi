@@ -129,22 +129,27 @@ impl InitializeBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority_pda = Some(authority_pda);
         self
     }
+    #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
@@ -152,6 +157,7 @@ impl InitializeBuilder {
         self.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn collection_mint(
         &mut self,
         collection_mint: solana_program::pubkey::Pubkey,
@@ -159,6 +165,7 @@ impl InitializeBuilder {
         self.collection_mint = Some(collection_mint);
         self
     }
+    #[inline(always)]
     pub fn collection_master_edition(
         &mut self,
         collection_master_edition: solana_program::pubkey::Pubkey,
@@ -166,6 +173,7 @@ impl InitializeBuilder {
         self.collection_master_edition = Some(collection_master_edition);
         self
     }
+    #[inline(always)]
     pub fn collection_update_authority(
         &mut self,
         collection_update_authority: solana_program::pubkey::Pubkey,
@@ -173,6 +181,7 @@ impl InitializeBuilder {
         self.collection_update_authority = Some(collection_update_authority);
         self
     }
+    #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
@@ -180,6 +189,7 @@ impl InitializeBuilder {
         self.collection_authority_record = Some(collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
         token_metadata_program: solana_program::pubkey::Pubkey,
@@ -187,10 +197,12 @@ impl InitializeBuilder {
         self.token_metadata_program = Some(token_metadata_program);
         self
     }
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn data(&mut self, data: CandyMachineData) -> &mut Self {
         self.data = Some(data);
         self
@@ -366,6 +378,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn candy_machine(
         &mut self,
         candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -373,6 +386,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority_pda(
         &mut self,
         authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
@@ -380,6 +394,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.authority_pda = Some(authority_pda);
         self
     }
+    #[inline(always)]
     pub fn authority(
         &mut self,
         authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -387,10 +402,12 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -398,6 +415,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn collection_mint(
         &mut self,
         collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -405,6 +423,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.collection_mint = Some(collection_mint);
         self
     }
+    #[inline(always)]
     pub fn collection_master_edition(
         &mut self,
         collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -412,6 +431,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.collection_master_edition = Some(collection_master_edition);
         self
     }
+    #[inline(always)]
     pub fn collection_update_authority(
         &mut self,
         collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -419,6 +439,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.collection_update_authority = Some(collection_update_authority);
         self
     }
+    #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
         collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
@@ -426,6 +447,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.collection_authority_record = Some(collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
         token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -433,6 +455,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.token_metadata_program = Some(token_metadata_program);
         self
     }
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -440,6 +463,7 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn data(&mut self, data: CandyMachineData) -> &mut Self {
         self.instruction.data = Some(data);
         self

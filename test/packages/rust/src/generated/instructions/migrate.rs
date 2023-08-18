@@ -130,22 +130,32 @@ impl MigrateBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Master edition account
+    #[inline(always)]
     pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.master_edition = Some(master_edition);
         self
     }
+    /// Token account
+    #[inline(always)]
     pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_account = Some(token_account);
         self
     }
+    /// Mint account
+    #[inline(always)]
     pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint = Some(mint);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: solana_program::pubkey::Pubkey,
@@ -153,6 +163,8 @@ impl MigrateBuilder {
         self.update_authority = Some(update_authority);
         self
     }
+    /// Collection metadata account
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
@@ -160,14 +172,20 @@ impl MigrateBuilder {
         self.collection_metadata = Some(collection_metadata);
         self
     }
+    /// Token Program
+    #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_program = Some(token_program);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// Instruction sysvar account
+    #[inline(always)]
     pub fn sysvar_instructions(
         &mut self,
         sysvar_instructions: solana_program::pubkey::Pubkey,
@@ -175,6 +193,9 @@ impl MigrateBuilder {
         self.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: solana_program::pubkey::Pubkey,
@@ -182,6 +203,7 @@ impl MigrateBuilder {
         self.authorization_rules = Some(authorization_rules);
         self
     }
+    #[inline(always)]
     pub fn migrate_args(&mut self, migrate_args: MigrateArgs) -> &mut Self {
         self.migrate_args = Some(migrate_args);
         self
@@ -354,6 +376,8 @@ impl<'a> MigrateCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -361,6 +385,8 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Master edition account
+    #[inline(always)]
     pub fn master_edition(
         &mut self,
         master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -368,6 +394,8 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.master_edition = Some(master_edition);
         self
     }
+    /// Token account
+    #[inline(always)]
     pub fn token_account(
         &mut self,
         token_account: &'a solana_program::account_info::AccountInfo<'a>,
@@ -375,10 +403,14 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.token_account = Some(token_account);
         self
     }
+    /// Mint account
+    #[inline(always)]
     pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -386,6 +418,8 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
+    /// Collection metadata account
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -393,6 +427,8 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
     }
+    /// Token Program
+    #[inline(always)]
     pub fn token_program(
         &mut self,
         token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -400,6 +436,8 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.token_program = Some(token_program);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -407,6 +445,8 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    /// Instruction sysvar account
+    #[inline(always)]
     pub fn sysvar_instructions(
         &mut self,
         sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
@@ -414,6 +454,9 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
@@ -421,6 +464,7 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.authorization_rules = Some(authorization_rules);
         self
     }
+    #[inline(always)]
     pub fn migrate_args(&mut self, migrate_args: MigrateArgs) -> &mut Self {
         self.instruction.migrate_args = Some(migrate_args);
         self

@@ -101,6 +101,8 @@ impl CreateReservationListBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    #[inline(always)]
     pub fn reservation_list(
         &mut self,
         reservation_list: solana_program::pubkey::Pubkey,
@@ -108,10 +110,14 @@ impl CreateReservationListBuilder {
         self.reservation_list = Some(reservation_list);
         self
     }
+    /// Payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: solana_program::pubkey::Pubkey,
@@ -119,22 +125,32 @@ impl CreateReservationListBuilder {
         self.update_authority = Some(update_authority);
         self
     }
+    ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.master_edition = Some(master_edition);
         self
     }
+    /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
+    #[inline(always)]
     pub fn resource(&mut self, resource: solana_program::pubkey::Pubkey) -> &mut Self {
         self.resource = Some(resource);
         self
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// Rent info
+    #[inline(always)]
     pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
         self.rent = Some(rent);
         self
@@ -272,6 +288,8 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    #[inline(always)]
     pub fn reservation_list(
         &mut self,
         reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
@@ -279,10 +297,14 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
         self.instruction.reservation_list = Some(reservation_list);
         self
     }
+    /// Payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -290,6 +312,8 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
+    ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(
         &mut self,
         master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -297,6 +321,8 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
         self.instruction.master_edition = Some(master_edition);
         self
     }
+    /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
+    #[inline(always)]
     pub fn resource(
         &mut self,
         resource: &'a solana_program::account_info::AccountInfo<'a>,
@@ -304,6 +330,8 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
         self.instruction.resource = Some(resource);
         self
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -311,6 +339,8 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -318,6 +348,8 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    /// Rent info
+    #[inline(always)]
     pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.rent = Some(rent);
         self

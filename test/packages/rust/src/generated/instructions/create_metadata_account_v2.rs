@@ -110,22 +110,32 @@ impl CreateMetadataAccountV2Builder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Mint of token asset
+    #[inline(always)]
     pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint = Some(mint);
         self
     }
+    /// Mint authority
+    #[inline(always)]
     pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint_authority = Some(mint_authority);
         self
     }
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    /// update authority info
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: solana_program::pubkey::Pubkey,
@@ -133,18 +143,25 @@ impl CreateMetadataAccountV2Builder {
         self.update_authority = Some(update_authority);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// `[optional account]`
+    /// Rent info
+    #[inline(always)]
     pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
         self.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn data(&mut self, data: DataV2) -> &mut Self {
         self.data = Some(data);
         self
     }
+    #[inline(always)]
     pub fn is_mutable(&mut self, is_mutable: bool) -> &mut Self {
         self.is_mutable = Some(is_mutable);
         self
@@ -285,6 +302,8 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -292,10 +311,14 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Mint of token asset
+    #[inline(always)]
     pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
+    /// Mint authority
+    #[inline(always)]
     pub fn mint_authority(
         &mut self,
         mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -303,10 +326,14 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    /// update authority info
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -314,6 +341,8 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -321,14 +350,19 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    /// `[optional account]`
+    /// Rent info
+    #[inline(always)]
     pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn data(&mut self, data: DataV2) -> &mut Self {
         self.instruction.data = Some(data);
         self
     }
+    #[inline(always)]
     pub fn is_mutable(&mut self, is_mutable: bool) -> &mut Self {
         self.instruction.is_mutable = Some(is_mutable);
         self

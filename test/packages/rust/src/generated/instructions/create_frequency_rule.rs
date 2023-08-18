@@ -87,30 +87,40 @@ impl CreateFrequencyRuleBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Payer and creator of the Frequency Rule
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    /// The PDA account where the Frequency Rule is stored
+    #[inline(always)]
     pub fn frequency_pda(&mut self, frequency_pda: solana_program::pubkey::Pubkey) -> &mut Self {
         self.frequency_pda = Some(frequency_pda);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn rule_set_name(&mut self, rule_set_name: String) -> &mut Self {
         self.rule_set_name = Some(rule_set_name);
         self
     }
+    #[inline(always)]
     pub fn freq_rule_name(&mut self, freq_rule_name: String) -> &mut Self {
         self.freq_rule_name = Some(freq_rule_name);
         self
     }
+    #[inline(always)]
     pub fn last_update(&mut self, last_update: i64) -> &mut Self {
         self.last_update = Some(last_update);
         self
     }
+    #[inline(always)]
     pub fn period(&mut self, period: i64) -> &mut Self {
         self.period = Some(period);
         self
@@ -215,10 +225,14 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Payer and creator of the Frequency Rule
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    /// The PDA account where the Frequency Rule is stored
+    #[inline(always)]
     pub fn frequency_pda(
         &mut self,
         frequency_pda: &'a solana_program::account_info::AccountInfo<'a>,
@@ -226,6 +240,8 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
         self.instruction.frequency_pda = Some(frequency_pda);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -233,18 +249,22 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn rule_set_name(&mut self, rule_set_name: String) -> &mut Self {
         self.instruction.rule_set_name = Some(rule_set_name);
         self
     }
+    #[inline(always)]
     pub fn freq_rule_name(&mut self, freq_rule_name: String) -> &mut Self {
         self.instruction.freq_rule_name = Some(freq_rule_name);
         self
     }
+    #[inline(always)]
     pub fn last_update(&mut self, last_update: i64) -> &mut Self {
         self.instruction.last_update = Some(last_update);
         self
     }
+    #[inline(always)]
     pub fn period(&mut self, period: i64) -> &mut Self {
         self.instruction.period = Some(period);
         self

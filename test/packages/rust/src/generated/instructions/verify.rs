@@ -102,10 +102,14 @@ impl VerifyBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Collection Update authority
+    #[inline(always)]
     pub fn collection_authority(
         &mut self,
         collection_authority: solana_program::pubkey::Pubkey,
@@ -113,10 +117,15 @@ impl VerifyBuilder {
         self.collection_authority = Some(collection_authority);
         self
     }
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: solana_program::pubkey::Pubkey,
@@ -124,6 +133,9 @@ impl VerifyBuilder {
         self.authorization_rules = Some(authorization_rules);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
         authorization_rules_program: solana_program::pubkey::Pubkey,
@@ -131,6 +143,7 @@ impl VerifyBuilder {
         self.authorization_rules_program = Some(authorization_rules_program);
         self
     }
+    #[inline(always)]
     pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
         self.verify_args = Some(verify_args);
         self
@@ -260,6 +273,8 @@ impl<'a> VerifyCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -267,6 +282,8 @@ impl<'a> VerifyCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Collection Update authority
+    #[inline(always)]
     pub fn collection_authority(
         &mut self,
         collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -274,10 +291,15 @@ impl<'a> VerifyCpiBuilder<'a> {
         self.instruction.collection_authority = Some(collection_authority);
         self
     }
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
@@ -285,6 +307,9 @@ impl<'a> VerifyCpiBuilder<'a> {
         self.instruction.authorization_rules = Some(authorization_rules);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
         authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -292,6 +317,7 @@ impl<'a> VerifyCpiBuilder<'a> {
         self.instruction.authorization_rules_program = Some(authorization_rules_program);
         self
     }
+    #[inline(always)]
     pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
         self.instruction.verify_args = Some(verify_args);
         self

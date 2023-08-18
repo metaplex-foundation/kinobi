@@ -115,14 +115,20 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Destination account
+    #[inline(always)]
     pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
         self.destination = Some(destination);
         self
     }
+    /// Token account containing one time authorization token
+    #[inline(always)]
     pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token = Some(token);
         self
     }
+    /// One time authorization mint
+    #[inline(always)]
     pub fn one_time_printing_authorization_mint(
         &mut self,
         one_time_printing_authorization_mint: solana_program::pubkey::Pubkey,
@@ -130,30 +136,43 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
         self.one_time_printing_authorization_mint = Some(one_time_printing_authorization_mint);
         self
     }
+    /// Printing mint
+    #[inline(always)]
     pub fn printing_mint(&mut self, printing_mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.printing_mint = Some(printing_mint);
         self
     }
+    /// Burn authority
+    #[inline(always)]
     pub fn burn_authority(&mut self, burn_authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.burn_authority = Some(burn_authority);
         self
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.master_edition = Some(master_edition);
         self
     }
+    /// Token program
+    #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_program = Some(token_program);
         self
     }
+    /// Rent
+    #[inline(always)]
     pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
         self.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn mint_printing_tokens_via_token_args(
         &mut self,
         mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
@@ -311,6 +330,8 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Destination account
+    #[inline(always)]
     pub fn destination(
         &mut self,
         destination: &'a solana_program::account_info::AccountInfo<'a>,
@@ -318,10 +339,14 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         self.instruction.destination = Some(destination);
         self
     }
+    /// Token account containing one time authorization token
+    #[inline(always)]
     pub fn token(&mut self, token: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.token = Some(token);
         self
     }
+    /// One time authorization mint
+    #[inline(always)]
     pub fn one_time_printing_authorization_mint(
         &mut self,
         one_time_printing_authorization_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -330,6 +355,8 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
             Some(one_time_printing_authorization_mint);
         self
     }
+    /// Printing mint
+    #[inline(always)]
     pub fn printing_mint(
         &mut self,
         printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -337,6 +364,8 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         self.instruction.printing_mint = Some(printing_mint);
         self
     }
+    /// Burn authority
+    #[inline(always)]
     pub fn burn_authority(
         &mut self,
         burn_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -344,6 +373,8 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         self.instruction.burn_authority = Some(burn_authority);
         self
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -351,6 +382,8 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(
         &mut self,
         master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -358,6 +391,8 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         self.instruction.master_edition = Some(master_edition);
         self
     }
+    /// Token program
+    #[inline(always)]
     pub fn token_program(
         &mut self,
         token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -365,10 +400,13 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
         self.instruction.token_program = Some(token_program);
         self
     }
+    /// Rent
+    #[inline(always)]
     pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn mint_printing_tokens_via_token_args(
         &mut self,
         mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,

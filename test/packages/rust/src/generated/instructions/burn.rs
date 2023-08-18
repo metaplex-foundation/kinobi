@@ -136,22 +136,32 @@ impl BurnBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Metadata (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Asset owner
+    #[inline(always)]
     pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
         self.owner = Some(owner);
         self
     }
+    /// Mint of token asset
+    #[inline(always)]
     pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint = Some(mint);
         self
     }
+    /// Token account to close
+    #[inline(always)]
     pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_account = Some(token_account);
         self
     }
+    /// MasterEdition of the asset
+    #[inline(always)]
     pub fn master_edition_account(
         &mut self,
         master_edition_account: solana_program::pubkey::Pubkey,
@@ -159,6 +169,8 @@ impl BurnBuilder {
         self.master_edition_account = Some(master_edition_account);
         self
     }
+    /// SPL Token Program
+    #[inline(always)]
     pub fn spl_token_program(
         &mut self,
         spl_token_program: solana_program::pubkey::Pubkey,
@@ -166,6 +178,9 @@ impl BurnBuilder {
         self.spl_token_program = Some(spl_token_program);
         self
     }
+    /// `[optional account]`
+    /// Metadata of the Collection
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
@@ -173,6 +188,9 @@ impl BurnBuilder {
         self.collection_metadata = Some(collection_metadata);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: solana_program::pubkey::Pubkey,
@@ -180,6 +198,9 @@ impl BurnBuilder {
         self.authorization_rules = Some(authorization_rules);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
         authorization_rules_program: solana_program::pubkey::Pubkey,
@@ -187,6 +208,7 @@ impl BurnBuilder {
         self.authorization_rules_program = Some(authorization_rules_program);
         self
     }
+    #[inline(always)]
     pub fn burn_args(&mut self, burn_args: BurnArgs) -> &mut Self {
         self.burn_args = Some(burn_args);
         self
@@ -362,6 +384,8 @@ impl<'a> BurnCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Metadata (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -369,14 +393,20 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Asset owner
+    #[inline(always)]
     pub fn owner(&mut self, owner: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.owner = Some(owner);
         self
     }
+    /// Mint of token asset
+    #[inline(always)]
     pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
+    /// Token account to close
+    #[inline(always)]
     pub fn token_account(
         &mut self,
         token_account: &'a solana_program::account_info::AccountInfo<'a>,
@@ -384,6 +414,8 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.token_account = Some(token_account);
         self
     }
+    /// MasterEdition of the asset
+    #[inline(always)]
     pub fn master_edition_account(
         &mut self,
         master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
@@ -391,6 +423,8 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.master_edition_account = Some(master_edition_account);
         self
     }
+    /// SPL Token Program
+    #[inline(always)]
     pub fn spl_token_program(
         &mut self,
         spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -398,6 +432,9 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.spl_token_program = Some(spl_token_program);
         self
     }
+    /// `[optional account]`
+    /// Metadata of the Collection
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -405,6 +442,9 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
     pub fn authorization_rules(
         &mut self,
         authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
@@ -412,6 +452,9 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.authorization_rules = Some(authorization_rules);
         self
     }
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
         authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -419,6 +462,7 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.authorization_rules_program = Some(authorization_rules_program);
         self
     }
+    #[inline(always)]
     pub fn burn_args(&mut self, burn_args: BurnArgs) -> &mut Self {
         self.instruction.burn_args = Some(burn_args);
         self

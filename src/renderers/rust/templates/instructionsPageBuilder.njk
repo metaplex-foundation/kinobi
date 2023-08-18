@@ -20,6 +20,9 @@ impl {{ instruction.name | pascalCase }}Builder {
     Self::default()
   }
   {% for account in instruction.accounts %}
+    {{'/// `[optional account]`\n' if account.isOptional }}
+    {{- macros.docblock(account.docs) -}}
+    #[inline(always)]
     pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: solana_program::pubkey::Pubkey{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
       {% if account.isSigner === 'either' %}
         self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
@@ -31,6 +34,9 @@ impl {{ instruction.name | pascalCase }}Builder {
   {% endfor %}
   {% for arg in instructionArgs %}
     {% if not arg.default %}
+      {{'/// `[optional argument]`\n' if arg.innerOptionType }}
+      {{- macros.docblock(arg.docs) -}}
+      #[inline(always)]
       pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> &mut Self {
         self.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
         self

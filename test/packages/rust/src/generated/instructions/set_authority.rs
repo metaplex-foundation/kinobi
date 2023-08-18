@@ -67,14 +67,17 @@ impl SetAuthorityBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn new_authority(&mut self, new_authority: Pubkey) -> &mut Self {
         self.new_authority = Some(new_authority);
         self
@@ -160,6 +163,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn candy_machine(
         &mut self,
         candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -167,6 +171,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
         self.instruction.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(
         &mut self,
         authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -174,6 +179,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
         self.instruction.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn new_authority(&mut self, new_authority: Pubkey) -> &mut Self {
         self.instruction.new_authority = Some(new_authority);
         self

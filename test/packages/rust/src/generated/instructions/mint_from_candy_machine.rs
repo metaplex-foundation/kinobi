@@ -166,26 +166,32 @@ impl MintFromCandyMachineBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority_pda = Some(authority_pda);
         self
     }
+    #[inline(always)]
     pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint_authority = Some(mint_authority);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn nft_mint(&mut self, nft_mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.nft_mint = Some(nft_mint);
         self
     }
+    #[inline(always)]
     pub fn nft_mint_authority(
         &mut self,
         nft_mint_authority: solana_program::pubkey::Pubkey,
@@ -193,10 +199,12 @@ impl MintFromCandyMachineBuilder {
         self.nft_mint_authority = Some(nft_mint_authority);
         self
     }
+    #[inline(always)]
     pub fn nft_metadata(&mut self, nft_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.nft_metadata = Some(nft_metadata);
         self
     }
+    #[inline(always)]
     pub fn nft_master_edition(
         &mut self,
         nft_master_edition: solana_program::pubkey::Pubkey,
@@ -204,6 +212,7 @@ impl MintFromCandyMachineBuilder {
         self.nft_master_edition = Some(nft_master_edition);
         self
     }
+    #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
@@ -211,6 +220,7 @@ impl MintFromCandyMachineBuilder {
         self.collection_authority_record = Some(collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn collection_mint(
         &mut self,
         collection_mint: solana_program::pubkey::Pubkey,
@@ -218,6 +228,7 @@ impl MintFromCandyMachineBuilder {
         self.collection_mint = Some(collection_mint);
         self
     }
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
@@ -225,6 +236,7 @@ impl MintFromCandyMachineBuilder {
         self.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn collection_master_edition(
         &mut self,
         collection_master_edition: solana_program::pubkey::Pubkey,
@@ -232,6 +244,7 @@ impl MintFromCandyMachineBuilder {
         self.collection_master_edition = Some(collection_master_edition);
         self
     }
+    #[inline(always)]
     pub fn collection_update_authority(
         &mut self,
         collection_update_authority: solana_program::pubkey::Pubkey,
@@ -239,6 +252,7 @@ impl MintFromCandyMachineBuilder {
         self.collection_update_authority = Some(collection_update_authority);
         self
     }
+    #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
         token_metadata_program: solana_program::pubkey::Pubkey,
@@ -246,14 +260,17 @@ impl MintFromCandyMachineBuilder {
         self.token_metadata_program = Some(token_metadata_program);
         self
     }
+    #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_program = Some(token_program);
         self
     }
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn recent_slothashes(
         &mut self,
         recent_slothashes: solana_program::pubkey::Pubkey,
@@ -492,6 +509,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn candy_machine(
         &mut self,
         candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -499,6 +517,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority_pda(
         &mut self,
         authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
@@ -506,6 +525,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.authority_pda = Some(authority_pda);
         self
     }
+    #[inline(always)]
     pub fn mint_authority(
         &mut self,
         mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -513,10 +533,12 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn nft_mint(
         &mut self,
         nft_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -524,6 +546,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.nft_mint = Some(nft_mint);
         self
     }
+    #[inline(always)]
     pub fn nft_mint_authority(
         &mut self,
         nft_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -531,6 +554,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.nft_mint_authority = Some(nft_mint_authority);
         self
     }
+    #[inline(always)]
     pub fn nft_metadata(
         &mut self,
         nft_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -538,6 +562,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.nft_metadata = Some(nft_metadata);
         self
     }
+    #[inline(always)]
     pub fn nft_master_edition(
         &mut self,
         nft_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -545,6 +570,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.nft_master_edition = Some(nft_master_edition);
         self
     }
+    #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
         collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
@@ -552,6 +578,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.collection_authority_record = Some(collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn collection_mint(
         &mut self,
         collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -559,6 +586,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.collection_mint = Some(collection_mint);
         self
     }
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -566,6 +594,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn collection_master_edition(
         &mut self,
         collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -573,6 +602,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.collection_master_edition = Some(collection_master_edition);
         self
     }
+    #[inline(always)]
     pub fn collection_update_authority(
         &mut self,
         collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -580,6 +610,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.collection_update_authority = Some(collection_update_authority);
         self
     }
+    #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
         token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -587,6 +618,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.token_metadata_program = Some(token_metadata_program);
         self
     }
+    #[inline(always)]
     pub fn token_program(
         &mut self,
         token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -594,6 +626,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.token_program = Some(token_program);
         self
     }
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -601,6 +634,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn recent_slothashes(
         &mut self,
         recent_slothashes: &'a solana_program::account_info::AccountInfo<'a>,

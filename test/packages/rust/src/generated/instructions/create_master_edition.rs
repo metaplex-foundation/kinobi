@@ -114,14 +114,20 @@ impl CreateMasterEditionBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
+    #[inline(always)]
     pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.edition = Some(edition);
         self
     }
+    /// Metadata mint
+    #[inline(always)]
     pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint = Some(mint);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: solana_program::pubkey::Pubkey,
@@ -129,30 +135,43 @@ impl CreateMasterEditionBuilder {
         self.update_authority = Some(update_authority);
         self
     }
+    /// Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
+    #[inline(always)]
     pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.mint_authority = Some(mint_authority);
         self
     }
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Token program
+    #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_program = Some(token_program);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// Rent info
+    #[inline(always)]
     pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
         self.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn create_master_edition_args(
         &mut self,
         create_master_edition_args: CreateMasterEditionArgs,
@@ -310,6 +329,8 @@ impl<'a> CreateMasterEditionCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
+    #[inline(always)]
     pub fn edition(
         &mut self,
         edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -317,10 +338,14 @@ impl<'a> CreateMasterEditionCpiBuilder<'a> {
         self.instruction.edition = Some(edition);
         self
     }
+    /// Metadata mint
+    #[inline(always)]
     pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -328,6 +353,8 @@ impl<'a> CreateMasterEditionCpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
+    /// Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
+    #[inline(always)]
     pub fn mint_authority(
         &mut self,
         mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -335,10 +362,14 @@ impl<'a> CreateMasterEditionCpiBuilder<'a> {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -346,6 +377,8 @@ impl<'a> CreateMasterEditionCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Token program
+    #[inline(always)]
     pub fn token_program(
         &mut self,
         token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -353,6 +386,8 @@ impl<'a> CreateMasterEditionCpiBuilder<'a> {
         self.instruction.token_program = Some(token_program);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -360,10 +395,13 @@ impl<'a> CreateMasterEditionCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    /// Rent info
+    #[inline(always)]
     pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn create_master_edition_args(
         &mut self,
         create_master_edition_args: CreateMasterEditionArgs,

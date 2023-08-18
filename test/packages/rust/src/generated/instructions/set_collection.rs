@@ -145,22 +145,27 @@ impl SetCollectionBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
         self.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
         self.authority_pda = Some(authority_pda);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn collection_mint(
         &mut self,
         collection_mint: solana_program::pubkey::Pubkey,
@@ -168,6 +173,7 @@ impl SetCollectionBuilder {
         self.collection_mint = Some(collection_mint);
         self
     }
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
@@ -175,6 +181,7 @@ impl SetCollectionBuilder {
         self.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
@@ -182,6 +189,7 @@ impl SetCollectionBuilder {
         self.collection_authority_record = Some(collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn new_collection_update_authority(
         &mut self,
         new_collection_update_authority: solana_program::pubkey::Pubkey,
@@ -189,6 +197,7 @@ impl SetCollectionBuilder {
         self.new_collection_update_authority = Some(new_collection_update_authority);
         self
     }
+    #[inline(always)]
     pub fn new_collection_metadata(
         &mut self,
         new_collection_metadata: solana_program::pubkey::Pubkey,
@@ -196,6 +205,7 @@ impl SetCollectionBuilder {
         self.new_collection_metadata = Some(new_collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn new_collection_mint(
         &mut self,
         new_collection_mint: solana_program::pubkey::Pubkey,
@@ -203,6 +213,7 @@ impl SetCollectionBuilder {
         self.new_collection_mint = Some(new_collection_mint);
         self
     }
+    #[inline(always)]
     pub fn new_collection_master_edition(
         &mut self,
         new_collection_master_edition: solana_program::pubkey::Pubkey,
@@ -210,6 +221,7 @@ impl SetCollectionBuilder {
         self.new_collection_master_edition = Some(new_collection_master_edition);
         self
     }
+    #[inline(always)]
     pub fn new_collection_authority_record(
         &mut self,
         new_collection_authority_record: solana_program::pubkey::Pubkey,
@@ -217,6 +229,7 @@ impl SetCollectionBuilder {
         self.new_collection_authority_record = Some(new_collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
         token_metadata_program: solana_program::pubkey::Pubkey,
@@ -224,6 +237,7 @@ impl SetCollectionBuilder {
         self.token_metadata_program = Some(token_metadata_program);
         self
     }
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
@@ -430,6 +444,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    #[inline(always)]
     pub fn candy_machine(
         &mut self,
         candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
@@ -437,6 +452,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.candy_machine = Some(candy_machine);
         self
     }
+    #[inline(always)]
     pub fn authority(
         &mut self,
         authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -444,6 +460,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.authority = Some(authority);
         self
     }
+    #[inline(always)]
     pub fn authority_pda(
         &mut self,
         authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
@@ -451,10 +468,12 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.authority_pda = Some(authority_pda);
         self
     }
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    #[inline(always)]
     pub fn collection_mint(
         &mut self,
         collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -462,6 +481,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.collection_mint = Some(collection_mint);
         self
     }
+    #[inline(always)]
     pub fn collection_metadata(
         &mut self,
         collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -469,6 +489,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
         collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
@@ -476,6 +497,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.collection_authority_record = Some(collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn new_collection_update_authority(
         &mut self,
         new_collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -483,6 +505,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.new_collection_update_authority = Some(new_collection_update_authority);
         self
     }
+    #[inline(always)]
     pub fn new_collection_metadata(
         &mut self,
         new_collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -490,6 +513,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.new_collection_metadata = Some(new_collection_metadata);
         self
     }
+    #[inline(always)]
     pub fn new_collection_mint(
         &mut self,
         new_collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -497,6 +521,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.new_collection_mint = Some(new_collection_mint);
         self
     }
+    #[inline(always)]
     pub fn new_collection_master_edition(
         &mut self,
         new_collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -504,6 +529,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.new_collection_master_edition = Some(new_collection_master_edition);
         self
     }
+    #[inline(always)]
     pub fn new_collection_authority_record(
         &mut self,
         new_collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
@@ -511,6 +537,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.new_collection_authority_record = Some(new_collection_authority_record);
         self
     }
+    #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
         token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -518,6 +545,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.token_metadata_program = Some(token_metadata_program);
         self
     }
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,

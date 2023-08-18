@@ -77,22 +77,30 @@ impl CreateRuleSetBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Payer and creator of the RuleSet
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
+    /// The PDA account where the RuleSet is stored
+    #[inline(always)]
     pub fn rule_set_pda(&mut self, rule_set_pda: solana_program::pubkey::Pubkey) -> &mut Self {
         self.rule_set_pda = Some(rule_set_pda);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn create_args(&mut self, create_args: TaCreateArgs) -> &mut Self {
         self.create_args = Some(create_args);
         self
     }
+    #[inline(always)]
     pub fn rule_set_bump(&mut self, rule_set_bump: u8) -> &mut Self {
         self.rule_set_bump = Some(rule_set_bump);
         self
@@ -191,10 +199,14 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Payer and creator of the RuleSet
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
+    /// The PDA account where the RuleSet is stored
+    #[inline(always)]
     pub fn rule_set_pda(
         &mut self,
         rule_set_pda: &'a solana_program::account_info::AccountInfo<'a>,
@@ -202,6 +214,8 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
         self.instruction.rule_set_pda = Some(rule_set_pda);
         self
     }
+    /// System program
+    #[inline(always)]
     pub fn system_program(
         &mut self,
         system_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -209,10 +223,12 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
     pub fn create_args(&mut self, create_args: TaCreateArgs) -> &mut Self {
         self.instruction.create_args = Some(create_args);
         self
     }
+    #[inline(always)]
     pub fn rule_set_bump(&mut self, rule_set_bump: u8) -> &mut Self {
         self.instruction.rule_set_bump = Some(rule_set_bump);
         self

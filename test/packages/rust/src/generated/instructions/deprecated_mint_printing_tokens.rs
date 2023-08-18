@@ -102,14 +102,20 @@ impl DeprecatedMintPrintingTokensBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    /// Destination account
+    #[inline(always)]
     pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
         self.destination = Some(destination);
         self
     }
+    /// Printing mint
+    #[inline(always)]
     pub fn printing_mint(&mut self, printing_mint: solana_program::pubkey::Pubkey) -> &mut Self {
         self.printing_mint = Some(printing_mint);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: solana_program::pubkey::Pubkey,
@@ -117,22 +123,31 @@ impl DeprecatedMintPrintingTokensBuilder {
         self.update_authority = Some(update_authority);
         self
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
         self.metadata = Some(metadata);
         self
     }
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.master_edition = Some(master_edition);
         self
     }
+    /// Token program
+    #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.token_program = Some(token_program);
         self
     }
+    /// Rent
+    #[inline(always)]
     pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
         self.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn mint_printing_tokens_via_token_args(
         &mut self,
         mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
@@ -270,6 +285,8 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
         });
         Self { instruction }
     }
+    /// Destination account
+    #[inline(always)]
     pub fn destination(
         &mut self,
         destination: &'a solana_program::account_info::AccountInfo<'a>,
@@ -277,6 +294,8 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
         self.instruction.destination = Some(destination);
         self
     }
+    /// Printing mint
+    #[inline(always)]
     pub fn printing_mint(
         &mut self,
         printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
@@ -284,6 +303,8 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
         self.instruction.printing_mint = Some(printing_mint);
         self
     }
+    /// Update authority
+    #[inline(always)]
     pub fn update_authority(
         &mut self,
         update_authority: &'a solana_program::account_info::AccountInfo<'a>,
@@ -291,6 +312,8 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
         self.instruction.update_authority = Some(update_authority);
         self
     }
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    #[inline(always)]
     pub fn metadata(
         &mut self,
         metadata: &'a solana_program::account_info::AccountInfo<'a>,
@@ -298,6 +321,8 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
         self.instruction.metadata = Some(metadata);
         self
     }
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    #[inline(always)]
     pub fn master_edition(
         &mut self,
         master_edition: &'a solana_program::account_info::AccountInfo<'a>,
@@ -305,6 +330,8 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
         self.instruction.master_edition = Some(master_edition);
         self
     }
+    /// Token program
+    #[inline(always)]
     pub fn token_program(
         &mut self,
         token_program: &'a solana_program::account_info::AccountInfo<'a>,
@@ -312,10 +339,13 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
         self.instruction.token_program = Some(token_program);
         self
     }
+    /// Rent
+    #[inline(always)]
     pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.rent = Some(rent);
         self
     }
+    #[inline(always)]
     pub fn mint_printing_tokens_via_token_args(
         &mut self,
         mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
