@@ -46,3 +46,14 @@ impl MasterEditionV1 {
         )
     }
 }
+
+impl<'a> TryFrom<&'a solana_program::account_info::AccountInfo<'a>> for MasterEditionV1 {
+    type Error = std::io::Error;
+
+    fn try_from(
+        account_info: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> Result<Self, Self::Error> {
+        let mut data: &[u8] = &(*account_info.data).borrow();
+        Self::deserialize(&mut data)
+    }
+}

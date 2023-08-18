@@ -28,3 +28,14 @@ pub struct CandyMachine {
     /// Candy machine configuration data.
     pub data: CandyMachineData,
 }
+
+impl<'a> TryFrom<&'a solana_program::account_info::AccountInfo<'a>> for CandyMachine {
+    type Error = std::io::Error;
+
+    fn try_from(
+        account_info: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> Result<Self, Self::Error> {
+        let mut data: &[u8] = &(*account_info.data).borrow();
+        Self::deserialize(&mut data)
+    }
+}

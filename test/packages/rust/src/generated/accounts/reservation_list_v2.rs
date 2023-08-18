@@ -20,3 +20,14 @@ pub struct ReservationListV2 {
     pub total_reservation_spots: u64,
     pub current_reservation_spots: u64,
 }
+
+impl<'a> TryFrom<&'a solana_program::account_info::AccountInfo<'a>> for ReservationListV2 {
+    type Error = std::io::Error;
+
+    fn try_from(
+        account_info: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> Result<Self, Self::Error> {
+        let mut data: &[u8] = &(*account_info.data).borrow();
+        Self::deserialize(&mut data)
+    }
+}
