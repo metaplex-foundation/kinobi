@@ -488,7 +488,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
       if (accountsAndArgsConflicts.length > 0) {
         logWarn(
-          `Accounts and args of instruction [${instruction.name}] have the following ` +
+          `[JavaScript] Accounts and args of instruction [${instruction.name}] have the following ` +
             `conflicting attributes [${accountsAndArgsConflicts.join(
               ', '
             )}]. ` +

@@ -209,26 +209,6 @@
   ],
   "types": [
     {
-      "name": "RecursiveType",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "children",
-            "type": {
-              "vec": {
-                "defined": "RecursiveType"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
       "name": "CreateArgs",
       "type": {
         "kind": "struct",
@@ -343,6 +323,36 @@
                 {
                   "defined": "PayloadType"
                 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExtendedPayload",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": {
+              "hashMap": [
+                {
+                  "defined": "PayloadKey"
+                },
+                {
+                  "defined": "PayloadType"
+                }
+              ]
+            }
+          },
+          {
+            "name": "args",
+            "type": {
+              "tuple": [
+                "u8",
+                "string"
               ]
             }
           }

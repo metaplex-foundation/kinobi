@@ -2362,6 +2362,7 @@
           "name": "mint",
           "isMut": true,
           "isSigner": false,
+          "isOptionalSigner": true,
           "desc": "Mint of token asset"
         },
         {
@@ -4319,6 +4320,23 @@
                 "name": "decimals",
                 "type": {
                   "option": "u8"
+                }
+              },
+              {
+                "name": "max_supply",
+                "type": {
+                  "option": "u64"
+                }
+              }
+            ]
+          },
+          {
+            "name": "V2",
+            "fields": [
+              {
+                "name": "asset_data",
+                "type": {
+                  "defined": "AssetData"
                 }
               },
               {

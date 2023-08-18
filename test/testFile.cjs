@@ -102,7 +102,11 @@ kinobi.update(
         mintAuthority: { defaultsTo: k.accountDefault('updateAuthority') },
         edition: { defaultsTo: k.accountDefault('mint') },
         foo: { defaultsTo: k.accountDefault('bar') },
-        bar: { defaultsTo: k.programIdDefault() },
+        bar: {
+          defaultsTo: k.programIdDefault(),
+          isOptional: true,
+          isOptionalStrategy: 'programId',
+        },
         delegateRecord: {
           defaultsTo: k.pdaDefault('delegateRecord', {
             seeds: {
@@ -185,13 +189,6 @@ kinobi.update(
     },
     'mplTokenMetadata.UpdateArgs.V1': {
       tokenStandard: k.vSome(k.vEnum('TokenStandard', 'NonFungible')),
-      collection: k.vSome(
-        k.vEnum(
-          'PayloadType',
-          'Pubkey',
-          k.vTuple([k.vPublicKey('1'.repeat(32))])
-        )
-      ),
     },
   })
 );
@@ -207,13 +204,6 @@ kinobi.update(
   })
 );
 
-kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
-kinobi.update(
-  new k.FlattenStructVisitor({
-    'mplTokenMetadata.Metadata': ['Data'],
-  })
-);
-
 kinobi.update(
   new k.CreateSubInstructionsFromEnumArgsVisitor({
     'mplTokenMetadata.Create': 'createArgs',
@@ -223,10 +213,29 @@ kinobi.update(
 
 kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
 
+kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
+kinobi.update(
+  new k.FlattenStructVisitor({
+    'mplTokenMetadata.Metadata': ['Data'],
+  })
+);
+
 const kinobiJson = kinobi.getJson();
 const kinobiReconstructed = k.createFromJson(kinobiJson);
 
 // kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
+
+/**
+ * Render clients.
+ */
+
 kinobiReconstructed.accept(
-  new k.RenderJavaScriptVisitor('./test/package/src/generated')
+  new k.RenderJavaScriptVisitor('./test/packages/js/src/generated')
+);
+
+kinobiReconstructed.accept(
+  new k.RenderRustVisitor('./test/packages/rust/src/generated', {
+    crateFolder: './test/packages/rust',
+    formatCode: true,
+  })
 );
