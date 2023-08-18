@@ -5,9 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use num_derive::FromPrimitive;
 use thiserror::Error;
 
-#[derive(Clone, Debug, Eq, Error, PartialEq)]
+#[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
 pub enum MplTokenMetadataError {
     /// 0x0 - Failed to unpack instruction data
     #[error("Failed to unpack instruction data")]
@@ -39,22 +40,22 @@ pub enum MplTokenMetadataError {
     /// 0x9 - You must be the mint authority and signer on this transaction
     #[error("You must be the mint authority and signer on this transaction")]
     NotMintAuthority,
-    /// 0xa - Mint authority provided does not match the authority on the mint
+    /// 0xA - Mint authority provided does not match the authority on the mint
     #[error("Mint authority provided does not match the authority on the mint")]
     InvalidMintAuthority,
-    /// 0xb - Name too long
+    /// 0xB - Name too long
     #[error("Name too long")]
     NameTooLong,
-    /// 0xc - Symbol too long
+    /// 0xC - Symbol too long
     #[error("Symbol too long")]
     SymbolTooLong,
-    /// 0xd - URI too long
+    /// 0xD - URI too long
     #[error("URI too long")]
     UriTooLong,
-    /// 0xe - Update authority must be equivalent to the metadata's authority and also signer of this transaction
+    /// 0xE - Update authority must be equivalent to the metadata's authority and also signer of this transaction
     #[error("Update authority must be equivalent to the metadata's authority and also signer of this transaction")]
     UpdateAuthorityMustBeEqualToMetadataAuthorityAndSigner,
-    /// 0xf - Mint given does not match mint on Metadata
+    /// 0xF - Mint given does not match mint on Metadata
     #[error("Mint given does not match mint on Metadata")]
     MintMismatch,
     /// 0x10 - Editions must have exactly one token
@@ -87,22 +88,22 @@ pub enum MplTokenMetadataError {
     /// 0x19 - Token burn failed
     #[error("Token burn failed")]
     TokenBurnFailed,
-    /// 0x1a - The One Time authorization mint does not match that on the token account!
+    /// 0x1A - The One Time authorization mint does not match that on the token account!
     #[error("The One Time authorization mint does not match that on the token account!")]
     TokenAccountOneTimeAuthMintMismatch,
-    /// 0x1b - Derived key invalid
+    /// 0x1B - Derived key invalid
     #[error("Derived key invalid")]
     DerivedKeyInvalid,
-    /// 0x1c - The Printing mint does not match that on the master edition!
+    /// 0x1C - The Printing mint does not match that on the master edition!
     #[error("The Printing mint does not match that on the master edition!")]
     PrintingMintMismatch,
-    /// 0x1d - The One Time Printing Auth mint does not match that on the master edition!
+    /// 0x1D - The One Time Printing Auth mint does not match that on the master edition!
     #[error("The One Time Printing Auth mint does not match that on the master edition!")]
     OneTimePrintingAuthMintMismatch,
-    /// 0x1e - The mint of the token account does not match the Printing mint!
+    /// 0x1E - The mint of the token account does not match the Printing mint!
     #[error("The mint of the token account does not match the Printing mint!")]
     TokenAccountMintMismatch,
-    /// 0x1f - The mint of the token account does not match the master metadata mint!
+    /// 0x1F - The mint of the token account does not match the master metadata mint!
     #[error("The mint of the token account does not match the master metadata mint!")]
     TokenAccountMintMismatchV2,
     /// 0x20 - Not enough tokens to mint a limited edition
@@ -137,22 +138,22 @@ pub enum MplTokenMetadataError {
     /// 0x29 - Basis points cannot be more than 10000
     #[error("Basis points cannot be more than 10000")]
     InvalidBasisPoints,
-    /// 0x2a - Primary sale can only be flipped to true and is immutable
+    /// 0x2A - Primary sale can only be flipped to true and is immutable
     #[error("Primary sale can only be flipped to true and is immutable")]
     PrimarySaleCanOnlyBeFlippedToTrue,
-    /// 0x2b - Owner does not match that on the account given
+    /// 0x2B - Owner does not match that on the account given
     #[error("Owner does not match that on the account given")]
     OwnerMismatch,
-    /// 0x2c - This account has no tokens to be used for authorization
+    /// 0x2C - This account has no tokens to be used for authorization
     #[error("This account has no tokens to be used for authorization")]
     NoBalanceInAccountForAuthorization,
-    /// 0x2d - Share total must equal 100 for creator array
+    /// 0x2D - Share total must equal 100 for creator array
     #[error("Share total must equal 100 for creator array")]
     ShareTotalMustBe100,
-    /// 0x2e - This reservation list already exists!
+    /// 0x2E - This reservation list already exists!
     #[error("This reservation list already exists!")]
     ReservationExists,
-    /// 0x2f - This reservation list does not exist!
+    /// 0x2F - This reservation list does not exist!
     #[error("This reservation list does not exist!")]
     ReservationDoesNotExist,
     /// 0x30 - This reservation list exists but was never set with reservations
@@ -185,22 +186,22 @@ pub enum MplTokenMetadataError {
     /// 0x39 - Incorrect account owner
     #[error("Incorrect account owner")]
     IncorrectOwner,
-    /// 0x3a - printing these tokens would breach the maximum supply limit of the master edition
+    /// 0x3A - printing these tokens would breach the maximum supply limit of the master edition
     #[error("printing these tokens would breach the maximum supply limit of the master edition")]
     PrintingWouldBreachMaximumSupply,
-    /// 0x3b - Data is immutable
+    /// 0x3B - Data is immutable
     #[error("Data is immutable")]
     DataIsImmutable,
-    /// 0x3c - No duplicate creator addresses
+    /// 0x3C - No duplicate creator addresses
     #[error("No duplicate creator addresses")]
     DuplicateCreatorAddress,
-    /// 0x3d - Reservation spots remaining should match total spots when first being created
+    /// 0x3D - Reservation spots remaining should match total spots when first being created
     #[error("Reservation spots remaining should match total spots when first being created")]
     ReservationSpotsRemainingShouldMatchTotalSpotsAtStart,
-    /// 0x3e - Invalid token program
+    /// 0x3E - Invalid token program
     #[error("Invalid token program")]
     InvalidTokenProgram,
-    /// 0x3f - Data type mismatch
+    /// 0x3F - Data type mismatch
     #[error("Data type mismatch")]
     DataTypeMismatch,
     /// 0x40 - Beyond alotted address size in reservation!
@@ -233,22 +234,22 @@ pub enum MplTokenMetadataError {
     /// 0x49 - Is Mutable can only be flipped to false
     #[error("Is Mutable can only be flipped to false")]
     IsMutableCanOnlyBeFlippedToFalse,
-    /// 0x4a - Collection cannot be verified in this instruction
+    /// 0x4A - Collection cannot be verified in this instruction
     #[error("Collection cannot be verified in this instruction")]
     CollectionCannotBeVerifiedInThisInstruction,
-    /// 0x4b - This instruction was deprecated in a previous release and is now removed
+    /// 0x4B - This instruction was deprecated in a previous release and is now removed
     #[error("This instruction was deprecated in a previous release and is now removed")]
     Removed,
-    /// 0x4c - This token use method is burn and there are no remaining uses, it must be burned
+    /// 0x4C - This token use method is burn and there are no remaining uses, it must be burned
     #[error("This token use method is burn and there are no remaining uses, it must be burned")]
     MustBeBurned,
-    /// 0x4d - This use method is invalid
+    /// 0x4D - This use method is invalid
     #[error("This use method is invalid")]
     InvalidUseMethod,
-    /// 0x4e - Cannot Change Use Method after the first use
+    /// 0x4E - Cannot Change Use Method after the first use
     #[error("Cannot Change Use Method after the first use")]
     CannotChangeUseMethodAfterFirstUse,
-    /// 0x4f - Cannot Change Remaining or Available uses after the first use
+    /// 0x4F - Cannot Change Remaining or Available uses after the first use
     #[error("Cannot Change Remaining or Available uses after the first use")]
     CannotChangeUsesAfterFirstUse,
     /// 0x50 - Collection Not Found on Metadata
@@ -281,22 +282,22 @@ pub enum MplTokenMetadataError {
     /// 0x59 - This Use Authority Record is invalid.
     #[error("This Use Authority Record is invalid.")]
     InvalidUseAuthorityRecord,
-    /// 0x5a - This Collection Authority Record is invalid.
+    /// 0x5A - This Collection Authority Record is invalid.
     #[error("This Collection Authority Record is invalid.")]
     InvalidCollectionAuthorityRecord,
-    /// 0x5b - Metadata does not match the freeze authority on the mint
+    /// 0x5B - Metadata does not match the freeze authority on the mint
     #[error("Metadata does not match the freeze authority on the mint")]
     InvalidFreezeAuthority,
-    /// 0x5c - All tokens in this account have not been delegated to this user.
+    /// 0x5C - All tokens in this account have not been delegated to this user.
     #[error("All tokens in this account have not been delegated to this user.")]
     InvalidDelegate,
-    /// 0x5d - Creator can not be adjusted once they are verified.
+    /// 0x5D - Creator can not be adjusted once they are verified.
     #[error("Creator can not be adjusted once they are verified.")]
     CannotAdjustVerifiedCreator,
-    /// 0x5e - Verified creators cannot be removed.
+    /// 0x5E - Verified creators cannot be removed.
     #[error("Verified creators cannot be removed.")]
     CannotRemoveVerifiedCreator,
-    /// 0x5f - Can not wipe verified creators.
+    /// 0x5F - Can not wipe verified creators.
     #[error("Can not wipe verified creators.")]
     CannotWipeVerifiedCreators,
     /// 0x60 - Not allowed to change seller fee basis points.
@@ -331,22 +332,22 @@ pub enum MplTokenMetadataError {
     /// 0x69 - This NFT is not a verified member of the specified collection.
     #[error("This NFT is not a verified member of the specified collection.")]
     NotVerifiedMemberOfCollection,
-    /// 0x6a - This NFT is not a collection parent NFT.
+    /// 0x6A - This NFT is not a collection parent NFT.
     #[error("This NFT is not a collection parent NFT.")]
     NotACollectionParent,
-    /// 0x6b - Could not determine a TokenStandard type.
+    /// 0x6B - Could not determine a TokenStandard type.
     #[error("Could not determine a TokenStandard type.")]
     CouldNotDetermineTokenStandard,
-    /// 0x6c - This mint account has an edition but none was provided.
+    /// 0x6C - This mint account has an edition but none was provided.
     #[error("This mint account has an edition but none was provided.")]
     MissingEditionAccount,
-    /// 0x6d - This edition is not a Master Edition
+    /// 0x6D - This edition is not a Master Edition
     #[error("This edition is not a Master Edition")]
     NotAMasterEdition,
-    /// 0x6e - This Master Edition has existing prints
+    /// 0x6E - This Master Edition has existing prints
     #[error("This Master Edition has existing prints")]
     MasterEditionHasPrints,
-    /// 0x6f - Borsh Deserialization Error
+    /// 0x6F - Borsh Deserialization Error
     #[error("Borsh Deserialization Error")]
     BorshDeserializationError,
     /// 0x70 - Cannot update a verified collection in this command
@@ -379,22 +380,22 @@ pub enum MplTokenMetadataError {
     /// 0x79 - Print Edition does not match Master Edition
     #[error("Print Edition does not match Master Edition")]
     PrintEditionDoesNotMatchMasterEdition,
-    /// 0x7a - Edition Number greater than max supply
+    /// 0x7A - Edition Number greater than max supply
     #[error("Edition Number greater than max supply")]
     EditionNumberGreaterThanMaxSupply,
-    /// 0x7b - Must unverify before migrating collections.
+    /// 0x7B - Must unverify before migrating collections.
     #[error("Must unverify before migrating collections.")]
     MustUnverify,
-    /// 0x7c - Invalid Escrow Account Bump Seed
+    /// 0x7C - Invalid Escrow Account Bump Seed
     #[error("Invalid Escrow Account Bump Seed")]
     InvalidEscrowBumpSeed,
-    /// 0x7d - Must Escrow Authority
+    /// 0x7D - Must Escrow Authority
     #[error("Must Escrow Authority")]
     MustBeEscrowAuthority,
-    /// 0x7e - Invalid System Program
+    /// 0x7E - Invalid System Program
     #[error("Invalid System Program")]
     InvalidSystemProgram,
-    /// 0x7f - Must be a Non Fungible Token
+    /// 0x7F - Must be a Non Fungible Token
     #[error("Must be a Non Fungible Token")]
     MustBeNonFungible,
     /// 0x80 - Insufficient tokens for transfer
@@ -427,22 +428,22 @@ pub enum MplTokenMetadataError {
     /// 0x89 - Missing authorization rules account
     #[error("Missing authorization rules account")]
     MissingAuthorizationRules,
-    /// 0x8a - Missing programmable configuration
+    /// 0x8A - Missing programmable configuration
     #[error("Missing programmable configuration")]
     MissingProgrammableConfig,
-    /// 0x8b - Invalid programmable configuration
+    /// 0x8B - Invalid programmable configuration
     #[error("Invalid programmable configuration")]
     InvalidProgrammableConfig,
-    /// 0x8c - Delegate already exists
+    /// 0x8C - Delegate already exists
     #[error("Delegate already exists")]
     DelegateAlreadyExists,
-    /// 0x8d - Delegate not found
+    /// 0x8D - Delegate not found
     #[error("Delegate not found")]
     DelegateNotFound,
-    /// 0x8e - Required account not set in instruction builder
+    /// 0x8E - Required account not set in instruction builder
     #[error("Required account not set in instruction builder")]
     MissingAccountInBuilder,
-    /// 0x8f - Required argument not set in instruction builder
+    /// 0x8F - Required argument not set in instruction builder
     #[error("Required argument not set in instruction builder")]
     MissingArgumentInBuilder,
     /// 0x90 - Feature not supported currently
@@ -466,4 +467,10 @@ pub enum MplTokenMetadataError {
     /// 0x96 - Invalid delegate role for transfer
     #[error("Invalid delegate role for transfer")]
     InvalidDelegateRoleForTransfer,
+}
+
+impl solana_program::program_error::PrintProgramError for MplTokenMetadataError {
+    fn print<E>(&self) {
+        solana_program::msg!(&self.to_string());
+    }
 }

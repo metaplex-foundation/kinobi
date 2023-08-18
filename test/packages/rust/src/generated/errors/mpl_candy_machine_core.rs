@@ -5,9 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use num_derive::FromPrimitive;
 use thiserror::Error;
 
-#[derive(Clone, Debug, Eq, Error, PartialEq)]
+#[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
 pub enum MplCandyMachineCoreError {
     /// 0x1770 - Account does not have correct owner
     #[error("Account does not have correct owner")]
@@ -39,22 +40,22 @@ pub enum MplCandyMachineCoreError {
     /// 0x1779 - Cannot switch to hidden settings after items available is greater than 0
     #[error("Cannot switch to hidden settings after items available is greater than 0")]
     CannotSwitchToHiddenSettings,
-    /// 0x177a - Incorrect collection NFT authority
+    /// 0x177A - Incorrect collection NFT authority
     #[error("Incorrect collection NFT authority")]
     IncorrectCollectionAuthority,
-    /// 0x177b - The metadata account has data in it, and this must be empty to mint a new NFT
+    /// 0x177B - The metadata account has data in it, and this must be empty to mint a new NFT
     #[error("The metadata account has data in it, and this must be empty to mint a new NFT")]
     MetadataAccountMustBeEmpty,
-    /// 0x177c - Can't change collection settings after items have begun to be minted
+    /// 0x177C - Can't change collection settings after items have begun to be minted
     #[error("Can't change collection settings after items have begun to be minted")]
     NoChangingCollectionDuringMint,
-    /// 0x177d - Value longer than expected maximum value
+    /// 0x177D - Value longer than expected maximum value
     #[error("Value longer than expected maximum value")]
     ExceededLengthError,
-    /// 0x177e - Missing config lines settings
+    /// 0x177E - Missing config lines settings
     #[error("Missing config lines settings")]
     MissingConfigLinesSettings,
-    /// 0x177f - Cannot increase the length in config lines settings
+    /// 0x177F - Cannot increase the length in config lines settings
     #[error("Cannot increase the length in config lines settings")]
     CannotIncreaseLength,
     /// 0x1780 - Cannot switch from hidden settings
@@ -72,4 +73,10 @@ pub enum MplCandyMachineCoreError {
     /// 0x1784 - Not all config lines were added to the candy machine
     #[error("Not all config lines were added to the candy machine")]
     NotFullyLoaded,
+}
+
+impl solana_program::program_error::PrintProgramError for MplCandyMachineCoreError {
+    fn print<E>(&self) {
+        solana_program::msg!(&self.to_string());
+    }
 }

@@ -5,8 +5,10 @@ edition = "2021"
 publish = false
 
 [dependencies]
-solana-program = "~1.14.13"
-borsh = "0.9.3"
+solana-program = "^1.10"
+borsh = ">= 0.9"
+num-derive = "^0.3"
+num-traits = "^0.2"
 thiserror = "~1.0"
 
 [lib]

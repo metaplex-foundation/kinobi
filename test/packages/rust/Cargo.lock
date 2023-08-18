@@ -516,6 +516,8 @@ name = "kinobi-dummy-generated"
 version = "0.1.0"
 dependencies = [
  "borsh",
+ "num-derive",
+ "num-traits",
  "solana-program",
  "thiserror",
 ]

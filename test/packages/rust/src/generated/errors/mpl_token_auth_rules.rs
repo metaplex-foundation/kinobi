@@ -5,9 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use num_derive::FromPrimitive;
 use thiserror::Error;
 
-#[derive(Clone, Debug, Eq, Error, PartialEq)]
+#[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
 pub enum MplTokenAuthRulesError {
     /// 0x0 - Numerical Overflow
     #[error("Numerical Overflow")]
@@ -39,19 +40,25 @@ pub enum MplTokenAuthRulesError {
     /// 0x9 - Amount checked failed
     #[error("Amount checked failed")]
     AmountCheckFailed,
-    /// 0xa - Frequency check failed
+    /// 0xA - Frequency check failed
     #[error("Frequency check failed")]
     FrequencyCheckFailed,
-    /// 0xb - Pubkey Tree Match check failed
+    /// 0xB - Pubkey Tree Match check failed
     #[error("Pubkey Tree Match check failed")]
     PubkeyTreeMatchCheckFailed,
-    /// 0xc - Payer is not a signer
+    /// 0xC - Payer is not a signer
     #[error("Payer is not a signer")]
     PayerIsNotSigner,
-    /// 0xd -
+    /// 0xD -
     #[error("")]
     NotImplemented,
-    /// 0xe - Borsh Serialization Error
+    /// 0xE - Borsh Serialization Error
     #[error("Borsh Serialization Error")]
     BorshSerializationError,
+}
+
+impl solana_program::program_error::PrintProgramError for MplTokenAuthRulesError {
+    fn print<E>(&self) {
+        solana_program::msg!(&self.to_string());
+    }
 }
