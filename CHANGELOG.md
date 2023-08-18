@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.13.0
+
+### Minor Changes
+
+- [#59](https://github.com/metaplex-foundation/kinobi/pull/59) [`eaf0e8f`](https://github.com/metaplex-foundation/kinobi/commit/eaf0e8f0d620a1aba025b00a7e779a6ddd9f5d19) Thanks [@febo](https://github.com/febo)! - Add rust client generation
+
 ## 0.12.3
 
 ### Patch Changes
