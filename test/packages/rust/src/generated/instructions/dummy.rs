@@ -39,6 +39,11 @@ impl Dummy {
         ));
         if let Some(mint) = self.mint {
             accounts.push(solana_program::instruction::AccountMeta::new(mint, false));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.update_authority,
@@ -57,6 +62,11 @@ impl Dummy {
         if let Some(bar) = self.bar {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 bar, true,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
             ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -200,6 +210,11 @@ impl<'a> DummyCpi<'a> {
             accounts.push(solana_program::instruction::AccountMeta::new(
                 *mint.key, false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.update_authority.key,
@@ -220,6 +235,11 @@ impl<'a> DummyCpi<'a> {
         if let Some(bar) = self.bar {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *bar.key, true,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
             ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(

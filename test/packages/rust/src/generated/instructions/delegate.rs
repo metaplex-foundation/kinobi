@@ -63,12 +63,22 @@ impl Delegate {
                 master_edition,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.mint, false,
         ));
         if let Some(token) = self.token {
             accounts.push(solana_program::instruction::AccountMeta::new(token, false));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.authority,
@@ -90,16 +100,31 @@ impl Delegate {
                 spl_token_program,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules_program) = self.authorization_rules_program {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules_program,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -314,6 +339,11 @@ impl<'a> DelegateCpi<'a> {
                 *master_edition.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.mint.key,
@@ -322,6 +352,11 @@ impl<'a> DelegateCpi<'a> {
         if let Some(token) = self.token {
             accounts.push(solana_program::instruction::AccountMeta::new(
                 *token.key, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
             ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -345,16 +380,31 @@ impl<'a> DelegateCpi<'a> {
                 *spl_token_program.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules_program) = self.authorization_rules_program {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules_program.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

@@ -79,10 +79,20 @@ impl Utilize {
                 use_authority_record,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(burner) = self.burner {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 burner, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
             ));
         }
 
@@ -296,10 +306,20 @@ impl<'a> UtilizeCpi<'a> {
                 *use_authority_record.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(burner) = self.burner {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *burner.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

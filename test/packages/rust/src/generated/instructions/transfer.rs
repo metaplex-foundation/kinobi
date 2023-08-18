@@ -59,6 +59,11 @@ impl Transfer {
                 delegate_record,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.token, false,
@@ -87,6 +92,11 @@ impl Transfer {
                 master_edition,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.spl_token_program,
@@ -109,10 +119,20 @@ impl Transfer {
                 authorization_rules_program,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -347,6 +367,11 @@ impl<'a> TransferCpi<'a> {
                 *delegate_record.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.token.key,
@@ -377,6 +402,11 @@ impl<'a> TransferCpi<'a> {
                 *master_edition.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.spl_token_program.key,
@@ -399,10 +429,20 @@ impl<'a> TransferCpi<'a> {
                 *authorization_rules_program.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

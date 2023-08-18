@@ -18,7 +18,7 @@ pub struct {{ instruction.name | pascalCase }} {
     {% set type = 'solana_program::pubkey::Pubkey' %}
   {% endif %}
 
-  {% if account.isOptional or account.defaultsTo.kind === 'programId' %}
+  {% if account.isOptional %}
     pub {{ account.name | snakeCase }}: Option<{{ type }}>,
   {% else %}
     pub {{ account.name | snakeCase }}: {{ type }},
@@ -37,24 +37,26 @@ impl {{ instruction.name | pascalCase }} {
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
         {% if account.isOptional %}
-          if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
-            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-              {{ account.name | snakeCase }},
-              signer,
-            ));
-          }
-        {% elif account.defaultsTo.kind === 'programId' %}
-          if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
-            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-              {{ account.name | snakeCase }},
-              signer,
-            ));
-          } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-              crate::{{ program.name | snakeCase | upper }}_ID,
-              false,
-            ));
-          }
+          {% if account.isOptionalStrategy === 'programId' %}
+            if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
+              accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                {{ account.name | snakeCase }},
+                signer,
+              ));
+            } else {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::{{ program.name | snakeCase | upper }}_ID,
+                false,
+              ));
+            }
+          {% else %}
+            if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
+              accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                {{ account.name | snakeCase }},
+                signer,
+              ));
+            }
+          {% endif %}
         {% else %}
           accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
             self.{{ account.name | snakeCase }}.0,
@@ -63,24 +65,26 @@ impl {{ instruction.name | pascalCase }} {
         {% endif %}
       {% else %}
         {% if account.isOptional %}
-          if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
-            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-              {{ account.name | snakeCase }},
-              {{ 'true' if account.isSigner else 'false' }},
-            ));
-          }
-        {% elif account.defaultsTo.kind === 'programId' %}
-          if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
-            accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
-              {{ account.name | snakeCase }},
-              {{ 'true' if account.isSigner else 'false' }},
-            ));
-          } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-              crate::{{ program.name | snakeCase | upper }}_ID,
-              false,
-            ));
-          }
+          {% if account.isOptionalStrategy === 'programId' %}
+            if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
+              accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                {{ account.name | snakeCase }},
+                {{ 'true' if account.isSigner else 'false' }},
+              ));
+            } else {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::{{ program.name | snakeCase | upper }}_ID,
+                false,
+              ));
+            }
+          {% elif account.isOptional %}
+            if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
+              accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
+                {{ account.name | snakeCase }},
+                {{ 'true' if account.isSigner else 'false' }},
+              ));
+            }
+          {% endif %}
         {% else %}
           accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
             self.{{ account.name | snakeCase }},

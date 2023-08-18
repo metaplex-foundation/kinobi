@@ -47,6 +47,11 @@ impl CreateV2 {
                 master_edition,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.mint.0,
@@ -248,6 +253,11 @@ impl<'a> CreateV2Cpi<'a> {
         if let Some(master_edition) = self.master_edition {
             accounts.push(solana_program::instruction::AccountMeta::new(
                 *master_edition.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

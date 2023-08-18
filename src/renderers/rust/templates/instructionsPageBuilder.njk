@@ -41,14 +41,14 @@ impl {{ instruction.name | pascalCase }}Builder {
   pub fn build(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {
         {% for account in instruction.accounts %}
-          {% if account.defaultsTo.kind === 'programId' %}
+          {% if account.isOptional %}
+            {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }},
+          {% elif account.defaultsTo.kind === 'programId' %}
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}, {# Program ID set on the instruction creation. #}
           {% elif account.defaultsTo.kind === 'program' %}
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.unwrap_or(solana_program::pubkey!("{{ account.defaultsTo.program.publicKey }}")),
           {% elif account.defaultsTo.kind === 'publicKey' %}
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.unwrap_or(solana_program::pubkey!("{{ account.defaultsTo.publicKey }}")),
-          {% elif account.isOptional %}
-            {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }},
           {% else %}
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.expect("{{ account.name | snakeCase }} is not set"),
           {% endif %}

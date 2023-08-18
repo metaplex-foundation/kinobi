@@ -64,6 +64,11 @@ impl ApproveCollectionAuthority {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 rent, false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
 
         solana_program::instruction::Instruction {
@@ -232,6 +237,11 @@ impl<'a> ApproveCollectionAuthorityCpi<'a> {
         if let Some(rent) = self.rent {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *rent.key, false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
             ));
         }
 

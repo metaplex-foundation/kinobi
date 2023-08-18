@@ -55,6 +55,11 @@ impl UnverifyCollection {
                 collection_authority_record,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
 
         solana_program::instruction::Instruction {
@@ -200,6 +205,11 @@ impl<'a> UnverifyCollectionCpi<'a> {
         if let Some(collection_authority_record) = self.collection_authority_record {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *collection_authority_record.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

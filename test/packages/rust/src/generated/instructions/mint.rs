@@ -56,6 +56,11 @@ impl Mint {
                 master_edition,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.mint, false,
@@ -88,10 +93,20 @@ impl Mint {
                 authorization_rules_program,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
@@ -294,6 +309,11 @@ impl<'a> MintCpi<'a> {
                 *master_edition.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.mint.key,
@@ -328,10 +348,20 @@ impl<'a> MintCpi<'a> {
                 *authorization_rules_program.key,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
         if let Some(authorization_rules) = self.authorization_rules {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authorization_rules.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }

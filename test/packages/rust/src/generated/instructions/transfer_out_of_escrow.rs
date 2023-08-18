@@ -96,6 +96,11 @@ impl TransferOutOfEscrow {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authority, true,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
 
         solana_program::instruction::Instruction {
@@ -333,6 +338,11 @@ impl<'a> TransferOutOfEscrowCpi<'a> {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 *authority.key,
                 true,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
             ));
         }
 

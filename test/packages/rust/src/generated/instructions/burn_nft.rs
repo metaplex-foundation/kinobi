@@ -59,6 +59,11 @@ impl BurnNft {
                 collection_metadata,
                 false,
             ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
         }
 
         solana_program::instruction::Instruction {
@@ -213,6 +218,11 @@ impl<'a> BurnNftCpi<'a> {
         if let Some(collection_metadata) = self.collection_metadata {
             accounts.push(solana_program::instruction::AccountMeta::new(
                 *collection_metadata.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
                 false,
             ));
         }
