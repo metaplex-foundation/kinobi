@@ -122,19 +122,35 @@ impl UpdateV1 {
                 false,
             ));
         }
+        let mut data = UpdateV1InstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
+        }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct UpdateV1InstructionData {
+    discriminator: u8,
+    update_v1_discriminator: u8,
+}
+
+impl UpdateV1InstructionData {
+    fn new() -> Self {
+        Self {
+            discriminator: 43,
+            update_v1_discriminator: 0,
         }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UpdateV1InstructionArgs {
-    discriminator: u8,
-    update_v1_discriminator: u8,
     pub authorization_data: Option<AuthorizationData>,
     pub new_update_authority: Option<Pubkey>,
     pub data: Option<UpdateV1InstructionDataData>,
@@ -156,39 +172,6 @@ pub struct UpdateV1InstructionDataData {
     pub uri: String,
     pub seller_fee_basis_points: u16,
     pub creators: Option<Vec<Creator>>,
-}
-
-impl UpdateV1InstructionArgs {
-    pub fn new(
-        authorization_data: Option<AuthorizationData>,
-        new_update_authority: Option<Pubkey>,
-        data: Option<UpdateV1InstructionDataData>,
-        primary_sale_happened: Option<bool>,
-        is_mutable: Option<bool>,
-        collection: Option<Collection>,
-        uses: Option<Uses>,
-        collection_details: Option<CollectionDetails>,
-        programmable_config: Option<ProgrammableConfig>,
-        delegate_state: Option<DelegateState>,
-        authority_type: AuthorityType,
-    ) -> Self {
-        Self {
-            discriminator: 43,
-            update_v1_discriminator: 0,
-            authorization_data,
-            new_update_authority,
-            data,
-            primary_sale_happened,
-            is_mutable,
-            token_standard: Some(TokenStandard::NonFungible),
-            collection,
-            uses,
-            collection_details,
-            programmable_config,
-            delegate_state,
-            authority_type,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -388,22 +371,23 @@ impl UpdateV1Builder {
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
         };
-        let mut args = UpdateV1InstructionArgs::new(
-            self.authorization_data.clone(),
-            self.new_update_authority.clone(),
-            self.data.clone(),
-            self.primary_sale_happened.clone(),
-            self.is_mutable.clone(),
-            self.collection.clone(),
-            self.uses.clone(),
-            self.collection_details.clone(),
-            self.programmable_config.clone(),
-            self.delegate_state.clone(),
-            self.authority_type
+        let args = UpdateV1InstructionArgs {
+            authorization_data: self.authorization_data.clone(),
+            new_update_authority: self.new_update_authority.clone(),
+            data: self.data.clone(),
+            primary_sale_happened: self.primary_sale_happened.clone(),
+            is_mutable: self.is_mutable.clone(),
+            token_standard: self.token_standard.clone(),
+            collection: self.collection.clone(),
+            uses: self.uses.clone(),
+            collection_details: self.collection_details.clone(),
+            programmable_config: self.programmable_config.clone(),
+            delegate_state: self.delegate_state.clone(),
+            authority_type: self
+                .authority_type
                 .clone()
                 .expect("authority_type is not set"),
-        );
-        args.token_standard = self.token_standard.clone();
+        };
 
         accounts.instruction(args)
     }
@@ -522,11 +506,14 @@ impl<'a> UpdateV1Cpi<'a> {
                 false,
             ));
         }
+        let mut data = UpdateV1InstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(10 + 1);
         account_infos.push(self.__program.clone());
@@ -755,23 +742,24 @@ impl<'a> UpdateV1CpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateV1Cpi<'a> {
-        let mut args = UpdateV1InstructionArgs::new(
-            self.instruction.authorization_data.clone(),
-            self.instruction.new_update_authority.clone(),
-            self.instruction.data.clone(),
-            self.instruction.primary_sale_happened.clone(),
-            self.instruction.is_mutable.clone(),
-            self.instruction.collection.clone(),
-            self.instruction.uses.clone(),
-            self.instruction.collection_details.clone(),
-            self.instruction.programmable_config.clone(),
-            self.instruction.delegate_state.clone(),
-            self.instruction
+        let args = UpdateV1InstructionArgs {
+            authorization_data: self.instruction.authorization_data.clone(),
+            new_update_authority: self.instruction.new_update_authority.clone(),
+            data: self.instruction.data.clone(),
+            primary_sale_happened: self.instruction.primary_sale_happened.clone(),
+            is_mutable: self.instruction.is_mutable.clone(),
+            token_standard: self.instruction.token_standard.clone(),
+            collection: self.instruction.collection.clone(),
+            uses: self.instruction.uses.clone(),
+            collection_details: self.instruction.collection_details.clone(),
+            programmable_config: self.instruction.programmable_config.clone(),
+            delegate_state: self.instruction.delegate_state.clone(),
+            authority_type: self
+                .instruction
                 .authority_type
                 .clone()
                 .expect("authority_type is not set"),
-        );
-        args.token_standard = self.instruction.token_standard.clone();
+        };
 
         UpdateV1Cpi {
             __program: self.instruction.__program,

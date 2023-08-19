@@ -59,18 +59,33 @@ impl CreateMetadataAccount {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.rent, false,
         ));
+        let mut data = CreateMetadataAccountInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct CreateMetadataAccountInstructionData {
+    discriminator: u8,
+}
+
+impl CreateMetadataAccountInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 0 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateMetadataAccountInstructionArgs {
-    discriminator: u8,
     pub data: CreateMetadataAccountInstructionDataData,
     pub is_mutable: bool,
     pub metadata_bump: u8,
@@ -83,21 +98,6 @@ pub struct CreateMetadataAccountInstructionDataData {
     pub uri: String,
     pub seller_fee_basis_points: u16,
     pub creators: Option<Vec<Creator>>,
-}
-
-impl CreateMetadataAccountInstructionArgs {
-    pub fn new(
-        data: CreateMetadataAccountInstructionDataData,
-        is_mutable: bool,
-        metadata_bump: u8,
-    ) -> Self {
-        Self {
-            discriminator: 0,
-            data,
-            is_mutable,
-            metadata_bump,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -194,13 +194,14 @@ impl CreateMetadataAccountBuilder {
                 "SysvarRent111111111111111111111111111111111"
             )),
         };
-        let args = CreateMetadataAccountInstructionArgs::new(
-            self.data.clone().expect("data is not set"),
-            self.is_mutable.clone().expect("is_mutable is not set"),
-            self.metadata_bump
+        let args = CreateMetadataAccountInstructionArgs {
+            data: self.data.clone().expect("data is not set"),
+            is_mutable: self.is_mutable.clone().expect("is_mutable is not set"),
+            metadata_bump: self
+                .metadata_bump
                 .clone()
                 .expect("metadata_bump is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -267,11 +268,16 @@ impl<'a> CreateMetadataAccountCpi<'a> {
             *self.rent.key,
             false,
         ));
+        let mut data = CreateMetadataAccountInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(7 + 1);
         account_infos.push(self.__program.clone());
@@ -384,17 +390,19 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateMetadataAccountCpi<'a> {
-        let args = CreateMetadataAccountInstructionArgs::new(
-            self.instruction.data.clone().expect("data is not set"),
-            self.instruction
+        let args = CreateMetadataAccountInstructionArgs {
+            data: self.instruction.data.clone().expect("data is not set"),
+            is_mutable: self
+                .instruction
                 .is_mutable
                 .clone()
                 .expect("is_mutable is not set"),
-            self.instruction
+            metadata_bump: self
+                .instruction
                 .metadata_bump
                 .clone()
                 .expect("metadata_bump is not set"),
-        );
+        };
 
         CreateMetadataAccountCpi {
             __program: self.instruction.__program,

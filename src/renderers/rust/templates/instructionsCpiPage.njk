@@ -32,10 +32,6 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
   #[allow(clippy::clone_on_copy)]
   #[allow(clippy::vec_init_then_push)]
   pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
-    {% if hasArgs === false %}
-    let args = {{ instruction.name | pascalCase }}InstructionArgs::new();
-    {% endif %}
-
     let mut accounts = Vec::with_capacity({{ instruction.accounts.length }});
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
@@ -92,11 +88,16 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
         {% endif %}
       {% endif %}
     {% endfor %}
+    let {{ 'mut ' if hasArgs }}data = {{ instruction.name | pascalCase }}InstructionData::new().try_to_vec().unwrap();
+    {% if hasArgs %}
+      let mut args = self.__args.try_to_vec().unwrap();
+      data.append(&mut args);
+    {% endif %}
 
     let instruction = solana_program::instruction::Instruction {
       program_id: crate::{{ program.name | snakeCase | upper }}_ID,
       accounts,
-      data: {{ 'self.__' if hasArgs }}args.try_to_vec().unwrap(),
+      data,
     };
     let mut account_infos = Vec::with_capacity({{ instruction.accounts.length }} + 1);
     account_infos.push(self.__program.clone());

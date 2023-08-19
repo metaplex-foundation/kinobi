@@ -84,28 +84,34 @@ impl Initialize {
             self.system_program,
             false,
         ));
+        let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
+        }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct InitializeInstructionData {
+    discriminator: [u8; 8],
+}
+
+impl InitializeInstructionData {
+    fn new() -> Self {
+        Self {
+            discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
         }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct InitializeInstructionArgs {
-    discriminator: [u8; 8],
     pub data: CandyMachineData,
-}
-
-impl InitializeInstructionArgs {
-    pub fn new(data: CandyMachineData) -> Self {
-        Self {
-            discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
-            data,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -235,7 +241,9 @@ impl InitializeBuilder {
                     .system_program
                     .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             };
-        let args = InitializeInstructionArgs::new(self.data.clone().expect("data is not set"));
+        let args = InitializeInstructionArgs {
+            data: self.data.clone().expect("data is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -326,11 +334,14 @@ impl<'a> InitializeCpi<'a> {
             *self.system_program.key,
             false,
         ));
+        let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(11 + 1);
         account_infos.push(self.__program.clone());
@@ -470,8 +481,9 @@ impl<'a> InitializeCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> InitializeCpi<'a> {
-        let args =
-            InitializeInstructionArgs::new(self.instruction.data.clone().expect("data is not set"));
+        let args = InitializeInstructionArgs {
+            data: self.instruction.data.clone().expect("data is not set"),
+        };
 
         InitializeCpi {
             __program: self.instruction.__program,

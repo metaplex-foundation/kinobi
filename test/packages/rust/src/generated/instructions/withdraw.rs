@@ -18,8 +18,6 @@ pub struct Withdraw {
 impl Withdraw {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let args = WithdrawInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(2);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
@@ -29,22 +27,23 @@ impl Withdraw {
             self.authority,
             true,
         ));
+        let data = WithdrawInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct WithdrawInstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct WithdrawInstructionData {
     discriminator: [u8; 8],
 }
 
-impl WithdrawInstructionArgs {
-    pub fn new() -> Self {
+impl WithdrawInstructionData {
+    fn new() -> Self {
         Self {
             discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
         }
@@ -103,8 +102,6 @@ impl<'a> WithdrawCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let args = WithdrawInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(2);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
@@ -114,11 +111,12 @@ impl<'a> WithdrawCpi<'a> {
             *self.authority.key,
             true,
         ));
+        let data = WithdrawInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
         account_infos.push(self.__program.clone());

@@ -78,28 +78,34 @@ impl CreateMasterEditionV3 {
                 false,
             ));
         }
+        let mut data = CreateMasterEditionV3InstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct CreateMasterEditionV3InstructionData {
+    discriminator: u8,
+}
+
+impl CreateMasterEditionV3InstructionData {
+    fn new() -> Self {
+        Self { discriminator: 17 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateMasterEditionV3InstructionArgs {
-    discriminator: u8,
     pub create_master_edition_args: CreateMasterEditionArgs,
-}
-
-impl CreateMasterEditionV3InstructionArgs {
-    pub fn new(create_master_edition_args: CreateMasterEditionArgs) -> Self {
-        Self {
-            discriminator: 17,
-            create_master_edition_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -204,11 +210,12 @@ impl CreateMasterEditionV3Builder {
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
         };
-        let args = CreateMasterEditionV3InstructionArgs::new(
-            self.create_master_edition_args
+        let args = CreateMasterEditionV3InstructionArgs {
+            create_master_edition_args: self
+                .create_master_edition_args
                 .clone()
                 .expect("create_master_edition_args is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -293,11 +300,16 @@ impl<'a> CreateMasterEditionV3Cpi<'a> {
                 false,
             ));
         }
+        let mut data = CreateMasterEditionV3InstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
         account_infos.push(self.__program.clone());
@@ -426,12 +438,13 @@ impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateMasterEditionV3Cpi<'a> {
-        let args = CreateMasterEditionV3InstructionArgs::new(
-            self.instruction
+        let args = CreateMasterEditionV3InstructionArgs {
+            create_master_edition_args: self
+                .instruction
                 .create_master_edition_args
                 .clone()
                 .expect("create_master_edition_args is not set"),
-        );
+        };
 
         CreateMasterEditionV3Cpi {
             __program: self.instruction.__program,

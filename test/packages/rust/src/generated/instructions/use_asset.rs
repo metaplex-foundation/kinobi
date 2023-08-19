@@ -105,28 +105,32 @@ impl UseAsset {
                 false,
             ));
         }
+        let mut data = UseAssetInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct UseAssetInstructionData {
+    discriminator: u8,
+}
+
+impl UseAssetInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 45 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UseAssetInstructionArgs {
-    discriminator: u8,
     pub use_asset_args: UseAssetArgs,
-}
-
-impl UseAssetInstructionArgs {
-    pub fn new(use_asset_args: UseAssetArgs) -> Self {
-        Self {
-            discriminator: 45,
-            use_asset_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -257,11 +261,12 @@ impl UseAssetBuilder {
             authorization_rules: self.authorization_rules,
             authorization_rules_program: self.authorization_rules_program,
         };
-        let args = UseAssetInstructionArgs::new(
-            self.use_asset_args
+        let args = UseAssetInstructionArgs {
+            use_asset_args: self
+                .use_asset_args
                 .clone()
                 .expect("use_asset_args is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -373,11 +378,14 @@ impl<'a> UseAssetCpi<'a> {
                 false,
             ));
         }
+        let mut data = UseAssetInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(11 + 1);
         account_infos.push(self.__program.clone());
@@ -534,12 +542,13 @@ impl<'a> UseAssetCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UseAssetCpi<'a> {
-        let args = UseAssetInstructionArgs::new(
-            self.instruction
+        let args = UseAssetInstructionArgs {
+            use_asset_args: self
+                .instruction
                 .use_asset_args
                 .clone()
                 .expect("use_asset_args is not set"),
-        );
+        };
 
         UseAssetCpi {
             __program: self.instruction.__program,

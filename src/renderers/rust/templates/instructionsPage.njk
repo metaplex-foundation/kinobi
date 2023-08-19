@@ -29,10 +29,6 @@ pub struct {{ instruction.name | pascalCase }} {
 impl {{ instruction.name | pascalCase }} {
   #[allow(clippy::vec_init_then_push)]
   pub fn instruction(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}) -> solana_program::instruction::Instruction {
-    {% if hasArgs === false %}
-    let args = {{ instruction.name | pascalCase }}InstructionArgs::new();
-    {% endif %}
-
     let mut accounts = Vec::with_capacity({{ instruction.accounts.length }});
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
@@ -93,46 +89,56 @@ impl {{ instruction.name | pascalCase }} {
         {% endif %}
       {% endif %}
     {% endfor %}
+    let {{ 'mut ' if hasArgs }}data = {{ instruction.name | pascalCase }}InstructionData::new().try_to_vec().unwrap();
+    {% if hasArgs %}
+      let mut args = args.try_to_vec().unwrap();
+      data.append(&mut args);
+    {% endif %}
 
     solana_program::instruction::Instruction {
       program_id: crate::{{ program.name | snakeCase | upper }}_ID,
       accounts,
-      data: args.try_to_vec().unwrap(),
+      data,
     }
   }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-{{ 'pub ' if hasArgs }}struct {{ instruction.name | pascalCase }}InstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct {{ instruction.name | pascalCase }}InstructionData {
   {% for arg in instructionArgs %}
-    {{ 'pub ' if not arg.default }}{{ arg.name | snakeCase }}: {{ arg.type }},
+    {% if arg.default %}
+      {{ arg.name | snakeCase }}: {{ arg.type }},
+    {% endif %}
   {% endfor %}
 }
 
-{% for nestedStruct in typeManifest.nestedStructs %}
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
-{{ nestedStruct }}
-{% endfor %}
-
-impl {{ instruction.name | pascalCase }}InstructionArgs {
-  pub fn new(
-    {% for arg in instructionArgs %}
-      {% if not arg.default and not arg.optional %}
-        {{ arg.name | snakeCase }}: {{ arg.type }},
-      {% endif %}
-    {% endfor %}
-  ) -> Self {
+impl {{ instruction.name | pascalCase }}InstructionData {
+  fn new() -> Self {
     Self {
       {% for arg in instructionArgs %}
-        {% if arg.default or arg.optional %}
+        {% if arg.default %}
           {{ arg.name | snakeCase }}: {{ arg.value }},
-        {% else %}
-          {{ arg.name | snakeCase }},
         {% endif %}
       {% endfor %}
     }
   }
 }
+
+{% if hasArgs %}
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct {{ instruction.name | pascalCase }}InstructionArgs {
+  {% for arg in instructionArgs %}
+    {% if not arg.default %}
+      pub {{ arg.name | snakeCase }}: {{ arg.type }},
+    {% endif %}
+  {% endfor %}
+}
+{% endif %}
+
+{% for nestedStruct in typeManifest.nestedStructs %}
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+{{ nestedStruct }}
+{% endfor %}
 
 {% include "instructionsPageBuilder.njk" %}
 

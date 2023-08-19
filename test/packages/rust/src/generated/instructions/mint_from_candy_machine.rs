@@ -48,8 +48,6 @@ pub struct MintFromCandyMachine {
 impl MintFromCandyMachine {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let args = MintFromCandyMachineInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(17);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
@@ -118,22 +116,25 @@ impl MintFromCandyMachine {
             self.recent_slothashes,
             false,
         ));
+        let data = MintFromCandyMachineInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct MintFromCandyMachineInstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct MintFromCandyMachineInstructionData {
     discriminator: [u8; 8],
 }
 
-impl MintFromCandyMachineInstructionArgs {
-    pub fn new() -> Self {
+impl MintFromCandyMachineInstructionData {
+    fn new() -> Self {
         Self {
             discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
         }
@@ -375,8 +376,6 @@ impl<'a> MintFromCandyMachineCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let args = MintFromCandyMachineInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(17);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
@@ -446,11 +445,14 @@ impl<'a> MintFromCandyMachineCpi<'a> {
             *self.recent_slothashes.key,
             false,
         ));
+        let data = MintFromCandyMachineInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(17 + 1);
         account_infos.push(self.__program.clone());

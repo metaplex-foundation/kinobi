@@ -95,28 +95,34 @@ impl DeprecatedCreateMasterEdition {
             self.one_time_printing_authorization_mint_authority,
             true,
         ));
+        let mut data = DeprecatedCreateMasterEditionInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct DeprecatedCreateMasterEditionInstructionData {
+    discriminator: u8,
+}
+
+impl DeprecatedCreateMasterEditionInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 2 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct DeprecatedCreateMasterEditionInstructionArgs {
-    discriminator: u8,
     pub create_master_edition_args: CreateMasterEditionArgs,
-}
-
-impl DeprecatedCreateMasterEditionInstructionArgs {
-    pub fn new(create_master_edition_args: CreateMasterEditionArgs) -> Self {
-        Self {
-            discriminator: 2,
-            create_master_edition_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -270,11 +276,12 @@ impl DeprecatedCreateMasterEditionBuilder {
                 .one_time_printing_authorization_mint_authority
                 .expect("one_time_printing_authorization_mint_authority is not set"),
         };
-        let args = DeprecatedCreateMasterEditionInstructionArgs::new(
-            self.create_master_edition_args
+        let args = DeprecatedCreateMasterEditionInstructionArgs {
+            create_master_edition_args: self
+                .create_master_edition_args
                 .clone()
                 .expect("create_master_edition_args is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -378,11 +385,16 @@ impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
             *self.one_time_printing_authorization_mint_authority.key,
             true,
         ));
+        let mut data = DeprecatedCreateMasterEditionInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
         account_infos.push(self.__program.clone());
@@ -555,12 +567,13 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedCreateMasterEditionCpi<'a> {
-        let args = DeprecatedCreateMasterEditionInstructionArgs::new(
-            self.instruction
+        let args = DeprecatedCreateMasterEditionInstructionArgs {
+            create_master_edition_args: self
+                .instruction
                 .create_master_edition_args
                 .clone()
                 .expect("create_master_edition_args is not set"),
-        );
+        };
 
         DeprecatedCreateMasterEditionCpi {
             __program: self.instruction.__program,

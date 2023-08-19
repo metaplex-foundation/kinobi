@@ -128,28 +128,32 @@ impl Delegate {
                 false,
             ));
         }
+        let mut data = DelegateInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct DelegateInstructionData {
+    discriminator: u8,
+}
+
+impl DelegateInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 48 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct DelegateInstructionArgs {
-    discriminator: u8,
     pub delegate_args: DelegateArgs,
-}
-
-impl DelegateInstructionArgs {
-    pub fn new(delegate_args: DelegateArgs) -> Self {
-        Self {
-            discriminator: 48,
-            delegate_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -299,11 +303,12 @@ impl DelegateBuilder {
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
         };
-        let args = DelegateInstructionArgs::new(
-            self.delegate_args
+        let args = DelegateInstructionArgs {
+            delegate_args: self
+                .delegate_args
                 .clone()
                 .expect("delegate_args is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -440,11 +445,14 @@ impl<'a> DelegateCpi<'a> {
                 false,
             ));
         }
+        let mut data = DelegateInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
         account_infos.push(self.__program.clone());
@@ -626,12 +634,13 @@ impl<'a> DelegateCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DelegateCpi<'a> {
-        let args = DelegateInstructionArgs::new(
-            self.instruction
+        let args = DelegateInstructionArgs {
+            delegate_args: self
+                .instruction
                 .delegate_args
                 .clone()
                 .expect("delegate_args is not set"),
-        );
+        };
 
         DelegateCpi {
             __program: self.instruction.__program,

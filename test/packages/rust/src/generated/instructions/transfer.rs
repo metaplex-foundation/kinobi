@@ -136,28 +136,32 @@ impl Transfer {
                 false,
             ));
         }
+        let mut data = TransferInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct TransferInstructionData {
+    discriminator: u8,
+}
+
+impl TransferInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 46 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct TransferInstructionArgs {
-    discriminator: u8,
     pub transfer_args: TransferArgs,
-}
-
-impl TransferInstructionArgs {
-    pub fn new(transfer_args: TransferArgs) -> Self {
-        Self {
-            discriminator: 46,
-            transfer_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -334,11 +338,12 @@ impl TransferBuilder {
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
         };
-        let args = TransferInstructionArgs::new(
-            self.transfer_args
+        let args = TransferInstructionArgs {
+            transfer_args: self
+                .transfer_args
                 .clone()
                 .expect("transfer_args is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -481,11 +486,14 @@ impl<'a> TransferCpi<'a> {
                 false,
             ));
         }
+        let mut data = TransferInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(15 + 1);
         account_infos.push(self.__program.clone());
@@ -689,12 +697,13 @@ impl<'a> TransferCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> TransferCpi<'a> {
-        let args = TransferInstructionArgs::new(
-            self.instruction
+        let args = TransferInstructionArgs {
+            transfer_args: self
+                .instruction
                 .transfer_args
                 .clone()
                 .expect("transfer_args is not set"),
-        );
+        };
 
         TransferCpi {
             __program: self.instruction.__program,

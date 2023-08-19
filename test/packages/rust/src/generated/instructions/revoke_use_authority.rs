@@ -33,8 +33,6 @@ pub struct RevokeUseAuthority {
 impl RevokeUseAuthority {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let args = RevokeUseAuthorityInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(9);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.use_authority_record,
@@ -75,22 +73,25 @@ impl RevokeUseAuthority {
                 false,
             ));
         }
+        let data = RevokeUseAuthorityInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct RevokeUseAuthorityInstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct RevokeUseAuthorityInstructionData {
     discriminator: u8,
 }
 
-impl RevokeUseAuthorityInstructionArgs {
-    pub fn new() -> Self {
+impl RevokeUseAuthorityInstructionData {
+    fn new() -> Self {
         Self { discriminator: 21 }
     }
 }
@@ -234,8 +235,6 @@ impl<'a> RevokeUseAuthorityCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let args = RevokeUseAuthorityInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(9);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.use_authority_record.key,
@@ -279,11 +278,14 @@ impl<'a> RevokeUseAuthorityCpi<'a> {
                 false,
             ));
         }
+        let data = RevokeUseAuthorityInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
         account_infos.push(self.__program.clone());

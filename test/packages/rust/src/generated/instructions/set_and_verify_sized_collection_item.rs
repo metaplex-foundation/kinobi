@@ -31,8 +31,6 @@ pub struct SetAndVerifySizedCollectionItem {
 impl SetAndVerifySizedCollectionItem {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let args = SetAndVerifySizedCollectionItemInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(8);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -72,22 +70,25 @@ impl SetAndVerifySizedCollectionItem {
                 false,
             ));
         }
+        let data = SetAndVerifySizedCollectionItemInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct SetAndVerifySizedCollectionItemInstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct SetAndVerifySizedCollectionItemInstructionData {
     discriminator: u8,
 }
 
-impl SetAndVerifySizedCollectionItemInstructionArgs {
-    pub fn new() -> Self {
+impl SetAndVerifySizedCollectionItemInstructionData {
+    fn new() -> Self {
         Self { discriminator: 32 }
     }
 }
@@ -226,8 +227,6 @@ impl<'a> SetAndVerifySizedCollectionItemCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let args = SetAndVerifySizedCollectionItemInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(8);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
@@ -268,11 +267,14 @@ impl<'a> SetAndVerifySizedCollectionItemCpi<'a> {
                 false,
             ));
         }
+        let data = SetAndVerifySizedCollectionItemInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
         account_infos.push(self.__program.clone());
