@@ -234,7 +234,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports.mergeWith(argImports);
         renderValue = value;
       }
-        
+
       hasArgs = hasArgs || field.defaultsTo?.strategy !== 'omitted';
       hasOptional = hasOptional || field.defaultsTo?.strategy === 'optional';
 
