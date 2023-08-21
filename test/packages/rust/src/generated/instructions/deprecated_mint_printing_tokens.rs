@@ -61,28 +61,34 @@ impl DeprecatedMintPrintingTokens {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.rent, false,
         ));
+        let mut data = DeprecatedMintPrintingTokensInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct DeprecatedMintPrintingTokensInstructionData {
+    discriminator: u8,
+}
+
+impl DeprecatedMintPrintingTokensInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 9 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct DeprecatedMintPrintingTokensInstructionArgs {
-    discriminator: u8,
     pub mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
-}
-
-impl DeprecatedMintPrintingTokensInstructionArgs {
-    pub fn new(mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs) -> Self {
-        Self {
-            discriminator: 9,
-            mint_printing_tokens_via_token_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -170,11 +176,12 @@ impl DeprecatedMintPrintingTokensBuilder {
                 "SysvarRent111111111111111111111111111111111"
             )),
         };
-        let args = DeprecatedMintPrintingTokensInstructionArgs::new(
-            self.mint_printing_tokens_via_token_args
+        let args = DeprecatedMintPrintingTokensInstructionArgs {
+            mint_printing_tokens_via_token_args: self
+                .mint_printing_tokens_via_token_args
                 .clone()
                 .expect("mint_printing_tokens_via_token_args is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -241,11 +248,16 @@ impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
             *self.rent.key,
             false,
         ));
+        let mut data = DeprecatedMintPrintingTokensInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(7 + 1);
         account_infos.push(self.__program.clone());
@@ -356,12 +368,13 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedMintPrintingTokensCpi<'a> {
-        let args = DeprecatedMintPrintingTokensInstructionArgs::new(
-            self.instruction
+        let args = DeprecatedMintPrintingTokensInstructionArgs {
+            mint_printing_tokens_via_token_args: self
+                .instruction
                 .mint_printing_tokens_via_token_args
                 .clone()
                 .expect("mint_printing_tokens_via_token_args is not set"),
-        );
+        };
 
         DeprecatedMintPrintingTokensCpi {
             __program: self.instruction.__program,

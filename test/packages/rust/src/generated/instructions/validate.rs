@@ -118,32 +118,34 @@ impl Validate {
                 false,
             ));
         }
+        let mut data = ValidateInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct ValidateInstructionData {
+    discriminator: u8,
+}
+
+impl ValidateInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 1 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct ValidateInstructionArgs {
-    discriminator: u8,
     pub rule_set_name: String,
     pub operation: Operation,
     pub payload: Payload,
-}
-
-impl ValidateInstructionArgs {
-    pub fn new(rule_set_name: String, operation: Operation, payload: Payload) -> Self {
-        Self {
-            discriminator: 1,
-            rule_set_name,
-            operation,
-            payload,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -323,13 +325,14 @@ impl ValidateBuilder {
             opt_rule_nonsigner4: self.opt_rule_nonsigner4,
             opt_rule_nonsigner5: self.opt_rule_nonsigner5,
         };
-        let args = ValidateInstructionArgs::new(
-            self.rule_set_name
+        let args = ValidateInstructionArgs {
+            rule_set_name: self
+                .rule_set_name
                 .clone()
                 .expect("rule_set_name is not set"),
-            self.operation.clone().expect("operation is not set"),
-            self.payload.clone().expect("payload is not set"),
-        );
+            operation: self.operation.clone().expect("operation is not set"),
+            payload: self.payload.clone().expect("payload is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -452,11 +455,14 @@ impl<'a> ValidateCpi<'a> {
                 false,
             ));
         }
+        let mut data = ValidateInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
         account_infos.push(self.__program.clone());
@@ -671,20 +677,23 @@ impl<'a> ValidateCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ValidateCpi<'a> {
-        let args = ValidateInstructionArgs::new(
-            self.instruction
+        let args = ValidateInstructionArgs {
+            rule_set_name: self
+                .instruction
                 .rule_set_name
                 .clone()
                 .expect("rule_set_name is not set"),
-            self.instruction
+            operation: self
+                .instruction
                 .operation
                 .clone()
                 .expect("operation is not set"),
-            self.instruction
+            payload: self
+                .instruction
                 .payload
                 .clone()
                 .expect("payload is not set"),
-        );
+        };
 
         ValidateCpi {
             __program: self.instruction.__program,

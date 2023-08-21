@@ -110,28 +110,32 @@ impl Mint {
                 false,
             ));
         }
+        let mut data = MintInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct MintInstructionData {
+    discriminator: u8,
+}
+
+impl MintInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 42 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct MintInstructionArgs {
-    discriminator: u8,
     pub mint_args: MintArgs,
-}
-
-impl MintInstructionArgs {
-    pub fn new(mint_args: MintArgs) -> Self {
-        Self {
-            discriminator: 42,
-            mint_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -275,7 +279,9 @@ impl MintBuilder {
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
         };
-        let args = MintInstructionArgs::new(self.mint_args.clone().expect("mint_args is not set"));
+        let args = MintInstructionArgs {
+            mint_args: self.mint_args.clone().expect("mint_args is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -393,11 +399,14 @@ impl<'a> MintCpi<'a> {
                 false,
             ));
         }
+        let mut data = MintInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(12 + 1);
         account_infos.push(self.__program.clone());
@@ -562,12 +571,13 @@ impl<'a> MintCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> MintCpi<'a> {
-        let args = MintInstructionArgs::new(
-            self.instruction
+        let args = MintInstructionArgs {
+            mint_args: self
+                .instruction
                 .mint_args
                 .clone()
                 .expect("mint_args is not set"),
-        );
+        };
 
         MintCpi {
             __program: self.instruction.__program,

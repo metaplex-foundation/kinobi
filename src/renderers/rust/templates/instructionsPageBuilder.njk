@@ -34,7 +34,8 @@ impl {{ instruction.name | pascalCase }}Builder {
   {% endfor %}
   {% for arg in instructionArgs %}
     {% if not arg.default %}
-      {{'/// `[optional argument]`\n' if arg.innerOptionType }}
+      {{ '/// `[optional argument]`\n' if arg.innerOptionType }}
+      {{- "/// `[optional argument, defaults to '" + arg.value + "']`\n" if not arg.innerOptionType and arg.value -}}
       {{- macros.docblock(arg.docs) -}}
       #[inline(always)]
       pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> &mut Self {
@@ -61,24 +62,21 @@ impl {{ instruction.name | pascalCase }}Builder {
         {% endfor %}
     };
     {% if hasArgs %}
-      let {{ 'mut' if hasOptional }} args = {{ instruction.name | pascalCase }}InstructionArgs::new(
+      let args = {{ instruction.name | pascalCase }}InstructionArgs {
         {% for arg in instructionArgs %}
-          {% if not arg.default and not arg.optional %}
-            self.{{ arg.name | snakeCase }}.clone(){{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
+          {% if not arg.default %}
+            {% if arg.optional %}
+              {% if arg.innerOptionType %}
+                {{ arg.name | snakeCase }}: self.{{ arg.name | snakeCase }}.clone(),
+              {% else %}
+                {{ arg.name | snakeCase }}: self.{{ arg.name | snakeCase }}.clone(){{ '.unwrap_or(' + arg.value + ')' if arg.value else '.expect(\"' + arg.name | snakeCase + ' is not set\")' }},
+              {% endif %}
+            {% else %}
+              {{ arg.name | snakeCase }}: self.{{ arg.name | snakeCase }}.clone(){{ '.expect(\"' + arg.name | snakeCase + ' is not set\")' if not arg.innerOptionType }},
+            {% endif %}
           {% endif %}
         {% endfor %}
-      );
-      {% for arg in instructionArgs %}
-        {% if arg.optional %}
-          {% if arg.innerOptionType %}
-            args.{{ arg.name | snakeCase }} = self.{{ arg.name | snakeCase }}.clone();
-          {% else %}
-            if let Some({{ arg.name | snakeCase }}) = &self.{{ arg.name | snakeCase }} {
-              args.{{ arg.name | snakeCase }} = {{ arg.name | snakeCase }}.clone();
-            }
-          {% endif %}
-        {% endif %}
-      {% endfor %}
+      };
     {% endif %}
 
     accounts.instruction({{ 'args' if hasArgs }})

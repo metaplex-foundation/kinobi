@@ -102,28 +102,34 @@ impl TransferOutOfEscrow {
                 false,
             ));
         }
+        let mut data = TransferOutOfEscrowInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct TransferOutOfEscrowInstructionData {
+    discriminator: u8,
+}
+
+impl TransferOutOfEscrowInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 40 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct TransferOutOfEscrowInstructionArgs {
-    discriminator: u8,
     pub amount: u64,
-}
-
-impl TransferOutOfEscrowInstructionArgs {
-    pub fn new(amount: u64) -> Self {
-        Self {
-            discriminator: 40,
-            amount,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -261,9 +267,9 @@ impl TransferOutOfEscrowBuilder {
             )),
             authority: self.authority,
         };
-        let args = TransferOutOfEscrowInstructionArgs::new(
-            self.amount.clone().expect("amount is not set"),
-        );
+        let args = TransferOutOfEscrowInstructionArgs {
+            amount: self.amount.clone().expect("amount is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -373,11 +379,16 @@ impl<'a> TransferOutOfEscrowCpi<'a> {
                 false,
             ));
         }
+        let mut data = TransferOutOfEscrowInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
         account_infos.push(self.__program.clone());
@@ -553,9 +564,9 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> TransferOutOfEscrowCpi<'a> {
-        let args = TransferOutOfEscrowInstructionArgs::new(
-            self.instruction.amount.clone().expect("amount is not set"),
-        );
+        let args = TransferOutOfEscrowInstructionArgs {
+            amount: self.instruction.amount.clone().expect("amount is not set"),
+        };
 
         TransferOutOfEscrowCpi {
             __program: self.instruction.__program,

@@ -30,8 +30,6 @@ pub struct Dummy {
 impl Dummy {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let args = DummyInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(8);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
@@ -73,22 +71,23 @@ impl Dummy {
             self.delegate_record,
             false,
         ));
+        let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct DummyInstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct DummyInstructionData {
     discriminator: [u8; 8],
 }
 
-impl DummyInstructionArgs {
-    pub fn new() -> Self {
+impl DummyInstructionData {
+    fn new() -> Self {
         Self {
             discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
         }
@@ -209,8 +208,6 @@ impl<'a> DummyCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let args = DummyInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(8);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
@@ -256,11 +253,12 @@ impl<'a> DummyCpi<'a> {
             *self.delegate_record.key,
             false,
         ));
+        let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
         account_infos.push(self.__program.clone());

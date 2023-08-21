@@ -31,8 +31,6 @@ pub struct CreateReservationList {
 impl CreateReservationList {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let args = CreateReservationListInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(8);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.reservation_list,
@@ -64,22 +62,25 @@ impl CreateReservationList {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.rent, false,
         ));
+        let data = CreateReservationListInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct CreateReservationListInstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct CreateReservationListInstructionData {
     discriminator: u8,
 }
 
-impl CreateReservationListInstructionArgs {
-    pub fn new() -> Self {
+impl CreateReservationListInstructionData {
+    fn new() -> Self {
         Self { discriminator: 6 }
     }
 }
@@ -208,8 +209,6 @@ impl<'a> CreateReservationListCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let args = CreateReservationListInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(8);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.reservation_list.key,
@@ -243,11 +242,14 @@ impl<'a> CreateReservationListCpi<'a> {
             *self.rent.key,
             false,
         ));
+        let data = CreateReservationListInstructionData::new()
+            .try_to_vec()
+            .unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(8 + 1);
         account_infos.push(self.__program.clone());

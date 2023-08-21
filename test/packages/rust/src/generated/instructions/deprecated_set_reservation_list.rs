@@ -38,39 +38,37 @@ impl DeprecatedSetReservationList {
             self.resource,
             true,
         ));
+        let mut data = DeprecatedSetReservationListInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct DeprecatedSetReservationListInstructionData {
+    discriminator: u8,
+}
+
+impl DeprecatedSetReservationListInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 5 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct DeprecatedSetReservationListInstructionArgs {
-    discriminator: u8,
     pub reservations: Vec<Reservation>,
     pub total_reservation_spots: Option<u64>,
     pub offset: u64,
     pub total_spot_offset: u64,
-}
-
-impl DeprecatedSetReservationListInstructionArgs {
-    pub fn new(
-        reservations: Vec<Reservation>,
-        total_reservation_spots: Option<u64>,
-        offset: u64,
-        total_spot_offset: u64,
-    ) -> Self {
-        Self {
-            discriminator: 5,
-            reservations,
-            total_reservation_spots,
-            offset,
-            total_spot_offset,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -138,14 +136,15 @@ impl DeprecatedSetReservationListBuilder {
             reservation_list: self.reservation_list.expect("reservation_list is not set"),
             resource: self.resource.expect("resource is not set"),
         };
-        let args = DeprecatedSetReservationListInstructionArgs::new(
-            self.reservations.clone().expect("reservations is not set"),
-            self.total_reservation_spots.clone(),
-            self.offset.clone().expect("offset is not set"),
-            self.total_spot_offset
+        let args = DeprecatedSetReservationListInstructionArgs {
+            reservations: self.reservations.clone().expect("reservations is not set"),
+            total_reservation_spots: self.total_reservation_spots.clone(),
+            offset: self.offset.clone().expect("offset is not set"),
+            total_spot_offset: self
+                .total_spot_offset
                 .clone()
                 .expect("total_spot_offset is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -188,11 +187,16 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
             *self.resource.key,
             true,
         ));
+        let mut data = DeprecatedSetReservationListInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
         account_infos.push(self.__program.clone());
@@ -277,18 +281,20 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedSetReservationListCpi<'a> {
-        let args = DeprecatedSetReservationListInstructionArgs::new(
-            self.instruction
+        let args = DeprecatedSetReservationListInstructionArgs {
+            reservations: self
+                .instruction
                 .reservations
                 .clone()
                 .expect("reservations is not set"),
-            self.instruction.total_reservation_spots.clone(),
-            self.instruction.offset.clone().expect("offset is not set"),
-            self.instruction
+            total_reservation_spots: self.instruction.total_reservation_spots.clone(),
+            offset: self.instruction.offset.clone().expect("offset is not set"),
+            total_spot_offset: self
+                .instruction
                 .total_spot_offset
                 .clone()
                 .expect("total_spot_offset is not set"),
-        );
+        };
 
         DeprecatedSetReservationListCpi {
             __program: self.instruction.__program,

@@ -37,30 +37,33 @@ impl CreateRuleSet {
             self.system_program,
             false,
         ));
+        let mut data = CreateRuleSetInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct CreateRuleSetInstructionData {
+    discriminator: u8,
+}
+
+impl CreateRuleSetInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 0 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateRuleSetInstructionArgs {
-    discriminator: u8,
     pub create_args: TaCreateArgs,
     pub rule_set_bump: u8,
-}
-
-impl CreateRuleSetInstructionArgs {
-    pub fn new(create_args: TaCreateArgs, rule_set_bump: u8) -> Self {
-        Self {
-            discriminator: 0,
-            create_args,
-            rule_set_bump,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -114,12 +117,13 @@ impl CreateRuleSetBuilder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
         };
-        let args = CreateRuleSetInstructionArgs::new(
-            self.create_args.clone().expect("create_args is not set"),
-            self.rule_set_bump
+        let args = CreateRuleSetInstructionArgs {
+            create_args: self.create_args.clone().expect("create_args is not set"),
+            rule_set_bump: self
+                .rule_set_bump
                 .clone()
                 .expect("rule_set_bump is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -162,11 +166,14 @@ impl<'a> CreateRuleSetCpi<'a> {
             *self.system_program.key,
             false,
         ));
+        let mut data = CreateRuleSetInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
         account_infos.push(self.__program.clone());
@@ -235,16 +242,18 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateRuleSetCpi<'a> {
-        let args = CreateRuleSetInstructionArgs::new(
-            self.instruction
+        let args = CreateRuleSetInstructionArgs {
+            create_args: self
+                .instruction
                 .create_args
                 .clone()
                 .expect("create_args is not set"),
-            self.instruction
+            rule_set_bump: self
+                .instruction
                 .rule_set_bump
                 .clone()
                 .expect("rule_set_bump is not set"),
-        );
+        };
 
         CreateRuleSetCpi {
             __program: self.instruction.__program,

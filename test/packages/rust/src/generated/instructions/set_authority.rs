@@ -31,28 +31,34 @@ impl SetAuthority {
             self.authority,
             true,
         ));
+        let mut data = SetAuthorityInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
+        }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct SetAuthorityInstructionData {
+    discriminator: [u8; 8],
+}
+
+impl SetAuthorityInstructionData {
+    fn new() -> Self {
+        Self {
+            discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
         }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct SetAuthorityInstructionArgs {
-    discriminator: [u8; 8],
     pub new_authority: Pubkey,
-}
-
-impl SetAuthorityInstructionArgs {
-    pub fn new(new_authority: Pubkey) -> Self {
-        Self {
-            discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
-            new_authority,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -88,11 +94,12 @@ impl SetAuthorityBuilder {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
         };
-        let args = SetAuthorityInstructionArgs::new(
-            self.new_authority
+        let args = SetAuthorityInstructionArgs {
+            new_authority: self
+                .new_authority
                 .clone()
                 .expect("new_authority is not set"),
-        );
+        };
 
         accounts.instruction(args)
     }
@@ -129,11 +136,14 @@ impl<'a> SetAuthorityCpi<'a> {
             *self.authority.key,
             true,
         ));
+        let mut data = SetAuthorityInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
         account_infos.push(self.__program.clone());
@@ -186,12 +196,13 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetAuthorityCpi<'a> {
-        let args = SetAuthorityInstructionArgs::new(
-            self.instruction
+        let args = SetAuthorityInstructionArgs {
+            new_authority: self
+                .instruction
                 .new_authority
                 .clone()
                 .expect("new_authority is not set"),
-        );
+        };
 
         SetAuthorityCpi {
             __program: self.instruction.__program,

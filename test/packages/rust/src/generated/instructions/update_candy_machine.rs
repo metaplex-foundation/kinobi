@@ -31,28 +31,36 @@ impl UpdateCandyMachine {
             self.authority,
             true,
         ));
+        let mut data = UpdateCandyMachineInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
+        }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct UpdateCandyMachineInstructionData {
+    discriminator: [u8; 8],
+}
+
+impl UpdateCandyMachineInstructionData {
+    fn new() -> Self {
+        Self {
+            discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
         }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UpdateCandyMachineInstructionArgs {
-    discriminator: [u8; 8],
     pub data: CandyMachineData,
-}
-
-impl UpdateCandyMachineInstructionArgs {
-    pub fn new(data: CandyMachineData) -> Self {
-        Self {
-            discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
-            data,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -88,8 +96,9 @@ impl UpdateCandyMachineBuilder {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
         };
-        let args =
-            UpdateCandyMachineInstructionArgs::new(self.data.clone().expect("data is not set"));
+        let args = UpdateCandyMachineInstructionArgs {
+            data: self.data.clone().expect("data is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -126,11 +135,16 @@ impl<'a> UpdateCandyMachineCpi<'a> {
             *self.authority.key,
             true,
         ));
+        let mut data = UpdateCandyMachineInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
         account_infos.push(self.__program.clone());
@@ -183,9 +197,9 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateCandyMachineCpi<'a> {
-        let args = UpdateCandyMachineInstructionArgs::new(
-            self.instruction.data.clone().expect("data is not set"),
-        );
+        let args = UpdateCandyMachineInstructionArgs {
+            data: self.instruction.data.clone().expect("data is not set"),
+        };
 
         UpdateCandyMachineCpi {
             __program: self.instruction.__program,

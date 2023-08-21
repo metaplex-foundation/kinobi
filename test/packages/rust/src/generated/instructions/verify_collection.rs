@@ -27,8 +27,6 @@ pub struct VerifyCollection {
 impl VerifyCollection {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let args = VerifyCollectionInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(6);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
@@ -53,22 +51,23 @@ impl VerifyCollection {
             self.collection_master_edition_account,
             false,
         ));
+        let data = VerifyCollectionInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-struct VerifyCollectionInstructionArgs {
+#[derive(BorshDeserialize, BorshSerialize)]
+struct VerifyCollectionInstructionData {
     discriminator: u8,
 }
 
-impl VerifyCollectionInstructionArgs {
-    pub fn new() -> Self {
+impl VerifyCollectionInstructionData {
+    fn new() -> Self {
         Self { discriminator: 18 }
     }
 }
@@ -180,8 +179,6 @@ impl<'a> VerifyCollectionCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let args = VerifyCollectionInstructionArgs::new();
-
         let mut accounts = Vec::with_capacity(6);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
@@ -207,11 +204,12 @@ impl<'a> VerifyCollectionCpi<'a> {
             *self.collection_master_edition_account.key,
             false,
         ));
+        let data = VerifyCollectionInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(6 + 1);
         account_infos.push(self.__program.clone());

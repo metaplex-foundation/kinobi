@@ -63,28 +63,32 @@ impl Verify {
                 false,
             ));
         }
+        let mut data = VerifyInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct VerifyInstructionData {
+    discriminator: u8,
+}
+
+impl VerifyInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 47 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct VerifyInstructionArgs {
-    discriminator: u8,
     pub verify_args: VerifyArgs,
-}
-
-impl VerifyInstructionArgs {
-    pub fn new(verify_args: VerifyArgs) -> Self {
-        Self {
-            discriminator: 47,
-            verify_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -159,8 +163,9 @@ impl VerifyBuilder {
             authorization_rules: self.authorization_rules,
             authorization_rules_program: self.authorization_rules_program,
         };
-        let args =
-            VerifyInstructionArgs::new(self.verify_args.clone().expect("verify_args is not set"));
+        let args = VerifyInstructionArgs {
+            verify_args: self.verify_args.clone().expect("verify_args is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -229,11 +234,14 @@ impl<'a> VerifyCpi<'a> {
                 false,
             ));
         }
+        let mut data = VerifyInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(5 + 1);
         account_infos.push(self.__program.clone());
@@ -324,12 +332,13 @@ impl<'a> VerifyCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> VerifyCpi<'a> {
-        let args = VerifyInstructionArgs::new(
-            self.instruction
+        let args = VerifyInstructionArgs {
+            verify_args: self
+                .instruction
                 .verify_args
                 .clone()
                 .expect("verify_args is not set"),
-        );
+        };
 
         VerifyCpi {
             __program: self.instruction.__program,

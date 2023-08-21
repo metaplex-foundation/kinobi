@@ -80,32 +80,37 @@ impl CreateV2 {
             self.spl_token_program,
             false,
         ));
+        let mut data = CreateV2InstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
+        }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct CreateV2InstructionData {
+    discriminator: u8,
+    create_v2_discriminator: u8,
+}
+
+impl CreateV2InstructionData {
+    fn new() -> Self {
+        Self {
+            discriminator: 41,
+            create_v2_discriminator: 1,
         }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateV2InstructionArgs {
-    discriminator: u8,
-    create_v2_discriminator: u8,
     pub asset_data: AssetData,
     pub max_supply: Option<u64>,
-}
-
-impl CreateV2InstructionArgs {
-    pub fn new(asset_data: AssetData, max_supply: Option<u64>) -> Self {
-        Self {
-            discriminator: 41,
-            create_v2_discriminator: 1,
-            asset_data,
-            max_supply,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -222,10 +227,10 @@ impl CreateV2Builder {
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
         };
-        let args = CreateV2InstructionArgs::new(
-            self.asset_data.clone().expect("asset_data is not set"),
-            self.max_supply.clone(),
-        );
+        let args = CreateV2InstructionArgs {
+            asset_data: self.asset_data.clone().expect("asset_data is not set"),
+            max_supply: self.max_supply.clone(),
+        };
 
         accounts.instruction(args)
     }
@@ -311,11 +316,14 @@ impl<'a> CreateV2Cpi<'a> {
             *self.spl_token_program.key,
             false,
         ));
+        let mut data = CreateV2InstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(9 + 1);
         account_infos.push(self.__program.clone());
@@ -455,13 +463,14 @@ impl<'a> CreateV2CpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateV2Cpi<'a> {
-        let args = CreateV2InstructionArgs::new(
-            self.instruction
+        let args = CreateV2InstructionArgs {
+            asset_data: self
+                .instruction
                 .asset_data
                 .clone()
                 .expect("asset_data is not set"),
-            self.instruction.max_supply.clone(),
-        );
+            max_supply: self.instruction.max_supply.clone(),
+        };
 
         CreateV2Cpi {
             __program: self.instruction.__program,

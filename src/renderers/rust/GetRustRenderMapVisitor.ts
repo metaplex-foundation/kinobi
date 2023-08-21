@@ -233,9 +233,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         );
         imports.mergeWith(argImports);
         renderValue = value;
-      } else {
-        hasArgs = true;
       }
+
+      hasArgs = hasArgs || field.defaultsTo?.strategy !== 'omitted';
       hasOptional = hasOptional || field.defaultsTo?.strategy === 'optional';
 
       const name = accountsAndArgsConflicts.includes(field.name)

@@ -33,18 +33,33 @@ impl UpdateMetadataAccount {
             self.update_authority,
             true,
         ));
+        let mut data = UpdateMetadataAccountInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct UpdateMetadataAccountInstructionData {
+    discriminator: u8,
+}
+
+impl UpdateMetadataAccountInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 1 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct UpdateMetadataAccountInstructionArgs {
-    discriminator: u8,
     pub data: Option<UpdateMetadataAccountInstructionDataData>,
     pub update_authority_arg: Option<Pubkey>,
     pub primary_sale_happened: Option<bool>,
@@ -57,21 +72,6 @@ pub struct UpdateMetadataAccountInstructionDataData {
     pub uri: String,
     pub seller_fee_basis_points: u16,
     pub creators: Option<Vec<Creator>>,
-}
-
-impl UpdateMetadataAccountInstructionArgs {
-    pub fn new(
-        data: Option<UpdateMetadataAccountInstructionDataData>,
-        update_authority_arg: Option<Pubkey>,
-        primary_sale_happened: Option<bool>,
-    ) -> Self {
-        Self {
-            discriminator: 1,
-            data,
-            update_authority_arg,
-            primary_sale_happened,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -127,11 +127,11 @@ impl UpdateMetadataAccountBuilder {
             metadata: self.metadata.expect("metadata is not set"),
             update_authority: self.update_authority.expect("update_authority is not set"),
         };
-        let args = UpdateMetadataAccountInstructionArgs::new(
-            self.data.clone(),
-            self.update_authority_arg.clone(),
-            self.primary_sale_happened.clone(),
-        );
+        let args = UpdateMetadataAccountInstructionArgs {
+            data: self.data.clone(),
+            update_authority_arg: self.update_authority_arg.clone(),
+            primary_sale_happened: self.primary_sale_happened.clone(),
+        };
 
         accounts.instruction(args)
     }
@@ -168,11 +168,16 @@ impl<'a> UpdateMetadataAccountCpi<'a> {
             *self.update_authority.key,
             true,
         ));
+        let mut data = UpdateMetadataAccountInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(2 + 1);
         account_infos.push(self.__program.clone());
@@ -242,11 +247,11 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateMetadataAccountCpi<'a> {
-        let args = UpdateMetadataAccountInstructionArgs::new(
-            self.instruction.data.clone(),
-            self.instruction.update_authority_arg.clone(),
-            self.instruction.primary_sale_happened.clone(),
-        );
+        let args = UpdateMetadataAccountInstructionArgs {
+            data: self.instruction.data.clone(),
+            update_authority_arg: self.instruction.update_authority_arg.clone(),
+            primary_sale_happened: self.instruction.primary_sale_happened.clone(),
+        };
 
         UpdateMetadataAccountCpi {
             __program: self.instruction.__program,

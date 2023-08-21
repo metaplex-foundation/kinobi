@@ -128,28 +128,32 @@ impl Revoke {
                 false,
             ));
         }
+        let mut data = RevokeInstructionData::new().try_to_vec().unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct RevokeInstructionData {
+    discriminator: u8,
+}
+
+impl RevokeInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 49 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct RevokeInstructionArgs {
-    discriminator: u8,
     pub revoke_args: RevokeArgs,
-}
-
-impl RevokeInstructionArgs {
-    pub fn new(revoke_args: RevokeArgs) -> Self {
-        Self {
-            discriminator: 49,
-            revoke_args,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -299,8 +303,9 @@ impl RevokeBuilder {
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
         };
-        let args =
-            RevokeInstructionArgs::new(self.revoke_args.clone().expect("revoke_args is not set"));
+        let args = RevokeInstructionArgs {
+            revoke_args: self.revoke_args.clone().expect("revoke_args is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -437,11 +442,14 @@ impl<'a> RevokeCpi<'a> {
                 false,
             ));
         }
+        let mut data = RevokeInstructionData::new().try_to_vec().unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(13 + 1);
         account_infos.push(self.__program.clone());
@@ -623,12 +631,13 @@ impl<'a> RevokeCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> RevokeCpi<'a> {
-        let args = RevokeInstructionArgs::new(
-            self.instruction
+        let args = RevokeInstructionArgs {
+            revoke_args: self
+                .instruction
                 .revoke_args
                 .clone()
                 .expect("revoke_args is not set"),
-        );
+        };
 
         RevokeCpi {
             __program: self.instruction.__program,

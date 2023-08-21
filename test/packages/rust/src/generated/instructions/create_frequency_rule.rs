@@ -36,39 +36,37 @@ impl CreateFrequencyRule {
             self.system_program,
             false,
         ));
+        let mut data = CreateFrequencyRuleInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: args.try_to_vec().unwrap(),
+            data,
         }
+    }
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct CreateFrequencyRuleInstructionData {
+    discriminator: u8,
+}
+
+impl CreateFrequencyRuleInstructionData {
+    fn new() -> Self {
+        Self { discriminator: 2 }
     }
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateFrequencyRuleInstructionArgs {
-    discriminator: u8,
     pub rule_set_name: String,
     pub freq_rule_name: String,
     pub last_update: i64,
     pub period: i64,
-}
-
-impl CreateFrequencyRuleInstructionArgs {
-    pub fn new(
-        rule_set_name: String,
-        freq_rule_name: String,
-        last_update: i64,
-        period: i64,
-    ) -> Self {
-        Self {
-            discriminator: 2,
-            rule_set_name,
-            freq_rule_name,
-            last_update,
-            period,
-        }
-    }
 }
 
 /// Instruction builder.
@@ -134,16 +132,18 @@ impl CreateFrequencyRuleBuilder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
         };
-        let args = CreateFrequencyRuleInstructionArgs::new(
-            self.rule_set_name
+        let args = CreateFrequencyRuleInstructionArgs {
+            rule_set_name: self
+                .rule_set_name
                 .clone()
                 .expect("rule_set_name is not set"),
-            self.freq_rule_name
+            freq_rule_name: self
+                .freq_rule_name
                 .clone()
                 .expect("freq_rule_name is not set"),
-            self.last_update.clone().expect("last_update is not set"),
-            self.period.clone().expect("period is not set"),
-        );
+            last_update: self.last_update.clone().expect("last_update is not set"),
+            period: self.period.clone().expect("period is not set"),
+        };
 
         accounts.instruction(args)
     }
@@ -186,11 +186,16 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
             *self.system_program.key,
             false,
         ));
+        let mut data = CreateFrequencyRuleInstructionData::new()
+            .try_to_vec()
+            .unwrap();
+        let mut args = self.__args.try_to_vec().unwrap();
+        data.append(&mut args);
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_AUTH_RULES_ID,
             accounts,
-            data: self.__args.try_to_vec().unwrap(),
+            data,
         };
         let mut account_infos = Vec::with_capacity(3 + 1);
         account_infos.push(self.__program.clone());
@@ -271,21 +276,24 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateFrequencyRuleCpi<'a> {
-        let args = CreateFrequencyRuleInstructionArgs::new(
-            self.instruction
+        let args = CreateFrequencyRuleInstructionArgs {
+            rule_set_name: self
+                .instruction
                 .rule_set_name
                 .clone()
                 .expect("rule_set_name is not set"),
-            self.instruction
+            freq_rule_name: self
+                .instruction
                 .freq_rule_name
                 .clone()
                 .expect("freq_rule_name is not set"),
-            self.instruction
+            last_update: self
+                .instruction
                 .last_update
                 .clone()
                 .expect("last_update is not set"),
-            self.instruction.period.clone().expect("period is not set"),
-        );
+            period: self.instruction.period.clone().expect("period is not set"),
+        };
 
         CreateFrequencyRuleCpi {
             __program: self.instruction.__program,
