@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.13.1
+
+### Patch Changes
+
+- [#61](https://github.com/metaplex-foundation/kinobi/pull/61) [`8d63ee3`](https://github.com/metaplex-foundation/kinobi/commit/8d63ee311481417a4bb29b392dc71883163a0652) Thanks [@febo](https://github.com/febo)! - Move default args resolution to builders
+
 ## 0.13.0
 
 ### Minor Changes
