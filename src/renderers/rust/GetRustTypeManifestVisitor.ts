@@ -126,7 +126,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     }
 
     if (arrayType.size.kind === 'remainder') {
-      childManifest.imports.add('crate::types::helper::RemainderVec');
+      childManifest.imports.add('kaigan::types::RemainderVec');
       return {
         ...childManifest,
         type: `RemainderVec<${childManifest.type}>`,
