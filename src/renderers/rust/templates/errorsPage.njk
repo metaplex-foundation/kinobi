@@ -19,4 +19,5 @@ impl solana_program::program_error::PrintProgramError for {{ program.name | pasc
         solana_program::msg!(&self.to_string());
     }
 }
+
 {% endblock %}
