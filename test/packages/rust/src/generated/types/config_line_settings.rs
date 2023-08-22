@@ -9,7 +9,6 @@ use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
 /// Config line settings to allocate space for individual name + URI.
-
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct ConfigLineSettings {
     /// Common name prefix

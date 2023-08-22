@@ -11,7 +11,6 @@ use crate::generated::types::ReservationV1;
 use borsh::BorshSerialize;
 use borsh::BorshDeserialize;
 
-
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct ReservationListV1AccountData {
 pub key: TmKey,
