@@ -9,7 +9,6 @@ use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
 /// Hidden settings for large mints used with off-chain data.
-
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 pub struct HiddenSettings {
     /// Asset prefix name

@@ -5,14 +5,14 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use crate::generated::types::ConfigLine;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
+use kaigan::types::RemainderVec;
 
-/// Config line struct for storing asset (NFT) data pre-mint.
+/// Dummy lines.
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
-pub struct ConfigLine {
-    /// Name of the asset.
-    pub name: String,
-    /// URI to JSON metadata.
-    pub uri: String,
+pub struct DummyLines {
+    /// The dummy lines.
+    pub lines: RemainderVec<ConfigLine>,
 }

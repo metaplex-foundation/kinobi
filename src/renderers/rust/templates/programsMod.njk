@@ -9,4 +9,5 @@ use solana_program::{pubkey, pubkey::Pubkey};
 /// `{{ program.name | snakeCase }}` program ID.
 pub const {{ program.name | snakeCase | upper }}_ID: Pubkey = pubkey!("{{ program.publicKey }}");
 {% endfor %}
+
 {% endblock %}

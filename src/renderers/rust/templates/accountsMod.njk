@@ -3,10 +3,11 @@
 {% block main %}
 
 {% for account in accountsToExport | sort(false, false, 'name') %}
-mod {{ account.name | snakeCase }};
+pub mod {{ account.name | snakeCase }};
 {% endfor %}
 
 {% for account in accountsToExport | sort(false, false, 'name') %}
-pub use {{ account.name | snakeCase }}::*;
+pub use self::{{ account.name | snakeCase }}::*;
 {% endfor %}
+
 {% endblock %}

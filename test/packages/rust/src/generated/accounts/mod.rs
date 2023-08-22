@@ -5,30 +5,30 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-mod candy_machine;
-mod collection_authority_record;
-mod delegate_record;
-mod edition;
-mod edition_marker;
-mod frequency_account;
-mod master_edition_v1;
-mod master_edition_v2;
-mod metadata;
-mod reservation_list_v1;
-mod reservation_list_v2;
-mod token_owned_escrow;
-mod use_authority_record;
+pub mod candy_machine;
+pub mod collection_authority_record;
+pub mod delegate_record;
+pub mod edition;
+pub mod edition_marker;
+pub mod frequency_account;
+pub mod master_edition_v1;
+pub mod master_edition_v2;
+pub mod metadata;
+pub mod reservation_list_v1;
+pub mod reservation_list_v2;
+pub mod token_owned_escrow;
+pub mod use_authority_record;
 
-pub use candy_machine::*;
-pub use collection_authority_record::*;
-pub use delegate_record::*;
-pub use edition::*;
-pub use edition_marker::*;
-pub use frequency_account::*;
-pub use master_edition_v1::*;
-pub use master_edition_v2::*;
-pub use metadata::*;
-pub use reservation_list_v1::*;
-pub use reservation_list_v2::*;
-pub use token_owned_escrow::*;
-pub use use_authority_record::*;
+pub use self::candy_machine::*;
+pub use self::collection_authority_record::*;
+pub use self::delegate_record::*;
+pub use self::edition::*;
+pub use self::edition_marker::*;
+pub use self::frequency_account::*;
+pub use self::master_edition_v1::*;
+pub use self::master_edition_v2::*;
+pub use self::metadata::*;
+pub use self::reservation_list_v1::*;
+pub use self::reservation_list_v2::*;
+pub use self::token_owned_escrow::*;
+pub use self::use_authority_record::*;

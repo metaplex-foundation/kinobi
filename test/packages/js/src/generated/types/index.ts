@@ -22,6 +22,7 @@ export * from './dataV2';
 export * from './delegateArgs';
 export * from './delegateRole';
 export * from './delegateState';
+export * from './dummyLines';
 export * from './escrowAuthority';
 export * from './extendedPayload';
 export * from './hiddenSettings';

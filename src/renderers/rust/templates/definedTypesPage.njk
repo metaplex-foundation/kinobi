@@ -6,9 +6,10 @@
 {{ imports }}
 
 {{ macros.docblock(definedType.docs) }}
-{{ typeManifest.type }}
+{{- typeManifest.type }}
 
 {% for nestedStruct in typeManifest.nestedStructs %}
 {{ nestedStruct }}
 {% endfor %}
+
 {% endblock %}
