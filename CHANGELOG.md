@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.13.2
+
+### Patch Changes
+
+- [#63](https://github.com/metaplex-foundation/kinobi/pull/63) [`a422c5a`](https://github.com/metaplex-foundation/kinobi/commit/a422c5acd0bb982547596cad9e0cd65a05d1e81c) Thanks [@febo](https://github.com/febo)! - Improve rust modules
+
 ## 0.13.1
 
 ### Patch Changes
