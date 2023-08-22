@@ -688,6 +688,29 @@
           }
         ]
       }
+    },
+    {
+      "name": "DummyLines",
+      "docs": [
+        "Dummy lines."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lines",
+            "docs": [
+              "The dummy lines."
+            ],
+            "type": {
+              "vec": {
+                "defined": "ConfigLine"
+              },
+              "size": "remainder"
+            }
+          }
+        ]
+      }
     }
   ],
   "errors": [
