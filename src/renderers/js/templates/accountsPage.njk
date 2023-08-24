@@ -80,7 +80,7 @@ export function get{{ account.name | pascalCase }}GpaBuilder(context: Pick<Conte
   ;
 }
 
-{% if account.size !== undefined %}
+{% if account.size != null %}
 export function get{{ account.name | pascalCase }}Size(): number {
   return {{ account.size }};
 }

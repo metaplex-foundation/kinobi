@@ -23,7 +23,7 @@ export type AccountNode = {
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
-  readonly size?: number;
+  readonly size?: number | null;
   readonly seeds: AccountSeed[];
   readonly discriminator?: AccountDiscriminator;
 };
