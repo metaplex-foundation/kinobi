@@ -5,10 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use num_derive::FromPrimitive;
-use thiserror::Error;
+use spl_program_error::*;
 
-#[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
+#[spl_program_error]
 pub enum MplCandyMachineCoreError {
     /// 0x1770 - Account does not have correct owner
     #[error("Account does not have correct owner")]
@@ -73,10 +72,4 @@ pub enum MplCandyMachineCoreError {
     /// 0x1784 - Not all config lines were added to the candy machine
     #[error("Not all config lines were added to the candy machine")]
     NotFullyLoaded,
-}
-
-impl solana_program::program_error::PrintProgramError for MplCandyMachineCoreError {
-    fn print<E>(&self) {
-        solana_program::msg!(&self.to_string());
-    }
 }
