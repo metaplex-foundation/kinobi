@@ -12,9 +12,9 @@
 {{ nestedStruct }}
 {% endfor %}
 
-{% if account.size !== undefined or seeds.length > 0 %}
+{% if account.size != null or seeds.length > 0 %}
 impl {{ account.name | pascalCase }} {
-  {% if account.size !== undefined %}
+  {% if account.size != null %}
     pub const LEN: usize = {{ account.size }};
   {% endif %}
 
