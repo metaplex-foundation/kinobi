@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.13.3
+
+### Patch Changes
+
+- [#65](https://github.com/metaplex-foundation/kinobi/pull/65) [`ac836fa`](https://github.com/metaplex-foundation/kinobi/commit/ac836fabab2270da877bd77193cfba27dbbfc5bf) Thanks [@febo](https://github.com/febo)! - Allow account size to be null
+
+- [#65](https://github.com/metaplex-foundation/kinobi/pull/65) [`ac836fa`](https://github.com/metaplex-foundation/kinobi/commit/ac836fabab2270da877bd77193cfba27dbbfc5bf) Thanks [@febo](https://github.com/febo)! - Simplify rust error enum traits
+
 ## 0.13.2
 
 ### Patch Changes
