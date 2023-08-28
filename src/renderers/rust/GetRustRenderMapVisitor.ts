@@ -114,16 +114,18 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       return renderMap;
     }
 
-    renderMap
-      .mergeWith(
-        ...nodes
-          .getAllInstructionsWithSubs(
-            program,
-            !this.options.renderParentInstructions
-          )
-          .map((ix) => visit(ix, this))
-      )
-      .add(
+    renderMap.mergeWith(
+      ...nodes
+        .getAllInstructionsWithSubs(
+          program,
+          !this.options.renderParentInstructions
+        )
+        .map((ix) => visit(ix, this))
+    );
+
+    // Errors.
+    if (program.errors.length > 0) {
+      renderMap.add(
         `errors/${snakeCase(name)}.rs`,
         this.render('errorsPage.njk', {
           imports: new RustImportMap().toString(this.options.dependencyMap),
@@ -134,6 +136,8 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
           })),
         })
       );
+    }
+
     this.program = null;
     return renderMap;
   }
