@@ -1,44 +1,28 @@
-{% set hasResolvingAccounts = hasAccounts or hasResolvers %}
-{% set hasResolvingArgs = hasDataArgs or hasArgDefaults or hasResolvers %}
-{% macro getAccountVar(name, accountsObj) -%}
-  {% if accountsWithDefaults.includes(name) %}
-    resolvedAccounts.{{ name | camelCase }}[0]
-  {% else %}
-    {{ accountsObj }}.{{ name | camelCase }}
-  {% endif %}
-{%- endmacro %}
-{% macro getArgVar(name, argsObj) -%}
-  {{ 'resolvingArgs' if argsWithDefaults.includes(name) else argsObj }}.{{ name | camelCase }}
-{%- endmacro %}
+{% set hasResolvedAccounts = hasAccounts or hasResolvers %}
+{% set hasResolvedArgs = hasDataArgs or hasArgDefaults or hasResolvers %}
 
-{% if resolvedInputs.length > 0 or hasResolvingAccounts or hasResolvingArgs %}
+{% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
   // Resolved inputs.
-  {% if hasResolvingAccounts %}
-    const resolvedAccounts = {
-      {% for account in accounts %}
-        {% if not account.hasDefaultValue %}
-          {{ account.name | camelCase }}: [{{ accountsObj }}.{{ account.name | camelCase }}, {{ 'true' if account.isWritable else 'false' }}] as const,
-        {% endif %}
+  {% if hasResolvedAccounts %}
+    const resolvedAccounts: ResolvedAccounts = {
+      {% for (account, index) in accounts %}
+        {{ account.name | camelCase }}: {
+          index: {{ index }},
+          isWritable: {{ 'true' if account.isWritable else 'false' }},
+          value: {{ accountsObj }}.{{ account.name | camelCase }}, 
+        },
       {% endfor %}
     };
   {% endif %}
-  {% if hasResolvingArgs %}
-    const resolvingArgs = {};
+  {% if hasResolvedArgs %}
+    const resolvedArgs: ResolvedArgs<{{ instruction.name | pascalCase + 'InstructionArgs' }}> = { ...{{ argsObj }} };
   {% endif %}
   {% for input in resolvedInputsWithDefaults %}
-    {#- Input prefix. -#}
-    {% if input.kind === 'account' %}
-      {% set inputPrefix %}resolvedAccounts, '{{ input.name | camelCase }}', {{ accountsObj }}.{{ input.name | camelCase }} ? [{{ accountsObj }}.{{ input.name | camelCase }}, {{ 'true' if input.isWritable else 'false' }}] as const : {% endset %}
-      {% set inputDefaultIsWritable %}{{ 'true' if input.isWritable else 'false' }}{% endset %}
-    {% else %}
-      {% set inputPrefix %}resolvingArgs, '{{ input.name | camelCase }}', {{ argsObj }}.{{ input.name | camelCase }} ??{% endset %}
-      {% set inputDefaultIsWritable %}false{% endset %}
-    {% endif %}
     {#- Input default value. -#}
     {% if input.defaultsTo.kind === 'account' and input.kind === 'account' %}
-      {% set inputDefault %}{{ getAccountVar(input.defaultsTo.name, accountsObj) }}{% endset %}
+      {% set inputDefault %}resolvedAccounts.{{ input.defaultsTo.name }}.value{% endset %}
     {% elif input.defaultsTo.kind === 'account' %}
-      {% set inputDefault %}publicKey({{ getAccountVar(input.defaultsTo.name, accountsObj) }}, false){% endset %}
+      {% set inputDefault %}publicKey(resolvedAccounts.{{ input.defaultsTo.name }}.value, false){% endset %}
     {% elif input.defaultsTo.kind === 'pda' %}
       {% set inputDefault -%}
         find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
@@ -48,9 +32,9 @@
                 {%- if seedValue.kind === 'value' -%}
                   {{ seedKey }}: {{ seedValue.render }},
                 {%- elif seedValue.kind === 'account' -%}
-                  {{ seedKey }}: publicKey({{ getAccountVar(seedValue.name, accountsObj) }}, false),
+                  {{ seedKey }}: publicKey(resolvedAccounts.{{ seedValue.name }}.value, false),
                 {%- else -%}
-                  {{ seedKey }}: {{ getArgVar(seedValue.name, argsObj) }},
+                  {{ seedKey }}: resolvedArgs.{{ seedValue.name }},
                 {%- endif -%}
               {%- endfor -%}
             }
@@ -62,6 +46,9 @@
     {% elif input.defaultsTo.kind === 'program' %}
       {% set inputDefault %}context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'){% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
+    {% elif input.defaultsTo.kind === 'programId' and input.kind === 'account' and input.isOptionalStrategy === 'programId' %}
+      {% set inputDefault %}undefined{% endset %}
+      {# TODO: Skip this at a higher level? #}
     {% elif input.defaultsTo.kind === 'programId' %}
       {% set inputDefault %}programId{% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
@@ -74,25 +61,29 @@
     {% elif input.defaultsTo.kind === 'payer' %}
       {% set inputDefault %}context.payer.publicKey{% endset %}
     {% elif input.defaultsTo.kind === 'arg' %}
-      {% set inputDefault %}{{ getArgVar(input.defaultsTo.name, argsObj) }}{% endset %}
+      {% set inputDefault %}resolvedArgs.{{ input.defaultsTo.name }}{% endset %}
     {% elif input.defaultsTo.kind === 'accountBump' %}
-      {% set inputDefault %}{{ getAccountVar(input.defaultsTo.name, accountsObj) }}[1]{% endset %}
+      {% set inputDefault %}accountsObj.{{ input.defaultsTo.name }}[1]{% endset %}
     {% elif input.defaultsTo.kind === 'value' %}
       {% set inputDefault %}{{ input.defaultsTo.render }}{% endset %}
     {% elif input.defaultsTo.kind === 'resolver' %}
-      {% set inputDefault %}{{ input.defaultsTo.name | camelCase }}(context, { ...{{ accountsObj }}, ...resolvedAccounts }, { ...{{ argsObj }}, ...resolvingArgs }, programId, {{ inputDefaultIsWritable }}){% endset %}
+      {% set inputDefault %}{{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId, {{ 'true' if input.isWritable else 'false' }}){% endset %}
     {% else %}
       {% set inputDefault %}programId /* Unrecognized default kind [{{ input.defaultsTo.kind }}]. */{% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
     {% endif %}
     {# Add input to resolving object. #}
-    {%- if input.kind === 'account' and input.defaultsTo.kind !== 'resolver' %}
-      addObjectProperty({{ inputPrefix }} [{{ inputDefault }}, {{ inputDefaultIsWritable }}] as const);
+    {%- if input.kind === 'account' %}
+      if (!{{ accountsObj }}.{{ input.name | camelCase }}) {
+        resolvedAccounts.{{ input.name | camelCase }}.value = {{ inputDefault }};
+        {% if inputDefaultIsWritable %} 
+          resolvedAccounts.{{ input.name | camelCase }}.isWritable = {{ inputDefaultIsWritable }};
+        {% endif %} 
+      }
     {% else %}
-      addObjectProperty({{ inputPrefix }} {{ inputDefault }});
+      if (!{{ argsObj }}.{{ input.name | camelCase }}) {
+        resolvedArgs.{{ input.name | camelCase }}.value = {{ inputDefault }};
+      }
     {% endif -%}
   {% endfor %}
-  {% if hasDataArgs or hasByteResolver or instruction.remainingAccounts %}
-    const resolvedArgs = { ...{{ argsObj }}, ...resolvingArgs };
-  {% endif %}
 {% endif %}

@@ -416,7 +416,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
     if (accounts.length > 0) {
-      imports.add('shared', 'addAccountMeta');
+      imports.add('shared', ['addAccountMeta', 'ResolvedAccounts']);
     }
 
     // Data Args.
