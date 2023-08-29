@@ -1,14 +1,14 @@
 {% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
   // Resolved inputs.
   {% if hasResolvedAccounts %}
-    const resolvedAccounts: ResolvedAccounts = {
+    const resolvedAccounts: ResolvedAccountsWithIndices = {
       {% for account in accounts %}
         {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} },
       {% endfor %}
     };
   {% endif %}
   {% if hasResolvedArgs %}
-    const resolvedArgs: ResolvedArgs<{{ instruction.name | pascalCase + 'InstructionArgs' }}> = { ...{{ argsObj }} };
+    const resolvedArgs = { ...{{ argsObj }} } as {{ instruction.name | pascalCase + 'InstructionArgs' }}
   {% endif %}
   {% for input in resolvedInputsWithDefaults %}
     {#- Input default value. -#}

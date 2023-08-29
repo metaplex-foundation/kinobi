@@ -393,8 +393,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const resolvedInputsWithDefaults = resolvedInputs.filter(
       (input) => input.kind !== 'account' || input.defaultsTo !== undefined
     );
-    if (resolvedInputsWithDefaults.length > 0) {
-      imports.add('shared', 'addObjectProperty');
+    if (hasResolvedAccounts) {
+      imports.add('shared', ['ResolvedAccountsWithIndices']);
     }
     const accountsWithDefaults = resolvedInputsWithDefaults
       .filter((input) => input.kind === 'account')
@@ -417,9 +417,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
-    if (hasResolvedAccounts) {
-      imports.add('shared', ['ResolvedAccounts']);
-    }
     if (accounts.length > 0) {
       imports.add('shared', ['addAccountMetas']);
     }

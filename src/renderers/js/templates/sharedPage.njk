@@ -11,27 +11,19 @@ import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer } from '@metap
 export type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 /**
- * Defines an instruction account that is or will be resolved.
+ * Defines an instruction account to resolve.
  * @internal
  */
 export type ResolvedAccount = {
-  index: number;
   isWritable: boolean;
   value: PublicKey | Pda | Signer | undefined;
 }
 
-export type ResolvedAccounts = Record<string, ResolvedAccount>;
-
-export type ResolvedArgs<T extends object> = Record<string, ResolvedAccount>;
-
 /**
- * Helper function that dynamically updates the type of
- * an object as we add more properties to the object.
+ * Defines a set of instruction account to resolve with their indices.
  * @internal
  */
-export function addObjectProperty<T extends object, U extends string, V>(obj: T, key: U, value: V): asserts obj is T & { [K in U]: V } {
-  (obj as any)[key] = value;
-};
+export type ResolvedAccountsWithIndices = Record<string, ResolvedAccount & { index: number }>;
 
 /**
  * Add instruction accounts to the given list of keys and signers.
@@ -40,27 +32,25 @@ export function addObjectProperty<T extends object, U extends string, V>(obj: T,
 export function addAccountMetas(
   keys: AccountMeta[],
   signers: Signer[],
-  accounts: ResolvedAccounts,
+  accounts: ResolvedAccount[],
   isOptionalStrategy: 'omitted' | 'programId',
   programId: PublicKey,
 ): void {
-  accounts
-    .sort((a,b) => a.index - b.index)
-    .forEach(account => {
-      if (!account.value) {
-        if (isOptionalStrategy === 'omitted') return;
-        keys.push({ pubkey: programId, isSigner: false, isWritable: false });
-        return;
-      }
+  accounts.forEach(account => {
+    if (!account.value) {
+      if (isOptionalStrategy === 'omitted') return;
+      keys.push({ pubkey: programId, isSigner: false, isWritable: false });
+      return;
+    }
 
-      if (isSigner(account.value)) {
-        signers.push(account.value);
-      }
-      keys.push({
-        pubkey: publicKey(account.value, false),
-        isSigner: isSigner(account.value),
-        isWritable: account.isWritable,
-      });
+    if (isSigner(account.value)) {
+      signers.push(account.value);
+    }
+    keys.push({
+      pubkey: publicKey(account.value, false),
+      isSigner: isSigner(account.value),
+      isWritable: account.isWritable,
     });
+  });
 };
 {% endblock %}
