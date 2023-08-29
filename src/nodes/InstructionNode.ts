@@ -41,6 +41,7 @@ export type InstructionNode = {
   readonly bytesCreatedOnChain?: BytesCreatedOnChain;
   readonly remainingAccounts?: RemainingAccounts;
   readonly argDefaults: Record<string, InstructionArgDefault>;
+  readonly optionalAccountStrategy: 'omitted' | 'programId';
 };
 
 export type InstructionNodeInput = Omit<
@@ -76,6 +77,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
         value,
       ])
     ),
+    optionalAccountStrategy: input.optionalAccountStrategy ?? 'programId',
   } as InstructionNode;
 }
 
@@ -111,6 +113,9 @@ export function instructionNodeFromIdl(
       name: `${name}InstructionData`,
       struct: dataArgs,
     }),
+    optionalAccountStrategy: useProgramIdForOptionalAccounts
+      ? 'programId'
+      : 'omitted',
   });
 }
 

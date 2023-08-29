@@ -365,6 +365,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       hasAccountResolvers ||
       hasByteResolver ||
       hasRemainingAccountsResolver;
+    const hasResolvedAccounts = hasAccounts || hasResolvers;
+    const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
 
     // Resolved inputs.
     const resolvedInputs = visit(
@@ -415,8 +417,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
+    if (hasResolvedAccounts) {
+      imports.add('shared', ['ResolvedAccounts']);
+    }
     if (accounts.length > 0) {
-      imports.add('shared', ['addAccountMeta', 'ResolvedAccounts']);
+      imports.add('shared', ['addAccountMeta']);
     }
 
     // Data Args.
@@ -532,6 +537,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         hasByteResolver,
         hasRemainingAccountsResolver,
         hasResolvers,
+        hasResolvedAccounts,
+        hasResolvedArgs,
       })
     );
   }

@@ -1,16 +1,9 @@
-{% set hasResolvedAccounts = hasAccounts or hasResolvers %}
-{% set hasResolvedArgs = hasDataArgs or hasArgDefaults or hasResolvers %}
-
 {% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
   // Resolved inputs.
   {% if hasResolvedAccounts %}
     const resolvedAccounts: ResolvedAccounts = {
-      {% for (account, index) in accounts %}
-        {{ account.name | camelCase }}: {
-          index: {{ index }},
-          isWritable: {{ 'true' if account.isWritable else 'false' }},
-          value: {{ accountsObj }}.{{ account.name | camelCase }}, 
-        },
+      {% for account in accounts %}
+        {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} },
       {% endfor %}
     };
   {% endif %}
@@ -76,7 +69,7 @@
     {%- if input.kind === 'account' %}
       if (!{{ accountsObj }}.{{ input.name | camelCase }}) {
         resolvedAccounts.{{ input.name | camelCase }}.value = {{ inputDefault }};
-        {% if inputDefaultIsWritable %} 
+        {% if inputDefaultIsWritable -%} 
           resolvedAccounts.{{ input.name | camelCase }}.isWritable = {{ inputDefaultIsWritable }};
         {% endif %} 
       }
