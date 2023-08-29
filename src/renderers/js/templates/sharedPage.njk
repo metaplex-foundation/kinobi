@@ -14,10 +14,7 @@ export type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
  * Defines an instruction account to resolve.
  * @internal
  */
-export type ResolvedAccount = {
-  isWritable: boolean;
-  value: PublicKey | Pda | Signer | undefined;
-}
+export type ResolvedAccount<T = PublicKey | Pda | Signer | null> = { isWritable: boolean; value: T; }
 
 /**
  * Defines a set of instruction account to resolve with their indices.

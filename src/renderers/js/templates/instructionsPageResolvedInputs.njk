@@ -3,7 +3,7 @@
   {% if hasResolvedAccounts %}
     const resolvedAccounts: ResolvedAccountsWithIndices = {
       {% for account in accounts %}
-        {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} },
+        {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
       {% endfor %}
     };
   {% endif %}
@@ -40,7 +40,7 @@
       {% set inputDefault %}context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'){% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
     {% elif input.defaultsTo.kind === 'programId' and input.kind === 'account' and input.isOptionalStrategy === 'programId' %}
-      {% set inputDefault %}undefined{% endset %}
+      {% set inputDefault %}null{% endset %}
       {# TODO: Skip this at a higher level? #}
     {% elif input.defaultsTo.kind === 'programId' %}
       {% set inputDefault %}programId{% endset %}
@@ -66,7 +66,11 @@
       {% set inputDefaultIsWritable %}false{% endset %}
     {% endif %}
     {# Add input to resolving object. #}
-    {%- if input.kind === 'account' %}
+    {%- if input.kind === 'account' and input.defaultsTo.kind === 'resolver' %}
+      if (!{{ accountsObj }}.{{ input.name | camelCase }}) {
+        resolvedAccounts.{{ input.name | camelCase }} = { ...resolvedAccounts.{{ input.name | camelCase }}, ...{{ inputDefault }} };
+      }
+    {% elif input.kind === 'account' %}
       if (!{{ accountsObj }}.{{ input.name | camelCase }}) {
         resolvedAccounts.{{ input.name | camelCase }}.value = {{ inputDefault }};
         {% if inputDefaultIsWritable -%} 
@@ -75,7 +79,7 @@
       }
     {% else %}
       if (!{{ argsObj }}.{{ input.name | camelCase }}) {
-        resolvedArgs.{{ input.name | camelCase }}.value = {{ inputDefault }};
+        resolvedArgs.{{ input.name | camelCase }} = {{ inputDefault }};
       }
     {% endif -%}
   {% endfor %}
