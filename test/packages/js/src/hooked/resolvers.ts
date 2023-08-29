@@ -13,8 +13,10 @@ import {
 
 export const resolveMasterEditionFromTokenStandard = (
   context: Pick<Context, 'eddsa' | 'programs'>,
-  accounts: { mint: ResolvedAccount<PublicKey | Pda | Signer> },
-  args: { tokenStandard: TokenStandard }
+  accounts: { mint: ResolvedAccount<PublicKey | Pda> },
+  args: { tokenStandard: TokenStandard },
+  programId: any,
+  isWritable: any
 ): Partial<ResolvedAccount> => {
   return args.tokenStandard === TokenStandard.NonFungible ||
     args.tokenStandard === TokenStandard.ProgrammableNonFungible
