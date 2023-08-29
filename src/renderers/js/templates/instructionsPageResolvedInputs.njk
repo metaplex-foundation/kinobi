@@ -8,7 +8,7 @@
     } satisfies ResolvedAccountsWithIndices;
   {% endif %}
   {% if hasResolvedArgs %}
-    const resolvedArgs = { ...{{ argsObj }} } satisfies {{ instruction.name | pascalCase + 'InstructionArgs' }}
+    const resolvedArgs = { ...{{ argsObj }} };
   {% endif %}
   {% for input in resolvedInputsWithDefaults %}
     {#- Input default value. -#}
@@ -39,9 +39,6 @@
     {% elif input.defaultsTo.kind === 'program' %}
       {% set inputDefault %}context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'){% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
-    {% elif input.defaultsTo.kind === 'programId' and input.kind === 'account' and input.isOptionalStrategy === 'programId' %}
-      {% set inputDefault %}null{% endset %}
-      {# TODO: Skip this at a higher level? #}
     {% elif input.defaultsTo.kind === 'programId' %}
       {% set inputDefault %}programId{% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}

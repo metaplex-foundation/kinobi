@@ -52,7 +52,7 @@ export function {{ instruction.name | camelCase }}(
 
   // Data.
   {% if hasDataArgs %}
-    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize(resolvedArgs);
+    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize(resolvedArgs as {{ instruction.name | pascalCase + 'InstructionDataArgs' }});
   {% elif hasData %}
     const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize({});
   {% else %}
