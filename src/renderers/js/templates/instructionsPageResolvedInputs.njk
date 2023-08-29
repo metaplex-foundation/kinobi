@@ -1,11 +1,13 @@
 {% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
   // Resolved inputs.
   {% if hasResolvedAccounts %}
-    const resolvedAccounts: ResolvedAccountsWithIndices = {
-      {% for account in accounts %}
-        {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
-      {% endfor %}
-    };
+    const resolvedAccounts: ResolvedAccountsWithIndices = Object.fromEntries(
+      [
+        {% for account in accounts %}
+          ["{{ account.name | camelCase }}", {{ accountsObj }}.{{ account.name | camelCase }}, {{ 'true' if account.isWritable else 'false' }}],
+        {% endfor %}
+      ].map(([name, value, isWritable], index) => ([name, { index, isWritable, value: value ?? null }]))
+    )
   {% endif %}
   {% if hasResolvedArgs %}
     const resolvedArgs = { ...{{ argsObj }} } as {{ instruction.name | pascalCase + 'InstructionArgs' }}
