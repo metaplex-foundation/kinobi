@@ -6,9 +6,9 @@
 {% if remaining.kind === 'arg' %}
   // Remaining Accounts.
   const remainingAccounts = resolvedArgs.{{ remaining.name | camelCase }}.map((value, index) => ({ index, value, isWritable: {{ "true" if remaining.isWritable else "false" }} }));
-  addAccountMetas(keys, signers, remainingAccounts, {{ instruction.optionalAccountStrategy }});
+  addAccountMetas(keys, signers, remainingAccounts, "{{ instruction.optionalAccountStrategy }}", programId);
 {% elif remaining.kind === 'resolver' %}
   // Remaining Accounts.
   const remainingAccounts = {{ remaining.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
-  addAccountMetas(keys, signers, remainingAccounts, {{ instruction.optionalAccountStrategy }});
+  addAccountMetas(keys, signers, remainingAccounts, "{{ instruction.optionalAccountStrategy }}", programId);
 {% endif %}
