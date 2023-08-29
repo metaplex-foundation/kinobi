@@ -58,7 +58,7 @@
     {% elif input.defaultsTo.kind === 'arg' %}
       {% set inputDefault %}resolvedArgs.{{ input.defaultsTo.name }}{% endset %}
     {% elif input.defaultsTo.kind === 'accountBump' %}
-      {% set inputDefault %}{{ accountsObj }}.{{ input.defaultsTo.name }}[1]{% endset %}
+      {% set inputDefault %}(resolvedAccounts.{{ input.defaultsTo.name }}.value as Pda)[1]{% endset %}
     {% elif input.defaultsTo.kind === 'value' %}
       {% set inputDefault %}{{ input.defaultsTo.render }}{% endset %}
     {% elif input.defaultsTo.kind === 'resolver' %}
