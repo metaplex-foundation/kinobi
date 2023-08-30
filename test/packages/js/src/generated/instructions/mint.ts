@@ -83,7 +83,7 @@ export type MintInstructionArgs = MintInstructionDataArgs;
 
 // Instruction.
 export function mint(
-  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'identity' | 'payer' | 'programs'>,
   input: MintInstructionAccounts & MintInstructionArgs
 ): TransactionBuilder {
   // Program ID.

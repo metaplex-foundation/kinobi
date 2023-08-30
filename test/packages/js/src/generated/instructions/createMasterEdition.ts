@@ -94,7 +94,7 @@ export type CreateMasterEditionInstructionArgs =
 
 // Instruction.
 export function createMasterEdition(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateMasterEditionInstructionAccounts &
     CreateMasterEditionInstructionArgs
 ): TransactionBuilder {

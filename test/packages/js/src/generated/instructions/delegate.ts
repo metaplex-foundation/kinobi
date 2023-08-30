@@ -96,7 +96,7 @@ export type DelegateInstructionArgs = DelegateInstructionDataArgs;
 
 // Instruction.
 export function delegate(
-  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'identity' | 'payer' | 'programs'>,
   input: DelegateInstructionAccounts & DelegateInstructionArgs
 ): TransactionBuilder {
   // Program ID.

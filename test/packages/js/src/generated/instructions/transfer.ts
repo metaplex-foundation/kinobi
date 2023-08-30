@@ -110,7 +110,7 @@ export type TransferInstructionArgs = PickPartial<
 
 // Instruction.
 export function transfer(
-  context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
+  context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,
   input: TransferInstructionAccounts & TransferInstructionArgs
 ): TransactionBuilder {
   // Program ID.

@@ -102,7 +102,7 @@ export type DeprecatedCreateMasterEditionInstructionArgs =
 
 // Instruction.
 export function deprecatedCreateMasterEdition(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: DeprecatedCreateMasterEditionInstructionAccounts &
     DeprecatedCreateMasterEditionInstructionArgs
 ): TransactionBuilder {

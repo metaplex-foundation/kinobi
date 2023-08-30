@@ -76,7 +76,7 @@ export function getCreateEscrowAccountInstructionDataSerializer(): Serializer<
 
 // Instruction.
 export function createEscrowAccount(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateEscrowAccountInstructionAccounts
 ): TransactionBuilder {
   // Program ID.
