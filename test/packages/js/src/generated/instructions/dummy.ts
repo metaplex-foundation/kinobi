@@ -22,6 +22,7 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
+import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../accounts';
 import {
   PickPartial,
@@ -43,6 +44,7 @@ export type DummyInstructionAccounts = {
   bar?: Signer;
   delegate?: Signer;
   delegateRecord?: PublicKey | Pda;
+  tokenOrAtaProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -112,6 +114,11 @@ export function dummy(
       isWritable: true,
       value: input.delegateRecord ?? null,
     },
+    tokenOrAtaProgram: {
+      index: 9,
+      isWritable: false,
+      value: input.tokenOrAtaProgram ?? null,
+    },
   };
 
   // Arguments.
@@ -137,6 +144,29 @@ export function dummy(
       resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
         role: DelegateRole.Collection,
       });
+    }
+  }
+  if (!resolvedAccounts.tokenOrAtaProgram.value) {
+    if (
+      resolveTokenOrAta(
+        context,
+        resolvedAccounts,
+        resolvedArgs,
+        programId,
+        false
+      )
+    ) {
+      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splToken',
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      );
+      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+    } else {
+      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splAssociatedToken',
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+      );
+      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
     }
   }
   if (!resolvedArgs.identityArg) {

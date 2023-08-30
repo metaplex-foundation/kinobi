@@ -115,6 +115,21 @@ kinobi.update(
             }),
           }),
         },
+        tokenOrAtaProgram: {
+          defaultsTo: k.conditionalResolverDefault(
+            k.resolverDefault('resolveTokenOrAta'),
+            {
+              ifTrue: k.programDefault(
+                'splToken',
+                'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+              ),
+              ifFalse: k.programDefault(
+                'splAssociatedToken',
+                'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+              ),
+            }
+          ),
+        },
       },
       args: {
         identityArg: {

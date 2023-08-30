@@ -52,6 +52,11 @@
           "isMut": true,
           "isSigner": false,
           "isOptional": true
+        },
+        {
+          "name": "tokenOrAtaProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ]
     },
