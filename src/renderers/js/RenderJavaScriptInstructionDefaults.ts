@@ -1,4 +1,10 @@
-import { camelCase, pascalCase } from '../../shared';
+import {
+  InstructionAccountDefault,
+  InstructionArgDefault,
+  InstructionDefault,
+  camelCase,
+  pascalCase,
+} from '../../shared';
 import { ResolvedInstructionInput } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
@@ -140,8 +146,89 @@ export function renderJavaScriptInstructionDefaults(
       return render(
         `${resolverName}(context, resolvedAccounts, resolvedArgs, programId, ${isWritable})`
       );
+    case 'conditional':
+    case 'conditionalResolver':
+      const ifTrueRenderer = renderNestedInstructionDefault(
+        input,
+        optionalAccountStrategy,
+        defaultsTo.ifTrue
+      );
+      const ifFalseRenderer = renderNestedInstructionDefault(
+        input,
+        optionalAccountStrategy,
+        defaultsTo.ifTrue
+      );
+      if (!ifTrueRenderer && !ifFalseRenderer) {
+        return { imports, render: '' };
+      }
+      if (ifTrueRenderer) {
+        imports.mergeWith(ifTrueRenderer.imports);
+      }
+      if (ifFalseRenderer) {
+        imports.mergeWith(ifFalseRenderer.imports);
+      }
+      const negatedCondition = !ifTrueRenderer;
+      let condition = 'true';
+
+      if (defaultsTo.kind === 'conditional') {
+        const comparedInputName =
+          defaultsTo.input.kind === 'account'
+            ? `resolvedAccounts.${camelCase(defaultsTo.input.name)}.value`
+            : `resolvedArgs.${camelCase(defaultsTo.input.name)}`;
+        if (defaultsTo.value) {
+          const comparedValue = renderJavaScriptValueNode(defaultsTo.value);
+          imports.mergeWith(comparedValue.imports);
+          const operator = negatedCondition ? '!==' : '===';
+          condition = `${comparedInputName} ${operator} ${comparedValue.render}`;
+        } else {
+          condition = negatedCondition
+            ? `!${comparedInputName}`
+            : comparedInputName;
+        }
+      } else {
+        const conditionalResolverName = camelCase(defaultsTo.resolver.name);
+        const conditionalIsWritable =
+          input.kind === 'account' && input.isWritable ? 'true' : 'false';
+        imports.add(defaultsTo.resolver.importFrom, conditionalResolverName);
+        condition = `${conditionalResolverName}(context, resolvedAccounts, resolvedArgs, programId, ${conditionalIsWritable})`;
+        condition = negatedCondition ? `!${condition}` : condition;
+      }
+
+      if (ifTrueRenderer && ifFalseRenderer) {
+        return {
+          imports,
+          render: `if (${condition}) {\n${ifTrueRenderer.render}\n} else {\n${ifFalseRenderer.render}\n}`,
+        };
+      }
+
+      return {
+        imports,
+        render: `if (${condition}) {\n${
+          ifTrueRenderer ? ifTrueRenderer.render : ifFalseRenderer?.render
+        }\n}`,
+      };
     default:
       const neverDefault: never = defaultsTo;
       throw new Error(`Unexpected value type ${(neverDefault as any).kind}`);
   }
+}
+
+function renderNestedInstructionDefault(
+  input: ResolvedInstructionInput,
+  optionalAccountStrategy: 'programId' | 'omitted',
+  defaultsTo: InstructionDefault | undefined
+): { imports: JavaScriptImportMap; render: string } | undefined {
+  if (!defaultsTo) return undefined;
+
+  if (input.kind === 'account') {
+    return renderJavaScriptInstructionDefaults(
+      { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
+      optionalAccountStrategy
+    );
+  }
+
+  return renderJavaScriptInstructionDefaults(
+    { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
+    optionalAccountStrategy
+  );
 }
