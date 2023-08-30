@@ -1,4 +1,4 @@
-import { Context } from '@metaplex-foundation/umi';
+import { Context, PublicKey } from '@metaplex-foundation/umi';
 import {
   ResolvedAccount,
   ResolvedAccounts,
@@ -22,4 +22,14 @@ export const resolveMasterEditionFromTokenStandard = (
         }),
       }
     : { value: null };
+};
+
+export const resolveTokenOrAta = (
+  context: any,
+  accounts: ResolvedAccounts,
+  args: { proof?: PublicKey[] },
+  programId?: any,
+  isWritable?: any
+): boolean => {
+  return !!args.proof && args.proof.length > 0;
 };
