@@ -1,7 +1,7 @@
 import { Context } from '@metaplex-foundation/umi';
 import {
   ResolvedAccount,
-  ResolvedAccountsWithIndices,
+  ResolvedAccounts,
   TokenStandard,
   expectPublicKey,
   findMasterEditionV2Pda,
@@ -9,7 +9,7 @@ import {
 
 export const resolveMasterEditionFromTokenStandard = (
   context: Pick<Context, 'eddsa' | 'programs'>,
-  accounts: ResolvedAccountsWithIndices,
+  accounts: ResolvedAccounts,
   args: { tokenStandard?: TokenStandard },
   programId: any,
   isWritable: any

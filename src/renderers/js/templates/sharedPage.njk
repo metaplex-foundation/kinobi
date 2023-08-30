@@ -48,23 +48,16 @@ export function expectPda(
 }
 
 /**
- * Asserts that the given value is a Signer.
- * @internal
- */
-export function expectSigner(
-  value: PublicKey | Pda | Signer | null | undefined
-): Signer {
-  if (!value || !isSigner(value)) {
-    throw new Error('Expected a Signer.');
-  }
-  return value;
-}
-
-/**
  * Defines an instruction account to resolve.
  * @internal
  */
 export type ResolvedAccount<T = PublicKey | Pda | Signer | null> = { isWritable: boolean; value: T; }
+
+/**
+ * Defines a set of instruction account to resolve.
+ * @internal
+ */
+export type ResolvedAccounts = Record<string, ResolvedAccount>;
 
 /**
  * Defines a set of instruction account to resolve with their indices.
