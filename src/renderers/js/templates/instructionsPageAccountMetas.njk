@@ -1,3 +1,0 @@
-{% if accounts.length > 0 %}
-  addAccountMetas(keys, signers, Object.values(resolvedAccounts).sort((a,b) => a.index - b.index), "{{ instruction.optionalAccountStrategy }}", programId);
-{% endif %}

@@ -66,16 +66,17 @@ export type ResolvedAccounts = Record<string, ResolvedAccount>;
 export type ResolvedAccountsWithIndices = Record<string, ResolvedAccount & { index: number }>;
 
 /**
- * Add instruction accounts to the given list of keys and signers.
+ * Get account metas and signers from resolved accounts.
  * @internal
  */
-export function addAccountMetas(
-  keys: AccountMeta[],
-  signers: Signer[],
+export function getAccountMetasAndSigners(
   accounts: ResolvedAccount[],
   isOptionalStrategy: 'omitted' | 'programId',
   programId: PublicKey,
-): void {
+): [AccountMeta[], Signer[]] {
+  const keys: AccountMeta[] = [];
+  const signers: Signer[] = [];
+
   accounts.forEach(account => {
     if (!account.value) {
       if (isOptionalStrategy === 'omitted') return;
@@ -92,5 +93,7 @@ export function addAccountMetas(
       isWritable: account.isWritable,
     });
   });
+
+  return [keys, signers];
 };
 {% endblock %}

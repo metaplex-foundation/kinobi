@@ -325,13 +325,19 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports.
-    const imports = new JavaScriptImportMap().add('umi', [
-      'AccountMeta',
-      'Context',
-      'Signer',
-      'TransactionBuilder',
-      'transactionBuilder',
-    ]);
+    const imports = new JavaScriptImportMap()
+      .add('umi', [
+        'AccountMeta',
+        'Context',
+        'Signer',
+        'TransactionBuilder',
+        'transactionBuilder',
+      ])
+      .add('shared', [
+        'ResolvedAccount',
+        'ResolvedAccountsWithIndices',
+        'getAccountMetasAndSigners',
+      ]);
 
     // Instruction helpers.
     const hasAccounts = instruction.accounts.length > 0;
@@ -365,7 +371,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       hasAccountResolvers ||
       hasByteResolver ||
       hasRemainingAccountsResolver;
-    const hasResolvedAccounts = hasAccounts || hasResolvers;
     const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
 
     // Resolved inputs.
@@ -408,9 +413,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const resolvedInputsWithDefaults = resolvedInputs.filter(
       (input) => input.kind !== 'account' || input.defaultsTo !== undefined
     );
-    if (hasResolvedAccounts) {
-      imports.add('shared', ['ResolvedAccountsWithIndices']);
-    }
     const accountsWithDefaults = resolvedInputsWithDefaults
       .filter((input) => input.kind === 'account')
       .map((input) => input.name);
@@ -432,9 +434,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
-    if (accounts.length > 0) {
-      imports.add('shared', ['addAccountMetas']);
-    }
 
     // Data Args.
     const linkedDataArgs = !!instruction.dataArgs.link;
@@ -549,7 +548,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         hasByteResolver,
         hasRemainingAccountsResolver,
         hasResolvers,
-        hasResolvedAccounts,
         hasResolvedArgs,
       })
     );

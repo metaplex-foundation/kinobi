@@ -1,14 +1,9 @@
-{% set remaining = instruction.remainingAccounts %}
-{% macro getArgVar(name, argsObj) -%}
-  {{ 'resolvedArgs' if argsWithDefaults.includes(name) else argsObj }}.{{ name | camelCase }}
-{%- endmacro %}
-
-{% if remaining.kind === 'arg' %}
+{% if instruction.remainingAccounts.kind === 'arg' %}
   // Remaining Accounts.
-  const remainingAccounts = resolvedArgs.{{ remaining.name | camelCase }}.map((value, index) => ({ index, value, isWritable: {{ "true" if remaining.isWritable else "false" }} }));
-  addAccountMetas(keys, signers, remainingAccounts, "{{ instruction.optionalAccountStrategy }}", programId);
-{% elif remaining.kind === 'resolver' %}
+  const remainingAccounts = resolvedArgs.{{ instruction.remainingAccounts.name | camelCase }}.map((value, index) => ({ index, value, isWritable: {{ "true" if instruction.remainingAccounts.isWritable else "false" }} }));
+  orderedAccounts.push(...remainingAccounts);
+{% elif instruction.remainingAccounts.kind === 'resolver' %}
   // Remaining Accounts.
-  const remainingAccounts = {{ remaining.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
-  addAccountMetas(keys, signers, remainingAccounts, "{{ instruction.optionalAccountStrategy }}", programId);
+  const remainingAccounts = {{ instruction.remainingAccounts.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+  orderedAccounts.push(...remainingAccounts);
 {% endif %}
