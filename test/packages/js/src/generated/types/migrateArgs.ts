@@ -14,17 +14,10 @@ export enum MigrateArgs {
 
 export type MigrateArgsArgs = MigrateArgs;
 
-/** @deprecated Use `getMigrateArgsSerializer()` without any argument instead. */
-export function getMigrateArgsSerializer(
-  _context: object
-): Serializer<MigrateArgsArgs, MigrateArgs>;
 export function getMigrateArgsSerializer(): Serializer<
   MigrateArgsArgs,
   MigrateArgs
->;
-export function getMigrateArgsSerializer(
-  _context: object = {}
-): Serializer<MigrateArgsArgs, MigrateArgs> {
+> {
   return scalarEnum<MigrateArgs>(MigrateArgs, {
     description: 'MigrateArgs',
   }) as Serializer<MigrateArgsArgs, MigrateArgs>;

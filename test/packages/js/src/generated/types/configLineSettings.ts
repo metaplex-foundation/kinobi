@@ -30,17 +30,10 @@ export type ConfigLineSettings = {
 
 export type ConfigLineSettingsArgs = ConfigLineSettings;
 
-/** @deprecated Use `getConfigLineSettingsSerializer()` without any argument instead. */
-export function getConfigLineSettingsSerializer(
-  _context: object
-): Serializer<ConfigLineSettingsArgs, ConfigLineSettings>;
 export function getConfigLineSettingsSerializer(): Serializer<
   ConfigLineSettingsArgs,
   ConfigLineSettings
->;
-export function getConfigLineSettingsSerializer(
-  _context: object = {}
-): Serializer<ConfigLineSettingsArgs, ConfigLineSettings> {
+> {
   return struct<ConfigLineSettings>(
     [
       ['prefixName', string()],

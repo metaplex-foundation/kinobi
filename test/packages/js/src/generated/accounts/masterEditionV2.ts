@@ -45,17 +45,10 @@ export type MasterEditionV2AccountDataArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
-/** @deprecated Use `getMasterEditionV2AccountDataSerializer()` without any argument instead. */
-export function getMasterEditionV2AccountDataSerializer(
-  _context: object
-): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
 export function getMasterEditionV2AccountDataSerializer(): Serializer<
   MasterEditionV2AccountDataArgs,
   MasterEditionV2AccountData
->;
-export function getMasterEditionV2AccountDataSerializer(
-  _context: object = {}
-): Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData> {
+> {
   return mapSerializer<
     MasterEditionV2AccountDataArgs,
     any,
@@ -73,20 +66,11 @@ export function getMasterEditionV2AccountDataSerializer(
   ) as Serializer<MasterEditionV2AccountDataArgs, MasterEditionV2AccountData>;
 }
 
-/** @deprecated Use `deserializeMasterEditionV2(rawAccount)` without any context instead. */
-export function deserializeMasterEditionV2(
-  context: object,
-  rawAccount: RpcAccount
-): MasterEditionV2;
 export function deserializeMasterEditionV2(
   rawAccount: RpcAccount
-): MasterEditionV2;
-export function deserializeMasterEditionV2(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
 ): MasterEditionV2 {
   return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
+    rawAccount,
     getMasterEditionV2AccountDataSerializer()
   );
 }

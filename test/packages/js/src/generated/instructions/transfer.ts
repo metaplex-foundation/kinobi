@@ -23,7 +23,12 @@ import {
   u8,
 } from '@metaplex-foundation/umi/serializers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
-import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
+import {
+  PickPartial,
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import {
   TokenStandard,
   TokenStandardArgs,
@@ -74,17 +79,10 @@ export type TransferInstructionData = {
 
 export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
-/** @deprecated Use `getTransferInstructionDataSerializer()` without any argument instead. */
-export function getTransferInstructionDataSerializer(
-  _context: object
-): Serializer<TransferInstructionDataArgs, TransferInstructionData>;
 export function getTransferInstructionDataSerializer(): Serializer<
   TransferInstructionDataArgs,
   TransferInstructionData
->;
-export function getTransferInstructionDataSerializer(
-  _context: object = {}
-): Serializer<TransferInstructionDataArgs, TransferInstructionData> {
+> {
   return mapSerializer<
     TransferInstructionDataArgs,
     any,
@@ -115,145 +113,141 @@ export function transfer(
   context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
   input: TransferInstructionAccounts & TransferInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    token: [input.token, true] as const,
-    tokenOwner: [input.tokenOwner, false] as const,
-    destination: [input.destination, true] as const,
-    destinationOwner: [input.destinationOwner, false] as const,
-    mint: [input.mint, false] as const,
-    metadata: [input.metadata, true] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    authority: { index: 0, isWritable: true, value: input.authority ?? null },
+    delegateRecord: {
+      index: 1,
+      isWritable: true,
+      value: input.delegateRecord ?? null,
+    },
+    token: { index: 2, isWritable: true, value: input.token ?? null },
+    tokenOwner: {
+      index: 3,
+      isWritable: false,
+      value: input.tokenOwner ?? null,
+    },
+    destination: {
+      index: 4,
+      isWritable: true,
+      value: input.destination ?? null,
+    },
+    destinationOwner: {
+      index: 5,
+      isWritable: false,
+      value: input.destinationOwner ?? null,
+    },
+    mint: { index: 6, isWritable: false, value: input.mint ?? null },
+    metadata: { index: 7, isWritable: true, value: input.metadata ?? null },
+    masterEdition: {
+      index: 8,
+      isWritable: false,
+      value: input.masterEdition ?? null,
+    },
+    splTokenProgram: {
+      index: 9,
+      isWritable: false,
+      value: input.splTokenProgram ?? null,
+    },
+    splAtaProgram: {
+      index: 10,
+      isWritable: false,
+      value: input.splAtaProgram ?? null,
+    },
+    systemProgram: {
+      index: 11,
+      isWritable: false,
+      value: input.systemProgram ?? null,
+    },
+    sysvarInstructions: {
+      index: 12,
+      isWritable: false,
+      value: input.sysvarInstructions ?? null,
+    },
+    authorizationRulesProgram: {
+      index: 13,
+      isWritable: false,
+      value: input.authorizationRulesProgram ?? null,
+    },
+    authorizationRules: {
+      index: 14,
+      isWritable: false,
+      value: input.authorizationRules ?? null,
+    },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'authority',
-    input.authority
-      ? ([input.authority, true] as const)
-      : ([context.identity, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'delegateRecord',
-    input.delegateRecord
-      ? ([input.delegateRecord, true] as const)
-      : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvingArgs,
-    'tokenStandard',
-    input.tokenStandard ?? TokenStandard.NonFungible
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'masterEdition',
-    input.masterEdition
-      ? ([input.masterEdition, false] as const)
-      : resolveMasterEditionFromTokenStandard(
-          context,
-          { ...input, ...resolvedAccounts },
-          { ...input, ...resolvingArgs },
-          programId,
-          false
-        )
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'splTokenProgram',
-    input.splTokenProgram
-      ? ([input.splTokenProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splToken',
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'splAtaProgram',
-    input.splAtaProgram
-      ? ([input.splAtaProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splAssociatedToken',
-            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    input.systemProgram
-      ? ([input.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'sysvarInstructions',
-    input.sysvarInstructions
-      ? ([input.sysvarInstructions, false] as const)
-      : ([
-          publicKey('Sysvar1nstructions1111111111111111111111111'),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'authorizationRulesProgram',
-    input.authorizationRulesProgram
-      ? ([input.authorizationRulesProgram, false] as const)
-      : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'authorizationRules',
-    input.authorizationRules
-      ? ([input.authorizationRules, false] as const)
-      : ([programId, false] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
-  addAccountMeta(keys, signers, resolvedAccounts.token, false);
-  addAccountMeta(keys, signers, resolvedAccounts.tokenOwner, false);
-  addAccountMeta(keys, signers, resolvedAccounts.destination, false);
-  addAccountMeta(keys, signers, resolvedAccounts.destinationOwner, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
-  addAccountMeta(keys, signers, resolvedAccounts.splTokenProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.splAtaProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
-  addAccountMeta(
-    keys,
-    signers,
-    resolvedAccounts.authorizationRulesProgram,
-    false
+  // Arguments.
+  const resolvedArgs: TransferInstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.authority.value) {
+    resolvedAccounts.authority.value = context.identity;
+  }
+  if (!resolvedArgs.tokenStandard) {
+    resolvedArgs.tokenStandard = TokenStandard.NonFungible;
+  }
+  if (!resolvedAccounts.masterEdition.value) {
+    resolvedAccounts.masterEdition = {
+      ...resolvedAccounts.masterEdition,
+      ...resolveMasterEditionFromTokenStandard(
+        context,
+        resolvedAccounts,
+        resolvedArgs,
+        programId,
+        false
+      ),
+    };
+  }
+  if (!resolvedAccounts.splTokenProgram.value) {
+    resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    resolvedAccounts.splTokenProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.splAtaProgram.value) {
+    resolvedAccounts.splAtaProgram.value = context.programs.getPublicKey(
+      'splAssociatedToken',
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+    );
+    resolvedAccounts.splAtaProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.sysvarInstructions.value) {
+    resolvedAccounts.sysvarInstructions.value = publicKey(
+      'Sysvar1nstructions1111111111111111111111111'
+    );
+    resolvedAccounts.sysvarInstructions.isWritable = false;
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
   );
-  addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data = getTransferInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getTransferInstructionDataSerializer().serialize(
+    resolvedArgs as TransferInstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

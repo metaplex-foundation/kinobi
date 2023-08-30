@@ -18,14 +18,7 @@ export enum BurnArgs {
 
 export type BurnArgsArgs = BurnArgs;
 
-/** @deprecated Use `getBurnArgsSerializer()` without any argument instead. */
-export function getBurnArgsSerializer(
-  _context: object
-): Serializer<BurnArgsArgs, BurnArgs>;
-export function getBurnArgsSerializer(): Serializer<BurnArgsArgs, BurnArgs>;
-export function getBurnArgsSerializer(
-  _context: object = {}
-): Serializer<BurnArgsArgs, BurnArgs> {
+export function getBurnArgsSerializer(): Serializer<BurnArgsArgs, BurnArgs> {
   return scalarEnum<BurnArgs>(BurnArgs, {
     size: u64(),
     description: 'BurnArgs',

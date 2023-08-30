@@ -21,7 +21,11 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 
 // Accounts.
 export type SetTokenStandardInstructionAccounts = {
@@ -40,20 +44,7 @@ export type SetTokenStandardInstructionData = { discriminator: number };
 
 export type SetTokenStandardInstructionDataArgs = {};
 
-/** @deprecated Use `getSetTokenStandardInstructionDataSerializer()` without any argument instead. */
-export function getSetTokenStandardInstructionDataSerializer(
-  _context: object
-): Serializer<
-  SetTokenStandardInstructionDataArgs,
-  SetTokenStandardInstructionData
->;
 export function getSetTokenStandardInstructionDataSerializer(): Serializer<
-  SetTokenStandardInstructionDataArgs,
-  SetTokenStandardInstructionData
->;
-export function getSetTokenStandardInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   SetTokenStandardInstructionDataArgs,
   SetTokenStandardInstructionData
 > {
@@ -77,33 +68,37 @@ export function setTokenStandard(
   context: Pick<Context, 'programs'>,
   input: SetTokenStandardInstructionAccounts
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    metadata: [input.metadata, true] as const,
-    updateAuthority: [input.updateAuthority, true] as const,
-    mint: [input.mint, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
+    updateAuthority: {
+      index: 1,
+      isWritable: true,
+      value: input.updateAuthority ?? null,
+    },
+    mint: { index: 2, isWritable: false, value: input.mint ?? null },
+    edition: { index: 3, isWritable: false, value: input.edition ?? null },
   };
-  addObjectProperty(
-    resolvedAccounts,
-    'edition',
-    input.edition
-      ? ([input.edition, false] as const)
-      : ([programId, false] as const)
-  );
 
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
+  // Default values.
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
   const data = getSetTokenStandardInstructionDataSerializer().serialize({});

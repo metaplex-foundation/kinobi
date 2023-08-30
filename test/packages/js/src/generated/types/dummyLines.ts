@@ -24,17 +24,10 @@ export type DummyLinesArgs = {
   lines: Array<ConfigLineArgs>;
 };
 
-/** @deprecated Use `getDummyLinesSerializer()` without any argument instead. */
-export function getDummyLinesSerializer(
-  _context: object
-): Serializer<DummyLinesArgs, DummyLines>;
 export function getDummyLinesSerializer(): Serializer<
   DummyLinesArgs,
   DummyLines
->;
-export function getDummyLinesSerializer(
-  _context: object = {}
-): Serializer<DummyLinesArgs, DummyLines> {
+> {
   return struct<DummyLines>(
     [['lines', array(getConfigLineSerializer(), { size: 'remainder' })]],
     { description: 'DummyLines' }

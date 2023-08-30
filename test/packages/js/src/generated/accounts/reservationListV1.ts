@@ -40,20 +40,11 @@ import {
 
 export type ReservationListV1 = Account<ReservationListV1AccountData>;
 
-/** @deprecated Use `deserializeReservationListV1(rawAccount)` without any context instead. */
-export function deserializeReservationListV1(
-  context: object,
-  rawAccount: RpcAccount
-): ReservationListV1;
 export function deserializeReservationListV1(
   rawAccount: RpcAccount
-): ReservationListV1;
-export function deserializeReservationListV1(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
 ): ReservationListV1 {
   return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
+    rawAccount,
     getReservationListV1AccountDataSerializer()
   );
 }

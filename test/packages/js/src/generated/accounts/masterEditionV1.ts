@@ -55,17 +55,10 @@ export type MasterEditionV1AccountDataArgs = {
   oneTimePrintingAuthorizationMint: PublicKey;
 };
 
-/** @deprecated Use `getMasterEditionV1AccountDataSerializer()` without any argument instead. */
-export function getMasterEditionV1AccountDataSerializer(
-  _context: object
-): Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData>;
 export function getMasterEditionV1AccountDataSerializer(): Serializer<
   MasterEditionV1AccountDataArgs,
   MasterEditionV1AccountData
->;
-export function getMasterEditionV1AccountDataSerializer(
-  _context: object = {}
-): Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData> {
+> {
   return mapSerializer<
     MasterEditionV1AccountDataArgs,
     any,
@@ -85,20 +78,11 @@ export function getMasterEditionV1AccountDataSerializer(
   ) as Serializer<MasterEditionV1AccountDataArgs, MasterEditionV1AccountData>;
 }
 
-/** @deprecated Use `deserializeMasterEditionV1(rawAccount)` without any context instead. */
-export function deserializeMasterEditionV1(
-  context: object,
-  rawAccount: RpcAccount
-): MasterEditionV1;
 export function deserializeMasterEditionV1(
   rawAccount: RpcAccount
-): MasterEditionV1;
-export function deserializeMasterEditionV1(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
 ): MasterEditionV1 {
   return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
+    rawAccount,
     getMasterEditionV1AccountDataSerializer()
   );
 }

@@ -23,7 +23,11 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 
 // Accounts.
 export type CreateFrequencyRuleInstructionAccounts = {
@@ -51,20 +55,7 @@ export type CreateFrequencyRuleInstructionDataArgs = {
   period: number | bigint;
 };
 
-/** @deprecated Use `getCreateFrequencyRuleInstructionDataSerializer()` without any argument instead. */
-export function getCreateFrequencyRuleInstructionDataSerializer(
-  _context: object
-): Serializer<
-  CreateFrequencyRuleInstructionDataArgs,
-  CreateFrequencyRuleInstructionData
->;
 export function getCreateFrequencyRuleInstructionDataSerializer(): Serializer<
-  CreateFrequencyRuleInstructionDataArgs,
-  CreateFrequencyRuleInstructionData
->;
-export function getCreateFrequencyRuleInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   CreateFrequencyRuleInstructionDataArgs,
   CreateFrequencyRuleInstructionData
 > {
@@ -100,49 +91,58 @@ export function createFrequencyRule(
   input: CreateFrequencyRuleInstructionAccounts &
     CreateFrequencyRuleInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenAuthRules',
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    frequencyPda: [input.frequencyPda, true] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    payer: { index: 0, isWritable: true, value: input.payer ?? null },
+    frequencyPda: {
+      index: 1,
+      isWritable: true,
+      value: input.frequencyPda ?? null,
+    },
+    systemProgram: {
+      index: 2,
+      isWritable: false,
+      value: input.systemProgram ?? null,
+    },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    input.payer
-      ? ([input.payer, true] as const)
-      : ([context.payer, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    input.systemProgram
-      ? ([input.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.frequencyPda, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  // Arguments.
+  const resolvedArgs: CreateFrequencyRuleInstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
-  const data =
-    getCreateFrequencyRuleInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getCreateFrequencyRuleInstructionDataSerializer().serialize(
+    resolvedArgs as CreateFrequencyRuleInstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

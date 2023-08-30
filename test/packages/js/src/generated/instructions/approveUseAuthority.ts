@@ -22,7 +22,11 @@ import {
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 
 // Accounts.
 export type ApproveUseAuthorityInstructionAccounts = {
@@ -60,20 +64,7 @@ export type ApproveUseAuthorityInstructionDataArgs = {
   numberOfUses: number | bigint;
 };
 
-/** @deprecated Use `getApproveUseAuthorityInstructionDataSerializer()` without any argument instead. */
-export function getApproveUseAuthorityInstructionDataSerializer(
-  _context: object
-): Serializer<
-  ApproveUseAuthorityInstructionDataArgs,
-  ApproveUseAuthorityInstructionData
->;
 export function getApproveUseAuthorityInstructionDataSerializer(): Serializer<
-  ApproveUseAuthorityInstructionDataArgs,
-  ApproveUseAuthorityInstructionData
->;
-export function getApproveUseAuthorityInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   ApproveUseAuthorityInstructionDataArgs,
   ApproveUseAuthorityInstructionData
 > {
@@ -106,81 +97,81 @@ export function approveUseAuthority(
   input: ApproveUseAuthorityInstructionAccounts &
     ApproveUseAuthorityInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    useAuthorityRecord: [input.useAuthorityRecord, true] as const,
-    owner: [input.owner, true] as const,
-    user: [input.user, false] as const,
-    ownerTokenAccount: [input.ownerTokenAccount, true] as const,
-    metadata: [input.metadata, false] as const,
-    mint: [input.mint, false] as const,
-    burner: [input.burner, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    useAuthorityRecord: {
+      index: 0,
+      isWritable: true,
+      value: input.useAuthorityRecord ?? null,
+    },
+    owner: { index: 1, isWritable: true, value: input.owner ?? null },
+    payer: { index: 2, isWritable: true, value: input.payer ?? null },
+    user: { index: 3, isWritable: false, value: input.user ?? null },
+    ownerTokenAccount: {
+      index: 4,
+      isWritable: true,
+      value: input.ownerTokenAccount ?? null,
+    },
+    metadata: { index: 5, isWritable: false, value: input.metadata ?? null },
+    mint: { index: 6, isWritable: false, value: input.mint ?? null },
+    burner: { index: 7, isWritable: false, value: input.burner ?? null },
+    tokenProgram: {
+      index: 8,
+      isWritable: false,
+      value: input.tokenProgram ?? null,
+    },
+    systemProgram: {
+      index: 9,
+      isWritable: false,
+      value: input.systemProgram ?? null,
+    },
+    rent: { index: 10, isWritable: false, value: input.rent ?? null },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    input.payer
-      ? ([input.payer, true] as const)
-      : ([context.payer, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'tokenProgram',
-    input.tokenProgram
-      ? ([input.tokenProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splToken',
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    input.systemProgram
-      ? ([input.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'rent',
-    input.rent ? ([input.rent, false] as const) : ([programId, false] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.useAuthorityRecord, false);
-  addAccountMeta(keys, signers, resolvedAccounts.owner, false);
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.user, false);
-  addAccountMeta(keys, signers, resolvedAccounts.ownerTokenAccount, false);
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.burner, false);
-  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
+  // Arguments.
+  const resolvedArgs: ApproveUseAuthorityInstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+  if (!resolvedAccounts.tokenProgram.value) {
+    resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    resolvedAccounts.tokenProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
-  const data =
-    getApproveUseAuthorityInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getApproveUseAuthorityInstructionDataSerializer().serialize(
+    resolvedArgs as ApproveUseAuthorityInstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
