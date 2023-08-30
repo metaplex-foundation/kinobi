@@ -35,7 +35,7 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
     let mut accounts = Vec::with_capacity({{ instruction.accounts.length }});
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
-        {% if account.isOptional and account.isOptionalStrategy === 'programId' %}
+        {% if account.isOptional and instruction.optionalAccountStrategy === 'programId' %}
           if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
             accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
               *{{ account.name | snakeCase }}.key,
@@ -61,7 +61,7 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
           ));
         {% endif %}
       {% else %}
-        {% if account.isOptional and account.isOptionalStrategy === 'programId' %}
+        {% if account.isOptional and instruction.optionalAccountStrategy === 'programId' %}
           if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
             accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
               *{{ account.name | snakeCase }}.key,

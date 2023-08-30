@@ -71,7 +71,7 @@ export type ResolvedAccountsWithIndices = Record<string, ResolvedAccount & { ind
  */
 export function getAccountMetasAndSigners(
   accounts: ResolvedAccount[],
-  isOptionalStrategy: 'omitted' | 'programId',
+  optionalAccountStrategy: 'omitted' | 'programId',
   programId: PublicKey,
 ): [AccountMeta[], Signer[]] {
   const keys: AccountMeta[] = [];
@@ -79,7 +79,7 @@ export function getAccountMetasAndSigners(
 
   accounts.forEach(account => {
     if (!account.value) {
-      if (isOptionalStrategy === 'omitted') return;
+      if (optionalAccountStrategy === 'omitted') return;
       keys.push({ pubkey: programId, isSigner: false, isWritable: false });
       return;
     }
