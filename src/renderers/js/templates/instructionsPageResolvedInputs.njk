@@ -29,7 +29,7 @@
     {% elif input.defaultsTo.kind === 'program' %}
       {% set inputDefault %}context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'){% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
-    {% elif input.defaultsTo.kind === 'programId' %}
+    {% elif input.defaultsTo.kind === 'programId' and not (instruction.optionalAccountStrategy === 'programId' and input.kind === 'account' and input.isOptional) %}
       {% set inputDefault %}programId{% endset %}
       {% set inputDefaultIsWritable %}false{% endset %}
     {% elif input.defaultsTo.kind === 'identity' and input.kind === 'account' and input.isSigner !== false %}
