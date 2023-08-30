@@ -1,18 +1,19 @@
 /// Instruction builder.
 #[derive(Default)]
 pub struct {{ instruction.name | pascalCase }}Builder {
-{% for account in instruction.accounts %}
-  {% if account.isSigner === 'either' %}
-    {{ account.name | snakeCase }}: Option<(solana_program::pubkey::Pubkey, bool)>,
-  {% else %}
-    {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
-  {% endif %}
-{% endfor %}
-{% for arg in instructionArgs %}
-  {% if not arg.default %}
-    {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
-  {% endif %}
-{% endfor %}
+  {% for account in instruction.accounts %}
+    {% if account.isSigner === 'either' %}
+      {{ account.name | snakeCase }}: Option<(solana_program::pubkey::Pubkey, bool)>,
+    {% else %}
+      {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default %}
+      {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
+    {% endif %}
+  {% endfor %}
+  __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl {{ instruction.name | pascalCase }}Builder {
@@ -44,6 +45,11 @@ impl {{ instruction.name | pascalCase }}Builder {
       }
     {% endif %}
   {% endfor %}
+  #[inline(always)]
+  pub fn remaining_account(&mut self, account: solana_program::pubkey::Pubkey, as_type: super::AccountType) -> &mut Self {
+    self.__remaining_accounts.push((account, as_type));
+    self
+  }
   #[allow(clippy::clone_on_copy)]
   pub fn build(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {
@@ -60,6 +66,7 @@ impl {{ instruction.name | pascalCase }}Builder {
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.expect("{{ account.name | snakeCase }} is not set"),
           {% endif %}
         {% endfor %}
+        __remaining_accounts: self.__remaining_accounts.clone(),
     };
     {% if hasArgs %}
       let args = {{ instruction.name | pascalCase }}InstructionArgs {

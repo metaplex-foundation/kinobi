@@ -16,6 +16,8 @@ pub struct CreateFrequencyRule {
     pub frequency_pda: solana_program::pubkey::Pubkey,
     /// System program
     pub system_program: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CreateFrequencyRule {
@@ -24,7 +26,7 @@ impl CreateFrequencyRule {
         &self,
         args: CreateFrequencyRuleInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3);
+        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.payer, true,
         ));
@@ -36,6 +38,11 @@ impl CreateFrequencyRule {
             self.system_program,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = CreateFrequencyRuleInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -79,6 +86,7 @@ pub struct CreateFrequencyRuleBuilder {
     freq_rule_name: Option<String>,
     last_update: Option<i64>,
     period: Option<i64>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CreateFrequencyRuleBuilder {
@@ -123,6 +131,15 @@ impl CreateFrequencyRuleBuilder {
         self.period = Some(period);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateFrequencyRule {
@@ -131,6 +148,7 @@ impl CreateFrequencyRuleBuilder {
             system_program: self
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = CreateFrequencyRuleInstructionArgs {
             rule_set_name: self
@@ -161,6 +179,11 @@ pub struct CreateFrequencyRuleCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: CreateFrequencyRuleInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> CreateFrequencyRuleCpi<'a> {
@@ -173,7 +196,7 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3);
+        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.payer.key,
             true,
@@ -186,6 +209,15 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
             *self.system_program.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = CreateFrequencyRuleInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -227,6 +259,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
             freq_rule_name: None,
             last_update: None,
             period: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -274,6 +307,17 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
         self.instruction.period = Some(period);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateFrequencyRuleCpi<'a> {
         let args = CreateFrequencyRuleInstructionArgs {
@@ -310,6 +354,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
                 .system_program
                 .expect("system_program is not set"),
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -323,4 +368,8 @@ struct CreateFrequencyRuleCpiBuilderInstruction<'a> {
     freq_rule_name: Option<String>,
     last_update: Option<i64>,
     period: Option<i64>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

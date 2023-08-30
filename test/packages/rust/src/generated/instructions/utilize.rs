@@ -32,6 +32,8 @@ pub struct Utilize {
     pub use_authority_record: Option<solana_program::pubkey::Pubkey>,
     /// Program As Signer (Burner)
     pub burner: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Utilize {
@@ -40,7 +42,7 @@ impl Utilize {
         &self,
         args: UtilizeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(11);
+        let mut accounts = Vec::with_capacity(11 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -95,6 +97,11 @@ impl Utilize {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = UtilizeInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -138,6 +145,7 @@ pub struct UtilizeBuilder {
     use_authority_record: Option<solana_program::pubkey::Pubkey>,
     burner: Option<solana_program::pubkey::Pubkey>,
     number_of_uses: Option<u64>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl UtilizeBuilder {
@@ -220,6 +228,15 @@ impl UtilizeBuilder {
         self.number_of_uses = Some(number_of_uses);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Utilize {
@@ -242,6 +259,7 @@ impl UtilizeBuilder {
             )),
             use_authority_record: self.use_authority_record,
             burner: self.burner,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = UtilizeInstructionArgs {
             number_of_uses: self
@@ -282,6 +300,11 @@ pub struct UtilizeCpi<'a> {
     pub burner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: UtilizeInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> UtilizeCpi<'a> {
@@ -294,7 +317,7 @@ impl<'a> UtilizeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(11);
+        let mut accounts = Vec::with_capacity(11 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -353,6 +376,15 @@ impl<'a> UtilizeCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = UtilizeInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -409,6 +441,7 @@ impl<'a> UtilizeCpiBuilder<'a> {
             use_authority_record: None,
             burner: None,
             number_of_uses: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -509,6 +542,17 @@ impl<'a> UtilizeCpiBuilder<'a> {
         self.instruction.number_of_uses = Some(number_of_uses);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UtilizeCpi<'a> {
         let args = UtilizeInstructionArgs {
@@ -559,6 +603,7 @@ impl<'a> UtilizeCpiBuilder<'a> {
 
             burner: self.instruction.burner,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -577,4 +622,8 @@ struct UtilizeCpiBuilderInstruction<'a> {
     use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     burner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     number_of_uses: Option<u64>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

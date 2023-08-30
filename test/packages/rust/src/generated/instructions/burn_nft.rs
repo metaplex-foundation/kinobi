@@ -24,12 +24,14 @@ pub struct BurnNft {
     pub spl_token_program: solana_program::pubkey::Pubkey,
     /// Metadata of the Collection
     pub collection_metadata: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl BurnNft {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(7);
+        let mut accounts = Vec::with_capacity(7 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -63,6 +65,11 @@ impl BurnNft {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = BurnNftInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -94,6 +101,7 @@ pub struct BurnNftBuilder {
     master_edition_account: Option<solana_program::pubkey::Pubkey>,
     spl_token_program: Option<solana_program::pubkey::Pubkey>,
     collection_metadata: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl BurnNftBuilder {
@@ -152,6 +160,15 @@ impl BurnNftBuilder {
         self.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = BurnNft {
@@ -166,6 +183,7 @@ impl BurnNftBuilder {
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
             collection_metadata: self.collection_metadata,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -190,6 +208,11 @@ pub struct BurnNftCpi<'a> {
     pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Metadata of the Collection
     pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> BurnNftCpi<'a> {
@@ -202,7 +225,7 @@ impl<'a> BurnNftCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(7);
+        let mut accounts = Vec::with_capacity(7 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -238,6 +261,15 @@ impl<'a> BurnNftCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = BurnNftInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -281,6 +313,7 @@ impl<'a> BurnNftCpiBuilder<'a> {
             master_edition_account: None,
             spl_token_program: None,
             collection_metadata: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -342,6 +375,17 @@ impl<'a> BurnNftCpiBuilder<'a> {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> BurnNftCpi<'a> {
         BurnNftCpi {
@@ -369,6 +413,7 @@ impl<'a> BurnNftCpiBuilder<'a> {
                 .expect("spl_token_program is not set"),
 
             collection_metadata: self.instruction.collection_metadata,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -382,4 +427,8 @@ struct BurnNftCpiBuilderInstruction<'a> {
     master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

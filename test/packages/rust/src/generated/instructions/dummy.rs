@@ -25,12 +25,14 @@ pub struct Dummy {
     pub bar: Option<solana_program::pubkey::Pubkey>,
 
     pub delegate_record: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Dummy {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
             true,
@@ -71,6 +73,11 @@ impl Dummy {
             self.delegate_record,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -105,6 +112,7 @@ pub struct DummyBuilder {
     foo: Option<solana_program::pubkey::Pubkey>,
     bar: Option<solana_program::pubkey::Pubkey>,
     delegate_record: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl DummyBuilder {
@@ -159,6 +167,15 @@ impl DummyBuilder {
         self.delegate_record = Some(delegate_record);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Dummy {
@@ -170,6 +187,7 @@ impl DummyBuilder {
             foo: self.foo.expect("foo is not set"),
             bar: self.bar,
             delegate_record: self.delegate_record.expect("delegate_record is not set"),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -196,6 +214,11 @@ pub struct DummyCpi<'a> {
     pub bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 
     pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> DummyCpi<'a> {
@@ -208,7 +231,7 @@ impl<'a> DummyCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
             true,
@@ -253,6 +276,15 @@ impl<'a> DummyCpi<'a> {
             *self.delegate_record.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -300,6 +332,7 @@ impl<'a> DummyCpiBuilder<'a> {
             foo: None,
             bar: None,
             delegate_record: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -357,6 +390,17 @@ impl<'a> DummyCpiBuilder<'a> {
         self.instruction.delegate_record = Some(delegate_record);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DummyCpi<'a> {
         DummyCpi {
@@ -386,6 +430,7 @@ impl<'a> DummyCpiBuilder<'a> {
                 .instruction
                 .delegate_record
                 .expect("delegate_record is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -400,4 +445,8 @@ struct DummyCpiBuilderInstruction<'a> {
     foo: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

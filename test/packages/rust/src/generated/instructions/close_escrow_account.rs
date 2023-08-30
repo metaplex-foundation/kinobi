@@ -26,12 +26,14 @@ pub struct CloseEscrowAccount {
     pub system_program: solana_program::pubkey::Pubkey,
     /// Instructions sysvar account
     pub sysvar_instructions: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CloseEscrowAccount {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.escrow,
             false,
@@ -62,6 +64,11 @@ impl CloseEscrowAccount {
             self.sysvar_instructions,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = CloseEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -96,6 +103,7 @@ pub struct CloseEscrowAccountBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CloseEscrowAccountBuilder {
@@ -153,6 +161,15 @@ impl CloseEscrowAccountBuilder {
         self.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CloseEscrowAccount {
@@ -168,6 +185,7 @@ impl CloseEscrowAccountBuilder {
             sysvar_instructions: self.sysvar_instructions.unwrap_or(solana_program::pubkey!(
                 "Sysvar1nstructions1111111111111111111111111"
             )),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -194,6 +212,11 @@ pub struct CloseEscrowAccountCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Instructions sysvar account
     pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> CloseEscrowAccountCpi<'a> {
@@ -206,7 +229,7 @@ impl<'a> CloseEscrowAccountCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.escrow.key,
             false,
@@ -239,6 +262,15 @@ impl<'a> CloseEscrowAccountCpi<'a> {
             *self.sysvar_instructions.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = CloseEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -284,6 +316,7 @@ impl<'a> CloseEscrowAccountCpiBuilder<'a> {
             payer: None,
             system_program: None,
             sysvar_instructions: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -353,6 +386,17 @@ impl<'a> CloseEscrowAccountCpiBuilder<'a> {
         self.instruction.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CloseEscrowAccountCpi<'a> {
         CloseEscrowAccountCpi {
@@ -382,6 +426,7 @@ impl<'a> CloseEscrowAccountCpiBuilder<'a> {
                 .instruction
                 .sysvar_instructions
                 .expect("sysvar_instructions is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -396,4 +441,8 @@ struct CloseEscrowAccountCpiBuilderInstruction<'a> {
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

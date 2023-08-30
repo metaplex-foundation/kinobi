@@ -37,12 +37,14 @@ pub struct SetCollection {
     pub token_metadata_program: solana_program::pubkey::Pubkey,
 
     pub system_program: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl SetCollection {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(14);
+        let mut accounts = Vec::with_capacity(14 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -98,6 +100,11 @@ impl SetCollection {
             self.system_program,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = SetCollectionInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -138,6 +145,7 @@ pub struct SetCollectionBuilder {
     new_collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     token_metadata_program: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl SetCollectionBuilder {
@@ -241,6 +249,15 @@ impl SetCollectionBuilder {
         self.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts =
@@ -277,6 +294,7 @@ impl SetCollectionBuilder {
                 system_program: self
                     .system_program
                     .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+                __remaining_accounts: self.__remaining_accounts.clone(),
             };
 
         accounts.instruction()
@@ -315,6 +333,11 @@ pub struct SetCollectionCpi<'a> {
     pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> SetCollectionCpi<'a> {
@@ -327,7 +350,7 @@ impl<'a> SetCollectionCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(14);
+        let mut accounts = Vec::with_capacity(14 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -384,6 +407,15 @@ impl<'a> SetCollectionCpi<'a> {
             *self.system_program.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = SetCollectionInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -439,6 +471,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
             new_collection_authority_record: None,
             token_metadata_program: None,
             system_program: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -551,6 +584,17 @@ impl<'a> SetCollectionCpiBuilder<'a> {
         self.instruction.system_program = Some(system_program);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetCollectionCpi<'a> {
         SetCollectionCpi {
@@ -619,6 +663,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -639,4 +684,8 @@ struct SetCollectionCpiBuilderInstruction<'a> {
     new_collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_metadata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

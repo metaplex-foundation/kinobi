@@ -40,6 +40,8 @@ pub struct UpdateV1 {
     pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl UpdateV1 {
@@ -48,7 +50,7 @@ impl UpdateV1 {
         &self,
         args: UpdateV1InstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(10);
+        let mut accounts = Vec::with_capacity(10 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.authority,
             true,
@@ -122,6 +124,11 @@ impl UpdateV1 {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = UpdateV1InstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -199,6 +206,7 @@ pub struct UpdateV1Builder {
     programmable_config: Option<ProgrammableConfig>,
     delegate_state: Option<DelegateState>,
     authority_type: Option<AuthorityType>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl UpdateV1Builder {
@@ -353,6 +361,15 @@ impl UpdateV1Builder {
         self.authority_type = Some(authority_type);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateV1 {
@@ -370,6 +387,7 @@ impl UpdateV1Builder {
             delegate_record: self.delegate_record,
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = UpdateV1InstructionArgs {
             authorization_data: self.authorization_data.clone(),
@@ -419,6 +437,11 @@ pub struct UpdateV1Cpi<'a> {
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: UpdateV1InstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> UpdateV1Cpi<'a> {
@@ -431,7 +454,7 @@ impl<'a> UpdateV1Cpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(10);
+        let mut accounts = Vec::with_capacity(10 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.authority.key,
             true,
@@ -506,6 +529,15 @@ impl<'a> UpdateV1Cpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = UpdateV1InstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -577,6 +609,7 @@ impl<'a> UpdateV1CpiBuilder<'a> {
             programmable_config: None,
             delegate_state: None,
             authority_type: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -740,6 +773,17 @@ impl<'a> UpdateV1CpiBuilder<'a> {
         self.instruction.authority_type = Some(authority_type);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateV1Cpi<'a> {
         let args = UpdateV1InstructionArgs {
@@ -790,6 +834,7 @@ impl<'a> UpdateV1CpiBuilder<'a> {
 
             authorization_rules: self.instruction.authorization_rules,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -818,4 +863,8 @@ struct UpdateV1CpiBuilderInstruction<'a> {
     programmable_config: Option<ProgrammableConfig>,
     delegate_state: Option<DelegateState>,
     authority_type: Option<AuthorityType>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

@@ -14,6 +14,8 @@ pub struct SetAuthority {
     pub candy_machine: solana_program::pubkey::Pubkey,
 
     pub authority: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl SetAuthority {
@@ -22,7 +24,7 @@ impl SetAuthority {
         &self,
         args: SetAuthorityInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(2);
+        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -31,6 +33,11 @@ impl SetAuthority {
             self.authority,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = SetAuthorityInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -67,6 +74,7 @@ pub struct SetAuthorityBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     new_authority: Option<Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl SetAuthorityBuilder {
@@ -88,11 +96,21 @@ impl SetAuthorityBuilder {
         self.new_authority = Some(new_authority);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetAuthority {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = SetAuthorityInstructionArgs {
             new_authority: self
@@ -115,6 +133,11 @@ pub struct SetAuthorityCpi<'a> {
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: SetAuthorityInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> SetAuthorityCpi<'a> {
@@ -127,7 +150,7 @@ impl<'a> SetAuthorityCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(2);
+        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -136,6 +159,15 @@ impl<'a> SetAuthorityCpi<'a> {
             *self.authority.key,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = SetAuthorityInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -170,6 +202,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
             candy_machine: None,
             authority: None,
             new_authority: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -194,6 +227,17 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
         self.instruction.new_authority = Some(new_authority);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetAuthorityCpi<'a> {
         let args = SetAuthorityInstructionArgs {
@@ -214,6 +258,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
 
             authority: self.instruction.authority.expect("authority is not set"),
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -223,4 +268,8 @@ struct SetAuthorityCpiBuilderInstruction<'a> {
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     new_authority: Option<Pubkey>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

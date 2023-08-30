@@ -134,3 +134,36 @@ pub use self::verify::*;
 pub use self::verify_collection::*;
 pub use self::verify_sized_collection_item::*;
 pub use self::withdraw::*;
+
+/// Enum representing the different types of remaining accounts.
+#[derive(Copy, Clone)]
+pub enum AccountType {
+    /// A `readonly` remaining account.
+    Readonly,
+    /// A `readonly` signer as a remaining account.
+    Signer,
+    /// A `writable` remaining account.
+    Writable,
+    /// A `writable` signer as a remaining account.
+    WritableSigner,
+}
+
+impl AccountType {
+    fn to_account_meta(
+        &self,
+        pubkey: solana_program::pubkey::Pubkey,
+    ) -> solana_program::instruction::AccountMeta {
+        match self {
+            AccountType::Readonly => {
+                solana_program::instruction::AccountMeta::new_readonly(pubkey, false)
+            }
+            AccountType::Signer => {
+                solana_program::instruction::AccountMeta::new_readonly(pubkey, true)
+            }
+            AccountType::Writable => solana_program::instruction::AccountMeta::new(pubkey, false),
+            AccountType::WritableSigner => {
+                solana_program::instruction::AccountMeta::new(pubkey, true)
+            }
+        }
+    }
+}

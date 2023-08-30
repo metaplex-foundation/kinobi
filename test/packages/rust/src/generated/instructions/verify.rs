@@ -21,6 +21,8 @@ pub struct Verify {
     pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
     /// Token Authorization Rules Program
     pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Verify {
@@ -29,7 +31,7 @@ impl Verify {
         &self,
         args: VerifyInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -63,6 +65,11 @@ impl Verify {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = VerifyInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -100,6 +107,7 @@ pub struct VerifyBuilder {
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     verify_args: Option<VerifyArgs>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl VerifyBuilder {
@@ -152,6 +160,15 @@ impl VerifyBuilder {
         self.verify_args = Some(verify_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Verify {
@@ -162,6 +179,7 @@ impl VerifyBuilder {
             payer: self.payer.expect("payer is not set"),
             authorization_rules: self.authorization_rules,
             authorization_rules_program: self.authorization_rules_program,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = VerifyInstructionArgs {
             verify_args: self.verify_args.clone().expect("verify_args is not set"),
@@ -187,6 +205,11 @@ pub struct VerifyCpi<'a> {
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: VerifyInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> VerifyCpi<'a> {
@@ -199,7 +222,7 @@ impl<'a> VerifyCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -234,6 +257,15 @@ impl<'a> VerifyCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = VerifyInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -278,6 +310,7 @@ impl<'a> VerifyCpiBuilder<'a> {
             authorization_rules: None,
             authorization_rules_program: None,
             verify_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -330,6 +363,17 @@ impl<'a> VerifyCpiBuilder<'a> {
         self.instruction.verify_args = Some(verify_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> VerifyCpi<'a> {
         let args = VerifyInstructionArgs {
@@ -356,6 +400,7 @@ impl<'a> VerifyCpiBuilder<'a> {
 
             authorization_rules_program: self.instruction.authorization_rules_program,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -368,4 +413,8 @@ struct VerifyCpiBuilderInstruction<'a> {
     authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     verify_args: Option<VerifyArgs>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

@@ -39,6 +39,8 @@ pub struct MintNewEditionFromMasterEditionViaToken {
     pub system_program: solana_program::pubkey::Pubkey,
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl MintNewEditionFromMasterEditionViaToken {
@@ -47,7 +49,7 @@ impl MintNewEditionFromMasterEditionViaToken {
         &self,
         args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(14);
+        let mut accounts = Vec::with_capacity(14 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.new_metadata,
             false,
@@ -109,6 +111,11 @@ impl MintNewEditionFromMasterEditionViaToken {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = MintNewEditionFromMasterEditionViaTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -159,6 +166,7 @@ pub struct MintNewEditionFromMasterEditionViaTokenBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     mint_new_edition_from_master_edition_via_token_args:
         Option<MintNewEditionFromMasterEditionViaTokenArgs>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl MintNewEditionFromMasterEditionViaTokenBuilder {
@@ -271,6 +279,15 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
             Some(mint_new_edition_from_master_edition_via_token_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = MintNewEditionFromMasterEditionViaToken {
@@ -298,6 +315,7 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = MintNewEditionFromMasterEditionViaTokenInstructionArgs {
             mint_new_edition_from_master_edition_via_token_args: self
@@ -344,6 +362,11 @@ pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a> {
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
@@ -356,7 +379,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(14);
+        let mut accounts = Vec::with_capacity(14 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.new_metadata.key,
             false,
@@ -419,6 +442,15 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = MintNewEditionFromMasterEditionViaTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -482,6 +514,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
                 system_program: None,
                 rent: None,
                 mint_new_edition_from_master_edition_via_token_args: None,
+                __remaining_accounts: Vec::new(),
             },
         );
         Self { instruction }
@@ -617,6 +650,17 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
             Some(mint_new_edition_from_master_edition_via_token_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
         let args = MintNewEditionFromMasterEditionViaTokenInstructionArgs {
@@ -688,6 +732,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
 
             rent: self.instruction.rent,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -710,4 +755,8 @@ struct MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a> {
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint_new_edition_from_master_edition_via_token_args:
         Option<MintNewEditionFromMasterEditionViaTokenArgs>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

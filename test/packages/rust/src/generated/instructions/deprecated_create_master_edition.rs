@@ -37,6 +37,8 @@ pub struct DeprecatedCreateMasterEdition {
     pub rent: solana_program::pubkey::Pubkey,
     /// One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY.
     pub one_time_printing_authorization_mint_authority: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl DeprecatedCreateMasterEdition {
@@ -45,7 +47,7 @@ impl DeprecatedCreateMasterEdition {
         &self,
         args: DeprecatedCreateMasterEditionInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(13);
+        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
             false,
@@ -95,6 +97,11 @@ impl DeprecatedCreateMasterEdition {
             self.one_time_printing_authorization_mint_authority,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = DeprecatedCreateMasterEditionInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -142,6 +149,7 @@ pub struct DeprecatedCreateMasterEditionBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     one_time_printing_authorization_mint_authority: Option<solana_program::pubkey::Pubkey>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl DeprecatedCreateMasterEditionBuilder {
@@ -247,6 +255,15 @@ impl DeprecatedCreateMasterEditionBuilder {
         self.create_master_edition_args = Some(create_master_edition_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedCreateMasterEdition {
@@ -275,6 +292,7 @@ impl DeprecatedCreateMasterEditionBuilder {
             one_time_printing_authorization_mint_authority: self
                 .one_time_printing_authorization_mint_authority
                 .expect("one_time_printing_authorization_mint_authority is not set"),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = DeprecatedCreateMasterEditionInstructionArgs {
             create_master_edition_args: self
@@ -320,6 +338,11 @@ pub struct DeprecatedCreateMasterEditionCpi<'a> {
         &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: DeprecatedCreateMasterEditionInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
@@ -332,7 +355,7 @@ impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(13);
+        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
             false,
@@ -385,6 +408,15 @@ impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
             *self.one_time_printing_authorization_mint_authority.key,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = DeprecatedCreateMasterEditionInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -443,6 +475,7 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
             rent: None,
             one_time_printing_authorization_mint_authority: None,
             create_master_edition_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -565,6 +598,17 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
         self.instruction.create_master_edition_args = Some(create_master_edition_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DeprecatedCreateMasterEditionCpi<'a> {
         let args = DeprecatedCreateMasterEditionInstructionArgs {
@@ -628,6 +672,7 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
                 .one_time_printing_authorization_mint_authority
                 .expect("one_time_printing_authorization_mint_authority is not set"),
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -649,4 +694,8 @@ struct DeprecatedCreateMasterEditionCpiBuilderInstruction<'a> {
     one_time_printing_authorization_mint_authority:
         Option<&'a solana_program::account_info::AccountInfo<'a>>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

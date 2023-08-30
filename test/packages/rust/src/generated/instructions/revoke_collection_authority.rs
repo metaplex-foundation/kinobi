@@ -20,12 +20,14 @@ pub struct RevokeCollectionAuthority {
     pub metadata: solana_program::pubkey::Pubkey,
     /// Mint of Metadata
     pub mint: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl RevokeCollectionAuthority {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.collection_authority_record,
             false,
@@ -45,6 +47,11 @@ impl RevokeCollectionAuthority {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.mint, false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = RevokeCollectionAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -76,6 +83,7 @@ pub struct RevokeCollectionAuthorityBuilder {
     revoke_authority: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl RevokeCollectionAuthorityBuilder {
@@ -121,6 +129,15 @@ impl RevokeCollectionAuthorityBuilder {
         self.mint = Some(mint);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = RevokeCollectionAuthority {
@@ -133,6 +150,7 @@ impl RevokeCollectionAuthorityBuilder {
             revoke_authority: self.revoke_authority.expect("revoke_authority is not set"),
             metadata: self.metadata.expect("metadata is not set"),
             mint: self.mint.expect("mint is not set"),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -153,6 +171,11 @@ pub struct RevokeCollectionAuthorityCpi<'a> {
     pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
     /// Mint of Metadata
     pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> RevokeCollectionAuthorityCpi<'a> {
@@ -165,7 +188,7 @@ impl<'a> RevokeCollectionAuthorityCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.collection_authority_record.key,
             false,
@@ -186,6 +209,15 @@ impl<'a> RevokeCollectionAuthorityCpi<'a> {
             *self.mint.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = RevokeCollectionAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -225,6 +257,7 @@ impl<'a> RevokeCollectionAuthorityCpiBuilder<'a> {
             revoke_authority: None,
             metadata: None,
             mint: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -270,6 +303,17 @@ impl<'a> RevokeCollectionAuthorityCpiBuilder<'a> {
         self.instruction.mint = Some(mint);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> RevokeCollectionAuthorityCpi<'a> {
         RevokeCollectionAuthorityCpi {
@@ -293,6 +337,7 @@ impl<'a> RevokeCollectionAuthorityCpiBuilder<'a> {
             metadata: self.instruction.metadata.expect("metadata is not set"),
 
             mint: self.instruction.mint.expect("mint is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -304,4 +349,8 @@ struct RevokeCollectionAuthorityCpiBuilderInstruction<'a> {
     revoke_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

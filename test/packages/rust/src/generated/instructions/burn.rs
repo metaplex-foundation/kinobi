@@ -29,6 +29,8 @@ pub struct Burn {
     pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
     /// Token Authorization Rules Program
     pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Burn {
@@ -37,7 +39,7 @@ impl Burn {
         &self,
         args: BurnInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(9);
+        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -93,6 +95,11 @@ impl Burn {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = BurnInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -134,6 +141,7 @@ pub struct BurnBuilder {
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     burn_args: Option<BurnArgs>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl BurnBuilder {
@@ -217,6 +225,15 @@ impl BurnBuilder {
         self.burn_args = Some(burn_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Burn {
@@ -233,6 +250,7 @@ impl BurnBuilder {
             collection_metadata: self.collection_metadata,
             authorization_rules: self.authorization_rules,
             authorization_rules_program: self.authorization_rules_program,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = BurnInstructionArgs {
             burn_args: self.burn_args.clone().expect("burn_args is not set"),
@@ -266,6 +284,11 @@ pub struct BurnCpi<'a> {
     pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: BurnInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> BurnCpi<'a> {
@@ -278,7 +301,7 @@ impl<'a> BurnCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(9);
+        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -336,6 +359,15 @@ impl<'a> BurnCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = BurnInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -390,6 +422,7 @@ impl<'a> BurnCpiBuilder<'a> {
             authorization_rules: None,
             authorization_rules_program: None,
             burn_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -476,6 +509,17 @@ impl<'a> BurnCpiBuilder<'a> {
         self.instruction.burn_args = Some(burn_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> BurnCpi<'a> {
         let args = BurnInstructionArgs {
@@ -516,6 +560,7 @@ impl<'a> BurnCpiBuilder<'a> {
 
             authorization_rules_program: self.instruction.authorization_rules_program,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -532,4 +577,8 @@ struct BurnCpiBuilderInstruction<'a> {
     authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     burn_args: Option<BurnArgs>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

@@ -32,6 +32,8 @@ pub struct ApproveUseAuthority {
     pub system_program: solana_program::pubkey::Pubkey,
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl ApproveUseAuthority {
@@ -40,7 +42,7 @@ impl ApproveUseAuthority {
         &self,
         args: ApproveUseAuthorityInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(11);
+        let mut accounts = Vec::with_capacity(11 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.use_authority_record,
             false,
@@ -87,6 +89,11 @@ impl ApproveUseAuthority {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = ApproveUseAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -132,6 +139,7 @@ pub struct ApproveUseAuthorityBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     number_of_uses: Option<u64>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl ApproveUseAuthorityBuilder {
@@ -216,6 +224,15 @@ impl ApproveUseAuthorityBuilder {
         self.number_of_uses = Some(number_of_uses);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ApproveUseAuthority {
@@ -238,6 +255,7 @@ impl ApproveUseAuthorityBuilder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = ApproveUseAuthorityInstructionArgs {
             number_of_uses: self
@@ -278,6 +296,11 @@ pub struct ApproveUseAuthorityCpi<'a> {
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: ApproveUseAuthorityInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> ApproveUseAuthorityCpi<'a> {
@@ -290,7 +313,7 @@ impl<'a> ApproveUseAuthorityCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(11);
+        let mut accounts = Vec::with_capacity(11 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.use_authority_record.key,
             false,
@@ -341,6 +364,15 @@ impl<'a> ApproveUseAuthorityCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = ApproveUseAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -397,6 +429,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
             system_program: None,
             rent: None,
             number_of_uses: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -490,6 +523,17 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
         self.instruction.number_of_uses = Some(number_of_uses);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ApproveUseAuthorityCpi<'a> {
         let args = ApproveUseAuthorityInstructionArgs {
@@ -537,6 +581,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
 
             rent: self.instruction.rent,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -555,4 +600,8 @@ struct ApproveUseAuthorityCpiBuilderInstruction<'a> {
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     number_of_uses: Option<u64>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

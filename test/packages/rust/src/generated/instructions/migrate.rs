@@ -31,6 +31,8 @@ pub struct Migrate {
     pub sysvar_instructions: solana_program::pubkey::Pubkey,
     /// Token Authorization Rules account
     pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Migrate {
@@ -39,7 +41,7 @@ impl Migrate {
         &self,
         args: MigrateInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(10);
+        let mut accounts = Vec::with_capacity(10 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -86,6 +88,11 @@ impl Migrate {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = MigrateInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -128,6 +135,7 @@ pub struct MigrateBuilder {
     sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     migrate_args: Option<MigrateArgs>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl MigrateBuilder {
@@ -212,6 +220,15 @@ impl MigrateBuilder {
         self.migrate_args = Some(migrate_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Migrate {
@@ -233,6 +250,7 @@ impl MigrateBuilder {
                 "Sysvar1nstructions1111111111111111111111111"
             )),
             authorization_rules: self.authorization_rules,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = MigrateInstructionArgs {
             migrate_args: self.migrate_args.clone().expect("migrate_args is not set"),
@@ -268,6 +286,11 @@ pub struct MigrateCpi<'a> {
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: MigrateInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> MigrateCpi<'a> {
@@ -280,7 +303,7 @@ impl<'a> MigrateCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(10);
+        let mut accounts = Vec::with_capacity(10 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -328,6 +351,15 @@ impl<'a> MigrateCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = MigrateInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -380,6 +412,7 @@ impl<'a> MigrateCpiBuilder<'a> {
             sysvar_instructions: None,
             authorization_rules: None,
             migrate_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -476,6 +509,17 @@ impl<'a> MigrateCpiBuilder<'a> {
         self.instruction.migrate_args = Some(migrate_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> MigrateCpi<'a> {
         let args = MigrateInstructionArgs {
@@ -530,6 +574,7 @@ impl<'a> MigrateCpiBuilder<'a> {
 
             authorization_rules: self.instruction.authorization_rules,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -547,4 +592,8 @@ struct MigrateCpiBuilderInstruction<'a> {
     sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     migrate_args: Option<MigrateArgs>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

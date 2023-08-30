@@ -37,6 +37,8 @@ pub struct Revoke {
     pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Revoke {
@@ -45,7 +47,7 @@ impl Revoke {
         &self,
         args: RevokeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(13);
+        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.delegate_record,
             false,
@@ -128,6 +130,11 @@ impl Revoke {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = RevokeInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -173,6 +180,7 @@ pub struct RevokeBuilder {
     authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     revoke_args: Option<RevokeArgs>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl RevokeBuilder {
@@ -282,6 +290,15 @@ impl RevokeBuilder {
         self.revoke_args = Some(revoke_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Revoke {
@@ -302,6 +319,7 @@ impl RevokeBuilder {
             spl_token_program: self.spl_token_program,
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = RevokeInstructionArgs {
             revoke_args: self.revoke_args.clone().expect("revoke_args is not set"),
@@ -343,6 +361,11 @@ pub struct RevokeCpi<'a> {
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: RevokeInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> RevokeCpi<'a> {
@@ -355,7 +378,7 @@ impl<'a> RevokeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(13);
+        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.delegate_record.key,
             false,
@@ -442,6 +465,15 @@ impl<'a> RevokeCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = RevokeInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -508,6 +540,7 @@ impl<'a> RevokeCpiBuilder<'a> {
             authorization_rules_program: None,
             authorization_rules: None,
             revoke_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -629,6 +662,17 @@ impl<'a> RevokeCpiBuilder<'a> {
         self.instruction.revoke_args = Some(revoke_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> RevokeCpi<'a> {
         let args = RevokeInstructionArgs {
@@ -677,6 +721,7 @@ impl<'a> RevokeCpiBuilder<'a> {
 
             authorization_rules: self.instruction.authorization_rules,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -697,4 +742,8 @@ struct RevokeCpiBuilderInstruction<'a> {
     authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     revoke_args: Option<RevokeArgs>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

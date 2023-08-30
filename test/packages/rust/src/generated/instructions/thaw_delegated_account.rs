@@ -20,12 +20,14 @@ pub struct ThawDelegatedAccount {
     pub mint: solana_program::pubkey::Pubkey,
     /// Token Program
     pub token_program: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl ThawDelegatedAccount {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.delegate,
             true,
@@ -45,6 +47,11 @@ impl ThawDelegatedAccount {
             self.token_program,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = ThawDelegatedAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -76,6 +83,7 @@ pub struct ThawDelegatedAccountBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     token_program: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl ThawDelegatedAccountBuilder {
@@ -112,6 +120,15 @@ impl ThawDelegatedAccountBuilder {
         self.token_program = Some(token_program);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ThawDelegatedAccount {
@@ -122,6 +139,7 @@ impl ThawDelegatedAccountBuilder {
             token_program: self.token_program.unwrap_or(solana_program::pubkey!(
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -142,6 +160,11 @@ pub struct ThawDelegatedAccountCpi<'a> {
     pub mint: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token Program
     pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> ThawDelegatedAccountCpi<'a> {
@@ -154,7 +177,7 @@ impl<'a> ThawDelegatedAccountCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.delegate.key,
             true,
@@ -175,6 +198,15 @@ impl<'a> ThawDelegatedAccountCpi<'a> {
             *self.token_program.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = ThawDelegatedAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -214,6 +246,7 @@ impl<'a> ThawDelegatedAccountCpiBuilder<'a> {
             edition: None,
             mint: None,
             token_program: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -259,6 +292,17 @@ impl<'a> ThawDelegatedAccountCpiBuilder<'a> {
         self.instruction.token_program = Some(token_program);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ThawDelegatedAccountCpi<'a> {
         ThawDelegatedAccountCpi {
@@ -279,6 +323,7 @@ impl<'a> ThawDelegatedAccountCpiBuilder<'a> {
                 .instruction
                 .token_program
                 .expect("token_program is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -290,4 +335,8 @@ struct ThawDelegatedAccountCpiBuilderInstruction<'a> {
     edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

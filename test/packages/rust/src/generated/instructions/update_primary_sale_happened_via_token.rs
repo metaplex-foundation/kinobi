@@ -16,12 +16,14 @@ pub struct UpdatePrimarySaleHappenedViaToken {
     pub owner: solana_program::pubkey::Pubkey,
     /// Account containing tokens from the metadata's mint
     pub token: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl UpdatePrimarySaleHappenedViaToken {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3);
+        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -32,6 +34,11 @@ impl UpdatePrimarySaleHappenedViaToken {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.token, false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = UpdatePrimarySaleHappenedViaTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -61,6 +68,7 @@ pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
     token: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl UpdatePrimarySaleHappenedViaTokenBuilder {
@@ -85,12 +93,22 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
         self.token = Some(token);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdatePrimarySaleHappenedViaToken {
             metadata: self.metadata.expect("metadata is not set"),
             owner: self.owner.expect("owner is not set"),
             token: self.token.expect("token is not set"),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -107,6 +125,11 @@ pub struct UpdatePrimarySaleHappenedViaTokenCpi<'a> {
     pub owner: &'a solana_program::account_info::AccountInfo<'a>,
     /// Account containing tokens from the metadata's mint
     pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
@@ -119,7 +142,7 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3);
+        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -132,6 +155,15 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
             *self.token.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = UpdatePrimarySaleHappenedViaTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -167,6 +199,7 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
             metadata: None,
             owner: None,
             token: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -191,6 +224,17 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
         self.instruction.token = Some(token);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
         UpdatePrimarySaleHappenedViaTokenCpi {
@@ -201,6 +245,7 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
             owner: self.instruction.owner.expect("owner is not set"),
 
             token: self.instruction.token.expect("token is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -210,4 +255,8 @@ struct UpdatePrimarySaleHappenedViaTokenCpiBuilderInstruction<'a> {
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

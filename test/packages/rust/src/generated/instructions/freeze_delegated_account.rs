@@ -20,12 +20,14 @@ pub struct FreezeDelegatedAccount {
     pub mint: solana_program::pubkey::Pubkey,
     /// Token Program
     pub token_program: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl FreezeDelegatedAccount {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.delegate,
             true,
@@ -45,6 +47,11 @@ impl FreezeDelegatedAccount {
             self.token_program,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = FreezeDelegatedAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -76,6 +83,7 @@ pub struct FreezeDelegatedAccountBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     token_program: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl FreezeDelegatedAccountBuilder {
@@ -112,6 +120,15 @@ impl FreezeDelegatedAccountBuilder {
         self.token_program = Some(token_program);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = FreezeDelegatedAccount {
@@ -122,6 +139,7 @@ impl FreezeDelegatedAccountBuilder {
             token_program: self.token_program.unwrap_or(solana_program::pubkey!(
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -142,6 +160,11 @@ pub struct FreezeDelegatedAccountCpi<'a> {
     pub mint: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token Program
     pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> FreezeDelegatedAccountCpi<'a> {
@@ -154,7 +177,7 @@ impl<'a> FreezeDelegatedAccountCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(5);
+        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.delegate.key,
             true,
@@ -175,6 +198,15 @@ impl<'a> FreezeDelegatedAccountCpi<'a> {
             *self.token_program.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = FreezeDelegatedAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -214,6 +246,7 @@ impl<'a> FreezeDelegatedAccountCpiBuilder<'a> {
             edition: None,
             mint: None,
             token_program: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -259,6 +292,17 @@ impl<'a> FreezeDelegatedAccountCpiBuilder<'a> {
         self.instruction.token_program = Some(token_program);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> FreezeDelegatedAccountCpi<'a> {
         FreezeDelegatedAccountCpi {
@@ -279,6 +323,7 @@ impl<'a> FreezeDelegatedAccountCpiBuilder<'a> {
                 .instruction
                 .token_program
                 .expect("token_program is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -290,4 +335,8 @@ struct FreezeDelegatedAccountCpiBuilderInstruction<'a> {
     edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

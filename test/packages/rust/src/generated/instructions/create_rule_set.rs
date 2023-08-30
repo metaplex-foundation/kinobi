@@ -17,6 +17,8 @@ pub struct CreateRuleSet {
     pub rule_set_pda: solana_program::pubkey::Pubkey,
     /// System program
     pub system_program: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CreateRuleSet {
@@ -25,7 +27,7 @@ impl CreateRuleSet {
         &self,
         args: CreateRuleSetInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3);
+        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.payer, true,
         ));
@@ -37,6 +39,11 @@ impl CreateRuleSet {
             self.system_program,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = CreateRuleSetInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -74,6 +81,7 @@ pub struct CreateRuleSetBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     create_args: Option<TaCreateArgs>,
     rule_set_bump: Option<u8>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CreateRuleSetBuilder {
@@ -108,6 +116,15 @@ impl CreateRuleSetBuilder {
         self.rule_set_bump = Some(rule_set_bump);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateRuleSet {
@@ -116,6 +133,7 @@ impl CreateRuleSetBuilder {
             system_program: self
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = CreateRuleSetInstructionArgs {
             create_args: self.create_args.clone().expect("create_args is not set"),
@@ -141,6 +159,11 @@ pub struct CreateRuleSetCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: CreateRuleSetInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> CreateRuleSetCpi<'a> {
@@ -153,7 +176,7 @@ impl<'a> CreateRuleSetCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3);
+        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.payer.key,
             true,
@@ -166,6 +189,15 @@ impl<'a> CreateRuleSetCpi<'a> {
             *self.system_program.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = CreateRuleSetInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -203,6 +235,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
             system_program: None,
             create_args: None,
             rule_set_bump: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -240,6 +273,17 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
         self.instruction.rule_set_bump = Some(rule_set_bump);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateRuleSetCpi<'a> {
         let args = CreateRuleSetInstructionArgs {
@@ -270,6 +314,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
                 .system_program
                 .expect("system_program is not set"),
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -281,4 +326,8 @@ struct CreateRuleSetCpiBuilderInstruction<'a> {
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     create_args: Option<TaCreateArgs>,
     rule_set_bump: Option<u8>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

@@ -23,6 +23,8 @@ pub struct {{ instruction.name | pascalCase }}Cpi<'a> {
     /// The arguments for the instruction.
     pub __args: {{ instruction.name | pascalCase }}InstructionArgs,
   {% endif %}
+  /// Additional instruction accounts.
+  pub __remaining_accounts: Vec<(&'a solana_program::account_info::AccountInfo<'a>, super::AccountType)>,
 }
 
 impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
@@ -32,7 +34,7 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
   #[allow(clippy::clone_on_copy)]
   #[allow(clippy::vec_init_then_push)]
   pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
-    let mut accounts = Vec::with_capacity({{ instruction.accounts.length }});
+    let mut accounts = Vec::with_capacity({{ instruction.accounts.length }} + self.__remaining_accounts.len());
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
         {% if account.isOptional and account.isOptionalStrategy === 'programId' %}
@@ -88,6 +90,7 @@ impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
         {% endif %}
       {% endif %}
     {% endfor %}
+    self.__remaining_accounts.iter().for_each(|remaining_account| accounts.push(remaining_account.1.to_account_meta(*remaining_account.0.key)));
     let {{ 'mut ' if hasArgs }}data = {{ instruction.name | pascalCase }}InstructionData::new().try_to_vec().unwrap();
     {% if hasArgs %}
       let mut args = self.__args.try_to_vec().unwrap();

@@ -14,6 +14,8 @@ pub struct UpdateCandyMachine {
     pub candy_machine: solana_program::pubkey::Pubkey,
 
     pub authority: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl UpdateCandyMachine {
@@ -22,7 +24,7 @@ impl UpdateCandyMachine {
         &self,
         args: UpdateCandyMachineInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(2);
+        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -31,6 +33,11 @@ impl UpdateCandyMachine {
             self.authority,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = UpdateCandyMachineInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -69,6 +76,7 @@ pub struct UpdateCandyMachineBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     data: Option<CandyMachineData>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl UpdateCandyMachineBuilder {
@@ -90,11 +98,21 @@ impl UpdateCandyMachineBuilder {
         self.data = Some(data);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateCandyMachine {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = UpdateCandyMachineInstructionArgs {
             data: self.data.clone().expect("data is not set"),
@@ -114,6 +132,11 @@ pub struct UpdateCandyMachineCpi<'a> {
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: UpdateCandyMachineInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> UpdateCandyMachineCpi<'a> {
@@ -126,7 +149,7 @@ impl<'a> UpdateCandyMachineCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(2);
+        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -135,6 +158,15 @@ impl<'a> UpdateCandyMachineCpi<'a> {
             *self.authority.key,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = UpdateCandyMachineInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -171,6 +203,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
             candy_machine: None,
             authority: None,
             data: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -195,6 +228,17 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
         self.instruction.data = Some(data);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> UpdateCandyMachineCpi<'a> {
         let args = UpdateCandyMachineInstructionArgs {
@@ -211,6 +255,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
 
             authority: self.instruction.authority.expect("authority is not set"),
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -220,4 +265,8 @@ struct UpdateCandyMachineCpiBuilderInstruction<'a> {
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     data: Option<CandyMachineData>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

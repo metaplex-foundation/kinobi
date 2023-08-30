@@ -29,6 +29,8 @@ pub struct CreateV1 {
     pub sysvar_instructions: solana_program::pubkey::Pubkey,
     /// SPL Token program
     pub spl_token_program: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CreateV1 {
@@ -37,7 +39,7 @@ impl CreateV1 {
         &self,
         args: CreateV1InstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(9);
+        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -80,6 +82,11 @@ impl CreateV1 {
             self.spl_token_program,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = CreateV1InstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -129,6 +136,7 @@ pub struct CreateV1Builder {
     asset_data: Option<AssetData>,
     decimals: Option<u8>,
     max_supply: Option<u64>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl CreateV1Builder {
@@ -216,6 +224,15 @@ impl CreateV1Builder {
         self.max_supply = Some(max_supply);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateV1 {
@@ -234,6 +251,7 @@ impl CreateV1Builder {
             spl_token_program: self.spl_token_program.unwrap_or(solana_program::pubkey!(
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = CreateV1InstructionArgs {
             asset_data: self.asset_data.clone().expect("asset_data is not set"),
@@ -269,6 +287,11 @@ pub struct CreateV1Cpi<'a> {
     pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: CreateV1InstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> CreateV1Cpi<'a> {
@@ -281,7 +304,7 @@ impl<'a> CreateV1Cpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(9);
+        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -325,6 +348,15 @@ impl<'a> CreateV1Cpi<'a> {
             *self.spl_token_program.key,
             false,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = CreateV1InstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -377,6 +409,7 @@ impl<'a> CreateV1CpiBuilder<'a> {
             asset_data: None,
             decimals: None,
             max_supply: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -477,6 +510,17 @@ impl<'a> CreateV1CpiBuilder<'a> {
         self.instruction.max_supply = Some(max_supply);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> CreateV1Cpi<'a> {
         let args = CreateV1InstructionArgs {
@@ -525,6 +569,7 @@ impl<'a> CreateV1CpiBuilder<'a> {
                 .spl_token_program
                 .expect("spl_token_program is not set"),
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -543,4 +588,8 @@ struct CreateV1CpiBuilderInstruction<'a> {
     asset_data: Option<AssetData>,
     decimals: Option<u8>,
     max_supply: Option<u64>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

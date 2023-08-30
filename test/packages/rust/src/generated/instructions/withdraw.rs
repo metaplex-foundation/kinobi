@@ -13,12 +13,14 @@ pub struct Withdraw {
     pub candy_machine: solana_program::pubkey::Pubkey,
 
     pub authority: solana_program::pubkey::Pubkey,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Withdraw {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(2);
+        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -27,6 +29,11 @@ impl Withdraw {
             self.authority,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = WithdrawInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -55,6 +62,7 @@ impl WithdrawInstructionData {
 pub struct WithdrawBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl WithdrawBuilder {
@@ -71,11 +79,21 @@ impl WithdrawBuilder {
         self.authority = Some(authority);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Withdraw {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -90,6 +108,11 @@ pub struct WithdrawCpi<'a> {
     pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> WithdrawCpi<'a> {
@@ -102,7 +125,7 @@ impl<'a> WithdrawCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(2);
+        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -111,6 +134,15 @@ impl<'a> WithdrawCpi<'a> {
             *self.authority.key,
             true,
         ));
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = WithdrawInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -142,6 +174,7 @@ impl<'a> WithdrawCpiBuilder<'a> {
             __program: program,
             candy_machine: None,
             authority: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -161,6 +194,17 @@ impl<'a> WithdrawCpiBuilder<'a> {
         self.instruction.authority = Some(authority);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> WithdrawCpi<'a> {
         WithdrawCpi {
@@ -172,6 +216,7 @@ impl<'a> WithdrawCpiBuilder<'a> {
                 .expect("candy_machine is not set"),
 
             authority: self.instruction.authority.expect("authority is not set"),
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -180,4 +225,8 @@ struct WithdrawCpiBuilderInstruction<'a> {
     __program: &'a solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

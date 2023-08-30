@@ -37,6 +37,8 @@ pub struct Delegate {
     pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     /// Token Authorization Rules account
     pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl Delegate {
@@ -45,7 +47,7 @@ impl Delegate {
         &self,
         args: DelegateInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(13);
+        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.delegate_record,
             false,
@@ -128,6 +130,11 @@ impl Delegate {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let mut data = DelegateInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -173,6 +180,7 @@ pub struct DelegateBuilder {
     authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     delegate_args: Option<DelegateArgs>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl DelegateBuilder {
@@ -282,6 +290,15 @@ impl DelegateBuilder {
         self.delegate_args = Some(delegate_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = Delegate {
@@ -302,6 +319,7 @@ impl DelegateBuilder {
             spl_token_program: self.spl_token_program,
             authorization_rules_program: self.authorization_rules_program,
             authorization_rules: self.authorization_rules,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
         let args = DelegateInstructionArgs {
             delegate_args: self
@@ -346,6 +364,11 @@ pub struct DelegateCpi<'a> {
     pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: DelegateInstructionArgs,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> DelegateCpi<'a> {
@@ -358,7 +381,7 @@ impl<'a> DelegateCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(13);
+        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.delegate_record.key,
             false,
@@ -445,6 +468,15 @@ impl<'a> DelegateCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let mut data = DelegateInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -511,6 +543,7 @@ impl<'a> DelegateCpiBuilder<'a> {
             authorization_rules_program: None,
             authorization_rules: None,
             delegate_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -632,6 +665,17 @@ impl<'a> DelegateCpiBuilder<'a> {
         self.instruction.delegate_args = Some(delegate_args);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> DelegateCpi<'a> {
         let args = DelegateInstructionArgs {
@@ -680,6 +724,7 @@ impl<'a> DelegateCpiBuilder<'a> {
 
             authorization_rules: self.instruction.authorization_rules,
             __args: args,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -700,4 +745,8 @@ struct DelegateCpiBuilderInstruction<'a> {
     authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate_args: Option<DelegateArgs>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

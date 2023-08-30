@@ -18,12 +18,14 @@ pub struct SetTokenStandard {
     pub mint: solana_program::pubkey::Pubkey,
     /// Edition account
     pub edition: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl SetTokenStandard {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(4);
+        let mut accounts = Vec::with_capacity(4 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -45,6 +47,11 @@ impl SetTokenStandard {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = SetTokenStandardInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -73,6 +80,7 @@ pub struct SetTokenStandardBuilder {
     update_authority: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     edition: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl SetTokenStandardBuilder {
@@ -107,6 +115,15 @@ impl SetTokenStandardBuilder {
         self.edition = Some(edition);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = SetTokenStandard {
@@ -114,6 +131,7 @@ impl SetTokenStandardBuilder {
             update_authority: self.update_authority.expect("update_authority is not set"),
             mint: self.mint.expect("mint is not set"),
             edition: self.edition,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -132,6 +150,11 @@ pub struct SetTokenStandardCpi<'a> {
     pub mint: &'a solana_program::account_info::AccountInfo<'a>,
     /// Edition account
     pub edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> SetTokenStandardCpi<'a> {
@@ -144,7 +167,7 @@ impl<'a> SetTokenStandardCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(4);
+        let mut accounts = Vec::with_capacity(4 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -168,6 +191,15 @@ impl<'a> SetTokenStandardCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = SetTokenStandardInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -205,6 +237,7 @@ impl<'a> SetTokenStandardCpiBuilder<'a> {
             update_authority: None,
             mint: None,
             edition: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -242,6 +275,17 @@ impl<'a> SetTokenStandardCpiBuilder<'a> {
         self.instruction.edition = Some(edition);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> SetTokenStandardCpi<'a> {
         SetTokenStandardCpi {
@@ -257,6 +301,7 @@ impl<'a> SetTokenStandardCpiBuilder<'a> {
             mint: self.instruction.mint.expect("mint is not set"),
 
             edition: self.instruction.edition,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -267,4 +312,8 @@ struct SetTokenStandardCpiBuilderInstruction<'a> {
     update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }

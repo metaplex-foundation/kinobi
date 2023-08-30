@@ -26,12 +26,14 @@ pub struct ApproveCollectionAuthority {
     pub system_program: solana_program::pubkey::Pubkey,
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl ApproveCollectionAuthority {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.collection_authority_record,
             false,
@@ -68,6 +70,11 @@ impl ApproveCollectionAuthority {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
+            });
         let data = ApproveCollectionAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -102,6 +109,7 @@ pub struct ApproveCollectionAuthorityBuilder {
     mint: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
 }
 
 impl ApproveCollectionAuthorityBuilder {
@@ -166,6 +174,15 @@ impl ApproveCollectionAuthorityBuilder {
         self.rent = Some(rent);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: solana_program::pubkey::Pubkey,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.__remaining_accounts.push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> solana_program::instruction::Instruction {
         let accounts = ApproveCollectionAuthority {
@@ -183,6 +200,7 @@ impl ApproveCollectionAuthorityBuilder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts.clone(),
         };
 
         accounts.instruction()
@@ -209,6 +227,11 @@ pub struct ApproveCollectionAuthorityCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent info
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Additional instruction accounts.
+    pub __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
 
 impl<'a> ApproveCollectionAuthorityCpi<'a> {
@@ -221,7 +244,7 @@ impl<'a> ApproveCollectionAuthorityCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.collection_authority_record.key,
             false,
@@ -260,6 +283,15 @@ impl<'a> ApproveCollectionAuthorityCpi<'a> {
                 false,
             ));
         }
+        self.__remaining_accounts
+            .iter()
+            .for_each(|remaining_account| {
+                accounts.push(
+                    remaining_account
+                        .1
+                        .to_account_meta(*remaining_account.0.key),
+                )
+            });
         let data = ApproveCollectionAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -307,6 +339,7 @@ impl<'a> ApproveCollectionAuthorityCpiBuilder<'a> {
             mint: None,
             system_program: None,
             rent: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -374,6 +407,17 @@ impl<'a> ApproveCollectionAuthorityCpiBuilder<'a> {
         self.instruction.rent = Some(rent);
         self
     }
+    #[inline(always)]
+    pub fn remaining_account(
+        &mut self,
+        account: &'a solana_program::account_info::AccountInfo<'a>,
+        as_type: super::AccountType,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, as_type));
+        self
+    }
     #[allow(clippy::clone_on_copy)]
     pub fn build(&self) -> ApproveCollectionAuthorityCpi<'a> {
         ApproveCollectionAuthorityCpi {
@@ -406,6 +450,7 @@ impl<'a> ApproveCollectionAuthorityCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
+            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
         }
     }
 }
@@ -420,4 +465,8 @@ struct ApproveCollectionAuthorityCpiBuilderInstruction<'a> {
     mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<(
+        &'a solana_program::account_info::AccountInfo<'a>,
+        super::AccountType,
+    )>,
 }
