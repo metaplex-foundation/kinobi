@@ -156,7 +156,7 @@ export function renderJavaScriptInstructionDefaults(
       const ifFalseRenderer = renderNestedInstructionDefault(
         input,
         optionalAccountStrategy,
-        defaultsTo.ifTrue
+        defaultsTo.ifFalse
       );
       if (!ifTrueRenderer && !ifFalseRenderer) {
         return { imports, render: '' };

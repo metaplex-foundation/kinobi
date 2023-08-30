@@ -107,10 +107,12 @@ kinobi.update(
           isOptional: true,
         },
         delegateRecord: {
-          defaultsTo: k.pdaDefault('delegateRecord', {
-            seeds: {
-              role: k.valueDefault(k.vEnum('delegateRole', 'Collection')),
-            },
+          defaultsTo: k.conditionalDefault('account', 'delegate', {
+            ifTrue: k.pdaDefault('delegateRecord', {
+              seeds: {
+                role: k.valueDefault(k.vEnum('delegateRole', 'Collection')),
+              },
+            }),
           }),
         },
       },

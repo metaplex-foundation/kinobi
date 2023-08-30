@@ -24,13 +24,15 @@ pub struct Dummy {
 
     pub bar: Option<solana_program::pubkey::Pubkey>,
 
-    pub delegate_record: solana_program::pubkey::Pubkey,
+    pub delegate: Option<solana_program::pubkey::Pubkey>,
+
+    pub delegate_record: Option<solana_program::pubkey::Pubkey>,
 }
 
 impl Dummy {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(9);
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
             true,
@@ -67,10 +69,27 @@ impl Dummy {
                 false,
             ));
         }
-        accounts.push(solana_program::instruction::AccountMeta::new(
-            self.delegate_record,
-            false,
-        ));
+        if let Some(delegate) = self.delegate {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                delegate, true,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
+        if let Some(delegate_record) = self.delegate_record {
+            accounts.push(solana_program::instruction::AccountMeta::new(
+                delegate_record,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
         let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -104,6 +123,7 @@ pub struct DummyBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
     foo: Option<solana_program::pubkey::Pubkey>,
     bar: Option<solana_program::pubkey::Pubkey>,
+    delegate: Option<solana_program::pubkey::Pubkey>,
     delegate_record: Option<solana_program::pubkey::Pubkey>,
 }
 
@@ -151,6 +171,13 @@ impl DummyBuilder {
         self.bar = Some(bar);
         self
     }
+    /// `[optional account]`
+    #[inline(always)]
+    pub fn delegate(&mut self, delegate: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.delegate = Some(delegate);
+        self
+    }
+    /// `[optional account]`
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
@@ -169,7 +196,8 @@ impl DummyBuilder {
             payer: self.payer.expect("payer is not set"),
             foo: self.foo.expect("foo is not set"),
             bar: self.bar,
-            delegate_record: self.delegate_record.expect("delegate_record is not set"),
+            delegate: self.delegate,
+            delegate_record: self.delegate_record,
         };
 
         accounts.instruction()
@@ -195,7 +223,9 @@ pub struct DummyCpi<'a> {
 
     pub bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 
-    pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+
+    pub delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 impl<'a> DummyCpi<'a> {
@@ -208,7 +238,7 @@ impl<'a> DummyCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(8);
+        let mut accounts = Vec::with_capacity(9);
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
             true,
@@ -249,10 +279,28 @@ impl<'a> DummyCpi<'a> {
                 false,
             ));
         }
-        accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.delegate_record.key,
-            false,
-        ));
+        if let Some(delegate) = self.delegate {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *delegate.key,
+                true,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
+        if let Some(delegate_record) = self.delegate_record {
+            accounts.push(solana_program::instruction::AccountMeta::new(
+                *delegate_record.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_CANDY_MACHINE_CORE_ID,
+                false,
+            ));
+        }
         let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -260,7 +308,7 @@ impl<'a> DummyCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(8 + 1);
+        let mut account_infos = Vec::with_capacity(9 + 1);
         account_infos.push(self.__program.clone());
         account_infos.push(self.edition.clone());
         if let Some(mint) = self.mint {
@@ -273,7 +321,12 @@ impl<'a> DummyCpi<'a> {
         if let Some(bar) = self.bar {
             account_infos.push(bar.clone());
         }
-        account_infos.push(self.delegate_record.clone());
+        if let Some(delegate) = self.delegate {
+            account_infos.push(delegate.clone());
+        }
+        if let Some(delegate_record) = self.delegate_record {
+            account_infos.push(delegate_record.clone());
+        }
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -299,6 +352,7 @@ impl<'a> DummyCpiBuilder<'a> {
             payer: None,
             foo: None,
             bar: None,
+            delegate: None,
             delegate_record: None,
         });
         Self { instruction }
@@ -349,6 +403,16 @@ impl<'a> DummyCpiBuilder<'a> {
         self.instruction.bar = Some(bar);
         self
     }
+    /// `[optional account]`
+    #[inline(always)]
+    pub fn delegate(
+        &mut self,
+        delegate: &'a solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.delegate = Some(delegate);
+        self
+    }
+    /// `[optional account]`
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
@@ -382,10 +446,9 @@ impl<'a> DummyCpiBuilder<'a> {
 
             bar: self.instruction.bar,
 
-            delegate_record: self
-                .instruction
-                .delegate_record
-                .expect("delegate_record is not set"),
+            delegate: self.instruction.delegate,
+
+            delegate_record: self.instruction.delegate_record,
         }
     }
 }
@@ -399,5 +462,6 @@ struct DummyCpiBuilderInstruction<'a> {
     payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     foo: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }

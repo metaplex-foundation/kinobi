@@ -41,6 +41,7 @@ export type DummyInstructionAccounts = {
   payer?: Signer;
   foo?: PublicKey | Pda;
   bar?: Signer;
+  delegate?: Signer;
   delegateRecord?: PublicKey | Pda;
 };
 
@@ -79,7 +80,7 @@ export type DummyInstructionArgs = PickPartial<
 
 // Instruction.
 export function dummy(
-  context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
+  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
   input: DummyInstructionAccounts & DummyInstructionArgs
 ): TransactionBuilder {
   // Program ID.
@@ -105,8 +106,9 @@ export function dummy(
     payer: { index: 4, isWritable: true, value: input.payer ?? null },
     foo: { index: 5, isWritable: true, value: input.foo ?? null },
     bar: { index: 6, isWritable: false, value: input.bar ?? null },
+    delegate: { index: 7, isWritable: false, value: input.delegate ?? null },
     delegateRecord: {
-      index: 7,
+      index: 8,
       isWritable: true,
       value: input.delegateRecord ?? null,
     },
@@ -131,9 +133,11 @@ export function dummy(
     resolvedAccounts.foo.value = expectSome(resolvedAccounts.bar.value);
   }
   if (!resolvedAccounts.delegateRecord.value) {
-    resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
-      role: DelegateRole.Collection,
-    });
+    if (resolvedAccounts.delegate.value) {
+      resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
+        role: DelegateRole.Collection,
+      });
+    }
   }
   if (!resolvedArgs.identityArg) {
     resolvedArgs.identityArg = context.identity.publicKey;

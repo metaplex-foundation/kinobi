@@ -42,9 +42,16 @@
           "isSigner": true
         },
         {
+          "name": "delegate",
+          "isMut": false,
+          "isSigner": true,
+          "isOptional": true
+        },
+        {
           "name": "delegateRecord",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "isOptional": true
         }
       ]
     },
