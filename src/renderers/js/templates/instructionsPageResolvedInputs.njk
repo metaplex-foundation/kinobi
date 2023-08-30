@@ -1,70 +1,14 @@
 {% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
   // Default values.
   {% for input in resolvedInputsWithDefaults %}
-    {#- Input default value. -#}
-    {% if input.defaultsTo.kind === 'account' and input.kind === 'account' %}
-      {% set inputDefault %}expectSome(resolvedAccounts.{{ input.defaultsTo.name }}.value){% endset %}
-    {% elif input.defaultsTo.kind === 'account' %}
-      {% set inputDefault %}expectPublicKey(resolvedAccounts.{{ input.defaultsTo.name }}.value){% endset %}
-    {% elif input.defaultsTo.kind === 'pda' %}
-      {% set inputDefault -%}
-        find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
-          {%- if (input.defaultsTo.seeds | length) > 0 -%}
-            {
-              {%- for seedKey, seedValue in input.defaultsTo.seeds -%}
-                {%- if seedValue.kind === 'value' -%}
-                  {{ seedKey }}: {{ seedValue.render }},
-                {%- elif seedValue.kind === 'account' -%}
-                  {{ seedKey }}: expectPublicKey(resolvedAccounts.{{ seedValue.name }}.value),
-                {%- else -%}
-                  {{ seedKey }}: expectSome(resolvedArgs.{{ seedValue.name }}),
-                {%- endif -%}
-              {%- endfor -%}
-            }
-          {%- endif -%}
-        )
-      {%- endset %}
-    {% elif input.defaultsTo.kind === 'publicKey' %}
-      {% set inputDefault %}publicKey('{{ input.defaultsTo.publicKey }}'){% endset %}
-    {% elif input.defaultsTo.kind === 'program' %}
-      {% set inputDefault %}context.programs.getPublicKey('{{ input.defaultsTo.program.name }}', '{{ input.defaultsTo.program.publicKey }}'){% endset %}
-      {% set inputDefaultIsWritable %}false{% endset %}
-    {% elif input.defaultsTo.kind === 'programId' and not (instruction.optionalAccountStrategy === 'programId' and input.kind === 'account' and input.isOptional) %}
-      {% set inputDefault %}programId{% endset %}
-      {% set inputDefaultIsWritable %}false{% endset %}
-    {% elif input.defaultsTo.kind === 'identity' and input.kind === 'account' and input.isSigner !== false %}
-      {% set inputDefault %}context.identity{% endset %}
-    {% elif input.defaultsTo.kind === 'identity' %}
-      {% set inputDefault %}context.identity.publicKey{% endset %}
-    {% elif input.defaultsTo.kind === 'payer' and input.kind === 'account' and input.isSigner !== false %}
-      {% set inputDefault %}context.payer{% endset %}
-    {% elif input.defaultsTo.kind === 'payer' %}
-      {% set inputDefault %}context.payer.publicKey{% endset %}
-    {% elif input.defaultsTo.kind === 'arg' %}
-      {% set inputDefault %}expectSome(resolvedArgs.{{ input.defaultsTo.name }}){% endset %}
-    {% elif input.defaultsTo.kind === 'accountBump' %}
-      {% set inputDefault %}expectPda(resolvedAccounts.{{ input.defaultsTo.name }}.value)[1]{% endset %}
-    {% elif input.defaultsTo.kind === 'value' %}
-      {% set inputDefault %}{{ input.defaultsTo.render }}{% endset %}
-    {% elif input.defaultsTo.kind === 'resolver' %}
-      {% set inputDefault %}{{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId, {{ 'true' if input.isWritable else 'false' }}){% endset %}
-    {% endif %}
-    {# Add input to resolved object. #}
-    {%- if inputDefault -%}
-      {% if input.kind === 'account' and input.defaultsTo.kind === 'resolver' %}
+    {%- if input.render -%}
+      {% if input.kind === 'account' %}
         if (!resolvedAccounts.{{ input.name | camelCase }}.value) {
-          resolvedAccounts.{{ input.name | camelCase }} = { ...resolvedAccounts.{{ input.name | camelCase }}, ...{{ inputDefault }} };
-        }
-      {% elif input.kind === 'account' %}
-        if (!resolvedAccounts.{{ input.name | camelCase }}.value) {
-          resolvedAccounts.{{ input.name | camelCase }}.value = {{ inputDefault }};
-          {% if inputDefaultIsWritable -%} 
-            resolvedAccounts.{{ input.name | camelCase }}.isWritable = {{ inputDefaultIsWritable }};
-          {% endif %} 
+          {{ input.render }}
         }
       {% else %}
         if (!resolvedArgs.{{ input.name | camelCase }}) {
-          resolvedArgs.{{ input.name | camelCase }} = {{ inputDefault }};
+          {{ input.render }}
         }
       {% endif %}
     {% endif %}

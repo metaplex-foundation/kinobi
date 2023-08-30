@@ -26,6 +26,7 @@ import {
 } from './GetJavaScriptTypeManifestVisitor';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
+import { renderJavaScriptInstructionDefaults } from './RenderJavaScriptInstructionDefaults';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -378,44 +379,16 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       this.resolvedInstructionInputVisitor
     ).map((input: ResolvedInstructionInput) => {
-      if (input.defaultsTo?.kind === 'pda') {
-        const { seeds } = input.defaultsTo;
-        Object.keys(seeds).forEach((seed: string) => {
-          const seedValue = seeds[seed];
-          if (seedValue.kind !== 'value') {
-            imports.add(
-              'shared',
-              seedValue.kind === 'account' ? 'expectPublicKey' : 'expectSome'
-            );
-            return;
-          }
-          const valueManifest = renderJavaScriptValueNode(seedValue.value);
-          (seedValue as any).render = valueManifest.render;
-          imports.mergeWith(valueManifest.imports);
-        });
-      } else if (input.defaultsTo?.kind === 'value') {
-        const { defaultsTo } = input;
-        const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
-        (defaultsTo as any).render = valueManifest.render;
-        imports.mergeWith(valueManifest.imports);
-      } else if (input.defaultsTo?.kind === 'account') {
-        imports.add(
-          'shared',
-          input.kind === 'account' ? 'expectSome' : 'expectPublicKey'
-        );
-      } else if (input.defaultsTo?.kind === 'arg') {
-        imports.add('shared', ['expectSome']);
-      } else if (input.defaultsTo?.kind === 'accountBump') {
-        imports.add('shared', ['expectPda']);
-      }
-      return input;
+      const renderedInput = renderJavaScriptInstructionDefaults(
+        input,
+        instruction.optionalAccountStrategy
+      );
+      imports.mergeWith(renderedInput.imports);
+      return { ...input, render: renderedInput.render };
     });
     const resolvedInputsWithDefaults = resolvedInputs.filter(
       (input) => input.kind !== 'account' || input.defaultsTo !== undefined
     );
-    const accountsWithDefaults = resolvedInputsWithDefaults
-      .filter((input) => input.kind === 'account')
-      .map((input) => input.name);
     const argsWithDefaults = resolvedInputsWithDefaults
       .filter((input) => input.kind === 'arg')
       .map((input) => input.name);
@@ -528,7 +501,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         program: this.program,
         resolvedInputs,
         resolvedInputsWithDefaults,
-        accountsWithDefaults,
         argsWithDefaults,
         accounts,
         needsEddsa: hasDefaultKinds(['pda']) || hasResolvers,
@@ -610,27 +582,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports.add('umi', 'PublicKey');
       if (account.isSigner !== true) imports.add('umi', 'Pda');
       if (account.isSigner !== false) imports.add('umi', 'Signer');
-
-      if (account.defaultsTo?.kind === 'publicKey') {
-        imports.add('umi', 'publicKey');
-      } else if (account.defaultsTo?.kind === 'pda') {
-        const pdaAccount = pascalCase(account.defaultsTo.pdaAccount);
-        const importFrom =
-          account.defaultsTo.importFrom === 'generated'
-            ? 'generatedAccounts'
-            : account.defaultsTo.importFrom;
-        imports.add(importFrom, `find${pdaAccount}Pda`);
-        Object.values(account.defaultsTo.seeds).forEach((seed) => {
-          if (seed.kind === 'account') {
-            imports.add('umi', 'publicKey');
-          }
-        });
-      } else if (account.defaultsTo?.kind === 'resolver') {
-        imports.add(
-          account.defaultsTo.importFrom,
-          camelCase(account.defaultsTo.name)
-        );
-      }
     });
     return imports;
   }
