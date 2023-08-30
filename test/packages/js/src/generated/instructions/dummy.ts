@@ -127,9 +127,6 @@ export function dummy(
   if (!resolvedAccounts.payer.value) {
     resolvedAccounts.payer.value = context.payer;
   }
-  if (!resolvedAccounts.bar.value) {
-    resolvedAccounts.bar.value = context.payer;
-  }
   if (!resolvedAccounts.foo.value) {
     resolvedAccounts.foo.value = expectSome(resolvedAccounts.bar.value);
   }

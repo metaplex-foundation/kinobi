@@ -159,7 +159,6 @@ export function createV2(
     resolvedAccounts.sysvarInstructions.value = publicKey(
       'Sysvar1nstructions1111111111111111111111111'
     );
-    resolvedAccounts.sysvarInstructions.isWritable = false;
   }
   if (!resolvedAccounts.splTokenProgram.value) {
     resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(

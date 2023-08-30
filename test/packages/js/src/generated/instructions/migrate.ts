@@ -163,7 +163,6 @@ export function migrate(
     resolvedAccounts.sysvarInstructions.value = publicKey(
       'Sysvar1nstructions1111111111111111111111111'
     );
-    resolvedAccounts.sysvarInstructions.isWritable = false;
   }
 
   // Accounts in order.

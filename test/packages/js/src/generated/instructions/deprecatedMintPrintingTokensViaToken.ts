@@ -161,7 +161,6 @@ export function deprecatedMintPrintingTokensViaToken(
     resolvedAccounts.rent.value = publicKey(
       'SysvarRent111111111111111111111111111111111'
     );
-    resolvedAccounts.rent.isWritable = false;
   }
 
   // Accounts in order.

@@ -183,7 +183,6 @@ export function createMetadataAccount(
     resolvedAccounts.rent.value = publicKey(
       'SysvarRent111111111111111111111111111111111'
     );
-    resolvedAccounts.rent.isWritable = false;
   }
   if (!resolvedArgs.metadataBump) {
     resolvedArgs.metadataBump = expectPda(resolvedAccounts.metadata.value)[1];
