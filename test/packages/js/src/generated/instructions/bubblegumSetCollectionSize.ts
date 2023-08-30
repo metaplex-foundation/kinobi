@@ -127,8 +127,6 @@ export function bubblegumSetCollectionSize(
   // Arguments.
   const resolvedArgs: BubblegumSetCollectionSizeInstructionArgs = { ...input };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

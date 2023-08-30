@@ -108,8 +108,6 @@ export function unverifyCollection(
     },
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

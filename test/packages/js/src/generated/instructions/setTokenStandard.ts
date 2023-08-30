@@ -86,8 +86,6 @@ export function setTokenStandard(
     edition: { index: 3, isWritable: false, value: input.edition ?? null },
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

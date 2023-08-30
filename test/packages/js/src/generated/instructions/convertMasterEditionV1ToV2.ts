@@ -94,8 +94,6 @@ export function convertMasterEditionV1ToV2(
     },
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

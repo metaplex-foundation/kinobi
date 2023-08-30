@@ -387,7 +387,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       return { ...input, render: renderedInput.render };
     });
     const resolvedInputsWithDefaults = resolvedInputs.filter(
-      (input) => input.kind !== 'account' || input.defaultsTo !== undefined
+      (input) => input.defaultsTo !== undefined && input.render !== ''
     );
     const argsWithDefaults = resolvedInputsWithDefaults
       .filter((input) => input.kind === 'arg')

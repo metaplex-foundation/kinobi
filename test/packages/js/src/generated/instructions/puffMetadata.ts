@@ -70,8 +70,6 @@ export function puffMetadata(
     metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

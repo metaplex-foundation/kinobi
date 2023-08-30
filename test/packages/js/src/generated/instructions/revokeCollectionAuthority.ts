@@ -100,8 +100,6 @@ export function revokeCollectionAuthority(
     mint: { index: 4, isWritable: false, value: input.mint ?? null },
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

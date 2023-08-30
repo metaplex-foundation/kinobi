@@ -82,8 +82,6 @@ export function updatePrimarySaleHappenedViaToken(
     token: { index: 2, isWritable: false, value: input.token ?? null },
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

@@ -112,8 +112,6 @@ export function updateMetadataAccountV2(
   // Arguments.
   const resolvedArgs: UpdateMetadataAccountV2InstructionArgs = { ...args };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

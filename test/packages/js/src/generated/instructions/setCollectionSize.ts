@@ -119,8 +119,6 @@ export function setCollectionSize(
   // Arguments.
   const resolvedArgs: SetCollectionSizeInstructionArgs = { ...input };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

@@ -125,8 +125,6 @@ export function deprecatedSetReservationList(
     ...input,
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts

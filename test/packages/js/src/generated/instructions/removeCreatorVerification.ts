@@ -79,8 +79,6 @@ export function removeCreatorVerification(
     creator: { index: 1, isWritable: false, value: input.creator ?? null },
   };
 
-  // Default values.
-
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(
     resolvedAccounts
