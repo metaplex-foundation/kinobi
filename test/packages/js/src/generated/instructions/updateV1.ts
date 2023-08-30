@@ -188,7 +188,7 @@ export type UpdateV1InstructionArgs = UpdateV1InstructionDataArgs;
 
 // Instruction.
 export function updateV1(
-  context: Pick<Context, 'programs' | 'identity'>,
+  context: Pick<Context, 'identity' | 'programs'>,
   input: UpdateV1InstructionAccounts & UpdateV1InstructionArgs
 ): TransactionBuilder {
   // Program ID.

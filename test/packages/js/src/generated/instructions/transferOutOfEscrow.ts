@@ -98,7 +98,7 @@ export type TransferOutOfEscrowInstructionArgs =
 
 // Instruction.
 export function transferOutOfEscrow(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: TransferOutOfEscrowInstructionAccounts &
     TransferOutOfEscrowInstructionArgs
 ): TransactionBuilder {

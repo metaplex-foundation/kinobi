@@ -9,12 +9,7 @@
 
 // Instruction.
 export function {{ instruction.name | camelCase }}(
-  context: Pick<Context,
-    | 'programs'
-    {{- '| \'eddsa\'' if needsEddsa else '' }}
-    {{- '| \'identity\'' if needsIdentity else '' }}
-    {{- '| \'payer\'' if needsPayer else '' }}
-  >,
+  context: {{ interfaces }},
   {% set accountsType = instruction.name | pascalCase + 'InstructionAccounts' %}
   {% set argsType = instruction.name | pascalCase + 'InstructionArgs' %}
   {% if canMergeAccountsAndArgs %}

@@ -80,7 +80,7 @@ export type DummyInstructionArgs = PickPartial<
 
 // Instruction.
 export function dummy(
-  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,
   input: DummyInstructionAccounts & DummyInstructionArgs
 ): TransactionBuilder {
   // Program ID.

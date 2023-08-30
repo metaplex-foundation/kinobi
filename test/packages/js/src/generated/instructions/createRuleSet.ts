@@ -88,7 +88,7 @@ export type CreateRuleSetInstructionArgs = PickPartial<
 
 // Instruction.
 export function createRuleSet(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionArgs
 ): TransactionBuilder {
   // Program ID.

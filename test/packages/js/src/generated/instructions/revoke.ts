@@ -88,7 +88,7 @@ export type RevokeInstructionArgs = RevokeInstructionDataArgs;
 
 // Instruction.
 export function revoke(
-  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'identity' | 'payer' | 'programs'>,
   input: RevokeInstructionAccounts & RevokeInstructionArgs
 ): TransactionBuilder {
   // Program ID.

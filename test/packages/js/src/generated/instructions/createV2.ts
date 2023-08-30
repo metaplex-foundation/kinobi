@@ -95,7 +95,7 @@ export type CreateV2InstructionArgs = CreateV2InstructionDataArgs;
 
 // Instruction.
 export function createV2(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateV2InstructionAccounts & CreateV2InstructionArgs
 ): TransactionBuilder {
   // Program ID.

@@ -84,7 +84,7 @@ export type InitializeInstructionArgs = InitializeInstructionDataArgs;
 
 // Instruction.
 export function initialize(
-  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'identity' | 'payer' | 'programs'>,
   input: InitializeInstructionAccounts & InitializeInstructionArgs
 ): TransactionBuilder {
   // Program ID.

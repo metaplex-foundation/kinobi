@@ -5,7 +5,6 @@ import {
   camelCase,
   getGpaFieldsFromAccount,
   ImportFrom,
-  InstructionDefault,
   pascalCase,
 } from '../../shared';
 import { logWarn } from '../../shared/logs';
@@ -24,9 +23,10 @@ import {
   GetJavaScriptTypeManifestVisitor,
   JavaScriptTypeManifest,
 } from './GetJavaScriptTypeManifestVisitor';
+import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 import { renderJavaScriptInstructionDefaults } from './RenderJavaScriptInstructionDefaults';
+import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -325,7 +325,8 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
-    // Imports.
+    // Imports and interfaces.
+    const interfaces = new JavaScriptContextMap().add('programs');
     const imports = new JavaScriptImportMap()
       .add('umi', [
         'AccountMeta',
@@ -373,6 +374,9 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       hasByteResolver ||
       hasRemainingAccountsResolver;
     const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
+    if (hasResolvers) {
+      interfaces.add(['eddsa', 'identity', 'payer']);
+    }
 
     // Resolved inputs.
     const resolvedInputs = visit(
@@ -384,6 +388,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instruction.optionalAccountStrategy
       );
       imports.mergeWith(renderedInput.imports);
+      interfaces.mergeWith(renderedInput.interfaces);
       return { ...input, render: renderedInput.render };
     });
     const resolvedInputsWithDefaults = resolvedInputs.filter(
@@ -488,24 +493,17 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
     }
 
-    const hasDefaultKinds = (kinds: Array<InstructionDefault['kind']>) =>
-      resolvedInputs.some(
-        (input) => input.defaultsTo && kinds.includes(input.defaultsTo.kind)
-      );
-
     return new RenderMap().add(
       `instructions/${camelCase(instruction.name)}.ts`,
       this.render('instructionsPage.njk', {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
+        interfaces: interfaces.toString(),
         program: this.program,
         resolvedInputs,
         resolvedInputsWithDefaults,
         argsWithDefaults,
         accounts,
-        needsEddsa: hasDefaultKinds(['pda']) || hasResolvers,
-        needsIdentity: hasDefaultKinds(['identity']) || hasResolvers,
-        needsPayer: hasDefaultKinds(['payer']) || hasResolvers,
         dataArgManifest,
         extraArgManifest,
         canMergeAccountsAndArgs,

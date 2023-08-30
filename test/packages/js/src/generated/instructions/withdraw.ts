@@ -61,7 +61,7 @@ export function getWithdrawInstructionDataSerializer(): Serializer<
 
 // Instruction.
 export function withdraw(
-  context: Pick<Context, 'programs' | 'identity'>,
+  context: Pick<Context, 'identity' | 'programs'>,
   input: WithdrawInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

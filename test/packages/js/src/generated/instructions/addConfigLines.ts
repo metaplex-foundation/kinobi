@@ -80,7 +80,7 @@ export type AddConfigLinesInstructionArgs = AddConfigLinesInstructionDataArgs;
 
 // Instruction.
 export function addConfigLines(
-  context: Pick<Context, 'programs' | 'identity'>,
+  context: Pick<Context, 'identity' | 'programs'>,
   input: AddConfigLinesInstructionAccounts & AddConfigLinesInstructionArgs
 ): TransactionBuilder {
   // Program ID.

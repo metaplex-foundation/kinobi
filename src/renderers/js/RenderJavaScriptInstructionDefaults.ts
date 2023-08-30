@@ -6,6 +6,7 @@ import {
   pascalCase,
 } from '../../shared';
 import { ResolvedInstructionInput } from '../../visitors';
+import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
@@ -14,11 +15,14 @@ export function renderJavaScriptInstructionDefaults(
   optionalAccountStrategy: 'programId' | 'omitted'
 ): {
   imports: JavaScriptImportMap;
+  interfaces: JavaScriptContextMap;
   render: string;
 } {
   const imports = new JavaScriptImportMap();
+  const interfaces = new JavaScriptContextMap();
+
   if (!input.defaultsTo) {
-    return { imports, render: '' };
+    return { imports, interfaces, render: '' };
   }
 
   const { defaultsTo } = input;
@@ -27,24 +31,28 @@ export function renderJavaScriptInstructionDefaults(
     isWritable?: boolean
   ): {
     imports: JavaScriptImportMap;
+    interfaces: JavaScriptContextMap;
     render: string;
   } => {
     const inputName = camelCase(input.name);
     if (input.kind === 'account' && defaultsTo.kind === 'resolver') {
       return {
         imports,
+        interfaces,
         render: `resolvedAccounts.${inputName} = { ...resolvedAccounts.${inputName}, ...${defaultValue} };`,
       };
     }
     if (input.kind === 'account' && isWritable === undefined) {
       return {
         imports,
+        interfaces,
         render: `resolvedAccounts.${inputName}.value = ${defaultValue};`,
       };
     }
     if (input.kind === 'account') {
       return {
         imports,
+        interfaces,
         render:
           `resolvedAccounts.${inputName}.value = ${defaultValue};\n` +
           `resolvedAccounts.${inputName}.isWritable = ${
@@ -54,6 +62,7 @@ export function renderJavaScriptInstructionDefaults(
     }
     return {
       imports,
+      interfaces,
       render: `resolvedArgs.${inputName} = ${defaultValue};`,
     };
   };
@@ -74,6 +83,7 @@ export function renderJavaScriptInstructionDefaults(
           ? 'generatedAccounts'
           : defaultsTo.importFrom;
       imports.add(pdaImportFrom, pdaFunction);
+      interfaces.add('eddsa');
       const pdaArgs = ['context'];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): string => {
@@ -113,15 +123,17 @@ export function renderJavaScriptInstructionDefaults(
         input.kind === 'account' &&
         input.isOptional
       ) {
-        return { imports, render: '' };
+        return { imports, interfaces, render: '' };
       }
       return render('programId', false);
     case 'identity':
+      interfaces.add('identity');
       if (input.kind === 'account' && input.isSigner !== false) {
         return render('context.identity');
       }
       return render('context.identity.publicKey');
     case 'payer':
+      interfaces.add('payer');
       if (input.kind === 'account' && input.isSigner !== false) {
         return render('context.payer');
       }
@@ -143,6 +155,7 @@ export function renderJavaScriptInstructionDefaults(
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
       imports.add(defaultsTo.importFrom, resolverName);
+      interfaces.add(['eddsa', 'identity', 'payer']);
       return render(
         `${resolverName}(context, resolvedAccounts, resolvedArgs, programId, ${isWritable})`
       );
@@ -159,13 +172,15 @@ export function renderJavaScriptInstructionDefaults(
         defaultsTo.ifFalse
       );
       if (!ifTrueRenderer && !ifFalseRenderer) {
-        return { imports, render: '' };
+        return { imports, interfaces, render: '' };
       }
       if (ifTrueRenderer) {
         imports.mergeWith(ifTrueRenderer.imports);
+        interfaces.mergeWith(ifTrueRenderer.interfaces);
       }
       if (ifFalseRenderer) {
         imports.mergeWith(ifFalseRenderer.imports);
+        interfaces.mergeWith(ifFalseRenderer.interfaces);
       }
       const negatedCondition = !ifTrueRenderer;
       let condition = 'true';
@@ -190,6 +205,7 @@ export function renderJavaScriptInstructionDefaults(
         const conditionalIsWritable =
           input.kind === 'account' && input.isWritable ? 'true' : 'false';
         imports.add(defaultsTo.resolver.importFrom, conditionalResolverName);
+        interfaces.add(['eddsa', 'identity', 'payer']);
         condition = `${conditionalResolverName}(context, resolvedAccounts, resolvedArgs, programId, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
@@ -197,12 +213,14 @@ export function renderJavaScriptInstructionDefaults(
       if (ifTrueRenderer && ifFalseRenderer) {
         return {
           imports,
+          interfaces,
           render: `if (${condition}) {\n${ifTrueRenderer.render}\n} else {\n${ifFalseRenderer.render}\n}`,
         };
       }
 
       return {
         imports,
+        interfaces,
         render: `if (${condition}) {\n${
           ifTrueRenderer ? ifTrueRenderer.render : ifFalseRenderer?.render
         }\n}`,
@@ -217,7 +235,13 @@ function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
   defaultsTo: InstructionDefault | undefined
-): { imports: JavaScriptImportMap; render: string } | undefined {
+):
+  | {
+      imports: JavaScriptImportMap;
+      interfaces: JavaScriptContextMap;
+      render: string;
+    }
+  | undefined {
   if (!defaultsTo) return undefined;
 
   if (input.kind === 'account') {
