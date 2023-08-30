@@ -2,13 +2,63 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer } from '@metaplex-foundation/umi';
+import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer, isPda } from '@metaplex-foundation/umi';
 
 /**
  * Transforms the given object such that the given keys are optional.
  * @internal
  */
 export type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+/**
+ * Asserts that the given value is not null or undefined.
+ * @internal
+ */
+export function expectSome<T> (value: T | null | undefined): T {
+  if (value == null) {
+    throw new Error('Expected a value but received null or undefined.');
+  }
+  return value;
+}
+
+/**
+ * Asserts that the given value is a PublicKey.
+ * @internal
+ */
+export function expectPublicKey(
+  value: PublicKey | Pda | Signer | null | undefined
+): PublicKey {
+  if (!value) {
+    throw new Error('Expected a PublicKey.');
+  }
+  return publicKey(value, false);
+}
+
+/**
+ * Asserts that the given value is a PDA.
+ * @internal
+ */
+export function expectPda(
+  value: PublicKey | Pda | Signer | null | undefined
+): Pda {
+  if (!value || !Array.isArray(value) || !isPda(value)) {
+    throw new Error('Expected a PDA.');
+  }
+  return value;
+}
+
+/**
+ * Asserts that the given value is a Signer.
+ * @internal
+ */
+export function expectSigner(
+  value: PublicKey | Pda | Signer | null | undefined
+): Signer {
+  if (!value || !isSigner(value)) {
+    throw new Error('Expected a Signer.');
+  }
+  return value;
+}
 
 /**
  * Defines an instruction account to resolve.

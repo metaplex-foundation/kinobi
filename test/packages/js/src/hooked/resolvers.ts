@@ -1,20 +1,16 @@
-import {
-  Context,
-  Pda,
-  PublicKey,
-  Signer,
-  publicKey,
-} from '@metaplex-foundation/umi';
+import { Context } from '@metaplex-foundation/umi';
 import {
   ResolvedAccount,
+  ResolvedAccountsWithIndices,
   TokenStandard,
+  expectPublicKey,
   findMasterEditionV2Pda,
 } from '../generated';
 
 export const resolveMasterEditionFromTokenStandard = (
   context: Pick<Context, 'eddsa' | 'programs'>,
-  accounts: { mint: ResolvedAccount<PublicKey | Pda> },
-  args: { tokenStandard: TokenStandard },
+  accounts: ResolvedAccountsWithIndices,
+  args: { tokenStandard?: TokenStandard },
   programId: any,
   isWritable: any
 ): Partial<ResolvedAccount> => {
@@ -22,7 +18,7 @@ export const resolveMasterEditionFromTokenStandard = (
     args.tokenStandard === TokenStandard.ProgrammableNonFungible
     ? {
         value: findMasterEditionV2Pda(context, {
-          mint: publicKey(accounts.mint.value, false),
+          mint: expectPublicKey(accounts.mint.value),
         }),
       }
     : { value: null };

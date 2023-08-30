@@ -1,21 +1,21 @@
 {% if resolvedInputs.length > 0 or hasResolvedAccounts or hasResolvedArgs %}
   // Resolved inputs.
   {% if hasResolvedAccounts %}
-    const resolvedAccounts = {
+    const resolvedAccounts: ResolvedAccountsWithIndices = {
       {% for account in accounts %}
-        {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }} as boolean, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
+        {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
       {% endfor %}
-    } satisfies ResolvedAccountsWithIndices;
+    };
   {% endif %}
   {% if hasResolvedArgs %}
-    const resolvedArgs = { ...{{ argsObj }} };
+    const resolvedArgs: {{ instruction.name | pascalCase + 'InstructionArgs' }} = { ...{{ argsObj }} };
   {% endif %}
   {% for input in resolvedInputsWithDefaults %}
     {#- Input default value. -#}
     {% if input.defaultsTo.kind === 'account' and input.kind === 'account' %}
-      {% set inputDefault %}resolvedAccounts.{{ input.defaultsTo.name }}.value{% endset %}
+      {% set inputDefault %}expectSome(resolvedAccounts.{{ input.defaultsTo.name }}.value){% endset %}
     {% elif input.defaultsTo.kind === 'account' %}
-      {% set inputDefault %}publicKey(resolvedAccounts.{{ input.defaultsTo.name }}.value, false){% endset %}
+      {% set inputDefault %}expectPublicKey(resolvedAccounts.{{ input.defaultsTo.name }}.value){% endset %}
     {% elif input.defaultsTo.kind === 'pda' %}
       {% set inputDefault -%}
         find{{ input.defaultsTo.pdaAccount | pascalCase }}Pda(context,
@@ -25,9 +25,9 @@
                 {%- if seedValue.kind === 'value' -%}
                   {{ seedKey }}: {{ seedValue.render }},
                 {%- elif seedValue.kind === 'account' -%}
-                  {{ seedKey }}: publicKey(resolvedAccounts.{{ seedValue.name }}.value, false),
+                  {{ seedKey }}: expectPublicKey(resolvedAccounts.{{ seedValue.name }}.value),
                 {%- else -%}
-                  {{ seedKey }}: resolvedArgs.{{ seedValue.name }},
+                  {{ seedKey }}: expectSome(resolvedArgs.{{ seedValue.name }}),
                 {%- endif -%}
               {%- endfor -%}
             }
@@ -51,33 +51,32 @@
     {% elif input.defaultsTo.kind === 'payer' %}
       {% set inputDefault %}context.payer.publicKey{% endset %}
     {% elif input.defaultsTo.kind === 'arg' %}
-      {% set inputDefault %}resolvedArgs.{{ input.defaultsTo.name }}{% endset %}
+      {% set inputDefault %}expectSome(resolvedArgs.{{ input.defaultsTo.name }}){% endset %}
     {% elif input.defaultsTo.kind === 'accountBump' %}
-      {% set inputDefault %}resolvedAccounts.{{ input.defaultsTo.name }}.value[1]{% endset %}
+      {% set inputDefault %}expectPda(resolvedAccounts.{{ input.defaultsTo.name }}.value)[1]{% endset %}
     {% elif input.defaultsTo.kind === 'value' %}
       {% set inputDefault %}{{ input.defaultsTo.render }}{% endset %}
     {% elif input.defaultsTo.kind === 'resolver' %}
       {% set inputDefault %}{{ input.defaultsTo.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId, {{ 'true' if input.isWritable else 'false' }}){% endset %}
-    {% else %}
-      {% set inputDefault %}programId /* Unrecognized default kind [{{ input.defaultsTo.kind }}]. */{% endset %}
-      {% set inputDefaultIsWritable %}false{% endset %}
     {% endif %}
-    {# Add input to resolving object. #}
-    {%- if input.kind === 'account' and input.defaultsTo.kind === 'resolver' %}
-      if (!resolvedAccounts.{{ input.name | camelCase }}.value) {
-        resolvedAccounts.{{ input.name | camelCase }} = { ...resolvedAccounts.{{ input.name | camelCase }}, ...{{ inputDefault }} };
-      }
-    {% elif input.kind === 'account' %}
-      if (!resolvedAccounts.{{ input.name | camelCase }}.value) {
-        resolvedAccounts.{{ input.name | camelCase }}.value = {{ inputDefault }};
-        {% if inputDefaultIsWritable -%} 
-          resolvedAccounts.{{ input.name | camelCase }}.isWritable = {{ inputDefaultIsWritable }};
-        {% endif %} 
-      }
-    {% else %}
-      if (!resolvedArgs.{{ input.name | camelCase }}) {
-        resolvedArgs.{{ input.name | camelCase }} = {{ inputDefault }};
-      }
+    {# Add input to resolved object. #}
+    {% if inputDefault %}
+      {%- if input.kind === 'account' and input.defaultsTo.kind === 'resolver' %}
+        if (!resolvedAccounts.{{ input.name | camelCase }}.value) {
+          resolvedAccounts.{{ input.name | camelCase }} = { ...resolvedAccounts.{{ input.name | camelCase }}, ...{{ inputDefault }} };
+        }
+      {% elif input.kind === 'account' %}
+        if (!resolvedAccounts.{{ input.name | camelCase }}.value) {
+          resolvedAccounts.{{ input.name | camelCase }}.value = {{ inputDefault }};
+          {% if inputDefaultIsWritable -%} 
+            resolvedAccounts.{{ input.name | camelCase }}.isWritable = {{ inputDefaultIsWritable }};
+          {% endif %} 
+        }
+      {% else %}
+        if (!resolvedArgs.{{ input.name | camelCase }}) {
+          resolvedArgs.{{ input.name | camelCase }} = {{ inputDefault }};
+        }
+      {% endif -%}
     {% endif -%}
   {% endfor %}
 {% endif %}

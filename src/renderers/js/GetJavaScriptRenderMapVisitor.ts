@@ -377,7 +377,13 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         const { seeds } = input.defaultsTo;
         Object.keys(seeds).forEach((seed: string) => {
           const seedValue = seeds[seed];
-          if (seedValue.kind !== 'value') return;
+          if (seedValue.kind !== 'value') {
+            imports.add(
+              'shared',
+              seedValue.kind === 'account' ? 'expectPublicKey' : 'expectSome'
+            );
+            return;
+          }
           const valueManifest = renderJavaScriptValueNode(seedValue.value);
           (seedValue as any).render = valueManifest.render;
           imports.mergeWith(valueManifest.imports);
@@ -387,6 +393,15 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
         (defaultsTo as any).render = valueManifest.render;
         imports.mergeWith(valueManifest.imports);
+      } else if (input.defaultsTo?.kind === 'account') {
+        imports.add(
+          'shared',
+          input.kind === 'account' ? 'expectSome' : 'expectPublicKey'
+        );
+      } else if (input.defaultsTo?.kind === 'arg') {
+        imports.add('shared', ['expectSome']);
+      } else if (input.defaultsTo?.kind === 'accountBump') {
+        imports.add('shared', ['expectPda']);
       }
       return input;
     });
