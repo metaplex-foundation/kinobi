@@ -328,13 +328,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Imports and interfaces.
     const interfaces = new JavaScriptContextMap().add('programs');
     const imports = new JavaScriptImportMap()
-      .add('umi', [
-        'AccountMeta',
-        'Context',
-        'Signer',
-        'TransactionBuilder',
-        'transactionBuilder',
-      ])
+      .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
       .add('shared', [
         'ResolvedAccount',
         'ResolvedAccountsWithIndices',
