@@ -5,9 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use spl_program_error::*;
+use num_derive::FromPrimitive;
+use thiserror::Error;
 
-#[spl_program_error]
+#[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
 pub enum MplTokenAuthRulesError {
     /// 0x0 - Numerical Overflow
     #[error("Numerical Overflow")]
@@ -54,4 +55,10 @@ pub enum MplTokenAuthRulesError {
     /// 0xE - Borsh Serialization Error
     #[error("Borsh Serialization Error")]
     BorshSerializationError,
+}
+
+impl solana_program::program_error::PrintProgramError for MplTokenAuthRulesError {
+    fn print<E>(&self) {
+        solana_program::msg!(&self.to_string());
+    }
 }
