@@ -117,7 +117,7 @@ kinobi.update(
         },
         tokenOrAtaProgram: {
           defaultsTo: k.conditionalResolverDefault(
-            k.resolverDefault('resolveTokenOrAta'),
+            k.resolverDefault('resolveTokenOrAta', [k.dependsOnArg('proof')]),
             {
               ifTrue: k.programDefault(
                 'splToken',

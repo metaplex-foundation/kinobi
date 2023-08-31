@@ -1,4 +1,9 @@
-import { InstructionArgDefault, InstructionDependency } from '../../shared';
+import {
+  InstructionAccountDefault,
+  InstructionArgDefault,
+  InstructionDefault,
+  InstructionDependency,
+} from '../../shared';
 import type * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 
@@ -243,6 +248,24 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
   getInstructionDependencies(input: InstructionInput): InstructionDependency[] {
     if (!input.defaultsTo) return [];
 
+    const getNestedDependencies = (
+      defaultsTo: InstructionDefault | undefined
+    ): InstructionDependency[] => {
+      if (!defaultsTo) return [];
+
+      if (input.kind === 'account') {
+        return this.getInstructionDependencies({
+          ...input,
+          defaultsTo: defaultsTo as InstructionAccountDefault,
+        });
+      }
+
+      return this.getInstructionDependencies({
+        ...input,
+        defaultsTo: defaultsTo as InstructionArgDefault,
+      });
+    };
+
     if (
       input.defaultsTo.kind === 'account' ||
       input.defaultsTo.kind === 'accountBump'
@@ -268,6 +291,20 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
     if (input.defaultsTo.kind === 'resolver') {
       return input.defaultsTo.dependsOn;
+    }
+
+    if (
+      input.defaultsTo.kind === 'conditional' ||
+      input.defaultsTo.kind === 'conditionalResolver'
+    ) {
+      const dependencies: InstructionDependency[] =
+        input.defaultsTo.kind === 'conditional'
+          ? [input.defaultsTo.input]
+          : input.defaultsTo.resolver.dependsOn ?? [];
+
+      dependencies.push(...getNestedDependencies(input.defaultsTo.ifTrue));
+      dependencies.push(...getNestedDependencies(input.defaultsTo.ifFalse));
+      return dependencies;
     }
 
     return [];

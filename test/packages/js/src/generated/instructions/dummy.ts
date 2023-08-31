@@ -76,7 +76,7 @@ export type DummyInstructionExtraArgs = {
 // Args.
 export type DummyInstructionArgs = PickPartial<
   DummyInstructionExtraArgs,
-  'identityArg' | 'proof'
+  'proof' | 'identityArg'
 >;
 
 // Instruction.
@@ -145,6 +145,9 @@ export function dummy(
       });
     }
   }
+  if (!resolvedArgs.proof) {
+    resolvedArgs.proof = [];
+  }
   if (!resolvedAccounts.tokenOrAtaProgram.value) {
     if (
       resolveTokenOrAta(
@@ -170,9 +173,6 @@ export function dummy(
   }
   if (!resolvedArgs.identityArg) {
     resolvedArgs.identityArg = context.identity.publicKey;
-  }
-  if (!resolvedArgs.proof) {
-    resolvedArgs.proof = [];
   }
 
   // Accounts in order.
