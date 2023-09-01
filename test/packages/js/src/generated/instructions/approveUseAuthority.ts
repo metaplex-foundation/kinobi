@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -93,7 +92,7 @@ export type ApproveUseAuthorityInstructionArgs =
 
 // Instruction.
 export function approveUseAuthority(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: ApproveUseAuthorityInstructionAccounts &
     ApproveUseAuthorityInstructionArgs
 ): TransactionBuilder {

@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -74,7 +73,7 @@ export function getUnverifySizedCollectionItemInstructionDataSerializer(): Seria
 
 // Instruction.
 export function unverifySizedCollectionItem(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: UnverifySizedCollectionItemInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

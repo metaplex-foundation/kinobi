@@ -42,8 +42,20 @@
           "isSigner": true
         },
         {
+          "name": "delegate",
+          "isMut": false,
+          "isSigner": true,
+          "isOptional": true
+        },
+        {
           "name": "delegateRecord",
           "isMut": true,
+          "isSigner": false,
+          "isOptional": true
+        },
+        {
+          "name": "tokenOrAtaProgram",
+          "isMut": false,
           "isSigner": false
         }
       ]

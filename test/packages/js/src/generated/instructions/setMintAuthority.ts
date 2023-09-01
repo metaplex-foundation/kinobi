@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -65,7 +64,7 @@ export function getSetMintAuthorityInstructionDataSerializer(): Serializer<
 
 // Instruction.
 export function setMintAuthority(
-  context: Pick<Context, 'programs' | 'identity'>,
+  context: Pick<Context, 'identity' | 'programs'>,
   input: SetMintAuthorityInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

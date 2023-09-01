@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -71,7 +70,7 @@ export type SetAuthorityInstructionArgs = SetAuthorityInstructionDataArgs;
 
 // Instruction.
 export function setAuthority(
-  context: Pick<Context, 'programs' | 'identity'>,
+  context: Pick<Context, 'identity' | 'programs'>,
   input: SetAuthorityInstructionAccounts & SetAuthorityInstructionArgs
 ): TransactionBuilder {
   // Program ID.

@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -22,6 +21,7 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
+import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../accounts';
 import {
   PickPartial,
@@ -41,7 +41,9 @@ export type DummyInstructionAccounts = {
   payer?: Signer;
   foo?: PublicKey | Pda;
   bar?: Signer;
+  delegate?: Signer;
   delegateRecord?: PublicKey | Pda;
+  tokenOrAtaProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -74,12 +76,12 @@ export type DummyInstructionExtraArgs = {
 // Args.
 export type DummyInstructionArgs = PickPartial<
   DummyInstructionExtraArgs,
-  'identityArg' | 'proof'
+  'proof' | 'identityArg'
 >;
 
 // Instruction.
 export function dummy(
-  context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
+  context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,
   input: DummyInstructionAccounts & DummyInstructionArgs
 ): TransactionBuilder {
   // Program ID.
@@ -105,10 +107,16 @@ export function dummy(
     payer: { index: 4, isWritable: true, value: input.payer ?? null },
     foo: { index: 5, isWritable: true, value: input.foo ?? null },
     bar: { index: 6, isWritable: false, value: input.bar ?? null },
+    delegate: { index: 7, isWritable: false, value: input.delegate ?? null },
     delegateRecord: {
-      index: 7,
+      index: 8,
       isWritable: true,
       value: input.delegateRecord ?? null,
+    },
+    tokenOrAtaProgram: {
+      index: 9,
+      isWritable: false,
+      value: input.tokenOrAtaProgram ?? null,
     },
   };
 
@@ -131,15 +139,40 @@ export function dummy(
     resolvedAccounts.foo.value = expectSome(resolvedAccounts.bar.value);
   }
   if (!resolvedAccounts.delegateRecord.value) {
-    resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
-      role: DelegateRole.Collection,
-    });
-  }
-  if (!resolvedArgs.identityArg) {
-    resolvedArgs.identityArg = context.identity.publicKey;
+    if (resolvedAccounts.delegate.value) {
+      resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
+        role: DelegateRole.Collection,
+      });
+    }
   }
   if (!resolvedArgs.proof) {
     resolvedArgs.proof = [];
+  }
+  if (!resolvedAccounts.tokenOrAtaProgram.value) {
+    if (
+      resolveTokenOrAta(
+        context,
+        resolvedAccounts,
+        resolvedArgs,
+        programId,
+        false
+      )
+    ) {
+      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splToken',
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      );
+      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+    } else {
+      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splAssociatedToken',
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+      );
+      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+    }
+  }
+  if (!resolvedArgs.identityArg) {
+    resolvedArgs.identityArg = context.identity.publicKey;
   }
 
   // Accounts in order.

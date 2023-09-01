@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -106,7 +105,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionArgs =
 
 // Instruction.
 export function mintNewEditionFromMasterEditionViaToken(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: MintNewEditionFromMasterEditionViaTokenInstructionAccounts &
     MintNewEditionFromMasterEditionViaTokenInstructionArgs
 ): TransactionBuilder {

@@ -8,7 +8,6 @@
 
 import {
   ACCOUNT_HEADER_SIZE,
-  AccountMeta,
   Context,
   Option,
   OptionOrNullable,
@@ -127,7 +126,7 @@ export type CreateMetadataAccountInstructionArgs = PickPartial<
 
 // Instruction.
 export function createMetadataAccount(
-  context: Pick<Context, 'programs' | 'eddsa' | 'payer'>,
+  context: Pick<Context, 'eddsa' | 'payer' | 'programs'>,
   input: CreateMetadataAccountInstructionAccounts &
     CreateMetadataAccountInstructionArgs
 ): TransactionBuilder {

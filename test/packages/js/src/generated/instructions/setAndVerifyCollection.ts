@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -73,7 +72,7 @@ export function getSetAndVerifyCollectionInstructionDataSerializer(): Serializer
 
 // Instruction.
 export function setAndVerifyCollection(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: SetAndVerifyCollectionInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

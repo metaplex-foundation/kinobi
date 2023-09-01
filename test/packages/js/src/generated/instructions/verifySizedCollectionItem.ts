@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -74,7 +73,7 @@ export function getVerifySizedCollectionItemInstructionDataSerializer(): Seriali
 
 // Instruction.
 export function verifySizedCollectionItem(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: VerifySizedCollectionItemInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

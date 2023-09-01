@@ -25,6 +25,19 @@ export type InstructionDefault =
       dependsOn: InstructionDependency[];
       resolvedIsSigner?: boolean | 'either';
       resolvedIsOptional?: boolean;
+    }
+  | {
+      kind: 'conditional';
+      input: InstructionDependency;
+      value?: ValueNode;
+      ifTrue?: InstructionDefault;
+      ifFalse?: InstructionDefault;
+    }
+  | {
+      kind: 'conditionalResolver';
+      resolver: ExtractInstructionDefault<'resolver'>;
+      ifTrue?: InstructionDefault;
+      ifFalse?: InstructionDefault;
     };
 
 export type ExtractInstructionDefault<T extends InstructionDefault['kind']> =
@@ -125,6 +138,35 @@ export const resolverDefault = (
   dependsOn,
   resolvedIsSigner: options.resolvedIsSigner,
   resolvedIsOptional: options.resolvedIsOptional,
+});
+
+export const conditionalDefault = (
+  inputType: 'account' | 'arg',
+  name: string,
+  options: {
+    value?: ValueNode;
+    ifTrue?: InstructionDefault;
+    ifFalse?: InstructionDefault;
+  } = {}
+): ExtractInstructionDefault<'conditional'> => ({
+  kind: 'conditional',
+  input: { kind: inputType, name: mainCase(name) },
+  value: options.value,
+  ifTrue: options.ifTrue,
+  ifFalse: options.ifFalse,
+});
+
+export const conditionalResolverDefault = (
+  resolver: ExtractInstructionDefault<'resolver'>,
+  options: {
+    ifTrue?: InstructionDefault;
+    ifFalse?: InstructionDefault;
+  } = {}
+): ExtractInstructionDefault<'conditionalResolver'> => ({
+  kind: 'conditionalResolver',
+  resolver,
+  ifTrue: options.ifTrue,
+  ifFalse: options.ifFalse,
 });
 
 export type InstructionDependency = { kind: 'account' | 'arg'; name: string };

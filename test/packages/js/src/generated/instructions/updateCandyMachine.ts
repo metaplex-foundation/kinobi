@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -81,7 +80,7 @@ export type UpdateCandyMachineInstructionArgs =
 
 // Instruction.
 export function updateCandyMachine(
-  context: Pick<Context, 'programs' | 'identity'>,
+  context: Pick<Context, 'identity' | 'programs'>,
   input: UpdateCandyMachineInstructionAccounts &
     UpdateCandyMachineInstructionArgs
 ): TransactionBuilder {

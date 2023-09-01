@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -89,7 +88,7 @@ export type CreateMetadataAccountV2InstructionArgs =
 
 // Instruction.
 export function createMetadataAccountV2(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateMetadataAccountV2InstructionAccounts &
     CreateMetadataAccountV2InstructionArgs
 ): TransactionBuilder {

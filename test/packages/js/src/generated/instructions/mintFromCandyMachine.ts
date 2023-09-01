@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -81,7 +80,7 @@ export function getMintFromCandyMachineInstructionDataSerializer(): Serializer<
 
 // Instruction.
 export function mintFromCandyMachine(
-  context: Pick<Context, 'programs' | 'identity' | 'payer'>,
+  context: Pick<Context, 'identity' | 'payer' | 'programs'>,
   input: MintFromCandyMachineInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

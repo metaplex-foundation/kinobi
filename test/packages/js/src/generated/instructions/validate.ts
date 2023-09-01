@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -106,7 +105,7 @@ export type ValidateInstructionArgs = ValidateInstructionDataArgs;
 
 // Instruction.
 export function validate(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: ValidateInstructionAccounts & ValidateInstructionArgs
 ): TransactionBuilder {
   // Program ID.

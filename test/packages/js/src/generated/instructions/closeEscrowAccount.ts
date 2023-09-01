@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -74,7 +73,7 @@ export function getCloseEscrowAccountInstructionDataSerializer(): Serializer<
 
 // Instruction.
 export function closeEscrowAccount(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CloseEscrowAccountInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -76,7 +75,7 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(): Serial
 
 // Instruction.
 export function approveCollectionAuthority(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: ApproveCollectionAuthorityInstructionAccounts
 ): TransactionBuilder {
   // Program ID.

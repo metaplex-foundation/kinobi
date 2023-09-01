@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -52,7 +51,7 @@ export type CreateReservationListInstructionArgs =
 
 // Instruction.
 export function createReservationList(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   accounts: CreateReservationListInstructionAccounts,
   args: CreateReservationListInstructionArgs
 ): TransactionBuilder {

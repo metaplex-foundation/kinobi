@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -87,7 +86,7 @@ export type CreateFrequencyRuleInstructionArgs =
 
 // Instruction.
 export function createFrequencyRule(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateFrequencyRuleInstructionAccounts &
     CreateFrequencyRuleInstructionArgs
 ): TransactionBuilder {

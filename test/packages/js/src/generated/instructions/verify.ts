@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -71,7 +70,7 @@ export type VerifyInstructionArgs = VerifyInstructionDataArgs;
 
 // Instruction.
 export function verify(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: VerifyInstructionAccounts & VerifyInstructionArgs
 ): TransactionBuilder {
   // Program ID.

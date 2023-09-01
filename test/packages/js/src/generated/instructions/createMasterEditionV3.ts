@@ -8,7 +8,6 @@
 
 import {
   ACCOUNT_HEADER_SIZE,
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -95,7 +94,7 @@ export type CreateMasterEditionV3InstructionArgs =
 
 // Instruction.
 export function createMasterEditionV3(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateMasterEditionV3InstructionAccounts &
     CreateMasterEditionV3InstructionArgs
 ): TransactionBuilder {

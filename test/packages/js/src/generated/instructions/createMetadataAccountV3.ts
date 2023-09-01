@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Option,
   OptionOrNullable,
@@ -104,7 +103,7 @@ export type CreateMetadataAccountV3InstructionArgs =
 
 // Instruction.
 export function createMetadataAccountV3(
-  context: Pick<Context, 'programs' | 'eddsa' | 'payer'>,
+  context: Pick<Context, 'eddsa' | 'payer' | 'programs'>,
   input: CreateMetadataAccountV3InstructionAccounts &
     CreateMetadataAccountV3InstructionArgs
 ): TransactionBuilder {

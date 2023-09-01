@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -97,7 +96,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
 
 // Instruction.
 export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAccounts
 ): TransactionBuilder {
   // Program ID.
