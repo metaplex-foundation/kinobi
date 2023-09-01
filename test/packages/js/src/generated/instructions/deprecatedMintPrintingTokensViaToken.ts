@@ -22,7 +22,11 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -61,20 +65,7 @@ export type DeprecatedMintPrintingTokensViaTokenInstructionDataArgs = {
   mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
 };
 
-/** @deprecated Use `getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer()` without any argument instead. */
-export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
-  _context: object
-): Serializer<
-  DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
-  DeprecatedMintPrintingTokensViaTokenInstructionData
->;
 export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(): Serializer<
-  DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
-  DeprecatedMintPrintingTokensViaTokenInstructionData
->;
-export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
   DeprecatedMintPrintingTokensViaTokenInstructionData
 > {
@@ -110,73 +101,84 @@ export function deprecatedMintPrintingTokensViaToken(
   input: DeprecatedMintPrintingTokensViaTokenInstructionAccounts &
     DeprecatedMintPrintingTokensViaTokenInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    destination: [input.destination, true] as const,
-    token: [input.token, true] as const,
-    oneTimePrintingAuthorizationMint: [
-      input.oneTimePrintingAuthorizationMint,
-      true,
-    ] as const,
-    printingMint: [input.printingMint, true] as const,
-    burnAuthority: [input.burnAuthority, false] as const,
-    metadata: [input.metadata, false] as const,
-    masterEdition: [input.masterEdition, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    destination: {
+      index: 0,
+      isWritable: true,
+      value: input.destination ?? null,
+    },
+    token: { index: 1, isWritable: true, value: input.token ?? null },
+    oneTimePrintingAuthorizationMint: {
+      index: 2,
+      isWritable: true,
+      value: input.oneTimePrintingAuthorizationMint ?? null,
+    },
+    printingMint: {
+      index: 3,
+      isWritable: true,
+      value: input.printingMint ?? null,
+    },
+    burnAuthority: {
+      index: 4,
+      isWritable: false,
+      value: input.burnAuthority ?? null,
+    },
+    metadata: { index: 5, isWritable: false, value: input.metadata ?? null },
+    masterEdition: {
+      index: 6,
+      isWritable: false,
+      value: input.masterEdition ?? null,
+    },
+    tokenProgram: {
+      index: 7,
+      isWritable: false,
+      value: input.tokenProgram ?? null,
+    },
+    rent: { index: 8, isWritable: false, value: input.rent ?? null },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'tokenProgram',
-    input.tokenProgram
-      ? ([input.tokenProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splToken',
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'rent',
-    input.rent
-      ? ([input.rent, false] as const)
-      : ([
-          publicKey('SysvarRent111111111111111111111111111111111'),
-          false,
-        ] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.destination, false);
-  addAccountMeta(keys, signers, resolvedAccounts.token, false);
-  addAccountMeta(
-    keys,
-    signers,
-    resolvedAccounts.oneTimePrintingAuthorizationMint,
-    false
+  // Arguments.
+  const resolvedArgs: DeprecatedMintPrintingTokensViaTokenInstructionArgs = {
+    ...input,
+  };
+
+  // Default values.
+  if (!resolvedAccounts.tokenProgram.value) {
+    resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    resolvedAccounts.tokenProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.rent.value) {
+    resolvedAccounts.rent.value = publicKey(
+      'SysvarRent111111111111111111111111111111111'
+    );
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
   );
-  addAccountMeta(keys, signers, resolvedAccounts.printingMint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.burnAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
-  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
 
   // Data.
   const data =
     getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer().serialize(
-      resolvedArgs
+      resolvedArgs as DeprecatedMintPrintingTokensViaTokenInstructionDataArgs
     );
 
   // Bytes Created On Chain.

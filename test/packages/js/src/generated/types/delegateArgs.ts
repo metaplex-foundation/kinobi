@@ -27,17 +27,10 @@ export type DelegateArgsArgs =
   | { __kind: 'SaleV1'; amount: SolAmount }
   | { __kind: 'TransferV1'; amount: number | bigint };
 
-/** @deprecated Use `getDelegateArgsSerializer()` without any argument instead. */
-export function getDelegateArgsSerializer(
-  _context: object
-): Serializer<DelegateArgsArgs, DelegateArgs>;
 export function getDelegateArgsSerializer(): Serializer<
   DelegateArgsArgs,
   DelegateArgs
->;
-export function getDelegateArgsSerializer(
-  _context: object = {}
-): Serializer<DelegateArgsArgs, DelegateArgs> {
+> {
   return dataEnum<DelegateArgs>(
     [
       ['CollectionV1', unit()],

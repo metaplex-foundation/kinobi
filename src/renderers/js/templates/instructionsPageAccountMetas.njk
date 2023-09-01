@@ -1,3 +1,0 @@
-{% for account in accounts %}
-  addAccountMeta(keys, signers, resolvedAccounts.{{ account.name | camelCase }}, {{ 'true' if account.resolvedIsOptional else 'false' }});
-{% endfor %}

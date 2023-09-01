@@ -38,21 +38,34 @@ export function {{ instruction.name | camelCase }}(
     {% endif %}
   {% endif %}
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
 
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    {% for account in accounts %}
+      {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
+    {% endfor %}
+  };
+
+  {% if hasResolvedArgs %}
+    // Arguments.
+    const resolvedArgs: {{ instruction.name | pascalCase + 'InstructionArgs' }} = { ...{{ argsObj }} };
+  {% endif %}
+
   {% include "instructionsPageResolvedInputs.njk" %}
 
-  {% include "instructionsPageAccountMetas.njk" %}
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(resolvedAccounts).sort((a,b) => a.index - b.index);
 
   {% include "instructionsPageRemainingAccounts.njk" %}
 
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(orderedAccounts, "{{ instruction.optionalAccountStrategy }}", programId);
+
   // Data.
   {% if hasDataArgs %}
-    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize(resolvedArgs);
+    const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize(resolvedArgs as {{ instruction.name | pascalCase + 'InstructionDataArgs' }});
   {% elif hasData %}
     const data = get{{ instruction.dataArgs.name | pascalCase }}Serializer().serialize({});
   {% else %}

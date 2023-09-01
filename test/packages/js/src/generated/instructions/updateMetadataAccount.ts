@@ -29,7 +29,11 @@ import {
   u16,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import { Creator, CreatorArgs, getCreatorSerializer } from '../types';
 
 // Accounts.
@@ -66,20 +70,7 @@ export type UpdateMetadataAccountInstructionDataArgs = {
   primarySaleHappened: OptionOrNullable<boolean>;
 };
 
-/** @deprecated Use `getUpdateMetadataAccountInstructionDataSerializer()` without any argument instead. */
-export function getUpdateMetadataAccountInstructionDataSerializer(
-  _context: object
-): Serializer<
-  UpdateMetadataAccountInstructionDataArgs,
-  UpdateMetadataAccountInstructionData
->;
 export function getUpdateMetadataAccountInstructionDataSerializer(): Serializer<
-  UpdateMetadataAccountInstructionDataArgs,
-  UpdateMetadataAccountInstructionData
->;
-export function getUpdateMetadataAccountInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   UpdateMetadataAccountInstructionDataArgs,
   UpdateMetadataAccountInstructionData
 > {
@@ -125,29 +116,41 @@ export function updateMetadataAccount(
   accounts: UpdateMetadataAccountInstructionAccounts,
   args: UpdateMetadataAccountInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    metadata: [accounts.metadata, true] as const,
-    updateAuthority: [accounts.updateAuthority, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    metadata: { index: 0, isWritable: true, value: accounts.metadata ?? null },
+    updateAuthority: {
+      index: 1,
+      isWritable: false,
+      value: accounts.updateAuthority ?? null,
+    },
   };
-  const resolvingArgs = {};
-  const resolvedArgs = { ...args, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
+  // Arguments.
+  const resolvedArgs: UpdateMetadataAccountInstructionArgs = { ...args };
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
-  const data =
-    getUpdateMetadataAccountInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getUpdateMetadataAccountInstructionDataSerializer().serialize(
+    resolvedArgs as UpdateMetadataAccountInstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

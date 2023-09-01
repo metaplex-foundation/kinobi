@@ -38,17 +38,10 @@ export type ReservationListV1AccountDataArgs = {
   reservations: Array<ReservationV1Args>;
 };
 
-/** @deprecated Use `getReservationListV1AccountDataSerializer()` without any argument instead. */
-export function getReservationListV1AccountDataSerializer(
-  _context: object
-): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData>;
 export function getReservationListV1AccountDataSerializer(): Serializer<
   ReservationListV1AccountDataArgs,
   ReservationListV1AccountData
->;
-export function getReservationListV1AccountDataSerializer(
-  _context: object = {}
-): Serializer<ReservationListV1AccountDataArgs, ReservationListV1AccountData> {
+> {
   return mapSerializer<
     ReservationListV1AccountDataArgs,
     any,

@@ -22,7 +22,11 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import {
   CreateMasterEditionArgs,
   CreateMasterEditionArgsArgs,
@@ -69,20 +73,7 @@ export type DeprecatedCreateMasterEditionInstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
-/** @deprecated Use `getDeprecatedCreateMasterEditionInstructionDataSerializer()` without any argument instead. */
-export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
-  _context: object
-): Serializer<
-  DeprecatedCreateMasterEditionInstructionDataArgs,
-  DeprecatedCreateMasterEditionInstructionData
->;
 export function getDeprecatedCreateMasterEditionInstructionDataSerializer(): Serializer<
-  DeprecatedCreateMasterEditionInstructionDataArgs,
-  DeprecatedCreateMasterEditionInstructionData
->;
-export function getDeprecatedCreateMasterEditionInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   DeprecatedCreateMasterEditionInstructionDataArgs,
   DeprecatedCreateMasterEditionInstructionData
 > {
@@ -115,107 +106,106 @@ export function deprecatedCreateMasterEdition(
   input: DeprecatedCreateMasterEditionInstructionAccounts &
     DeprecatedCreateMasterEditionInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    edition: [input.edition, true] as const,
-    mint: [input.mint, true] as const,
-    printingMint: [input.printingMint, true] as const,
-    oneTimePrintingAuthorizationMint: [
-      input.oneTimePrintingAuthorizationMint,
-      true,
-    ] as const,
-    updateAuthority: [input.updateAuthority, false] as const,
-    printingMintAuthority: [input.printingMintAuthority, false] as const,
-    mintAuthority: [input.mintAuthority, false] as const,
-    metadata: [input.metadata, false] as const,
-    oneTimePrintingAuthorizationMintAuthority: [
-      input.oneTimePrintingAuthorizationMintAuthority,
-      false,
-    ] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    edition: { index: 0, isWritable: true, value: input.edition ?? null },
+    mint: { index: 1, isWritable: true, value: input.mint ?? null },
+    printingMint: {
+      index: 2,
+      isWritable: true,
+      value: input.printingMint ?? null,
+    },
+    oneTimePrintingAuthorizationMint: {
+      index: 3,
+      isWritable: true,
+      value: input.oneTimePrintingAuthorizationMint ?? null,
+    },
+    updateAuthority: {
+      index: 4,
+      isWritable: false,
+      value: input.updateAuthority ?? null,
+    },
+    printingMintAuthority: {
+      index: 5,
+      isWritable: false,
+      value: input.printingMintAuthority ?? null,
+    },
+    mintAuthority: {
+      index: 6,
+      isWritable: false,
+      value: input.mintAuthority ?? null,
+    },
+    metadata: { index: 7, isWritable: false, value: input.metadata ?? null },
+    payer: { index: 8, isWritable: false, value: input.payer ?? null },
+    tokenProgram: {
+      index: 9,
+      isWritable: false,
+      value: input.tokenProgram ?? null,
+    },
+    systemProgram: {
+      index: 10,
+      isWritable: false,
+      value: input.systemProgram ?? null,
+    },
+    rent: { index: 11, isWritable: false, value: input.rent ?? null },
+    oneTimePrintingAuthorizationMintAuthority: {
+      index: 12,
+      isWritable: false,
+      value: input.oneTimePrintingAuthorizationMintAuthority ?? null,
+    },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    input.payer
-      ? ([input.payer, false] as const)
-      : ([context.payer, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'tokenProgram',
-    input.tokenProgram
-      ? ([input.tokenProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splToken',
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    input.systemProgram
-      ? ([input.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'rent',
-    input.rent
-      ? ([input.rent, false] as const)
-      : ([
-          publicKey('SysvarRent111111111111111111111111111111111'),
-          false,
-        ] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.edition, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.printingMint, false);
-  addAccountMeta(
-    keys,
-    signers,
-    resolvedAccounts.oneTimePrintingAuthorizationMint,
-    false
-  );
-  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.printingMintAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.tokenProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
-  addAccountMeta(
-    keys,
-    signers,
-    resolvedAccounts.oneTimePrintingAuthorizationMintAuthority,
-    false
+  // Arguments.
+  const resolvedArgs: DeprecatedCreateMasterEditionInstructionArgs = {
+    ...input,
+  };
+
+  // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+  if (!resolvedAccounts.tokenProgram.value) {
+    resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    resolvedAccounts.tokenProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.rent.value) {
+    resolvedAccounts.rent.value = publicKey(
+      'SysvarRent111111111111111111111111111111111'
+    );
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
   );
 
   // Data.
   const data =
     getDeprecatedCreateMasterEditionInstructionDataSerializer().serialize(
-      resolvedArgs
+      resolvedArgs as DeprecatedCreateMasterEditionInstructionDataArgs
     );
 
   // Bytes Created On Chain.

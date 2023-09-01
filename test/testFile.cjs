@@ -105,7 +105,6 @@ kinobi.update(
         bar: {
           defaultsTo: k.programIdDefault(),
           isOptional: true,
-          isOptionalStrategy: 'programId',
         },
         delegateRecord: {
           defaultsTo: k.pdaDefault('delegateRecord', {

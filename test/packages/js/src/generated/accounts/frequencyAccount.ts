@@ -52,17 +52,10 @@ export type FrequencyAccountAccountDataArgs = {
   period: number | bigint;
 };
 
-/** @deprecated Use `getFrequencyAccountAccountDataSerializer()` without any argument instead. */
-export function getFrequencyAccountAccountDataSerializer(
-  _context: object
-): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
 export function getFrequencyAccountAccountDataSerializer(): Serializer<
   FrequencyAccountAccountDataArgs,
   FrequencyAccountAccountData
->;
-export function getFrequencyAccountAccountDataSerializer(
-  _context: object = {}
-): Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData> {
+> {
   return mapSerializer<
     FrequencyAccountAccountDataArgs,
     any,
@@ -80,20 +73,11 @@ export function getFrequencyAccountAccountDataSerializer(
   ) as Serializer<FrequencyAccountAccountDataArgs, FrequencyAccountAccountData>;
 }
 
-/** @deprecated Use `deserializeFrequencyAccount(rawAccount)` without any context instead. */
-export function deserializeFrequencyAccount(
-  context: object,
-  rawAccount: RpcAccount
-): FrequencyAccount;
 export function deserializeFrequencyAccount(
   rawAccount: RpcAccount
-): FrequencyAccount;
-export function deserializeFrequencyAccount(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
 ): FrequencyAccount {
   return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
+    rawAccount,
     getFrequencyAccountAccountDataSerializer()
   );
 }

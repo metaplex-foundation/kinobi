@@ -34,17 +34,10 @@ export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
-/** @deprecated Use `getEditionMarkerAccountDataSerializer()` without any argument instead. */
-export function getEditionMarkerAccountDataSerializer(
-  _context: object
-): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
 export function getEditionMarkerAccountDataSerializer(): Serializer<
   EditionMarkerAccountDataArgs,
   EditionMarkerAccountData
->;
-export function getEditionMarkerAccountDataSerializer(
-  _context: object = {}
-): Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData> {
+> {
   return mapSerializer<
     EditionMarkerAccountDataArgs,
     any,
@@ -61,18 +54,11 @@ export function getEditionMarkerAccountDataSerializer(
   ) as Serializer<EditionMarkerAccountDataArgs, EditionMarkerAccountData>;
 }
 
-/** @deprecated Use `deserializeEditionMarker(rawAccount)` without any context instead. */
 export function deserializeEditionMarker(
-  context: object,
   rawAccount: RpcAccount
-): EditionMarker;
-export function deserializeEditionMarker(rawAccount: RpcAccount): EditionMarker;
-export function deserializeEditionMarker(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
 ): EditionMarker {
   return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
+    rawAccount,
     getEditionMarkerAccountDataSerializer()
   );
 }

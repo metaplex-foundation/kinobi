@@ -1,10 +1,5 @@
 import { IdlInstructionAccount } from '../idl';
-import {
-  InstructionAccountDefault,
-  PartialExcept,
-  mainCase,
-  programIdDefault,
-} from '../shared';
+import { InstructionAccountDefault, PartialExcept, mainCase } from '../shared';
 import type { Node } from './Node';
 
 export type InstructionAccountNode = {
@@ -14,7 +9,6 @@ export type InstructionAccountNode = {
   readonly isWritable: boolean;
   readonly isSigner: boolean | 'either';
   readonly isOptional: boolean;
-  readonly isOptionalStrategy: 'omitted' | 'programId';
   readonly docs: string[];
   readonly defaultsTo?: InstructionAccountDefault;
 };
@@ -33,15 +27,13 @@ export function instructionAccountNode(
     isWritable: input.isWritable,
     isSigner: input.isSigner,
     isOptional: input.isOptional ?? false,
-    isOptionalStrategy: input.isOptionalStrategy ?? 'programId',
     docs: input.docs ?? [],
     defaultsTo: input.defaultsTo,
   } as InstructionAccountNode;
 }
 
 export function instructionAccountNodeFromIdl(
-  idl: IdlInstructionAccount,
-  useProgramIdForOptionalAccounts = true
+  idl: IdlInstructionAccount
 ): InstructionAccountNode {
   const isOptional = idl.optional ?? idl.isOptional ?? false;
   const desc = idl.desc ? [idl.desc] : undefined;
@@ -50,14 +42,7 @@ export function instructionAccountNodeFromIdl(
     isWritable: idl.isMut ?? false,
     isSigner: idl.isOptionalSigner ? 'either' : idl.isSigner ?? false,
     isOptional,
-    isOptionalStrategy: useProgramIdForOptionalAccounts
-      ? 'programId'
-      : 'omitted',
     docs: idl.docs ?? desc ?? [],
-    defaultsTo:
-      isOptional && useProgramIdForOptionalAccounts
-        ? programIdDefault()
-        : undefined,
   });
 }
 

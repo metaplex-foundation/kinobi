@@ -33,7 +33,7 @@ impl {{ instruction.name | pascalCase }} {
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
         {% if account.isOptional %}
-          {% if account.isOptionalStrategy === 'programId' %}
+          {% if instruction.optionalAccountStrategy === 'programId' %}
             if let Some(({{ account.name | snakeCase }}, signer)) = self.{{ account.name | snakeCase }} {
               accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
                 {{ account.name | snakeCase }},
@@ -61,7 +61,7 @@ impl {{ instruction.name | pascalCase }} {
         {% endif %}
       {% else %}
         {% if account.isOptional %}
-          {% if account.isOptionalStrategy === 'programId' %}
+          {% if instruction.optionalAccountStrategy === 'programId' %}
             if let Some({{ account.name | snakeCase }}) = self.{{ account.name | snakeCase }} {
               accounts.push(solana_program::instruction::AccountMeta::{{ 'new' if account.isWritable else 'new_readonly' }}(
                 {{ account.name | snakeCase }},

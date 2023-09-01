@@ -31,7 +31,11 @@ import {
   u16,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import {
   AuthorityType,
   AuthorityTypeArgs,
@@ -131,17 +135,10 @@ export type UpdateV1InstructionDataArgs = {
   authorityType: AuthorityTypeArgs;
 };
 
-/** @deprecated Use `getUpdateV1InstructionDataSerializer()` without any argument instead. */
-export function getUpdateV1InstructionDataSerializer(
-  _context: object
-): Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData>;
 export function getUpdateV1InstructionDataSerializer(): Serializer<
   UpdateV1InstructionDataArgs,
   UpdateV1InstructionData
->;
-export function getUpdateV1InstructionDataSerializer(
-  _context: object = {}
-): Serializer<UpdateV1InstructionDataArgs, UpdateV1InstructionData> {
+> {
   return mapSerializer<
     UpdateV1InstructionDataArgs,
     any,
@@ -194,106 +191,86 @@ export function updateV1(
   context: Pick<Context, 'programs' | 'identity'>,
   input: UpdateV1InstructionAccounts & UpdateV1InstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    metadata: [input.metadata, true] as const,
-    mint: [input.mint, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    authority: { index: 0, isWritable: false, value: input.authority ?? null },
+    metadata: { index: 1, isWritable: true, value: input.metadata ?? null },
+    masterEdition: {
+      index: 2,
+      isWritable: true,
+      value: input.masterEdition ?? null,
+    },
+    mint: { index: 3, isWritable: false, value: input.mint ?? null },
+    systemProgram: {
+      index: 4,
+      isWritable: false,
+      value: input.systemProgram ?? null,
+    },
+    sysvarInstructions: {
+      index: 5,
+      isWritable: false,
+      value: input.sysvarInstructions ?? null,
+    },
+    token: { index: 6, isWritable: false, value: input.token ?? null },
+    delegateRecord: {
+      index: 7,
+      isWritable: false,
+      value: input.delegateRecord ?? null,
+    },
+    authorizationRulesProgram: {
+      index: 8,
+      isWritable: false,
+      value: input.authorizationRulesProgram ?? null,
+    },
+    authorizationRules: {
+      index: 9,
+      isWritable: false,
+      value: input.authorizationRules ?? null,
+    },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'authority',
-    input.authority
-      ? ([input.authority, false] as const)
-      : ([context.identity, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'masterEdition',
-    input.masterEdition
-      ? ([input.masterEdition, true] as const)
-      : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    input.systemProgram
-      ? ([input.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'sysvarInstructions',
-    input.sysvarInstructions
-      ? ([input.sysvarInstructions, false] as const)
-      : ([
-          publicKey('Sysvar1nstructions1111111111111111111111111'),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'token',
-    input.token
-      ? ([input.token, false] as const)
-      : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'delegateRecord',
-    input.delegateRecord
-      ? ([input.delegateRecord, false] as const)
-      : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'authorizationRulesProgram',
-    input.authorizationRulesProgram
-      ? ([input.authorizationRulesProgram, false] as const)
-      : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'authorizationRules',
-    input.authorizationRules
-      ? ([input.authorizationRules, false] as const)
-      : ([programId, false] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.sysvarInstructions, false);
-  addAccountMeta(keys, signers, resolvedAccounts.token, false);
-  addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
-  addAccountMeta(
-    keys,
-    signers,
-    resolvedAccounts.authorizationRulesProgram,
-    false
+  // Arguments.
+  const resolvedArgs: UpdateV1InstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.authority.value) {
+    resolvedAccounts.authority.value = context.identity;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.sysvarInstructions.value) {
+    resolvedAccounts.sysvarInstructions.value = publicKey(
+      'Sysvar1nstructions1111111111111111111111111'
+    );
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
   );
-  addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
 
   // Data.
-  const data = getUpdateV1InstructionDataSerializer().serialize(resolvedArgs);
+  const data = getUpdateV1InstructionDataSerializer().serialize(
+    resolvedArgs as UpdateV1InstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

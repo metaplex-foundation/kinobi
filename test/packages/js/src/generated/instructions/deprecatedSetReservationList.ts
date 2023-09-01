@@ -26,7 +26,11 @@ import {
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -59,20 +63,7 @@ export type DeprecatedSetReservationListInstructionDataArgs = {
   totalSpotOffset: number | bigint;
 };
 
-/** @deprecated Use `getDeprecatedSetReservationListInstructionDataSerializer()` without any argument instead. */
-export function getDeprecatedSetReservationListInstructionDataSerializer(
-  _context: object
-): Serializer<
-  DeprecatedSetReservationListInstructionDataArgs,
-  DeprecatedSetReservationListInstructionData
->;
 export function getDeprecatedSetReservationListInstructionDataSerializer(): Serializer<
-  DeprecatedSetReservationListInstructionDataArgs,
-  DeprecatedSetReservationListInstructionData
->;
-export function getDeprecatedSetReservationListInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   DeprecatedSetReservationListInstructionDataArgs,
   DeprecatedSetReservationListInstructionData
 > {
@@ -108,32 +99,48 @@ export function deprecatedSetReservationList(
   input: DeprecatedSetReservationListInstructionAccounts &
     DeprecatedSetReservationListInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    masterEdition: [input.masterEdition, true] as const,
-    reservationList: [input.reservationList, true] as const,
-    resource: [input.resource, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    masterEdition: {
+      index: 0,
+      isWritable: true,
+      value: input.masterEdition ?? null,
+    },
+    reservationList: {
+      index: 1,
+      isWritable: true,
+      value: input.reservationList ?? null,
+    },
+    resource: { index: 2, isWritable: false, value: input.resource ?? null },
   };
-  const resolvingArgs = {};
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
-  addAccountMeta(keys, signers, resolvedAccounts.reservationList, false);
-  addAccountMeta(keys, signers, resolvedAccounts.resource, false);
+  // Arguments.
+  const resolvedArgs: DeprecatedSetReservationListInstructionArgs = {
+    ...input,
+  };
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
   const data =
     getDeprecatedSetReservationListInstructionDataSerializer().serialize(
-      resolvedArgs
+      resolvedArgs as DeprecatedSetReservationListInstructionDataArgs
     );
 
   // Bytes Created On Chain.

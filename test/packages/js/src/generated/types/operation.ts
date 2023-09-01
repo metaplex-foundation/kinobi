@@ -17,14 +17,7 @@ export enum Operation {
 
 export type OperationArgs = Operation;
 
-/** @deprecated Use `getOperationSerializer()` without any argument instead. */
-export function getOperationSerializer(
-  _context: object
-): Serializer<OperationArgs, Operation>;
-export function getOperationSerializer(): Serializer<OperationArgs, Operation>;
-export function getOperationSerializer(
-  _context: object = {}
-): Serializer<OperationArgs, Operation> {
+export function getOperationSerializer(): Serializer<OperationArgs, Operation> {
   return scalarEnum<Operation>(Operation, {
     description: 'Operation',
   }) as Serializer<OperationArgs, Operation>;

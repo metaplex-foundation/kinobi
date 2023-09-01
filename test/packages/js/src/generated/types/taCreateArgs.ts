@@ -21,17 +21,10 @@ export type TaCreateArgs = {
 
 export type TaCreateArgsArgs = TaCreateArgs;
 
-/** @deprecated Use `getTaCreateArgsSerializer()` without any argument instead. */
-export function getTaCreateArgsSerializer(
-  _context: object
-): Serializer<TaCreateArgsArgs, TaCreateArgs>;
 export function getTaCreateArgsSerializer(): Serializer<
   TaCreateArgsArgs,
   TaCreateArgs
->;
-export function getTaCreateArgsSerializer(
-  _context: object = {}
-): Serializer<TaCreateArgsArgs, TaCreateArgs> {
+> {
   return struct<TaCreateArgs>(
     [
       ['ruleSetName', string()],

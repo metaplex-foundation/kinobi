@@ -33,17 +33,10 @@ export type ExtendedPayloadArgs = {
   args: [number, string];
 };
 
-/** @deprecated Use `getExtendedPayloadSerializer()` without any argument instead. */
-export function getExtendedPayloadSerializer(
-  _context: object
-): Serializer<ExtendedPayloadArgs, ExtendedPayload>;
 export function getExtendedPayloadSerializer(): Serializer<
   ExtendedPayloadArgs,
   ExtendedPayload
->;
-export function getExtendedPayloadSerializer(
-  _context: object = {}
-): Serializer<ExtendedPayloadArgs, ExtendedPayload> {
+> {
   return struct<ExtendedPayload>(
     [
       ['map', map(getPayloadKeySerializer(), getPayloadTypeSerializer())],

@@ -58,17 +58,10 @@ export type ReservationListV2AccountDataArgs = {
   currentReservationSpots: number | bigint;
 };
 
-/** @deprecated Use `getReservationListV2AccountDataSerializer()` without any argument instead. */
-export function getReservationListV2AccountDataSerializer(
-  _context: object
-): Serializer<ReservationListV2AccountDataArgs, ReservationListV2AccountData>;
 export function getReservationListV2AccountDataSerializer(): Serializer<
   ReservationListV2AccountDataArgs,
   ReservationListV2AccountData
->;
-export function getReservationListV2AccountDataSerializer(
-  _context: object = {}
-): Serializer<ReservationListV2AccountDataArgs, ReservationListV2AccountData> {
+> {
   return mapSerializer<
     ReservationListV2AccountDataArgs,
     any,
@@ -92,20 +85,11 @@ export function getReservationListV2AccountDataSerializer(
   >;
 }
 
-/** @deprecated Use `deserializeReservationListV2(rawAccount)` without any context instead. */
-export function deserializeReservationListV2(
-  context: object,
-  rawAccount: RpcAccount
-): ReservationListV2;
 export function deserializeReservationListV2(
   rawAccount: RpcAccount
-): ReservationListV2;
-export function deserializeReservationListV2(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
 ): ReservationListV2 {
   return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
+    rawAccount,
     getReservationListV2AccountDataSerializer()
   );
 }

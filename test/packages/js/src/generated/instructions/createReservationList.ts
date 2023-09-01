@@ -20,7 +20,11 @@ import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
 } from '../../hooked';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 
 // Accounts.
 export type CreateReservationListInstructionAccounts = {
@@ -52,68 +56,76 @@ export function createReservationList(
   accounts: CreateReservationListInstructionAccounts,
   args: CreateReservationListInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    reservationList: [accounts.reservationList, true] as const,
-    updateAuthority: [accounts.updateAuthority, false] as const,
-    masterEdition: [accounts.masterEdition, false] as const,
-    resource: [accounts.resource, false] as const,
-    metadata: [accounts.metadata, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    reservationList: {
+      index: 0,
+      isWritable: true,
+      value: accounts.reservationList ?? null,
+    },
+    payer: { index: 1, isWritable: false, value: accounts.payer ?? null },
+    updateAuthority: {
+      index: 2,
+      isWritable: false,
+      value: accounts.updateAuthority ?? null,
+    },
+    masterEdition: {
+      index: 3,
+      isWritable: false,
+      value: accounts.masterEdition ?? null,
+    },
+    resource: { index: 4, isWritable: false, value: accounts.resource ?? null },
+    metadata: { index: 5, isWritable: false, value: accounts.metadata ?? null },
+    systemProgram: {
+      index: 6,
+      isWritable: false,
+      value: accounts.systemProgram ?? null,
+    },
+    rent: { index: 7, isWritable: false, value: accounts.rent ?? null },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    accounts.payer
-      ? ([accounts.payer, false] as const)
-      : ([context.payer, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    accounts.systemProgram
-      ? ([accounts.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'rent',
-    accounts.rent
-      ? ([accounts.rent, false] as const)
-      : ([
-          publicKey('SysvarRent111111111111111111111111111111111'),
-          false,
-        ] as const)
-  );
-  const resolvedArgs = { ...args, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.reservationList, false);
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.masterEdition, false);
-  addAccountMeta(keys, signers, resolvedAccounts.resource, false);
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
+  // Arguments.
+  const resolvedArgs: CreateReservationListInstructionArgs = { ...args };
+
+  // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+  if (!resolvedAccounts.rent.value) {
+    resolvedAccounts.rent.value = publicKey(
+      'SysvarRent111111111111111111111111111111111'
+    );
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
-  const data =
-    getCreateReservationListInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getCreateReservationListInstructionDataSerializer().serialize(
+    resolvedArgs as CreateReservationListInstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;
