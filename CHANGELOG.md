@@ -1,5 +1,25 @@
 # @metaplex-foundation/kinobi
 
+## 0.14.0
+
+### Minor Changes
+
+- [#68](https://github.com/metaplex-foundation/kinobi/pull/68) [`0dbe3c9`](https://github.com/metaplex-foundation/kinobi/commit/0dbe3c9d002b653feb201de37bc9daced28c1ab6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove deprecated signatures in JS renderer
+
+- [#68](https://github.com/metaplex-foundation/kinobi/pull/68) [`0dbe3c9`](https://github.com/metaplex-foundation/kinobi/commit/0dbe3c9d002b653feb201de37bc9daced28c1ab6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Refactor instruction input resolution so it's more intuitive and easier to maintain
+
+- [#68](https://github.com/metaplex-foundation/kinobi/pull/68) [`0dbe3c9`](https://github.com/metaplex-foundation/kinobi/commit/0dbe3c9d002b653feb201de37bc9daced28c1ab6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - More isOptionalStrategy from instructionAccountNode to instructionNode as "optionalAccountStrategy"
+
+- [#73](https://github.com/metaplex-foundation/kinobi/pull/73) [`f751c09`](https://github.com/metaplex-foundation/kinobi/commit/f751c09074a224fba595fc149fe24a7fefd50cf0) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add conditional and conditionalResolver defaults for instruction inputs
+
+- [#68](https://github.com/metaplex-foundation/kinobi/pull/68) [`0dbe3c9`](https://github.com/metaplex-foundation/kinobi/commit/0dbe3c9d002b653feb201de37bc9daced28c1ab6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove programId account default when optionalAccountStrategy is programId already
+
+### Patch Changes
+
+- [#67](https://github.com/metaplex-foundation/kinobi/pull/67) [`059e288`](https://github.com/metaplex-foundation/kinobi/commit/059e288c4ec54cf17357b13b301f8e16541ae999) Thanks [@febo](https://github.com/febo)! - Add program errors length test
+
+- [#71](https://github.com/metaplex-foundation/kinobi/pull/71) [`8ae1bd3`](https://github.com/metaplex-foundation/kinobi/commit/8ae1bd39e2c8d8a5bb2ac5ff8c0894bc74e7f096) Thanks [@febo](https://github.com/febo)! - Switch to use error traits
+
 ## 0.13.3
 
 ### Patch Changes
