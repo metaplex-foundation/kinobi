@@ -3,11 +3,15 @@
 {% block main %}
 
 {% for program in programsToExport | sort(false, false, 'name') %}
-pub mod {{ program.name | snakeCase }};
+  {% if program.errors.length > 0 %}
+    pub mod {{ program.name | snakeCase }};
+  {% endif %}
 {% endfor %}
 
 {% for program in programsToExport | sort(false, false, 'name') %}
-pub use self::{{ program.name | snakeCase }}::{{ program.name | pascalCase }}Error;
+  {% if program.errors.length > 0 %}
+    pub use self::{{ program.name | snakeCase }}::{{ program.name | pascalCase }}Error;
+  {% endif %}
 {% endfor %}
 
 {% endblock %}
