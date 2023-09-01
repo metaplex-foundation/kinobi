@@ -5,9 +5,10 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use spl_program_error::*;
+use num_derive::FromPrimitive;
+use thiserror::Error;
 
-#[spl_program_error]
+#[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
 pub enum MplTokenMetadataError {
     /// 0x0 - Failed to unpack instruction data
     #[error("Failed to unpack instruction data")]
@@ -466,4 +467,10 @@ pub enum MplTokenMetadataError {
     /// 0x96 - Invalid delegate role for transfer
     #[error("Invalid delegate role for transfer")]
     InvalidDelegateRoleForTransfer,
+}
+
+impl solana_program::program_error::PrintProgramError for MplTokenMetadataError {
+    fn print<E>(&self) {
+        solana_program::msg!(&self.to_string());
+    }
 }
