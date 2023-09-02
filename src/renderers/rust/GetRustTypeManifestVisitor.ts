@@ -329,7 +329,8 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
     let derive = '';
     if (fieldManifest.type === 'Pubkey') {
-      derive = '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
+      derive =
+        '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
     }
 
     return {
