@@ -11,6 +11,7 @@ use solana_program::pubkey::Pubkey;
 
 /// This is a union of all the possible payload types.
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum PayloadType {
     Pubkey(Pubkey),
     Seeds {

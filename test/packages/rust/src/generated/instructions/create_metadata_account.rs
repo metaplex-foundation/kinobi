@@ -84,7 +84,8 @@ impl CreateMetadataAccountInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreateMetadataAccountInstructionArgs {
     pub data: CreateMetadataAccountInstructionDataData,
     pub is_mutable: bool,
@@ -92,6 +93,7 @@ pub struct CreateMetadataAccountInstructionArgs {
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreateMetadataAccountInstructionDataData {
     pub name: String,
     pub symbol: String,
