@@ -17,13 +17,19 @@ pub struct ConvertMasterEditionV1ToV2 {
     /// Printing mint
     pub printing_mint: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl ConvertMasterEditionV1ToV2 {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.master_edition,
             false,
@@ -36,9 +42,11 @@ impl ConvertMasterEditionV1ToV2 {
             self.printing_mint,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = ConvertMasterEditionV1ToV2InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -109,7 +117,11 @@ impl ConvertMasterEditionV1ToV2Builder {
             master_edition: self.master_edition.expect("master_edition is not set"),
             one_time_auth: self.one_time_auth.expect("one_time_auth is not set"),
             printing_mint: self.printing_mint.expect("printing_mint is not set"),
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
 
         accounts.instruction()
@@ -127,7 +139,7 @@ pub struct ConvertMasterEditionV1ToV2Cpi<'a> {
     /// Printing mint
     pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> ConvertMasterEditionV1ToV2Cpi<'a> {
@@ -140,7 +152,13 @@ impl<'a> ConvertMasterEditionV1ToV2Cpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.master_edition.key,
             false,
@@ -153,9 +171,11 @@ impl<'a> ConvertMasterEditionV1ToV2Cpi<'a> {
             *self.printing_mint.key,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = ConvertMasterEditionV1ToV2InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -256,7 +276,11 @@ impl<'a> ConvertMasterEditionV1ToV2CpiBuilder<'a> {
                 .instruction
                 .printing_mint
                 .expect("printing_mint is not set"),
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

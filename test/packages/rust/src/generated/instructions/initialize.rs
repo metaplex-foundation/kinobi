@@ -33,7 +33,7 @@ pub struct Initialize {
 
     pub system_program: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl Initialize {
@@ -42,7 +42,13 @@ impl Initialize {
         &self,
         args: InitializeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(11 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            11 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -86,9 +92,11 @@ impl Initialize {
             self.system_program,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -256,7 +264,11 @@ impl InitializeBuilder {
                 system_program: self
                     .system_program
                     .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
-                __remaining_accounts: self.__remaining_accounts.clone(),
+                __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                    None
+                } else {
+                    Some(self.__remaining_accounts.clone())
+                },
             };
         let args = InitializeInstructionArgs {
             data: self.data.clone().expect("data is not set"),
@@ -295,7 +307,7 @@ pub struct InitializeCpi<'a> {
     /// The arguments for the instruction.
     pub __args: InitializeInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> InitializeCpi<'a> {
@@ -308,7 +320,13 @@ impl<'a> InitializeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(11 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            11 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -353,9 +371,11 @@ impl<'a> InitializeCpi<'a> {
             *self.system_program.key,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -575,7 +595,11 @@ impl<'a> InitializeCpiBuilder<'a> {
                 .system_program
                 .expect("system_program is not set"),
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

@@ -29,13 +29,19 @@ pub struct CreateEscrowAccount {
     /// Authority/creator of the escrow account
     pub authority: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl CreateEscrowAccount {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            9 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.escrow,
             false,
@@ -76,9 +82,11 @@ impl CreateEscrowAccount {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = CreateEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -205,7 +213,11 @@ impl CreateEscrowAccountBuilder {
                 "Sysvar1nstructions1111111111111111111111111"
             )),
             authority: self.authority,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
 
         accounts.instruction()
@@ -235,7 +247,7 @@ pub struct CreateEscrowAccountCpi<'a> {
     /// Authority/creator of the escrow account
     pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> CreateEscrowAccountCpi<'a> {
@@ -248,7 +260,13 @@ impl<'a> CreateEscrowAccountCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            9 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.escrow.key,
             false,
@@ -292,9 +310,11 @@ impl<'a> CreateEscrowAccountCpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = CreateEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -470,7 +490,11 @@ impl<'a> CreateEscrowAccountCpiBuilder<'a> {
                 .expect("sysvar_instructions is not set"),
 
             authority: self.instruction.authority,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

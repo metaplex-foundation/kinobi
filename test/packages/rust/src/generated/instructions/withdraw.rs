@@ -14,13 +14,19 @@ pub struct Withdraw {
 
     pub authority: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl Withdraw {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            2 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -29,9 +35,11 @@ impl Withdraw {
             self.authority,
             true,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = WithdrawInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -92,7 +100,11 @@ impl WithdrawBuilder {
         let accounts = Withdraw {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
 
         accounts.instruction()
@@ -108,7 +120,7 @@ pub struct WithdrawCpi<'a> {
 
     pub authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> WithdrawCpi<'a> {
@@ -121,7 +133,13 @@ impl<'a> WithdrawCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(2 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            2 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -130,9 +148,11 @@ impl<'a> WithdrawCpi<'a> {
             *self.authority.key,
             true,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = WithdrawInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -210,7 +230,11 @@ impl<'a> WithdrawCpiBuilder<'a> {
                 .expect("candy_machine is not set"),
 
             authority: self.instruction.authority.expect("authority is not set"),
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

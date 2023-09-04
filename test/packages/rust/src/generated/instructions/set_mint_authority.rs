@@ -16,13 +16,19 @@ pub struct SetMintAuthority {
 
     pub mint_authority: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl SetMintAuthority {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -35,9 +41,11 @@ impl SetMintAuthority {
             self.mint_authority,
             true,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = SetMintAuthorityInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -105,7 +113,11 @@ impl SetMintAuthorityBuilder {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
             mint_authority: self.mint_authority.expect("mint_authority is not set"),
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
 
         accounts.instruction()
@@ -123,7 +135,7 @@ pub struct SetMintAuthorityCpi<'a> {
 
     pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> SetMintAuthorityCpi<'a> {
@@ -136,7 +148,13 @@ impl<'a> SetMintAuthorityCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -149,9 +167,11 @@ impl<'a> SetMintAuthorityCpi<'a> {
             *self.mint_authority.key,
             true,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = SetMintAuthorityInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -244,7 +264,11 @@ impl<'a> SetMintAuthorityCpiBuilder<'a> {
                 .instruction
                 .mint_authority
                 .expect("mint_authority is not set"),
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

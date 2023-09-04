@@ -30,7 +30,7 @@ pub struct CreateMasterEditionV3 {
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl CreateMasterEditionV3 {
@@ -39,7 +39,13 @@ impl CreateMasterEditionV3 {
         &self,
         args: CreateMasterEditionV3InstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            9 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
             false,
@@ -80,9 +86,11 @@ impl CreateMasterEditionV3 {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = CreateMasterEditionV3InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -225,7 +233,11 @@ impl CreateMasterEditionV3Builder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
         let args = CreateMasterEditionV3InstructionArgs {
             create_master_edition_args: self
@@ -263,7 +275,7 @@ pub struct CreateMasterEditionV3Cpi<'a> {
     /// The arguments for the instruction.
     pub __args: CreateMasterEditionV3InstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> CreateMasterEditionV3Cpi<'a> {
@@ -276,7 +288,13 @@ impl<'a> CreateMasterEditionV3Cpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(9 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            9 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
             false,
@@ -319,9 +337,11 @@ impl<'a> CreateMasterEditionV3Cpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = CreateMasterEditionV3InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -517,7 +537,11 @@ impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
 
             rent: self.instruction.rent,
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

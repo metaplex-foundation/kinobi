@@ -44,13 +44,19 @@ pub struct MintFromCandyMachine {
 
     pub recent_slothashes: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl MintFromCandyMachine {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(17 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            17 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -118,9 +124,11 @@ impl MintFromCandyMachine {
             self.recent_slothashes,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = MintFromCandyMachineInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -336,7 +344,11 @@ impl MintFromCandyMachineBuilder {
                 recent_slothashes: self
                     .recent_slothashes
                     .expect("recent_slothashes is not set"),
-                __remaining_accounts: self.__remaining_accounts.clone(),
+                __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                    None
+                } else {
+                    Some(self.__remaining_accounts.clone())
+                },
             };
 
         accounts.instruction()
@@ -382,7 +394,7 @@ pub struct MintFromCandyMachineCpi<'a> {
 
     pub recent_slothashes: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> MintFromCandyMachineCpi<'a> {
@@ -395,7 +407,13 @@ impl<'a> MintFromCandyMachineCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(17 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            17 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -464,9 +482,11 @@ impl<'a> MintFromCandyMachineCpi<'a> {
             *self.recent_slothashes.key,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = MintFromCandyMachineInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -765,7 +785,11 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
                 .instruction
                 .recent_slothashes
                 .expect("recent_slothashes is not set"),
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

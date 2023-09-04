@@ -25,13 +25,19 @@ pub struct BurnNft {
     /// Metadata of the Collection
     pub collection_metadata: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl BurnNft {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(7 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            7 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -65,9 +71,11 @@ impl BurnNft {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = BurnNftInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -182,7 +190,11 @@ impl BurnNftBuilder {
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
             collection_metadata: self.collection_metadata,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
 
         accounts.instruction()
@@ -208,7 +220,7 @@ pub struct BurnNftCpi<'a> {
     /// Metadata of the Collection
     pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> BurnNftCpi<'a> {
@@ -221,7 +233,13 @@ impl<'a> BurnNftCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(7 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            7 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -257,9 +275,11 @@ impl<'a> BurnNftCpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = BurnNftInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -407,7 +427,11 @@ impl<'a> BurnNftCpiBuilder<'a> {
                 .expect("spl_token_program is not set"),
 
             collection_metadata: self.instruction.collection_metadata,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

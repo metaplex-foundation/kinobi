@@ -82,7 +82,11 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
         {% if hasArgs %}
           __args: args,
         {% endif %}
-        __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+        __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+          None
+        } else {
+          Some(self.instruction.__remaining_accounts.clone())
+        },
     }
   }
 }

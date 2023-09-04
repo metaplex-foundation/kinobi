@@ -46,7 +46,7 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxy {
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl MintNewEditionFromMasterEditionViaVaultProxy {
@@ -55,7 +55,13 @@ impl MintNewEditionFromMasterEditionViaVaultProxy {
         &self,
         args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(17 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            17 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.new_metadata,
             false,
@@ -128,9 +134,11 @@ impl MintNewEditionFromMasterEditionViaVaultProxy {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = MintNewEditionFromMasterEditionViaVaultProxyInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -368,7 +376,11 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
         let args = MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs {
             mint_new_edition_from_master_edition_via_token_args: self
@@ -422,7 +434,7 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
     /// The arguments for the instruction.
     pub __args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
@@ -435,7 +447,13 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(17 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            17 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.new_metadata.key,
             false,
@@ -510,9 +528,11 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = MintNewEditionFromMasterEditionViaVaultProxyInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -840,7 +860,11 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a> {
 
             rent: self.instruction.rent,
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

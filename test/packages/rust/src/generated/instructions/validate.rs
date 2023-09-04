@@ -39,7 +39,7 @@ pub struct Validate {
     /// Optional rule validation non-signer 5
     pub opt_rule_nonsigner5: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl Validate {
@@ -48,7 +48,13 @@ impl Validate {
         &self,
         args: ValidateInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            13 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.payer, true,
         ));
@@ -120,9 +126,11 @@ impl Validate {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = ValidateInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -340,7 +348,11 @@ impl ValidateBuilder {
             opt_rule_nonsigner3: self.opt_rule_nonsigner3,
             opt_rule_nonsigner4: self.opt_rule_nonsigner4,
             opt_rule_nonsigner5: self.opt_rule_nonsigner5,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
         let args = ValidateInstructionArgs {
             rule_set_name: self
@@ -388,7 +400,7 @@ pub struct ValidateCpi<'a> {
     /// The arguments for the instruction.
     pub __args: ValidateInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> ValidateCpi<'a> {
@@ -401,7 +413,13 @@ impl<'a> ValidateCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(13 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            13 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.payer.key,
             true,
@@ -474,9 +492,11 @@ impl<'a> ValidateCpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = ValidateInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -765,7 +785,11 @@ impl<'a> ValidateCpiBuilder<'a> {
 
             opt_rule_nonsigner5: self.instruction.opt_rule_nonsigner5,
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

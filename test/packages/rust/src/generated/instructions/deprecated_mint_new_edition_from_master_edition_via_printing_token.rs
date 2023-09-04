@@ -43,13 +43,19 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
     /// Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
     pub reservation_list: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(16 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            16 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -118,9 +124,11 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -318,7 +326,11 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
                 "SysvarRent111111111111111111111111111111111"
             )),
             reservation_list: self.reservation_list,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
 
         accounts.instruction()
@@ -362,7 +374,7 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
     /// Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
     pub reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
@@ -375,7 +387,13 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(16 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            16 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -447,9 +465,11 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -737,7 +757,11 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
             rent: self.instruction.rent.expect("rent is not set"),
 
             reservation_list: self.instruction.reservation_list,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

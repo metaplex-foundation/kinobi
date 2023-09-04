@@ -27,13 +27,19 @@ pub struct CloseEscrowAccount {
     /// Instructions sysvar account
     pub sysvar_instructions: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl CloseEscrowAccount {
     #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            8 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.escrow,
             false,
@@ -64,9 +70,11 @@ impl CloseEscrowAccount {
             self.sysvar_instructions,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = CloseEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -184,7 +192,11 @@ impl CloseEscrowAccountBuilder {
             sysvar_instructions: self.sysvar_instructions.unwrap_or(solana_program::pubkey!(
                 "Sysvar1nstructions1111111111111111111111111"
             )),
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
 
         accounts.instruction()
@@ -212,7 +224,7 @@ pub struct CloseEscrowAccountCpi<'a> {
     /// Instructions sysvar account
     pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> CloseEscrowAccountCpi<'a> {
@@ -225,7 +237,13 @@ impl<'a> CloseEscrowAccountCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(8 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            8 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.escrow.key,
             false,
@@ -258,9 +276,11 @@ impl<'a> CloseEscrowAccountCpi<'a> {
             *self.sysvar_instructions.key,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let data = CloseEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -420,7 +440,11 @@ impl<'a> CloseEscrowAccountCpiBuilder<'a> {
                 .instruction
                 .sysvar_instructions
                 .expect("sysvar_instructions is not set"),
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

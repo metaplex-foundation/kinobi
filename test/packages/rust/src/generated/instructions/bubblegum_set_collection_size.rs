@@ -22,7 +22,7 @@ pub struct BubblegumSetCollectionSize {
     /// Collection Authority Record PDA
     pub collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl BubblegumSetCollectionSize {
@@ -31,7 +31,13 @@ impl BubblegumSetCollectionSize {
         &self,
         args: BubblegumSetCollectionSizeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            5 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.collection_metadata,
             false,
@@ -59,9 +65,11 @@ impl BubblegumSetCollectionSize {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = BubblegumSetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -184,7 +192,11 @@ impl BubblegumSetCollectionSizeBuilder {
             collection_mint: self.collection_mint.expect("collection_mint is not set"),
             bubblegum_signer: self.bubblegum_signer.expect("bubblegum_signer is not set"),
             collection_authority_record: self.collection_authority_record,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
         let args = BubblegumSetCollectionSizeInstructionArgs {
             set_collection_size_args: self
@@ -214,7 +226,7 @@ pub struct BubblegumSetCollectionSizeCpi<'a> {
     /// The arguments for the instruction.
     pub __args: BubblegumSetCollectionSizeInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> BubblegumSetCollectionSizeCpi<'a> {
@@ -227,7 +239,13 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(5 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            5 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.collection_metadata.key,
             false,
@@ -255,9 +273,11 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = BubblegumSetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -410,7 +430,11 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
 
             collection_authority_record: self.instruction.collection_authority_record,
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

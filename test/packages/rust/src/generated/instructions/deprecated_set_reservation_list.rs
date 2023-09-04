@@ -18,7 +18,7 @@ pub struct DeprecatedSetReservationList {
     /// The resource you tied the reservation list too
     pub resource: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl DeprecatedSetReservationList {
@@ -27,7 +27,13 @@ impl DeprecatedSetReservationList {
         &self,
         args: DeprecatedSetReservationListInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.master_edition,
             false,
@@ -40,9 +46,11 @@ impl DeprecatedSetReservationList {
             self.resource,
             true,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = DeprecatedSetReservationListInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -151,7 +159,11 @@ impl DeprecatedSetReservationListBuilder {
             master_edition: self.master_edition.expect("master_edition is not set"),
             reservation_list: self.reservation_list.expect("reservation_list is not set"),
             resource: self.resource.expect("resource is not set"),
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
         let args = DeprecatedSetReservationListInstructionArgs {
             reservations: self.reservations.clone().expect("reservations is not set"),
@@ -180,7 +192,7 @@ pub struct DeprecatedSetReservationListCpi<'a> {
     /// The arguments for the instruction.
     pub __args: DeprecatedSetReservationListInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> DeprecatedSetReservationListCpi<'a> {
@@ -193,7 +205,13 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.master_edition.key,
             false,
@@ -206,9 +224,11 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
             *self.resource.key,
             true,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = DeprecatedSetReservationListInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -349,7 +369,11 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
 
             resource: self.instruction.resource.expect("resource is not set"),
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

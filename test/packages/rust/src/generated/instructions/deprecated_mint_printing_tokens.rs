@@ -26,7 +26,7 @@ pub struct DeprecatedMintPrintingTokens {
     /// Rent
     pub rent: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl DeprecatedMintPrintingTokens {
@@ -35,7 +35,13 @@ impl DeprecatedMintPrintingTokens {
         &self,
         args: DeprecatedMintPrintingTokensInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(7 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            7 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.destination,
             false,
@@ -63,9 +69,11 @@ impl DeprecatedMintPrintingTokens {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.rent, false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = DeprecatedMintPrintingTokensInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -191,7 +199,11 @@ impl DeprecatedMintPrintingTokensBuilder {
             rent: self.rent.unwrap_or(solana_program::pubkey!(
                 "SysvarRent111111111111111111111111111111111"
             )),
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
         let args = DeprecatedMintPrintingTokensInstructionArgs {
             mint_printing_tokens_via_token_args: self
@@ -225,7 +237,7 @@ pub struct DeprecatedMintPrintingTokensCpi<'a> {
     /// The arguments for the instruction.
     pub __args: DeprecatedMintPrintingTokensInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
@@ -238,7 +250,13 @@ impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(7 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            7 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.destination.key,
             false,
@@ -267,9 +285,11 @@ impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
             *self.rent.key,
             false,
         ));
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = DeprecatedMintPrintingTokensInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -446,7 +466,11 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
 
             rent: self.instruction.rent.expect("rent is not set"),
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }

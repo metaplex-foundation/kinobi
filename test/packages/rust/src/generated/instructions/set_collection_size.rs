@@ -20,7 +20,7 @@ pub struct SetCollectionSize {
     /// Collection Authority Record PDA
     pub collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccount>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl SetCollectionSize {
@@ -29,7 +29,13 @@ impl SetCollectionSize {
         &self,
         args: SetCollectionSizeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(4 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            4 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.collection_metadata,
             false,
@@ -53,9 +59,11 @@ impl SetCollectionSize {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = SetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -167,7 +175,11 @@ impl SetCollectionSizeBuilder {
                 .expect("collection_authority is not set"),
             collection_mint: self.collection_mint.expect("collection_mint is not set"),
             collection_authority_record: self.collection_authority_record,
-            __remaining_accounts: self.__remaining_accounts.clone(),
+            __remaining_accounts: if self.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.__remaining_accounts.clone())
+            },
         };
         let args = SetCollectionSizeInstructionArgs {
             set_collection_size_args: self
@@ -195,7 +207,7 @@ pub struct SetCollectionSizeCpi<'a> {
     /// The arguments for the instruction.
     pub __args: SetCollectionSizeInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> SetCollectionSizeCpi<'a> {
@@ -208,7 +220,13 @@ impl<'a> SetCollectionSizeCpi<'a> {
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(4 + self.__remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(
+            4 + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                remaining_accounts.len()
+            } else {
+                0
+            },
+        );
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.collection_metadata.key,
             false,
@@ -232,9 +250,11 @@ impl<'a> SetCollectionSizeCpi<'a> {
                 false,
             ));
         }
-        self.__remaining_accounts
-            .iter()
-            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts
+                .iter()
+                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
+        }
         let mut data = SetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -371,7 +391,11 @@ impl<'a> SetCollectionSizeCpiBuilder<'a> {
 
             collection_authority_record: self.instruction.collection_authority_record,
             __args: args,
-            __remaining_accounts: self.instruction.__remaining_accounts.clone(),
+            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
+                None
+            } else {
+                Some(self.instruction.__remaining_accounts.clone())
+            },
         }
     }
 }
