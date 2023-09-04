@@ -33,7 +33,7 @@ pub struct Initialize {
 
     pub system_program: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    pub __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl Initialize {
@@ -88,9 +88,7 @@ impl Initialize {
         ));
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -136,7 +134,7 @@ pub struct InitializeBuilder {
     token_metadata_program: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     data: Option<CandyMachineData>,
-    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl InitializeBuilder {
@@ -222,12 +220,13 @@ impl InitializeBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
-        &mut self,
-        account: solana_program::pubkey::Pubkey,
-        as_type: super::AccountType,
-    ) -> &mut Self {
-        self.__remaining_accounts.push((account, as_type));
+    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -296,10 +295,7 @@ pub struct InitializeCpi<'a> {
     /// The arguments for the instruction.
     pub __args: InitializeInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }
 
 impl<'a> InitializeCpi<'a> {
@@ -359,13 +355,7 @@ impl<'a> InitializeCpi<'a> {
         ));
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(
-                    remaining_account
-                        .1
-                        .to_account_meta(*remaining_account.0.key),
-                )
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -513,14 +503,18 @@ impl<'a> InitializeCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
+    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(
         &mut self,
-        account: &'a solana_program::account_info::AccountInfo<'a>,
-        as_type: super::AccountType,
+        accounts: &[super::RemainingAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
-            .push((account, as_type));
+            .extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -600,8 +594,5 @@ struct InitializeCpiBuilderInstruction<'a> {
     token_metadata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     data: Option<CandyMachineData>,
-    __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }

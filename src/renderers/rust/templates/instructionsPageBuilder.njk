@@ -13,7 +13,7 @@ pub struct {{ instruction.name | pascalCase }}Builder {
       {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
     {% endif %}
   {% endfor %}
-  __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+  __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl {{ instruction.name | pascalCase }}Builder {
@@ -46,8 +46,13 @@ impl {{ instruction.name | pascalCase }}Builder {
     {% endif %}
   {% endfor %}
   #[inline(always)]
-  pub fn remaining_account(&mut self, account: solana_program::pubkey::Pubkey, as_type: super::AccountType) -> &mut Self {
-    self.__remaining_accounts.push((account, as_type));
+  pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    self.__remaining_accounts.push(account);
+    self
+  }
+  #[inline(always)]
+  pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    self.__remaining_accounts.extend_from_slice(accounts);
     self
   }
   #[allow(clippy::clone_on_copy)]

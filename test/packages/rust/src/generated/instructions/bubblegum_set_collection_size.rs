@@ -22,7 +22,7 @@ pub struct BubblegumSetCollectionSize {
     /// Collection Authority Record PDA
     pub collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    pub __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl BubblegumSetCollectionSize {
@@ -61,9 +61,7 @@ impl BubblegumSetCollectionSize {
         }
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = BubblegumSetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -103,7 +101,7 @@ pub struct BubblegumSetCollectionSizeBuilder {
     bubblegum_signer: Option<solana_program::pubkey::Pubkey>,
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     set_collection_size_args: Option<SetCollectionSizeArgs>,
-    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl BubblegumSetCollectionSizeBuilder {
@@ -165,12 +163,13 @@ impl BubblegumSetCollectionSizeBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
-        &mut self,
-        account: solana_program::pubkey::Pubkey,
-        as_type: super::AccountType,
-    ) -> &mut Self {
-        self.__remaining_accounts.push((account, as_type));
+    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -215,10 +214,7 @@ pub struct BubblegumSetCollectionSizeCpi<'a> {
     /// The arguments for the instruction.
     pub __args: BubblegumSetCollectionSizeInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }
 
 impl<'a> BubblegumSetCollectionSizeCpi<'a> {
@@ -261,13 +257,7 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
         }
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(
-                    remaining_account
-                        .1
-                        .to_account_meta(*remaining_account.0.key),
-                )
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = BubblegumSetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -371,14 +361,18 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
+    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(
         &mut self,
-        account: &'a solana_program::account_info::AccountInfo<'a>,
-        as_type: super::AccountType,
+        accounts: &[super::RemainingAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
-            .push((account, as_type));
+            .extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -429,8 +423,5 @@ struct BubblegumSetCollectionSizeCpiBuilderInstruction<'a> {
     bubblegum_signer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     set_collection_size_args: Option<SetCollectionSizeArgs>,
-    __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }

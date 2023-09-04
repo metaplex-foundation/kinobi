@@ -30,7 +30,7 @@ pub struct CreateMasterEditionV3 {
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    pub __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl CreateMasterEditionV3 {
@@ -82,9 +82,7 @@ impl CreateMasterEditionV3 {
         }
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = CreateMasterEditionV3InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -128,7 +126,7 @@ pub struct CreateMasterEditionV3Builder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
-    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl CreateMasterEditionV3Builder {
@@ -202,12 +200,13 @@ impl CreateMasterEditionV3Builder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
-        &mut self,
-        account: solana_program::pubkey::Pubkey,
-        as_type: super::AccountType,
-    ) -> &mut Self {
-        self.__remaining_accounts.push((account, as_type));
+    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -264,10 +263,7 @@ pub struct CreateMasterEditionV3Cpi<'a> {
     /// The arguments for the instruction.
     pub __args: CreateMasterEditionV3InstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }
 
 impl<'a> CreateMasterEditionV3Cpi<'a> {
@@ -325,13 +321,7 @@ impl<'a> CreateMasterEditionV3Cpi<'a> {
         }
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(
-                    remaining_account
-                        .1
-                        .to_account_meta(*remaining_account.0.key),
-                )
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = CreateMasterEditionV3InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -470,14 +460,18 @@ impl<'a> CreateMasterEditionV3CpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
+    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(
         &mut self,
-        account: &'a solana_program::account_info::AccountInfo<'a>,
-        as_type: super::AccountType,
+        accounts: &[super::RemainingAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
-            .push((account, as_type));
+            .extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -540,8 +534,5 @@ struct CreateMasterEditionV3CpiBuilderInstruction<'a> {
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
-    __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }

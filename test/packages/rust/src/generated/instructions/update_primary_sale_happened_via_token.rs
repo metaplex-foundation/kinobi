@@ -17,7 +17,7 @@ pub struct UpdatePrimarySaleHappenedViaToken {
     /// Account containing tokens from the metadata's mint
     pub token: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    pub __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl UpdatePrimarySaleHappenedViaToken {
@@ -36,9 +36,7 @@ impl UpdatePrimarySaleHappenedViaToken {
         ));
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = UpdatePrimarySaleHappenedViaTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -68,7 +66,7 @@ pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
     token: Option<solana_program::pubkey::Pubkey>,
-    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl UpdatePrimarySaleHappenedViaTokenBuilder {
@@ -94,12 +92,13 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
-        &mut self,
-        account: solana_program::pubkey::Pubkey,
-        as_type: super::AccountType,
-    ) -> &mut Self {
-        self.__remaining_accounts.push((account, as_type));
+    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -126,10 +125,7 @@ pub struct UpdatePrimarySaleHappenedViaTokenCpi<'a> {
     /// Account containing tokens from the metadata's mint
     pub token: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }
 
 impl<'a> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
@@ -157,13 +153,7 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpi<'a> {
         ));
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(
-                    remaining_account
-                        .1
-                        .to_account_meta(*remaining_account.0.key),
-                )
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = UpdatePrimarySaleHappenedViaTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -225,14 +215,18 @@ impl<'a> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
+    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(
         &mut self,
-        account: &'a solana_program::account_info::AccountInfo<'a>,
-        as_type: super::AccountType,
+        accounts: &[super::RemainingAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
-            .push((account, as_type));
+            .extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -255,8 +249,5 @@ struct UpdatePrimarySaleHappenedViaTokenCpiBuilderInstruction<'a> {
     metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }

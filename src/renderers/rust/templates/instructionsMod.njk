@@ -10,34 +10,52 @@ pub mod {{ instruction.name | snakeCase }};
 pub use self::{{ instruction.name | snakeCase }}::*;
 {% endfor %}
 
-/// Enum representing the different types of remaining accounts.
-#[derive(Copy, Clone)]
-pub enum AccountType {
-    /// A `readonly` remaining account.
-    Readonly,
-    /// A `readonly` signer as a remaining account.
-    Signer,
-    /// A `writable` remaining account.
-    Writable,
-    /// A `writable` signer as a remaining account.
-    WritableSigner,
+#[derive(Clone, Copy)]
+pub enum RemainingAccount {
+    Address(solana_program::pubkey::Pubkey),
+    Signer(solana_program::pubkey::Pubkey),
+    WritableAddress(solana_program::pubkey::Pubkey),
+    WritableSigner(solana_program::pubkey::Pubkey),
 }
 
-impl AccountType {
-    fn to_account_meta(&self, pubkey: solana_program::pubkey::Pubkey) -> solana_program::instruction::AccountMeta {
-        match self {
-            AccountType::Readonly => {
-                solana_program::instruction::AccountMeta::new_readonly(pubkey, false)
-            }
-            AccountType::Signer => {
-                solana_program::instruction::AccountMeta::new_readonly(pubkey, true)
-            }
-            AccountType::Writable => {
-                solana_program::instruction::AccountMeta::new(pubkey, false)
-            }
-            AccountType::WritableSigner => {
-                solana_program::instruction::AccountMeta::new(pubkey, true)
-            }
+impl RemainingAccount {
+    pub fn to_account_meta(&self) -> solana_program::instruction::AccountMeta {
+        let (pubkey, writable, signer) = match self {
+            RemainingAccount::Address(pubkey) => (pubkey, false, false),
+            RemainingAccount::Signer(pubkey) => (pubkey, false, true),
+            RemainingAccount::WritableAddress(pubkey) => (pubkey, true, false),
+            RemainingAccount::WritableSigner(pubkey) => (pubkey, true, true),
+        };
+
+        if writable {
+            solana_program::instruction::AccountMeta::new(*pubkey, signer)
+        } else {
+            solana_program::instruction::AccountMeta::new_readonly(*pubkey, signer)
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub enum RemainingAccountInfo<'a> {
+    Address(&'a solana_program::account_info::AccountInfo<'a>),
+    Signer(&'a solana_program::account_info::AccountInfo<'a>),
+    WritableAddress(&'a solana_program::account_info::AccountInfo<'a>),
+    WritableSigner(&'a solana_program::account_info::AccountInfo<'a>),
+}
+
+impl<'a> RemainingAccountInfo<'a> {
+    pub fn to_account_meta(&self) -> solana_program::instruction::AccountMeta {
+        let (pubkey, writable, signer) = match self {
+            RemainingAccountInfo::Address(account_info) => (account_info.key, false, false),
+            RemainingAccountInfo::Signer(account_info) => (account_info.key, false, true),
+            RemainingAccountInfo::WritableAddress(account_info) => (account_info.key, true, false),
+            RemainingAccountInfo::WritableSigner(account_info) => (account_info.key, true, true),
+        };
+
+        if writable {
+            solana_program::instruction::AccountMeta::new(*pubkey, signer)
+        } else {
+            solana_program::instruction::AccountMeta::new_readonly(*pubkey, signer)
         }
     }
 }

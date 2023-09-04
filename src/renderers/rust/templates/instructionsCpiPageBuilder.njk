@@ -45,8 +45,13 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     {% endif %}
   {% endfor %}
   #[inline(always)]
-  pub fn remaining_account(&mut self, account: &'a solana_program::account_info::AccountInfo<'a>, as_type: super::AccountType) -> &mut Self {
-    self.instruction.__remaining_accounts.push((account, as_type));
+  pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    self.instruction.__remaining_accounts.push(account);
+    self
+  }
+  #[inline(always)]
+  pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccountInfo<'a>]) -> &mut Self {
+    self.instruction.__remaining_accounts.extend_from_slice(accounts);
     self
   }
   #[allow(clippy::clone_on_copy)]
@@ -96,5 +101,5 @@ struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a> {
       {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
     {% endif %}
   {% endfor %}
-  __remaining_accounts: Vec<(&'a solana_program::account_info::AccountInfo<'a>, super::AccountType)>,
+  __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }

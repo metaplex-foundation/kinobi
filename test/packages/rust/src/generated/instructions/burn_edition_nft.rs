@@ -31,7 +31,7 @@ pub struct BurnEditionNft {
     /// SPL Token Program
     pub spl_token_program: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    pub __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl BurnEditionNft {
@@ -79,9 +79,7 @@ impl BurnEditionNft {
         ));
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(remaining_account.1.to_account_meta(remaining_account.0))
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = BurnEditionNftInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -116,7 +114,7 @@ pub struct BurnEditionNftBuilder {
     print_edition_account: Option<solana_program::pubkey::Pubkey>,
     edition_marker_account: Option<solana_program::pubkey::Pubkey>,
     spl_token_program: Option<solana_program::pubkey::Pubkey>,
-    __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+    __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl BurnEditionNftBuilder {
@@ -208,12 +206,13 @@ impl BurnEditionNftBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
-        &mut self,
-        account: solana_program::pubkey::Pubkey,
-        as_type: super::AccountType,
-    ) -> &mut Self {
-        self.__remaining_accounts.push((account, as_type));
+    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -277,10 +276,7 @@ pub struct BurnEditionNftCpi<'a> {
     /// SPL Token Program
     pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }
 
 impl<'a> BurnEditionNftCpi<'a> {
@@ -336,13 +332,7 @@ impl<'a> BurnEditionNftCpi<'a> {
         ));
         self.__remaining_accounts
             .iter()
-            .for_each(|remaining_account| {
-                accounts.push(
-                    remaining_account
-                        .1
-                        .to_account_meta(*remaining_account.0.key),
-                )
-            });
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = BurnEditionNftInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -482,14 +472,18 @@ impl<'a> BurnEditionNftCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(
+    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn remaining_accounts(
         &mut self,
-        account: &'a solana_program::account_info::AccountInfo<'a>,
-        as_type: super::AccountType,
+        accounts: &[super::RemainingAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
-            .push((account, as_type));
+            .extend_from_slice(accounts);
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -557,8 +551,5 @@ struct BurnEditionNftCpiBuilderInstruction<'a> {
     print_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     edition_marker_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<(
-        &'a solana_program::account_info::AccountInfo<'a>,
-        super::AccountType,
-    )>,
+    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
 }

@@ -25,7 +25,7 @@ pub struct {{ instruction.name | pascalCase }} {
     {% endif %}
   {% endfor %}
   /// Additional instruction accounts.
-  pub __remaining_accounts: Vec<(solana_program::pubkey::Pubkey, super::AccountType)>,
+  pub __remaining_accounts: Vec<super::RemainingAccount>,
 }
 
 impl {{ instruction.name | pascalCase }} {
@@ -91,7 +91,7 @@ impl {{ instruction.name | pascalCase }} {
         {% endif %}
       {% endif %}
     {% endfor %}
-    self.__remaining_accounts.iter().for_each(|remaining_account| accounts.push(remaining_account.1.to_account_meta(remaining_account.0)));
+    self.__remaining_accounts.iter().for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
     let {{ 'mut ' if hasArgs }}data = {{ instruction.name | pascalCase }}InstructionData::new().try_to_vec().unwrap();
     {% if hasArgs %}
       let mut args = args.try_to_vec().unwrap();
