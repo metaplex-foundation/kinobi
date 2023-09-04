@@ -25,7 +25,7 @@ pub struct {{ instruction.name | pascalCase }} {
     {% endif %}
   {% endfor %}
   /// Additional instruction accounts.
-  pub __remaining_accounts: Vec<super::RemainingAccount>,
+  pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl {{ instruction.name | pascalCase }} {

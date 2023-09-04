@@ -43,7 +43,7 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
     /// Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
     pub reservation_list: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
@@ -163,7 +163,7 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     reservation_list: Option<solana_program::pubkey::Pubkey>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
@@ -280,12 +280,12 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -362,7 +362,7 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
     /// Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
     pub reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
@@ -657,14 +657,14 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -760,5 +760,5 @@ struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilderInstru
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

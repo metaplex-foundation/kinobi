@@ -30,7 +30,7 @@ pub struct CreateV2 {
     /// SPL Token program
     pub spl_token_program: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl CreateV2 {
@@ -132,7 +132,7 @@ pub struct CreateV2Builder {
     spl_token_program: Option<solana_program::pubkey::Pubkey>,
     asset_data: Option<AssetData>,
     max_supply: Option<u64>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl CreateV2Builder {
@@ -215,12 +215,12 @@ impl CreateV2Builder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -278,7 +278,7 @@ pub struct CreateV2Cpi<'a> {
     /// The arguments for the instruction.
     pub __args: CreateV2InstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> CreateV2Cpi<'a> {
@@ -485,14 +485,14 @@ impl<'a> CreateV2CpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -564,5 +564,5 @@ struct CreateV2CpiBuilderInstruction<'a> {
     spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     asset_data: Option<AssetData>,
     max_supply: Option<u64>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

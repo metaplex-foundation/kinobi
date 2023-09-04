@@ -17,7 +17,7 @@ pub struct CreateFrequencyRule {
     /// System program
     pub system_program: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl CreateFrequencyRule {
@@ -84,7 +84,7 @@ pub struct CreateFrequencyRuleBuilder {
     freq_rule_name: Option<String>,
     last_update: Option<i64>,
     period: Option<i64>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl CreateFrequencyRuleBuilder {
@@ -130,12 +130,12 @@ impl CreateFrequencyRuleBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -179,7 +179,7 @@ pub struct CreateFrequencyRuleCpi<'a> {
     /// The arguments for the instruction.
     pub __args: CreateFrequencyRuleInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> CreateFrequencyRuleCpi<'a> {
@@ -298,14 +298,14 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -362,5 +362,5 @@ struct CreateFrequencyRuleCpiBuilderInstruction<'a> {
     freq_rule_name: Option<String>,
     last_update: Option<i64>,
     period: Option<i64>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

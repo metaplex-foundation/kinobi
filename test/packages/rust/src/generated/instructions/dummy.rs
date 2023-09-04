@@ -26,7 +26,7 @@ pub struct Dummy {
 
     pub delegate_record: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl Dummy {
@@ -110,7 +110,7 @@ pub struct DummyBuilder {
     foo: Option<solana_program::pubkey::Pubkey>,
     bar: Option<solana_program::pubkey::Pubkey>,
     delegate_record: Option<solana_program::pubkey::Pubkey>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DummyBuilder {
@@ -166,12 +166,12 @@ impl DummyBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -214,7 +214,7 @@ pub struct DummyCpi<'a> {
 
     pub delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> DummyCpi<'a> {
@@ -381,14 +381,14 @@ impl<'a> DummyCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -439,5 +439,5 @@ struct DummyCpiBuilderInstruction<'a> {
     foo: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

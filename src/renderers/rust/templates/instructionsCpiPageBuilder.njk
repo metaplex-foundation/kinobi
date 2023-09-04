@@ -45,12 +45,12 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     {% endif %}
   {% endfor %}
   #[inline(always)]
-  pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+  pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
     self.instruction.__remaining_accounts.push(account);
     self
   }
   #[inline(always)]
-  pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccountInfo<'a>]) -> &mut Self {
+  pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccountInfo<'a>]) -> &mut Self {
     self.instruction.__remaining_accounts.extend_from_slice(accounts);
     self
   }
@@ -101,5 +101,5 @@ struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a> {
       {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
     {% endif %}
   {% endfor %}
-  __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+  __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

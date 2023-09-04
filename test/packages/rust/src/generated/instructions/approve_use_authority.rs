@@ -33,7 +33,7 @@ pub struct ApproveUseAuthority {
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl ApproveUseAuthority {
@@ -137,7 +137,7 @@ pub struct ApproveUseAuthorityBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     number_of_uses: Option<u64>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl ApproveUseAuthorityBuilder {
@@ -223,12 +223,12 @@ impl ApproveUseAuthorityBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -296,7 +296,7 @@ pub struct ApproveUseAuthorityCpi<'a> {
     /// The arguments for the instruction.
     pub __args: ApproveUseAuthorityInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> ApproveUseAuthorityCpi<'a> {
@@ -514,14 +514,14 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -594,5 +594,5 @@ struct ApproveUseAuthorityCpiBuilderInstruction<'a> {
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     number_of_uses: Option<u64>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

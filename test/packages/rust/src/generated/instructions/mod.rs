@@ -136,20 +136,20 @@ pub use self::verify_sized_collection_item::*;
 pub use self::withdraw::*;
 
 #[derive(Clone, Copy)]
-pub enum RemainingAccount {
-    Address(solana_program::pubkey::Pubkey),
-    Signer(solana_program::pubkey::Pubkey),
-    WritableAddress(solana_program::pubkey::Pubkey),
+pub enum InstructionAccount {
+    Readonly(solana_program::pubkey::Pubkey),
+    ReadonlySigner(solana_program::pubkey::Pubkey),
+    Writable(solana_program::pubkey::Pubkey),
     WritableSigner(solana_program::pubkey::Pubkey),
 }
 
-impl RemainingAccount {
+impl InstructionAccount {
     pub fn to_account_meta(&self) -> solana_program::instruction::AccountMeta {
         let (pubkey, writable, signer) = match self {
-            RemainingAccount::Address(pubkey) => (pubkey, false, false),
-            RemainingAccount::Signer(pubkey) => (pubkey, false, true),
-            RemainingAccount::WritableAddress(pubkey) => (pubkey, true, false),
-            RemainingAccount::WritableSigner(pubkey) => (pubkey, true, true),
+            InstructionAccount::Readonly(pubkey) => (pubkey, false, false),
+            InstructionAccount::ReadonlySigner(pubkey) => (pubkey, false, true),
+            InstructionAccount::Writable(pubkey) => (pubkey, true, false),
+            InstructionAccount::WritableSigner(pubkey) => (pubkey, true, true),
         };
 
         if writable {
@@ -161,20 +161,20 @@ impl RemainingAccount {
 }
 
 #[derive(Clone, Copy)]
-pub enum RemainingAccountInfo<'a> {
-    Address(&'a solana_program::account_info::AccountInfo<'a>),
-    Signer(&'a solana_program::account_info::AccountInfo<'a>),
-    WritableAddress(&'a solana_program::account_info::AccountInfo<'a>),
+pub enum InstructionAccountInfo<'a> {
+    Readonly(&'a solana_program::account_info::AccountInfo<'a>),
+    ReadonlySigner(&'a solana_program::account_info::AccountInfo<'a>),
+    Writable(&'a solana_program::account_info::AccountInfo<'a>),
     WritableSigner(&'a solana_program::account_info::AccountInfo<'a>),
 }
 
-impl<'a> RemainingAccountInfo<'a> {
+impl<'a> InstructionAccountInfo<'a> {
     pub fn to_account_meta(&self) -> solana_program::instruction::AccountMeta {
         let (pubkey, writable, signer) = match self {
-            RemainingAccountInfo::Address(account_info) => (account_info.key, false, false),
-            RemainingAccountInfo::Signer(account_info) => (account_info.key, false, true),
-            RemainingAccountInfo::WritableAddress(account_info) => (account_info.key, true, false),
-            RemainingAccountInfo::WritableSigner(account_info) => (account_info.key, true, true),
+            InstructionAccountInfo::Readonly(account_info) => (account_info.key, false, false),
+            InstructionAccountInfo::ReadonlySigner(account_info) => (account_info.key, false, true),
+            InstructionAccountInfo::Writable(account_info) => (account_info.key, true, false),
+            InstructionAccountInfo::WritableSigner(account_info) => (account_info.key, true, true),
         };
 
         if writable {

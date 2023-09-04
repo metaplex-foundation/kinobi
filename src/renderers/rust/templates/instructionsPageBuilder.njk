@@ -13,7 +13,7 @@ pub struct {{ instruction.name | pascalCase }}Builder {
       {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
     {% endif %}
   {% endfor %}
-  __remaining_accounts: Vec<super::RemainingAccount>,
+  __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl {{ instruction.name | pascalCase }}Builder {
@@ -46,12 +46,12 @@ impl {{ instruction.name | pascalCase }}Builder {
     {% endif %}
   {% endfor %}
   #[inline(always)]
-  pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+  pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
     self.__remaining_accounts.push(account);
     self
   }
   #[inline(always)]
-  pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+  pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
     self.__remaining_accounts.extend_from_slice(accounts);
     self
   }

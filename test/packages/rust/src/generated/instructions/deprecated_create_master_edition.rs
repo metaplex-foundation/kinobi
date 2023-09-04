@@ -38,7 +38,7 @@ pub struct DeprecatedCreateMasterEdition {
     /// One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY.
     pub one_time_printing_authorization_mint_authority: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedCreateMasterEdition {
@@ -147,7 +147,7 @@ pub struct DeprecatedCreateMasterEditionBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     one_time_printing_authorization_mint_authority: Option<solana_program::pubkey::Pubkey>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedCreateMasterEditionBuilder {
@@ -254,12 +254,12 @@ impl DeprecatedCreateMasterEditionBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -338,7 +338,7 @@ pub struct DeprecatedCreateMasterEditionCpi<'a> {
     /// The arguments for the instruction.
     pub __args: DeprecatedCreateMasterEditionInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
@@ -589,14 +589,14 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -688,5 +688,5 @@ struct DeprecatedCreateMasterEditionCpiBuilderInstruction<'a> {
     one_time_printing_authorization_mint_authority:
         Option<&'a solana_program::account_info::AccountInfo<'a>>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

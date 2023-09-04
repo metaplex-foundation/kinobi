@@ -18,7 +18,7 @@ pub struct DeprecatedSetReservationList {
     /// The resource you tied the reservation list too
     pub resource: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedSetReservationList {
@@ -86,7 +86,7 @@ pub struct DeprecatedSetReservationListBuilder {
     total_reservation_spots: Option<u64>,
     offset: Option<u64>,
     total_spot_offset: Option<u64>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedSetReservationListBuilder {
@@ -136,12 +136,12 @@ impl DeprecatedSetReservationListBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -180,7 +180,7 @@ pub struct DeprecatedSetReservationListCpi<'a> {
     /// The arguments for the instruction.
     pub __args: DeprecatedSetReservationListInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> DeprecatedSetReservationListCpi<'a> {
@@ -303,14 +303,14 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -363,5 +363,5 @@ struct DeprecatedSetReservationListCpiBuilderInstruction<'a> {
     total_reservation_spots: Option<u64>,
     offset: Option<u64>,
     total_spot_offset: Option<u64>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

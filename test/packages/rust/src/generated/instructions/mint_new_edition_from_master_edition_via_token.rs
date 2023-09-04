@@ -40,7 +40,7 @@ pub struct MintNewEditionFromMasterEditionViaToken {
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl MintNewEditionFromMasterEditionViaToken {
@@ -164,7 +164,7 @@ pub struct MintNewEditionFromMasterEditionViaTokenBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     mint_new_edition_from_master_edition_via_token_args:
         Option<MintNewEditionFromMasterEditionViaTokenArgs>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl MintNewEditionFromMasterEditionViaTokenBuilder {
@@ -278,12 +278,12 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -362,7 +362,7 @@ pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a> {
     /// The arguments for the instruction.
     pub __args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
@@ -641,14 +641,14 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -749,5 +749,5 @@ struct MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a> {
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint_new_edition_from_master_edition_via_token_args:
         Option<MintNewEditionFromMasterEditionViaTokenArgs>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

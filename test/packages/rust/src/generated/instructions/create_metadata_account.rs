@@ -26,7 +26,7 @@ pub struct CreateMetadataAccount {
     /// Rent info
     pub rent: solana_program::pubkey::Pubkey,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccount>,
+    pub __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl CreateMetadataAccount {
@@ -118,7 +118,7 @@ pub struct CreateMetadataAccountBuilder {
     data: Option<CreateMetadataAccountInstructionDataData>,
     is_mutable: Option<bool>,
     metadata_bump: Option<u8>,
-    __remaining_accounts: Vec<super::RemainingAccount>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl CreateMetadataAccountBuilder {
@@ -186,12 +186,12 @@ impl CreateMetadataAccountBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccount) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::RemainingAccount]) -> &mut Self {
+    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -245,7 +245,7 @@ pub struct CreateMetadataAccountCpi<'a> {
     /// The arguments for the instruction.
     pub __args: CreateMetadataAccountInstructionArgs,
     /// Additional instruction accounts.
-    pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> CreateMetadataAccountCpi<'a> {
@@ -412,14 +412,14 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::RemainingAccountInfo<'a>) -> &mut Self {
+    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
     pub fn remaining_accounts(
         &mut self,
-        accounts: &[super::RemainingAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -485,5 +485,5 @@ struct CreateMetadataAccountCpiBuilderInstruction<'a> {
     data: Option<CreateMetadataAccountInstructionDataData>,
     is_mutable: Option<bool>,
     metadata_bump: Option<u8>,
-    __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

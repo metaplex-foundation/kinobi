@@ -24,7 +24,7 @@ pub struct {{ instruction.name | pascalCase }}Cpi<'a> {
     pub __args: {{ instruction.name | pascalCase }}InstructionArgs,
   {% endif %}
   /// Additional instruction accounts.
-  pub __remaining_accounts: Vec<super::RemainingAccountInfo<'a>>,
+  pub __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
 
 impl<'a> {{ instruction.name | pascalCase }}Cpi<'a> {
