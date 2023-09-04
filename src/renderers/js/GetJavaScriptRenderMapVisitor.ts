@@ -5,7 +5,6 @@ import {
   camelCase,
   getGpaFieldsFromAccount,
   ImportFrom,
-  InstructionDefault,
   pascalCase,
 } from '../../shared';
 import { logWarn } from '../../shared/logs';
@@ -24,7 +23,9 @@ import {
   GetJavaScriptTypeManifestVisitor,
   JavaScriptTypeManifest,
 } from './GetJavaScriptTypeManifestVisitor';
+import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
+import { renderJavaScriptInstructionDefaults } from './RenderJavaScriptInstructionDefaults';
 import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
@@ -324,14 +325,15 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
-    // Imports.
-    const imports = new JavaScriptImportMap().add('umi', [
-      'AccountMeta',
-      'Context',
-      'Signer',
-      'TransactionBuilder',
-      'transactionBuilder',
-    ]);
+    // Imports and interfaces.
+    const interfaces = new JavaScriptContextMap().add('programs');
+    const imports = new JavaScriptImportMap()
+      .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
+      .add('shared', [
+        'ResolvedAccount',
+        'ResolvedAccountsWithIndices',
+        'getAccountMetasAndSigners',
+      ]);
 
     // Instruction helpers.
     const hasAccounts = instruction.accounts.length > 0;
@@ -365,38 +367,27 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       hasAccountResolvers ||
       hasByteResolver ||
       hasRemainingAccountsResolver;
+    const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
+    if (hasResolvers) {
+      interfaces.add(['eddsa', 'identity', 'payer']);
+    }
 
     // Resolved inputs.
     const resolvedInputs = visit(
       instruction,
       this.resolvedInstructionInputVisitor
     ).map((input: ResolvedInstructionInput) => {
-      if (input.defaultsTo?.kind === 'pda') {
-        const { seeds } = input.defaultsTo;
-        Object.keys(seeds).forEach((seed: string) => {
-          const seedValue = seeds[seed];
-          if (seedValue.kind !== 'value') return;
-          const valueManifest = renderJavaScriptValueNode(seedValue.value);
-          (seedValue as any).render = valueManifest.render;
-          imports.mergeWith(valueManifest.imports);
-        });
-      } else if (input.defaultsTo?.kind === 'value') {
-        const { defaultsTo } = input;
-        const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
-        (defaultsTo as any).render = valueManifest.render;
-        imports.mergeWith(valueManifest.imports);
-      }
-      return input;
+      const renderedInput = renderJavaScriptInstructionDefaults(
+        input,
+        instruction.optionalAccountStrategy
+      );
+      imports.mergeWith(renderedInput.imports);
+      interfaces.mergeWith(renderedInput.interfaces);
+      return { ...input, render: renderedInput.render };
     });
     const resolvedInputsWithDefaults = resolvedInputs.filter(
-      (input) => input.kind !== 'account' || input.defaultsTo !== undefined
+      (input) => input.defaultsTo !== undefined && input.render !== ''
     );
-    if (resolvedInputsWithDefaults.length > 0) {
-      imports.add('shared', 'addObjectProperty');
-    }
-    const accountsWithDefaults = resolvedInputsWithDefaults
-      .filter((input) => input.kind === 'account')
-      .map((input) => input.name);
     const argsWithDefaults = resolvedInputsWithDefaults
       .filter((input) => input.kind === 'arg')
       .map((input) => input.name);
@@ -415,9 +406,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       };
     });
     imports.mergeWith(this.getInstructionAccountImports(accounts));
-    if (accounts.length > 0) {
-      imports.add('shared', 'addAccountMeta');
-    }
 
     // Data Args.
     const linkedDataArgs = !!instruction.dataArgs.link;
@@ -499,25 +487,17 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
     }
 
-    const hasDefaultKinds = (kinds: Array<InstructionDefault['kind']>) =>
-      resolvedInputs.some(
-        (input) => input.defaultsTo && kinds.includes(input.defaultsTo.kind)
-      );
-
     return new RenderMap().add(
       `instructions/${camelCase(instruction.name)}.ts`,
       this.render('instructionsPage.njk', {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
+        interfaces: interfaces.toString(),
         program: this.program,
         resolvedInputs,
         resolvedInputsWithDefaults,
-        accountsWithDefaults,
         argsWithDefaults,
         accounts,
-        needsEddsa: hasDefaultKinds(['pda']) || hasResolvers,
-        needsIdentity: hasDefaultKinds(['identity']) || hasResolvers,
-        needsPayer: hasDefaultKinds(['payer']) || hasResolvers,
         dataArgManifest,
         extraArgManifest,
         canMergeAccountsAndArgs,
@@ -532,6 +512,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         hasByteResolver,
         hasRemainingAccountsResolver,
         hasResolvers,
+        hasResolvedArgs,
       })
     );
   }
@@ -593,27 +574,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports.add('umi', 'PublicKey');
       if (account.isSigner !== true) imports.add('umi', 'Pda');
       if (account.isSigner !== false) imports.add('umi', 'Signer');
-
-      if (account.defaultsTo?.kind === 'publicKey') {
-        imports.add('umi', 'publicKey');
-      } else if (account.defaultsTo?.kind === 'pda') {
-        const pdaAccount = pascalCase(account.defaultsTo.pdaAccount);
-        const importFrom =
-          account.defaultsTo.importFrom === 'generated'
-            ? 'generatedAccounts'
-            : account.defaultsTo.importFrom;
-        imports.add(importFrom, `find${pdaAccount}Pda`);
-        Object.values(account.defaultsTo.seeds).forEach((seed) => {
-          if (seed.kind === 'account') {
-            imports.add('umi', 'publicKey');
-          }
-        });
-      } else if (account.defaultsTo?.kind === 'resolver') {
-        imports.add(
-          account.defaultsTo.importFrom,
-          camelCase(account.defaultsTo.name)
-        );
-      }
     });
     return imports;
   }

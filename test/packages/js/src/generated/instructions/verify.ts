@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -21,7 +20,11 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import { VerifyArgs, VerifyArgsArgs, getVerifyArgsSerializer } from '../types';
 
 // Accounts.
@@ -46,17 +49,10 @@ export type VerifyInstructionData = {
 
 export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
-/** @deprecated Use `getVerifyInstructionDataSerializer()` without any argument instead. */
-export function getVerifyInstructionDataSerializer(
-  _context: object
-): Serializer<VerifyInstructionDataArgs, VerifyInstructionData>;
 export function getVerifyInstructionDataSerializer(): Serializer<
   VerifyInstructionDataArgs,
   VerifyInstructionData
->;
-export function getVerifyInstructionDataSerializer(
-  _context: object = {}
-): Serializer<VerifyInstructionDataArgs, VerifyInstructionData> {
+> {
   return mapSerializer<VerifyInstructionDataArgs, any, VerifyInstructionData>(
     struct<VerifyInstructionData>(
       [
@@ -74,60 +70,60 @@ export type VerifyInstructionArgs = VerifyInstructionDataArgs;
 
 // Instruction.
 export function verify(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: VerifyInstructionAccounts & VerifyInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    metadata: [input.metadata, true] as const,
-    collectionAuthority: [input.collectionAuthority, true] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
+    collectionAuthority: {
+      index: 1,
+      isWritable: true,
+      value: input.collectionAuthority ?? null,
+    },
+    payer: { index: 2, isWritable: true, value: input.payer ?? null },
+    authorizationRules: {
+      index: 3,
+      isWritable: false,
+      value: input.authorizationRules ?? null,
+    },
+    authorizationRulesProgram: {
+      index: 4,
+      isWritable: false,
+      value: input.authorizationRulesProgram ?? null,
+    },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    input.payer
-      ? ([input.payer, true] as const)
-      : ([context.payer, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'authorizationRules',
-    input.authorizationRules
-      ? ([input.authorizationRules, false] as const)
-      : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'authorizationRulesProgram',
-    input.authorizationRulesProgram
-      ? ([input.authorizationRulesProgram, false] as const)
-      : ([programId, false] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.collectionAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.authorizationRules, false);
-  addAccountMeta(
-    keys,
-    signers,
-    resolvedAccounts.authorizationRulesProgram,
-    false
+  // Arguments.
+  const resolvedArgs: VerifyInstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
   );
 
   // Data.
-  const data = getVerifyInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getVerifyInstructionDataSerializer().serialize(
+    resolvedArgs as VerifyInstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

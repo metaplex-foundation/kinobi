@@ -25,14 +25,7 @@ export type CmCreator = {
 
 export type CmCreatorArgs = CmCreator;
 
-/** @deprecated Use `getCmCreatorSerializer()` without any argument instead. */
-export function getCmCreatorSerializer(
-  _context: object
-): Serializer<CmCreatorArgs, CmCreator>;
-export function getCmCreatorSerializer(): Serializer<CmCreatorArgs, CmCreator>;
-export function getCmCreatorSerializer(
-  _context: object = {}
-): Serializer<CmCreatorArgs, CmCreator> {
+export function getCmCreatorSerializer(): Serializer<CmCreatorArgs, CmCreator> {
   return struct<CmCreator>(
     [
       ['address', publicKeySerializer()],

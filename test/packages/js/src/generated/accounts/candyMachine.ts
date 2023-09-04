@@ -68,17 +68,10 @@ export type CandyMachineAccountDataArgs = {
   data: CandyMachineDataArgs;
 };
 
-/** @deprecated Use `getCandyMachineAccountDataSerializer()` without any argument instead. */
-export function getCandyMachineAccountDataSerializer(
-  _context: object
-): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
 export function getCandyMachineAccountDataSerializer(): Serializer<
   CandyMachineAccountDataArgs,
   CandyMachineAccountData
->;
-export function getCandyMachineAccountDataSerializer(
-  _context: object = {}
-): Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData> {
+> {
   return mapSerializer<
     CandyMachineAccountDataArgs,
     any,
@@ -103,20 +96,8 @@ export function getCandyMachineAccountDataSerializer(
   ) as Serializer<CandyMachineAccountDataArgs, CandyMachineAccountData>;
 }
 
-/** @deprecated Use `deserializeCandyMachine(rawAccount)` without any context instead. */
-export function deserializeCandyMachine(
-  context: object,
-  rawAccount: RpcAccount
-): CandyMachine;
-export function deserializeCandyMachine(rawAccount: RpcAccount): CandyMachine;
-export function deserializeCandyMachine(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
-): CandyMachine {
-  return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
-    getCandyMachineAccountDataSerializer()
-  );
+export function deserializeCandyMachine(rawAccount: RpcAccount): CandyMachine {
+  return deserializeAccount(rawAccount, getCandyMachineAccountDataSerializer());
 }
 
 export async function fetchCandyMachine(

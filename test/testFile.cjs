@@ -105,14 +105,30 @@ kinobi.update(
         bar: {
           defaultsTo: k.programIdDefault(),
           isOptional: true,
-          isOptionalStrategy: 'programId',
         },
         delegateRecord: {
-          defaultsTo: k.pdaDefault('delegateRecord', {
-            seeds: {
-              role: k.valueDefault(k.vEnum('delegateRole', 'Collection')),
-            },
+          defaultsTo: k.conditionalDefault('account', 'delegate', {
+            ifTrue: k.pdaDefault('delegateRecord', {
+              seeds: {
+                role: k.valueDefault(k.vEnum('delegateRole', 'Collection')),
+              },
+            }),
           }),
+        },
+        tokenOrAtaProgram: {
+          defaultsTo: k.conditionalResolverDefault(
+            k.resolverDefault('resolveTokenOrAta', [k.dependsOnArg('proof')]),
+            {
+              ifTrue: k.programDefault(
+                'splToken',
+                'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+              ),
+              ifFalse: k.programDefault(
+                'splAssociatedToken',
+                'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+              ),
+            }
+          ),
         },
       },
       args: {

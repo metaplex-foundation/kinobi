@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -22,7 +21,11 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 
 // Accounts.
 export type SetMintAuthorityInstructionAccounts = {
@@ -36,20 +39,7 @@ export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
 
 export type SetMintAuthorityInstructionDataArgs = {};
 
-/** @deprecated Use `getSetMintAuthorityInstructionDataSerializer()` without any argument instead. */
-export function getSetMintAuthorityInstructionDataSerializer(
-  _context: object
-): Serializer<
-  SetMintAuthorityInstructionDataArgs,
-  SetMintAuthorityInstructionData
->;
 export function getSetMintAuthorityInstructionDataSerializer(): Serializer<
-  SetMintAuthorityInstructionDataArgs,
-  SetMintAuthorityInstructionData
->;
-export function getSetMintAuthorityInstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   SetMintAuthorityInstructionDataArgs,
   SetMintAuthorityInstructionData
 > {
@@ -74,34 +64,46 @@ export function getSetMintAuthorityInstructionDataSerializer(
 
 // Instruction.
 export function setMintAuthority(
-  context: Pick<Context, 'programs' | 'identity'>,
+  context: Pick<Context, 'identity' | 'programs'>,
   input: SetMintAuthorityInstructionAccounts
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplCandyMachineCore',
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    candyMachine: [input.candyMachine, true] as const,
-    mintAuthority: [input.mintAuthority, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    candyMachine: {
+      index: 0,
+      isWritable: true,
+      value: input.candyMachine ?? null,
+    },
+    authority: { index: 1, isWritable: false, value: input.authority ?? null },
+    mintAuthority: {
+      index: 2,
+      isWritable: false,
+      value: input.mintAuthority ?? null,
+    },
   };
-  addObjectProperty(
-    resolvedAccounts,
-    'authority',
-    input.authority
-      ? ([input.authority, false] as const)
-      : ([context.identity, false] as const)
-  );
 
-  addAccountMeta(keys, signers, resolvedAccounts.candyMachine, false);
-  addAccountMeta(keys, signers, resolvedAccounts.authority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
+  // Default values.
+  if (!resolvedAccounts.authority.value) {
+    resolvedAccounts.authority.value = context.identity;
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
   const data = getSetMintAuthorityInstructionDataSerializer().serialize({});

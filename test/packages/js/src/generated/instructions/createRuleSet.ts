@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -21,7 +20,13 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
+import {
+  PickPartial,
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  expectPda,
+  getAccountMetasAndSigners,
+} from '../shared';
 import {
   TaCreateArgs,
   TaCreateArgsArgs,
@@ -50,17 +55,10 @@ export type CreateRuleSetInstructionDataArgs = {
   ruleSetBump: number;
 };
 
-/** @deprecated Use `getCreateRuleSetInstructionDataSerializer()` without any argument instead. */
-export function getCreateRuleSetInstructionDataSerializer(
-  _context: object
-): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData>;
 export function getCreateRuleSetInstructionDataSerializer(): Serializer<
   CreateRuleSetInstructionDataArgs,
   CreateRuleSetInstructionData
->;
-export function getCreateRuleSetInstructionDataSerializer(
-  _context: object = {}
-): Serializer<CreateRuleSetInstructionDataArgs, CreateRuleSetInstructionData> {
+> {
   return mapSerializer<
     CreateRuleSetInstructionDataArgs,
     any,
@@ -89,57 +87,60 @@ export type CreateRuleSetInstructionArgs = PickPartial<
 
 // Instruction.
 export function createRuleSet(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateRuleSetInstructionAccounts & CreateRuleSetInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenAuthRules',
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    ruleSetPda: [input.ruleSetPda, true] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    payer: { index: 0, isWritable: true, value: input.payer ?? null },
+    ruleSetPda: { index: 1, isWritable: true, value: input.ruleSetPda ?? null },
+    systemProgram: {
+      index: 2,
+      isWritable: false,
+      value: input.systemProgram ?? null,
+    },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    input.payer
-      ? ([input.payer, true] as const)
-      : ([context.payer, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    input.systemProgram
-      ? ([input.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvingArgs,
-    'ruleSetBump',
-    input.ruleSetBump ?? input.ruleSetPda[1]
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.ruleSetPda, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
+  // Arguments.
+  const resolvedArgs: CreateRuleSetInstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+  if (!resolvedArgs.ruleSetBump) {
+    resolvedArgs.ruleSetBump = expectPda(resolvedAccounts.ruleSetPda.value)[1];
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
-  const data =
-    getCreateRuleSetInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getCreateRuleSetInstructionDataSerializer().serialize(
+    resolvedArgs as CreateRuleSetInstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

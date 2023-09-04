@@ -25,17 +25,10 @@ export type HiddenSettings = {
 
 export type HiddenSettingsArgs = HiddenSettings;
 
-/** @deprecated Use `getHiddenSettingsSerializer()` without any argument instead. */
-export function getHiddenSettingsSerializer(
-  _context: object
-): Serializer<HiddenSettingsArgs, HiddenSettings>;
 export function getHiddenSettingsSerializer(): Serializer<
   HiddenSettingsArgs,
   HiddenSettings
->;
-export function getHiddenSettingsSerializer(
-  _context: object = {}
-): Serializer<HiddenSettingsArgs, HiddenSettings> {
+> {
   return struct<HiddenSettings>(
     [
       ['name', string()],

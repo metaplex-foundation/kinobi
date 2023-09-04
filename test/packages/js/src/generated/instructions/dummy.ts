@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -22,8 +21,15 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
+import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../accounts';
-import { PickPartial, addAccountMeta, addObjectProperty } from '../shared';
+import {
+  PickPartial,
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  expectSome,
+  getAccountMetasAndSigners,
+} from '../shared';
 import { DelegateRole } from '../types';
 
 // Accounts.
@@ -35,7 +41,9 @@ export type DummyInstructionAccounts = {
   payer?: Signer;
   foo?: PublicKey | Pda;
   bar?: Signer;
+  delegate?: Signer;
   delegateRecord?: PublicKey | Pda;
+  tokenOrAtaProgram?: PublicKey | Pda;
 };
 
 // Data.
@@ -43,17 +51,10 @@ export type DummyInstructionData = { discriminator: Array<number> };
 
 export type DummyInstructionDataArgs = {};
 
-/** @deprecated Use `getDummyInstructionDataSerializer()` without any argument instead. */
-export function getDummyInstructionDataSerializer(
-  _context: object
-): Serializer<DummyInstructionDataArgs, DummyInstructionData>;
 export function getDummyInstructionDataSerializer(): Serializer<
   DummyInstructionDataArgs,
   DummyInstructionData
->;
-export function getDummyInstructionDataSerializer(
-  _context: object = {}
-): Serializer<DummyInstructionDataArgs, DummyInstructionData> {
+> {
   return mapSerializer<DummyInstructionDataArgs, any, DummyInstructionData>(
     struct<DummyInstructionData>(
       [['discriminator', array(u8(), { size: 8 })]],
@@ -75,99 +76,123 @@ export type DummyInstructionExtraArgs = {
 // Args.
 export type DummyInstructionArgs = PickPartial<
   DummyInstructionExtraArgs,
-  'identityArg' | 'proof'
+  'proof' | 'identityArg'
 >;
 
 // Instruction.
 export function dummy(
-  context: Pick<Context, 'programs' | 'eddsa' | 'identity' | 'payer'>,
+  context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,
   input: DummyInstructionAccounts & DummyInstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplCandyMachineCore',
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    updateAuthority: [input.updateAuthority, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    edition: { index: 0, isWritable: true, value: input.edition ?? null },
+    mint: { index: 1, isWritable: true, value: input.mint ?? null },
+    updateAuthority: {
+      index: 2,
+      isWritable: false,
+      value: input.updateAuthority ?? null,
+    },
+    mintAuthority: {
+      index: 3,
+      isWritable: true,
+      value: input.mintAuthority ?? null,
+    },
+    payer: { index: 4, isWritable: true, value: input.payer ?? null },
+    foo: { index: 5, isWritable: true, value: input.foo ?? null },
+    bar: { index: 6, isWritable: false, value: input.bar ?? null },
+    delegate: { index: 7, isWritable: false, value: input.delegate ?? null },
+    delegateRecord: {
+      index: 8,
+      isWritable: true,
+      value: input.delegateRecord ?? null,
+    },
+    tokenOrAtaProgram: {
+      index: 9,
+      isWritable: false,
+      value: input.tokenOrAtaProgram ?? null,
+    },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'mint',
-    input.mint ? ([input.mint, true] as const) : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'edition',
-    input.edition
-      ? ([input.edition, true] as const)
-      : ([resolvedAccounts.mint[0], true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'mintAuthority',
-    input.mintAuthority
-      ? ([input.mintAuthority, true] as const)
-      : ([input.updateAuthority, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    input.payer
-      ? ([input.payer, true] as const)
-      : ([context.payer, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'bar',
-    input.bar ? ([input.bar, false] as const) : ([programId, false] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'foo',
-    input.foo
-      ? ([input.foo, true] as const)
-      : ([resolvedAccounts.bar[0], true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'delegateRecord',
-    input.delegateRecord
-      ? ([input.delegateRecord, true] as const)
-      : ([
-          findDelegateRecordPda(context, { role: DelegateRole.Collection }),
-          true,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvingArgs,
-    'identityArg',
-    input.identityArg ?? context.identity.publicKey
-  );
-  addObjectProperty(resolvingArgs, 'proof', input.proof ?? []);
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.edition, true);
-  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.foo, true);
-  addAccountMeta(keys, signers, resolvedAccounts.bar, false);
-  addAccountMeta(keys, signers, resolvedAccounts.delegateRecord, false);
+  // Arguments.
+  const resolvedArgs: DummyInstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.edition.value) {
+    resolvedAccounts.edition.value = expectSome(resolvedAccounts.mint.value);
+  }
+  if (!resolvedAccounts.mintAuthority.value) {
+    resolvedAccounts.mintAuthority.value = expectSome(
+      resolvedAccounts.updateAuthority.value
+    );
+  }
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+  if (!resolvedAccounts.foo.value) {
+    resolvedAccounts.foo.value = expectSome(resolvedAccounts.bar.value);
+  }
+  if (!resolvedAccounts.delegateRecord.value) {
+    if (resolvedAccounts.delegate.value) {
+      resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
+        role: DelegateRole.Collection,
+      });
+    }
+  }
+  if (!resolvedArgs.proof) {
+    resolvedArgs.proof = [];
+  }
+  if (!resolvedAccounts.tokenOrAtaProgram.value) {
+    if (
+      resolveTokenOrAta(
+        context,
+        resolvedAccounts,
+        resolvedArgs,
+        programId,
+        false
+      )
+    ) {
+      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splToken',
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      );
+      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+    } else {
+      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splAssociatedToken',
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+      );
+      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+    }
+  }
+  if (!resolvedArgs.identityArg) {
+    resolvedArgs.identityArg = context.identity.publicKey;
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
 
   // Remaining Accounts.
-  const remainingAccounts = resolvedArgs.proof.map(
-    (address) => [address, false] as const
-  );
-  remainingAccounts.forEach((remainingAccount) =>
-    addAccountMeta(keys, signers, remainingAccount, false)
+  const remainingAccounts = resolvedArgs.proof.map((value, index) => ({
+    index,
+    value,
+    isWritable: false,
+  }));
+  orderedAccounts.push(...remainingAccounts);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
   );
 
   // Data.

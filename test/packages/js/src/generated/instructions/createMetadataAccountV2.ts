@@ -7,7 +7,6 @@
  */
 
 import {
-  AccountMeta,
   Context,
   Pda,
   PublicKey,
@@ -22,7 +21,11 @@ import {
   struct,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { addAccountMeta, addObjectProperty } from '../shared';
+import {
+  ResolvedAccount,
+  ResolvedAccountsWithIndices,
+  getAccountMetasAndSigners,
+} from '../shared';
 import { DataV2, DataV2Args, getDataV2Serializer } from '../types';
 
 // Accounts.
@@ -55,20 +58,7 @@ export type CreateMetadataAccountV2InstructionDataArgs = {
   isMutable: boolean;
 };
 
-/** @deprecated Use `getCreateMetadataAccountV2InstructionDataSerializer()` without any argument instead. */
-export function getCreateMetadataAccountV2InstructionDataSerializer(
-  _context: object
-): Serializer<
-  CreateMetadataAccountV2InstructionDataArgs,
-  CreateMetadataAccountV2InstructionData
->;
 export function getCreateMetadataAccountV2InstructionDataSerializer(): Serializer<
-  CreateMetadataAccountV2InstructionDataArgs,
-  CreateMetadataAccountV2InstructionData
->;
-export function getCreateMetadataAccountV2InstructionDataSerializer(
-  _context: object = {}
-): Serializer<
   CreateMetadataAccountV2InstructionDataArgs,
   CreateMetadataAccountV2InstructionData
 > {
@@ -98,67 +88,70 @@ export type CreateMetadataAccountV2InstructionArgs =
 
 // Instruction.
 export function createMetadataAccountV2(
-  context: Pick<Context, 'programs' | 'payer'>,
+  context: Pick<Context, 'payer' | 'programs'>,
   input: CreateMetadataAccountV2InstructionAccounts &
     CreateMetadataAccountV2InstructionArgs
 ): TransactionBuilder {
-  const signers: Signer[] = [];
-  const keys: AccountMeta[] = [];
-
   // Program ID.
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
 
-  // Resolved inputs.
-  const resolvedAccounts = {
-    metadata: [input.metadata, true] as const,
-    mint: [input.mint, false] as const,
-    mintAuthority: [input.mintAuthority, false] as const,
-    updateAuthority: [input.updateAuthority, false] as const,
+  // Accounts.
+  const resolvedAccounts: ResolvedAccountsWithIndices = {
+    metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
+    mint: { index: 1, isWritable: false, value: input.mint ?? null },
+    mintAuthority: {
+      index: 2,
+      isWritable: false,
+      value: input.mintAuthority ?? null,
+    },
+    payer: { index: 3, isWritable: true, value: input.payer ?? null },
+    updateAuthority: {
+      index: 4,
+      isWritable: false,
+      value: input.updateAuthority ?? null,
+    },
+    systemProgram: {
+      index: 5,
+      isWritable: false,
+      value: input.systemProgram ?? null,
+    },
+    rent: { index: 6, isWritable: false, value: input.rent ?? null },
   };
-  const resolvingArgs = {};
-  addObjectProperty(
-    resolvedAccounts,
-    'payer',
-    input.payer
-      ? ([input.payer, true] as const)
-      : ([context.payer, true] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'systemProgram',
-    input.systemProgram
-      ? ([input.systemProgram, false] as const)
-      : ([
-          context.programs.getPublicKey(
-            'splSystem',
-            '11111111111111111111111111111111'
-          ),
-          false,
-        ] as const)
-  );
-  addObjectProperty(
-    resolvedAccounts,
-    'rent',
-    input.rent ? ([input.rent, false] as const) : ([programId, false] as const)
-  );
-  const resolvedArgs = { ...input, ...resolvingArgs };
 
-  addAccountMeta(keys, signers, resolvedAccounts.metadata, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mint, false);
-  addAccountMeta(keys, signers, resolvedAccounts.mintAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.payer, false);
-  addAccountMeta(keys, signers, resolvedAccounts.updateAuthority, false);
-  addAccountMeta(keys, signers, resolvedAccounts.systemProgram, false);
-  addAccountMeta(keys, signers, resolvedAccounts.rent, false);
+  // Arguments.
+  const resolvedArgs: CreateMetadataAccountV2InstructionArgs = { ...input };
+
+  // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
+  if (!resolvedAccounts.systemProgram.value) {
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    resolvedAccounts.systemProgram.isWritable = false;
+  }
+
+  // Accounts in order.
+  const orderedAccounts: ResolvedAccount[] = Object.values(
+    resolvedAccounts
+  ).sort((a, b) => a.index - b.index);
+
+  // Keys and Signers.
+  const [keys, signers] = getAccountMetasAndSigners(
+    orderedAccounts,
+    'programId',
+    programId
+  );
 
   // Data.
-  const data =
-    getCreateMetadataAccountV2InstructionDataSerializer().serialize(
-      resolvedArgs
-    );
+  const data = getCreateMetadataAccountV2InstructionDataSerializer().serialize(
+    resolvedArgs as CreateMetadataAccountV2InstructionDataArgs
+  );
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

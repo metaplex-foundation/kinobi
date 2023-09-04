@@ -73,17 +73,10 @@ export type CandyMachineDataArgs = {
   hiddenSettings: OptionOrNullable<HiddenSettingsArgs>;
 };
 
-/** @deprecated Use `getCandyMachineDataSerializer()` without any argument instead. */
-export function getCandyMachineDataSerializer(
-  _context: object
-): Serializer<CandyMachineDataArgs, CandyMachineData>;
 export function getCandyMachineDataSerializer(): Serializer<
   CandyMachineDataArgs,
   CandyMachineData
->;
-export function getCandyMachineDataSerializer(
-  _context: object = {}
-): Serializer<CandyMachineDataArgs, CandyMachineData> {
+> {
   return struct<CandyMachineData>(
     [
       ['itemsAvailable', u64()],

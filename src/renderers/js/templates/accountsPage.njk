@@ -16,11 +16,8 @@
   {{ macros.exportSerializer(account.name | pascalCase + 'AccountData', typeManifest) }}
 {% endif %}
 
-/** @deprecated Use `deserialize{{ account.name | pascalCase }}(rawAccount)` without any context instead. */
-export function deserialize{{ account.name | pascalCase }}(context: object, rawAccount: RpcAccount): {{ account.name | pascalCase }};
-export function deserialize{{ account.name | pascalCase }}(rawAccount: RpcAccount): {{ account.name | pascalCase }};
-export function deserialize{{ account.name | pascalCase }}(context: RpcAccount | object, rawAccount?: RpcAccount): {{ account.name | pascalCase }} {
-  return deserializeAccount(rawAccount ?? context as RpcAccount, get{{ account.name | pascalCase }}AccountDataSerializer());
+export function deserialize{{ account.name | pascalCase }}(rawAccount: RpcAccount): {{ account.name | pascalCase }} {
+  return deserializeAccount(rawAccount, get{{ account.name | pascalCase }}AccountDataSerializer());
 }
 
 export async function fetch{{ account.name | pascalCase }}(

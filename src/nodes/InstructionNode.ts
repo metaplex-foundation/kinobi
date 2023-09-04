@@ -41,6 +41,7 @@ export type InstructionNode = {
   readonly bytesCreatedOnChain?: BytesCreatedOnChain;
   readonly remainingAccounts?: RemainingAccounts;
   readonly argDefaults: Record<string, InstructionArgDefault>;
+  readonly optionalAccountStrategy: 'omitted' | 'programId';
 };
 
 export type InstructionNodeInput = Omit<
@@ -76,6 +77,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
         value,
       ])
     ),
+    optionalAccountStrategy: input.optionalAccountStrategy ?? 'programId',
   } as InstructionNode;
 }
 
@@ -84,7 +86,6 @@ export function instructionNodeFromIdl(
 ): InstructionNode {
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
-  const useProgramIdForOptionalAccounts = !idl.legacyOptionalAccountsStrategy;
   let dataArgs = structTypeNodeFromIdl({
     kind: 'struct',
     fields: idl.args ?? [],
@@ -105,12 +106,15 @@ export function instructionNodeFromIdl(
     idlName,
     docs: idl.docs ?? [],
     accounts: (idl.accounts ?? []).map((account) =>
-      instructionAccountNodeFromIdl(account, useProgramIdForOptionalAccounts)
+      instructionAccountNodeFromIdl(account)
     ),
     dataArgs: instructionDataArgsNode({
       name: `${name}InstructionData`,
       struct: dataArgs,
     }),
+    optionalAccountStrategy: idl.legacyOptionalAccountsStrategy
+      ? 'omitted'
+      : 'programId',
   });
 }
 

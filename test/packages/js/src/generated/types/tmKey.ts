@@ -25,14 +25,7 @@ export enum TmKey {
 
 export type TmKeyArgs = TmKey;
 
-/** @deprecated Use `getTmKeySerializer()` without any argument instead. */
-export function getTmKeySerializer(
-  _context: object
-): Serializer<TmKeyArgs, TmKey>;
-export function getTmKeySerializer(): Serializer<TmKeyArgs, TmKey>;
-export function getTmKeySerializer(
-  _context: object = {}
-): Serializer<TmKeyArgs, TmKey> {
+export function getTmKeySerializer(): Serializer<TmKeyArgs, TmKey> {
   return scalarEnum<TmKey>(TmKey, { description: 'TmKey' }) as Serializer<
     TmKeyArgs,
     TmKey

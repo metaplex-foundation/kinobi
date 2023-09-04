@@ -27,17 +27,10 @@ export type DelegateStateArgs = {
   hasData: boolean;
 };
 
-/** @deprecated Use `getDelegateStateSerializer()` without any argument instead. */
-export function getDelegateStateSerializer(
-  _context: object
-): Serializer<DelegateStateArgs, DelegateState>;
 export function getDelegateStateSerializer(): Serializer<
   DelegateStateArgs,
   DelegateState
->;
-export function getDelegateStateSerializer(
-  _context: object = {}
-): Serializer<DelegateStateArgs, DelegateState> {
+> {
   return struct<DelegateState>(
     [
       ['role', getDelegateRoleSerializer()],

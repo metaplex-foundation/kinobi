@@ -19,17 +19,10 @@ export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 
 export type UseAssetArgsArgs = { __kind: 'V1'; useCount: number | bigint };
 
-/** @deprecated Use `getUseAssetArgsSerializer()` without any argument instead. */
-export function getUseAssetArgsSerializer(
-  _context: object
-): Serializer<UseAssetArgsArgs, UseAssetArgs>;
 export function getUseAssetArgsSerializer(): Serializer<
   UseAssetArgsArgs,
   UseAssetArgs
->;
-export function getUseAssetArgsSerializer(
-  _context: object = {}
-): Serializer<UseAssetArgsArgs, UseAssetArgs> {
+> {
   return dataEnum<UseAssetArgs>(
     [
       [

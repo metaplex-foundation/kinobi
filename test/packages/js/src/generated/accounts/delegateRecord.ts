@@ -49,17 +49,10 @@ export type DelegateRecordAccountDataArgs = {
   bump: number;
 };
 
-/** @deprecated Use `getDelegateRecordAccountDataSerializer()` without any argument instead. */
-export function getDelegateRecordAccountDataSerializer(
-  _context: object
-): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
 export function getDelegateRecordAccountDataSerializer(): Serializer<
   DelegateRecordAccountDataArgs,
   DelegateRecordAccountData
->;
-export function getDelegateRecordAccountDataSerializer(
-  _context: object = {}
-): Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData> {
+> {
   return mapSerializer<
     DelegateRecordAccountDataArgs,
     any,
@@ -77,20 +70,11 @@ export function getDelegateRecordAccountDataSerializer(
   ) as Serializer<DelegateRecordAccountDataArgs, DelegateRecordAccountData>;
 }
 
-/** @deprecated Use `deserializeDelegateRecord(rawAccount)` without any context instead. */
-export function deserializeDelegateRecord(
-  context: object,
-  rawAccount: RpcAccount
-): DelegateRecord;
 export function deserializeDelegateRecord(
   rawAccount: RpcAccount
-): DelegateRecord;
-export function deserializeDelegateRecord(
-  context: RpcAccount | object,
-  rawAccount?: RpcAccount
 ): DelegateRecord {
   return deserializeAccount(
-    rawAccount ?? (context as RpcAccount),
+    rawAccount,
     getDelegateRecordAccountDataSerializer()
   );
 }
