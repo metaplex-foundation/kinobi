@@ -185,6 +185,7 @@ impl UseAssetBuilder {
         self.owner = Some(owner);
         self
     }
+    /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// SPL Token program
     #[inline(always)]
     pub fn spl_token_program(
@@ -194,12 +195,14 @@ impl UseAssetBuilder {
         self.spl_token_program = Some(spl_token_program);
         self
     }
+    /// `[optional account, default to 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL']`
     /// Associated Token program
     #[inline(always)]
     pub fn ata_program(&mut self, ata_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.ata_program = Some(ata_program);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {

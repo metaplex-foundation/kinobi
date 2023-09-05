@@ -198,12 +198,14 @@ impl MintBuilder {
         self.authority = Some(authority);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// `[optional account, default to 'Sysvar1nstructions1111111111111111111111111']`
     /// Instructions sysvar account
     #[inline(always)]
     pub fn sysvar_instructions(
@@ -213,6 +215,7 @@ impl MintBuilder {
         self.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// SPL Token program
     #[inline(always)]
     pub fn spl_token_program(
@@ -222,6 +225,7 @@ impl MintBuilder {
         self.spl_token_program = Some(spl_token_program);
         self
     }
+    /// `[optional account, default to 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL']`
     /// SPL Associated Token Account program
     #[inline(always)]
     pub fn spl_ata_program(

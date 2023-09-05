@@ -174,12 +174,14 @@ impl CreateV2Builder {
         self.update_authority = Some(update_authority);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// `[optional account, default to 'Sysvar1nstructions1111111111111111111111111']`
     /// Instructions sysvar account
     #[inline(always)]
     pub fn sysvar_instructions(
@@ -189,6 +191,7 @@ impl CreateV2Builder {
         self.sysvar_instructions = Some(sysvar_instructions);
         self
     }
+    /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// SPL Token program
     #[inline(always)]
     pub fn spl_token_program(

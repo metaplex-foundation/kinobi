@@ -133,6 +133,7 @@ impl BurnNftBuilder {
         self.master_edition_account = Some(master_edition_account);
         self
     }
+    /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// SPL Token Program
     #[inline(always)]
     pub fn spl_token_program(
