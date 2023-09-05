@@ -228,6 +228,7 @@ impl SetCollectionBuilder {
         self.new_collection_authority_record = Some(new_collection_authority_record);
         self
     }
+    /// `[optional account, default to 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s']`
     #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
@@ -236,6 +237,7 @@ impl SetCollectionBuilder {
         self.token_metadata_program = Some(token_metadata_program);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);

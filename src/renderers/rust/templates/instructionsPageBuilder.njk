@@ -20,7 +20,9 @@ impl {{ instruction.name | pascalCase }}Builder {
     Self::default()
   }
   {% for account in instruction.accounts %}
-    {{'/// `[optional account]`\n' if account.isOptional }}
+    {{'/// `[optional account]`\n' if account.isOptional -}}
+    {{"/// `[optional account, default to '" + account.defaultsTo.program.publicKey + "']`\n" if account.defaultsTo.kind === 'program' -}}
+    {{"/// `[optional account, default to '" + account.defaultsTo.publicKey + "']`\n" if account.defaultsTo.kind === 'publicKey' -}}
     {{- macros.docblock(account.docs) -}}
     #[inline(always)]
     pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: solana_program::pubkey::Pubkey{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
