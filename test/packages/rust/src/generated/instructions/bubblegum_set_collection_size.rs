@@ -21,23 +21,22 @@ pub struct BubblegumSetCollectionSize {
     pub bubblegum_signer: solana_program::pubkey::Pubkey,
     /// Collection Authority Record PDA
     pub collection_authority_record: Option<solana_program::pubkey::Pubkey>,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl BubblegumSetCollectionSize {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: BubblegumSetCollectionSizeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            5 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: BubblegumSetCollectionSizeInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.collection_metadata,
             false,
@@ -65,11 +64,9 @@ impl BubblegumSetCollectionSize {
                 false,
             ));
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = BubblegumSetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -182,7 +179,7 @@ impl BubblegumSetCollectionSizeBuilder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = BubblegumSetCollectionSize {
             collection_metadata: self
                 .collection_metadata
@@ -193,11 +190,6 @@ impl BubblegumSetCollectionSizeBuilder {
             collection_mint: self.collection_mint.expect("collection_mint is not set"),
             bubblegum_signer: self.bubblegum_signer.expect("bubblegum_signer is not set"),
             collection_authority_record: self.collection_authority_record,
-            __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.__remaining_accounts.clone())
-            },
         };
         let args = BubblegumSetCollectionSizeInstructionArgs {
             set_collection_size_args: self
@@ -206,8 +198,22 @@ impl BubblegumSetCollectionSizeBuilder {
                 .expect("set_collection_size_args is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `bubblegum_set_collection_size` CPI accounts.
+pub struct BubblegumSetCollectionSizeCpiAccounts<'a> {
+    /// Collection Metadata account
+    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Update authority
+    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of the Collection
+    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Signing PDA of Bubblegum program
+    pub bubblegum_signer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Authority Record PDA
+    pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `bubblegum_set_collection_size` CPI instruction.
@@ -226,27 +232,50 @@ pub struct BubblegumSetCollectionSizeCpi<'a> {
     pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: BubblegumSetCollectionSizeInstructionArgs,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> BubblegumSetCollectionSizeCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: BubblegumSetCollectionSizeCpiAccounts<'a>,
+        args: BubblegumSetCollectionSizeInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            collection_metadata: accounts.collection_metadata,
+            collection_authority: accounts.collection_authority,
+            collection_mint: accounts.collection_mint,
+            bubblegum_signer: accounts.bubblegum_signer,
+            collection_authority_record: accounts.collection_authority_record,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            5 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.collection_metadata.key,
             false,
@@ -274,11 +303,9 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
                 false,
             ));
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = BubblegumSetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -290,14 +317,7 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            5 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(5 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.collection_metadata.clone());
         account_infos.push(self.collection_authority.clone());
@@ -306,11 +326,9 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
         if let Some(collection_authority_record) = self.collection_authority_record {
             account_infos.push(collection_authority_record.clone());
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -408,8 +426,16 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> BubblegumSetCollectionSizeCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = BubblegumSetCollectionSizeInstructionArgs {
             set_collection_size_args: self
                 .instruction
@@ -417,8 +443,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
                 .clone()
                 .expect("set_collection_size_args is not set"),
         };
-
-        BubblegumSetCollectionSizeCpi {
+        let instruction = BubblegumSetCollectionSizeCpi {
             __program: self.instruction.__program,
 
             collection_metadata: self
@@ -443,12 +468,11 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
 
             collection_authority_record: self.instruction.collection_authority_record,
             __args: args,
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

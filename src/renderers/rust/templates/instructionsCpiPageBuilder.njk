@@ -54,8 +54,13 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     self.instruction.__remaining_accounts.extend_from_slice(accounts);
     self
   }
+  #[inline(always)]
+  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed(&[])
+  }
   #[allow(clippy::clone_on_copy)]
-  pub fn build(&self) -> {{ instruction.name | pascalCase }}Cpi<'a> {
+  #[allow(clippy::vec_init_then_push)]
+  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
     {% if hasArgs %}
       let args = {{ instruction.name | pascalCase }}InstructionArgs {
         {% for arg in instructionArgs %}
@@ -73,8 +78,7 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
         {% endfor %}
       };
     {% endif %}
-
-    {{ instruction.name | pascalCase }}Cpi {
+    let instruction = {{ instruction.name | pascalCase }}Cpi {
         __program: self.instruction.__program,
         {% for account in instruction.accounts %}          
           {{ account.name | snakeCase }}: self.instruction.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional }},
@@ -82,12 +86,8 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
         {% if hasArgs %}
           __args: args,
         {% endif %}
-        __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-          None
-        } else {
-          Some(self.instruction.__remaining_accounts.clone())
-        },
-    }
+    };
+    instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
   }
 }
 

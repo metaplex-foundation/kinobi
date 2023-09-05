@@ -16,23 +16,22 @@ pub struct UpdateMetadataAccountV2 {
     pub metadata: solana_program::pubkey::Pubkey,
     /// Update authority key
     pub update_authority: solana_program::pubkey::Pubkey,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl UpdateMetadataAccountV2 {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: UpdateMetadataAccountV2InstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            2 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: UpdateMetadataAccountV2InstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -41,11 +40,9 @@ impl UpdateMetadataAccountV2 {
             self.update_authority,
             true,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = UpdateMetadataAccountV2InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -146,15 +143,10 @@ impl UpdateMetadataAccountV2Builder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateMetadataAccountV2 {
             metadata: self.metadata.expect("metadata is not set"),
             update_authority: self.update_authority.expect("update_authority is not set"),
-            __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.__remaining_accounts.clone())
-            },
         };
         let args = UpdateMetadataAccountV2InstructionArgs {
             data: self.data.clone(),
@@ -163,8 +155,16 @@ impl UpdateMetadataAccountV2Builder {
             is_mutable: self.is_mutable.clone(),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `update_metadata_account_v2` CPI accounts.
+pub struct UpdateMetadataAccountV2CpiAccounts<'a> {
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Update authority key
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `update_metadata_account_v2` CPI instruction.
@@ -177,27 +177,47 @@ pub struct UpdateMetadataAccountV2Cpi<'a> {
     pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: UpdateMetadataAccountV2InstructionArgs,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> UpdateMetadataAccountV2Cpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: UpdateMetadataAccountV2CpiAccounts<'a>,
+        args: UpdateMetadataAccountV2InstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            metadata: accounts.metadata,
+            update_authority: accounts.update_authority,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            2 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -206,11 +226,9 @@ impl<'a> UpdateMetadataAccountV2Cpi<'a> {
             *self.update_authority.key,
             true,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = UpdateMetadataAccountV2InstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -222,22 +240,13 @@ impl<'a> UpdateMetadataAccountV2Cpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            2 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(2 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.update_authority.clone());
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -323,16 +332,23 @@ impl<'a> UpdateMetadataAccountV2CpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> UpdateMetadataAccountV2Cpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = UpdateMetadataAccountV2InstructionArgs {
             data: self.instruction.data.clone(),
             update_authority_arg: self.instruction.update_authority_arg.clone(),
             primary_sale_happened: self.instruction.primary_sale_happened.clone(),
             is_mutable: self.instruction.is_mutable.clone(),
         };
-
-        UpdateMetadataAccountV2Cpi {
+        let instruction = UpdateMetadataAccountV2Cpi {
             __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
@@ -342,12 +358,11 @@ impl<'a> UpdateMetadataAccountV2CpiBuilder<'a> {
                 .update_authority
                 .expect("update_authority is not set"),
             __args: args,
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

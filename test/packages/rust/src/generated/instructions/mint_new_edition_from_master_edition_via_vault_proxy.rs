@@ -45,23 +45,22 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxy {
     pub system_program: solana_program::pubkey::Pubkey,
     /// Rent info
     pub rent: Option<solana_program::pubkey::Pubkey>,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl MintNewEditionFromMasterEditionViaVaultProxy {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            17 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(17 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.new_metadata,
             false,
@@ -134,11 +133,9 @@ impl MintNewEditionFromMasterEditionViaVaultProxy {
                 false,
             ));
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = MintNewEditionFromMasterEditionViaVaultProxyInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -346,7 +343,7 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = MintNewEditionFromMasterEditionViaVaultProxy {
             new_metadata: self.new_metadata.expect("new_metadata is not set"),
             new_edition: self.new_edition.expect("new_edition is not set"),
@@ -379,11 +376,6 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
                 .system_program
                 .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
             rent: self.rent,
-            __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.__remaining_accounts.clone())
-            },
         };
         let args = MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs {
             mint_new_edition_from_master_edition_via_token_args: self
@@ -392,8 +384,46 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
                 .expect("mint_new_edition_from_master_edition_via_token_args is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `mint_new_edition_from_master_edition_via_vault_proxy` CPI accounts.
+pub struct MintNewEditionFromMasterEditionViaVaultProxyCpiAccounts<'a> {
+    /// New Metadata key (pda of ['metadata', program id, mint id])
+    pub new_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// New Edition (pda of ['metadata', program id, mint id, 'edition'])
+    pub new_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition']
+    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
+    pub new_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
+    pub edition_mark_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint authority of new mint
+    pub new_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Vault authority
+    pub vault_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Safety deposit token store account
+    pub safety_deposit_store: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Safety deposit box
+    pub safety_deposit_box: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Vault
+    pub vault: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Update authority info for new metadata
+    pub new_metadata_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Master record metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token vault program
+    pub token_vault_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent info
+    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `mint_new_edition_from_master_edition_via_vault_proxy` CPI instruction.
@@ -436,27 +466,62 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
     pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: MintNewEditionFromMasterEditionViaVaultProxyCpiAccounts<'a>,
+        args: MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            new_metadata: accounts.new_metadata,
+            new_edition: accounts.new_edition,
+            master_edition: accounts.master_edition,
+            new_mint: accounts.new_mint,
+            edition_mark_pda: accounts.edition_mark_pda,
+            new_mint_authority: accounts.new_mint_authority,
+            payer: accounts.payer,
+            vault_authority: accounts.vault_authority,
+            safety_deposit_store: accounts.safety_deposit_store,
+            safety_deposit_box: accounts.safety_deposit_box,
+            vault: accounts.vault,
+            new_metadata_update_authority: accounts.new_metadata_update_authority,
+            metadata: accounts.metadata,
+            token_program: accounts.token_program,
+            token_vault_program: accounts.token_vault_program,
+            system_program: accounts.system_program,
+            rent: accounts.rent,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            17 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(17 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.new_metadata.key,
             false,
@@ -531,11 +596,9 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
                 false,
             ));
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = MintNewEditionFromMasterEditionViaVaultProxyInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -547,14 +610,7 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            17 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(17 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.new_metadata.clone());
         account_infos.push(self.new_edition.clone());
@@ -575,11 +631,9 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
         if let Some(rent) = self.rent {
             account_infos.push(rent.clone());
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -792,8 +846,16 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs {
             mint_new_edition_from_master_edition_via_token_args: self
                 .instruction
@@ -801,8 +863,7 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a> {
                 .clone()
                 .expect("mint_new_edition_from_master_edition_via_token_args is not set"),
         };
-
-        MintNewEditionFromMasterEditionViaVaultProxyCpi {
+        let instruction = MintNewEditionFromMasterEditionViaVaultProxyCpi {
             __program: self.instruction.__program,
 
             new_metadata: self
@@ -875,12 +936,11 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a> {
 
             rent: self.instruction.rent,
             __args: args,
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

@@ -26,20 +26,18 @@ pub struct CreateReservationList {
     pub system_program: solana_program::pubkey::Pubkey,
     /// Rent info
     pub rent: solana_program::pubkey::Pubkey,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl CreateReservationList {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            8 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(8 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.reservation_list,
             false,
@@ -70,11 +68,9 @@ impl CreateReservationList {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.rent, false,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = CreateReservationListInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -183,7 +179,7 @@ impl CreateReservationListBuilder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateReservationList {
             reservation_list: self.reservation_list.expect("reservation_list is not set"),
             payer: self.payer.expect("payer is not set"),
@@ -197,15 +193,30 @@ impl CreateReservationListBuilder {
             rent: self.rent.unwrap_or(solana_program::pubkey!(
                 "SysvarRent111111111111111111111111111111111"
             )),
-            __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.__remaining_accounts.clone())
-            },
         };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `create_reservation_list` CPI accounts.
+pub struct CreateReservationListCpiAccounts<'a> {
+    /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Update authority
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
+    pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent info
+    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `create_reservation_list` CPI instruction.
@@ -228,27 +239,51 @@ pub struct CreateReservationListCpi<'a> {
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
     /// Rent info
     pub rent: &'a solana_program::account_info::AccountInfo<'a>,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> CreateReservationListCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: CreateReservationListCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            reservation_list: accounts.reservation_list,
+            payer: accounts.payer,
+            update_authority: accounts.update_authority,
+            master_edition: accounts.master_edition,
+            resource: accounts.resource,
+            metadata: accounts.metadata,
+            system_program: accounts.system_program,
+            rent: accounts.rent,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            8 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(8 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.reservation_list.key,
             false,
@@ -281,11 +316,9 @@ impl<'a> CreateReservationListCpi<'a> {
             *self.rent.key,
             false,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = CreateReservationListInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -295,14 +328,7 @@ impl<'a> CreateReservationListCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            8 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(8 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.reservation_list.clone());
         account_infos.push(self.payer.clone());
@@ -312,11 +338,9 @@ impl<'a> CreateReservationListCpi<'a> {
         account_infos.push(self.metadata.clone());
         account_infos.push(self.system_program.clone());
         account_infos.push(self.rent.clone());
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -428,9 +452,17 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> CreateReservationListCpi<'a> {
-        CreateReservationListCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = CreateReservationListCpi {
             __program: self.instruction.__program,
 
             reservation_list: self
@@ -460,12 +492,11 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent.expect("rent is not set"),
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

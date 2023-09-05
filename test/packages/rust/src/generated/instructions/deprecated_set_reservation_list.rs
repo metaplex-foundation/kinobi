@@ -17,23 +17,22 @@ pub struct DeprecatedSetReservationList {
     pub reservation_list: solana_program::pubkey::Pubkey,
     /// The resource you tied the reservation list too
     pub resource: solana_program::pubkey::Pubkey,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl DeprecatedSetReservationList {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: DeprecatedSetReservationListInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: DeprecatedSetReservationListInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.master_edition,
             false,
@@ -46,11 +45,9 @@ impl DeprecatedSetReservationList {
             self.resource,
             true,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = DeprecatedSetReservationListInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -155,16 +152,11 @@ impl DeprecatedSetReservationListBuilder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedSetReservationList {
             master_edition: self.master_edition.expect("master_edition is not set"),
             reservation_list: self.reservation_list.expect("reservation_list is not set"),
             resource: self.resource.expect("resource is not set"),
-            __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.__remaining_accounts.clone())
-            },
         };
         let args = DeprecatedSetReservationListInstructionArgs {
             reservations: self.reservations.clone().expect("reservations is not set"),
@@ -176,8 +168,18 @@ impl DeprecatedSetReservationListBuilder {
                 .expect("total_spot_offset is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `deprecated_set_reservation_list` CPI accounts.
+pub struct DeprecatedSetReservationListCpiAccounts<'a> {
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
+    pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The resource you tied the reservation list too
+    pub resource: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `deprecated_set_reservation_list` CPI instruction.
@@ -192,27 +194,48 @@ pub struct DeprecatedSetReservationListCpi<'a> {
     pub resource: &'a solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: DeprecatedSetReservationListInstructionArgs,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> DeprecatedSetReservationListCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: DeprecatedSetReservationListCpiAccounts<'a>,
+        args: DeprecatedSetReservationListInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            master_edition: accounts.master_edition,
+            reservation_list: accounts.reservation_list,
+            resource: accounts.resource,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            3 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.master_edition.key,
             false,
@@ -225,11 +248,9 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
             *self.resource.key,
             true,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = DeprecatedSetReservationListInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -241,23 +262,14 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            3 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(3 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.master_edition.clone());
         account_infos.push(self.reservation_list.clone());
         account_infos.push(self.resource.clone());
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -350,8 +362,16 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> DeprecatedSetReservationListCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = DeprecatedSetReservationListInstructionArgs {
             reservations: self
                 .instruction
@@ -366,8 +386,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
                 .clone()
                 .expect("total_spot_offset is not set"),
         };
-
-        DeprecatedSetReservationListCpi {
+        let instruction = DeprecatedSetReservationListCpi {
             __program: self.instruction.__program,
 
             master_edition: self
@@ -382,12 +401,11 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
 
             resource: self.instruction.resource.expect("resource is not set"),
             __args: args,
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

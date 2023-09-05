@@ -24,21 +24,15 @@ pub struct {{ instruction.name | pascalCase }} {
       pub {{ account.name | snakeCase }}: {{ type }},
     {% endif %}
   {% endfor %}
-  /// Additional instruction accounts.
-  pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl {{ instruction.name | pascalCase }} {
-  #[allow(clippy::vec_init_then_push)]
   pub fn instruction(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}) -> solana_program::instruction::Instruction {
-    let mut accounts = Vec::with_capacity(
-      {{ instruction.accounts.length }}
-      + if let Some(remaining_accounts) = &self.__remaining_accounts {
-        remaining_accounts.len()
-      } else {
-        0
-      }
-    );
+    self.instruction_with_remaining_accounts({{ 'args, ' if hasArgs }}&[])
+  }
+  #[allow(clippy::vec_init_then_push)]
+  pub fn instruction_with_remaining_accounts(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}, remaining_accounts: &[super::InstructionAccount]) -> solana_program::instruction::Instruction {
+    let mut accounts = Vec::with_capacity({{ instruction.accounts.length }} + remaining_accounts.len());
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
         {% if account.isOptional %}
@@ -98,9 +92,7 @@ impl {{ instruction.name | pascalCase }} {
         {% endif %}
       {% endif %}
     {% endfor %}
-    if let Some(remaining_accounts) = &self.__remaining_accounts {
-      remaining_accounts.iter().for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-    }
+    remaining_accounts.iter().for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
     let {{ 'mut ' if hasArgs }}data = {{ instruction.name | pascalCase }}InstructionData::new().try_to_vec().unwrap();
     {% if hasArgs %}
       let mut args = args.try_to_vec().unwrap();

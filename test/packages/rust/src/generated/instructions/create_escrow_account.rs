@@ -28,20 +28,18 @@ pub struct CreateEscrowAccount {
     pub sysvar_instructions: solana_program::pubkey::Pubkey,
     /// Authority/creator of the escrow account
     pub authority: Option<solana_program::pubkey::Pubkey>,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl CreateEscrowAccount {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            9 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(9 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.escrow,
             false,
@@ -82,11 +80,9 @@ impl CreateEscrowAccount {
                 false,
             ));
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = CreateEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -200,7 +196,7 @@ impl CreateEscrowAccountBuilder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateEscrowAccount {
             escrow: self.escrow.expect("escrow is not set"),
             metadata: self.metadata.expect("metadata is not set"),
@@ -215,15 +211,32 @@ impl CreateEscrowAccountBuilder {
                 "Sysvar1nstructions1111111111111111111111111"
             )),
             authority: self.authority,
-            __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.__remaining_accounts.clone())
-            },
         };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `create_escrow_account` CPI accounts.
+pub struct CreateEscrowAccountCpiAccounts<'a> {
+    /// Escrow account
+    pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint account
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account of the token
+    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Edition account
+    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Wallet paying for the transaction and new account
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Instructions sysvar account
+    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Authority/creator of the escrow account
+    pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `create_escrow_account` CPI instruction.
@@ -248,27 +261,52 @@ pub struct CreateEscrowAccountCpi<'a> {
     pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
     /// Authority/creator of the escrow account
     pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> CreateEscrowAccountCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: CreateEscrowAccountCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            escrow: accounts.escrow,
+            metadata: accounts.metadata,
+            mint: accounts.mint,
+            token_account: accounts.token_account,
+            edition: accounts.edition,
+            payer: accounts.payer,
+            system_program: accounts.system_program,
+            sysvar_instructions: accounts.sysvar_instructions,
+            authority: accounts.authority,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            9 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(9 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.escrow.key,
             false,
@@ -312,11 +350,9 @@ impl<'a> CreateEscrowAccountCpi<'a> {
                 false,
             ));
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = CreateEscrowAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -326,14 +362,7 @@ impl<'a> CreateEscrowAccountCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            9 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(9 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.escrow.clone());
         account_infos.push(self.metadata.clone());
@@ -346,11 +375,9 @@ impl<'a> CreateEscrowAccountCpi<'a> {
         if let Some(authority) = self.authority {
             account_infos.push(authority.clone());
         }
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -473,9 +500,17 @@ impl<'a> CreateEscrowAccountCpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> CreateEscrowAccountCpi<'a> {
-        CreateEscrowAccountCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = CreateEscrowAccountCpi {
             __program: self.instruction.__program,
 
             escrow: self.instruction.escrow.expect("escrow is not set"),
@@ -504,12 +539,11 @@ impl<'a> CreateEscrowAccountCpiBuilder<'a> {
                 .expect("sysvar_instructions is not set"),
 
             authority: self.instruction.authority,
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

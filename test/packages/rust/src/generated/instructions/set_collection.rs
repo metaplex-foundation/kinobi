@@ -37,20 +37,18 @@ pub struct SetCollection {
     pub token_metadata_program: solana_program::pubkey::Pubkey,
 
     pub system_program: solana_program::pubkey::Pubkey,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl SetCollection {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            14 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(14 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -106,11 +104,9 @@ impl SetCollection {
             self.system_program,
             false,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = SetCollectionInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -268,7 +264,7 @@ impl SetCollectionBuilder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts =
             SetCollection {
                 candy_machine: self.candy_machine.expect("candy_machine is not set"),
@@ -303,15 +299,41 @@ impl SetCollectionBuilder {
                 system_program: self
                     .system_program
                     .unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
-                __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                    None
-                } else {
-                    Some(self.__remaining_accounts.clone())
-                },
             };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `set_collection` CPI accounts.
+pub struct SetCollectionCpiAccounts<'a> {
+    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub new_collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub new_collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub new_collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub new_collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub new_collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `set_collection` CPI instruction.
@@ -346,27 +368,57 @@ pub struct SetCollectionCpi<'a> {
     pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
 
     pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> SetCollectionCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: SetCollectionCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            candy_machine: accounts.candy_machine,
+            authority: accounts.authority,
+            authority_pda: accounts.authority_pda,
+            payer: accounts.payer,
+            collection_mint: accounts.collection_mint,
+            collection_metadata: accounts.collection_metadata,
+            collection_authority_record: accounts.collection_authority_record,
+            new_collection_update_authority: accounts.new_collection_update_authority,
+            new_collection_metadata: accounts.new_collection_metadata,
+            new_collection_mint: accounts.new_collection_mint,
+            new_collection_master_edition: accounts.new_collection_master_edition,
+            new_collection_authority_record: accounts.new_collection_authority_record,
+            token_metadata_program: accounts.token_metadata_program,
+            system_program: accounts.system_program,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            14 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(14 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -423,11 +475,9 @@ impl<'a> SetCollectionCpi<'a> {
             *self.system_program.key,
             false,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = SetCollectionInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -435,14 +485,7 @@ impl<'a> SetCollectionCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            14 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(14 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority.clone());
@@ -458,11 +501,9 @@ impl<'a> SetCollectionCpi<'a> {
         account_infos.push(self.new_collection_authority_record.clone());
         account_infos.push(self.token_metadata_program.clone());
         account_infos.push(self.system_program.clone());
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -623,9 +664,17 @@ impl<'a> SetCollectionCpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> SetCollectionCpi<'a> {
-        SetCollectionCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = SetCollectionCpi {
             __program: self.instruction.__program,
 
             candy_machine: self
@@ -691,12 +740,11 @@ impl<'a> SetCollectionCpiBuilder<'a> {
                 .instruction
                 .system_program
                 .expect("system_program is not set"),
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

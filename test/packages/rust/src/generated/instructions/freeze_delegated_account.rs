@@ -20,20 +20,18 @@ pub struct FreezeDelegatedAccount {
     pub mint: solana_program::pubkey::Pubkey,
     /// Token Program
     pub token_program: solana_program::pubkey::Pubkey,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccount>>,
 }
 
 impl FreezeDelegatedAccount {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(
-            5 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.delegate,
             true,
@@ -53,11 +51,9 @@ impl FreezeDelegatedAccount {
             self.token_program,
             false,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = FreezeDelegatedAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -138,7 +134,7 @@ impl FreezeDelegatedAccountBuilder {
         self
     }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = FreezeDelegatedAccount {
             delegate: self.delegate.expect("delegate is not set"),
             token_account: self.token_account.expect("token_account is not set"),
@@ -147,15 +143,24 @@ impl FreezeDelegatedAccountBuilder {
             token_program: self.token_program.unwrap_or(solana_program::pubkey!(
                 "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
             )),
-            __remaining_accounts: if self.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.__remaining_accounts.clone())
-            },
         };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `freeze_delegated_account` CPI accounts.
+pub struct FreezeDelegatedAccountCpiAccounts<'a> {
+    /// Delegate
+    pub delegate: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account to freeze
+    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Edition
+    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token mint
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token Program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `freeze_delegated_account` CPI instruction.
@@ -172,27 +177,48 @@ pub struct FreezeDelegatedAccountCpi<'a> {
     pub mint: &'a solana_program::account_info::AccountInfo<'a>,
     /// Token Program
     pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
-    /// Additional instruction accounts.
-    pub __remaining_accounts: Option<Vec<super::InstructionAccountInfo<'a>>>,
 }
 
 impl<'a> FreezeDelegatedAccountCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: FreezeDelegatedAccountCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            delegate: accounts.delegate,
+            token_account: accounts.token_account,
+            edition: accounts.edition,
+            mint: accounts.mint,
+            token_program: accounts.token_program,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(
-            5 + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                remaining_accounts.len()
-            } else {
-                0
-            },
-        );
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.delegate.key,
             true,
@@ -213,11 +239,9 @@ impl<'a> FreezeDelegatedAccountCpi<'a> {
             *self.token_program.key,
             false,
         ));
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts
-                .iter()
-                .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
-        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = FreezeDelegatedAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -227,25 +251,16 @@ impl<'a> FreezeDelegatedAccountCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(
-            5 + 1
-                + if let Some(remaining_accounts) = &self.__remaining_accounts {
-                    remaining_accounts.len()
-                } else {
-                    0
-                },
-        );
+        let mut account_infos = Vec::with_capacity(5 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.delegate.clone());
         account_infos.push(self.token_account.clone());
         account_infos.push(self.edition.clone());
         account_infos.push(self.mint.clone());
         account_infos.push(self.token_program.clone());
-        if let Some(remaining_accounts) = &self.__remaining_accounts {
-            remaining_accounts.iter().for_each(|remaining_account| {
-                account_infos.push(remaining_account.account_info().clone())
-            });
-        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -330,9 +345,17 @@ impl<'a> FreezeDelegatedAccountCpiBuilder<'a> {
             .extend_from_slice(accounts);
         self
     }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> FreezeDelegatedAccountCpi<'a> {
-        FreezeDelegatedAccountCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = FreezeDelegatedAccountCpi {
             __program: self.instruction.__program,
 
             delegate: self.instruction.delegate.expect("delegate is not set"),
@@ -350,12 +373,11 @@ impl<'a> FreezeDelegatedAccountCpiBuilder<'a> {
                 .instruction
                 .token_program
                 .expect("token_program is not set"),
-            __remaining_accounts: if self.instruction.__remaining_accounts.is_empty() {
-                None
-            } else {
-                Some(self.instruction.__remaining_accounts.clone())
-            },
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 

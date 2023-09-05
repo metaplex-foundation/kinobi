@@ -58,7 +58,7 @@ impl {{ instruction.name | pascalCase }}Builder {
     self
   }
   #[allow(clippy::clone_on_copy)]
-  pub fn build(&self) -> solana_program::instruction::Instruction {
+  pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {
         {% for account in instruction.accounts %}
           {% if account.isOptional %}
@@ -73,11 +73,6 @@ impl {{ instruction.name | pascalCase }}Builder {
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.expect("{{ account.name | snakeCase }} is not set"),
           {% endif %}
         {% endfor %}
-        __remaining_accounts: if self.__remaining_accounts.is_empty() {
-          None
-        } else {
-          Some(self.__remaining_accounts.clone())
-        },
     };
     {% if hasArgs %}
       let args = {{ instruction.name | pascalCase }}InstructionArgs {
@@ -97,6 +92,6 @@ impl {{ instruction.name | pascalCase }}Builder {
       };
     {% endif %}
 
-    accounts.instruction({{ 'args' if hasArgs }})
+    accounts.instruction_with_remaining_accounts({{ 'args, ' if hasArgs }}&self.__remaining_accounts)
   }
 }
