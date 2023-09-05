@@ -479,7 +479,14 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(16 + 1);
+        let mut account_infos = Vec::with_capacity(
+            16 + 1
+                + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                    remaining_accounts.len()
+                } else {
+                    0
+                },
+        );
         account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.edition.clone());
@@ -498,6 +505,11 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
         account_infos.push(self.rent.clone());
         if let Some(reservation_list) = self.reservation_list {
             account_infos.push(reservation_list.clone());
+        }
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts.iter().for_each(|remaining_account| {
+                account_infos.push(remaining_account.account_info().clone())
+            });
         }
 
         if signers_seeds.is_empty() {

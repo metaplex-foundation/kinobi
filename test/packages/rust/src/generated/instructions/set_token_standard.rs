@@ -217,13 +217,25 @@ impl<'a> SetTokenStandardCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(4 + 1);
+        let mut account_infos = Vec::with_capacity(
+            4 + 1
+                + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                    remaining_accounts.len()
+                } else {
+                    0
+                },
+        );
         account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.update_authority.clone());
         account_infos.push(self.mint.clone());
         if let Some(edition) = self.edition {
             account_infos.push(edition.clone());
+        }
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts.iter().for_each(|remaining_account| {
+                account_infos.push(remaining_account.account_info().clone())
+            });
         }
 
         if signers_seeds.is_empty() {

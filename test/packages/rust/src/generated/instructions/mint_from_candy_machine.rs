@@ -496,7 +496,14 @@ impl<'a> MintFromCandyMachineCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(17 + 1);
+        let mut account_infos = Vec::with_capacity(
+            17 + 1
+                + if let Some(remaining_accounts) = &self.__remaining_accounts {
+                    remaining_accounts.len()
+                } else {
+                    0
+                },
+        );
         account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority_pda.clone());
@@ -515,6 +522,11 @@ impl<'a> MintFromCandyMachineCpi<'a> {
         account_infos.push(self.token_program.clone());
         account_infos.push(self.system_program.clone());
         account_infos.push(self.recent_slothashes.clone());
+        if let Some(remaining_accounts) = &self.__remaining_accounts {
+            remaining_accounts.iter().for_each(|remaining_account| {
+                account_infos.push(remaining_account.account_info().clone())
+            });
+        }
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)

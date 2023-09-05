@@ -183,4 +183,12 @@ impl<'a> InstructionAccountInfo<'a> {
             solana_program::instruction::AccountMeta::new_readonly(*pubkey, signer)
         }
     }
+    pub fn account_info(&self) -> &'a solana_program::account_info::AccountInfo<'a> {
+        match self {
+            InstructionAccountInfo::Readonly(account_info)
+            | InstructionAccountInfo::ReadonlySigner(account_info)
+            | InstructionAccountInfo::Writable(account_info)
+            | InstructionAccountInfo::WritableSigner(account_info) => account_info,
+        }
+    }
 }
