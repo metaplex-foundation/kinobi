@@ -76,7 +76,8 @@ impl DeprecatedSetReservationListInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct DeprecatedSetReservationListInstructionArgs {
     pub reservations: Vec<Reservation>,
     pub total_reservation_spots: Option<u64>,

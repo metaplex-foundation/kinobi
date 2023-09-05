@@ -71,7 +71,8 @@ impl UpdateMetadataAccountV2InstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct UpdateMetadataAccountV2InstructionArgs {
     pub data: Option<DataV2>,
     pub update_authority_arg: Option<Pubkey>,

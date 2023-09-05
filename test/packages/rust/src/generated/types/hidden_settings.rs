@@ -10,6 +10,7 @@ use borsh::BorshSerialize;
 
 /// Hidden settings for large mints used with off-chain data.
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct HiddenSettings {
     /// Asset prefix name
     pub name: String,

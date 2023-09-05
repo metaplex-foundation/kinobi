@@ -13,6 +13,7 @@ use borsh::BorshSerialize;
 
 /// Candy machine configuration data.
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CandyMachineData {
     /// Number of assets available
     pub items_available: u64,

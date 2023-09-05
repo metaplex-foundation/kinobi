@@ -73,7 +73,8 @@ impl CreateRuleSetInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreateRuleSetInstructionArgs {
     pub create_args: TaCreateArgs,
     pub rule_set_bump: u8,
@@ -106,6 +107,7 @@ impl CreateRuleSetBuilder {
         self.rule_set_pda = Some(rule_set_pda);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {

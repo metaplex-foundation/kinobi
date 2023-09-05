@@ -122,7 +122,8 @@ impl InitializeInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct InitializeInstructionArgs {
     pub data: CandyMachineData,
 }
@@ -209,6 +210,7 @@ impl InitializeBuilder {
         self.collection_authority_record = Some(collection_authority_record);
         self
     }
+    /// `[optional account, default to 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s']`
     #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
@@ -217,6 +219,7 @@ impl InitializeBuilder {
         self.token_metadata_program = Some(token_metadata_program);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);

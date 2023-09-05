@@ -74,7 +74,8 @@ impl CreateFrequencyRuleInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreateFrequencyRuleInstructionArgs {
     pub rule_set_name: String,
     pub freq_rule_name: String,
@@ -111,6 +112,7 @@ impl CreateFrequencyRuleBuilder {
         self.frequency_pda = Some(frequency_pda);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {

@@ -162,7 +162,8 @@ impl UpdateV1InstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct UpdateV1InstructionArgs {
     pub authorization_data: Option<AuthorizationData>,
     pub new_update_authority: Option<Pubkey>,
@@ -179,6 +180,7 @@ pub struct UpdateV1InstructionArgs {
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct UpdateV1InstructionDataData {
     pub name: String,
     pub symbol: String,
@@ -244,12 +246,14 @@ impl UpdateV1Builder {
         self.mint = Some(mint);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
         self.system_program = Some(system_program);
         self
     }
+    /// `[optional account, default to 'Sysvar1nstructions1111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn sysvar_instructions(

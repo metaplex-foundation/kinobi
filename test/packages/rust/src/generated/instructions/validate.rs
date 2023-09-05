@@ -154,7 +154,8 @@ impl ValidateInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ValidateInstructionArgs {
     pub rule_set_name: String,
     pub operation: Operation,
@@ -199,6 +200,7 @@ impl ValidateBuilder {
         self.rule_set = Some(rule_set);
         self
     }
+    /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
     #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
