@@ -103,7 +103,8 @@ impl CreateMasterEditionV3InstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreateMasterEditionV3InstructionArgs {
     pub create_master_edition_args: CreateMasterEditionArgs,
 }

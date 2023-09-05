@@ -112,7 +112,8 @@ impl ApproveUseAuthorityInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ApproveUseAuthorityInstructionArgs {
     pub number_of_uses: u64,
 }

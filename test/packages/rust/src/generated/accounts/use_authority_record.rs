@@ -10,6 +10,7 @@ use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct UseAuthorityRecord {
     pub key: TmKey,
     pub allowed_uses: u64,

@@ -13,15 +13,28 @@ use solana_program::pubkey::Pubkey;
 /// Candy machine state and config data.
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CandyMachine {
     pub discriminator: [u8; 8],
     /// Features versioning flags.
     pub features: u64,
     /// Authority address.
+    #[cfg_attr(
+        feature = "serde",
+        serde(with = "serde_with::As::<serde_with::DisplayFromStr>")
+    )]
     pub authority: Pubkey,
     /// Authority address allowed to mint from the candy machine.
+    #[cfg_attr(
+        feature = "serde",
+        serde(with = "serde_with::As::<serde_with::DisplayFromStr>")
+    )]
     pub mint_authority: Pubkey,
     /// The collection mint for the candy machine.
+    #[cfg_attr(
+        feature = "serde",
+        serde(with = "serde_with::As::<serde_with::DisplayFromStr>")
+    )]
     pub collection_mint: Pubkey,
     /// Number of assets redeemed.
     pub items_redeemed: u64,

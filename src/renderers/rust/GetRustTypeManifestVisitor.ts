@@ -36,7 +36,10 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     this.parentName = null;
     return {
       ...manifest,
-      type: `#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n${manifest.type}`,
+      type:
+        '#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n' +
+        '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
+        `${manifest.type}`,
     };
   }
 
@@ -93,9 +96,15 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     }
     return {
       ...manifest,
-      type: `#[derive(${traits.join(', ')})]\n${manifest.type}`,
+      type:
+        `#[derive(${traits.join(', ')})]\n` +
+        '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
+        `${manifest.type}`,
       nestedStructs: manifest.nestedStructs.map(
-        (struct) => `#[derive(${traits.join(', ')})]\n${struct}`
+        (struct) =>
+          `#[derive(${traits.join(', ')})]\n` +
+          '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
+          `${struct}`
       ),
     };
   }
@@ -318,11 +327,17 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     const fieldName = snakeCase(structFieldType.name);
     const docblock = this.createDocblock(structFieldType.docs);
 
+    let derive = '';
+    if (fieldManifest.type === 'Pubkey') {
+      derive =
+        '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
+    }
+
     return {
       ...fieldManifest,
       type: this.inlineStruct
-        ? `${docblock}${fieldName}: ${fieldManifest.type},`
-        : `${docblock}pub ${fieldName}: ${fieldManifest.type},`,
+        ? `${docblock}${derive}${fieldName}: ${fieldManifest.type},`
+        : `${docblock}${derive}pub ${fieldName}: ${fieldManifest.type},`,
     };
   }
 

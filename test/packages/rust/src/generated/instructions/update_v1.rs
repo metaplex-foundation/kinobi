@@ -149,7 +149,8 @@ impl UpdateV1InstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct UpdateV1InstructionArgs {
     pub authorization_data: Option<AuthorizationData>,
     pub new_update_authority: Option<Pubkey>,
@@ -166,6 +167,7 @@ pub struct UpdateV1InstructionArgs {
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct UpdateV1InstructionDataData {
     pub name: String,
     pub symbol: String,

@@ -4,13 +4,18 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
+[lib]
+crate-type = ["lib"]
+
+[features]
+serde = ["dep:serde", "dep:serde_with", "kaigan/serde"]
+
 [dependencies]
 borsh = ">= 0.9"
 kaigan = ">= 0.1"
 num-derive = "^0.3"
 num-traits = "^0.2"
-solana-program = "^1.10"
+serde = { version = "^1.0", features = ["derive"], optional = true }
+serde_with = { version = "^3.0", optional = true }
+solana-program = "^1.14"
 thiserror = "^1.0"
-
-[lib]
-crate-type = ["lib"]

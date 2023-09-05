@@ -12,6 +12,7 @@ use kaigan::types::RemainderVec;
 
 /// Dummy lines.
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct DummyLines {
     /// The dummy lines.
     pub lines: RemainderVec<ConfigLine>,
