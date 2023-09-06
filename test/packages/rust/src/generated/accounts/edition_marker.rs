@@ -18,6 +18,12 @@ pub struct EditionMarker {
 
 impl EditionMarker {
     pub const LEN: usize = 32;
+
+    #[inline(always)]
+    pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+        let mut data = data;
+        Self::deserialize(&mut data)
+    }
 }
 
 impl<'a> TryFrom<&'a solana_program::account_info::AccountInfo<'a>> for EditionMarker {

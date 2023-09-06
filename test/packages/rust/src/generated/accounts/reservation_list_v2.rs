@@ -26,6 +26,14 @@ pub struct ReservationListV2 {
     pub current_reservation_spots: u64,
 }
 
+impl ReservationListV2 {
+    #[inline(always)]
+    pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+        let mut data = data;
+        Self::deserialize(&mut data)
+    }
+}
+
 impl<'a> TryFrom<&'a solana_program::account_info::AccountInfo<'a>> for ReservationListV2 {
     type Error = std::io::Error;
 

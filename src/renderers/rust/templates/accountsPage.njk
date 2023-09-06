@@ -12,41 +12,12 @@
 {{ nestedStruct }}
 {% endfor %}
 
-{% if account.size != null or seeds.length > 0 %}
 impl {{ account.name | pascalCase }} {
   {% if account.size != null %}
     pub const LEN: usize = {{ account.size }};
   {% endif %}
 
   {% if seeds.length > 0 %}
-    pub fn find_pda(
-    {% if hasVariableSeeds %}
-        {% for seed in seeds %}
-          {% if seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
-            {{ seed.name | snakeCase }}: &{{ seed.typeManifest.type }},
-          {% elif seed.kind === 'variable' %}
-            {{ seed.name | snakeCase }}: {{ seed.typeManifest.type }},
-          {% endif %}
-        {% endfor %}
-    {% endif %}
-    ) -> (solana_program::pubkey::Pubkey, u8) {
-      solana_program::pubkey::Pubkey::find_program_address(
-        &[
-          {% for seed in seeds %}
-            {% if seed.kind === 'programId' %}
-              crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
-            {% elif seed.kind === 'constant' %}
-              {{ seed.value.render }}.as_bytes(),
-            {% elif seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
-              {{ seed.name | snakeCase }}.as_ref(),
-            {% else %}
-              {{ seed.name | snakeCase }}.to_string().as_ref(),
-            {% endif %}
-          {% endfor %}
-        ],
-        &crate::{{ program.name | snakeCase | upper }}_ID,
-      )
-    }
     pub fn create_pda(
       {% if hasVariableSeeds %}
           {% for seed in seeds %}
@@ -75,9 +46,43 @@ impl {{ account.name | pascalCase }} {
         &crate::{{ program.name | snakeCase | upper }}_ID,
       )
     }
+
+    pub fn find_pda(
+    {% if hasVariableSeeds %}
+        {% for seed in seeds %}
+          {% if seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
+            {{ seed.name | snakeCase }}: &{{ seed.typeManifest.type }},
+          {% elif seed.kind === 'variable' %}
+            {{ seed.name | snakeCase }}: {{ seed.typeManifest.type }},
+          {% endif %}
+        {% endfor %}
+    {% endif %}
+    ) -> (solana_program::pubkey::Pubkey, u8) {
+      solana_program::pubkey::Pubkey::find_program_address(
+        &[
+          {% for seed in seeds %}
+            {% if seed.kind === 'programId' %}
+              crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
+            {% elif seed.kind === 'constant' %}
+              {{ seed.value.render }}.as_bytes(),
+            {% elif seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
+              {{ seed.name | snakeCase }}.as_ref(),
+            {% else %}
+              {{ seed.name | snakeCase }}.to_string().as_ref(),
+            {% endif %}
+          {% endfor %}
+        ],
+        &crate::{{ program.name | snakeCase | upper }}_ID,
+      )
+    }
   {% endif %}
+
+  #[inline(always)]
+  pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+    let mut data = data;
+    Self::deserialize(&mut data)
+  }
 }
-{% endif %}
 
 impl<'a> TryFrom<&'a solana_program::account_info::AccountInfo<'a>> for {{ account.name | pascalCase }} {
   type Error = std::io::Error;
