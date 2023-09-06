@@ -5,19 +5,19 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-pub mod candy_machine;
-pub mod collection_authority_record;
-pub mod delegate_record;
-pub mod edition;
-pub mod edition_marker;
-pub mod frequency_account;
-pub mod master_edition_v1;
-pub mod master_edition_v2;
-pub mod metadata;
-pub mod reservation_list_v1;
-pub mod reservation_list_v2;
-pub mod token_owned_escrow;
-pub mod use_authority_record;
+pub(crate) mod candy_machine;
+pub(crate) mod collection_authority_record;
+pub(crate) mod delegate_record;
+pub(crate) mod edition;
+pub(crate) mod edition_marker;
+pub(crate) mod frequency_account;
+pub(crate) mod master_edition_v1;
+pub(crate) mod master_edition_v2;
+pub(crate) mod metadata;
+pub(crate) mod reservation_list_v1;
+pub(crate) mod reservation_list_v2;
+pub(crate) mod token_owned_escrow;
+pub(crate) mod use_authority_record;
 
 pub use self::candy_machine::*;
 pub use self::collection_authority_record::*;

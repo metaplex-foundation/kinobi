@@ -4,7 +4,7 @@
 
 {% for program in programsToExport | sort(false, false, 'name') %}
   {% if program.errors.length > 0 %}
-    pub mod {{ program.name | snakeCase }};
+    pub(crate) mod {{ program.name | snakeCase }};
   {% endif %}
 {% endfor %}
 
