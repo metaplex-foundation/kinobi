@@ -189,9 +189,9 @@ impl BurnBuilder {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: solana_program::pubkey::Pubkey,
+        collection_metadata: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.collection_metadata = Some(collection_metadata);
+        self.collection_metadata = collection_metadata;
         self
     }
     /// `[optional account]`
@@ -199,9 +199,9 @@ impl BurnBuilder {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: solana_program::pubkey::Pubkey,
+        authorization_rules: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.authorization_rules = Some(authorization_rules);
+        self.authorization_rules = authorization_rules;
         self
     }
     /// `[optional account]`
@@ -209,9 +209,9 @@ impl BurnBuilder {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: solana_program::pubkey::Pubkey,
+        authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.authorization_rules_program = Some(authorization_rules_program);
+        self.authorization_rules_program = authorization_rules_program;
         self
     }
     #[inline(always)]
@@ -448,9 +448,9 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.collection_metadata = Some(collection_metadata);
+        self.instruction.collection_metadata = collection_metadata;
         self
     }
     /// `[optional account]`
@@ -458,9 +458,9 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
+        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authorization_rules = Some(authorization_rules);
+        self.instruction.authorization_rules = authorization_rules;
         self
     }
     /// `[optional account]`
@@ -468,9 +468,9 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
+        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authorization_rules_program = Some(authorization_rules_program);
+        self.instruction.authorization_rules_program = authorization_rules_program;
         self
     }
     #[inline(always)]

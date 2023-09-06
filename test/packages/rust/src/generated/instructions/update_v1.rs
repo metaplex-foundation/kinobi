@@ -222,8 +222,11 @@ impl UpdateV1Builder {
     /// `[optional account]`
     /// Master Edition account
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.master_edition = Some(master_edition);
+    pub fn master_edition(
+        &mut self,
+        master_edition: Option<solana_program::pubkey::Pubkey>,
+    ) -> &mut Self {
+        self.master_edition = master_edition;
         self
     }
     /// Mint account
@@ -252,8 +255,8 @@ impl UpdateV1Builder {
     /// `[optional account]`
     /// Token account
     #[inline(always)]
-    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.token = Some(token);
+    pub fn token(&mut self, token: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.token = token;
         self
     }
     /// `[optional account]`
@@ -261,9 +264,9 @@ impl UpdateV1Builder {
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
-        delegate_record: solana_program::pubkey::Pubkey,
+        delegate_record: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.delegate_record = Some(delegate_record);
+        self.delegate_record = delegate_record;
         self
     }
     /// `[optional account]`
@@ -271,9 +274,9 @@ impl UpdateV1Builder {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: solana_program::pubkey::Pubkey,
+        authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.authorization_rules_program = Some(authorization_rules_program);
+        self.authorization_rules_program = authorization_rules_program;
         self
     }
     /// `[optional account]`
@@ -281,9 +284,9 @@ impl UpdateV1Builder {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: solana_program::pubkey::Pubkey,
+        authorization_rules: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.authorization_rules = Some(authorization_rules);
+        self.authorization_rules = authorization_rules;
         self
     }
     /// `[optional argument]`
@@ -607,9 +610,9 @@ impl<'a> UpdateV1CpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition(
         &mut self,
-        master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.master_edition = Some(master_edition);
+        self.instruction.master_edition = master_edition;
         self
     }
     /// Mint account
@@ -639,8 +642,11 @@ impl<'a> UpdateV1CpiBuilder<'a> {
     /// `[optional account]`
     /// Token account
     #[inline(always)]
-    pub fn token(&mut self, token: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-        self.instruction.token = Some(token);
+    pub fn token(
+        &mut self,
+        token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    ) -> &mut Self {
+        self.instruction.token = token;
         self
     }
     /// `[optional account]`
@@ -648,9 +654,9 @@ impl<'a> UpdateV1CpiBuilder<'a> {
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
-        delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
+        delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.delegate_record = Some(delegate_record);
+        self.instruction.delegate_record = delegate_record;
         self
     }
     /// `[optional account]`
@@ -658,9 +664,9 @@ impl<'a> UpdateV1CpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
+        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authorization_rules_program = Some(authorization_rules_program);
+        self.instruction.authorization_rules_program = authorization_rules_program;
         self
     }
     /// `[optional account]`
@@ -668,9 +674,9 @@ impl<'a> UpdateV1CpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
+        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authorization_rules = Some(authorization_rules);
+        self.instruction.authorization_rules = authorization_rules;
         self
     }
     /// `[optional argument]`

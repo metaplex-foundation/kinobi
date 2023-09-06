@@ -20,16 +20,31 @@ impl {{ instruction.name | pascalCase }}Builder {
     Self::default()
   }
   {% for account in instruction.accounts %}
-    {{'/// `[optional account]`\n' if account.isOptional -}}
-    {{"/// `[optional account, default to '" + account.defaultsTo.program.publicKey + "']`\n" if account.defaultsTo.kind === 'program' -}}
-    {{"/// `[optional account, default to '" + account.defaultsTo.publicKey + "']`\n" if account.defaultsTo.kind === 'publicKey' -}}
+    {% if account.isOptional %}
+      {{ '/// `[optional account]`\n' -}}
+    {% else %}
+      {{ "/// `[optional account, default to '" + account.defaultsTo.program.publicKey + "']`\n" if account.defaultsTo.kind === 'program' -}}
+      {{ "/// `[optional account, default to '" + account.defaultsTo.publicKey + "']`\n" if account.defaultsTo.kind === 'publicKey' -}}
+    {% endif %}
     {{- macros.docblock(account.docs) -}}
     #[inline(always)]
-    pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: solana_program::pubkey::Pubkey{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
-      {% if account.isSigner === 'either' %}
-        self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
+    pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: {{ 'Option<solana_program::pubkey::Pubkey>' if account.isOptional else 'solana_program::pubkey::Pubkey' }}{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
+      {% if account.isOptional %}
+        {% if account.isSigner === 'either' %}
+          if let Some({{ account.name | snakeCase }}) = {{ account.name | snakeCase }} {
+            self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
+          } else {
+            self.{{ account.name | snakeCase }} = None;
+          }
+        {% else %}
+          self.{{ account.name | snakeCase }} = {{ account.name | snakeCase }};
+        {% endif %}
       {% else %}
-        self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
+        {% if account.isSigner === 'either' %}
+          self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
+        {% else %}
+          self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
+        {% endif %}
       {% endif %}
       self
     }

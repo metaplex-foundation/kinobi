@@ -847,7 +847,9 @@ dependencies = [
 
 [[package]]
 name = "kaigan"
-version = "0.2.1"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4a26f49495f94a283312e7ef45a243540ef20c9356bb01c8d84a61ac8ba5339b"
 dependencies = [
  "borsh 0.10.3",
  "serde",

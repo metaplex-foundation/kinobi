@@ -271,9 +271,9 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
     #[inline(always)]
     pub fn reservation_list(
         &mut self,
-        reservation_list: solana_program::pubkey::Pubkey,
+        reservation_list: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.reservation_list = Some(reservation_list);
+        self.reservation_list = reservation_list;
         self
     }
     #[allow(clippy::clone_on_copy)]
@@ -631,9 +631,9 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
     #[inline(always)]
     pub fn reservation_list(
         &mut self,
-        reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+        reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.reservation_list = Some(reservation_list);
+        self.instruction.reservation_list = reservation_list;
         self
     }
     #[allow(clippy::clone_on_copy)]

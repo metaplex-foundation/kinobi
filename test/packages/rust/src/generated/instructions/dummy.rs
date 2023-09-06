@@ -145,8 +145,8 @@ impl DummyBuilder {
     }
     /// `[optional account]`
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.mint = Some(mint);
+    pub fn mint(&mut self, mint: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.mint = mint;
         self
     }
     #[inline(always)]
@@ -174,23 +174,23 @@ impl DummyBuilder {
     }
     /// `[optional account]`
     #[inline(always)]
-    pub fn bar(&mut self, bar: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.bar = Some(bar);
+    pub fn bar(&mut self, bar: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.bar = bar;
         self
     }
     /// `[optional account]`
     #[inline(always)]
-    pub fn delegate(&mut self, delegate: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.delegate = Some(delegate);
+    pub fn delegate(&mut self, delegate: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.delegate = delegate;
         self
     }
     /// `[optional account]`
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
-        delegate_record: solana_program::pubkey::Pubkey,
+        delegate_record: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.delegate_record = Some(delegate_record);
+        self.delegate_record = delegate_record;
         self
     }
     #[inline(always)]
@@ -393,8 +393,11 @@ impl<'a> DummyCpiBuilder<'a> {
     }
     /// `[optional account]`
     #[inline(always)]
-    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-        self.instruction.mint = Some(mint);
+    pub fn mint(
+        &mut self,
+        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    ) -> &mut Self {
+        self.instruction.mint = mint;
         self
     }
     #[inline(always)]
@@ -425,26 +428,29 @@ impl<'a> DummyCpiBuilder<'a> {
     }
     /// `[optional account]`
     #[inline(always)]
-    pub fn bar(&mut self, bar: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-        self.instruction.bar = Some(bar);
+    pub fn bar(
+        &mut self,
+        bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    ) -> &mut Self {
+        self.instruction.bar = bar;
         self
     }
     /// `[optional account]`
     #[inline(always)]
     pub fn delegate(
         &mut self,
-        delegate: &'a solana_program::account_info::AccountInfo<'a>,
+        delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.delegate = Some(delegate);
+        self.instruction.delegate = delegate;
         self
     }
     /// `[optional account]`
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
-        delegate_record: &'a solana_program::account_info::AccountInfo<'a>,
+        delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.delegate_record = Some(delegate_record);
+        self.instruction.delegate_record = delegate_record;
         self
     }
     #[inline(always)]
