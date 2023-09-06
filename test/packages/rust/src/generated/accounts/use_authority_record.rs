@@ -20,6 +20,7 @@ pub struct UseAuthorityRecord {
 impl UseAuthorityRecord {
     pub const LEN: usize = 10;
 
+    #[inline(always)]
     pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
         let mut data = data;
         Self::deserialize(&mut data)

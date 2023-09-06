@@ -25,6 +25,7 @@ pub struct TokenOwnedEscrow {
 }
 
 impl TokenOwnedEscrow {
+    #[inline(always)]
     pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
         let mut data = data;
         Self::deserialize(&mut data)
