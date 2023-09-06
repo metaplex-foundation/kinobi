@@ -217,9 +217,9 @@ impl MigrateBuilder {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: solana_program::pubkey::Pubkey,
+        authorization_rules: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.authorization_rules = Some(authorization_rules);
+        self.authorization_rules = authorization_rules;
         self
     }
     #[inline(always)]
@@ -558,9 +558,9 @@ impl<'a> MigrateCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
+        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authorization_rules = Some(authorization_rules);
+        self.instruction.authorization_rules = authorization_rules;
         self
     }
     #[inline(always)]

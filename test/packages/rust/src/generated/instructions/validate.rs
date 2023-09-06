@@ -208,10 +208,14 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_signer1(
         &mut self,
-        opt_rule_signer1: solana_program::pubkey::Pubkey,
+        opt_rule_signer1: Option<solana_program::pubkey::Pubkey>,
         as_signer: bool,
     ) -> &mut Self {
-        self.opt_rule_signer1 = Some((opt_rule_signer1, as_signer));
+        if let Some(opt_rule_signer1) = opt_rule_signer1 {
+            self.opt_rule_signer1 = Some((opt_rule_signer1, as_signer));
+        } else {
+            self.opt_rule_signer1 = None;
+        }
         self
     }
     /// `[optional account]`
@@ -219,9 +223,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_signer2(
         &mut self,
-        opt_rule_signer2: solana_program::pubkey::Pubkey,
+        opt_rule_signer2: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_signer2 = Some(opt_rule_signer2);
+        self.opt_rule_signer2 = opt_rule_signer2;
         self
     }
     /// `[optional account]`
@@ -229,9 +233,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_signer3(
         &mut self,
-        opt_rule_signer3: solana_program::pubkey::Pubkey,
+        opt_rule_signer3: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_signer3 = Some(opt_rule_signer3);
+        self.opt_rule_signer3 = opt_rule_signer3;
         self
     }
     /// `[optional account]`
@@ -239,9 +243,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_signer4(
         &mut self,
-        opt_rule_signer4: solana_program::pubkey::Pubkey,
+        opt_rule_signer4: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_signer4 = Some(opt_rule_signer4);
+        self.opt_rule_signer4 = opt_rule_signer4;
         self
     }
     /// `[optional account]`
@@ -249,9 +253,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_signer5(
         &mut self,
-        opt_rule_signer5: solana_program::pubkey::Pubkey,
+        opt_rule_signer5: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_signer5 = Some(opt_rule_signer5);
+        self.opt_rule_signer5 = opt_rule_signer5;
         self
     }
     /// `[optional account]`
@@ -259,9 +263,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_nonsigner1(
         &mut self,
-        opt_rule_nonsigner1: solana_program::pubkey::Pubkey,
+        opt_rule_nonsigner1: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_nonsigner1 = Some(opt_rule_nonsigner1);
+        self.opt_rule_nonsigner1 = opt_rule_nonsigner1;
         self
     }
     /// `[optional account]`
@@ -269,9 +273,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_nonsigner2(
         &mut self,
-        opt_rule_nonsigner2: solana_program::pubkey::Pubkey,
+        opt_rule_nonsigner2: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_nonsigner2 = Some(opt_rule_nonsigner2);
+        self.opt_rule_nonsigner2 = opt_rule_nonsigner2;
         self
     }
     /// `[optional account]`
@@ -279,9 +283,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_nonsigner3(
         &mut self,
-        opt_rule_nonsigner3: solana_program::pubkey::Pubkey,
+        opt_rule_nonsigner3: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_nonsigner3 = Some(opt_rule_nonsigner3);
+        self.opt_rule_nonsigner3 = opt_rule_nonsigner3;
         self
     }
     /// `[optional account]`
@@ -289,9 +293,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_nonsigner4(
         &mut self,
-        opt_rule_nonsigner4: solana_program::pubkey::Pubkey,
+        opt_rule_nonsigner4: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_nonsigner4 = Some(opt_rule_nonsigner4);
+        self.opt_rule_nonsigner4 = opt_rule_nonsigner4;
         self
     }
     /// `[optional account]`
@@ -299,9 +303,9 @@ impl ValidateBuilder {
     #[inline(always)]
     pub fn opt_rule_nonsigner5(
         &mut self,
-        opt_rule_nonsigner5: solana_program::pubkey::Pubkey,
+        opt_rule_nonsigner5: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.opt_rule_nonsigner5 = Some(opt_rule_nonsigner5);
+        self.opt_rule_nonsigner5 = opt_rule_nonsigner5;
         self
     }
     #[inline(always)]
@@ -663,10 +667,14 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer1(
         &mut self,
-        opt_rule_signer1: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_signer1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
         as_signer: bool,
     ) -> &mut Self {
-        self.instruction.opt_rule_signer1 = Some((opt_rule_signer1, as_signer));
+        if let Some(opt_rule_signer1) = opt_rule_signer1 {
+            self.instruction.opt_rule_signer1 = Some((opt_rule_signer1, as_signer));
+        } else {
+            self.instruction.opt_rule_signer1 = None;
+        }
         self
     }
     /// `[optional account]`
@@ -674,9 +682,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer2(
         &mut self,
-        opt_rule_signer2: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_signer2 = Some(opt_rule_signer2);
+        self.instruction.opt_rule_signer2 = opt_rule_signer2;
         self
     }
     /// `[optional account]`
@@ -684,9 +692,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer3(
         &mut self,
-        opt_rule_signer3: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_signer3 = Some(opt_rule_signer3);
+        self.instruction.opt_rule_signer3 = opt_rule_signer3;
         self
     }
     /// `[optional account]`
@@ -694,9 +702,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer4(
         &mut self,
-        opt_rule_signer4: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_signer4 = Some(opt_rule_signer4);
+        self.instruction.opt_rule_signer4 = opt_rule_signer4;
         self
     }
     /// `[optional account]`
@@ -704,9 +712,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer5(
         &mut self,
-        opt_rule_signer5: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_signer5 = Some(opt_rule_signer5);
+        self.instruction.opt_rule_signer5 = opt_rule_signer5;
         self
     }
     /// `[optional account]`
@@ -714,9 +722,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner1(
         &mut self,
-        opt_rule_nonsigner1: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_nonsigner1 = Some(opt_rule_nonsigner1);
+        self.instruction.opt_rule_nonsigner1 = opt_rule_nonsigner1;
         self
     }
     /// `[optional account]`
@@ -724,9 +732,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner2(
         &mut self,
-        opt_rule_nonsigner2: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_nonsigner2 = Some(opt_rule_nonsigner2);
+        self.instruction.opt_rule_nonsigner2 = opt_rule_nonsigner2;
         self
     }
     /// `[optional account]`
@@ -734,9 +742,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner3(
         &mut self,
-        opt_rule_nonsigner3: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_nonsigner3 = Some(opt_rule_nonsigner3);
+        self.instruction.opt_rule_nonsigner3 = opt_rule_nonsigner3;
         self
     }
     /// `[optional account]`
@@ -744,9 +752,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner4(
         &mut self,
-        opt_rule_nonsigner4: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_nonsigner4 = Some(opt_rule_nonsigner4);
+        self.instruction.opt_rule_nonsigner4 = opt_rule_nonsigner4;
         self
     }
     /// `[optional account]`
@@ -754,9 +762,9 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner5(
         &mut self,
-        opt_rule_nonsigner5: &'a solana_program::account_info::AccountInfo<'a>,
+        opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.opt_rule_nonsigner5 = Some(opt_rule_nonsigner5);
+        self.instruction.opt_rule_nonsigner5 = opt_rule_nonsigner5;
         self
     }
     #[inline(always)]

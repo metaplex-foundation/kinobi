@@ -158,9 +158,9 @@ impl BurnNftBuilder {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: solana_program::pubkey::Pubkey,
+        collection_metadata: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.collection_metadata = Some(collection_metadata);
+        self.collection_metadata = collection_metadata;
         self
     }
     #[inline(always)]
@@ -414,9 +414,9 @@ impl<'a> BurnNftCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.collection_metadata = Some(collection_metadata);
+        self.instruction.collection_metadata = collection_metadata;
         self
     }
     #[inline(always)]

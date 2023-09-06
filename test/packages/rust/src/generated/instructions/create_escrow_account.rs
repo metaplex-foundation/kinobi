@@ -181,8 +181,8 @@ impl CreateEscrowAccountBuilder {
     /// `[optional account]`
     /// Authority/creator of the escrow account
     #[inline(always)]
-    pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.authority = Some(authority);
+    pub fn authority(&mut self, authority: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.authority = authority;
         self
     }
     #[inline(always)]
@@ -480,9 +480,9 @@ impl<'a> CreateEscrowAccountCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authority = Some(authority);
+        self.instruction.authority = authority;
         self
     }
     #[inline(always)]

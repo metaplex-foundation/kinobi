@@ -113,8 +113,8 @@ impl SetTokenStandardBuilder {
     /// `[optional account]`
     /// Edition account
     #[inline(always)]
-    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.edition = Some(edition);
+    pub fn edition(&mut self, edition: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.edition = edition;
         self
     }
     #[inline(always)]
@@ -304,9 +304,9 @@ impl<'a> SetTokenStandardCpiBuilder<'a> {
     #[inline(always)]
     pub fn edition(
         &mut self,
-        edition: &'a solana_program::account_info::AccountInfo<'a>,
+        edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.edition = Some(edition);
+        self.instruction.edition = edition;
         self
     }
     #[inline(always)]

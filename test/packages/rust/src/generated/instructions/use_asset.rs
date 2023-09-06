@@ -225,9 +225,9 @@ impl UseAssetBuilder {
     #[inline(always)]
     pub fn use_authority_record(
         &mut self,
-        use_authority_record: solana_program::pubkey::Pubkey,
+        use_authority_record: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.use_authority_record = Some(use_authority_record);
+        self.use_authority_record = use_authority_record;
         self
     }
     /// `[optional account]`
@@ -235,9 +235,9 @@ impl UseAssetBuilder {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: solana_program::pubkey::Pubkey,
+        authorization_rules: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.authorization_rules = Some(authorization_rules);
+        self.authorization_rules = authorization_rules;
         self
     }
     /// `[optional account]`
@@ -245,9 +245,9 @@ impl UseAssetBuilder {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: solana_program::pubkey::Pubkey,
+        authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.authorization_rules_program = Some(authorization_rules_program);
+        self.authorization_rules_program = authorization_rules_program;
         self
     }
     #[inline(always)]
@@ -605,9 +605,9 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn use_authority_record(
         &mut self,
-        use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.use_authority_record = Some(use_authority_record);
+        self.instruction.use_authority_record = use_authority_record;
         self
     }
     /// `[optional account]`
@@ -615,9 +615,9 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: &'a solana_program::account_info::AccountInfo<'a>,
+        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authorization_rules = Some(authorization_rules);
+        self.instruction.authorization_rules = authorization_rules;
         self
     }
     /// `[optional account]`
@@ -625,9 +625,9 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: &'a solana_program::account_info::AccountInfo<'a>,
+        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.authorization_rules_program = Some(authorization_rules_program);
+        self.instruction.authorization_rules_program = authorization_rules_program;
         self
     }
     #[inline(always)]

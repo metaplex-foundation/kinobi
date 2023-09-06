@@ -319,8 +319,8 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
     /// `[optional account]`
     /// Rent info
     #[inline(always)]
-    pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.rent = Some(rent);
+    pub fn rent(&mut self, rent: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.rent = rent;
         self
     }
     #[inline(always)]
@@ -817,8 +817,11 @@ impl<'a> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a> {
     /// `[optional account]`
     /// Rent info
     #[inline(always)]
-    pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-        self.instruction.rent = Some(rent);
+    pub fn rent(
+        &mut self,
+        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    ) -> &mut Self {
+        self.instruction.rent = rent;
         self
     }
     #[inline(always)]

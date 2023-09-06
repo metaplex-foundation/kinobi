@@ -219,16 +219,16 @@ impl UtilizeBuilder {
     #[inline(always)]
     pub fn use_authority_record(
         &mut self,
-        use_authority_record: solana_program::pubkey::Pubkey,
+        use_authority_record: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.use_authority_record = Some(use_authority_record);
+        self.use_authority_record = use_authority_record;
         self
     }
     /// `[optional account]`
     /// Program As Signer (Burner)
     #[inline(always)]
-    pub fn burner(&mut self, burner: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.burner = Some(burner);
+    pub fn burner(&mut self, burner: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+        self.burner = burner;
         self
     }
     #[inline(always)]
@@ -585,9 +585,9 @@ impl<'a> UtilizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn use_authority_record(
         &mut self,
-        use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.use_authority_record = Some(use_authority_record);
+        self.instruction.use_authority_record = use_authority_record;
         self
     }
     /// `[optional account]`
@@ -595,9 +595,9 @@ impl<'a> UtilizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn burner(
         &mut self,
-        burner: &'a solana_program::account_info::AccountInfo<'a>,
+        burner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.burner = Some(burner);
+        self.instruction.burner = burner;
         self
     }
     #[inline(always)]

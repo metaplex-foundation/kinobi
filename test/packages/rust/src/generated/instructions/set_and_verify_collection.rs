@@ -179,9 +179,9 @@ impl SetAndVerifyCollectionBuilder {
     #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
-        collection_authority_record: solana_program::pubkey::Pubkey,
+        collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     ) -> &mut Self {
-        self.collection_authority_record = Some(collection_authority_record);
+        self.collection_authority_record = collection_authority_record;
         self
     }
     #[inline(always)]
@@ -462,9 +462,9 @@ impl<'a> SetAndVerifyCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
-        collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
-        self.instruction.collection_authority_record = Some(collection_authority_record);
+        self.instruction.collection_authority_record = collection_authority_record;
         self
     }
     #[inline(always)]
