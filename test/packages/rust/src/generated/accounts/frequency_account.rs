@@ -22,15 +22,6 @@ pub struct FrequencyAccount {
 impl FrequencyAccount {
     pub const LEN: usize = 24;
 
-    pub fn find_pda() -> (solana_program::pubkey::Pubkey, u8) {
-        solana_program::pubkey::Pubkey::find_program_address(
-            &[
-                "frequency_pda".as_bytes(),
-                crate::MPL_TOKEN_AUTH_RULES_ID.as_ref(),
-            ],
-            &crate::MPL_TOKEN_AUTH_RULES_ID,
-        )
-    }
     pub fn create_pda(
         bump: u8,
     ) -> Result<solana_program::pubkey::Pubkey, solana_program::pubkey::PubkeyError> {
@@ -42,6 +33,21 @@ impl FrequencyAccount {
             ],
             &crate::MPL_TOKEN_AUTH_RULES_ID,
         )
+    }
+
+    pub fn find_pda() -> (solana_program::pubkey::Pubkey, u8) {
+        solana_program::pubkey::Pubkey::find_program_address(
+            &[
+                "frequency_pda".as_bytes(),
+                crate::MPL_TOKEN_AUTH_RULES_ID.as_ref(),
+            ],
+            &crate::MPL_TOKEN_AUTH_RULES_ID,
+        )
+    }
+
+    pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+        let mut data = data;
+        Self::deserialize(&mut data)
     }
 }
 

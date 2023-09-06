@@ -30,16 +30,6 @@ pub struct MasterEditionV1 {
 }
 
 impl MasterEditionV1 {
-    pub fn find_pda(delegate_role: DelegateRole) -> (solana_program::pubkey::Pubkey, u8) {
-        solana_program::pubkey::Pubkey::find_program_address(
-            &[
-                "metadata".as_bytes(),
-                crate::MPL_TOKEN_METADATA_ID.as_ref(),
-                delegate_role.to_string().as_ref(),
-            ],
-            &crate::MPL_TOKEN_METADATA_ID,
-        )
-    }
     pub fn create_pda(
         delegate_role: DelegateRole,
         bump: u8,
@@ -53,6 +43,22 @@ impl MasterEditionV1 {
             ],
             &crate::MPL_TOKEN_METADATA_ID,
         )
+    }
+
+    pub fn find_pda(delegate_role: DelegateRole) -> (solana_program::pubkey::Pubkey, u8) {
+        solana_program::pubkey::Pubkey::find_program_address(
+            &[
+                "metadata".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                delegate_role.to_string().as_ref(),
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
+
+    pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+        let mut data = data;
+        Self::deserialize(&mut data)
     }
 }
 

@@ -24,6 +24,13 @@ pub struct ReservationListV1 {
     pub reservations: Vec<ReservationV1>,
 }
 
+impl ReservationListV1 {
+    pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+        let mut data = data;
+        Self::deserialize(&mut data)
+    }
+}
+
 impl<'a> TryFrom<&'a solana_program::account_info::AccountInfo<'a>> for ReservationListV1 {
     type Error = std::io::Error;
 

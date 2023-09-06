@@ -50,16 +50,6 @@ pub struct Metadata {
 impl Metadata {
     pub const LEN: usize = 679;
 
-    pub fn find_pda(mint: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
-        solana_program::pubkey::Pubkey::find_program_address(
-            &[
-                "metadata".as_bytes(),
-                crate::MPL_TOKEN_METADATA_ID.as_ref(),
-                mint.as_ref(),
-            ],
-            &crate::MPL_TOKEN_METADATA_ID,
-        )
-    }
     pub fn create_pda(
         mint: Pubkey,
         bump: u8,
@@ -73,6 +63,22 @@ impl Metadata {
             ],
             &crate::MPL_TOKEN_METADATA_ID,
         )
+    }
+
+    pub fn find_pda(mint: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
+        solana_program::pubkey::Pubkey::find_program_address(
+            &[
+                "metadata".as_bytes(),
+                crate::MPL_TOKEN_METADATA_ID.as_ref(),
+                mint.as_ref(),
+            ],
+            &crate::MPL_TOKEN_METADATA_ID,
+        )
+    }
+
+    pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+        let mut data = data;
+        Self::deserialize(&mut data)
     }
 }
 
