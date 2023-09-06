@@ -82,12 +82,12 @@ impl WithdrawBuilder {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
         self.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
@@ -222,12 +222,15 @@ impl<'a> WithdrawCpiBuilder<'a> {
         self
     }
     #[inline(always)]
-    pub fn remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
     }
     #[inline(always)]
-    pub fn remaining_accounts(
+    pub fn add_remaining_accounts(
         &mut self,
         accounts: &[super::InstructionAccountInfo<'a>],
     ) -> &mut Self {
