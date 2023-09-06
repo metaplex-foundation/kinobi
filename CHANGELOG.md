@@ -1,5 +1,23 @@
 # @metaplex-foundation/kinobi
 
+## 0.15.0
+
+### Minor Changes
+
+- [#78](https://github.com/metaplex-foundation/kinobi/pull/78) [`d020f40`](https://github.com/metaplex-foundation/kinobi/commit/d020f40467a7bbfec6d239bbe4acf2caaa3d3295) Thanks [@febo](https://github.com/febo)! - Optional account setters on Rust client
+
+- [#70](https://github.com/metaplex-foundation/kinobi/pull/70) [`30bd0c7`](https://github.com/metaplex-foundation/kinobi/commit/30bd0c75ad49b6be79f0521ed2d06a30ce47b605) Thanks [@febo](https://github.com/febo)! - Add remaining accounts to instructions
+
+- [#77](https://github.com/metaplex-foundation/kinobi/pull/77) [`a4274d3`](https://github.com/metaplex-foundation/kinobi/commit/a4274d3ce767cedfb3715cddff678766f2eb6626) Thanks [@febo](https://github.com/febo)! - Change mod visibility on Rust client
+
+### Patch Changes
+
+- [#79](https://github.com/metaplex-foundation/kinobi/pull/79) [`2e24d04`](https://github.com/metaplex-foundation/kinobi/commit/2e24d043a2430afecb648d3e54aefb7830ad68c4) Thanks [@febo](https://github.com/febo)! - Add bytes helper to account types on the Rust client
+
+- [#76](https://github.com/metaplex-foundation/kinobi/pull/76) [`0a87afb`](https://github.com/metaplex-foundation/kinobi/commit/0a87afbab0d8945811bf199538dd923eeb62700d) Thanks [@febo](https://github.com/febo)! - Add doc to default accounts
+
+- [#74](https://github.com/metaplex-foundation/kinobi/pull/74) [`d68cb5d`](https://github.com/metaplex-foundation/kinobi/commit/d68cb5d3a6e6a00420a1fc45f8e078c8a003e9f3) Thanks [@febo](https://github.com/febo)! - Add serde to accounts and defined types
+
 ## 0.14.0
 
 ### Minor Changes
