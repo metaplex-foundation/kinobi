@@ -17,12 +17,19 @@ pub struct AddConfigLines {
 }
 
 impl AddConfigLines {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: AddConfigLinesInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(2);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: AddConfigLinesInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -31,6 +38,9 @@ impl AddConfigLines {
             self.authority,
             true,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = AddConfigLinesInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -70,6 +80,7 @@ pub struct AddConfigLinesBuilder {
     authority: Option<solana_program::pubkey::Pubkey>,
     index: Option<u32>,
     config_lines: Option<Vec<ConfigLine>>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl AddConfigLinesBuilder {
@@ -96,8 +107,18 @@ impl AddConfigLinesBuilder {
         self.config_lines = Some(config_lines);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = AddConfigLines {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
@@ -107,8 +128,15 @@ impl AddConfigLinesBuilder {
             config_lines: self.config_lines.clone().expect("config_lines is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `add_config_lines` CPI accounts.
+pub struct AddConfigLinesCpiAccounts<'a> {
+    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `add_config_lines` CPI instruction.
@@ -124,16 +152,44 @@ pub struct AddConfigLinesCpi<'a> {
 }
 
 impl<'a> AddConfigLinesCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: AddConfigLinesCpiAccounts<'a>,
+        args: AddConfigLinesInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            candy_machine: accounts.candy_machine,
+            authority: accounts.authority,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(2);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -142,6 +198,9 @@ impl<'a> AddConfigLinesCpi<'a> {
             *self.authority.key,
             true,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = AddConfigLinesInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -151,10 +210,13 @@ impl<'a> AddConfigLinesCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(2 + 1);
+        let mut account_infos = Vec::with_capacity(2 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -177,6 +239,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
             authority: None,
             index: None,
             config_lines: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -206,8 +269,34 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
         self.instruction.config_lines = Some(config_lines);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> AddConfigLinesCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = AddConfigLinesInstructionArgs {
             index: self.instruction.index.clone().expect("index is not set"),
             config_lines: self
@@ -216,8 +305,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
                 .clone()
                 .expect("config_lines is not set"),
         };
-
-        AddConfigLinesCpi {
+        let instruction = AddConfigLinesCpi {
             __program: self.instruction.__program,
 
             candy_machine: self
@@ -227,7 +315,11 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
 
             authority: self.instruction.authority.expect("authority is not set"),
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -237,4 +329,5 @@ struct AddConfigLinesCpiBuilderInstruction<'a> {
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     index: Option<u32>,
     config_lines: Option<Vec<ConfigLine>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

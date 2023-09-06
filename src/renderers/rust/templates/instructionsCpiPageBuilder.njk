@@ -15,6 +15,7 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
           {{ arg.name | snakeCase }}: None,
         {% endif %}
       {% endfor %}
+      __remaining_accounts: Vec::new(),
     });
     Self { instruction }
   }
@@ -43,8 +44,23 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
       }
     {% endif %}
   {% endfor %}
+  #[inline(always)]
+  pub fn add_remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
+    self.instruction.__remaining_accounts.push(account);
+    self
+  }
+  #[inline(always)]
+  pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccountInfo<'a>]) -> &mut Self {
+    self.instruction.__remaining_accounts.extend_from_slice(accounts);
+    self
+  }
+  #[inline(always)]
+  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed(&[])
+  }
   #[allow(clippy::clone_on_copy)]
-  pub fn build(&self) -> {{ instruction.name | pascalCase }}Cpi<'a> {
+  #[allow(clippy::vec_init_then_push)]
+  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
     {% if hasArgs %}
       let args = {{ instruction.name | pascalCase }}InstructionArgs {
         {% for arg in instructionArgs %}
@@ -62,8 +78,7 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
         {% endfor %}
       };
     {% endif %}
-
-    {{ instruction.name | pascalCase }}Cpi {
+    let instruction = {{ instruction.name | pascalCase }}Cpi {
         __program: self.instruction.__program,
         {% for account in instruction.accounts %}          
           {{ account.name | snakeCase }}: self.instruction.{{ account.name | snakeCase }}{{ '.expect(\"' + account.name | snakeCase + ' is not set\")' if not account.isOptional }},
@@ -71,22 +86,24 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
         {% if hasArgs %}
           __args: args,
         {% endif %}
-    }
+    };
+    instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
   }
 }
 
 struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a> {
   __program: &'a solana_program::account_info::AccountInfo<'a>,
-{% for account in instruction.accounts %}
-  {% if account.isSigner === 'either' %}
-    {{ account.name | snakeCase }}: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
-  {% else %}
-    {{ account.name | snakeCase }}: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-  {% endif %}
-{% endfor %}
-{% for arg in instructionArgs %}
-  {% if not arg.default %}
-    {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
-  {% endif %}
-{% endfor %}
+  {% for account in instruction.accounts %}
+    {% if account.isSigner === 'either' %}
+      {{ account.name | snakeCase }}: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+    {% else %}
+      {{ account.name | snakeCase }}: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default %}
+      {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
+    {% endif %}
+  {% endfor %}
+  __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

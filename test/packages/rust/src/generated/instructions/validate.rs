@@ -41,12 +41,19 @@ pub struct Validate {
 }
 
 impl Validate {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: ValidateInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(13);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: ValidateInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(13 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.payer, true,
         ));
@@ -118,6 +125,9 @@ impl Validate {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = ValidateInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -168,6 +178,7 @@ pub struct ValidateBuilder {
     rule_set_name: Option<String>,
     operation: Option<Operation>,
     payload: Option<Payload>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl ValidateBuilder {
@@ -308,8 +319,18 @@ impl ValidateBuilder {
         self.payload = Some(payload);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Validate {
             payer: self.payer.expect("payer is not set"),
             rule_set: self.rule_set.expect("rule_set is not set"),
@@ -336,8 +357,38 @@ impl ValidateBuilder {
             payload: self.payload.clone().expect("payload is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `validate` CPI accounts.
+pub struct ValidateCpiAccounts<'a> {
+    /// Payer and creator of the RuleSet
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// The PDA account where the RuleSet is stored
+    pub rule_set: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub opt_rule_signer1: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+    /// Optional rule validation signer 2
+    pub opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation signer 3
+    pub opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation signer 4
+    pub opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation signer 5
+    pub opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation non-signer 1
+    pub opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation non-signer 2
+    pub opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation non-signer 3
+    pub opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation non-signer 4
+    pub opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    /// Optional rule validation non-signer 5
+    pub opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `validate` CPI instruction.
@@ -375,16 +426,55 @@ pub struct ValidateCpi<'a> {
 }
 
 impl<'a> ValidateCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: ValidateCpiAccounts<'a>,
+        args: ValidateInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            payer: accounts.payer,
+            rule_set: accounts.rule_set,
+            system_program: accounts.system_program,
+            opt_rule_signer1: accounts.opt_rule_signer1,
+            opt_rule_signer2: accounts.opt_rule_signer2,
+            opt_rule_signer3: accounts.opt_rule_signer3,
+            opt_rule_signer4: accounts.opt_rule_signer4,
+            opt_rule_signer5: accounts.opt_rule_signer5,
+            opt_rule_nonsigner1: accounts.opt_rule_nonsigner1,
+            opt_rule_nonsigner2: accounts.opt_rule_nonsigner2,
+            opt_rule_nonsigner3: accounts.opt_rule_nonsigner3,
+            opt_rule_nonsigner4: accounts.opt_rule_nonsigner4,
+            opt_rule_nonsigner5: accounts.opt_rule_nonsigner5,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(13);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(13 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.payer.key,
             true,
@@ -457,6 +547,9 @@ impl<'a> ValidateCpi<'a> {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = ValidateInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -466,7 +559,7 @@ impl<'a> ValidateCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(13 + 1);
+        let mut account_infos = Vec::with_capacity(13 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.payer.clone());
         account_infos.push(self.rule_set.clone());
@@ -501,6 +594,9 @@ impl<'a> ValidateCpi<'a> {
         if let Some(opt_rule_nonsigner5) = self.opt_rule_nonsigner5 {
             account_infos.push(opt_rule_nonsigner5.clone());
         }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -535,6 +631,7 @@ impl<'a> ValidateCpiBuilder<'a> {
             rule_set_name: None,
             operation: None,
             payload: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -677,8 +774,34 @@ impl<'a> ValidateCpiBuilder<'a> {
         self.instruction.payload = Some(payload);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> ValidateCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = ValidateInstructionArgs {
             rule_set_name: self
                 .instruction
@@ -696,8 +819,7 @@ impl<'a> ValidateCpiBuilder<'a> {
                 .clone()
                 .expect("payload is not set"),
         };
-
-        ValidateCpi {
+        let instruction = ValidateCpi {
             __program: self.instruction.__program,
 
             payer: self.instruction.payer.expect("payer is not set"),
@@ -729,7 +851,11 @@ impl<'a> ValidateCpiBuilder<'a> {
 
             opt_rule_nonsigner5: self.instruction.opt_rule_nonsigner5,
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -751,4 +877,5 @@ struct ValidateCpiBuilderInstruction<'a> {
     rule_set_name: Option<String>,
     operation: Option<Operation>,
     payload: Option<Payload>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

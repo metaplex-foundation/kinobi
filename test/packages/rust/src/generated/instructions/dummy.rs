@@ -32,9 +32,15 @@ pub struct Dummy {
 }
 
 impl Dummy {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(10);
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(10 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
             true,
@@ -96,6 +102,9 @@ impl Dummy {
             self.token_or_ata_program,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -132,6 +141,7 @@ pub struct DummyBuilder {
     delegate: Option<solana_program::pubkey::Pubkey>,
     delegate_record: Option<solana_program::pubkey::Pubkey>,
     token_or_ata_program: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DummyBuilder {
@@ -201,8 +211,18 @@ impl DummyBuilder {
         self.token_or_ata_program = Some(token_or_ata_program);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Dummy {
             edition: self.edition.expect("edition is not set"),
             mint: self.mint,
@@ -218,8 +238,31 @@ impl DummyBuilder {
                 .expect("token_or_ata_program is not set"),
         };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `dummy` CPI accounts.
+pub struct DummyCpiAccounts<'a> {
+    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub foo: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+
+    pub delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+
+    pub delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+
+    pub token_or_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `dummy` CPI instruction.
@@ -249,16 +292,50 @@ pub struct DummyCpi<'a> {
 }
 
 impl<'a> DummyCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: DummyCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            edition: accounts.edition,
+            mint: accounts.mint,
+            update_authority: accounts.update_authority,
+            mint_authority: accounts.mint_authority,
+            payer: accounts.payer,
+            foo: accounts.foo,
+            bar: accounts.bar,
+            delegate: accounts.delegate,
+            delegate_record: accounts.delegate_record,
+            token_or_ata_program: accounts.token_or_ata_program,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(10);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(10 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
             true,
@@ -325,6 +402,9 @@ impl<'a> DummyCpi<'a> {
             *self.token_or_ata_program.key,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = DummyInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -332,7 +412,7 @@ impl<'a> DummyCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(10 + 1);
+        let mut account_infos = Vec::with_capacity(10 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.edition.clone());
         if let Some(mint) = self.mint {
@@ -352,6 +432,9 @@ impl<'a> DummyCpi<'a> {
             account_infos.push(delegate_record.clone());
         }
         account_infos.push(self.token_or_ata_program.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -380,6 +463,7 @@ impl<'a> DummyCpiBuilder<'a> {
             delegate: None,
             delegate_record: None,
             token_or_ata_program: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -455,9 +539,35 @@ impl<'a> DummyCpiBuilder<'a> {
         self.instruction.token_or_ata_program = Some(token_or_ata_program);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> DummyCpi<'a> {
-        DummyCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = DummyCpi {
             __program: self.instruction.__program,
 
             edition: self.instruction.edition.expect("edition is not set"),
@@ -488,7 +598,11 @@ impl<'a> DummyCpiBuilder<'a> {
                 .instruction
                 .token_or_ata_program
                 .expect("token_or_ata_program is not set"),
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -504,4 +618,5 @@ struct DummyCpiBuilderInstruction<'a> {
     delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     token_or_ata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

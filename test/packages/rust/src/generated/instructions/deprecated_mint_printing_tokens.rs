@@ -28,12 +28,19 @@ pub struct DeprecatedMintPrintingTokens {
 }
 
 impl DeprecatedMintPrintingTokens {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: DeprecatedMintPrintingTokensInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(7);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: DeprecatedMintPrintingTokensInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(7 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.destination,
             false,
@@ -61,6 +68,9 @@ impl DeprecatedMintPrintingTokens {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.rent, false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = DeprecatedMintPrintingTokensInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -103,6 +113,7 @@ pub struct DeprecatedMintPrintingTokensBuilder {
     token_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     mint_printing_tokens_via_token_args: Option<MintPrintingTokensViaTokenArgs>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedMintPrintingTokensBuilder {
@@ -164,8 +175,18 @@ impl DeprecatedMintPrintingTokensBuilder {
         self.mint_printing_tokens_via_token_args = Some(mint_printing_tokens_via_token_args);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintPrintingTokens {
             destination: self.destination.expect("destination is not set"),
             printing_mint: self.printing_mint.expect("printing_mint is not set"),
@@ -186,8 +207,26 @@ impl DeprecatedMintPrintingTokensBuilder {
                 .expect("mint_printing_tokens_via_token_args is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `deprecated_mint_printing_tokens` CPI accounts.
+pub struct DeprecatedMintPrintingTokensCpiAccounts<'a> {
+    /// Destination account
+    pub destination: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Printing mint
+    pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Update authority
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
+    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent
+    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `deprecated_mint_printing_tokens` CPI instruction.
@@ -213,16 +252,49 @@ pub struct DeprecatedMintPrintingTokensCpi<'a> {
 }
 
 impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: DeprecatedMintPrintingTokensCpiAccounts<'a>,
+        args: DeprecatedMintPrintingTokensInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            destination: accounts.destination,
+            printing_mint: accounts.printing_mint,
+            update_authority: accounts.update_authority,
+            metadata: accounts.metadata,
+            master_edition: accounts.master_edition,
+            token_program: accounts.token_program,
+            rent: accounts.rent,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(7);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(7 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.destination.key,
             false,
@@ -251,6 +323,9 @@ impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
             *self.rent.key,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = DeprecatedMintPrintingTokensInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -262,7 +337,7 @@ impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(7 + 1);
+        let mut account_infos = Vec::with_capacity(7 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.destination.clone());
         account_infos.push(self.printing_mint.clone());
@@ -271,6 +346,9 @@ impl<'a> DeprecatedMintPrintingTokensCpi<'a> {
         account_infos.push(self.master_edition.clone());
         account_infos.push(self.token_program.clone());
         account_infos.push(self.rent.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -297,6 +375,7 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
             token_program: None,
             rent: None,
             mint_printing_tokens_via_token_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -369,8 +448,34 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
             Some(mint_printing_tokens_via_token_args);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> DeprecatedMintPrintingTokensCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = DeprecatedMintPrintingTokensInstructionArgs {
             mint_printing_tokens_via_token_args: self
                 .instruction
@@ -378,8 +483,7 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
                 .clone()
                 .expect("mint_printing_tokens_via_token_args is not set"),
         };
-
-        DeprecatedMintPrintingTokensCpi {
+        let instruction = DeprecatedMintPrintingTokensCpi {
             __program: self.instruction.__program,
 
             destination: self
@@ -411,7 +515,11 @@ impl<'a> DeprecatedMintPrintingTokensCpiBuilder<'a> {
 
             rent: self.instruction.rent.expect("rent is not set"),
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -425,4 +533,5 @@ struct DeprecatedMintPrintingTokensCpiBuilderInstruction<'a> {
     token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint_printing_tokens_via_token_args: Option<MintPrintingTokensViaTokenArgs>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
