@@ -28,12 +28,19 @@ pub struct CreateMetadataAccount {
 }
 
 impl CreateMetadataAccount {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: CreateMetadataAccountInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(7);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: CreateMetadataAccountInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(7 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -59,6 +66,9 @@ impl CreateMetadataAccount {
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.rent, false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = CreateMetadataAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -115,6 +125,7 @@ pub struct CreateMetadataAccountBuilder {
     data: Option<CreateMetadataAccountInstructionDataData>,
     is_mutable: Option<bool>,
     metadata_bump: Option<u8>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl CreateMetadataAccountBuilder {
@@ -183,8 +194,18 @@ impl CreateMetadataAccountBuilder {
         self.metadata_bump = Some(metadata_bump);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateMetadataAccount {
             metadata: self.metadata.expect("metadata is not set"),
             mint: self.mint.expect("mint is not set"),
@@ -207,8 +228,26 @@ impl CreateMetadataAccountBuilder {
                 .expect("metadata_bump is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `create_metadata_account` CPI accounts.
+pub struct CreateMetadataAccountCpiAccounts<'a> {
+    /// Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of token asset
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint authority
+    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// update authority info
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent info
+    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `create_metadata_account` CPI instruction.
@@ -234,16 +273,49 @@ pub struct CreateMetadataAccountCpi<'a> {
 }
 
 impl<'a> CreateMetadataAccountCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: CreateMetadataAccountCpiAccounts<'a>,
+        args: CreateMetadataAccountInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            metadata: accounts.metadata,
+            mint: accounts.mint,
+            mint_authority: accounts.mint_authority,
+            payer: accounts.payer,
+            update_authority: accounts.update_authority,
+            system_program: accounts.system_program,
+            rent: accounts.rent,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(7);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(7 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -272,6 +344,9 @@ impl<'a> CreateMetadataAccountCpi<'a> {
             *self.rent.key,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = CreateMetadataAccountInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -283,7 +358,7 @@ impl<'a> CreateMetadataAccountCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(7 + 1);
+        let mut account_infos = Vec::with_capacity(7 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.mint.clone());
@@ -292,6 +367,9 @@ impl<'a> CreateMetadataAccountCpi<'a> {
         account_infos.push(self.update_authority.clone());
         account_infos.push(self.system_program.clone());
         account_infos.push(self.rent.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -320,6 +398,7 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
             data: None,
             is_mutable: None,
             metadata_bump: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -392,8 +471,34 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
         self.instruction.metadata_bump = Some(metadata_bump);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> CreateMetadataAccountCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = CreateMetadataAccountInstructionArgs {
             data: self.instruction.data.clone().expect("data is not set"),
             is_mutable: self
@@ -407,8 +512,7 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
                 .clone()
                 .expect("metadata_bump is not set"),
         };
-
-        CreateMetadataAccountCpi {
+        let instruction = CreateMetadataAccountCpi {
             __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
@@ -434,7 +538,11 @@ impl<'a> CreateMetadataAccountCpiBuilder<'a> {
 
             rent: self.instruction.rent.expect("rent is not set"),
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -450,4 +558,5 @@ struct CreateMetadataAccountCpiBuilderInstruction<'a> {
     data: Option<CreateMetadataAccountInstructionDataData>,
     is_mutable: Option<bool>,
     metadata_bump: Option<u8>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

@@ -22,12 +22,19 @@ pub struct SetCollectionSize {
 }
 
 impl SetCollectionSize {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: SetCollectionSizeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(4);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: SetCollectionSizeInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(4 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.collection_metadata,
             false,
@@ -51,6 +58,9 @@ impl SetCollectionSize {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = SetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -90,6 +100,7 @@ pub struct SetCollectionSizeBuilder {
     collection_mint: Option<solana_program::pubkey::Pubkey>,
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     set_collection_size_args: Option<SetCollectionSizeArgs>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl SetCollectionSizeBuilder {
@@ -141,8 +152,18 @@ impl SetCollectionSizeBuilder {
         self.set_collection_size_args = Some(set_collection_size_args);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = SetCollectionSize {
             collection_metadata: self
                 .collection_metadata
@@ -160,8 +181,20 @@ impl SetCollectionSizeBuilder {
                 .expect("set_collection_size_args is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `set_collection_size` CPI accounts.
+pub struct SetCollectionSizeCpiAccounts<'a> {
+    /// Collection Metadata account
+    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Update authority
+    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of the Collection
+    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Collection Authority Record PDA
+    pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `set_collection_size` CPI instruction.
@@ -181,16 +214,46 @@ pub struct SetCollectionSizeCpi<'a> {
 }
 
 impl<'a> SetCollectionSizeCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: SetCollectionSizeCpiAccounts<'a>,
+        args: SetCollectionSizeInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            collection_metadata: accounts.collection_metadata,
+            collection_authority: accounts.collection_authority,
+            collection_mint: accounts.collection_mint,
+            collection_authority_record: accounts.collection_authority_record,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(4);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(4 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.collection_metadata.key,
             false,
@@ -214,6 +277,9 @@ impl<'a> SetCollectionSizeCpi<'a> {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = SetCollectionSizeInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -225,7 +291,7 @@ impl<'a> SetCollectionSizeCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(4 + 1);
+        let mut account_infos = Vec::with_capacity(4 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.collection_metadata.clone());
         account_infos.push(self.collection_authority.clone());
@@ -233,6 +299,9 @@ impl<'a> SetCollectionSizeCpi<'a> {
         if let Some(collection_authority_record) = self.collection_authority_record {
             account_infos.push(collection_authority_record.clone());
         }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -256,6 +325,7 @@ impl<'a> SetCollectionSizeCpiBuilder<'a> {
             collection_mint: None,
             collection_authority_record: None,
             set_collection_size_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -304,8 +374,34 @@ impl<'a> SetCollectionSizeCpiBuilder<'a> {
         self.instruction.set_collection_size_args = Some(set_collection_size_args);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> SetCollectionSizeCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = SetCollectionSizeInstructionArgs {
             set_collection_size_args: self
                 .instruction
@@ -313,8 +409,7 @@ impl<'a> SetCollectionSizeCpiBuilder<'a> {
                 .clone()
                 .expect("set_collection_size_args is not set"),
         };
-
-        SetCollectionSizeCpi {
+        let instruction = SetCollectionSizeCpi {
             __program: self.instruction.__program,
 
             collection_metadata: self
@@ -334,7 +429,11 @@ impl<'a> SetCollectionSizeCpiBuilder<'a> {
 
             collection_authority_record: self.instruction.collection_authority_record,
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -345,4 +444,5 @@ struct SetCollectionSizeCpiBuilderInstruction<'a> {
     collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     set_collection_size_args: Option<SetCollectionSizeArgs>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

@@ -1,18 +1,19 @@
 /// Instruction builder.
 #[derive(Default)]
 pub struct {{ instruction.name | pascalCase }}Builder {
-{% for account in instruction.accounts %}
-  {% if account.isSigner === 'either' %}
-    {{ account.name | snakeCase }}: Option<(solana_program::pubkey::Pubkey, bool)>,
-  {% else %}
-    {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
-  {% endif %}
-{% endfor %}
-{% for arg in instructionArgs %}
-  {% if not arg.default %}
-    {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
-  {% endif %}
-{% endfor %}
+  {% for account in instruction.accounts %}
+    {% if account.isSigner === 'either' %}
+      {{ account.name | snakeCase }}: Option<(solana_program::pubkey::Pubkey, bool)>,
+    {% else %}
+      {{ account.name | snakeCase }}: Option<solana_program::pubkey::Pubkey>,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default %}
+      {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
+    {% endif %}
+  {% endfor %}
+  __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl {{ instruction.name | pascalCase }}Builder {
@@ -61,8 +62,18 @@ impl {{ instruction.name | pascalCase }}Builder {
       }
     {% endif %}
   {% endfor %}
+  #[inline(always)]
+  pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+    self.__remaining_accounts.push(account);
+    self
+  }
+  #[inline(always)]
+  pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+    self.__remaining_accounts.extend_from_slice(accounts);
+    self
+  }
   #[allow(clippy::clone_on_copy)]
-  pub fn build(&self) -> solana_program::instruction::Instruction {
+  pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {
         {% for account in instruction.accounts %}
           {% if account.isOptional %}
@@ -96,6 +107,6 @@ impl {{ instruction.name | pascalCase }}Builder {
       };
     {% endif %}
 
-    accounts.instruction({{ 'args' if hasArgs }})
+    accounts.instruction_with_remaining_accounts({{ 'args, ' if hasArgs }}&self.__remaining_accounts)
   }
 }

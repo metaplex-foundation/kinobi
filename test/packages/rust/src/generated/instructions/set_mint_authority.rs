@@ -18,9 +18,15 @@ pub struct SetMintAuthority {
 }
 
 impl SetMintAuthority {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3);
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -33,6 +39,9 @@ impl SetMintAuthority {
             self.mint_authority,
             true,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = SetMintAuthorityInstructionData::new().try_to_vec().unwrap();
 
         solana_program::instruction::Instruction {
@@ -62,6 +71,7 @@ pub struct SetMintAuthorityBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     mint_authority: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl SetMintAuthorityBuilder {
@@ -83,16 +93,35 @@ impl SetMintAuthorityBuilder {
         self.mint_authority = Some(mint_authority);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = SetMintAuthority {
             candy_machine: self.candy_machine.expect("candy_machine is not set"),
             authority: self.authority.expect("authority is not set"),
             mint_authority: self.mint_authority.expect("mint_authority is not set"),
         };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `set_mint_authority` CPI accounts.
+pub struct SetMintAuthorityCpiAccounts<'a> {
+    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `set_mint_authority` CPI instruction.
@@ -108,16 +137,43 @@ pub struct SetMintAuthorityCpi<'a> {
 }
 
 impl<'a> SetMintAuthorityCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: SetMintAuthorityCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            candy_machine: accounts.candy_machine,
+            authority: accounts.authority,
+            mint_authority: accounts.mint_authority,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -130,6 +186,9 @@ impl<'a> SetMintAuthorityCpi<'a> {
             *self.mint_authority.key,
             true,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = SetMintAuthorityInstructionData::new().try_to_vec().unwrap();
 
         let instruction = solana_program::instruction::Instruction {
@@ -137,11 +196,14 @@ impl<'a> SetMintAuthorityCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(3 + 1);
+        let mut account_infos = Vec::with_capacity(3 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority.clone());
         account_infos.push(self.mint_authority.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -163,6 +225,7 @@ impl<'a> SetMintAuthorityCpiBuilder<'a> {
             candy_machine: None,
             authority: None,
             mint_authority: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -190,9 +253,35 @@ impl<'a> SetMintAuthorityCpiBuilder<'a> {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> SetMintAuthorityCpi<'a> {
-        SetMintAuthorityCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = SetMintAuthorityCpi {
             __program: self.instruction.__program,
 
             candy_machine: self
@@ -206,7 +295,11 @@ impl<'a> SetMintAuthorityCpiBuilder<'a> {
                 .instruction
                 .mint_authority
                 .expect("mint_authority is not set"),
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -215,4 +308,5 @@ struct SetMintAuthorityCpiBuilderInstruction<'a> {
     candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

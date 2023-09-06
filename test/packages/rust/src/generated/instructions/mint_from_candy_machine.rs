@@ -46,9 +46,15 @@ pub struct MintFromCandyMachine {
 }
 
 impl MintFromCandyMachine {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(17);
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(17 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -116,6 +122,9 @@ impl MintFromCandyMachine {
             self.recent_slothashes,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = MintFromCandyMachineInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -161,6 +170,7 @@ pub struct MintFromCandyMachineBuilder {
     token_program: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     recent_slothashes: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl MintFromCandyMachineBuilder {
@@ -282,8 +292,18 @@ impl MintFromCandyMachineBuilder {
         self.recent_slothashes = Some(recent_slothashes);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts =
             MintFromCandyMachine {
                 candy_machine: self.candy_machine.expect("candy_machine is not set"),
@@ -325,8 +345,45 @@ impl MintFromCandyMachineBuilder {
                     .expect("recent_slothashes is not set"),
             };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `mint_from_candy_machine` CPI accounts.
+pub struct MintFromCandyMachineCpiAccounts<'a> {
+    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub nft_mint: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub nft_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub nft_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub nft_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub recent_slothashes: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `mint_from_candy_machine` CPI instruction.
@@ -370,16 +427,57 @@ pub struct MintFromCandyMachineCpi<'a> {
 }
 
 impl<'a> MintFromCandyMachineCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: MintFromCandyMachineCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            candy_machine: accounts.candy_machine,
+            authority_pda: accounts.authority_pda,
+            mint_authority: accounts.mint_authority,
+            payer: accounts.payer,
+            nft_mint: accounts.nft_mint,
+            nft_mint_authority: accounts.nft_mint_authority,
+            nft_metadata: accounts.nft_metadata,
+            nft_master_edition: accounts.nft_master_edition,
+            collection_authority_record: accounts.collection_authority_record,
+            collection_mint: accounts.collection_mint,
+            collection_metadata: accounts.collection_metadata,
+            collection_master_edition: accounts.collection_master_edition,
+            collection_update_authority: accounts.collection_update_authority,
+            token_metadata_program: accounts.token_metadata_program,
+            token_program: accounts.token_program,
+            system_program: accounts.system_program,
+            recent_slothashes: accounts.recent_slothashes,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(17);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(17 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -448,6 +546,9 @@ impl<'a> MintFromCandyMachineCpi<'a> {
             *self.recent_slothashes.key,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = MintFromCandyMachineInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -457,7 +558,7 @@ impl<'a> MintFromCandyMachineCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(17 + 1);
+        let mut account_infos = Vec::with_capacity(17 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority_pda.clone());
@@ -476,6 +577,9 @@ impl<'a> MintFromCandyMachineCpi<'a> {
         account_infos.push(self.token_program.clone());
         account_infos.push(self.system_program.clone());
         account_infos.push(self.recent_slothashes.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -511,6 +615,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
             token_program: None,
             system_program: None,
             recent_slothashes: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -647,9 +752,35 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
         self.instruction.recent_slothashes = Some(recent_slothashes);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> MintFromCandyMachineCpi<'a> {
-        MintFromCandyMachineCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = MintFromCandyMachineCpi {
             __program: self.instruction.__program,
 
             candy_machine: self
@@ -730,7 +861,11 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
                 .instruction
                 .recent_slothashes
                 .expect("recent_slothashes is not set"),
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -753,4 +888,5 @@ struct MintFromCandyMachineCpiBuilderInstruction<'a> {
     token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     recent_slothashes: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

@@ -40,12 +40,19 @@ pub struct DeprecatedCreateMasterEdition {
 }
 
 impl DeprecatedCreateMasterEdition {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: DeprecatedCreateMasterEditionInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(13);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: DeprecatedCreateMasterEditionInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(13 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
             false,
@@ -95,6 +102,9 @@ impl DeprecatedCreateMasterEdition {
             self.one_time_printing_authorization_mint_authority,
             true,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = DeprecatedCreateMasterEditionInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -143,6 +153,7 @@ pub struct DeprecatedCreateMasterEditionBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     one_time_printing_authorization_mint_authority: Option<solana_program::pubkey::Pubkey>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedCreateMasterEditionBuilder {
@@ -251,8 +262,18 @@ impl DeprecatedCreateMasterEditionBuilder {
         self.create_master_edition_args = Some(create_master_edition_args);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedCreateMasterEdition {
             edition: self.edition.expect("edition is not set"),
             mint: self.mint.expect("mint is not set"),
@@ -287,8 +308,39 @@ impl DeprecatedCreateMasterEditionBuilder {
                 .expect("create_master_edition_args is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `deprecated_create_master_edition` CPI accounts.
+pub struct DeprecatedCreateMasterEditionCpiAccounts<'a> {
+    /// Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition']
+    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata mint
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Printing mint - A mint you control that can mint tokens that can be exchanged for limited editions of your master edition via the MintNewEditionFromMasterEditionViaToken endpoint
+    pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token.
+    pub one_time_printing_authorization_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Current Update authority key
+    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY.
+    pub printing_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
+    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent info
+    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    /// One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY.
+    pub one_time_printing_authorization_mint_authority:
+        &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `deprecated_create_master_edition` CPI instruction.
@@ -327,16 +379,56 @@ pub struct DeprecatedCreateMasterEditionCpi<'a> {
 }
 
 impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: DeprecatedCreateMasterEditionCpiAccounts<'a>,
+        args: DeprecatedCreateMasterEditionInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            edition: accounts.edition,
+            mint: accounts.mint,
+            printing_mint: accounts.printing_mint,
+            one_time_printing_authorization_mint: accounts.one_time_printing_authorization_mint,
+            update_authority: accounts.update_authority,
+            printing_mint_authority: accounts.printing_mint_authority,
+            mint_authority: accounts.mint_authority,
+            metadata: accounts.metadata,
+            payer: accounts.payer,
+            token_program: accounts.token_program,
+            system_program: accounts.system_program,
+            rent: accounts.rent,
+            one_time_printing_authorization_mint_authority: accounts
+                .one_time_printing_authorization_mint_authority,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(13);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(13 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
             false,
@@ -389,6 +481,9 @@ impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
             *self.one_time_printing_authorization_mint_authority.key,
             true,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = DeprecatedCreateMasterEditionInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -400,7 +495,7 @@ impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(13 + 1);
+        let mut account_infos = Vec::with_capacity(13 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.edition.clone());
         account_infos.push(self.mint.clone());
@@ -415,6 +510,9 @@ impl<'a> DeprecatedCreateMasterEditionCpi<'a> {
         account_infos.push(self.system_program.clone());
         account_infos.push(self.rent.clone());
         account_infos.push(self.one_time_printing_authorization_mint_authority.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -447,6 +545,7 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
             rent: None,
             one_time_printing_authorization_mint_authority: None,
             create_master_edition_args: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -569,8 +668,34 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
         self.instruction.create_master_edition_args = Some(create_master_edition_args);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> DeprecatedCreateMasterEditionCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = DeprecatedCreateMasterEditionInstructionArgs {
             create_master_edition_args: self
                 .instruction
@@ -578,8 +703,7 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
                 .clone()
                 .expect("create_master_edition_args is not set"),
         };
-
-        DeprecatedCreateMasterEditionCpi {
+        let instruction = DeprecatedCreateMasterEditionCpi {
             __program: self.instruction.__program,
 
             edition: self.instruction.edition.expect("edition is not set"),
@@ -632,7 +756,11 @@ impl<'a> DeprecatedCreateMasterEditionCpiBuilder<'a> {
                 .one_time_printing_authorization_mint_authority
                 .expect("one_time_printing_authorization_mint_authority is not set"),
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -653,4 +781,5 @@ struct DeprecatedCreateMasterEditionCpiBuilderInstruction<'a> {
     one_time_printing_authorization_mint_authority:
         Option<&'a solana_program::account_info::AccountInfo<'a>>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

@@ -3,11 +3,70 @@
 {% block main %}
 
 {% for instruction in instructionsToExport | sort(false, false, 'name') %}
-pub mod {{ instruction.name | snakeCase }};
+  pub(crate) mod {{ instruction.name | snakeCase }};
 {% endfor %}
 
 {% for instruction in instructionsToExport | sort(false, false, 'name') %}
-pub use self::{{ instruction.name | snakeCase }}::*;
+  pub use self::{{ instruction.name | snakeCase }}::*;
 {% endfor %}
+
+#[derive(Clone, Copy)]
+pub enum InstructionAccount {
+  Readonly(solana_program::pubkey::Pubkey),
+  ReadonlySigner(solana_program::pubkey::Pubkey),
+  Writable(solana_program::pubkey::Pubkey),
+  WritableSigner(solana_program::pubkey::Pubkey),
+}
+
+impl InstructionAccount {
+  pub fn to_account_meta(&self) -> solana_program::instruction::AccountMeta {
+    let (pubkey, writable, signer) = match self {
+      InstructionAccount::Readonly(pubkey) => (pubkey, false, false),
+      InstructionAccount::ReadonlySigner(pubkey) => (pubkey, false, true),
+      InstructionAccount::Writable(pubkey) => (pubkey, true, false),
+      InstructionAccount::WritableSigner(pubkey) => (pubkey, true, true),
+    };
+
+    if writable {
+      solana_program::instruction::AccountMeta::new(*pubkey, signer)
+    } else {
+      solana_program::instruction::AccountMeta::new_readonly(*pubkey, signer)
+    }
+  }
+}
+
+#[derive(Clone, Copy)]
+pub enum InstructionAccountInfo<'a> {
+  Readonly(&'a solana_program::account_info::AccountInfo<'a>),
+  ReadonlySigner(&'a solana_program::account_info::AccountInfo<'a>),
+  Writable(&'a solana_program::account_info::AccountInfo<'a>),
+  WritableSigner(&'a solana_program::account_info::AccountInfo<'a>),
+}
+
+impl<'a> InstructionAccountInfo<'a> {
+  pub fn to_account_meta(&self) -> solana_program::instruction::AccountMeta {
+    let (pubkey, writable, signer) = match self {
+      InstructionAccountInfo::Readonly(account_info) => (account_info.key, false, false),
+      InstructionAccountInfo::ReadonlySigner(account_info) => (account_info.key, false, true),
+      InstructionAccountInfo::Writable(account_info) => (account_info.key, true, false),
+      InstructionAccountInfo::WritableSigner(account_info) => (account_info.key, true, true),
+    };
+
+    if writable {
+      solana_program::instruction::AccountMeta::new(*pubkey, signer)
+    } else {
+      solana_program::instruction::AccountMeta::new_readonly(*pubkey, signer)
+    }
+  }
+  pub fn account_info(&self) -> &'a solana_program::account_info::AccountInfo<'a> {
+    match self {
+      InstructionAccountInfo::Readonly(account_info)
+        | InstructionAccountInfo::ReadonlySigner(account_info)
+        | InstructionAccountInfo::Writable(account_info)
+        | InstructionAccountInfo::WritableSigner(account_info)
+      => account_info,
+    }
+  }
+}
 
 {% endblock %}

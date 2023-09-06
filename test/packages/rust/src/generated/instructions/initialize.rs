@@ -35,12 +35,19 @@ pub struct Initialize {
 }
 
 impl Initialize {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: InitializeInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(11);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: InitializeInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(11 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.candy_machine,
             false,
@@ -84,6 +91,9 @@ impl Initialize {
             self.system_program,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
         let mut args = args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -130,6 +140,7 @@ pub struct InitializeBuilder {
     token_metadata_program: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     data: Option<CandyMachineData>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl InitializeBuilder {
@@ -216,8 +227,18 @@ impl InitializeBuilder {
         self.data = Some(data);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts =
             Initialize {
                 candy_machine: self.candy_machine.expect("candy_machine is not set"),
@@ -248,8 +269,33 @@ impl InitializeBuilder {
             data: self.data.clone().expect("data is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `initialize` CPI accounts.
+pub struct InitializeCpiAccounts<'a> {
+    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `initialize` CPI instruction.
@@ -283,16 +329,53 @@ pub struct InitializeCpi<'a> {
 }
 
 impl<'a> InitializeCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: InitializeCpiAccounts<'a>,
+        args: InitializeInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            candy_machine: accounts.candy_machine,
+            authority_pda: accounts.authority_pda,
+            authority: accounts.authority,
+            payer: accounts.payer,
+            collection_metadata: accounts.collection_metadata,
+            collection_mint: accounts.collection_mint,
+            collection_master_edition: accounts.collection_master_edition,
+            collection_update_authority: accounts.collection_update_authority,
+            collection_authority_record: accounts.collection_authority_record,
+            token_metadata_program: accounts.token_metadata_program,
+            system_program: accounts.system_program,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(11);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(11 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.candy_machine.key,
             false,
@@ -337,6 +420,9 @@ impl<'a> InitializeCpi<'a> {
             *self.system_program.key,
             false,
         ));
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = InitializeInstructionData::new().try_to_vec().unwrap();
         let mut args = self.__args.try_to_vec().unwrap();
         data.append(&mut args);
@@ -346,7 +432,7 @@ impl<'a> InitializeCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(11 + 1);
+        let mut account_infos = Vec::with_capacity(11 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.candy_machine.clone());
         account_infos.push(self.authority_pda.clone());
@@ -359,6 +445,9 @@ impl<'a> InitializeCpi<'a> {
         account_infos.push(self.collection_authority_record.clone());
         account_infos.push(self.token_metadata_program.clone());
         account_infos.push(self.system_program.clone());
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -389,6 +478,7 @@ impl<'a> InitializeCpiBuilder<'a> {
             token_metadata_program: None,
             system_program: None,
             data: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -482,13 +572,38 @@ impl<'a> InitializeCpiBuilder<'a> {
         self.instruction.data = Some(data);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> InitializeCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = InitializeInstructionArgs {
             data: self.instruction.data.clone().expect("data is not set"),
         };
-
-        InitializeCpi {
+        let instruction = InitializeCpi {
             __program: self.instruction.__program,
 
             candy_machine: self
@@ -540,7 +655,11 @@ impl<'a> InitializeCpiBuilder<'a> {
                 .system_program
                 .expect("system_program is not set"),
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -558,4 +677,5 @@ struct InitializeCpiBuilderInstruction<'a> {
     token_metadata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     data: Option<CandyMachineData>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

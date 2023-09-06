@@ -7,29 +7,32 @@
 
 /// Accounts.
 pub struct {{ instruction.name | pascalCase }} {
-{% for account in instruction.accounts %}
-  {% if account.docs.length > 0 %}
-    {{ macros.docblock(account.docs) }}
-  {% endif %}
+  {% for account in instruction.accounts %}
+    {% if account.docs.length > 0 %}
+      {{ macros.docblock(account.docs) }}
+    {% endif %}
 
-  {% if account.isSigner === 'either' %}
-    {% set type = '(solana_program::pubkey::Pubkey, bool)' %}
-  {% else %}
-    {% set type = 'solana_program::pubkey::Pubkey' %}
-  {% endif %}
+    {% if account.isSigner === 'either' %}
+      {% set type = '(solana_program::pubkey::Pubkey, bool)' %}
+    {% else %}
+      {% set type = 'solana_program::pubkey::Pubkey' %}
+    {% endif %}
 
-  {% if account.isOptional %}
-    pub {{ account.name | snakeCase }}: Option<{{ type }}>,
-  {% else %}
-    pub {{ account.name | snakeCase }}: {{ type }},
-  {% endif %}
-{% endfor %}
+    {% if account.isOptional %}
+      pub {{ account.name | snakeCase }}: Option<{{ type }}>,
+    {% else %}
+      pub {{ account.name | snakeCase }}: {{ type }},
+    {% endif %}
+  {% endfor %}
 }
 
 impl {{ instruction.name | pascalCase }} {
-  #[allow(clippy::vec_init_then_push)]
   pub fn instruction(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}) -> solana_program::instruction::Instruction {
-    let mut accounts = Vec::with_capacity({{ instruction.accounts.length }});
+    self.instruction_with_remaining_accounts({{ 'args, ' if hasArgs }}&[])
+  }
+  #[allow(clippy::vec_init_then_push)]
+  pub fn instruction_with_remaining_accounts(&self{{ ', args: ' + instruction.name | pascalCase + 'InstructionArgs' if hasArgs }}, remaining_accounts: &[super::InstructionAccount]) -> solana_program::instruction::Instruction {
+    let mut accounts = Vec::with_capacity({{ instruction.accounts.length }} + remaining_accounts.len());
     {% for account in instruction.accounts %}
       {% if account.isSigner === 'either' %}
         {% if account.isOptional %}
@@ -89,6 +92,7 @@ impl {{ instruction.name | pascalCase }} {
         {% endif %}
       {% endif %}
     {% endfor %}
+    remaining_accounts.iter().for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
     let {{ 'mut ' if hasArgs }}data = {{ instruction.name | pascalCase }}InstructionData::new().try_to_vec().unwrap();
     {% if hasArgs %}
       let mut args = args.try_to_vec().unwrap();

@@ -31,9 +31,15 @@ pub struct RevokeUseAuthority {
 }
 
 impl RevokeUseAuthority {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(9);
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(9 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.use_authority_record,
             false,
@@ -73,6 +79,9 @@ impl RevokeUseAuthority {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = RevokeUseAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -108,6 +117,7 @@ pub struct RevokeUseAuthorityBuilder {
     token_program: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl RevokeUseAuthorityBuilder {
@@ -177,8 +187,18 @@ impl RevokeUseAuthorityBuilder {
         self.rent = rent;
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = RevokeUseAuthority {
             use_authority_record: self
                 .use_authority_record
@@ -199,8 +219,30 @@ impl RevokeUseAuthorityBuilder {
             rent: self.rent,
         };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `revoke_use_authority` CPI accounts.
+pub struct RevokeUseAuthorityCpiAccounts<'a> {
+    /// Use Authority Record PDA
+    pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Owner
+    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    /// A Use Authority
+    pub user: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Owned Token Account Of Mint
+    pub owner_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of Metadata
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent info
+    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `revoke_use_authority` CPI instruction.
@@ -228,16 +270,49 @@ pub struct RevokeUseAuthorityCpi<'a> {
 }
 
 impl<'a> RevokeUseAuthorityCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: RevokeUseAuthorityCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            use_authority_record: accounts.use_authority_record,
+            owner: accounts.owner,
+            user: accounts.user,
+            owner_token_account: accounts.owner_token_account,
+            mint: accounts.mint,
+            metadata: accounts.metadata,
+            token_program: accounts.token_program,
+            system_program: accounts.system_program,
+            rent: accounts.rent,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(9);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(9 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.use_authority_record.key,
             false,
@@ -280,6 +355,9 @@ impl<'a> RevokeUseAuthorityCpi<'a> {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = RevokeUseAuthorityInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -289,7 +367,7 @@ impl<'a> RevokeUseAuthorityCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(9 + 1);
+        let mut account_infos = Vec::with_capacity(9 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.use_authority_record.clone());
         account_infos.push(self.owner.clone());
@@ -302,6 +380,9 @@ impl<'a> RevokeUseAuthorityCpi<'a> {
         if let Some(rent) = self.rent {
             account_infos.push(rent.clone());
         }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -329,6 +410,7 @@ impl<'a> RevokeUseAuthorityCpiBuilder<'a> {
             token_program: None,
             system_program: None,
             rent: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -405,9 +487,35 @@ impl<'a> RevokeUseAuthorityCpiBuilder<'a> {
         self.instruction.rent = rent;
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> RevokeUseAuthorityCpi<'a> {
-        RevokeUseAuthorityCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = RevokeUseAuthorityCpi {
             __program: self.instruction.__program,
 
             use_authority_record: self
@@ -439,7 +547,11 @@ impl<'a> RevokeUseAuthorityCpiBuilder<'a> {
                 .expect("system_program is not set"),
 
             rent: self.instruction.rent,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -454,4 +566,5 @@ struct RevokeUseAuthorityCpiBuilderInstruction<'a> {
     token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

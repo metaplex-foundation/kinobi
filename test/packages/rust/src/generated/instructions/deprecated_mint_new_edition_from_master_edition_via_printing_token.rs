@@ -45,9 +45,15 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
 }
 
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(16);
+        self.instruction_with_remaining_accounts(&[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(16 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
             false,
@@ -116,6 +122,9 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -158,6 +167,7 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     reservation_list: Option<solana_program::pubkey::Pubkey>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
@@ -276,8 +286,18 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
         self.reservation_list = reservation_list;
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
             metadata: self.metadata.expect("metadata is not set"),
             edition: self.edition.expect("edition is not set"),
@@ -307,8 +327,44 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
             reservation_list: self.reservation_list,
         };
 
-        accounts.instruction()
+        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
     }
+}
+
+/// `deprecated_mint_new_edition_from_master_edition_via_printing_token` CPI accounts.
+pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiAccounts<'a> {
+    /// New Metadata key (pda of ['metadata', program id, mint id])
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// New Edition V1 (pda of ['metadata', program id, mint id, 'edition'])
+    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])
+    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
+    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint authority of new mint
+    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Printing Mint of master record edition
+    pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account containing Printing mint token to be transferred
+    pub master_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number])
+    pub edition_marker: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Burn authority for this token
+    pub burn_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// update authority info for new metadata account
+    pub master_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Master record metadata account
+    pub master_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Rent info
+    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
+    pub reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `deprecated_mint_new_edition_from_master_edition_via_printing_token` CPI instruction.
@@ -350,16 +406,56 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
 }
 
 impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiAccounts<'a>,
+    ) -> Self {
+        Self {
+            __program: program,
+            metadata: accounts.metadata,
+            edition: accounts.edition,
+            master_edition: accounts.master_edition,
+            mint: accounts.mint,
+            mint_authority: accounts.mint_authority,
+            printing_mint: accounts.printing_mint,
+            master_token_account: accounts.master_token_account,
+            edition_marker: accounts.edition_marker,
+            burn_authority: accounts.burn_authority,
+            payer: accounts.payer,
+            master_update_authority: accounts.master_update_authority,
+            master_metadata: accounts.master_metadata,
+            token_program: accounts.token_program,
+            system_program: accounts.system_program,
+            rent: accounts.rent,
+            reservation_list: accounts.reservation_list,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(16);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(16 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
             *self.metadata.key,
             false,
@@ -431,6 +527,9 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let data = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -440,7 +539,7 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(16 + 1);
+        let mut account_infos = Vec::with_capacity(16 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.metadata.clone());
         account_infos.push(self.edition.clone());
@@ -460,6 +559,9 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
         if let Some(reservation_list) = self.reservation_list {
             account_infos.push(reservation_list.clone());
         }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -496,6 +598,7 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
                 system_program: None,
                 rent: None,
                 reservation_list: None,
+                __remaining_accounts: Vec::new(),
             },
         );
         Self { instruction }
@@ -636,9 +739,35 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
         self.instruction.reservation_list = reservation_list;
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a> {
-        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let instruction = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi {
             __program: self.instruction.__program,
 
             metadata: self.instruction.metadata.expect("metadata is not set"),
@@ -702,7 +831,11 @@ impl<'a> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a>
             rent: self.instruction.rent.expect("rent is not set"),
 
             reservation_list: self.instruction.reservation_list,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -724,4 +857,5 @@ struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilderInstru
     system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }

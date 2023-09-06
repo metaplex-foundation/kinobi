@@ -39,12 +39,19 @@ pub struct TransferOutOfEscrow {
 }
 
 impl TransferOutOfEscrow {
-    #[allow(clippy::vec_init_then_push)]
     pub fn instruction(
         &self,
         args: TransferOutOfEscrowInstructionArgs,
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(13);
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: TransferOutOfEscrowInstructionArgs,
+        remaining_accounts: &[super::InstructionAccount],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(13 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.escrow,
             false,
@@ -102,6 +109,9 @@ impl TransferOutOfEscrow {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = TransferOutOfEscrowInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -150,6 +160,7 @@ pub struct TransferOutOfEscrowBuilder {
     sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     amount: Option<u64>,
+    __remaining_accounts: Vec<super::InstructionAccount>,
 }
 
 impl TransferOutOfEscrowBuilder {
@@ -247,8 +258,18 @@ impl TransferOutOfEscrowBuilder {
         self.amount = Some(amount);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> solana_program::instruction::Instruction {
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = TransferOutOfEscrow {
             escrow: self.escrow.expect("escrow is not set"),
             metadata: self.metadata.expect("metadata is not set"),
@@ -276,8 +297,38 @@ impl TransferOutOfEscrowBuilder {
             amount: self.amount.clone().expect("amount is not set"),
         };
 
-        accounts.instruction(args)
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
     }
+}
+
+/// `transfer_out_of_escrow` CPI accounts.
+pub struct TransferOutOfEscrowCpiAccounts<'a> {
+    /// Escrow account
+    pub escrow: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Wallet paying for the transaction and new account
+    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint account for the new attribute
+    pub attribute_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account source for the new attribute
+    pub attribute_src: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account, owned by TM, destination for the new attribute
+    pub attribute_dst: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Mint account that the escrow is attached
+    pub escrow_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token account that holds the token the escrow is attached to
+    pub escrow_account: &'a solana_program::account_info::AccountInfo<'a>,
+    /// System program
+    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Associated Token program
+    pub ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Token program
+    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Instructions sysvar account
+    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    /// Authority/creator of the escrow account
+    pub authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `transfer_out_of_escrow` CPI instruction.
@@ -315,16 +366,55 @@ pub struct TransferOutOfEscrowCpi<'a> {
 }
 
 impl<'a> TransferOutOfEscrowCpi<'a> {
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
+    pub fn new(
+        program: &'a solana_program::account_info::AccountInfo<'a>,
+        accounts: TransferOutOfEscrowCpiAccounts<'a>,
+        args: TransferOutOfEscrowInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            escrow: accounts.escrow,
+            metadata: accounts.metadata,
+            payer: accounts.payer,
+            attribute_mint: accounts.attribute_mint,
+            attribute_src: accounts.attribute_src,
+            attribute_dst: accounts.attribute_dst,
+            escrow_mint: accounts.escrow_mint,
+            escrow_account: accounts.escrow_account,
+            system_program: accounts.system_program,
+            ata_program: accounts.ata_program,
+            token_program: accounts.token_program,
+            sysvar_instructions: accounts.sysvar_instructions,
+            authority: accounts.authority,
+            __args: args,
+        }
     }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
     pub fn invoke_signed(
         &self,
         signers_seeds: &[&[&[u8]]],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(13);
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(13 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.escrow.key,
             false,
@@ -384,6 +474,9 @@ impl<'a> TransferOutOfEscrowCpi<'a> {
                 false,
             ));
         }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| accounts.push(remaining_account.to_account_meta()));
         let mut data = TransferOutOfEscrowInstructionData::new()
             .try_to_vec()
             .unwrap();
@@ -395,7 +488,7 @@ impl<'a> TransferOutOfEscrowCpi<'a> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(13 + 1);
+        let mut account_infos = Vec::with_capacity(13 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
         account_infos.push(self.escrow.clone());
         account_infos.push(self.metadata.clone());
@@ -412,6 +505,9 @@ impl<'a> TransferOutOfEscrowCpi<'a> {
         if let Some(authority) = self.authority {
             account_infos.push(authority.clone());
         }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            account_infos.push(remaining_account.account_info().clone())
+        });
 
         if signers_seeds.is_empty() {
             solana_program::program::invoke(&instruction, &account_infos)
@@ -444,6 +540,7 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
             sysvar_instructions: None,
             authority: None,
             amount: None,
+            __remaining_accounts: Vec::new(),
         });
         Self { instruction }
     }
@@ -567,13 +664,38 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
         self.instruction.amount = Some(amount);
         self
     }
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: super::InstructionAccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.__remaining_accounts.push(account);
+        self
+    }
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[super::InstructionAccountInfo<'a>],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
     #[allow(clippy::clone_on_copy)]
-    pub fn build(&self) -> TransferOutOfEscrowCpi<'a> {
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
         let args = TransferOutOfEscrowInstructionArgs {
             amount: self.instruction.amount.clone().expect("amount is not set"),
         };
-
-        TransferOutOfEscrowCpi {
+        let instruction = TransferOutOfEscrowCpi {
             __program: self.instruction.__program,
 
             escrow: self.instruction.escrow.expect("escrow is not set"),
@@ -629,7 +751,11 @@ impl<'a> TransferOutOfEscrowCpiBuilder<'a> {
 
             authority: self.instruction.authority,
             __args: args,
-        }
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
     }
 }
 
@@ -649,4 +775,5 @@ struct TransferOutOfEscrowCpiBuilderInstruction<'a> {
     sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
     amount: Option<u64>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
 }
