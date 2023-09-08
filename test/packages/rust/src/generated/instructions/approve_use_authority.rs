@@ -275,65 +275,65 @@ impl ApproveUseAuthorityBuilder {
 }
 
 /// `approve_use_authority` CPI accounts.
-pub struct ApproveUseAuthorityCpiAccounts<'a> {
+pub struct ApproveUseAuthorityCpiAccounts<'a, 'b> {
     /// Use Authority Record PDA
-    pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub use_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
     /// Owner
-    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// A Use Authority
-    pub user: &'a solana_program::account_info::AccountInfo<'a>,
+    pub user: &'b solana_program::account_info::AccountInfo<'a>,
     /// Owned Token Account Of Mint
-    pub owner_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner_token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of Metadata
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Program As Signer (Burner)
-    pub burner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub burner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token program
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `approve_use_authority` CPI instruction.
-pub struct ApproveUseAuthorityCpi<'a> {
+pub struct ApproveUseAuthorityCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Use Authority Record PDA
-    pub use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub use_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
     /// Owner
-    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// A Use Authority
-    pub user: &'a solana_program::account_info::AccountInfo<'a>,
+    pub user: &'b solana_program::account_info::AccountInfo<'a>,
     /// Owned Token Account Of Mint
-    pub owner_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner_token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of Metadata
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Program As Signer (Burner)
-    pub burner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub burner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token program
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: ApproveUseAuthorityInstructionArgs,
 }
 
-impl<'a> ApproveUseAuthorityCpi<'a> {
+impl<'a, 'b> ApproveUseAuthorityCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: ApproveUseAuthorityCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: ApproveUseAuthorityCpiAccounts<'a, 'b>,
         args: ApproveUseAuthorityInstructionArgs,
     ) -> Self {
         Self {
@@ -359,7 +359,7 @@ impl<'a> ApproveUseAuthorityCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -375,7 +375,7 @@ impl<'a> ApproveUseAuthorityCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(11 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -470,12 +470,12 @@ impl<'a> ApproveUseAuthorityCpi<'a> {
 }
 
 /// `approve_use_authority` CPI instruction builder.
-pub struct ApproveUseAuthorityCpiBuilder<'a> {
-    instruction: Box<ApproveUseAuthorityCpiBuilderInstruction<'a>>,
+pub struct ApproveUseAuthorityCpiBuilder<'a, 'b> {
+    instruction: Box<ApproveUseAuthorityCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> ApproveUseAuthorityCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(ApproveUseAuthorityCpiBuilderInstruction {
             __program: program,
             use_authority_record: None,
@@ -498,26 +498,26 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn use_authority_record(
         &mut self,
-        use_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        use_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.use_authority_record = Some(use_authority_record);
         self
     }
     /// Owner
     #[inline(always)]
-    pub fn owner(&mut self, owner: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn owner(&mut self, owner: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.owner = Some(owner);
         self
     }
     /// Payer
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
     /// A Use Authority
     #[inline(always)]
-    pub fn user(&mut self, user: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn user(&mut self, user: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.user = Some(user);
         self
     }
@@ -525,7 +525,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn owner_token_account(
         &mut self,
-        owner_token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        owner_token_account: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.owner_token_account = Some(owner_token_account);
         self
@@ -534,14 +534,14 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
     }
     /// Mint of Metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn mint(&mut self, mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
@@ -549,7 +549,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn burner(
         &mut self,
-        burner: &'a solana_program::account_info::AccountInfo<'a>,
+        burner: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.burner = Some(burner);
         self
@@ -558,7 +558,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_program(
         &mut self,
-        token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_program = Some(token_program);
         self
@@ -567,7 +567,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -577,7 +577,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn rent(
         &mut self,
-        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.rent = rent;
         self
@@ -590,7 +590,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -598,7 +598,7 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -667,19 +667,19 @@ impl<'a> ApproveUseAuthorityCpiBuilder<'a> {
     }
 }
 
-struct ApproveUseAuthorityCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    user: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    owner_token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    burner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct ApproveUseAuthorityCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    use_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    owner: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    user: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    owner_token_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    burner: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     number_of_uses: Option<u64>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

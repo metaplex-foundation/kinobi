@@ -194,41 +194,41 @@ impl VerifyBuilder {
 }
 
 /// `verify` CPI accounts.
-pub struct VerifyCpiAccounts<'a> {
+pub struct VerifyCpiAccounts<'a, 'b> {
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Collection Update authority
-    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `verify` CPI instruction.
-pub struct VerifyCpi<'a> {
+pub struct VerifyCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Collection Update authority
-    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: VerifyInstructionArgs,
 }
 
-impl<'a> VerifyCpi<'a> {
+impl<'a, 'b> VerifyCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: VerifyCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: VerifyCpiAccounts<'a, 'b>,
         args: VerifyInstructionArgs,
     ) -> Self {
         Self {
@@ -248,7 +248,7 @@ impl<'a> VerifyCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -264,7 +264,7 @@ impl<'a> VerifyCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -337,12 +337,12 @@ impl<'a> VerifyCpi<'a> {
 }
 
 /// `verify` CPI instruction builder.
-pub struct VerifyCpiBuilder<'a> {
-    instruction: Box<VerifyCpiBuilderInstruction<'a>>,
+pub struct VerifyCpiBuilder<'a, 'b> {
+    instruction: Box<VerifyCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> VerifyCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> VerifyCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(VerifyCpiBuilderInstruction {
             __program: program,
             metadata: None,
@@ -359,7 +359,7 @@ impl<'a> VerifyCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -368,14 +368,14 @@ impl<'a> VerifyCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_authority(
         &mut self,
-        collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_authority = Some(collection_authority);
         self
     }
     /// payer
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -384,7 +384,7 @@ impl<'a> VerifyCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules = authorization_rules;
         self
@@ -394,7 +394,7 @@ impl<'a> VerifyCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules_program = authorization_rules_program;
         self
@@ -407,7 +407,7 @@ impl<'a> VerifyCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -415,7 +415,7 @@ impl<'a> VerifyCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -463,13 +463,13 @@ impl<'a> VerifyCpiBuilder<'a> {
     }
 }
 
-struct VerifyCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct VerifyCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     verify_args: Option<VerifyArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

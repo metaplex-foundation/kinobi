@@ -241,57 +241,57 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
 }
 
 /// `deprecated_mint_printing_tokens_via_token` CPI accounts.
-pub struct DeprecatedMintPrintingTokensViaTokenCpiAccounts<'a> {
+pub struct DeprecatedMintPrintingTokensViaTokenCpiAccounts<'a, 'b> {
     /// Destination account
-    pub destination: &'a solana_program::account_info::AccountInfo<'a>,
+    pub destination: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token account containing one time authorization token
-    pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token: &'b solana_program::account_info::AccountInfo<'a>,
     /// One time authorization mint
-    pub one_time_printing_authorization_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub one_time_printing_authorization_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Printing mint
-    pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub printing_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Burn authority
-    pub burn_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub burn_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token program
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent
-    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rent: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `deprecated_mint_printing_tokens_via_token` CPI instruction.
-pub struct DeprecatedMintPrintingTokensViaTokenCpi<'a> {
+pub struct DeprecatedMintPrintingTokensViaTokenCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Destination account
-    pub destination: &'a solana_program::account_info::AccountInfo<'a>,
+    pub destination: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token account containing one time authorization token
-    pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token: &'b solana_program::account_info::AccountInfo<'a>,
     /// One time authorization mint
-    pub one_time_printing_authorization_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub one_time_printing_authorization_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Printing mint
-    pub printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub printing_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Burn authority
-    pub burn_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub burn_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token program
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent
-    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rent: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: DeprecatedMintPrintingTokensViaTokenInstructionArgs,
 }
 
-impl<'a> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
+impl<'a, 'b> DeprecatedMintPrintingTokensViaTokenCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: DeprecatedMintPrintingTokensViaTokenCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: DeprecatedMintPrintingTokensViaTokenCpiAccounts<'a, 'b>,
         args: DeprecatedMintPrintingTokensViaTokenInstructionArgs,
     ) -> Self {
         Self {
@@ -315,7 +315,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -331,7 +331,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(9 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -408,12 +408,12 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpi<'a> {
 }
 
 /// `deprecated_mint_printing_tokens_via_token` CPI instruction builder.
-pub struct DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
-    instruction: Box<DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction<'a>>,
+pub struct DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a, 'b> {
+    instruction: Box<DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction {
             __program: program,
             destination: None,
@@ -434,14 +434,14 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn destination(
         &mut self,
-        destination: &'a solana_program::account_info::AccountInfo<'a>,
+        destination: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.destination = Some(destination);
         self
     }
     /// Token account containing one time authorization token
     #[inline(always)]
-    pub fn token(&mut self, token: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn token(&mut self, token: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.token = Some(token);
         self
     }
@@ -449,7 +449,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn one_time_printing_authorization_mint(
         &mut self,
-        one_time_printing_authorization_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        one_time_printing_authorization_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.one_time_printing_authorization_mint =
             Some(one_time_printing_authorization_mint);
@@ -459,7 +459,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn printing_mint(
         &mut self,
-        printing_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        printing_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.printing_mint = Some(printing_mint);
         self
@@ -468,7 +468,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn burn_authority(
         &mut self,
-        burn_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        burn_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.burn_authority = Some(burn_authority);
         self
@@ -477,7 +477,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -486,7 +486,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition(
         &mut self,
-        master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.master_edition = Some(master_edition);
         self
@@ -495,14 +495,14 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_program(
         &mut self,
-        token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_program = Some(token_program);
         self
     }
     /// Rent
     #[inline(always)]
-    pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn rent(&mut self, rent: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.rent = Some(rent);
         self
     }
@@ -518,7 +518,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -526,7 +526,7 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -597,17 +597,17 @@ impl<'a> DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a> {
     }
 }
 
-struct DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    destination: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    one_time_printing_authorization_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    printing_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    burn_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    destination: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    one_time_printing_authorization_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    printing_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    burn_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     mint_printing_tokens_via_token_args: Option<MintPrintingTokensViaTokenArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

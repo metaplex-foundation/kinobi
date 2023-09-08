@@ -217,49 +217,49 @@ impl CreateMetadataAccountV2Builder {
 }
 
 /// `create_metadata_account_v2` CPI accounts.
-pub struct CreateMetadataAccountV2CpiAccounts<'a> {
+pub struct CreateMetadataAccountV2CpiAccounts<'a, 'b> {
     /// Metadata key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint authority
-    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// update authority info
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `create_metadata_account_v2` CPI instruction.
-pub struct CreateMetadataAccountV2Cpi<'a> {
+pub struct CreateMetadataAccountV2Cpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint authority
-    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// update authority info
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: CreateMetadataAccountV2InstructionArgs,
 }
 
-impl<'a> CreateMetadataAccountV2Cpi<'a> {
+impl<'a, 'b> CreateMetadataAccountV2Cpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: CreateMetadataAccountV2CpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: CreateMetadataAccountV2CpiAccounts<'a, 'b>,
         args: CreateMetadataAccountV2InstructionArgs,
     ) -> Self {
         Self {
@@ -281,7 +281,7 @@ impl<'a> CreateMetadataAccountV2Cpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -297,7 +297,7 @@ impl<'a> CreateMetadataAccountV2Cpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(7 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -372,12 +372,12 @@ impl<'a> CreateMetadataAccountV2Cpi<'a> {
 }
 
 /// `create_metadata_account_v2` CPI instruction builder.
-pub struct CreateMetadataAccountV2CpiBuilder<'a> {
-    instruction: Box<CreateMetadataAccountV2CpiBuilderInstruction<'a>>,
+pub struct CreateMetadataAccountV2CpiBuilder<'a, 'b> {
+    instruction: Box<CreateMetadataAccountV2CpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> CreateMetadataAccountV2CpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateMetadataAccountV2CpiBuilderInstruction {
             __program: program,
             metadata: None,
@@ -397,14 +397,14 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn mint(&mut self, mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
@@ -412,14 +412,14 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     #[inline(always)]
     pub fn mint_authority(
         &mut self,
-        mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
     /// payer
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -427,7 +427,7 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     #[inline(always)]
     pub fn update_authority(
         &mut self,
-        update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.update_authority = Some(update_authority);
         self
@@ -436,7 +436,7 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -446,7 +446,7 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     #[inline(always)]
     pub fn rent(
         &mut self,
-        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.rent = rent;
         self
@@ -464,7 +464,7 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -472,7 +472,7 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -531,16 +531,16 @@ impl<'a> CreateMetadataAccountV2CpiBuilder<'a> {
     }
 }
 
-struct CreateMetadataAccountV2CpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct CreateMetadataAccountV2CpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     data: Option<DataV2>,
     is_mutable: Option<bool>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

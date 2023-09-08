@@ -161,29 +161,29 @@ impl UpdateMetadataAccountBuilder {
 }
 
 /// `update_metadata_account` CPI accounts.
-pub struct UpdateMetadataAccountCpiAccounts<'a> {
+pub struct UpdateMetadataAccountCpiAccounts<'a, 'b> {
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Update authority key
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `update_metadata_account` CPI instruction.
-pub struct UpdateMetadataAccountCpi<'a> {
+pub struct UpdateMetadataAccountCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Update authority key
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: UpdateMetadataAccountInstructionArgs,
 }
 
-impl<'a> UpdateMetadataAccountCpi<'a> {
+impl<'a, 'b> UpdateMetadataAccountCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: UpdateMetadataAccountCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: UpdateMetadataAccountCpiAccounts<'a, 'b>,
         args: UpdateMetadataAccountInstructionArgs,
     ) -> Self {
         Self {
@@ -200,7 +200,7 @@ impl<'a> UpdateMetadataAccountCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -216,7 +216,7 @@ impl<'a> UpdateMetadataAccountCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -258,12 +258,12 @@ impl<'a> UpdateMetadataAccountCpi<'a> {
 }
 
 /// `update_metadata_account` CPI instruction builder.
-pub struct UpdateMetadataAccountCpiBuilder<'a> {
-    instruction: Box<UpdateMetadataAccountCpiBuilderInstruction<'a>>,
+pub struct UpdateMetadataAccountCpiBuilder<'a, 'b> {
+    instruction: Box<UpdateMetadataAccountCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> UpdateMetadataAccountCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UpdateMetadataAccountCpiBuilderInstruction {
             __program: program,
             metadata: None,
@@ -279,7 +279,7 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -288,7 +288,7 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
     #[inline(always)]
     pub fn update_authority(
         &mut self,
-        update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.update_authority = Some(update_authority);
         self
@@ -314,7 +314,7 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -322,7 +322,7 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -362,12 +362,12 @@ impl<'a> UpdateMetadataAccountCpiBuilder<'a> {
     }
 }
 
-struct UpdateMetadataAccountCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct UpdateMetadataAccountCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     data: Option<UpdateMetadataAccountInstructionDataData>,
     update_authority_arg: Option<Pubkey>,
     primary_sale_happened: Option<bool>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

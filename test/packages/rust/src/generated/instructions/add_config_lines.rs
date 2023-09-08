@@ -133,28 +133,28 @@ impl AddConfigLinesBuilder {
 }
 
 /// `add_config_lines` CPI accounts.
-pub struct AddConfigLinesCpiAccounts<'a> {
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+pub struct AddConfigLinesCpiAccounts<'a, 'b> {
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `add_config_lines` CPI instruction.
-pub struct AddConfigLinesCpi<'a> {
+pub struct AddConfigLinesCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: AddConfigLinesInstructionArgs,
 }
 
-impl<'a> AddConfigLinesCpi<'a> {
+impl<'a, 'b> AddConfigLinesCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: AddConfigLinesCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: AddConfigLinesCpiAccounts<'a, 'b>,
         args: AddConfigLinesInstructionArgs,
     ) -> Self {
         Self {
@@ -171,7 +171,7 @@ impl<'a> AddConfigLinesCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -187,7 +187,7 @@ impl<'a> AddConfigLinesCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -227,12 +227,12 @@ impl<'a> AddConfigLinesCpi<'a> {
 }
 
 /// `add_config_lines` CPI instruction builder.
-pub struct AddConfigLinesCpiBuilder<'a> {
-    instruction: Box<AddConfigLinesCpiBuilderInstruction<'a>>,
+pub struct AddConfigLinesCpiBuilder<'a, 'b> {
+    instruction: Box<AddConfigLinesCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> AddConfigLinesCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> AddConfigLinesCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(AddConfigLinesCpiBuilderInstruction {
             __program: program,
             candy_machine: None,
@@ -246,7 +246,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
     #[inline(always)]
     pub fn candy_machine(
         &mut self,
-        candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+        candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.candy_machine = Some(candy_machine);
         self
@@ -254,7 +254,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority = Some(authority);
         self
@@ -272,7 +272,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -280,7 +280,7 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -323,11 +323,11 @@ impl<'a> AddConfigLinesCpiBuilder<'a> {
     }
 }
 
-struct AddConfigLinesCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct AddConfigLinesCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     index: Option<u32>,
     config_lines: Option<Vec<ConfigLine>>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

@@ -128,28 +128,28 @@ impl SetAuthorityBuilder {
 }
 
 /// `set_authority` CPI accounts.
-pub struct SetAuthorityCpiAccounts<'a> {
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+pub struct SetAuthorityCpiAccounts<'a, 'b> {
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `set_authority` CPI instruction.
-pub struct SetAuthorityCpi<'a> {
+pub struct SetAuthorityCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: SetAuthorityInstructionArgs,
 }
 
-impl<'a> SetAuthorityCpi<'a> {
+impl<'a, 'b> SetAuthorityCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: SetAuthorityCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: SetAuthorityCpiAccounts<'a, 'b>,
         args: SetAuthorityInstructionArgs,
     ) -> Self {
         Self {
@@ -166,7 +166,7 @@ impl<'a> SetAuthorityCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -182,7 +182,7 @@ impl<'a> SetAuthorityCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -222,12 +222,12 @@ impl<'a> SetAuthorityCpi<'a> {
 }
 
 /// `set_authority` CPI instruction builder.
-pub struct SetAuthorityCpiBuilder<'a> {
-    instruction: Box<SetAuthorityCpiBuilderInstruction<'a>>,
+pub struct SetAuthorityCpiBuilder<'a, 'b> {
+    instruction: Box<SetAuthorityCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> SetAuthorityCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> SetAuthorityCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(SetAuthorityCpiBuilderInstruction {
             __program: program,
             candy_machine: None,
@@ -240,7 +240,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn candy_machine(
         &mut self,
-        candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+        candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.candy_machine = Some(candy_machine);
         self
@@ -248,7 +248,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority = Some(authority);
         self
@@ -261,7 +261,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -269,7 +269,7 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -311,10 +311,10 @@ impl<'a> SetAuthorityCpiBuilder<'a> {
     }
 }
 
-struct SetAuthorityCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct SetAuthorityCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     new_authority: Option<Pubkey>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

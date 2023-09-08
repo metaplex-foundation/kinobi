@@ -306,74 +306,74 @@ impl SetCollectionBuilder {
 }
 
 /// `set_collection` CPI accounts.
-pub struct SetCollectionCpiAccounts<'a> {
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+pub struct SetCollectionCpiAccounts<'a, 'b> {
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `set_collection` CPI instruction.
-pub struct SetCollectionCpi<'a> {
+pub struct SetCollectionCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub new_collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
-impl<'a> SetCollectionCpi<'a> {
+impl<'a, 'b> SetCollectionCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: SetCollectionCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: SetCollectionCpiAccounts<'a, 'b>,
     ) -> Self {
         Self {
             __program: program,
@@ -400,7 +400,7 @@ impl<'a> SetCollectionCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -416,7 +416,7 @@ impl<'a> SetCollectionCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(14 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -514,12 +514,12 @@ impl<'a> SetCollectionCpi<'a> {
 }
 
 /// `set_collection` CPI instruction builder.
-pub struct SetCollectionCpiBuilder<'a> {
-    instruction: Box<SetCollectionCpiBuilderInstruction<'a>>,
+pub struct SetCollectionCpiBuilder<'a, 'b> {
+    instruction: Box<SetCollectionCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> SetCollectionCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> SetCollectionCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(SetCollectionCpiBuilderInstruction {
             __program: program,
             candy_machine: None,
@@ -543,7 +543,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn candy_machine(
         &mut self,
-        candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+        candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.candy_machine = Some(candy_machine);
         self
@@ -551,7 +551,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority = Some(authority);
         self
@@ -559,20 +559,20 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority_pda(
         &mut self,
-        authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority_pda = Some(authority_pda);
         self
     }
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
     #[inline(always)]
     pub fn collection_mint(
         &mut self,
-        collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_mint = Some(collection_mint);
         self
@@ -580,7 +580,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
@@ -588,7 +588,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
-        collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_authority_record = Some(collection_authority_record);
         self
@@ -596,7 +596,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_collection_update_authority(
         &mut self,
-        new_collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        new_collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_collection_update_authority = Some(new_collection_update_authority);
         self
@@ -604,7 +604,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_collection_metadata(
         &mut self,
-        new_collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        new_collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_collection_metadata = Some(new_collection_metadata);
         self
@@ -612,7 +612,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_collection_mint(
         &mut self,
-        new_collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        new_collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_collection_mint = Some(new_collection_mint);
         self
@@ -620,7 +620,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_collection_master_edition(
         &mut self,
-        new_collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        new_collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_collection_master_edition = Some(new_collection_master_edition);
         self
@@ -628,7 +628,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_collection_authority_record(
         &mut self,
-        new_collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        new_collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_collection_authority_record = Some(new_collection_authority_record);
         self
@@ -636,7 +636,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
-        token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_metadata_program = Some(token_metadata_program);
         self
@@ -644,7 +644,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -652,7 +652,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -660,7 +660,7 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -751,21 +751,21 @@ impl<'a> SetCollectionCpiBuilder<'a> {
     }
 }
 
-struct SetCollectionCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_collection_update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_collection_master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_metadata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+struct SetCollectionCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority_pda: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_collection_update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_collection_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_collection_master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_metadata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

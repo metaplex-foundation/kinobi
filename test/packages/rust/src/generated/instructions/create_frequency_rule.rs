@@ -173,33 +173,33 @@ impl CreateFrequencyRuleBuilder {
 }
 
 /// `create_frequency_rule` CPI accounts.
-pub struct CreateFrequencyRuleCpiAccounts<'a> {
+pub struct CreateFrequencyRuleCpiAccounts<'a, 'b> {
     /// Payer and creator of the Frequency Rule
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the Frequency Rule is stored
-    pub frequency_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub frequency_pda: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `create_frequency_rule` CPI instruction.
-pub struct CreateFrequencyRuleCpi<'a> {
+pub struct CreateFrequencyRuleCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the Frequency Rule
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the Frequency Rule is stored
-    pub frequency_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub frequency_pda: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: CreateFrequencyRuleInstructionArgs,
 }
 
-impl<'a> CreateFrequencyRuleCpi<'a> {
+impl<'a, 'b> CreateFrequencyRuleCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: CreateFrequencyRuleCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: CreateFrequencyRuleCpiAccounts<'a, 'b>,
         args: CreateFrequencyRuleInstructionArgs,
     ) -> Self {
         Self {
@@ -217,7 +217,7 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -233,7 +233,7 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -280,12 +280,12 @@ impl<'a> CreateFrequencyRuleCpi<'a> {
 }
 
 /// `create_frequency_rule` CPI instruction builder.
-pub struct CreateFrequencyRuleCpiBuilder<'a> {
-    instruction: Box<CreateFrequencyRuleCpiBuilderInstruction<'a>>,
+pub struct CreateFrequencyRuleCpiBuilder<'a, 'b> {
+    instruction: Box<CreateFrequencyRuleCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> CreateFrequencyRuleCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateFrequencyRuleCpiBuilderInstruction {
             __program: program,
             payer: None,
@@ -301,7 +301,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     }
     /// Payer and creator of the Frequency Rule
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -309,7 +309,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     #[inline(always)]
     pub fn frequency_pda(
         &mut self,
-        frequency_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        frequency_pda: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.frequency_pda = Some(frequency_pda);
         self
@@ -318,7 +318,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -346,7 +346,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -354,7 +354,7 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -412,14 +412,14 @@ impl<'a> CreateFrequencyRuleCpiBuilder<'a> {
     }
 }
 
-struct CreateFrequencyRuleCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    frequency_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct CreateFrequencyRuleCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    frequency_pda: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     rule_set_name: Option<String>,
     freq_rule_name: Option<String>,
     last_update: Option<i64>,
     period: Option<i64>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

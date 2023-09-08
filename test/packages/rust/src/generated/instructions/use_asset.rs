@@ -298,65 +298,65 @@ impl UseAssetBuilder {
 }
 
 /// `use_asset` CPI accounts.
-pub struct UseAssetCpiAccounts<'a> {
+pub struct UseAssetCpiAccounts<'a, 'b> {
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Account Of NFT
-    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of the Metadata
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Use authority or current owner of the asset
-    pub use_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub use_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Owner
-    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Token program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Associated Token program
-    pub ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Use Authority Record PDA (if present the program assumes a delegated use authority)
-    pub use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub use_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `use_asset` CPI instruction.
-pub struct UseAssetCpi<'a> {
+pub struct UseAssetCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Account Of NFT
-    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of the Metadata
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Use authority or current owner of the asset
-    pub use_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub use_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Owner
-    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Token program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Associated Token program
-    pub ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Use Authority Record PDA (if present the program assumes a delegated use authority)
-    pub use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub use_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: UseAssetInstructionArgs,
 }
 
-impl<'a> UseAssetCpi<'a> {
+impl<'a, 'b> UseAssetCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: UseAssetCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: UseAssetCpiAccounts<'a, 'b>,
         args: UseAssetInstructionArgs,
     ) -> Self {
         Self {
@@ -382,7 +382,7 @@ impl<'a> UseAssetCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -398,7 +398,7 @@ impl<'a> UseAssetCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(11 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -510,12 +510,12 @@ impl<'a> UseAssetCpi<'a> {
 }
 
 /// `use_asset` CPI instruction builder.
-pub struct UseAssetCpiBuilder<'a> {
-    instruction: Box<UseAssetCpiBuilderInstruction<'a>>,
+pub struct UseAssetCpiBuilder<'a, 'b> {
+    instruction: Box<UseAssetCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> UseAssetCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> UseAssetCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UseAssetCpiBuilderInstruction {
             __program: program,
             metadata: None,
@@ -538,7 +538,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -547,14 +547,14 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_account(
         &mut self,
-        token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        token_account: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_account = Some(token_account);
         self
     }
     /// Mint of the Metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn mint(&mut self, mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
@@ -562,14 +562,14 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn use_authority(
         &mut self,
-        use_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        use_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.use_authority = Some(use_authority);
         self
     }
     /// Owner
     #[inline(always)]
-    pub fn owner(&mut self, owner: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn owner(&mut self, owner: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.owner = Some(owner);
         self
     }
@@ -577,7 +577,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn spl_token_program(
         &mut self,
-        spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.spl_token_program = Some(spl_token_program);
         self
@@ -586,7 +586,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn ata_program(
         &mut self,
-        ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+        ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.ata_program = Some(ata_program);
         self
@@ -595,7 +595,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -605,7 +605,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn use_authority_record(
         &mut self,
-        use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        use_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.use_authority_record = use_authority_record;
         self
@@ -615,7 +615,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules = authorization_rules;
         self
@@ -625,7 +625,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules_program = authorization_rules_program;
         self
@@ -638,7 +638,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -646,7 +646,7 @@ impl<'a> UseAssetCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -718,19 +718,19 @@ impl<'a> UseAssetCpiBuilder<'a> {
     }
 }
 
-struct UseAssetCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    use_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    ata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    use_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct UseAssetCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    use_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    owner: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    spl_token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    ata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    use_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     use_asset_args: Option<UseAssetArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

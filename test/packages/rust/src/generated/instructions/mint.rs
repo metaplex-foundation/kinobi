@@ -317,69 +317,69 @@ impl MintBuilder {
 }
 
 /// `mint` CPI accounts.
-pub struct MintCpiAccounts<'a> {
+pub struct MintCpiAccounts<'a, 'b> {
     /// Token account
-    pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata account key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Edition account
-    pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// (Mint or Update) authority
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Instructions sysvar account
-    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    pub sysvar_instructions: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Token program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Associated Token Account program
-    pub spl_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Authorization Rules program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `mint` CPI instruction.
-pub struct MintCpi<'a> {
+pub struct MintCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token account
-    pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata account key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Edition account
-    pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// (Mint or Update) authority
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Instructions sysvar account
-    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    pub sysvar_instructions: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Token program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Associated Token Account program
-    pub spl_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Authorization Rules program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: MintInstructionArgs,
 }
 
-impl<'a> MintCpi<'a> {
+impl<'a, 'b> MintCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: MintCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: MintCpiAccounts<'a, 'b>,
         args: MintInstructionArgs,
     ) -> Self {
         Self {
@@ -406,7 +406,7 @@ impl<'a> MintCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -422,7 +422,7 @@ impl<'a> MintCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(12 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -539,12 +539,12 @@ impl<'a> MintCpi<'a> {
 }
 
 /// `mint` CPI instruction builder.
-pub struct MintCpiBuilder<'a> {
-    instruction: Box<MintCpiBuilderInstruction<'a>>,
+pub struct MintCpiBuilder<'a, 'b> {
+    instruction: Box<MintCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> MintCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> MintCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(MintCpiBuilderInstruction {
             __program: program,
             token: None,
@@ -566,7 +566,7 @@ impl<'a> MintCpiBuilder<'a> {
     }
     /// Token account
     #[inline(always)]
-    pub fn token(&mut self, token: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn token(&mut self, token: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.token = Some(token);
         self
     }
@@ -574,7 +574,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -584,20 +584,20 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition(
         &mut self,
-        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.master_edition = master_edition;
         self
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn mint(&mut self, mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
     /// Payer
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -605,7 +605,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority = Some(authority);
         self
@@ -614,7 +614,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -623,7 +623,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn sysvar_instructions(
         &mut self,
-        sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+        sysvar_instructions: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.sysvar_instructions = Some(sysvar_instructions);
         self
@@ -632,7 +632,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn spl_token_program(
         &mut self,
-        spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.spl_token_program = Some(spl_token_program);
         self
@@ -641,7 +641,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn spl_ata_program(
         &mut self,
-        spl_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+        spl_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.spl_ata_program = Some(spl_ata_program);
         self
@@ -651,7 +651,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules_program = authorization_rules_program;
         self
@@ -661,7 +661,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules = authorization_rules;
         self
@@ -674,7 +674,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -682,7 +682,7 @@ impl<'a> MintCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -753,20 +753,20 @@ impl<'a> MintCpiBuilder<'a> {
     }
 }
 
-struct MintCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    spl_ata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct MintCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    token: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    sysvar_instructions: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    spl_token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    spl_ata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     mint_args: Option<MintArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

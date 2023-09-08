@@ -335,77 +335,77 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
 }
 
 /// `mint_new_edition_from_master_edition_via_token` CPI accounts.
-pub struct MintNewEditionFromMasterEditionViaTokenCpiAccounts<'a> {
+pub struct MintNewEditionFromMasterEditionViaTokenCpiAccounts<'a, 'b> {
     /// New Metadata key (pda of ['metadata', program id, mint id])
-    pub new_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// New Edition (pda of ['metadata', program id, mint id, 'edition'])
-    pub new_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
-    pub new_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
-    pub edition_mark_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub edition_mark_pda: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint authority of new mint
-    pub new_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// owner of token account containing master token (#8)
-    pub token_account_owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account_owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// token account containing token from master metadata mint
-    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// Update authority info for new metadata
-    pub new_metadata_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_metadata_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master record metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token program
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `mint_new_edition_from_master_edition_via_token` CPI instruction.
-pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a> {
+pub struct MintNewEditionFromMasterEditionViaTokenCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// New Metadata key (pda of ['metadata', program id, mint id])
-    pub new_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// New Edition (pda of ['metadata', program id, mint id, 'edition'])
-    pub new_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
-    pub new_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
-    pub edition_mark_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub edition_mark_pda: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint authority of new mint
-    pub new_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// owner of token account containing master token (#8)
-    pub token_account_owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account_owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// token account containing token from master metadata mint
-    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// Update authority info for new metadata
-    pub new_metadata_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub new_metadata_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master record metadata account
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token program
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
 }
 
-impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
+impl<'a, 'b> MintNewEditionFromMasterEditionViaTokenCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: MintNewEditionFromMasterEditionViaTokenCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: MintNewEditionFromMasterEditionViaTokenCpiAccounts<'a, 'b>,
         args: MintNewEditionFromMasterEditionViaTokenInstructionArgs,
     ) -> Self {
         Self {
@@ -434,7 +434,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -450,7 +450,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(14 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -560,12 +560,12 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpi<'a> {
 }
 
 /// `mint_new_edition_from_master_edition_via_token` CPI instruction builder.
-pub struct MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
-    instruction: Box<MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a>>,
+pub struct MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a, 'b> {
+    instruction: Box<MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(
             MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction {
                 __program: program,
@@ -593,7 +593,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_metadata(
         &mut self,
-        new_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        new_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_metadata = Some(new_metadata);
         self
@@ -602,7 +602,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_edition(
         &mut self,
-        new_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        new_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_edition = Some(new_edition);
         self
@@ -611,7 +611,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition(
         &mut self,
-        master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.master_edition = Some(master_edition);
         self
@@ -620,7 +620,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_mint(
         &mut self,
-        new_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        new_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_mint = Some(new_mint);
         self
@@ -629,7 +629,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn edition_mark_pda(
         &mut self,
-        edition_mark_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        edition_mark_pda: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.edition_mark_pda = Some(edition_mark_pda);
         self
@@ -638,14 +638,14 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_mint_authority(
         &mut self,
-        new_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        new_mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_mint_authority = Some(new_mint_authority);
         self
     }
     /// payer
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -653,7 +653,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_account_owner(
         &mut self,
-        token_account_owner: &'a solana_program::account_info::AccountInfo<'a>,
+        token_account_owner: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_account_owner = Some(token_account_owner);
         self
@@ -662,7 +662,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_account(
         &mut self,
-        token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        token_account: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_account = Some(token_account);
         self
@@ -671,7 +671,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn new_metadata_update_authority(
         &mut self,
-        new_metadata_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        new_metadata_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.new_metadata_update_authority = Some(new_metadata_update_authority);
         self
@@ -680,7 +680,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -689,7 +689,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_program(
         &mut self,
-        token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_program = Some(token_program);
         self
@@ -698,7 +698,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -708,7 +708,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn rent(
         &mut self,
-        rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.rent = rent;
         self
@@ -726,7 +726,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -734,7 +734,7 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -827,23 +827,23 @@ impl<'a> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a> {
     }
 }
 
-struct MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    new_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    edition_mark_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_account_owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    new_metadata_update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    new_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    edition_mark_pda: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_mint_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_account_owner: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    new_metadata_update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     mint_new_edition_from_master_edition_via_token_args:
         Option<MintNewEditionFromMasterEditionViaTokenArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

@@ -243,58 +243,58 @@ impl DummyBuilder {
 }
 
 /// `dummy` CPI accounts.
-pub struct DummyCpiAccounts<'a> {
-    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+pub struct DummyCpiAccounts<'a, 'b> {
+    pub edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub foo: &'a solana_program::account_info::AccountInfo<'a>,
+    pub foo: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub token_or_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `dummy` CPI instruction.
-pub struct DummyCpi<'a> {
+pub struct DummyCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub foo: &'a solana_program::account_info::AccountInfo<'a>,
+    pub foo: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 
-    pub token_or_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
-impl<'a> DummyCpi<'a> {
+impl<'a, 'b> DummyCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: DummyCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: DummyCpiAccounts<'a, 'b>,
     ) -> Self {
         Self {
             __program: program,
@@ -317,7 +317,7 @@ impl<'a> DummyCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -333,7 +333,7 @@ impl<'a> DummyCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(10 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -445,12 +445,12 @@ impl<'a> DummyCpi<'a> {
 }
 
 /// `dummy` CPI instruction builder.
-pub struct DummyCpiBuilder<'a> {
-    instruction: Box<DummyCpiBuilderInstruction<'a>>,
+pub struct DummyCpiBuilder<'a, 'b> {
+    instruction: Box<DummyCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> DummyCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> DummyCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(DummyCpiBuilderInstruction {
             __program: program,
             edition: None,
@@ -470,7 +470,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn edition(
         &mut self,
-        edition: &'a solana_program::account_info::AccountInfo<'a>,
+        edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.edition = Some(edition);
         self
@@ -479,7 +479,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn mint(
         &mut self,
-        mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.mint = mint;
         self
@@ -487,7 +487,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn update_authority(
         &mut self,
-        update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.update_authority = Some(update_authority);
         self
@@ -495,18 +495,18 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn mint_authority(
         &mut self,
-        mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
     #[inline(always)]
-    pub fn foo(&mut self, foo: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn foo(&mut self, foo: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.foo = Some(foo);
         self
     }
@@ -514,7 +514,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn bar(
         &mut self,
-        bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.bar = bar;
         self
@@ -523,7 +523,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn delegate(
         &mut self,
-        delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.delegate = delegate;
         self
@@ -532,7 +532,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
-        delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.delegate_record = delegate_record;
         self
@@ -540,7 +540,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_or_ata_program(
         &mut self,
-        token_or_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_or_ata_program = Some(token_or_ata_program);
         self
@@ -548,7 +548,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -556,7 +556,7 @@ impl<'a> DummyCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -612,17 +612,17 @@ impl<'a> DummyCpiBuilder<'a> {
     }
 }
 
-struct DummyCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    foo: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    bar: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    delegate: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_or_ata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+struct DummyCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    foo: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_or_ata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }
