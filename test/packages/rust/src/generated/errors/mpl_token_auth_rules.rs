@@ -10,49 +10,49 @@ use thiserror::Error;
 
 #[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
 pub enum MplTokenAuthRulesError {
-    /// 0x0 - Numerical Overflow
+    /// 0 (0x0) - Numerical Overflow
     #[error("Numerical Overflow")]
     NumericalOverflow,
-    /// 0x1 - Data type mismatch
+    /// 1 (0x1) - Data type mismatch
     #[error("Data type mismatch")]
     DataTypeMismatch,
-    /// 0x2 - Incorrect account owner
+    /// 2 (0x2) - Incorrect account owner
     #[error("Incorrect account owner")]
     IncorrectOwner,
-    /// 0x3 - Could not index into PayloadVec
+    /// 3 (0x3) - Could not index into PayloadVec
     #[error("Could not index into PayloadVec")]
     PayloadVecIndexError,
-    /// 0x4 - Derived key invalid
+    /// 4 (0x4) - Derived key invalid
     #[error("Derived key invalid")]
     DerivedKeyInvalid,
-    /// 0x5 - Additional Signer check failed
+    /// 5 (0x5) - Additional Signer check failed
     #[error("Additional Signer check failed")]
     AdditionalSignerCheckFailed,
-    /// 0x6 - Pubkey Match check failed
+    /// 6 (0x6) - Pubkey Match check failed
     #[error("Pubkey Match check failed")]
     PubkeyMatchCheckFailed,
-    /// 0x7 - Derived Key Match check failed
+    /// 7 (0x7) - Derived Key Match check failed
     #[error("Derived Key Match check failed")]
     DerivedKeyMatchCheckFailed,
-    /// 0x8 - Program Owned check failed
+    /// 8 (0x8) - Program Owned check failed
     #[error("Program Owned check failed")]
     ProgramOwnedCheckFailed,
-    /// 0x9 - Amount checked failed
+    /// 9 (0x9) - Amount checked failed
     #[error("Amount checked failed")]
     AmountCheckFailed,
-    /// 0xA - Frequency check failed
+    /// 10 (0xA) - Frequency check failed
     #[error("Frequency check failed")]
     FrequencyCheckFailed,
-    /// 0xB - Pubkey Tree Match check failed
+    /// 11 (0xB) - Pubkey Tree Match check failed
     #[error("Pubkey Tree Match check failed")]
     PubkeyTreeMatchCheckFailed,
-    /// 0xC - Payer is not a signer
+    /// 12 (0xC) - Payer is not a signer
     #[error("Payer is not a signer")]
     PayerIsNotSigner,
-    /// 0xD -
+    /// 13 (0xD) -
     #[error("")]
     NotImplemented,
-    /// 0xE - Borsh Serialization Error
+    /// 14 (0xE) - Borsh Serialization Error
     #[error("Borsh Serialization Error")]
     BorshSerializationError,
 }
