@@ -153,33 +153,33 @@ impl CreateRuleSetBuilder {
 }
 
 /// `create_rule_set` CPI accounts.
-pub struct CreateRuleSetCpiAccounts<'a> {
+pub struct CreateRuleSetCpiAccounts<'a, 'b> {
     /// Payer and creator of the RuleSet
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the RuleSet is stored
-    pub rule_set_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rule_set_pda: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `create_rule_set` CPI instruction.
-pub struct CreateRuleSetCpi<'a> {
+pub struct CreateRuleSetCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the RuleSet
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the RuleSet is stored
-    pub rule_set_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rule_set_pda: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: CreateRuleSetInstructionArgs,
 }
 
-impl<'a> CreateRuleSetCpi<'a> {
+impl<'a, 'b> CreateRuleSetCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: CreateRuleSetCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: CreateRuleSetCpiAccounts<'a, 'b>,
         args: CreateRuleSetInstructionArgs,
     ) -> Self {
         Self {
@@ -197,7 +197,7 @@ impl<'a> CreateRuleSetCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -213,7 +213,7 @@ impl<'a> CreateRuleSetCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -258,12 +258,12 @@ impl<'a> CreateRuleSetCpi<'a> {
 }
 
 /// `create_rule_set` CPI instruction builder.
-pub struct CreateRuleSetCpiBuilder<'a> {
-    instruction: Box<CreateRuleSetCpiBuilderInstruction<'a>>,
+pub struct CreateRuleSetCpiBuilder<'a, 'b> {
+    instruction: Box<CreateRuleSetCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> CreateRuleSetCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> CreateRuleSetCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateRuleSetCpiBuilderInstruction {
             __program: program,
             payer: None,
@@ -277,7 +277,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     }
     /// Payer and creator of the RuleSet
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -285,7 +285,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     #[inline(always)]
     pub fn rule_set_pda(
         &mut self,
-        rule_set_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        rule_set_pda: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.rule_set_pda = Some(rule_set_pda);
         self
@@ -294,7 +294,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -312,7 +312,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -320,7 +320,7 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -372,12 +372,12 @@ impl<'a> CreateRuleSetCpiBuilder<'a> {
     }
 }
 
-struct CreateRuleSetCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    rule_set_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct CreateRuleSetCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    rule_set_pda: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     create_args: Option<TaCreateArgs>,
     rule_set_bump: Option<u8>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

@@ -127,28 +127,28 @@ impl UpdateCandyMachineBuilder {
 }
 
 /// `update_candy_machine` CPI accounts.
-pub struct UpdateCandyMachineCpiAccounts<'a> {
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+pub struct UpdateCandyMachineCpiAccounts<'a, 'b> {
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `update_candy_machine` CPI instruction.
-pub struct UpdateCandyMachineCpi<'a> {
+pub struct UpdateCandyMachineCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: UpdateCandyMachineInstructionArgs,
 }
 
-impl<'a> UpdateCandyMachineCpi<'a> {
+impl<'a, 'b> UpdateCandyMachineCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: UpdateCandyMachineCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: UpdateCandyMachineCpiAccounts<'a, 'b>,
         args: UpdateCandyMachineInstructionArgs,
     ) -> Self {
         Self {
@@ -165,7 +165,7 @@ impl<'a> UpdateCandyMachineCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -181,7 +181,7 @@ impl<'a> UpdateCandyMachineCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(2 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -223,12 +223,12 @@ impl<'a> UpdateCandyMachineCpi<'a> {
 }
 
 /// `update_candy_machine` CPI instruction builder.
-pub struct UpdateCandyMachineCpiBuilder<'a> {
-    instruction: Box<UpdateCandyMachineCpiBuilderInstruction<'a>>,
+pub struct UpdateCandyMachineCpiBuilder<'a, 'b> {
+    instruction: Box<UpdateCandyMachineCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> UpdateCandyMachineCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> UpdateCandyMachineCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(UpdateCandyMachineCpiBuilderInstruction {
             __program: program,
             candy_machine: None,
@@ -241,7 +241,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn candy_machine(
         &mut self,
-        candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+        candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.candy_machine = Some(candy_machine);
         self
@@ -249,7 +249,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority = Some(authority);
         self
@@ -262,7 +262,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -270,7 +270,7 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -308,10 +308,10 @@ impl<'a> UpdateCandyMachineCpiBuilder<'a> {
     }
 }
 
-struct UpdateCandyMachineCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct UpdateCandyMachineCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     data: Option<CandyMachineData>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

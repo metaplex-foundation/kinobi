@@ -350,86 +350,86 @@ impl MintFromCandyMachineBuilder {
 }
 
 /// `mint_from_candy_machine` CPI accounts.
-pub struct MintFromCandyMachineCpiAccounts<'a> {
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+pub struct MintFromCandyMachineCpiAccounts<'a, 'b> {
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub recent_slothashes: &'a solana_program::account_info::AccountInfo<'a>,
+    pub recent_slothashes: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `mint_from_candy_machine` CPI instruction.
-pub struct MintFromCandyMachineCpi<'a> {
+pub struct MintFromCandyMachineCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub nft_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub nft_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub recent_slothashes: &'a solana_program::account_info::AccountInfo<'a>,
+    pub recent_slothashes: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
-impl<'a> MintFromCandyMachineCpi<'a> {
+impl<'a, 'b> MintFromCandyMachineCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: MintFromCandyMachineCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: MintFromCandyMachineCpiAccounts<'a, 'b>,
     ) -> Self {
         Self {
             __program: program,
@@ -459,7 +459,7 @@ impl<'a> MintFromCandyMachineCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -475,7 +475,7 @@ impl<'a> MintFromCandyMachineCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(17 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -590,12 +590,12 @@ impl<'a> MintFromCandyMachineCpi<'a> {
 }
 
 /// `mint_from_candy_machine` CPI instruction builder.
-pub struct MintFromCandyMachineCpiBuilder<'a> {
-    instruction: Box<MintFromCandyMachineCpiBuilderInstruction<'a>>,
+pub struct MintFromCandyMachineCpiBuilder<'a, 'b> {
+    instruction: Box<MintFromCandyMachineCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> MintFromCandyMachineCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> MintFromCandyMachineCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(MintFromCandyMachineCpiBuilderInstruction {
             __program: program,
             candy_machine: None,
@@ -622,7 +622,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn candy_machine(
         &mut self,
-        candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+        candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.candy_machine = Some(candy_machine);
         self
@@ -630,7 +630,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority_pda(
         &mut self,
-        authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority_pda = Some(authority_pda);
         self
@@ -638,20 +638,20 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn mint_authority(
         &mut self,
-        mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.mint_authority = Some(mint_authority);
         self
     }
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
     #[inline(always)]
     pub fn nft_mint(
         &mut self,
-        nft_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        nft_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.nft_mint = Some(nft_mint);
         self
@@ -659,7 +659,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn nft_mint_authority(
         &mut self,
-        nft_mint_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        nft_mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.nft_mint_authority = Some(nft_mint_authority);
         self
@@ -667,7 +667,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn nft_metadata(
         &mut self,
-        nft_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        nft_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.nft_metadata = Some(nft_metadata);
         self
@@ -675,7 +675,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn nft_master_edition(
         &mut self,
-        nft_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        nft_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.nft_master_edition = Some(nft_master_edition);
         self
@@ -683,7 +683,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
-        collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_authority_record = Some(collection_authority_record);
         self
@@ -691,7 +691,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_mint(
         &mut self,
-        collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_mint = Some(collection_mint);
         self
@@ -699,7 +699,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
@@ -707,7 +707,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_master_edition(
         &mut self,
-        collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_master_edition = Some(collection_master_edition);
         self
@@ -715,7 +715,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_update_authority(
         &mut self,
-        collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_update_authority = Some(collection_update_authority);
         self
@@ -723,7 +723,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
-        token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_metadata_program = Some(token_metadata_program);
         self
@@ -731,7 +731,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_program(
         &mut self,
-        token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_program = Some(token_program);
         self
@@ -739,7 +739,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -747,7 +747,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn recent_slothashes(
         &mut self,
-        recent_slothashes: &'a solana_program::account_info::AccountInfo<'a>,
+        recent_slothashes: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.recent_slothashes = Some(recent_slothashes);
         self
@@ -755,7 +755,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -763,7 +763,7 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -869,24 +869,24 @@ impl<'a> MintFromCandyMachineCpiBuilder<'a> {
     }
 }
 
-struct MintFromCandyMachineCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    nft_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    nft_mint_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    nft_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    nft_master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_metadata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    recent_slothashes: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+struct MintFromCandyMachineCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority_pda: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    nft_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    nft_mint_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    nft_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    nft_master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_metadata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    recent_slothashes: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

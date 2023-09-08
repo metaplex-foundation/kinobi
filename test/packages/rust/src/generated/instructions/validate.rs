@@ -366,73 +366,73 @@ impl ValidateBuilder {
 }
 
 /// `validate` CPI accounts.
-pub struct ValidateCpiAccounts<'a> {
+pub struct ValidateCpiAccounts<'a, 'b> {
     /// Payer and creator of the RuleSet
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the RuleSet is stored
-    pub rule_set: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rule_set: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub opt_rule_signer1: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+    pub opt_rule_signer1: Option<(&'b solana_program::account_info::AccountInfo<'a>, bool)>,
     /// Optional rule validation signer 2
-    pub opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation signer 3
-    pub opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation signer 4
-    pub opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation signer 5
-    pub opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 1
-    pub opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner1: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 2
-    pub opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 3
-    pub opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 4
-    pub opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 5
-    pub opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `validate` CPI instruction.
-pub struct ValidateCpi<'a> {
+pub struct ValidateCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer and creator of the RuleSet
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// The PDA account where the RuleSet is stored
-    pub rule_set: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rule_set: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub opt_rule_signer1: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+    pub opt_rule_signer1: Option<(&'b solana_program::account_info::AccountInfo<'a>, bool)>,
     /// Optional rule validation signer 2
-    pub opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation signer 3
-    pub opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation signer 4
-    pub opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation signer 5
-    pub opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_signer5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 1
-    pub opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner1: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 2
-    pub opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 3
-    pub opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 4
-    pub opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Optional rule validation non-signer 5
-    pub opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub opt_rule_nonsigner5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: ValidateInstructionArgs,
 }
 
-impl<'a> ValidateCpi<'a> {
+impl<'a, 'b> ValidateCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: ValidateCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: ValidateCpiAccounts<'a, 'b>,
         args: ValidateInstructionArgs,
     ) -> Self {
         Self {
@@ -460,7 +460,7 @@ impl<'a> ValidateCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -476,7 +476,7 @@ impl<'a> ValidateCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(13 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -611,12 +611,12 @@ impl<'a> ValidateCpi<'a> {
 }
 
 /// `validate` CPI instruction builder.
-pub struct ValidateCpiBuilder<'a> {
-    instruction: Box<ValidateCpiBuilderInstruction<'a>>,
+pub struct ValidateCpiBuilder<'a, 'b> {
+    instruction: Box<ValidateCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> ValidateCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> ValidateCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(ValidateCpiBuilderInstruction {
             __program: program,
             payer: None,
@@ -641,7 +641,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     }
     /// Payer and creator of the RuleSet
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -649,7 +649,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn rule_set(
         &mut self,
-        rule_set: &'a solana_program::account_info::AccountInfo<'a>,
+        rule_set: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.rule_set = Some(rule_set);
         self
@@ -658,7 +658,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -667,7 +667,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer1(
         &mut self,
-        opt_rule_signer1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer1: Option<&'b solana_program::account_info::AccountInfo<'a>>,
         as_signer: bool,
     ) -> &mut Self {
         if let Some(opt_rule_signer1) = opt_rule_signer1 {
@@ -682,7 +682,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer2(
         &mut self,
-        opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_signer2 = opt_rule_signer2;
         self
@@ -692,7 +692,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer3(
         &mut self,
-        opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_signer3 = opt_rule_signer3;
         self
@@ -702,7 +702,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer4(
         &mut self,
-        opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_signer4 = opt_rule_signer4;
         self
@@ -712,7 +712,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_signer5(
         &mut self,
-        opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_signer5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_signer5 = opt_rule_signer5;
         self
@@ -722,7 +722,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner1(
         &mut self,
-        opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner1: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_nonsigner1 = opt_rule_nonsigner1;
         self
@@ -732,7 +732,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner2(
         &mut self,
-        opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_nonsigner2 = opt_rule_nonsigner2;
         self
@@ -742,7 +742,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner3(
         &mut self,
-        opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_nonsigner3 = opt_rule_nonsigner3;
         self
@@ -752,7 +752,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner4(
         &mut self,
-        opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_nonsigner4 = opt_rule_nonsigner4;
         self
@@ -762,7 +762,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn opt_rule_nonsigner5(
         &mut self,
-        opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        opt_rule_nonsigner5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.opt_rule_nonsigner5 = opt_rule_nonsigner5;
         self
@@ -785,7 +785,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -793,7 +793,7 @@ impl<'a> ValidateCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -867,23 +867,23 @@ impl<'a> ValidateCpiBuilder<'a> {
     }
 }
 
-struct ValidateCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    rule_set: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_signer1: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
-    opt_rule_signer2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_signer3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_signer4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_signer5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_nonsigner1: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_nonsigner2: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_nonsigner3: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_nonsigner4: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    opt_rule_nonsigner5: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct ValidateCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    rule_set: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_signer1: Option<(&'b solana_program::account_info::AccountInfo<'a>, bool)>,
+    opt_rule_signer2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_signer3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_signer4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_signer5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_nonsigner1: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_nonsigner2: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_nonsigner3: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_nonsigner4: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    opt_rule_nonsigner5: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     rule_set_name: Option<String>,
     operation: Option<Operation>,
     payload: Option<Payload>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

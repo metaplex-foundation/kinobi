@@ -173,33 +173,33 @@ impl DeprecatedSetReservationListBuilder {
 }
 
 /// `deprecated_set_reservation_list` CPI accounts.
-pub struct DeprecatedSetReservationListCpiAccounts<'a> {
+pub struct DeprecatedSetReservationListCpiAccounts<'a, 'b> {
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
-    pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+    pub reservation_list: &'b solana_program::account_info::AccountInfo<'a>,
     /// The resource you tied the reservation list too
-    pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+    pub resource: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `deprecated_set_reservation_list` CPI instruction.
-pub struct DeprecatedSetReservationListCpi<'a> {
+pub struct DeprecatedSetReservationListCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
-    pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+    pub reservation_list: &'b solana_program::account_info::AccountInfo<'a>,
     /// The resource you tied the reservation list too
-    pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+    pub resource: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: DeprecatedSetReservationListInstructionArgs,
 }
 
-impl<'a> DeprecatedSetReservationListCpi<'a> {
+impl<'a, 'b> DeprecatedSetReservationListCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: DeprecatedSetReservationListCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: DeprecatedSetReservationListCpiAccounts<'a, 'b>,
         args: DeprecatedSetReservationListInstructionArgs,
     ) -> Self {
         Self {
@@ -217,7 +217,7 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -233,7 +233,7 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -280,12 +280,12 @@ impl<'a> DeprecatedSetReservationListCpi<'a> {
 }
 
 /// `deprecated_set_reservation_list` CPI instruction builder.
-pub struct DeprecatedSetReservationListCpiBuilder<'a> {
-    instruction: Box<DeprecatedSetReservationListCpiBuilderInstruction<'a>>,
+pub struct DeprecatedSetReservationListCpiBuilder<'a, 'b> {
+    instruction: Box<DeprecatedSetReservationListCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> DeprecatedSetReservationListCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(DeprecatedSetReservationListCpiBuilderInstruction {
             __program: program,
             master_edition: None,
@@ -303,7 +303,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition(
         &mut self,
-        master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.master_edition = Some(master_edition);
         self
@@ -312,7 +312,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn reservation_list(
         &mut self,
-        reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+        reservation_list: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.reservation_list = Some(reservation_list);
         self
@@ -321,7 +321,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn resource(
         &mut self,
-        resource: &'a solana_program::account_info::AccountInfo<'a>,
+        resource: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.resource = Some(resource);
         self
@@ -350,7 +350,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -358,7 +358,7 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -412,14 +412,14 @@ impl<'a> DeprecatedSetReservationListCpiBuilder<'a> {
     }
 }
 
-struct DeprecatedSetReservationListCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    resource: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct DeprecatedSetReservationListCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    reservation_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    resource: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     reservations: Option<Vec<Reservation>>,
     total_reservation_spots: Option<u64>,
     offset: Option<u64>,
     total_spot_offset: Option<u64>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

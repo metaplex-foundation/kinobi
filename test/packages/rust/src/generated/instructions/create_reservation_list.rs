@@ -200,51 +200,51 @@ impl CreateReservationListBuilder {
 }
 
 /// `create_reservation_list` CPI accounts.
-pub struct CreateReservationListCpiAccounts<'a> {
+pub struct CreateReservationListCpiAccounts<'a, 'b> {
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
-    pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+    pub reservation_list: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// Update authority
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
-    pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+    pub resource: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rent: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `create_reservation_list` CPI instruction.
-pub struct CreateReservationListCpi<'a> {
+pub struct CreateReservationListCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
-    pub reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+    pub reservation_list: &'b solana_program::account_info::AccountInfo<'a>,
     /// Payer
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
     /// Update authority
-    pub update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
-    pub master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
-    pub resource: &'a solana_program::account_info::AccountInfo<'a>,
+    pub resource: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata key (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// System program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Rent info
-    pub rent: &'a solana_program::account_info::AccountInfo<'a>,
+    pub rent: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
-impl<'a> CreateReservationListCpi<'a> {
+impl<'a, 'b> CreateReservationListCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: CreateReservationListCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: CreateReservationListCpiAccounts<'a, 'b>,
     ) -> Self {
         Self {
             __program: program,
@@ -265,7 +265,7 @@ impl<'a> CreateReservationListCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -281,7 +281,7 @@ impl<'a> CreateReservationListCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(8 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -351,12 +351,12 @@ impl<'a> CreateReservationListCpi<'a> {
 }
 
 /// `create_reservation_list` CPI instruction builder.
-pub struct CreateReservationListCpiBuilder<'a> {
-    instruction: Box<CreateReservationListCpiBuilderInstruction<'a>>,
+pub struct CreateReservationListCpiBuilder<'a, 'b> {
+    instruction: Box<CreateReservationListCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> CreateReservationListCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> CreateReservationListCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateReservationListCpiBuilderInstruction {
             __program: program,
             reservation_list: None,
@@ -375,14 +375,14 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn reservation_list(
         &mut self,
-        reservation_list: &'a solana_program::account_info::AccountInfo<'a>,
+        reservation_list: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.reservation_list = Some(reservation_list);
         self
     }
     /// Payer
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
@@ -390,7 +390,7 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn update_authority(
         &mut self,
-        update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.update_authority = Some(update_authority);
         self
@@ -399,7 +399,7 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition(
         &mut self,
-        master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.master_edition = Some(master_edition);
         self
@@ -408,7 +408,7 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn resource(
         &mut self,
-        resource: &'a solana_program::account_info::AccountInfo<'a>,
+        resource: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.resource = Some(resource);
         self
@@ -417,7 +417,7 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -426,21 +426,21 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
     }
     /// Rent info
     #[inline(always)]
-    pub fn rent(&mut self, rent: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn rent(&mut self, rent: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.rent = Some(rent);
         self
     }
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -448,7 +448,7 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -503,15 +503,15 @@ impl<'a> CreateReservationListCpiBuilder<'a> {
     }
 }
 
-struct CreateReservationListCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    reservation_list: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    resource: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    rent: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+struct CreateReservationListCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    reservation_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    resource: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

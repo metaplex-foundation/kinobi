@@ -266,57 +266,57 @@ impl BurnBuilder {
 }
 
 /// `burn` CPI accounts.
-pub struct BurnCpiAccounts<'a> {
+pub struct BurnCpiAccounts<'a, 'b> {
     /// Metadata (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Asset owner
-    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token account to close
-    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// MasterEdition of the asset
-    pub master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Token Program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata of the Collection
-    pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `burn` CPI instruction.
-pub struct BurnCpi<'a> {
+pub struct BurnCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Asset owner
-    pub owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token account to close
-    pub token_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// MasterEdition of the asset
-    pub master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+    pub master_edition_account: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Token Program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata of the Collection
-    pub collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: BurnInstructionArgs,
 }
 
-impl<'a> BurnCpi<'a> {
+impl<'a, 'b> BurnCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: BurnCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: BurnCpiAccounts<'a, 'b>,
         args: BurnInstructionArgs,
     ) -> Self {
         Self {
@@ -340,7 +340,7 @@ impl<'a> BurnCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -356,7 +356,7 @@ impl<'a> BurnCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(9 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -458,12 +458,12 @@ impl<'a> BurnCpi<'a> {
 }
 
 /// `burn` CPI instruction builder.
-pub struct BurnCpiBuilder<'a> {
-    instruction: Box<BurnCpiBuilderInstruction<'a>>,
+pub struct BurnCpiBuilder<'a, 'b> {
+    instruction: Box<BurnCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> BurnCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> BurnCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(BurnCpiBuilderInstruction {
             __program: program,
             metadata: None,
@@ -484,20 +484,20 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
     }
     /// Asset owner
     #[inline(always)]
-    pub fn owner(&mut self, owner: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn owner(&mut self, owner: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.owner = Some(owner);
         self
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn mint(&mut self, mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
@@ -505,7 +505,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_account(
         &mut self,
-        token_account: &'a solana_program::account_info::AccountInfo<'a>,
+        token_account: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_account = Some(token_account);
         self
@@ -514,7 +514,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition_account(
         &mut self,
-        master_edition_account: &'a solana_program::account_info::AccountInfo<'a>,
+        master_edition_account: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.master_edition_account = Some(master_edition_account);
         self
@@ -523,7 +523,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn spl_token_program(
         &mut self,
-        spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.spl_token_program = Some(spl_token_program);
         self
@@ -533,7 +533,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.collection_metadata = collection_metadata;
         self
@@ -543,7 +543,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules = authorization_rules;
         self
@@ -553,7 +553,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules_program = authorization_rules_program;
         self
@@ -566,7 +566,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -574,7 +574,7 @@ impl<'a> BurnCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -636,17 +636,17 @@ impl<'a> BurnCpiBuilder<'a> {
     }
 }
 
-struct BurnCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    master_edition_account: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct BurnCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    owner: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    master_edition_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    spl_token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     burn_args: Option<BurnArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

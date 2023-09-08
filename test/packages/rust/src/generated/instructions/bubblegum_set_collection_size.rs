@@ -203,41 +203,41 @@ impl BubblegumSetCollectionSizeBuilder {
 }
 
 /// `bubblegum_set_collection_size` CPI accounts.
-pub struct BubblegumSetCollectionSizeCpiAccounts<'a> {
+pub struct BubblegumSetCollectionSizeCpiAccounts<'a, 'b> {
     /// Collection Metadata account
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Collection Update authority
-    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of the Collection
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Signing PDA of Bubblegum program
-    pub bubblegum_signer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub bubblegum_signer: &'b solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority Record PDA
-    pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `bubblegum_set_collection_size` CPI instruction.
-pub struct BubblegumSetCollectionSizeCpi<'a> {
+pub struct BubblegumSetCollectionSizeCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Collection Metadata account
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Collection Update authority
-    pub collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of the Collection
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Signing PDA of Bubblegum program
-    pub bubblegum_signer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub bubblegum_signer: &'b solana_program::account_info::AccountInfo<'a>,
     /// Collection Authority Record PDA
-    pub collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: BubblegumSetCollectionSizeInstructionArgs,
 }
 
-impl<'a> BubblegumSetCollectionSizeCpi<'a> {
+impl<'a, 'b> BubblegumSetCollectionSizeCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: BubblegumSetCollectionSizeCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: BubblegumSetCollectionSizeCpiAccounts<'a, 'b>,
         args: BubblegumSetCollectionSizeInstructionArgs,
     ) -> Self {
         Self {
@@ -257,7 +257,7 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -273,7 +273,7 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -339,12 +339,12 @@ impl<'a> BubblegumSetCollectionSizeCpi<'a> {
 }
 
 /// `bubblegum_set_collection_size` CPI instruction builder.
-pub struct BubblegumSetCollectionSizeCpiBuilder<'a> {
-    instruction: Box<BubblegumSetCollectionSizeCpiBuilderInstruction<'a>>,
+pub struct BubblegumSetCollectionSizeCpiBuilder<'a, 'b> {
+    instruction: Box<BubblegumSetCollectionSizeCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> BubblegumSetCollectionSizeCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(BubblegumSetCollectionSizeCpiBuilderInstruction {
             __program: program,
             collection_metadata: None,
@@ -361,7 +361,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
@@ -370,7 +370,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_authority(
         &mut self,
-        collection_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_authority = Some(collection_authority);
         self
@@ -379,7 +379,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_mint(
         &mut self,
-        collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_mint = Some(collection_mint);
         self
@@ -388,7 +388,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn bubblegum_signer(
         &mut self,
-        bubblegum_signer: &'a solana_program::account_info::AccountInfo<'a>,
+        bubblegum_signer: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.bubblegum_signer = Some(bubblegum_signer);
         self
@@ -398,7 +398,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
-        collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.collection_authority_record = collection_authority_record;
         self
@@ -414,7 +414,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -422,7 +422,7 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -479,13 +479,13 @@ impl<'a> BubblegumSetCollectionSizeCpiBuilder<'a> {
     }
 }
 
-struct BubblegumSetCollectionSizeCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    bubblegum_signer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct BubblegumSetCollectionSizeCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    bubblegum_signer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     set_collection_size_args: Option<SetCollectionSizeArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

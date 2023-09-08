@@ -1,10 +1,10 @@
 /// `{{ instruction.name | snakeCase }}` CPI instruction builder.
-pub struct {{ instruction.name | pascalCase }}CpiBuilder<'a> {
-  instruction: Box<{{ instruction.name | pascalCase }}CpiBuilderInstruction<'a>>,
+pub struct {{ instruction.name | pascalCase }}CpiBuilder<'a, 'b> {
+  instruction: Box<{{ instruction.name | pascalCase }}CpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
-  pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> {{ instruction.name | pascalCase }}CpiBuilder<'a, 'b> {
+  pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
     let instruction = Box::new({{ instruction.name | pascalCase }}CpiBuilderInstruction {
       __program: program,
       {% for account in instruction.accounts %}
@@ -23,7 +23,7 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     {{'/// `[optional account]`\n' if account.isOptional }}
     {{- macros.docblock(account.docs) -}}
     #[inline(always)]
-    pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: {{ "Option<&'a solana_program::account_info::AccountInfo<'a>>" if account.isOptional else "&'a solana_program::account_info::AccountInfo<'a>" }}{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
+    pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: {{ "Option<&'b solana_program::account_info::AccountInfo<'a>>" if account.isOptional else "&'b solana_program::account_info::AccountInfo<'a>" }}{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
       {% if account.isOptional %}
         {% if account.isSigner === 'either' %}
           if let Some({{ account.name | snakeCase }}) = {{ account.name | snakeCase }} {
@@ -57,12 +57,12 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
     {% endif %}
   {% endfor %}
   #[inline(always)]
-  pub fn add_remaining_account(&mut self, account: super::InstructionAccountInfo<'a>) -> &mut Self {
+  pub fn add_remaining_account(&mut self, account: super::InstructionAccountInfo<'a,'b>) -> &mut Self {
     self.instruction.__remaining_accounts.push(account);
     self
   }
   #[inline(always)]
-  pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccountInfo<'a>]) -> &mut Self {
+  pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccountInfo<'a, 'b>]) -> &mut Self {
     self.instruction.__remaining_accounts.extend_from_slice(accounts);
     self
   }
@@ -103,13 +103,13 @@ impl<'a> {{ instruction.name | pascalCase }}CpiBuilder<'a> {
   }
 }
 
-struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a> {
-  __program: &'a solana_program::account_info::AccountInfo<'a>,
+struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a, 'b> {
+  __program: &'b solana_program::account_info::AccountInfo<'a>,
   {% for account in instruction.accounts %}
     {% if account.isSigner === 'either' %}
-      {{ account.name | snakeCase }}: Option<(&'a solana_program::account_info::AccountInfo<'a>, bool)>,
+      {{ account.name | snakeCase }}: Option<(&'b solana_program::account_info::AccountInfo<'a>, bool)>,
     {% else %}
-      {{ account.name | snakeCase }}: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+      {{ account.name | snakeCase }}: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     {% endif %}
   {% endfor %}
   {% for arg in instructionArgs %}
@@ -117,5 +117,5 @@ struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a> {
       {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
     {% endif %}
   {% endfor %}
-  __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+  __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

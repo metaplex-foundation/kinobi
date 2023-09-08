@@ -274,64 +274,64 @@ impl InitializeBuilder {
 }
 
 /// `initialize` CPI accounts.
-pub struct InitializeCpiAccounts<'a> {
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+pub struct InitializeCpiAccounts<'a, 'b> {
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
 }
 
 /// `initialize` CPI instruction.
-pub struct InitializeCpi<'a> {
+pub struct InitializeCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+    pub candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub payer: &'a solana_program::account_info::AccountInfo<'a>,
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+    pub collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
 
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// The arguments for the instruction.
     pub __args: InitializeInstructionArgs,
 }
 
-impl<'a> InitializeCpi<'a> {
+impl<'a, 'b> InitializeCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: InitializeCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: InitializeCpiAccounts<'a, 'b>,
         args: InitializeInstructionArgs,
     ) -> Self {
         Self {
@@ -357,7 +357,7 @@ impl<'a> InitializeCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -373,7 +373,7 @@ impl<'a> InitializeCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(11 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -458,12 +458,12 @@ impl<'a> InitializeCpi<'a> {
 }
 
 /// `initialize` CPI instruction builder.
-pub struct InitializeCpiBuilder<'a> {
-    instruction: Box<InitializeCpiBuilderInstruction<'a>>,
+pub struct InitializeCpiBuilder<'a, 'b> {
+    instruction: Box<InitializeCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> InitializeCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> InitializeCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(InitializeCpiBuilderInstruction {
             __program: program,
             candy_machine: None,
@@ -485,7 +485,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn candy_machine(
         &mut self,
-        candy_machine: &'a solana_program::account_info::AccountInfo<'a>,
+        candy_machine: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.candy_machine = Some(candy_machine);
         self
@@ -493,7 +493,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority_pda(
         &mut self,
-        authority_pda: &'a solana_program::account_info::AccountInfo<'a>,
+        authority_pda: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority_pda = Some(authority_pda);
         self
@@ -501,20 +501,20 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority = Some(authority);
         self
     }
     #[inline(always)]
-    pub fn payer(&mut self, payer: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.payer = Some(payer);
         self
     }
     #[inline(always)]
     pub fn collection_metadata(
         &mut self,
-        collection_metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_metadata = Some(collection_metadata);
         self
@@ -522,7 +522,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_mint(
         &mut self,
-        collection_mint: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_mint: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_mint = Some(collection_mint);
         self
@@ -530,7 +530,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_master_edition(
         &mut self,
-        collection_master_edition: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_master_edition: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_master_edition = Some(collection_master_edition);
         self
@@ -538,7 +538,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_update_authority(
         &mut self,
-        collection_update_authority: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_update_authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_update_authority = Some(collection_update_authority);
         self
@@ -546,7 +546,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn collection_authority_record(
         &mut self,
-        collection_authority_record: &'a solana_program::account_info::AccountInfo<'a>,
+        collection_authority_record: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.collection_authority_record = Some(collection_authority_record);
         self
@@ -554,7 +554,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_metadata_program(
         &mut self,
-        token_metadata_program: &'a solana_program::account_info::AccountInfo<'a>,
+        token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_metadata_program = Some(token_metadata_program);
         self
@@ -562,7 +562,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -575,7 +575,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -583,7 +583,7 @@ impl<'a> InitializeCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -663,19 +663,19 @@ impl<'a> InitializeCpiBuilder<'a> {
     }
 }
 
-struct InitializeCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    candy_machine: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority_pda: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_update_authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    collection_authority_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_metadata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct InitializeCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority_pda: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_metadata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     data: Option<CandyMachineData>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }

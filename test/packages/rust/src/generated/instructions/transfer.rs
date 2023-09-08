@@ -379,81 +379,81 @@ impl TransferBuilder {
 }
 
 /// `transfer` CPI accounts.
-pub struct TransferCpiAccounts<'a> {
+pub struct TransferCpiAccounts<'a, 'b> {
     /// Transfer authority (token or delegate owner)
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Delegate record PDA
-    pub delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token account
-    pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token account owner
-    pub token_owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Destination token account
-    pub destination: &'a solana_program::account_info::AccountInfo<'a>,
+    pub destination: &'b solana_program::account_info::AccountInfo<'a>,
     /// Destination token account owner
-    pub destination_owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub destination_owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Edition of token asset
-    pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// SPL Token Program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Associated Token Account program
-    pub spl_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System Program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Instructions sysvar account
-    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    pub sysvar_instructions: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
 }
 
 /// `transfer` CPI instruction.
-pub struct TransferCpi<'a> {
+pub struct TransferCpi<'a, 'b> {
     /// The program to invoke.
-    pub __program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Transfer authority (token or delegate owner)
-    pub authority: &'a solana_program::account_info::AccountInfo<'a>,
+    pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// Delegate record PDA
-    pub delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token account
-    pub token: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token account owner
-    pub token_owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub token_owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Destination token account
-    pub destination: &'a solana_program::account_info::AccountInfo<'a>,
+    pub destination: &'b solana_program::account_info::AccountInfo<'a>,
     /// Destination token account owner
-    pub destination_owner: &'a solana_program::account_info::AccountInfo<'a>,
+    pub destination_owner: &'b solana_program::account_info::AccountInfo<'a>,
     /// Mint of token asset
-    pub mint: &'a solana_program::account_info::AccountInfo<'a>,
+    pub mint: &'b solana_program::account_info::AccountInfo<'a>,
     /// Metadata (pda of ['metadata', program id, mint id])
-    pub metadata: &'a solana_program::account_info::AccountInfo<'a>,
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
     /// Master Edition of token asset
-    pub master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// SPL Token Program
-    pub spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// SPL Associated Token Account program
-    pub spl_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub spl_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// System Program
-    pub system_program: &'a solana_program::account_info::AccountInfo<'a>,
+    pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
     /// Instructions sysvar account
-    pub sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+    pub sysvar_instructions: &'b solana_program::account_info::AccountInfo<'a>,
     /// Token Authorization Rules Program
-    pub authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// Token Authorization Rules account
-    pub authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     /// The arguments for the instruction.
     pub __args: TransferInstructionArgs,
 }
 
-impl<'a> TransferCpi<'a> {
+impl<'a, 'b> TransferCpi<'a, 'b> {
     pub fn new(
-        program: &'a solana_program::account_info::AccountInfo<'a>,
-        accounts: TransferCpiAccounts<'a>,
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: TransferCpiAccounts<'a, 'b>,
         args: TransferInstructionArgs,
     ) -> Self {
         Self {
@@ -483,7 +483,7 @@ impl<'a> TransferCpi<'a> {
     #[inline(always)]
     pub fn invoke_with_remaining_accounts(
         &self,
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
     }
@@ -499,7 +499,7 @@ impl<'a> TransferCpi<'a> {
     pub fn invoke_signed_with_remaining_accounts(
         &self,
         signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[super::InstructionAccountInfo<'a>],
+        remaining_accounts: &[super::InstructionAccountInfo<'a, '_>],
     ) -> solana_program::entrypoint::ProgramResult {
         let mut accounts = Vec::with_capacity(15 + remaining_accounts.len());
         accounts.push(solana_program::instruction::AccountMeta::new(
@@ -640,12 +640,12 @@ impl<'a> TransferCpi<'a> {
 }
 
 /// `transfer` CPI instruction builder.
-pub struct TransferCpiBuilder<'a> {
-    instruction: Box<TransferCpiBuilderInstruction<'a>>,
+pub struct TransferCpiBuilder<'a, 'b> {
+    instruction: Box<TransferCpiBuilderInstruction<'a, 'b>>,
 }
 
-impl<'a> TransferCpiBuilder<'a> {
-    pub fn new(program: &'a solana_program::account_info::AccountInfo<'a>) -> Self {
+impl<'a, 'b> TransferCpiBuilder<'a, 'b> {
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(TransferCpiBuilderInstruction {
             __program: program,
             authority: None,
@@ -672,7 +672,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn authority(
         &mut self,
-        authority: &'a solana_program::account_info::AccountInfo<'a>,
+        authority: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.authority = Some(authority);
         self
@@ -682,14 +682,14 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn delegate_record(
         &mut self,
-        delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.delegate_record = delegate_record;
         self
     }
     /// Token account
     #[inline(always)]
-    pub fn token(&mut self, token: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn token(&mut self, token: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.token = Some(token);
         self
     }
@@ -697,7 +697,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn token_owner(
         &mut self,
-        token_owner: &'a solana_program::account_info::AccountInfo<'a>,
+        token_owner: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.token_owner = Some(token_owner);
         self
@@ -706,7 +706,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn destination(
         &mut self,
-        destination: &'a solana_program::account_info::AccountInfo<'a>,
+        destination: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.destination = Some(destination);
         self
@@ -715,14 +715,14 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn destination_owner(
         &mut self,
-        destination_owner: &'a solana_program::account_info::AccountInfo<'a>,
+        destination_owner: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.destination_owner = Some(destination_owner);
         self
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: &'a solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+    pub fn mint(&mut self, mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
         self.instruction.mint = Some(mint);
         self
     }
@@ -730,7 +730,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn metadata(
         &mut self,
-        metadata: &'a solana_program::account_info::AccountInfo<'a>,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.metadata = Some(metadata);
         self
@@ -740,7 +740,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn master_edition(
         &mut self,
-        master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.master_edition = master_edition;
         self
@@ -749,7 +749,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn spl_token_program(
         &mut self,
-        spl_token_program: &'a solana_program::account_info::AccountInfo<'a>,
+        spl_token_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.spl_token_program = Some(spl_token_program);
         self
@@ -758,7 +758,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn spl_ata_program(
         &mut self,
-        spl_ata_program: &'a solana_program::account_info::AccountInfo<'a>,
+        spl_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.spl_ata_program = Some(spl_ata_program);
         self
@@ -767,7 +767,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn system_program(
         &mut self,
-        system_program: &'a solana_program::account_info::AccountInfo<'a>,
+        system_program: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.system_program = Some(system_program);
         self
@@ -776,7 +776,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn sysvar_instructions(
         &mut self,
-        sysvar_instructions: &'a solana_program::account_info::AccountInfo<'a>,
+        sysvar_instructions: &'b solana_program::account_info::AccountInfo<'a>,
     ) -> &mut Self {
         self.instruction.sysvar_instructions = Some(sysvar_instructions);
         self
@@ -786,7 +786,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules_program(
         &mut self,
-        authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules_program = authorization_rules_program;
         self
@@ -796,7 +796,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn authorization_rules(
         &mut self,
-        authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+        authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     ) -> &mut Self {
         self.instruction.authorization_rules = authorization_rules;
         self
@@ -809,7 +809,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_account(
         &mut self,
-        account: super::InstructionAccountInfo<'a>,
+        account: super::InstructionAccountInfo<'a, 'b>,
     ) -> &mut Self {
         self.instruction.__remaining_accounts.push(account);
         self
@@ -817,7 +817,7 @@ impl<'a> TransferCpiBuilder<'a> {
     #[inline(always)]
     pub fn add_remaining_accounts(
         &mut self,
-        accounts: &[super::InstructionAccountInfo<'a>],
+        accounts: &[super::InstructionAccountInfo<'a, 'b>],
     ) -> &mut Self {
         self.instruction
             .__remaining_accounts
@@ -903,23 +903,23 @@ impl<'a> TransferCpiBuilder<'a> {
     }
 }
 
-struct TransferCpiBuilderInstruction<'a> {
-    __program: &'a solana_program::account_info::AccountInfo<'a>,
-    authority: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    delegate_record: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    token_owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    destination: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    destination_owner: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    metadata: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    master_edition: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    spl_token_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    spl_ata_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    system_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    sysvar_instructions: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules_program: Option<&'a solana_program::account_info::AccountInfo<'a>>,
-    authorization_rules: Option<&'a solana_program::account_info::AccountInfo<'a>>,
+struct TransferCpiBuilderInstruction<'a, 'b> {
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    token_owner: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    destination: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    destination_owner: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    spl_token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    spl_ata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    sysvar_instructions: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     transfer_args: Option<TransferArgs>,
-    __remaining_accounts: Vec<super::InstructionAccountInfo<'a>>,
+    __remaining_accounts: Vec<super::InstructionAccountInfo<'a, 'b>>,
 }
