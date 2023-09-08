@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.15.1
+
+### Patch Changes
+
+- [#80](https://github.com/metaplex-foundation/kinobi/pull/80) [`0f081c4`](https://github.com/metaplex-foundation/kinobi/commit/0f081c474f27cdc6623f42d0ff49dcb53a07d830) Thanks [@febo](https://github.com/febo)! - Separate lifetimes on Rust CPI builders
+
+- [#81](https://github.com/metaplex-foundation/kinobi/pull/81) [`343d990`](https://github.com/metaplex-foundation/kinobi/commit/343d990976ccc957d593fbb17455c222d4935612) Thanks [@febo](https://github.com/febo)! - Add decimal indices to error comments in Rust client
+
 ## 0.15.0
 
 ### Minor Changes
