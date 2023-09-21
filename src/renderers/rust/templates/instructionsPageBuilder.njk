@@ -13,7 +13,7 @@ pub struct {{ instruction.name | pascalCase }}Builder {
       {{ arg.name | snakeCase }}: {{ arg.type if arg.innerOptionType else 'Option<' + arg.type + '>' }},
     {% endif %}
   {% endfor %}
-  __remaining_accounts: Vec<super::InstructionAccount>,
+  __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
 impl {{ instruction.name | pascalCase }}Builder {
@@ -62,13 +62,15 @@ impl {{ instruction.name | pascalCase }}Builder {
       }
     {% endif %}
   {% endfor %}
+  /// Add an aditional account to the instruction.
   #[inline(always)]
-  pub fn add_remaining_account(&mut self, account: super::InstructionAccount) -> &mut Self {
+  pub fn add_remaining_account(&mut self, account: solana_program::instruction::AccountMeta) -> &mut Self {
     self.__remaining_accounts.push(account);
     self
   }
+  /// Add additional accounts to the instruction.
   #[inline(always)]
-  pub fn add_remaining_accounts(&mut self, accounts: &[super::InstructionAccount]) -> &mut Self {
+  pub fn add_remaining_accounts(&mut self, accounts: &[solana_program::instruction::AccountMeta]) -> &mut Self {
     self.__remaining_accounts.extend_from_slice(accounts);
     self
   }
