@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.0
+
+### Minor Changes
+
+- [#83](https://github.com/metaplex-foundation/kinobi/pull/83) [`5f7d3b0`](https://github.com/metaplex-foundation/kinobi/commit/5f7d3b087c18dd2d75f979ab55445c167454df72) Thanks [@febo](https://github.com/febo)! - Remove custom instruction account types in Rust client
+
 ## 0.15.1
 
 ### Patch Changes
