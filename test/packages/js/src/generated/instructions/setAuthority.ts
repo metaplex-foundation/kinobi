@@ -80,14 +80,14 @@ export function setAuthority(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     candyMachine: {
       index: 0,
       isWritable: true,
       value: input.candyMachine ?? null,
     },
     authority: { index: 1, isWritable: false, value: input.authority ?? null },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: SetAuthorityInstructionArgs = { ...input };

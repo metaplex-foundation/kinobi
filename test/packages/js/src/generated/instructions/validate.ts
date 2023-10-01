@@ -115,7 +115,7 @@ export function validate(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     payer: { index: 0, isWritable: true, value: input.payer ?? null },
     ruleSet: { index: 1, isWritable: true, value: input.ruleSet ?? null },
     systemProgram: {
@@ -173,7 +173,7 @@ export function validate(
       isWritable: false,
       value: input.optRuleNonsigner5 ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: ValidateInstructionArgs = { ...input };

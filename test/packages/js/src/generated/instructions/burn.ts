@@ -85,7 +85,7 @@ export function burn(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
     owner: { index: 1, isWritable: true, value: input.owner ?? null },
     mint: { index: 2, isWritable: true, value: input.mint ?? null },
@@ -119,7 +119,7 @@ export function burn(
       isWritable: false,
       value: input.authorizationRulesProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: BurnInstructionArgs = { ...input };

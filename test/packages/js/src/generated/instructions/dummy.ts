@@ -91,7 +91,7 @@ export function dummy(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     edition: { index: 0, isWritable: true, value: input.edition ?? null },
     mint: { index: 1, isWritable: true, value: input.mint ?? null },
     updateAuthority: {
@@ -118,25 +118,27 @@ export function dummy(
       isWritable: false,
       value: input.tokenOrAtaProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: DummyInstructionArgs = { ...input };
 
   // Default values.
+  if (!resolvedAccounts.payer.value) {
+    resolvedAccounts.payer.value = context.payer;
+  }
   if (!resolvedAccounts.edition.value) {
-    resolvedAccounts.edition.value = expectSome(resolvedAccounts.mint.value);
+    resolvedAccounts.edition.value = expectSome(resolvedAccounts.payer.value);
   }
   if (!resolvedAccounts.mintAuthority.value) {
     resolvedAccounts.mintAuthority.value = expectSome(
       resolvedAccounts.updateAuthority.value
     );
   }
-  if (!resolvedAccounts.payer.value) {
-    resolvedAccounts.payer.value = context.payer;
-  }
   if (!resolvedAccounts.foo.value) {
-    resolvedAccounts.foo.value = expectSome(resolvedAccounts.bar.value);
+    resolvedAccounts.foo.value = expectSome(
+      resolvedAccounts.bar.value
+    ).publicKey;
   }
   if (!resolvedAccounts.delegateRecord.value) {
     if (resolvedAccounts.delegate.value) {

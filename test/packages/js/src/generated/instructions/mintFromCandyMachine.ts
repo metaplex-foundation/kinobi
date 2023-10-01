@@ -90,7 +90,7 @@ export function mintFromCandyMachine(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     candyMachine: {
       index: 0,
       isWritable: true,
@@ -168,7 +168,7 @@ export function mintFromCandyMachine(
       isWritable: false,
       value: input.recentSlothashes ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Default values.
   if (!resolvedAccounts.payer.value) {

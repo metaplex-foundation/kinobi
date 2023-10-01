@@ -93,7 +93,7 @@ export function utilize(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
     tokenAccount: {
       index: 1,
@@ -129,7 +129,7 @@ export function utilize(
       value: input.useAuthorityRecord ?? null,
     },
     burner: { index: 10, isWritable: false, value: input.burner ?? null },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: UtilizeInstructionArgs = { ...input };

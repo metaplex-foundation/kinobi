@@ -70,14 +70,14 @@ export function withdraw(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     candyMachine: {
       index: 0,
       isWritable: true,
       value: input.candyMachine ?? null,
     },
     authority: { index: 1, isWritable: true, value: input.authority ?? null },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Default values.
   if (!resolvedAccounts.authority.value) {

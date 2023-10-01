@@ -97,7 +97,7 @@ export function createRuleSet(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     payer: { index: 0, isWritable: true, value: input.payer ?? null },
     ruleSetPda: { index: 1, isWritable: true, value: input.ruleSetPda ?? null },
     systemProgram: {
@@ -105,7 +105,7 @@ export function createRuleSet(
       isWritable: false,
       value: input.systemProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: CreateRuleSetInstructionArgs = { ...input };

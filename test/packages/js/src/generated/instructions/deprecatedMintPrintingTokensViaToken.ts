@@ -107,7 +107,7 @@ export function deprecatedMintPrintingTokensViaToken(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     destination: {
       index: 0,
       isWritable: true,
@@ -141,7 +141,7 @@ export function deprecatedMintPrintingTokensViaToken(
       value: input.tokenProgram ?? null,
     },
     rent: { index: 8, isWritable: false, value: input.rent ?? null },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: DeprecatedMintPrintingTokensViaTokenInstructionArgs = {

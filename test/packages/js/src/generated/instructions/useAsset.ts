@@ -100,7 +100,7 @@ export function useAsset(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
     tokenAccount: {
       index: 1,
@@ -144,7 +144,7 @@ export function useAsset(
       isWritable: false,
       value: input.authorizationRulesProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: UseAssetInstructionArgs = { ...input };

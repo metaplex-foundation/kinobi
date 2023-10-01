@@ -92,7 +92,7 @@ export function mint(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     token: { index: 0, isWritable: true, value: input.token ?? null },
     metadata: { index: 1, isWritable: false, value: input.metadata ?? null },
     masterEdition: {
@@ -133,7 +133,7 @@ export function mint(
       isWritable: false,
       value: input.authorizationRules ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: MintInstructionArgs = { ...input };

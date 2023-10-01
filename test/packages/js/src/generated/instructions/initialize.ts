@@ -93,7 +93,7 @@ export function initialize(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     candyMachine: {
       index: 0,
       isWritable: true,
@@ -141,7 +141,7 @@ export function initialize(
       isWritable: false,
       value: input.systemProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: InitializeInstructionArgs = { ...input };

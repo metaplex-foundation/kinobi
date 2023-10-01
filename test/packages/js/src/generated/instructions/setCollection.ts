@@ -85,7 +85,7 @@ export function setCollection(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     candyMachine: {
       index: 0,
       isWritable: true,
@@ -148,7 +148,7 @@ export function setCollection(
       isWritable: false,
       value: input.systemProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Default values.
   if (!resolvedAccounts.authority.value) {
