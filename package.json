@@ -13,7 +13,7 @@
     "build": "rimraf dist && tsc && tsc -p test/tsconfig.json && pnpm build:njk",
     "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/ && copyfiles -u 1 src/**/*.njk dist/test/src/",
     "build:docs": "typedoc",
-    "test": "ava && node ./test/testFile.cjs",
+    "test": "ava && node ./test/testFile.cjs && tsc -p test/packages/js/tsconfig.json",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
     "package:change": "changeset",
