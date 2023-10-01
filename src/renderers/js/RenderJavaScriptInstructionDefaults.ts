@@ -72,6 +72,9 @@ export function renderJavaScriptInstructionDefaults(
       const name = camelCase(defaultsTo.name);
       if (input.kind === 'account') {
         imports.add('shared', 'expectSome');
+        if (input.resolvedIsSigner && !input.isSigner) {
+          return render(`expectSome(resolvedAccounts.${name}.value).publicKey`);
+        }
         return render(`expectSome(resolvedAccounts.${name}.value)`);
       }
       imports.add('shared', 'expectPublicKey');
