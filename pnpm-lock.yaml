@@ -1,80 +1,96 @@
 lockfileVersion: '6.0'
 
-dependencies:
-  '@noble/hashes':
-    specifier: ^1.1.5
-    version: 1.1.5
-  chalk:
-    specifier: ^4.0.0
-    version: 4.1.2
-  nunjucks:
-    specifier: ^3.2.3
-    version: 3.2.3
-  prettier:
-    specifier: ^2.8.1
-    version: 2.8.1
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
-devDependencies:
-  '@ava/typescript':
-    specifier: ^3.0.1
-    version: 3.0.1
-  '@changesets/changelog-github':
-    specifier: ^0.4.8
-    version: 0.4.8
-  '@changesets/cli':
-    specifier: ^2.26.0
-    version: 2.26.0
-  '@types/node':
-    specifier: ^18.11.17
-    version: 18.11.17
-  '@types/nunjucks':
-    specifier: ^3.2.1
-    version: 3.2.1
-  '@types/prettier':
-    specifier: ^2.7.1
-    version: 2.7.1
-  '@typescript-eslint/eslint-plugin':
-    specifier: ^5.0.0
-    version: 5.46.1(@typescript-eslint/parser@5.46.1)(eslint@8.29.0)(typescript@4.9.4)
-  '@typescript-eslint/parser':
-    specifier: ^5.46.1
-    version: 5.46.1(eslint@8.29.0)(typescript@4.9.4)
-  ava:
-    specifier: ^5.1.0
-    version: 5.2.0(@ava/typescript@3.0.1)
-  copyfiles:
-    specifier: ^2.4.1
-    version: 2.4.1
-  eslint:
-    specifier: ^8.0.1
-    version: 8.29.0
-  eslint-config-airbnb-typescript:
-    specifier: ^17.0.0
-    version: 17.0.0(@typescript-eslint/eslint-plugin@5.46.1)(@typescript-eslint/parser@5.46.1)(eslint-plugin-import@2.26.0)(eslint@8.29.0)
-  eslint-config-prettier:
-    specifier: ^8.5.0
-    version: 8.5.0(eslint@8.29.0)
-  eslint-plugin-import:
-    specifier: ^2.26.0
-    version: 2.26.0(@typescript-eslint/parser@5.46.1)(eslint@8.29.0)
-  eslint-plugin-prettier:
-    specifier: ^4.2.1
-    version: 4.2.1(eslint-config-prettier@8.5.0)(eslint@8.29.0)(prettier@2.8.1)
-  rimraf:
-    specifier: ^3.0.2
-    version: 3.0.2
-  typedoc:
-    specifier: ^0.23.25
-    version: 0.23.25(typescript@4.9.4)
-  typedoc-plugin-missing-exports:
-    specifier: ^1.0.0
-    version: 1.0.0(typedoc@0.23.25)
-  typescript:
-    specifier: ^4.9.4
-    version: 4.9.4
-  vercel:
-    specifier: ^28.16.2
-    version: 28.16.2
+importers:
+
+  .:
+    dependencies:
+      '@noble/hashes':
+        specifier: ^1.1.5
+        version: 1.1.5
+      chalk:
+        specifier: ^4.0.0
+        version: 4.1.2
+      nunjucks:
+        specifier: ^3.2.3
+        version: 3.2.3
+      prettier:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@ava/typescript':
+        specifier: ^3.0.1
+        version: 3.0.1
+      '@changesets/changelog-github':
+        specifier: ^0.4.8
+        version: 0.4.8
+      '@changesets/cli':
+        specifier: ^2.26.0
+        version: 2.26.0
+      '@types/node':
+        specifier: ^18.11.17
+        version: 18.11.17
+      '@types/nunjucks':
+        specifier: ^3.2.1
+        version: 3.2.1
+      '@types/prettier':
+        specifier: ^2.7.1
+        version: 2.7.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^5.0.0
+        version: 5.46.1(@typescript-eslint/parser@5.46.1)(eslint@8.29.0)(typescript@4.9.4)
+      '@typescript-eslint/parser':
+        specifier: ^5.46.1
+        version: 5.46.1(eslint@8.29.0)(typescript@4.9.4)
+      ava:
+        specifier: ^5.1.0
+        version: 5.2.0(@ava/typescript@3.0.1)
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      eslint:
+        specifier: ^8.0.1
+        version: 8.29.0
+      eslint-config-airbnb-typescript:
+        specifier: ^17.0.0
+        version: 17.0.0(@typescript-eslint/eslint-plugin@5.46.1)(@typescript-eslint/parser@5.46.1)(eslint-plugin-import@2.26.0)(eslint@8.29.0)
+      eslint-config-prettier:
+        specifier: ^8.5.0
+        version: 8.5.0(eslint@8.29.0)
+      eslint-plugin-import:
+        specifier: ^2.26.0
+        version: 2.26.0(@typescript-eslint/parser@5.46.1)(eslint@8.29.0)
+      eslint-plugin-prettier:
+        specifier: ^4.2.1
+        version: 4.2.1(eslint-config-prettier@8.5.0)(eslint@8.29.0)(prettier@2.8.1)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typedoc:
+        specifier: ^0.23.25
+        version: 0.23.25(typescript@4.9.4)
+      typedoc-plugin-missing-exports:
+        specifier: ^1.0.0
+        version: 1.0.0(typedoc@0.23.25)
+      typescript:
+        specifier: ^4.9.4
+        version: 4.9.4
+      vercel:
+        specifier: ^28.16.2
+        version: 28.16.2
+
+  test/packages/js:
+    dependencies:
+      '@metaplex-foundation/umi':
+        specifier: ^0.8.2
+        version: 0.8.9
+    devDependencies:
+      typescript:
+        specifier: ^4.9.4
+        version: 4.9.4
 
 packages:
 
@@ -1852,6 +1868,50 @@ packages:
       - encoding
       - supports-color
     dev: true
+
+  /@metaplex-foundation/umi-options@0.8.9:
+    resolution: {integrity: sha512-jSQ61sZMPSAk/TXn8v8fPqtz3x8d0/blVZXLLbpVbo2/T5XobiI6/MfmlUosAjAUaQl6bHRF8aIIqZEFkJiy4A==}
+    dev: false
+
+  /@metaplex-foundation/umi-public-keys@0.8.9:
+    resolution: {integrity: sha512-CxMzN7dgVGOq9OcNCJe2casKUpJ3RmTVoOvDFyeoTQuK+vkZ1YSSahbqC1iGuHEtKTLSjtWjKvUU6O7zWFTw3Q==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers-encodings': 0.8.9
+    dev: false
+
+  /@metaplex-foundation/umi-serializers-core@0.8.9:
+    resolution: {integrity: sha512-WT82tkiYJ0Qmscp7uTj1Hz6aWQPETwaKLAENAUN5DeWghkuBKtuxyBKVvEOuoXerJSdhiAk0e8DWA4cxcTTQ/w==}
+    dev: false
+
+  /@metaplex-foundation/umi-serializers-encodings@0.8.9:
+    resolution: {integrity: sha512-N3VWLDTJ0bzzMKcJDL08U3FaqRmwlN79FyE4BHj6bbAaJ9LEHjDQ9RJijZyWqTm0jE7I750fU7Ow5EZL38Xi6Q==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers-core': 0.8.9
+    dev: false
+
+  /@metaplex-foundation/umi-serializers-numbers@0.8.9:
+    resolution: {integrity: sha512-NtBf1fnVNQJHFQjLFzRu2i9GGnigb9hOm/Gfrk628d0q0tRJB7BOM3bs5C61VAs7kJs4yd+pDNVAERJkknQ7Lg==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers-core': 0.8.9
+    dev: false
+
+  /@metaplex-foundation/umi-serializers@0.8.9:
+    resolution: {integrity: sha512-Sve8Etm3zqvLSUfza+MYRkjTnCpiaAFT7VWdqeHzA3n58P0AfT3p74RrZwVt/UFkxI+ln8BslwBDJmwzcPkuHw==}
+    dependencies:
+      '@metaplex-foundation/umi-options': 0.8.9
+      '@metaplex-foundation/umi-public-keys': 0.8.9
+      '@metaplex-foundation/umi-serializers-core': 0.8.9
+      '@metaplex-foundation/umi-serializers-encodings': 0.8.9
+      '@metaplex-foundation/umi-serializers-numbers': 0.8.9
+    dev: false
+
+  /@metaplex-foundation/umi@0.8.9:
+    resolution: {integrity: sha512-Gip7HPDCjsX7OakPFBiifX89AofUGcsj/ujbvOfd/6GDIL4XjX79royuT3yyxzovRxyiaPF/kCK6a2dKtm69Kw==}
+    dependencies:
+      '@metaplex-foundation/umi-options': 0.8.9
+      '@metaplex-foundation/umi-public-keys': 0.8.9
+      '@metaplex-foundation/umi-serializers': 0.8.9
+    dev: false
 
   /@noble/hashes@1.1.5:
     resolution: {integrity: sha512-LTMZiiLc+V4v1Yi16TD6aX2gmtKszNye0pQgbaLqkvhIqP7nVsSaJsWloGQjJfJ8offaoP5GtX3yY5swbcJxxQ==}
@@ -6370,6 +6430,7 @@ packages:
 
   /node-addon-api@1.7.2:
     resolution: {integrity: sha512-ibPK3iA+vaY1eEjESkQkM0BbCqFOaZMiXRTtdB0u7b4djtY6JnsjvPdUHVMg6xQt3B8fpTTWHI9A+ADjM9frzg==}
+    requiresBuild: true
     dev: true
     optional: true
 
