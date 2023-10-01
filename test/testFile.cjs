@@ -100,7 +100,7 @@ kinobi.update(
     Dummy: {
       accounts: {
         mintAuthority: { defaultsTo: k.accountDefault('updateAuthority') },
-        edition: { defaultsTo: k.accountDefault('mint') },
+        edition: { defaultsTo: k.accountDefault('payer') },
         foo: { defaultsTo: k.accountDefault('bar') },
         bar: {
           defaultsTo: k.programIdDefault(),
