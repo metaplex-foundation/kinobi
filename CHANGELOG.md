@@ -1,5 +1,15 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.1
+
+### Patch Changes
+
+- [#89](https://github.com/metaplex-foundation/kinobi/pull/89) [`e47921b`](https://github.com/metaplex-foundation/kinobi/commit/e47921bb690f94fab05a5e8b816f8b1c1072fc3d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove pnpm workspace
+
+- [#88](https://github.com/metaplex-foundation/kinobi/pull/88) [`4142f6c`](https://github.com/metaplex-foundation/kinobi/commit/4142f6cfe9049b6dd229918d42720a970102e399) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix argument object when resolving defaults in JS renderer
+
+- [#85](https://github.com/metaplex-foundation/kinobi/pull/85) [`aa52a15`](https://github.com/metaplex-foundation/kinobi/commit/aa52a15ab1fa28122c1baa37047c933b34903f86) Thanks [@Juici](https://github.com/Juici)! - Fix issues TypeScript has with generated code
+
 ## 0.16.0
 
 ### Minor Changes
