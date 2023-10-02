@@ -97,7 +97,7 @@ export function createFrequencyRule(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     payer: { index: 0, isWritable: true, value: input.payer ?? null },
     frequencyPda: {
       index: 1,
@@ -109,7 +109,7 @@ export function createFrequencyRule(
       isWritable: false,
       value: input.systemProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: CreateFrequencyRuleInstructionArgs = { ...input };

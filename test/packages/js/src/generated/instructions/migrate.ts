@@ -95,7 +95,7 @@ export function migrate(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
     masterEdition: {
       index: 1,
@@ -138,7 +138,7 @@ export function migrate(
       isWritable: false,
       value: input.authorizationRules ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: MigrateInstructionArgs = { ...input };

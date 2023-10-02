@@ -17,7 +17,7 @@ const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
 /** IncorrectOwner: Account does not have correct owner */
 export class CmIncorrectOwnerError extends ProgramError {
-  readonly name: string = 'IncorrectOwner';
+  override readonly name: string = 'IncorrectOwner';
 
   readonly code: number = 0x1770; // 6000
 
@@ -30,7 +30,7 @@ nameToErrorMap.set('IncorrectOwner', CmIncorrectOwnerError);
 
 /** Uninitialized: Account is not initialized */
 export class CmUninitializedError extends ProgramError {
-  readonly name: string = 'Uninitialized';
+  override readonly name: string = 'Uninitialized';
 
   readonly code: number = 0x1771; // 6001
 
@@ -43,7 +43,7 @@ nameToErrorMap.set('Uninitialized', CmUninitializedError);
 
 /** MintMismatch: Mint Mismatch */
 export class CmMintMismatchError extends ProgramError {
-  readonly name: string = 'MintMismatch';
+  override readonly name: string = 'MintMismatch';
 
   readonly code: number = 0x1772; // 6002
 
@@ -56,7 +56,7 @@ nameToErrorMap.set('MintMismatch', CmMintMismatchError);
 
 /** IndexGreaterThanLength: Index greater than length */
 export class CmIndexGreaterThanLengthError extends ProgramError {
-  readonly name: string = 'IndexGreaterThanLength';
+  override readonly name: string = 'IndexGreaterThanLength';
 
   readonly code: number = 0x1773; // 6003
 
@@ -69,7 +69,7 @@ nameToErrorMap.set('IndexGreaterThanLength', CmIndexGreaterThanLengthError);
 
 /** NumericalOverflowError: Numerical overflow error */
 export class CmNumericalOverflowErrorError extends ProgramError {
-  readonly name: string = 'NumericalOverflowError';
+  override readonly name: string = 'NumericalOverflowError';
 
   readonly code: number = 0x1774; // 6004
 
@@ -82,7 +82,7 @@ nameToErrorMap.set('NumericalOverflowError', CmNumericalOverflowErrorError);
 
 /** TooManyCreators: Can only provide up to 4 creators to candy machine (because candy machine is one) */
 export class CmTooManyCreatorsError extends ProgramError {
-  readonly name: string = 'TooManyCreators';
+  override readonly name: string = 'TooManyCreators';
 
   readonly code: number = 0x1775; // 6005
 
@@ -99,7 +99,7 @@ nameToErrorMap.set('TooManyCreators', CmTooManyCreatorsError);
 
 /** CandyMachineEmpty: Candy machine is empty */
 export class CmCandyMachineEmptyError extends ProgramError {
-  readonly name: string = 'CandyMachineEmpty';
+  override readonly name: string = 'CandyMachineEmpty';
 
   readonly code: number = 0x1776; // 6006
 
@@ -112,7 +112,7 @@ nameToErrorMap.set('CandyMachineEmpty', CmCandyMachineEmptyError);
 
 /** HiddenSettingsDoNotHaveConfigLines: Candy machines using hidden uris do not have config lines, they have a single hash representing hashed order */
 export class CmHiddenSettingsDoNotHaveConfigLinesError extends ProgramError {
-  readonly name: string = 'HiddenSettingsDoNotHaveConfigLines';
+  override readonly name: string = 'HiddenSettingsDoNotHaveConfigLines';
 
   readonly code: number = 0x1777; // 6007
 
@@ -132,7 +132,7 @@ nameToErrorMap.set(
 
 /** CannotChangeNumberOfLines: Cannot change number of lines unless is a hidden config */
 export class CmCannotChangeNumberOfLinesError extends ProgramError {
-  readonly name: string = 'CannotChangeNumberOfLines';
+  override readonly name: string = 'CannotChangeNumberOfLines';
 
   readonly code: number = 0x1778; // 6008
 
@@ -152,7 +152,7 @@ nameToErrorMap.set(
 
 /** CannotSwitchToHiddenSettings: Cannot switch to hidden settings after items available is greater than 0 */
 export class CmCannotSwitchToHiddenSettingsError extends ProgramError {
-  readonly name: string = 'CannotSwitchToHiddenSettings';
+  override readonly name: string = 'CannotSwitchToHiddenSettings';
 
   readonly code: number = 0x1779; // 6009
 
@@ -172,7 +172,7 @@ nameToErrorMap.set(
 
 /** IncorrectCollectionAuthority: Incorrect collection NFT authority */
 export class CmIncorrectCollectionAuthorityError extends ProgramError {
-  readonly name: string = 'IncorrectCollectionAuthority';
+  override readonly name: string = 'IncorrectCollectionAuthority';
 
   readonly code: number = 0x177a; // 6010
 
@@ -188,7 +188,7 @@ nameToErrorMap.set(
 
 /** MetadataAccountMustBeEmpty: The metadata account has data in it, and this must be empty to mint a new NFT */
 export class CmMetadataAccountMustBeEmptyError extends ProgramError {
-  readonly name: string = 'MetadataAccountMustBeEmpty';
+  override readonly name: string = 'MetadataAccountMustBeEmpty';
 
   readonly code: number = 0x177b; // 6011
 
@@ -208,7 +208,7 @@ nameToErrorMap.set(
 
 /** NoChangingCollectionDuringMint: Can't change collection settings after items have begun to be minted */
 export class CmNoChangingCollectionDuringMintError extends ProgramError {
-  readonly name: string = 'NoChangingCollectionDuringMint';
+  override readonly name: string = 'NoChangingCollectionDuringMint';
 
   readonly code: number = 0x177c; // 6012
 
@@ -228,7 +228,7 @@ nameToErrorMap.set(
 
 /** ExceededLengthError: Value longer than expected maximum value */
 export class CmExceededLengthErrorError extends ProgramError {
-  readonly name: string = 'ExceededLengthError';
+  override readonly name: string = 'ExceededLengthError';
 
   readonly code: number = 0x177d; // 6013
 
@@ -241,7 +241,7 @@ nameToErrorMap.set('ExceededLengthError', CmExceededLengthErrorError);
 
 /** MissingConfigLinesSettings: Missing config lines settings */
 export class CmMissingConfigLinesSettingsError extends ProgramError {
-  readonly name: string = 'MissingConfigLinesSettings';
+  override readonly name: string = 'MissingConfigLinesSettings';
 
   readonly code: number = 0x177e; // 6014
 
@@ -257,7 +257,7 @@ nameToErrorMap.set(
 
 /** CannotIncreaseLength: Cannot increase the length in config lines settings */
 export class CmCannotIncreaseLengthError extends ProgramError {
-  readonly name: string = 'CannotIncreaseLength';
+  override readonly name: string = 'CannotIncreaseLength';
 
   readonly code: number = 0x177f; // 6015
 
@@ -274,7 +274,7 @@ nameToErrorMap.set('CannotIncreaseLength', CmCannotIncreaseLengthError);
 
 /** CannotSwitchFromHiddenSettings: Cannot switch from hidden settings */
 export class CmCannotSwitchFromHiddenSettingsError extends ProgramError {
-  readonly name: string = 'CannotSwitchFromHiddenSettings';
+  override readonly name: string = 'CannotSwitchFromHiddenSettings';
 
   readonly code: number = 0x1780; // 6016
 
@@ -290,7 +290,7 @@ nameToErrorMap.set(
 
 /** CannotChangeSequentialIndexGeneration: Cannot change sequential index generation after items have begun to be minted */
 export class CmCannotChangeSequentialIndexGenerationError extends ProgramError {
-  readonly name: string = 'CannotChangeSequentialIndexGeneration';
+  override readonly name: string = 'CannotChangeSequentialIndexGeneration';
 
   readonly code: number = 0x1781; // 6017
 
@@ -310,7 +310,7 @@ nameToErrorMap.set(
 
 /** CollectionKeyMismatch: Collection public key mismatch */
 export class CmCollectionKeyMismatchError extends ProgramError {
-  readonly name: string = 'CollectionKeyMismatch';
+  override readonly name: string = 'CollectionKeyMismatch';
 
   readonly code: number = 0x1782; // 6018
 
@@ -323,7 +323,7 @@ nameToErrorMap.set('CollectionKeyMismatch', CmCollectionKeyMismatchError);
 
 /** CouldNotRetrieveConfigLineData: Could not retrive config line data */
 export class CmCouldNotRetrieveConfigLineDataError extends ProgramError {
-  readonly name: string = 'CouldNotRetrieveConfigLineData';
+  override readonly name: string = 'CouldNotRetrieveConfigLineData';
 
   readonly code: number = 0x1783; // 6019
 
@@ -339,7 +339,7 @@ nameToErrorMap.set(
 
 /** NotFullyLoaded: Not all config lines were added to the candy machine */
 export class CmNotFullyLoadedError extends ProgramError {
-  readonly name: string = 'NotFullyLoaded';
+  override readonly name: string = 'NotFullyLoaded';
 
   readonly code: number = 0x1784; // 6020
 

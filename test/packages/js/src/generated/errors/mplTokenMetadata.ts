@@ -17,7 +17,7 @@ const nameToErrorMap: Map<string, ProgramErrorConstructor> = new Map();
 
 /** InstructionUnpackError: Failed to unpack instruction data */
 export class TmInstructionUnpackErrorError extends ProgramError {
-  readonly name: string = 'InstructionUnpackError';
+  override readonly name: string = 'InstructionUnpackError';
 
   readonly code: number = 0x0; // 0
 
@@ -30,7 +30,7 @@ nameToErrorMap.set('InstructionUnpackError', TmInstructionUnpackErrorError);
 
 /** InstructionPackError: Failed to pack instruction data */
 export class TmInstructionPackErrorError extends ProgramError {
-  readonly name: string = 'InstructionPackError';
+  override readonly name: string = 'InstructionPackError';
 
   readonly code: number = 0x1; // 1
 
@@ -43,7 +43,7 @@ nameToErrorMap.set('InstructionPackError', TmInstructionPackErrorError);
 
 /** NotRentExempt: Lamport balance below rent-exempt threshold */
 export class TmNotRentExemptError extends ProgramError {
-  readonly name: string = 'NotRentExempt';
+  override readonly name: string = 'NotRentExempt';
 
   readonly code: number = 0x2; // 2
 
@@ -56,7 +56,7 @@ nameToErrorMap.set('NotRentExempt', TmNotRentExemptError);
 
 /** AlreadyInitialized: Already initialized */
 export class TmAlreadyInitializedError extends ProgramError {
-  readonly name: string = 'AlreadyInitialized';
+  override readonly name: string = 'AlreadyInitialized';
 
   readonly code: number = 0x3; // 3
 
@@ -69,7 +69,7 @@ nameToErrorMap.set('AlreadyInitialized', TmAlreadyInitializedError);
 
 /** Uninitialized: Uninitialized */
 export class TmUninitializedError extends ProgramError {
-  readonly name: string = 'Uninitialized';
+  override readonly name: string = 'Uninitialized';
 
   readonly code: number = 0x4; // 4
 
@@ -82,7 +82,7 @@ nameToErrorMap.set('Uninitialized', TmUninitializedError);
 
 /** InvalidMetadataKey:  Metadata's key must match seed of ['metadata', program id, mint] provided */
 export class TmInvalidMetadataKeyError extends ProgramError {
-  readonly name: string = 'InvalidMetadataKey';
+  override readonly name: string = 'InvalidMetadataKey';
 
   readonly code: number = 0x5; // 5
 
@@ -99,7 +99,7 @@ nameToErrorMap.set('InvalidMetadataKey', TmInvalidMetadataKeyError);
 
 /** InvalidEditionKey: Edition's key must match seed of ['metadata', program id, name, 'edition'] provided */
 export class TmInvalidEditionKeyError extends ProgramError {
-  readonly name: string = 'InvalidEditionKey';
+  override readonly name: string = 'InvalidEditionKey';
 
   readonly code: number = 0x6; // 6
 
@@ -116,7 +116,7 @@ nameToErrorMap.set('InvalidEditionKey', TmInvalidEditionKeyError);
 
 /** UpdateAuthorityIncorrect: Update Authority given does not match */
 export class TmUpdateAuthorityIncorrectError extends ProgramError {
-  readonly name: string = 'UpdateAuthorityIncorrect';
+  override readonly name: string = 'UpdateAuthorityIncorrect';
 
   readonly code: number = 0x7; // 7
 
@@ -129,7 +129,7 @@ nameToErrorMap.set('UpdateAuthorityIncorrect', TmUpdateAuthorityIncorrectError);
 
 /** UpdateAuthorityIsNotSigner: Update Authority needs to be signer to update metadata */
 export class TmUpdateAuthorityIsNotSignerError extends ProgramError {
-  readonly name: string = 'UpdateAuthorityIsNotSigner';
+  override readonly name: string = 'UpdateAuthorityIsNotSigner';
 
   readonly code: number = 0x8; // 8
 
@@ -149,7 +149,7 @@ nameToErrorMap.set(
 
 /** NotMintAuthority: You must be the mint authority and signer on this transaction */
 export class TmNotMintAuthorityError extends ProgramError {
-  readonly name: string = 'NotMintAuthority';
+  override readonly name: string = 'NotMintAuthority';
 
   readonly code: number = 0x9; // 9
 
@@ -166,7 +166,7 @@ nameToErrorMap.set('NotMintAuthority', TmNotMintAuthorityError);
 
 /** InvalidMintAuthority: Mint authority provided does not match the authority on the mint */
 export class TmInvalidMintAuthorityError extends ProgramError {
-  readonly name: string = 'InvalidMintAuthority';
+  override readonly name: string = 'InvalidMintAuthority';
 
   readonly code: number = 0xa; // 10
 
@@ -183,7 +183,7 @@ nameToErrorMap.set('InvalidMintAuthority', TmInvalidMintAuthorityError);
 
 /** NameTooLong: Name too long */
 export class TmNameTooLongError extends ProgramError {
-  readonly name: string = 'NameTooLong';
+  override readonly name: string = 'NameTooLong';
 
   readonly code: number = 0xb; // 11
 
@@ -196,7 +196,7 @@ nameToErrorMap.set('NameTooLong', TmNameTooLongError);
 
 /** SymbolTooLong: Symbol too long */
 export class TmSymbolTooLongError extends ProgramError {
-  readonly name: string = 'SymbolTooLong';
+  override readonly name: string = 'SymbolTooLong';
 
   readonly code: number = 0xc; // 12
 
@@ -209,7 +209,7 @@ nameToErrorMap.set('SymbolTooLong', TmSymbolTooLongError);
 
 /** UriTooLong: URI too long */
 export class TmUriTooLongError extends ProgramError {
-  readonly name: string = 'UriTooLong';
+  override readonly name: string = 'UriTooLong';
 
   readonly code: number = 0xd; // 13
 
@@ -222,7 +222,7 @@ nameToErrorMap.set('UriTooLong', TmUriTooLongError);
 
 /** UpdateAuthorityMustBeEqualToMetadataAuthorityAndSigner: Update authority must be equivalent to the metadata's authority and also signer of this transaction */
 export class TmUpdateAuthorityMustBeEqualToMetadataAuthorityAndSignerError extends ProgramError {
-  readonly name: string =
+  override readonly name: string =
     'UpdateAuthorityMustBeEqualToMetadataAuthorityAndSigner';
 
   readonly code: number = 0xe; // 14
@@ -246,7 +246,7 @@ nameToErrorMap.set(
 
 /** MintMismatch: Mint given does not match mint on Metadata */
 export class TmMintMismatchError extends ProgramError {
-  readonly name: string = 'MintMismatch';
+  override readonly name: string = 'MintMismatch';
 
   readonly code: number = 0xf; // 15
 
@@ -259,7 +259,7 @@ nameToErrorMap.set('MintMismatch', TmMintMismatchError);
 
 /** EditionsMustHaveExactlyOneToken: Editions must have exactly one token */
 export class TmEditionsMustHaveExactlyOneTokenError extends ProgramError {
-  readonly name: string = 'EditionsMustHaveExactlyOneToken';
+  override readonly name: string = 'EditionsMustHaveExactlyOneToken';
 
   readonly code: number = 0x10; // 16
 
@@ -275,7 +275,7 @@ nameToErrorMap.set(
 
 /** MaxEditionsMintedAlready: Maximum editions printed already */
 export class TmMaxEditionsMintedAlreadyError extends ProgramError {
-  readonly name: string = 'MaxEditionsMintedAlready';
+  override readonly name: string = 'MaxEditionsMintedAlready';
 
   readonly code: number = 0x11; // 17
 
@@ -288,7 +288,7 @@ nameToErrorMap.set('MaxEditionsMintedAlready', TmMaxEditionsMintedAlreadyError);
 
 /** TokenMintToFailed: Token mint to failed */
 export class TmTokenMintToFailedError extends ProgramError {
-  readonly name: string = 'TokenMintToFailed';
+  override readonly name: string = 'TokenMintToFailed';
 
   readonly code: number = 0x12; // 18
 
@@ -301,7 +301,7 @@ nameToErrorMap.set('TokenMintToFailed', TmTokenMintToFailedError);
 
 /** MasterRecordMismatch: The master edition record passed must match the master record on the edition given */
 export class TmMasterRecordMismatchError extends ProgramError {
-  readonly name: string = 'MasterRecordMismatch';
+  override readonly name: string = 'MasterRecordMismatch';
 
   readonly code: number = 0x13; // 19
 
@@ -318,7 +318,7 @@ nameToErrorMap.set('MasterRecordMismatch', TmMasterRecordMismatchError);
 
 /** DestinationMintMismatch: The destination account does not have the right mint */
 export class TmDestinationMintMismatchError extends ProgramError {
-  readonly name: string = 'DestinationMintMismatch';
+  override readonly name: string = 'DestinationMintMismatch';
 
   readonly code: number = 0x14; // 20
 
@@ -335,7 +335,7 @@ nameToErrorMap.set('DestinationMintMismatch', TmDestinationMintMismatchError);
 
 /** EditionAlreadyMinted: An edition can only mint one of its kind! */
 export class TmEditionAlreadyMintedError extends ProgramError {
-  readonly name: string = 'EditionAlreadyMinted';
+  override readonly name: string = 'EditionAlreadyMinted';
 
   readonly code: number = 0x15; // 21
 
@@ -348,7 +348,7 @@ nameToErrorMap.set('EditionAlreadyMinted', TmEditionAlreadyMintedError);
 
 /** PrintingMintDecimalsShouldBeZero: Printing mint decimals should be zero */
 export class TmPrintingMintDecimalsShouldBeZeroError extends ProgramError {
-  readonly name: string = 'PrintingMintDecimalsShouldBeZero';
+  override readonly name: string = 'PrintingMintDecimalsShouldBeZero';
 
   readonly code: number = 0x16; // 22
 
@@ -364,7 +364,7 @@ nameToErrorMap.set(
 
 /** OneTimePrintingAuthorizationMintDecimalsShouldBeZero: OneTimePrintingAuthorization mint decimals should be zero */
 export class TmOneTimePrintingAuthorizationMintDecimalsShouldBeZeroError extends ProgramError {
-  readonly name: string =
+  override readonly name: string =
     'OneTimePrintingAuthorizationMintDecimalsShouldBeZero';
 
   readonly code: number = 0x17; // 23
@@ -388,7 +388,7 @@ nameToErrorMap.set(
 
 /** EditionMintDecimalsShouldBeZero: EditionMintDecimalsShouldBeZero */
 export class TmEditionMintDecimalsShouldBeZeroError extends ProgramError {
-  readonly name: string = 'EditionMintDecimalsShouldBeZero';
+  override readonly name: string = 'EditionMintDecimalsShouldBeZero';
 
   readonly code: number = 0x18; // 24
 
@@ -404,7 +404,7 @@ nameToErrorMap.set(
 
 /** TokenBurnFailed: Token burn failed */
 export class TmTokenBurnFailedError extends ProgramError {
-  readonly name: string = 'TokenBurnFailed';
+  override readonly name: string = 'TokenBurnFailed';
 
   readonly code: number = 0x19; // 25
 
@@ -417,7 +417,7 @@ nameToErrorMap.set('TokenBurnFailed', TmTokenBurnFailedError);
 
 /** TokenAccountOneTimeAuthMintMismatch: The One Time authorization mint does not match that on the token account! */
 export class TmTokenAccountOneTimeAuthMintMismatchError extends ProgramError {
-  readonly name: string = 'TokenAccountOneTimeAuthMintMismatch';
+  override readonly name: string = 'TokenAccountOneTimeAuthMintMismatch';
 
   readonly code: number = 0x1a; // 26
 
@@ -437,7 +437,7 @@ nameToErrorMap.set(
 
 /** DerivedKeyInvalid: Derived key invalid */
 export class TmDerivedKeyInvalidError extends ProgramError {
-  readonly name: string = 'DerivedKeyInvalid';
+  override readonly name: string = 'DerivedKeyInvalid';
 
   readonly code: number = 0x1b; // 27
 
@@ -450,7 +450,7 @@ nameToErrorMap.set('DerivedKeyInvalid', TmDerivedKeyInvalidError);
 
 /** PrintingMintMismatch: The Printing mint does not match that on the master edition! */
 export class TmPrintingMintMismatchError extends ProgramError {
-  readonly name: string = 'PrintingMintMismatch';
+  override readonly name: string = 'PrintingMintMismatch';
 
   readonly code: number = 0x1c; // 28
 
@@ -467,7 +467,7 @@ nameToErrorMap.set('PrintingMintMismatch', TmPrintingMintMismatchError);
 
 /** OneTimePrintingAuthMintMismatch: The One Time Printing Auth mint does not match that on the master edition! */
 export class TmOneTimePrintingAuthMintMismatchError extends ProgramError {
-  readonly name: string = 'OneTimePrintingAuthMintMismatch';
+  override readonly name: string = 'OneTimePrintingAuthMintMismatch';
 
   readonly code: number = 0x1d; // 29
 
@@ -487,7 +487,7 @@ nameToErrorMap.set(
 
 /** TokenAccountMintMismatch: The mint of the token account does not match the Printing mint! */
 export class TmTokenAccountMintMismatchError extends ProgramError {
-  readonly name: string = 'TokenAccountMintMismatch';
+  override readonly name: string = 'TokenAccountMintMismatch';
 
   readonly code: number = 0x1e; // 30
 
@@ -504,7 +504,7 @@ nameToErrorMap.set('TokenAccountMintMismatch', TmTokenAccountMintMismatchError);
 
 /** TokenAccountMintMismatchV2: The mint of the token account does not match the master metadata mint! */
 export class TmTokenAccountMintMismatchV2Error extends ProgramError {
-  readonly name: string = 'TokenAccountMintMismatchV2';
+  override readonly name: string = 'TokenAccountMintMismatchV2';
 
   readonly code: number = 0x1f; // 31
 
@@ -524,7 +524,7 @@ nameToErrorMap.set(
 
 /** NotEnoughTokens: Not enough tokens to mint a limited edition */
 export class TmNotEnoughTokensError extends ProgramError {
-  readonly name: string = 'NotEnoughTokens';
+  override readonly name: string = 'NotEnoughTokens';
 
   readonly code: number = 0x20; // 32
 
@@ -537,7 +537,7 @@ nameToErrorMap.set('NotEnoughTokens', TmNotEnoughTokensError);
 
 /** PrintingMintAuthorizationAccountMismatch: The mint on your authorization token holding account does not match your Printing mint! */
 export class TmPrintingMintAuthorizationAccountMismatchError extends ProgramError {
-  readonly name: string = 'PrintingMintAuthorizationAccountMismatch';
+  override readonly name: string = 'PrintingMintAuthorizationAccountMismatch';
 
   readonly code: number = 0x21; // 33
 
@@ -557,7 +557,7 @@ nameToErrorMap.set(
 
 /** AuthorizationTokenAccountOwnerMismatch: The authorization token account has a different owner than the update authority for the master edition! */
 export class TmAuthorizationTokenAccountOwnerMismatchError extends ProgramError {
-  readonly name: string = 'AuthorizationTokenAccountOwnerMismatch';
+  override readonly name: string = 'AuthorizationTokenAccountOwnerMismatch';
 
   readonly code: number = 0x22; // 34
 
@@ -577,7 +577,7 @@ nameToErrorMap.set(
 
 /** Disabled: This feature is currently disabled. */
 export class TmDisabledError extends ProgramError {
-  readonly name: string = 'Disabled';
+  override readonly name: string = 'Disabled';
 
   readonly code: number = 0x23; // 35
 
@@ -590,7 +590,7 @@ nameToErrorMap.set('Disabled', TmDisabledError);
 
 /** CreatorsTooLong: Creators list too long */
 export class TmCreatorsTooLongError extends ProgramError {
-  readonly name: string = 'CreatorsTooLong';
+  override readonly name: string = 'CreatorsTooLong';
 
   readonly code: number = 0x24; // 36
 
@@ -603,7 +603,7 @@ nameToErrorMap.set('CreatorsTooLong', TmCreatorsTooLongError);
 
 /** CreatorsMustBeAtleastOne: Creators must be at least one if set */
 export class TmCreatorsMustBeAtleastOneError extends ProgramError {
-  readonly name: string = 'CreatorsMustBeAtleastOne';
+  override readonly name: string = 'CreatorsMustBeAtleastOne';
 
   readonly code: number = 0x25; // 37
 
@@ -616,7 +616,7 @@ nameToErrorMap.set('CreatorsMustBeAtleastOne', TmCreatorsMustBeAtleastOneError);
 
 /** MustBeOneOfCreators: If using a creators array, you must be one of the creators listed */
 export class TmMustBeOneOfCreatorsError extends ProgramError {
-  readonly name: string = 'MustBeOneOfCreators';
+  override readonly name: string = 'MustBeOneOfCreators';
 
   readonly code: number = 0x26; // 38
 
@@ -633,7 +633,7 @@ nameToErrorMap.set('MustBeOneOfCreators', TmMustBeOneOfCreatorsError);
 
 /** NoCreatorsPresentOnMetadata: This metadata does not have creators */
 export class TmNoCreatorsPresentOnMetadataError extends ProgramError {
-  readonly name: string = 'NoCreatorsPresentOnMetadata';
+  override readonly name: string = 'NoCreatorsPresentOnMetadata';
 
   readonly code: number = 0x27; // 39
 
@@ -649,7 +649,7 @@ nameToErrorMap.set(
 
 /** CreatorNotFound: This creator address was not found */
 export class TmCreatorNotFoundError extends ProgramError {
-  readonly name: string = 'CreatorNotFound';
+  override readonly name: string = 'CreatorNotFound';
 
   readonly code: number = 0x28; // 40
 
@@ -662,7 +662,7 @@ nameToErrorMap.set('CreatorNotFound', TmCreatorNotFoundError);
 
 /** InvalidBasisPoints: Basis points cannot be more than 10000 */
 export class TmInvalidBasisPointsError extends ProgramError {
-  readonly name: string = 'InvalidBasisPoints';
+  override readonly name: string = 'InvalidBasisPoints';
 
   readonly code: number = 0x29; // 41
 
@@ -675,7 +675,7 @@ nameToErrorMap.set('InvalidBasisPoints', TmInvalidBasisPointsError);
 
 /** PrimarySaleCanOnlyBeFlippedToTrue: Primary sale can only be flipped to true and is immutable */
 export class TmPrimarySaleCanOnlyBeFlippedToTrueError extends ProgramError {
-  readonly name: string = 'PrimarySaleCanOnlyBeFlippedToTrue';
+  override readonly name: string = 'PrimarySaleCanOnlyBeFlippedToTrue';
 
   readonly code: number = 0x2a; // 42
 
@@ -695,7 +695,7 @@ nameToErrorMap.set(
 
 /** OwnerMismatch: Owner does not match that on the account given */
 export class TmOwnerMismatchError extends ProgramError {
-  readonly name: string = 'OwnerMismatch';
+  override readonly name: string = 'OwnerMismatch';
 
   readonly code: number = 0x2b; // 43
 
@@ -708,7 +708,7 @@ nameToErrorMap.set('OwnerMismatch', TmOwnerMismatchError);
 
 /** NoBalanceInAccountForAuthorization: This account has no tokens to be used for authorization */
 export class TmNoBalanceInAccountForAuthorizationError extends ProgramError {
-  readonly name: string = 'NoBalanceInAccountForAuthorization';
+  override readonly name: string = 'NoBalanceInAccountForAuthorization';
 
   readonly code: number = 0x2c; // 44
 
@@ -728,7 +728,7 @@ nameToErrorMap.set(
 
 /** ShareTotalMustBe100: Share total must equal 100 for creator array */
 export class TmShareTotalMustBe100Error extends ProgramError {
-  readonly name: string = 'ShareTotalMustBe100';
+  override readonly name: string = 'ShareTotalMustBe100';
 
   readonly code: number = 0x2d; // 45
 
@@ -741,7 +741,7 @@ nameToErrorMap.set('ShareTotalMustBe100', TmShareTotalMustBe100Error);
 
 /** ReservationExists: This reservation list already exists! */
 export class TmReservationExistsError extends ProgramError {
-  readonly name: string = 'ReservationExists';
+  override readonly name: string = 'ReservationExists';
 
   readonly code: number = 0x2e; // 46
 
@@ -754,7 +754,7 @@ nameToErrorMap.set('ReservationExists', TmReservationExistsError);
 
 /** ReservationDoesNotExist: This reservation list does not exist! */
 export class TmReservationDoesNotExistError extends ProgramError {
-  readonly name: string = 'ReservationDoesNotExist';
+  override readonly name: string = 'ReservationDoesNotExist';
 
   readonly code: number = 0x2f; // 47
 
@@ -767,7 +767,7 @@ nameToErrorMap.set('ReservationDoesNotExist', TmReservationDoesNotExistError);
 
 /** ReservationNotSet: This reservation list exists but was never set with reservations */
 export class TmReservationNotSetError extends ProgramError {
-  readonly name: string = 'ReservationNotSet';
+  override readonly name: string = 'ReservationNotSet';
 
   readonly code: number = 0x30; // 48
 
@@ -784,7 +784,7 @@ nameToErrorMap.set('ReservationNotSet', TmReservationNotSetError);
 
 /** ReservationAlreadyMade: This reservation list has already been set! */
 export class TmReservationAlreadyMadeError extends ProgramError {
-  readonly name: string = 'ReservationAlreadyMade';
+  override readonly name: string = 'ReservationAlreadyMade';
 
   readonly code: number = 0x31; // 49
 
@@ -797,7 +797,7 @@ nameToErrorMap.set('ReservationAlreadyMade', TmReservationAlreadyMadeError);
 
 /** BeyondMaxAddressSize: Provided more addresses than max allowed in single reservation */
 export class TmBeyondMaxAddressSizeError extends ProgramError {
-  readonly name: string = 'BeyondMaxAddressSize';
+  override readonly name: string = 'BeyondMaxAddressSize';
 
   readonly code: number = 0x32; // 50
 
@@ -814,7 +814,7 @@ nameToErrorMap.set('BeyondMaxAddressSize', TmBeyondMaxAddressSizeError);
 
 /** NumericalOverflowError: NumericalOverflowError */
 export class TmNumericalOverflowErrorError extends ProgramError {
-  readonly name: string = 'NumericalOverflowError';
+  override readonly name: string = 'NumericalOverflowError';
 
   readonly code: number = 0x33; // 51
 
@@ -827,7 +827,7 @@ nameToErrorMap.set('NumericalOverflowError', TmNumericalOverflowErrorError);
 
 /** ReservationBreachesMaximumSupply: This reservation would go beyond the maximum supply of the master edition! */
 export class TmReservationBreachesMaximumSupplyError extends ProgramError {
-  readonly name: string = 'ReservationBreachesMaximumSupply';
+  override readonly name: string = 'ReservationBreachesMaximumSupply';
 
   readonly code: number = 0x34; // 52
 
@@ -847,7 +847,7 @@ nameToErrorMap.set(
 
 /** AddressNotInReservation: Address not in reservation! */
 export class TmAddressNotInReservationError extends ProgramError {
-  readonly name: string = 'AddressNotInReservation';
+  override readonly name: string = 'AddressNotInReservation';
 
   readonly code: number = 0x35; // 53
 
@@ -860,7 +860,7 @@ nameToErrorMap.set('AddressNotInReservation', TmAddressNotInReservationError);
 
 /** CannotVerifyAnotherCreator: You cannot unilaterally verify another creator, they must sign */
 export class TmCannotVerifyAnotherCreatorError extends ProgramError {
-  readonly name: string = 'CannotVerifyAnotherCreator';
+  override readonly name: string = 'CannotVerifyAnotherCreator';
 
   readonly code: number = 0x36; // 54
 
@@ -880,7 +880,7 @@ nameToErrorMap.set(
 
 /** CannotUnverifyAnotherCreator: You cannot unilaterally unverify another creator */
 export class TmCannotUnverifyAnotherCreatorError extends ProgramError {
-  readonly name: string = 'CannotUnverifyAnotherCreator';
+  override readonly name: string = 'CannotUnverifyAnotherCreator';
 
   readonly code: number = 0x37; // 55
 
@@ -896,7 +896,7 @@ nameToErrorMap.set(
 
 /** SpotMismatch: In initial reservation setting, spots remaining should equal total spots */
 export class TmSpotMismatchError extends ProgramError {
-  readonly name: string = 'SpotMismatch';
+  override readonly name: string = 'SpotMismatch';
 
   readonly code: number = 0x38; // 56
 
@@ -913,7 +913,7 @@ nameToErrorMap.set('SpotMismatch', TmSpotMismatchError);
 
 /** IncorrectOwner: Incorrect account owner */
 export class TmIncorrectOwnerError extends ProgramError {
-  readonly name: string = 'IncorrectOwner';
+  override readonly name: string = 'IncorrectOwner';
 
   readonly code: number = 0x39; // 57
 
@@ -926,7 +926,7 @@ nameToErrorMap.set('IncorrectOwner', TmIncorrectOwnerError);
 
 /** PrintingWouldBreachMaximumSupply: printing these tokens would breach the maximum supply limit of the master edition */
 export class TmPrintingWouldBreachMaximumSupplyError extends ProgramError {
-  readonly name: string = 'PrintingWouldBreachMaximumSupply';
+  override readonly name: string = 'PrintingWouldBreachMaximumSupply';
 
   readonly code: number = 0x3a; // 58
 
@@ -946,7 +946,7 @@ nameToErrorMap.set(
 
 /** DataIsImmutable: Data is immutable */
 export class TmDataIsImmutableError extends ProgramError {
-  readonly name: string = 'DataIsImmutable';
+  override readonly name: string = 'DataIsImmutable';
 
   readonly code: number = 0x3b; // 59
 
@@ -959,7 +959,7 @@ nameToErrorMap.set('DataIsImmutable', TmDataIsImmutableError);
 
 /** DuplicateCreatorAddress: No duplicate creator addresses */
 export class TmDuplicateCreatorAddressError extends ProgramError {
-  readonly name: string = 'DuplicateCreatorAddress';
+  override readonly name: string = 'DuplicateCreatorAddress';
 
   readonly code: number = 0x3c; // 60
 
@@ -972,7 +972,7 @@ nameToErrorMap.set('DuplicateCreatorAddress', TmDuplicateCreatorAddressError);
 
 /** ReservationSpotsRemainingShouldMatchTotalSpotsAtStart: Reservation spots remaining should match total spots when first being created */
 export class TmReservationSpotsRemainingShouldMatchTotalSpotsAtStartError extends ProgramError {
-  readonly name: string =
+  override readonly name: string =
     'ReservationSpotsRemainingShouldMatchTotalSpotsAtStart';
 
   readonly code: number = 0x3d; // 61
@@ -996,7 +996,7 @@ nameToErrorMap.set(
 
 /** InvalidTokenProgram: Invalid token program */
 export class TmInvalidTokenProgramError extends ProgramError {
-  readonly name: string = 'InvalidTokenProgram';
+  override readonly name: string = 'InvalidTokenProgram';
 
   readonly code: number = 0x3e; // 62
 
@@ -1009,7 +1009,7 @@ nameToErrorMap.set('InvalidTokenProgram', TmInvalidTokenProgramError);
 
 /** DataTypeMismatch: Data type mismatch */
 export class TmDataTypeMismatchError extends ProgramError {
-  readonly name: string = 'DataTypeMismatch';
+  override readonly name: string = 'DataTypeMismatch';
 
   readonly code: number = 0x3f; // 63
 
@@ -1022,7 +1022,7 @@ nameToErrorMap.set('DataTypeMismatch', TmDataTypeMismatchError);
 
 /** BeyondAlottedAddressSize: Beyond alotted address size in reservation! */
 export class TmBeyondAlottedAddressSizeError extends ProgramError {
-  readonly name: string = 'BeyondAlottedAddressSize';
+  override readonly name: string = 'BeyondAlottedAddressSize';
 
   readonly code: number = 0x40; // 64
 
@@ -1035,7 +1035,7 @@ nameToErrorMap.set('BeyondAlottedAddressSize', TmBeyondAlottedAddressSizeError);
 
 /** ReservationNotComplete: The reservation has only been partially alotted */
 export class TmReservationNotCompleteError extends ProgramError {
-  readonly name: string = 'ReservationNotComplete';
+  override readonly name: string = 'ReservationNotComplete';
 
   readonly code: number = 0x41; // 65
 
@@ -1048,7 +1048,7 @@ nameToErrorMap.set('ReservationNotComplete', TmReservationNotCompleteError);
 
 /** TriedToReplaceAnExistingReservation: You cannot splice over an existing reservation! */
 export class TmTriedToReplaceAnExistingReservationError extends ProgramError {
-  readonly name: string = 'TriedToReplaceAnExistingReservation';
+  override readonly name: string = 'TriedToReplaceAnExistingReservation';
 
   readonly code: number = 0x42; // 66
 
@@ -1064,7 +1064,7 @@ nameToErrorMap.set(
 
 /** InvalidOperation: Invalid operation */
 export class TmInvalidOperationError extends ProgramError {
-  readonly name: string = 'InvalidOperation';
+  override readonly name: string = 'InvalidOperation';
 
   readonly code: number = 0x43; // 67
 
@@ -1077,7 +1077,7 @@ nameToErrorMap.set('InvalidOperation', TmInvalidOperationError);
 
 /** InvalidOwner: Invalid Owner */
 export class TmInvalidOwnerError extends ProgramError {
-  readonly name: string = 'InvalidOwner';
+  override readonly name: string = 'InvalidOwner';
 
   readonly code: number = 0x44; // 68
 
@@ -1090,7 +1090,7 @@ nameToErrorMap.set('InvalidOwner', TmInvalidOwnerError);
 
 /** PrintingMintSupplyMustBeZeroForConversion: Printing mint supply must be zero for conversion */
 export class TmPrintingMintSupplyMustBeZeroForConversionError extends ProgramError {
-  readonly name: string = 'PrintingMintSupplyMustBeZeroForConversion';
+  override readonly name: string = 'PrintingMintSupplyMustBeZeroForConversion';
 
   readonly code: number = 0x45; // 69
 
@@ -1106,7 +1106,8 @@ nameToErrorMap.set(
 
 /** OneTimeAuthMintSupplyMustBeZeroForConversion: One Time Auth mint supply must be zero for conversion */
 export class TmOneTimeAuthMintSupplyMustBeZeroForConversionError extends ProgramError {
-  readonly name: string = 'OneTimeAuthMintSupplyMustBeZeroForConversion';
+  override readonly name: string =
+    'OneTimeAuthMintSupplyMustBeZeroForConversion';
 
   readonly code: number = 0x46; // 70
 
@@ -1126,7 +1127,7 @@ nameToErrorMap.set(
 
 /** InvalidEditionIndex: You tried to insert one edition too many into an edition mark pda */
 export class TmInvalidEditionIndexError extends ProgramError {
-  readonly name: string = 'InvalidEditionIndex';
+  override readonly name: string = 'InvalidEditionIndex';
 
   readonly code: number = 0x47; // 71
 
@@ -1143,7 +1144,7 @@ nameToErrorMap.set('InvalidEditionIndex', TmInvalidEditionIndexError);
 
 /** ReservationArrayShouldBeSizeOne: In the legacy system the reservation needs to be of size one for cpu limit reasons */
 export class TmReservationArrayShouldBeSizeOneError extends ProgramError {
-  readonly name: string = 'ReservationArrayShouldBeSizeOne';
+  override readonly name: string = 'ReservationArrayShouldBeSizeOne';
 
   readonly code: number = 0x48; // 72
 
@@ -1163,7 +1164,7 @@ nameToErrorMap.set(
 
 /** IsMutableCanOnlyBeFlippedToFalse: Is Mutable can only be flipped to false */
 export class TmIsMutableCanOnlyBeFlippedToFalseError extends ProgramError {
-  readonly name: string = 'IsMutableCanOnlyBeFlippedToFalse';
+  override readonly name: string = 'IsMutableCanOnlyBeFlippedToFalse';
 
   readonly code: number = 0x49; // 73
 
@@ -1179,7 +1180,8 @@ nameToErrorMap.set(
 
 /** CollectionCannotBeVerifiedInThisInstruction: Collection cannot be verified in this instruction */
 export class TmCollectionCannotBeVerifiedInThisInstructionError extends ProgramError {
-  readonly name: string = 'CollectionCannotBeVerifiedInThisInstruction';
+  override readonly name: string =
+    'CollectionCannotBeVerifiedInThisInstruction';
 
   readonly code: number = 0x4a; // 74
 
@@ -1195,7 +1197,7 @@ nameToErrorMap.set(
 
 /** Removed: This instruction was deprecated in a previous release and is now removed */
 export class TmRemovedError extends ProgramError {
-  readonly name: string = 'Removed';
+  override readonly name: string = 'Removed';
 
   readonly code: number = 0x4b; // 75
 
@@ -1212,7 +1214,7 @@ nameToErrorMap.set('Removed', TmRemovedError);
 
 /** MustBeBurned: This token use method is burn and there are no remaining uses, it must be burned */
 export class TmMustBeBurnedError extends ProgramError {
-  readonly name: string = 'MustBeBurned';
+  override readonly name: string = 'MustBeBurned';
 
   readonly code: number = 0x4c; // 76
 
@@ -1229,7 +1231,7 @@ nameToErrorMap.set('MustBeBurned', TmMustBeBurnedError);
 
 /** InvalidUseMethod: This use method is invalid */
 export class TmInvalidUseMethodError extends ProgramError {
-  readonly name: string = 'InvalidUseMethod';
+  override readonly name: string = 'InvalidUseMethod';
 
   readonly code: number = 0x4d; // 77
 
@@ -1242,7 +1244,7 @@ nameToErrorMap.set('InvalidUseMethod', TmInvalidUseMethodError);
 
 /** CannotChangeUseMethodAfterFirstUse: Cannot Change Use Method after the first use */
 export class TmCannotChangeUseMethodAfterFirstUseError extends ProgramError {
-  readonly name: string = 'CannotChangeUseMethodAfterFirstUse';
+  override readonly name: string = 'CannotChangeUseMethodAfterFirstUse';
 
   readonly code: number = 0x4e; // 78
 
@@ -1258,7 +1260,7 @@ nameToErrorMap.set(
 
 /** CannotChangeUsesAfterFirstUse: Cannot Change Remaining or Available uses after the first use */
 export class TmCannotChangeUsesAfterFirstUseError extends ProgramError {
-  readonly name: string = 'CannotChangeUsesAfterFirstUse';
+  override readonly name: string = 'CannotChangeUsesAfterFirstUse';
 
   readonly code: number = 0x4f; // 79
 
@@ -1278,7 +1280,7 @@ nameToErrorMap.set(
 
 /** CollectionNotFound: Collection Not Found on Metadata */
 export class TmCollectionNotFoundError extends ProgramError {
-  readonly name: string = 'CollectionNotFound';
+  override readonly name: string = 'CollectionNotFound';
 
   readonly code: number = 0x50; // 80
 
@@ -1291,7 +1293,7 @@ nameToErrorMap.set('CollectionNotFound', TmCollectionNotFoundError);
 
 /** InvalidCollectionUpdateAuthority: Collection Update Authority is invalid */
 export class TmInvalidCollectionUpdateAuthorityError extends ProgramError {
-  readonly name: string = 'InvalidCollectionUpdateAuthority';
+  override readonly name: string = 'InvalidCollectionUpdateAuthority';
 
   readonly code: number = 0x51; // 81
 
@@ -1307,7 +1309,7 @@ nameToErrorMap.set(
 
 /** CollectionMustBeAUniqueMasterEdition: Collection Must Be a Unique Master Edition v2 */
 export class TmCollectionMustBeAUniqueMasterEditionError extends ProgramError {
-  readonly name: string = 'CollectionMustBeAUniqueMasterEdition';
+  override readonly name: string = 'CollectionMustBeAUniqueMasterEdition';
 
   readonly code: number = 0x52; // 82
 
@@ -1323,7 +1325,7 @@ nameToErrorMap.set(
 
 /** UseAuthorityRecordAlreadyExists: The Use Authority Record Already Exists, to modify it Revoke, then Approve */
 export class TmUseAuthorityRecordAlreadyExistsError extends ProgramError {
-  readonly name: string = 'UseAuthorityRecordAlreadyExists';
+  override readonly name: string = 'UseAuthorityRecordAlreadyExists';
 
   readonly code: number = 0x53; // 83
 
@@ -1343,7 +1345,7 @@ nameToErrorMap.set(
 
 /** UseAuthorityRecordAlreadyRevoked: The Use Authority Record is empty or already revoked */
 export class TmUseAuthorityRecordAlreadyRevokedError extends ProgramError {
-  readonly name: string = 'UseAuthorityRecordAlreadyRevoked';
+  override readonly name: string = 'UseAuthorityRecordAlreadyRevoked';
 
   readonly code: number = 0x54; // 84
 
@@ -1363,7 +1365,7 @@ nameToErrorMap.set(
 
 /** Unusable: This token has no uses */
 export class TmUnusableError extends ProgramError {
-  readonly name: string = 'Unusable';
+  override readonly name: string = 'Unusable';
 
   readonly code: number = 0x55; // 85
 
@@ -1376,7 +1378,7 @@ nameToErrorMap.set('Unusable', TmUnusableError);
 
 /** NotEnoughUses: There are not enough Uses left on this token. */
 export class TmNotEnoughUsesError extends ProgramError {
-  readonly name: string = 'NotEnoughUses';
+  override readonly name: string = 'NotEnoughUses';
 
   readonly code: number = 0x56; // 86
 
@@ -1389,7 +1391,7 @@ nameToErrorMap.set('NotEnoughUses', TmNotEnoughUsesError);
 
 /** CollectionAuthorityRecordAlreadyExists: This Collection Authority Record Already Exists. */
 export class TmCollectionAuthorityRecordAlreadyExistsError extends ProgramError {
-  readonly name: string = 'CollectionAuthorityRecordAlreadyExists';
+  override readonly name: string = 'CollectionAuthorityRecordAlreadyExists';
 
   readonly code: number = 0x57; // 87
 
@@ -1405,7 +1407,7 @@ nameToErrorMap.set(
 
 /** CollectionAuthorityDoesNotExist: This Collection Authority Record Does Not Exist. */
 export class TmCollectionAuthorityDoesNotExistError extends ProgramError {
-  readonly name: string = 'CollectionAuthorityDoesNotExist';
+  override readonly name: string = 'CollectionAuthorityDoesNotExist';
 
   readonly code: number = 0x58; // 88
 
@@ -1421,7 +1423,7 @@ nameToErrorMap.set(
 
 /** InvalidUseAuthorityRecord: This Use Authority Record is invalid. */
 export class TmInvalidUseAuthorityRecordError extends ProgramError {
-  readonly name: string = 'InvalidUseAuthorityRecord';
+  override readonly name: string = 'InvalidUseAuthorityRecord';
 
   readonly code: number = 0x59; // 89
 
@@ -1437,7 +1439,7 @@ nameToErrorMap.set(
 
 /** InvalidCollectionAuthorityRecord: This Collection Authority Record is invalid. */
 export class TmInvalidCollectionAuthorityRecordError extends ProgramError {
-  readonly name: string = 'InvalidCollectionAuthorityRecord';
+  override readonly name: string = 'InvalidCollectionAuthorityRecord';
 
   readonly code: number = 0x5a; // 90
 
@@ -1453,7 +1455,7 @@ nameToErrorMap.set(
 
 /** InvalidFreezeAuthority: Metadata does not match the freeze authority on the mint */
 export class TmInvalidFreezeAuthorityError extends ProgramError {
-  readonly name: string = 'InvalidFreezeAuthority';
+  override readonly name: string = 'InvalidFreezeAuthority';
 
   readonly code: number = 0x5b; // 91
 
@@ -1470,7 +1472,7 @@ nameToErrorMap.set('InvalidFreezeAuthority', TmInvalidFreezeAuthorityError);
 
 /** InvalidDelegate: All tokens in this account have not been delegated to this user. */
 export class TmInvalidDelegateError extends ProgramError {
-  readonly name: string = 'InvalidDelegate';
+  override readonly name: string = 'InvalidDelegate';
 
   readonly code: number = 0x5c; // 92
 
@@ -1487,7 +1489,7 @@ nameToErrorMap.set('InvalidDelegate', TmInvalidDelegateError);
 
 /** CannotAdjustVerifiedCreator: Creator can not be adjusted once they are verified. */
 export class TmCannotAdjustVerifiedCreatorError extends ProgramError {
-  readonly name: string = 'CannotAdjustVerifiedCreator';
+  override readonly name: string = 'CannotAdjustVerifiedCreator';
 
   readonly code: number = 0x5d; // 93
 
@@ -1507,7 +1509,7 @@ nameToErrorMap.set(
 
 /** CannotRemoveVerifiedCreator: Verified creators cannot be removed. */
 export class TmCannotRemoveVerifiedCreatorError extends ProgramError {
-  readonly name: string = 'CannotRemoveVerifiedCreator';
+  override readonly name: string = 'CannotRemoveVerifiedCreator';
 
   readonly code: number = 0x5e; // 94
 
@@ -1523,7 +1525,7 @@ nameToErrorMap.set(
 
 /** CannotWipeVerifiedCreators: Can not wipe verified creators. */
 export class TmCannotWipeVerifiedCreatorsError extends ProgramError {
-  readonly name: string = 'CannotWipeVerifiedCreators';
+  override readonly name: string = 'CannotWipeVerifiedCreators';
 
   readonly code: number = 0x5f; // 95
 
@@ -1539,7 +1541,7 @@ nameToErrorMap.set(
 
 /** NotAllowedToChangeSellerFeeBasisPoints: Not allowed to change seller fee basis points. */
 export class TmNotAllowedToChangeSellerFeeBasisPointsError extends ProgramError {
-  readonly name: string = 'NotAllowedToChangeSellerFeeBasisPoints';
+  override readonly name: string = 'NotAllowedToChangeSellerFeeBasisPoints';
 
   readonly code: number = 0x60; // 96
 
@@ -1555,7 +1557,7 @@ nameToErrorMap.set(
 
 /** EditionOverrideCannotBeZero: Edition override cannot be zero */
 export class TmEditionOverrideCannotBeZeroError extends ProgramError {
-  readonly name: string = 'EditionOverrideCannotBeZero';
+  override readonly name: string = 'EditionOverrideCannotBeZero';
 
   readonly code: number = 0x61; // 97
 
@@ -1571,7 +1573,7 @@ nameToErrorMap.set(
 
 /** InvalidUser: Invalid User */
 export class TmInvalidUserError extends ProgramError {
-  readonly name: string = 'InvalidUser';
+  override readonly name: string = 'InvalidUser';
 
   readonly code: number = 0x62; // 98
 
@@ -1584,7 +1586,7 @@ nameToErrorMap.set('InvalidUser', TmInvalidUserError);
 
 /** RevokeCollectionAuthoritySignerIncorrect: Revoke Collection Authority signer is incorrect */
 export class TmRevokeCollectionAuthoritySignerIncorrectError extends ProgramError {
-  readonly name: string = 'RevokeCollectionAuthoritySignerIncorrect';
+  override readonly name: string = 'RevokeCollectionAuthoritySignerIncorrect';
 
   readonly code: number = 0x63; // 99
 
@@ -1600,7 +1602,7 @@ nameToErrorMap.set(
 
 /** TokenCloseFailed: Token close failed */
 export class TmTokenCloseFailedError extends ProgramError {
-  readonly name: string = 'TokenCloseFailed';
+  override readonly name: string = 'TokenCloseFailed';
 
   readonly code: number = 0x64; // 100
 
@@ -1613,7 +1615,7 @@ nameToErrorMap.set('TokenCloseFailed', TmTokenCloseFailedError);
 
 /** UnsizedCollection: Can't use this function on unsized collection */
 export class TmUnsizedCollectionError extends ProgramError {
-  readonly name: string = 'UnsizedCollection';
+  override readonly name: string = 'UnsizedCollection';
 
   readonly code: number = 0x65; // 101
 
@@ -1626,7 +1628,7 @@ nameToErrorMap.set('UnsizedCollection', TmUnsizedCollectionError);
 
 /** SizedCollection: Can't use this function on a sized collection */
 export class TmSizedCollectionError extends ProgramError {
-  readonly name: string = 'SizedCollection';
+  override readonly name: string = 'SizedCollection';
 
   readonly code: number = 0x66; // 102
 
@@ -1639,7 +1641,7 @@ nameToErrorMap.set('SizedCollection', TmSizedCollectionError);
 
 /** MissingCollectionMetadata: Can't burn a verified member of a collection w/o providing collection metadata account */
 export class TmMissingCollectionMetadataError extends ProgramError {
-  readonly name: string = 'MissingCollectionMetadata';
+  override readonly name: string = 'MissingCollectionMetadata';
 
   readonly code: number = 0x67; // 103
 
@@ -1659,7 +1661,7 @@ nameToErrorMap.set(
 
 /** NotAMemberOfCollection: This NFT is not a member of the specified collection. */
 export class TmNotAMemberOfCollectionError extends ProgramError {
-  readonly name: string = 'NotAMemberOfCollection';
+  override readonly name: string = 'NotAMemberOfCollection';
 
   readonly code: number = 0x68; // 104
 
@@ -1676,7 +1678,7 @@ nameToErrorMap.set('NotAMemberOfCollection', TmNotAMemberOfCollectionError);
 
 /** NotVerifiedMemberOfCollection: This NFT is not a verified member of the specified collection. */
 export class TmNotVerifiedMemberOfCollectionError extends ProgramError {
-  readonly name: string = 'NotVerifiedMemberOfCollection';
+  override readonly name: string = 'NotVerifiedMemberOfCollection';
 
   readonly code: number = 0x69; // 105
 
@@ -1696,7 +1698,7 @@ nameToErrorMap.set(
 
 /** NotACollectionParent: This NFT is not a collection parent NFT. */
 export class TmNotACollectionParentError extends ProgramError {
-  readonly name: string = 'NotACollectionParent';
+  override readonly name: string = 'NotACollectionParent';
 
   readonly code: number = 0x6a; // 106
 
@@ -1709,7 +1711,7 @@ nameToErrorMap.set('NotACollectionParent', TmNotACollectionParentError);
 
 /** CouldNotDetermineTokenStandard: Could not determine a TokenStandard type. */
 export class TmCouldNotDetermineTokenStandardError extends ProgramError {
-  readonly name: string = 'CouldNotDetermineTokenStandard';
+  override readonly name: string = 'CouldNotDetermineTokenStandard';
 
   readonly code: number = 0x6b; // 107
 
@@ -1725,7 +1727,7 @@ nameToErrorMap.set(
 
 /** MissingEditionAccount: This mint account has an edition but none was provided. */
 export class TmMissingEditionAccountError extends ProgramError {
-  readonly name: string = 'MissingEditionAccount';
+  override readonly name: string = 'MissingEditionAccount';
 
   readonly code: number = 0x6c; // 108
 
@@ -1742,7 +1744,7 @@ nameToErrorMap.set('MissingEditionAccount', TmMissingEditionAccountError);
 
 /** NotAMasterEdition: This edition is not a Master Edition */
 export class TmNotAMasterEditionError extends ProgramError {
-  readonly name: string = 'NotAMasterEdition';
+  override readonly name: string = 'NotAMasterEdition';
 
   readonly code: number = 0x6d; // 109
 
@@ -1755,7 +1757,7 @@ nameToErrorMap.set('NotAMasterEdition', TmNotAMasterEditionError);
 
 /** MasterEditionHasPrints: This Master Edition has existing prints */
 export class TmMasterEditionHasPrintsError extends ProgramError {
-  readonly name: string = 'MasterEditionHasPrints';
+  override readonly name: string = 'MasterEditionHasPrints';
 
   readonly code: number = 0x6e; // 110
 
@@ -1768,7 +1770,7 @@ nameToErrorMap.set('MasterEditionHasPrints', TmMasterEditionHasPrintsError);
 
 /** BorshDeserializationError: Borsh Deserialization Error */
 export class TmBorshDeserializationErrorError extends ProgramError {
-  readonly name: string = 'BorshDeserializationError';
+  override readonly name: string = 'BorshDeserializationError';
 
   readonly code: number = 0x6f; // 111
 
@@ -1784,7 +1786,7 @@ nameToErrorMap.set(
 
 /** CannotUpdateVerifiedCollection: Cannot update a verified collection in this command */
 export class TmCannotUpdateVerifiedCollectionError extends ProgramError {
-  readonly name: string = 'CannotUpdateVerifiedCollection';
+  override readonly name: string = 'CannotUpdateVerifiedCollection';
 
   readonly code: number = 0x70; // 112
 
@@ -1804,7 +1806,7 @@ nameToErrorMap.set(
 
 /** CollectionMasterEditionAccountInvalid: Edition account doesnt match collection  */
 export class TmCollectionMasterEditionAccountInvalidError extends ProgramError {
-  readonly name: string = 'CollectionMasterEditionAccountInvalid';
+  override readonly name: string = 'CollectionMasterEditionAccountInvalid';
 
   readonly code: number = 0x71; // 113
 
@@ -1820,7 +1822,7 @@ nameToErrorMap.set(
 
 /** AlreadyVerified: Item is already verified. */
 export class TmAlreadyVerifiedError extends ProgramError {
-  readonly name: string = 'AlreadyVerified';
+  override readonly name: string = 'AlreadyVerified';
 
   readonly code: number = 0x72; // 114
 
@@ -1833,7 +1835,7 @@ nameToErrorMap.set('AlreadyVerified', TmAlreadyVerifiedError);
 
 /** AlreadyUnverified: Item is already unverified. */
 export class TmAlreadyUnverifiedError extends ProgramError {
-  readonly name: string = 'AlreadyUnverified';
+  override readonly name: string = 'AlreadyUnverified';
 
   readonly code: number = 0x73; // 115
 
@@ -1846,7 +1848,7 @@ nameToErrorMap.set('AlreadyUnverified', TmAlreadyUnverifiedError);
 
 /** NotAPrintEdition: This edition is not a Print Edition */
 export class TmNotAPrintEditionError extends ProgramError {
-  readonly name: string = 'NotAPrintEdition';
+  override readonly name: string = 'NotAPrintEdition';
 
   readonly code: number = 0x74; // 116
 
@@ -1859,7 +1861,7 @@ nameToErrorMap.set('NotAPrintEdition', TmNotAPrintEditionError);
 
 /** InvalidMasterEdition: Invalid Master Edition */
 export class TmInvalidMasterEditionError extends ProgramError {
-  readonly name: string = 'InvalidMasterEdition';
+  override readonly name: string = 'InvalidMasterEdition';
 
   readonly code: number = 0x75; // 117
 
@@ -1872,7 +1874,7 @@ nameToErrorMap.set('InvalidMasterEdition', TmInvalidMasterEditionError);
 
 /** InvalidPrintEdition: Invalid Print Edition */
 export class TmInvalidPrintEditionError extends ProgramError {
-  readonly name: string = 'InvalidPrintEdition';
+  override readonly name: string = 'InvalidPrintEdition';
 
   readonly code: number = 0x76; // 118
 
@@ -1885,7 +1887,7 @@ nameToErrorMap.set('InvalidPrintEdition', TmInvalidPrintEditionError);
 
 /** InvalidEditionMarker: Invalid Edition Marker */
 export class TmInvalidEditionMarkerError extends ProgramError {
-  readonly name: string = 'InvalidEditionMarker';
+  override readonly name: string = 'InvalidEditionMarker';
 
   readonly code: number = 0x77; // 119
 
@@ -1898,7 +1900,7 @@ nameToErrorMap.set('InvalidEditionMarker', TmInvalidEditionMarkerError);
 
 /** ReservationListDeprecated: Reservation List is Deprecated */
 export class TmReservationListDeprecatedError extends ProgramError {
-  readonly name: string = 'ReservationListDeprecated';
+  override readonly name: string = 'ReservationListDeprecated';
 
   readonly code: number = 0x78; // 120
 
@@ -1914,7 +1916,7 @@ nameToErrorMap.set(
 
 /** PrintEditionDoesNotMatchMasterEdition: Print Edition does not match Master Edition */
 export class TmPrintEditionDoesNotMatchMasterEditionError extends ProgramError {
-  readonly name: string = 'PrintEditionDoesNotMatchMasterEdition';
+  override readonly name: string = 'PrintEditionDoesNotMatchMasterEdition';
 
   readonly code: number = 0x79; // 121
 
@@ -1930,7 +1932,7 @@ nameToErrorMap.set(
 
 /** EditionNumberGreaterThanMaxSupply: Edition Number greater than max supply */
 export class TmEditionNumberGreaterThanMaxSupplyError extends ProgramError {
-  readonly name: string = 'EditionNumberGreaterThanMaxSupply';
+  override readonly name: string = 'EditionNumberGreaterThanMaxSupply';
 
   readonly code: number = 0x7a; // 122
 
@@ -1946,7 +1948,7 @@ nameToErrorMap.set(
 
 /** MustUnverify: Must unverify before migrating collections. */
 export class TmMustUnverifyError extends ProgramError {
-  readonly name: string = 'MustUnverify';
+  override readonly name: string = 'MustUnverify';
 
   readonly code: number = 0x7b; // 123
 
@@ -1959,7 +1961,7 @@ nameToErrorMap.set('MustUnverify', TmMustUnverifyError);
 
 /** InvalidEscrowBumpSeed: Invalid Escrow Account Bump Seed */
 export class TmInvalidEscrowBumpSeedError extends ProgramError {
-  readonly name: string = 'InvalidEscrowBumpSeed';
+  override readonly name: string = 'InvalidEscrowBumpSeed';
 
   readonly code: number = 0x7c; // 124
 
@@ -1972,7 +1974,7 @@ nameToErrorMap.set('InvalidEscrowBumpSeed', TmInvalidEscrowBumpSeedError);
 
 /** MustBeEscrowAuthority: Must Escrow Authority */
 export class TmMustBeEscrowAuthorityError extends ProgramError {
-  readonly name: string = 'MustBeEscrowAuthority';
+  override readonly name: string = 'MustBeEscrowAuthority';
 
   readonly code: number = 0x7d; // 125
 
@@ -1985,7 +1987,7 @@ nameToErrorMap.set('MustBeEscrowAuthority', TmMustBeEscrowAuthorityError);
 
 /** InvalidSystemProgram: Invalid System Program */
 export class TmInvalidSystemProgramError extends ProgramError {
-  readonly name: string = 'InvalidSystemProgram';
+  override readonly name: string = 'InvalidSystemProgram';
 
   readonly code: number = 0x7e; // 126
 
@@ -1998,7 +2000,7 @@ nameToErrorMap.set('InvalidSystemProgram', TmInvalidSystemProgramError);
 
 /** MustBeNonFungible: Must be a Non Fungible Token */
 export class TmMustBeNonFungibleError extends ProgramError {
-  readonly name: string = 'MustBeNonFungible';
+  override readonly name: string = 'MustBeNonFungible';
 
   readonly code: number = 0x7f; // 127
 
@@ -2011,7 +2013,7 @@ nameToErrorMap.set('MustBeNonFungible', TmMustBeNonFungibleError);
 
 /** InsufficientTokens: Insufficient tokens for transfer */
 export class TmInsufficientTokensError extends ProgramError {
-  readonly name: string = 'InsufficientTokens';
+  override readonly name: string = 'InsufficientTokens';
 
   readonly code: number = 0x80; // 128
 
@@ -2024,7 +2026,7 @@ nameToErrorMap.set('InsufficientTokens', TmInsufficientTokensError);
 
 /** BorshSerializationError: Borsh Serialization Error */
 export class TmBorshSerializationErrorError extends ProgramError {
-  readonly name: string = 'BorshSerializationError';
+  override readonly name: string = 'BorshSerializationError';
 
   readonly code: number = 0x81; // 129
 
@@ -2037,7 +2039,7 @@ nameToErrorMap.set('BorshSerializationError', TmBorshSerializationErrorError);
 
 /** NoFreezeAuthoritySet: Cannot create NFT with no Freeze Authority. */
 export class TmNoFreezeAuthoritySetError extends ProgramError {
-  readonly name: string = 'NoFreezeAuthoritySet';
+  override readonly name: string = 'NoFreezeAuthoritySet';
 
   readonly code: number = 0x82; // 130
 
@@ -2050,7 +2052,7 @@ nameToErrorMap.set('NoFreezeAuthoritySet', TmNoFreezeAuthoritySetError);
 
 /** InvalidCollectionSizeChange: Invalid collection size change */
 export class TmInvalidCollectionSizeChangeError extends ProgramError {
-  readonly name: string = 'InvalidCollectionSizeChange';
+  override readonly name: string = 'InvalidCollectionSizeChange';
 
   readonly code: number = 0x83; // 131
 
@@ -2066,7 +2068,7 @@ nameToErrorMap.set(
 
 /** InvalidBubblegumSigner: Invalid bubblegum signer */
 export class TmInvalidBubblegumSignerError extends ProgramError {
-  readonly name: string = 'InvalidBubblegumSigner';
+  override readonly name: string = 'InvalidBubblegumSigner';
 
   readonly code: number = 0x84; // 132
 
@@ -2079,7 +2081,7 @@ nameToErrorMap.set('InvalidBubblegumSigner', TmInvalidBubblegumSignerError);
 
 /** MintIsNotSigner: Mint needs to be signer to initialize the account */
 export class TmMintIsNotSignerError extends ProgramError {
-  readonly name: string = 'MintIsNotSigner';
+  override readonly name: string = 'MintIsNotSigner';
 
   readonly code: number = 0x85; // 133
 
@@ -2092,7 +2094,7 @@ nameToErrorMap.set('MintIsNotSigner', TmMintIsNotSignerError);
 
 /** InvalidTokenStandard: Invalid token standard */
 export class TmInvalidTokenStandardError extends ProgramError {
-  readonly name: string = 'InvalidTokenStandard';
+  override readonly name: string = 'InvalidTokenStandard';
 
   readonly code: number = 0x86; // 134
 
@@ -2105,7 +2107,7 @@ nameToErrorMap.set('InvalidTokenStandard', TmInvalidTokenStandardError);
 
 /** InvalidMintForTokenStandard: Invalid mint account for specified token standard */
 export class TmInvalidMintForTokenStandardError extends ProgramError {
-  readonly name: string = 'InvalidMintForTokenStandard';
+  override readonly name: string = 'InvalidMintForTokenStandard';
 
   readonly code: number = 0x87; // 135
 
@@ -2121,7 +2123,7 @@ nameToErrorMap.set(
 
 /** InvalidAuthorizationRules: Invalid authorization rules account */
 export class TmInvalidAuthorizationRulesError extends ProgramError {
-  readonly name: string = 'InvalidAuthorizationRules';
+  override readonly name: string = 'InvalidAuthorizationRules';
 
   readonly code: number = 0x88; // 136
 
@@ -2137,7 +2139,7 @@ nameToErrorMap.set(
 
 /** MissingAuthorizationRules: Missing authorization rules account */
 export class TmMissingAuthorizationRulesError extends ProgramError {
-  readonly name: string = 'MissingAuthorizationRules';
+  override readonly name: string = 'MissingAuthorizationRules';
 
   readonly code: number = 0x89; // 137
 
@@ -2153,7 +2155,7 @@ nameToErrorMap.set(
 
 /** MissingProgrammableConfig: Missing programmable configuration */
 export class TmMissingProgrammableConfigError extends ProgramError {
-  readonly name: string = 'MissingProgrammableConfig';
+  override readonly name: string = 'MissingProgrammableConfig';
 
   readonly code: number = 0x8a; // 138
 
@@ -2169,7 +2171,7 @@ nameToErrorMap.set(
 
 /** InvalidProgrammableConfig: Invalid programmable configuration */
 export class TmInvalidProgrammableConfigError extends ProgramError {
-  readonly name: string = 'InvalidProgrammableConfig';
+  override readonly name: string = 'InvalidProgrammableConfig';
 
   readonly code: number = 0x8b; // 139
 
@@ -2185,7 +2187,7 @@ nameToErrorMap.set(
 
 /** DelegateAlreadyExists: Delegate already exists */
 export class TmDelegateAlreadyExistsError extends ProgramError {
-  readonly name: string = 'DelegateAlreadyExists';
+  override readonly name: string = 'DelegateAlreadyExists';
 
   readonly code: number = 0x8c; // 140
 
@@ -2198,7 +2200,7 @@ nameToErrorMap.set('DelegateAlreadyExists', TmDelegateAlreadyExistsError);
 
 /** DelegateNotFound: Delegate not found */
 export class TmDelegateNotFoundError extends ProgramError {
-  readonly name: string = 'DelegateNotFound';
+  override readonly name: string = 'DelegateNotFound';
 
   readonly code: number = 0x8d; // 141
 
@@ -2211,7 +2213,7 @@ nameToErrorMap.set('DelegateNotFound', TmDelegateNotFoundError);
 
 /** MissingAccountInBuilder: Required account not set in instruction builder */
 export class TmMissingAccountInBuilderError extends ProgramError {
-  readonly name: string = 'MissingAccountInBuilder';
+  override readonly name: string = 'MissingAccountInBuilder';
 
   readonly code: number = 0x8e; // 142
 
@@ -2224,7 +2226,7 @@ nameToErrorMap.set('MissingAccountInBuilder', TmMissingAccountInBuilderError);
 
 /** MissingArgumentInBuilder: Required argument not set in instruction builder */
 export class TmMissingArgumentInBuilderError extends ProgramError {
-  readonly name: string = 'MissingArgumentInBuilder';
+  override readonly name: string = 'MissingArgumentInBuilder';
 
   readonly code: number = 0x8f; // 143
 
@@ -2237,7 +2239,7 @@ nameToErrorMap.set('MissingArgumentInBuilder', TmMissingArgumentInBuilderError);
 
 /** FeatureNotSupported: Feature not supported currently */
 export class TmFeatureNotSupportedError extends ProgramError {
-  readonly name: string = 'FeatureNotSupported';
+  override readonly name: string = 'FeatureNotSupported';
 
   readonly code: number = 0x90; // 144
 
@@ -2250,7 +2252,7 @@ nameToErrorMap.set('FeatureNotSupported', TmFeatureNotSupportedError);
 
 /** InvalidSystemWallet: Invalid system wallet */
 export class TmInvalidSystemWalletError extends ProgramError {
-  readonly name: string = 'InvalidSystemWallet';
+  override readonly name: string = 'InvalidSystemWallet';
 
   readonly code: number = 0x91; // 145
 
@@ -2263,7 +2265,7 @@ nameToErrorMap.set('InvalidSystemWallet', TmInvalidSystemWalletError);
 
 /** OnlySaleDelegateCanTransfer: Only the sale delegate can transfer while its set */
 export class TmOnlySaleDelegateCanTransferError extends ProgramError {
-  readonly name: string = 'OnlySaleDelegateCanTransfer';
+  override readonly name: string = 'OnlySaleDelegateCanTransfer';
 
   readonly code: number = 0x92; // 146
 
@@ -2279,7 +2281,7 @@ nameToErrorMap.set(
 
 /** MissingTokenAccount: Missing token account */
 export class TmMissingTokenAccountError extends ProgramError {
-  readonly name: string = 'MissingTokenAccount';
+  override readonly name: string = 'MissingTokenAccount';
 
   readonly code: number = 0x93; // 147
 
@@ -2292,7 +2294,7 @@ nameToErrorMap.set('MissingTokenAccount', TmMissingTokenAccountError);
 
 /** MissingSplTokenProgram: Missing SPL token program */
 export class TmMissingSplTokenProgramError extends ProgramError {
-  readonly name: string = 'MissingSplTokenProgram';
+  override readonly name: string = 'MissingSplTokenProgram';
 
   readonly code: number = 0x94; // 148
 
@@ -2305,7 +2307,7 @@ nameToErrorMap.set('MissingSplTokenProgram', TmMissingSplTokenProgramError);
 
 /** MissingAuthorizationRulesProgram: Missing SPL token program */
 export class TmMissingAuthorizationRulesProgramError extends ProgramError {
-  readonly name: string = 'MissingAuthorizationRulesProgram';
+  override readonly name: string = 'MissingAuthorizationRulesProgram';
 
   readonly code: number = 0x95; // 149
 
@@ -2321,7 +2323,7 @@ nameToErrorMap.set(
 
 /** InvalidDelegateRoleForTransfer: Invalid delegate role for transfer */
 export class TmInvalidDelegateRoleForTransferError extends ProgramError {
-  readonly name: string = 'InvalidDelegateRoleForTransfer';
+  override readonly name: string = 'InvalidDelegateRoleForTransfer';
 
   readonly code: number = 0x96; // 150
 

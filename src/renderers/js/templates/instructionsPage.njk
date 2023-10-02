@@ -37,11 +37,11 @@ export function {{ instruction.name | camelCase }}(
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     {% for account in accounts %}
       {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
     {% endfor %}
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   {% if hasResolvedArgs %}
     // Arguments.

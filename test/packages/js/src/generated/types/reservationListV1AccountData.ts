@@ -20,7 +20,6 @@ import {
   ReservationV1,
   ReservationV1Args,
   TmKey,
-  TmKeyArgs,
   getReservationV1Serializer,
   getTmKeySerializer,
 } from '.';

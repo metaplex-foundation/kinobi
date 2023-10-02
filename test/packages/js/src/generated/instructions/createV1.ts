@@ -107,7 +107,7 @@ export function createV1(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
     masterEdition: {
       index: 1,
@@ -141,7 +141,7 @@ export function createV1(
       isWritable: false,
       value: input.splTokenProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: CreateV1InstructionArgs = { ...input };

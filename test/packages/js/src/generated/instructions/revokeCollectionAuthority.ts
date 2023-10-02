@@ -79,7 +79,7 @@ export function revokeCollectionAuthority(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     collectionAuthorityRecord: {
       index: 0,
       isWritable: true,
@@ -97,7 +97,7 @@ export function revokeCollectionAuthority(
     },
     metadata: { index: 3, isWritable: false, value: input.metadata ?? null },
     mint: { index: 4, isWritable: false, value: input.mint ?? null },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Accounts in order.
   const orderedAccounts: ResolvedAccount[] = Object.values(

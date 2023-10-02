@@ -105,7 +105,7 @@ export function deprecatedSetReservationList(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     masterEdition: {
       index: 0,
       isWritable: true,
@@ -117,7 +117,7 @@ export function deprecatedSetReservationList(
       value: input.reservationList ?? null,
     },
     resource: { index: 2, isWritable: false, value: input.resource ?? null },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: DeprecatedSetReservationListInstructionArgs = {

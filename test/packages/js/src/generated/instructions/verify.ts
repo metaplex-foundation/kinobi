@@ -80,7 +80,7 @@ export function verify(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
     collectionAuthority: {
       index: 1,
@@ -98,7 +98,7 @@ export function verify(
       isWritable: false,
       value: input.authorizationRulesProgram ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: VerifyInstructionArgs = { ...input };

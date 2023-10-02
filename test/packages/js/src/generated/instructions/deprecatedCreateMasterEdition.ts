@@ -112,7 +112,7 @@ export function deprecatedCreateMasterEdition(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     edition: { index: 0, isWritable: true, value: input.edition ?? null },
     mint: { index: 1, isWritable: true, value: input.mint ?? null },
     printingMint: {
@@ -158,7 +158,7 @@ export function deprecatedCreateMasterEdition(
       isWritable: false,
       value: input.oneTimePrintingAuthorizationMintAuthority ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: DeprecatedCreateMasterEditionInstructionArgs = {

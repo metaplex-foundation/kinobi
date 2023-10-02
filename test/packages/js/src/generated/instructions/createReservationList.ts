@@ -62,7 +62,7 @@ export function createReservationList(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     reservationList: {
       index: 0,
       isWritable: true,
@@ -87,7 +87,7 @@ export function createReservationList(
       value: accounts.systemProgram ?? null,
     },
     rent: { index: 7, isWritable: false, value: accounts.rent ?? null },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: CreateReservationListInstructionArgs = { ...args };

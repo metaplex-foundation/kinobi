@@ -429,7 +429,11 @@ export class GetJavaScriptTypeManifestVisitor
         looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,
       };
     }
-    return { ...baseField, looseType: '' };
+    return {
+      ...baseField,
+      looseType: '',
+      looseImports: new JavaScriptImportMap(),
+    };
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): JavaScriptTypeManifest {

@@ -119,7 +119,7 @@ export function transfer(
   );
 
   // Accounts.
-  const resolvedAccounts: ResolvedAccountsWithIndices = {
+  const resolvedAccounts = {
     authority: { index: 0, isWritable: true, value: input.authority ?? null },
     delegateRecord: {
       index: 1,
@@ -179,7 +179,7 @@ export function transfer(
       isWritable: false,
       value: input.authorizationRules ?? null,
     },
-  };
+  } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
   const resolvedArgs: TransferInstructionArgs = { ...input };
