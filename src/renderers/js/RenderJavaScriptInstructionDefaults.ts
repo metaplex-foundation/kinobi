@@ -12,7 +12,8 @@ import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
 export function renderJavaScriptInstructionDefaults(
   input: ResolvedInstructionInput,
-  optionalAccountStrategy: 'programId' | 'omitted'
+  optionalAccountStrategy: 'programId' | 'omitted',
+  argObject: string
 ): {
   imports: JavaScriptImportMap;
   interfaces: JavaScriptContextMap;
@@ -63,7 +64,7 @@ export function renderJavaScriptInstructionDefaults(
     return {
       imports,
       interfaces,
-      render: `resolvedArgs.${inputName} = ${defaultValue};`,
+      render: `${argObject}.${inputName} = ${defaultValue};`,
     };
   };
 
@@ -99,7 +100,7 @@ export function renderJavaScriptInstructionDefaults(
           }
           if (seedValue.kind === 'arg') {
             imports.add('shared', 'expectSome');
-            return `${seed}: expectSome(resolvedArgs.${camelCase(
+            return `${seed}: expectSome(${argObject}.${camelCase(
               seedValue.name
             )})`;
           }
@@ -148,7 +149,7 @@ export function renderJavaScriptInstructionDefaults(
       );
     case 'arg':
       imports.add('shared', 'expectSome');
-      return render(`expectSome(resolvedArgs.${camelCase(defaultsTo.name)})`);
+      return render(`expectSome(${argObject}.${camelCase(defaultsTo.name)})`);
     case 'value':
       const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
       imports.mergeWith(valueManifest.imports);
@@ -160,19 +161,21 @@ export function renderJavaScriptInstructionDefaults(
       imports.add(defaultsTo.importFrom, resolverName);
       interfaces.add(['eddsa', 'identity', 'payer']);
       return render(
-        `${resolverName}(context, resolvedAccounts, resolvedArgs, programId, ${isWritable})`
+        `${resolverName}(context, resolvedAccounts, ${argObject}, programId, ${isWritable})`
       );
     case 'conditional':
     case 'conditionalResolver':
       const ifTrueRenderer = renderNestedInstructionDefault(
         input,
         optionalAccountStrategy,
-        defaultsTo.ifTrue
+        defaultsTo.ifTrue,
+        argObject
       );
       const ifFalseRenderer = renderNestedInstructionDefault(
         input,
         optionalAccountStrategy,
-        defaultsTo.ifFalse
+        defaultsTo.ifFalse,
+        argObject
       );
       if (!ifTrueRenderer && !ifFalseRenderer) {
         return { imports, interfaces, render: '' };
@@ -192,7 +195,7 @@ export function renderJavaScriptInstructionDefaults(
         const comparedInputName =
           defaultsTo.input.kind === 'account'
             ? `resolvedAccounts.${camelCase(defaultsTo.input.name)}.value`
-            : `resolvedArgs.${camelCase(defaultsTo.input.name)}`;
+            : `${argObject}.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
           const comparedValue = renderJavaScriptValueNode(defaultsTo.value);
           imports.mergeWith(comparedValue.imports);
@@ -209,7 +212,7 @@ export function renderJavaScriptInstructionDefaults(
           input.kind === 'account' && input.isWritable ? 'true' : 'false';
         imports.add(defaultsTo.resolver.importFrom, conditionalResolverName);
         interfaces.add(['eddsa', 'identity', 'payer']);
-        condition = `${conditionalResolverName}(context, resolvedAccounts, resolvedArgs, programId, ${conditionalIsWritable})`;
+        condition = `${conditionalResolverName}(context, resolvedAccounts, ${argObject}, programId, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 
@@ -237,7 +240,8 @@ export function renderJavaScriptInstructionDefaults(
 function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
-  defaultsTo: InstructionDefault | undefined
+  defaultsTo: InstructionDefault | undefined,
+  argObject: string
 ):
   | {
       imports: JavaScriptImportMap;
@@ -250,12 +254,14 @@ function renderNestedInstructionDefault(
   if (input.kind === 'account') {
     return renderJavaScriptInstructionDefaults(
       { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
-      optionalAccountStrategy
+      optionalAccountStrategy,
+      argObject
     );
   }
 
   return renderJavaScriptInstructionDefaults(
     { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
-    optionalAccountStrategy
+    optionalAccountStrategy,
+    argObject
   );
 }
