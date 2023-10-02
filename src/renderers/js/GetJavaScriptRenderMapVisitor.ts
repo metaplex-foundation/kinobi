@@ -372,14 +372,37 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       interfaces.add(['eddsa', 'identity', 'payer']);
     }
 
+    // canMergeAccountsAndArgs
+    const linkedDataArgs = !!instruction.dataArgs.link;
+    const linkedExtraArgs = !!instruction.extraArgs.link;
+    let canMergeAccountsAndArgs = false;
+    if (!linkedDataArgs && !linkedExtraArgs) {
+      const accountsAndArgsConflicts =
+        this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
+      if (accountsAndArgsConflicts.length > 0) {
+        logWarn(
+          `[JavaScript] Accounts and args of instruction [${instruction.name}] have the following ` +
+            `conflicting attributes [${accountsAndArgsConflicts.join(
+              ', '
+            )}]. ` +
+            `Thus, they could not be merged into a single input object. ` +
+            'You may want to rename the conflicting attributes.'
+        );
+      }
+      canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
+    }
+
     // Resolved inputs.
+    let argObject = canMergeAccountsAndArgs ? 'input' : 'args';
+    argObject = hasResolvedArgs ? 'resolvedArgs' : argObject;
     const resolvedInputs = visit(
       instruction,
       this.resolvedInstructionInputVisitor
     ).map((input: ResolvedInstructionInput) => {
       const renderedInput = renderJavaScriptInstructionDefaults(
         input,
-        instruction.optionalAccountStrategy
+        instruction.optionalAccountStrategy,
+        argObject
       );
       imports.mergeWith(renderedInput.imports);
       interfaces.mergeWith(renderedInput.interfaces);
@@ -408,7 +431,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     imports.mergeWith(this.getInstructionAccountImports(accounts));
 
     // Data Args.
-    const linkedDataArgs = !!instruction.dataArgs.link;
     const dataArgManifest = visit(
       instruction.dataArgs,
       this.typeManifestVisitor
@@ -427,7 +449,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Extra args.
-    const linkedExtraArgs = !!instruction.extraArgs.link;
     const extraArgManifest = visit(
       instruction.extraArgs,
       this.typeManifestVisitor
@@ -467,24 +488,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         remainingAccounts.importFrom,
         camelCase(remainingAccounts.name)
       );
-    }
-
-    // canMergeAccountsAndArgs
-    let canMergeAccountsAndArgs = false;
-    if (!linkedDataArgs && !linkedExtraArgs) {
-      const accountsAndArgsConflicts =
-        this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
-      if (accountsAndArgsConflicts.length > 0) {
-        logWarn(
-          `[JavaScript] Accounts and args of instruction [${instruction.name}] have the following ` +
-            `conflicting attributes [${accountsAndArgsConflicts.join(
-              ', '
-            )}]. ` +
-            `Thus, they could not be merged into a single input object. ` +
-            'You may want to rename the conflicting attributes.'
-        );
-      }
-      canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
     }
 
     return new RenderMap().add(
