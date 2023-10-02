@@ -1,5 +1,5 @@
 ---
-'@metaplex-foundation/kinobi-dummy-generated': patch
+'@metaplex-foundation/kinobi': patch
 ---
 
 Fix argument object when resolving defaults in JS renderer

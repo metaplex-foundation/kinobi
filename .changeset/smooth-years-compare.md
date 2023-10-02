@@ -1,5 +1,5 @@
 ---
-"@metaplex-foundation/kinobi-dummy-generated": patch
+'@metaplex-foundation/kinobi': patch
 ---
 
 Fix issues TypeScript has with generated code 
