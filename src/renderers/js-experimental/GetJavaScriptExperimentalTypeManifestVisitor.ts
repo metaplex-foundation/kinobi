@@ -150,27 +150,32 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): TypeManifest {
-    const strictImports = new ImportMap();
-    const looseImports = new ImportMap();
-    const serializerImports = new ImportMap().add(
-      'umiSerializers',
-      'scalarEnum'
-    );
-
-    const variantNames = enumType.variants.map((variant) =>
-      pascalCase(variant.name)
-    );
     const { parentName } = this;
     this.parentName = null;
-    const options: string[] = [];
+
+    const variantNames = enumType.variants.map((v) => pascalCase(v.name));
+    const encoderImports = new ImportMap();
+    const decoderImports = new ImportMap();
+    const encoderOptions: string[] = [];
+    const decoderOptions: string[] = [];
 
     if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
       const sizeManifest = visit(enumType.size, this);
-      strictImports.mergeWith(sizeManifest.strictImports);
-      looseImports.mergeWith(sizeManifest.looseImports);
-      serializerImports.mergeWith(sizeManifest.serializerImports);
-      options.push(`size: ${sizeManifest.serializer}`);
+      encoderImports.mergeWith(sizeManifest.encoder);
+      decoderImports.mergeWith(sizeManifest.decoder);
+      encoderOptions.push(`size: ${sizeManifest.encoder.render}`);
+      decoderOptions.push(`size: ${sizeManifest.decoder.render}`);
     }
+
+    if (parentName?.strict) {
+      encoderOptions.push(`description: '${pascalCase(parentName.strict)}'`);
+      decoderOptions.push(`description: '${pascalCase(parentName.strict)}'`);
+    }
+
+    const encoderOptionsAsString =
+      encoderOptions.length > 0 ? `, { ${encoderOptions.join(', ')} }` : '';
+    const decoderOptionsAsString =
+      decoderOptions.length > 0 ? `, { ${decoderOptions.join(', ')} }` : '';
 
     if (nodes.isScalarEnum(enumType)) {
       if (parentName === null) {
@@ -180,19 +185,28 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
             'defined type that is a scalar enum through a visitor.'
         );
       }
-      options.push(`description: '${parentName.strict}'`);
-      const optionsAsString =
-        options.length > 0 ? `, { ${options.join(', ')} }` : '';
       return {
         isEnum: true,
-        strictType: `{ ${variantNames.join(', ')} }`,
-        strictImports,
-        looseType: `{ ${variantNames.join(', ')} }`,
-        looseImports,
-        serializer:
-          `scalarEnum<${parentName.strict}>` +
-          `(${parentName.strict + optionsAsString})`,
-        serializerImports,
+        strictType: fragment(`{ ${variantNames.join(', ')} }`),
+        looseType: fragment(`{ ${variantNames.join(', ')} }`),
+        encoder: fragment(
+          `getScalarEnumEncoder<${parentName.strict}>(${
+            parentName.strict + encoderOptionsAsString
+          })`,
+          encoderImports.add(
+            'solanaCodecsDataStructures',
+            'getScalarEnumEncoder'
+          )
+        ),
+        decoder: fragment(
+          `getScalarEnumDecoder<${parentName.strict}>(${
+            parentName.strict + decoderOptionsAsString
+          })`,
+          decoderImports.add(
+            'solanaCodecsDataStructures',
+            'getScalarEnumDecoder'
+          )
+        ),
       };
     }
 
@@ -209,29 +223,33 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
       return variantManifest;
     });
 
-    const mergedManifest = this.mergeManifests(variants);
-    const variantSerializers = variants
-      .map((variant) => variant.serializer)
-      .join(', ');
-    const serializerTypeParams = parentName ? parentName.strict : 'any';
-    if (parentName?.strict) {
-      options.push(`description: '${pascalCase(parentName.strict)}'`);
-    }
-    const optionsAsString =
-      options.length > 0 ? `, { ${options.join(', ')} }` : '';
-
-    return {
-      ...mergedManifest,
-      strictType: variants.map((v) => v.strictType).join(' | '),
-      looseType: variants.map((v) => v.looseType).join(' | '),
-      serializer:
-        `dataEnum<${serializerTypeParams}>` +
-        `([${variantSerializers}]${optionsAsString})`,
-      serializerImports: mergedManifest.serializerImports.add(
-        'umiSerializers',
-        ['GetDataEnumKindContent', 'GetDataEnumKind', 'dataEnum']
-      ),
-    };
+    const mergedManifest = mergeManifests(
+      variants,
+      (renders) => renders.join(' | '),
+      (renders) => renders.join(', ')
+    );
+    const typeParam = parentName ? parentName.strict : 'any';
+    mergedManifest.encoder
+      .mapRender(
+        (r) =>
+          `getDataEnumEncoder<${typeParam}>([${r}]${encoderOptionsAsString})`
+      )
+      .addImports('solanaCodecsDataStructures', [
+        'GetDataEnumKindContent',
+        'GetDataEnumKind',
+        'getDataEnumEncoder',
+      ]);
+    mergedManifest.decoder
+      .mapRender(
+        (r) =>
+          `getDataEnumDecoder<${typeParam}>([${r}]${decoderOptionsAsString})`
+      )
+      .addImports('solanaCodecsDataStructures', [
+        'GetDataEnumKindContent',
+        'GetDataEnumKind',
+        'getDataEnumDecoder',
+      ]);
+    return mergedManifest;
   }
 
   visitEnumEmptyVariantType(

@@ -192,11 +192,12 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
     const isLinked = !!account.data.link;
     const typeManifest = visit(account, this.typeManifestVisitor);
     const imports = new ImportMap().mergeWith(
-      typeManifest.strictImports,
-      typeManifest.serializerImports
+      typeManifest.strictType,
+      typeManifest.encoder,
+      typeManifest.decoder
     );
     if (!isLinked) {
-      imports.mergeWith(typeManifest.looseImports);
+      imports.mergeWith(typeManifest.looseType);
     }
     imports
       .add('umi', [
@@ -250,10 +251,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
       this.byteSizeVisitor
     ).map((gpaField) => {
       const gpaFieldManifest = visit(gpaField.type, this.typeManifestVisitor);
-      imports.mergeWith(
-        gpaFieldManifest.looseImports,
-        gpaFieldManifest.serializerImports
-      );
+      imports.mergeWith(gpaFieldManifest.looseType, gpaFieldManifest.encoder);
       return { ...gpaField, manifest: gpaFieldManifest };
     });
     let resolvedGpaFields: { type: string; argument: string } | null = null;
@@ -266,7 +264,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
         argument: `{ ${gpaFields
           .map((f) => {
             const offset = f.offset === null ? 'null' : `${f.offset}`;
-            return `'${f.name}': [${offset}, ${f.manifest.serializer}]`;
+            return `'${f.name}': [${offset}, ${f.manifest.encoder.render}]`;
           })
           .join(', ')} }`,
       };
@@ -276,7 +274,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
     const seeds = account.seeds.map((seed) => {
       if (seed.kind === 'constant') {
         const seedManifest = visit(seed.type, this.typeManifestVisitor);
-        imports.mergeWith(seedManifest.serializerImports);
+        imports.mergeWith(seedManifest.encoder);
         const seedValue = seed.value;
         const valueManifest = renderJavaScriptExperimentalValueNode(seedValue);
         (seedValue as any).render = valueManifest.render;
@@ -285,10 +283,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
       }
       if (seed.kind === 'variable') {
         const seedManifest = visit(seed.type, this.typeManifestVisitor);
-        imports.mergeWith(
-          seedManifest.looseImports,
-          seedManifest.serializerImports
-        );
+        imports.mergeWith(seedManifest.looseType, seedManifest.encoder);
         return { ...seed, typeManifest: seedManifest };
       }
       imports
@@ -430,12 +425,13 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
     );
     if (linkedDataArgs || hasData) {
       imports.mergeWith(
-        dataArgManifest.looseImports,
-        dataArgManifest.serializerImports
+        dataArgManifest.looseType,
+        dataArgManifest.encoder,
+        dataArgManifest.decoder
       );
     }
     if (!linkedDataArgs) {
-      imports.mergeWith(dataArgManifest.strictImports);
+      imports.mergeWith(dataArgManifest.strictType);
     }
     if (!linkedDataArgs && hasData) {
       imports.add('umiSerializers', ['Serializer']);
@@ -446,7 +442,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
       instruction.extraArgs,
       this.typeManifestVisitor
     );
-    imports.mergeWith(extraArgManifest.looseImports);
+    imports.mergeWith(extraArgManifest.looseType);
 
     // Arg defaults.
     Object.values(instruction.argDefaults).forEach((argDefault) => {
