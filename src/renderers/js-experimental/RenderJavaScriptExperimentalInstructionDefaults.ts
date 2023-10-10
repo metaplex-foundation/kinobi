@@ -6,8 +6,8 @@ import {
   pascalCase,
 } from '../../shared';
 import { ResolvedInstructionInput } from '../../visitors';
-import { JavaScriptExperimentalContextMap } from './JavaScriptExperimentalContextMap';
-import { JavaScriptExperimentalImportMap } from './JavaScriptExperimentalImportMap';
+import { ContextMap } from './ContextMap';
+import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
 
 export function renderJavaScriptExperimentalInstructionDefaults(
@@ -15,12 +15,12 @@ export function renderJavaScriptExperimentalInstructionDefaults(
   optionalAccountStrategy: 'programId' | 'omitted',
   argObject: string
 ): {
-  imports: JavaScriptExperimentalImportMap;
-  interfaces: JavaScriptExperimentalContextMap;
+  imports: ImportMap;
+  interfaces: ContextMap;
   render: string;
 } {
-  const imports = new JavaScriptExperimentalImportMap();
-  const interfaces = new JavaScriptExperimentalContextMap();
+  const imports = new ImportMap();
+  const interfaces = new ContextMap();
 
   if (!input.defaultsTo) {
     return { imports, interfaces, render: '' };
@@ -31,8 +31,8 @@ export function renderJavaScriptExperimentalInstructionDefaults(
     defaultValue: string,
     isWritable?: boolean
   ): {
-    imports: JavaScriptExperimentalImportMap;
-    interfaces: JavaScriptExperimentalContextMap;
+    imports: ImportMap;
+    interfaces: ContextMap;
     render: string;
   } => {
     const inputName = camelCase(input.name);
@@ -250,8 +250,8 @@ function renderNestedInstructionDefault(
   argObject: string
 ):
   | {
-      imports: JavaScriptExperimentalImportMap;
-      interfaces: JavaScriptExperimentalContextMap;
+      imports: ImportMap;
+      interfaces: ContextMap;
       render: string;
     }
   | undefined {

@@ -1,25 +1,30 @@
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../shared';
+import { SizeStrategy, camelCase, capitalize, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
-import { JavaScriptExperimentalImportMap } from './JavaScriptExperimentalImportMap';
+import { Fragment, fragment } from './Fragment';
+import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
 
 export type JavaScriptExperimentalTypeManifest = {
   isEnum: boolean;
-  strictType: string;
-  strictImports: JavaScriptExperimentalImportMap;
-  looseType: string;
-  looseImports: JavaScriptExperimentalImportMap;
-  serializer: string;
-  serializerImports: JavaScriptExperimentalImportMap;
+  strictType: Fragment;
+  looseType: Fragment;
+  encoder: Fragment;
+  decoder: Fragment;
 };
+
+function getEncoderFunction(name: string) {
+  return `get${capitalize(name)}Encoder`;
+}
+
+function getDecoderFunction(name: string) {
+  return `get${capitalize(name)}Decoder`;
+}
 
 export class GetJavaScriptExperimentalTypeManifestVisitor
   implements Visitor<JavaScriptExperimentalTypeManifest>
 {
   private parentName: { strict: string; loose: string } | null = null;
-
-  constructor(readonly serializerVariable = 's') {}
 
   visitRoot(): JavaScriptExperimentalTypeManifest {
     throw new Error(
@@ -141,29 +146,23 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     return {
       isEnum: false,
       strictType: pascalCaseDefinedType,
-      strictImports: new JavaScriptExperimentalImportMap().add(
-        importFrom,
-        pascalCaseDefinedType
-      ),
+      strictImports: new ImportMap().add(importFrom, pascalCaseDefinedType),
       looseType: `${pascalCaseDefinedType}Args`,
-      looseImports: new JavaScriptExperimentalImportMap().add(
+      looseImports: new ImportMap().add(
         importFrom,
         `${pascalCaseDefinedType}Args`
       ),
       serializer: `${serializerName}()`,
-      serializerImports: new JavaScriptExperimentalImportMap().add(
-        importFrom,
-        serializerName
-      ),
+      serializerImports: new ImportMap().add(importFrom, serializerName),
     };
   }
 
   visitEnumType(
     enumType: nodes.EnumTypeNode
   ): JavaScriptExperimentalTypeManifest {
-    const strictImports = new JavaScriptExperimentalImportMap();
-    const looseImports = new JavaScriptExperimentalImportMap();
-    const serializerImports = new JavaScriptExperimentalImportMap().add(
+    const strictImports = new ImportMap();
+    const looseImports = new ImportMap();
+    const serializerImports = new ImportMap().add(
       'umiSerializers',
       'scalarEnum'
     );
@@ -255,14 +254,11 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     return {
       isEnum: false,
       strictType: `{ ${kindAttribute} }`,
-      strictImports: new JavaScriptExperimentalImportMap(),
+      strictImports: new ImportMap(),
       looseType: `{ ${kindAttribute} }`,
-      looseImports: new JavaScriptExperimentalImportMap(),
+      looseImports: new ImportMap(),
       serializer: `['${name}', unit()]`,
-      serializerImports: new JavaScriptExperimentalImportMap().add(
-        'umiSerializers',
-        'unit'
-      ),
+      serializerImports: new ImportMap().add('umiSerializers', 'unit'),
     };
   }
 
@@ -450,7 +446,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     return {
       ...baseField,
       looseType: '',
-      looseImports: new JavaScriptExperimentalImportMap(),
+      looseImports: new ImportMap(),
     };
   }
 
@@ -474,12 +470,9 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
   visitBoolType(
     boolType: nodes.BoolTypeNode
   ): JavaScriptExperimentalTypeManifest {
-    const looseImports = new JavaScriptExperimentalImportMap();
-    const strictImports = new JavaScriptExperimentalImportMap();
-    const serializerImports = new JavaScriptExperimentalImportMap().add(
-      'umiSerializers',
-      'bool'
-    );
+    const looseImports = new ImportMap();
+    const strictImports = new ImportMap();
+    const serializerImports = new ImportMap().add('umiSerializers', 'bool');
     let sizeSerializer = '';
     if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
       const size = visit(boolType.size, this);
@@ -503,12 +496,9 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
   visitBytesType(
     bytesType: nodes.BytesTypeNode
   ): JavaScriptExperimentalTypeManifest {
-    const strictImports = new JavaScriptExperimentalImportMap();
-    const looseImports = new JavaScriptExperimentalImportMap();
-    const serializerImports = new JavaScriptExperimentalImportMap().add(
-      'umiSerializers',
-      'bytes'
-    );
+    const strictImports = new ImportMap();
+    const looseImports = new ImportMap();
+    const serializerImports = new ImportMap().add('umiSerializers', 'bytes');
     const options: string[] = [];
 
     // Size option.
@@ -539,165 +529,121 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
   visitNumberType(
     numberType: nodes.NumberTypeNode
   ): JavaScriptExperimentalTypeManifest {
+    const encoderFunction = getEncoderFunction(numberType.format);
+    const decoderFunction = getDecoderFunction(numberType.format);
     const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
       numberType.format
     );
-    const serializerImports = new JavaScriptExperimentalImportMap().add(
-      'umiSerializers',
-      numberType.format
+    const encoderImports = new ImportMap().add(
+      'solanaCodecsNumbers',
+      encoderFunction
+    );
+    const decoderImports = new ImportMap().add(
+      'solanaCodecsNumbers',
+      decoderFunction
     );
     let endianness = '';
     if (numberType.endian === 'be') {
-      serializerImports.add('umiSerializers', 'Endian');
+      encoderImports.add('solanaCodecsNumbers', 'Endian');
+      decoderImports.add('solanaCodecsNumbers', 'Endian');
       endianness = '{ endian: Endian.Big }';
     }
     return {
       isEnum: false,
-      strictType: isBigNumber ? 'bigint' : 'number',
-      strictImports: new JavaScriptExperimentalImportMap(),
-      looseType: isBigNumber ? 'number | bigint' : 'number',
-      looseImports: new JavaScriptExperimentalImportMap(),
-      serializer: `${numberType.format}(${endianness})`,
-      serializerImports,
+      strictType: fragment(isBigNumber ? 'bigint' : 'number'),
+      looseType: fragment(isBigNumber ? 'number | bigint' : 'number'),
+      encoder: fragment(`${encoderFunction}(${endianness})`, encoderImports),
+      decoder: fragment(`${decoderFunction}(${endianness})`, decoderImports),
     };
   }
 
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
   ): JavaScriptExperimentalTypeManifest {
-    const { number, wrapper } = numberWrapperType;
-    const numberManifest = visit(number, this);
-    switch (wrapper.kind) {
-      case 'DateTime':
-        if (!nodes.isInteger(number)) {
-          throw new Error(
-            `DateTime wrappers can only be applied to integer ` +
-              `types. Got type [${number.toString()}].`
-          );
-        }
-        numberManifest.strictImports.add('umi', 'DateTime');
-        numberManifest.looseImports.add('umi', 'DateTimeInput');
-        numberManifest.serializerImports.add('umi', 'mapDateTimeSerializer');
-        return {
-          ...numberManifest,
-          strictType: `DateTime`,
-          looseType: `DateTimeInput`,
-          serializer: `mapDateTimeSerializer(${numberManifest.serializer})`,
-        };
-      case 'Amount':
-      case 'SolAmount':
-        if (!nodes.isUnsignedInteger(number)) {
-          throw new Error(
-            `Amount wrappers can only be applied to unsigned ` +
-              `integer types. Got type [${number.toString()}].`
-          );
-        }
-        const identifier =
-          wrapper.kind === 'SolAmount' ? 'SOL' : wrapper.identifier;
-        const decimals = wrapper.kind === 'SolAmount' ? 9 : wrapper.decimals;
-        const idAndDecimals = `'${identifier}', ${decimals}`;
-        const isSolAmount = identifier === 'SOL' && decimals === 9;
-        const amountType = isSolAmount
-          ? 'SolAmount'
-          : `Amount<${idAndDecimals}>`;
-        const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
-        numberManifest.strictImports.add('umi', amountImport);
-        numberManifest.looseImports.add('umi', amountImport);
-        numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
-        return {
-          ...numberManifest,
-          strictType: amountType,
-          looseType: amountType,
-          serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
-        };
-      default:
-        return numberManifest;
-    }
+    // TODO: Support number wrapper types.
+    const { number } = numberWrapperType;
+    return visit(number, this);
   }
 
   visitPublicKeyType(): JavaScriptExperimentalTypeManifest {
-    const imports = new JavaScriptExperimentalImportMap().add(
-      'umi',
-      'PublicKey'
+    const imports = new ImportMap().add(
+      'solanaAddresses',
+      'Base58EncodedAddress'
     );
     return {
       isEnum: false,
-      strictType: 'PublicKey',
-      strictImports: imports,
-      looseType: 'PublicKey',
-      looseImports: imports,
-      serializer: `publicKeySerializer()`,
-      serializerImports: new JavaScriptExperimentalImportMap()
-        .add('umiSerializers', 'publicKey')
-        .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer'),
+      strictType: fragment('Base58EncodedAddress', imports),
+      looseType: fragment('Base58EncodedAddress', imports),
+      encoder: fragment('getAddressEncoder()').add(
+        'solanaAddresses',
+        'getAddressEncoder'
+      ),
+      decoder: fragment('getAddressDecoder()').add(
+        'solanaAddresses',
+        'getAddressDecoder'
+      ),
     };
   }
 
   visitStringType(
     stringType: nodes.StringTypeNode
   ): JavaScriptExperimentalTypeManifest {
-    const looseImports = new JavaScriptExperimentalImportMap();
-    const strictImports = new JavaScriptExperimentalImportMap();
-    const serializerImports = new JavaScriptExperimentalImportMap().add(
-      'umiSerializers',
-      'string'
+    const encoderImports = new ImportMap().add(
+      'solanaCodecsStrings',
+      'getStringEncoder'
     );
-    const options: string[] = [];
+    const decoderImports = new ImportMap().add(
+      'solanaCodecsStrings',
+      'getStringDecoder'
+    );
+    const encoderOptions: string[] = [];
+    const decoderOptions: string[] = [];
 
     // Encoding option.
     if (stringType.encoding !== 'utf8') {
-      looseImports.add('umiSerializers', stringType.encoding);
-      strictImports.add('umiSerializers', stringType.encoding);
-      options.push(`encoding: ${stringType.encoding}`);
+      const encoderFunction = getEncoderFunction(stringType.encoding);
+      const decoderFunction = getDecoderFunction(stringType.encoding);
+      encoderImports.add('solanaCodecsStrings', encoderFunction);
+      decoderImports.add('solanaCodecsStrings', decoderFunction);
+      encoderOptions.push(`encoding: ${encoderFunction}`);
+      decoderOptions.push(`encoding: ${decoderFunction}`);
     }
 
     // Size option.
     if (stringType.size.kind === 'remainder') {
-      options.push(`size: 'variable'`);
+      encoderOptions.push(`size: 'variable'`);
+      decoderOptions.push(`size: 'variable'`);
     } else if (stringType.size.kind === 'fixed') {
-      options.push(`size: ${stringType.size.value}`);
+      encoderOptions.push(`size: ${stringType.size.value}`);
+      decoderOptions.push(`size: ${stringType.size.value}`);
     } else if (
       stringType.size.prefix.format !== 'u32' ||
       stringType.size.prefix.endian !== 'le'
     ) {
       const prefix = visit(stringType.size.prefix, this);
-      looseImports.mergeWith(prefix.looseImports);
-      strictImports.mergeWith(prefix.strictImports);
-      serializerImports.mergeWith(prefix.serializerImports);
-      options.push(`size: ${prefix.serializer}`);
+      encoderImports.mergeWith(prefix.encoder.imports);
+      decoderImports.mergeWith(prefix.decoder.imports);
+      encoderOptions.push(`size: ${prefix.encoder.render}`);
+      decoderOptions.push(`size: ${prefix.decoder.render}`);
     }
 
-    const optionsAsString =
-      options.length > 0 ? `{ ${options.join(', ')} }` : '';
+    const encoderOptionsAsString =
+      encoderOptions.length > 0 ? `{ ${encoderOptions.join(', ')} }` : '';
+    const decoderOptionsAsString =
+      decoderOptions.length > 0 ? `{ ${decoderOptions.join(', ')} }` : '';
 
     return {
       isEnum: false,
-      strictType: 'string',
-      strictImports,
-      looseType: 'string',
-      looseImports,
-      serializer: `string(${optionsAsString})`,
-      serializerImports,
-    };
-  }
-
-  protected mergeManifests(
-    manifests: JavaScriptExperimentalTypeManifest[]
-  ): Pick<
-    JavaScriptExperimentalTypeManifest,
-    'strictImports' | 'looseImports' | 'serializerImports' | 'isEnum'
-  > {
-    return {
-      strictImports: new JavaScriptExperimentalImportMap().mergeWith(
-        ...manifests.map((td) => td.strictImports)
+      strictType: fragment('string'),
+      looseType: fragment('string'),
+      encoder: fragment(
+        `getStringEncoder(${encoderOptionsAsString})`,
+        encoderImports
       ),
-      looseImports: new JavaScriptExperimentalImportMap().mergeWith(
-        ...manifests.map((td) => td.looseImports)
+      decoder: fragment(
+        `getStringDecoder(${decoderOptionsAsString})`,
+        decoderImports
       ),
-      serializerImports: new JavaScriptExperimentalImportMap().mergeWith(
-        ...manifests.map((td) => td.serializerImports)
-      ),
-      isEnum: false,
     };
   }
 
@@ -709,20 +655,17 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
   }
 
   protected getArrayLikeSizeOption(
-    size: nodes.ArrayTypeNode['size'],
-    manifest: Pick<
-      JavaScriptExperimentalTypeManifest,
-      'strictImports' | 'looseImports' | 'serializerImports'
-    >
+    size: SizeStrategy,
+    manifest: JavaScriptExperimentalTypeManifest
   ): string | null {
     if (size.kind === 'fixed') return `size: ${size.value}`;
     if (size.kind === 'remainder') return `size: 'remainder'`;
+    if (size.prefix.format === 'u32' && size.prefix.endian === 'le')
+      return null;
 
     const prefixManifest = visit(size.prefix, this);
-    if (prefixManifest.serializer === 'u32()') return null;
-
-    manifest.strictImports.mergeWith(prefixManifest.strictImports);
-    manifest.looseImports.mergeWith(prefixManifest.looseImports);
+    manifest.strictType.imports.mergeWith(prefixManifest.strictType.imports);
+    manifest.looseType.imports.mergeWith(prefixManifest.looseType.imports);
     manifest.serializerImports.mergeWith(prefixManifest.serializerImports);
     return `size: ${prefixManifest.serializer}`;
   }

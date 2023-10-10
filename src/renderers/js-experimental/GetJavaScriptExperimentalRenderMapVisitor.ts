@@ -23,8 +23,8 @@ import {
   GetJavaScriptExperimentalTypeManifestVisitor,
   JavaScriptExperimentalTypeManifest,
 } from './GetJavaScriptExperimentalTypeManifestVisitor';
-import { JavaScriptExperimentalContextMap } from './JavaScriptExperimentalContextMap';
-import { JavaScriptExperimentalImportMap } from './JavaScriptExperimentalImportMap';
+import { ContextMap } from './ContextMap';
+import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalInstructionDefaults } from './RenderJavaScriptExperimentalInstructionDefaults';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
 
@@ -163,7 +163,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
       .add(
         `errors/${camelCase(name)}.ts`,
         this.render('errorsPage.njk', {
-          imports: new JavaScriptExperimentalImportMap()
+          imports: new ImportMap()
             .add('umi', ['ProgramError', 'Program'])
             .toString(this.options.dependencyMap),
           program,
@@ -176,7 +176,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
       .add(
         `programs/${camelCase(name)}.ts`,
         this.render('programsPage.njk', {
-          imports: new JavaScriptExperimentalImportMap()
+          imports: new ImportMap()
             .add('umi', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
             .add('errors', [
               `get${pascalCaseName}ErrorFromCode`,
@@ -193,7 +193,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
   visitAccount(account: nodes.AccountNode): RenderMap {
     const isLinked = !!account.data.link;
     const typeManifest = visit(account, this.typeManifestVisitor);
-    const imports = new JavaScriptExperimentalImportMap().mergeWith(
+    const imports = new ImportMap().mergeWith(
       typeManifest.strictImports,
       typeManifest.serializerImports
     );
@@ -321,8 +321,8 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
     // Imports and interfaces.
-    const interfaces = new JavaScriptExperimentalContextMap().add('programs');
-    const imports = new JavaScriptExperimentalImportMap()
+    const interfaces = new ContextMap().add('programs');
+    const imports = new ImportMap()
       .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
       .add('shared', [
         'ResolvedAccount',
@@ -518,7 +518,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
     const pascalCaseName = pascalCase(definedType.name);
     const typeManifest = visit(definedType, this.typeManifestVisitor);
-    const imports = new JavaScriptExperimentalImportMap()
+    const imports = new ImportMap()
       .mergeWithManifest(typeManifest)
       .add('umiSerializers', ['Serializer'])
       .remove('generatedTypes', [
@@ -565,8 +565,8 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
 
   protected getInstructionAccountImports(
     accounts: ResolvedInstructionAccount[]
-  ): JavaScriptExperimentalImportMap {
-    const imports = new JavaScriptExperimentalImportMap();
+  ): ImportMap {
+    const imports = new ImportMap();
     accounts.forEach((account) => {
       if (account.isSigner !== true && !account.isPda)
         imports.add('umi', 'PublicKey');

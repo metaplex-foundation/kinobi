@@ -1,12 +1,12 @@
 import * as nodes from '../../nodes';
 import { camelCase, pascalCase } from '../../shared';
-import { JavaScriptExperimentalImportMap } from './JavaScriptExperimentalImportMap';
+import { ImportMap } from './ImportMap';
 
 export function renderJavaScriptExperimentalValueNode(value: nodes.ValueNode): {
-  imports: JavaScriptExperimentalImportMap;
+  imports: ImportMap;
   render: string;
 } {
-  const imports = new JavaScriptExperimentalImportMap();
+  const imports = new ImportMap();
   switch (value.kind) {
     case 'list':
     case 'tuple':
@@ -87,12 +87,12 @@ export function renderJavaScriptExperimentalValueNode(value: nodes.ValueNode): {
       };
     case 'optionNone':
       return {
-        imports: new JavaScriptExperimentalImportMap().add('umi', 'none'),
+        imports: new ImportMap().add('umi', 'none'),
         render: 'none()',
       };
     case 'publicKey':
       return {
-        imports: new JavaScriptExperimentalImportMap().add('umi', 'publicKey'),
+        imports: new ImportMap().add('umi', 'publicKey'),
         render: `publicKey("${value.value}")`,
       };
     case 'string':

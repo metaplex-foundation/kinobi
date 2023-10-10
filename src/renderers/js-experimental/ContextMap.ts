@@ -9,12 +9,10 @@ export type ContextInterface =
   | 'transactions'
   | 'uploader';
 
-export class JavaScriptExperimentalContextMap {
+export class ContextMap {
   protected readonly _interfaces: Set<ContextInterface> = new Set();
 
-  add(
-    contextInterface: ContextInterface | ContextInterface[]
-  ): JavaScriptExperimentalContextMap {
+  add(contextInterface: ContextInterface | ContextInterface[]): ContextMap {
     if (Array.isArray(contextInterface)) {
       contextInterface.forEach((i) => this._interfaces.add(i));
     } else {
@@ -23,9 +21,7 @@ export class JavaScriptExperimentalContextMap {
     return this;
   }
 
-  remove(
-    contextInterface: ContextInterface | ContextInterface[]
-  ): JavaScriptExperimentalContextMap {
+  remove(contextInterface: ContextInterface | ContextInterface[]): ContextMap {
     if (Array.isArray(contextInterface)) {
       contextInterface.forEach((i) => this._interfaces.delete(i));
     } else {
@@ -34,9 +30,7 @@ export class JavaScriptExperimentalContextMap {
     return this;
   }
 
-  mergeWith(
-    ...others: JavaScriptExperimentalContextMap[]
-  ): JavaScriptExperimentalContextMap {
+  mergeWith(...others: ContextMap[]): ContextMap {
     others.forEach((other) => this.add([...other._interfaces]));
     return this;
   }

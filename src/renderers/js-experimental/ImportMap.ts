@@ -21,16 +21,13 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   generatedTypes: '../types',
 };
 
-export class JavaScriptExperimentalImportMap {
+export class ImportMap {
   protected readonly _imports: Map<ImportFrom, Set<string>> = new Map();
 
   protected readonly _aliases: Map<ImportFrom, Record<string, string>> =
     new Map();
 
-  add(
-    module: ImportFrom,
-    imports: string | string[] | Set<string>
-  ): JavaScriptExperimentalImportMap {
+  add(module: ImportFrom, imports: string | string[] | Set<string>): ImportMap {
     const currentImports = this._imports.get(module) ?? new Set();
     const newImports = typeof imports === 'string' ? [imports] : imports;
     newImports.forEach((i) => currentImports.add(i));
@@ -41,7 +38,7 @@ export class JavaScriptExperimentalImportMap {
   remove(
     module: ImportFrom,
     imports: string | string[] | Set<string>
-  ): JavaScriptExperimentalImportMap {
+  ): ImportMap {
     const currentImports = this._imports.get(module) ?? new Set();
     const importsToRemove = typeof imports === 'string' ? [imports] : imports;
     importsToRemove.forEach((i) => currentImports.delete(i));
@@ -53,9 +50,7 @@ export class JavaScriptExperimentalImportMap {
     return this;
   }
 
-  mergeWith(
-    ...others: JavaScriptExperimentalImportMap[]
-  ): JavaScriptExperimentalImportMap {
+  mergeWith(...others: ImportMap[]): ImportMap {
     others.forEach((other) => {
       other._imports.forEach((imports, module) => {
         this.add(module, imports);
@@ -69,9 +64,7 @@ export class JavaScriptExperimentalImportMap {
     return this;
   }
 
-  mergeWithManifest(
-    manifest: JavaScriptExperimentalTypeManifest
-  ): JavaScriptExperimentalImportMap {
+  mergeWithManifest(manifest: JavaScriptExperimentalTypeManifest): ImportMap {
     return this.mergeWith(
       manifest.strictImports,
       manifest.looseImports,
@@ -79,11 +72,7 @@ export class JavaScriptExperimentalImportMap {
     );
   }
 
-  addAlias(
-    module: ImportFrom,
-    name: string,
-    alias: string
-  ): JavaScriptExperimentalImportMap {
+  addAlias(module: ImportFrom, name: string, alias: string): ImportMap {
     const currentAliases = this._aliases.get(module) ?? {};
     currentAliases[name] = alias;
     this._aliases.set(module, currentAliases);
