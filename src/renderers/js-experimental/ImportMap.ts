@@ -1,5 +1,6 @@
 import type { ImportFrom } from '../../shared';
-import { JavaScriptExperimentalTypeManifest } from './GetJavaScriptExperimentalTypeManifestVisitor';
+import { Fragment } from './Fragment';
+import { TypeManifest } from './TypeManifest';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
   // External.
@@ -50,8 +51,9 @@ export class ImportMap {
     return this;
   }
 
-  mergeWith(...others: ImportMap[]): ImportMap {
-    others.forEach((other) => {
+  mergeWith(...others: (ImportMap | Fragment)[]): ImportMap {
+    others.forEach((rawOther) => {
+      const other = 'imports' in rawOther ? rawOther.imports : rawOther;
       other._imports.forEach((imports, module) => {
         this.add(module, imports);
       });
@@ -64,11 +66,12 @@ export class ImportMap {
     return this;
   }
 
-  mergeWithManifest(manifest: JavaScriptExperimentalTypeManifest): ImportMap {
+  mergeWithManifest(manifest: TypeManifest): ImportMap {
     return this.mergeWith(
-      manifest.strictImports,
-      manifest.looseImports,
-      manifest.serializerImports
+      manifest.strictType,
+      manifest.looseType,
+      manifest.encoder,
+      manifest.decoder
     );
   }
 

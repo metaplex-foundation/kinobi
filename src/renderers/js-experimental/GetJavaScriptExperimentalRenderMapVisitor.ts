@@ -19,14 +19,12 @@ import {
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
-import {
-  GetJavaScriptExperimentalTypeManifestVisitor,
-  JavaScriptExperimentalTypeManifest,
-} from './GetJavaScriptExperimentalTypeManifestVisitor';
+import { GetJavaScriptExperimentalTypeManifestVisitor } from './GetJavaScriptExperimentalTypeManifestVisitor';
 import { ContextMap } from './ContextMap';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalInstructionDefaults } from './RenderJavaScriptExperimentalInstructionDefaults';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
+import { TypeManifest } from './TypeManifest';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -44,7 +42,7 @@ export type GetJavaScriptExperimentalRenderMapOptions = {
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
-  typeManifestVisitor?: Visitor<JavaScriptExperimentalTypeManifest>;
+  typeManifestVisitor?: Visitor<TypeManifest>;
   byteSizeVisitor?: Visitor<number | null> & {
     registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
   };

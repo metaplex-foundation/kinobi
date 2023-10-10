@@ -1,17 +1,10 @@
 import * as nodes from '../../nodes';
 import { SizeStrategy, camelCase, capitalize, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
-import { Fragment, fragment } from './Fragment';
+import { fragment, mergeFragments } from './Fragment';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
-
-export type JavaScriptExperimentalTypeManifest = {
-  isEnum: boolean;
-  strictType: Fragment;
-  looseType: Fragment;
-  encoder: Fragment;
-  decoder: Fragment;
-};
+import { TypeManifest, mergeManifests } from './TypeManifest';
 
 function getEncoderFunction(name: string) {
   return `get${capitalize(name)}Encoder`;
@@ -22,29 +15,27 @@ function getDecoderFunction(name: string) {
 }
 
 export class GetJavaScriptExperimentalTypeManifestVisitor
-  implements Visitor<JavaScriptExperimentalTypeManifest>
+  implements Visitor<TypeManifest>
 {
   private parentName: { strict: string; loose: string } | null = null;
 
-  visitRoot(): JavaScriptExperimentalTypeManifest {
+  visitRoot(): TypeManifest {
     throw new Error(
       'Cannot get type manifest for root node. Please select a child node.'
     );
   }
 
-  visitProgram(): JavaScriptExperimentalTypeManifest {
+  visitProgram(): TypeManifest {
     throw new Error(
       'Cannot get type manifest for program node. Please select a child node.'
     );
   }
 
-  visitAccount(account: nodes.AccountNode): JavaScriptExperimentalTypeManifest {
+  visitAccount(account: nodes.AccountNode): TypeManifest {
     return visit(account.data, this);
   }
 
-  visitAccountData(
-    accountData: nodes.AccountDataNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitAccountData(accountData: nodes.AccountDataNode): TypeManifest {
     this.parentName = {
       strict: pascalCase(accountData.name),
       loose: `${pascalCase(accountData.name)}Args`,
@@ -56,13 +47,11 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     return manifest;
   }
 
-  visitInstruction(
-    instruction: nodes.InstructionNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitInstruction(instruction: nodes.InstructionNode): TypeManifest {
     return visit(instruction.dataArgs, this);
   }
 
-  visitInstructionAccount(): JavaScriptExperimentalTypeManifest {
+  visitInstructionAccount(): TypeManifest {
     throw new Error(
       'Cannot get type manifest for instruction account node. Please select a another node.'
     );
@@ -70,7 +59,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitInstructionDataArgs(
     instructionDataArgs: nodes.InstructionDataArgsNode
-  ): JavaScriptExperimentalTypeManifest {
+  ): TypeManifest {
     this.parentName = {
       strict: pascalCase(instructionDataArgs.name),
       loose: `${pascalCase(instructionDataArgs.name)}Args`,
@@ -84,7 +73,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitInstructionExtraArgs(
     instructionExtraArgs: nodes.InstructionExtraArgsNode
-  ): JavaScriptExperimentalTypeManifest {
+  ): TypeManifest {
     this.parentName = {
       strict: pascalCase(instructionExtraArgs.name),
       loose: `${pascalCase(instructionExtraArgs.name)}Args`,
@@ -96,9 +85,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     return manifest;
   }
 
-  visitDefinedType(
-    definedType: nodes.DefinedTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitDefinedType(definedType: nodes.DefinedTypeNode): TypeManifest {
     this.parentName = {
       strict: pascalCase(definedType.name),
       loose: `${pascalCase(definedType.name)}Args`,
@@ -108,13 +95,11 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     return manifest;
   }
 
-  visitError(): JavaScriptExperimentalTypeManifest {
+  visitError(): TypeManifest {
     throw new Error('Cannot get type manifest for error node.');
   }
 
-  visitArrayType(
-    arrayType: nodes.ArrayTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitArrayType(arrayType: nodes.ArrayTypeNode): TypeManifest {
     const childManifest = visit(arrayType.child, this);
     childManifest.serializerImports.add(
       'solanaCodecsDataStructures',
@@ -133,9 +118,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     };
   }
 
-  visitLinkType(
-    linkType: nodes.LinkTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitLinkType(linkType: nodes.LinkTypeNode): TypeManifest {
     const pascalCaseDefinedType = pascalCase(linkType.name);
     const serializerName = `get${pascalCaseDefinedType}Serializer`;
     const importFrom =
@@ -157,9 +140,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     };
   }
 
-  visitEnumType(
-    enumType: nodes.EnumTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitEnumType(enumType: nodes.EnumTypeNode): TypeManifest {
     const strictImports = new ImportMap();
     const looseImports = new ImportMap();
     const serializerImports = new ImportMap().add(
@@ -206,20 +187,18 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
       };
     }
 
-    const variants = enumType.variants.map(
-      (variant): JavaScriptExperimentalTypeManifest => {
-        const variantName = pascalCase(variant.name);
-        this.parentName = parentName
-          ? {
-              strict: `GetDataEnumKindContent<${parentName.strict}, '${variantName}'>`,
-              loose: `GetDataEnumKindContent<${parentName.loose}, '${variantName}'>`,
-            }
-          : null;
-        const variantManifest = visit(variant, this);
-        this.parentName = null;
-        return variantManifest;
-      }
-    );
+    const variants = enumType.variants.map((variant): TypeManifest => {
+      const variantName = pascalCase(variant.name);
+      this.parentName = parentName
+        ? {
+            strict: `GetDataEnumKindContent<${parentName.strict}, '${variantName}'>`,
+            loose: `GetDataEnumKindContent<${parentName.loose}, '${variantName}'>`,
+          }
+        : null;
+      const variantManifest = visit(variant, this);
+      this.parentName = null;
+      return variantManifest;
+    });
 
     const mergedManifest = this.mergeManifests(variants);
     const variantSerializers = variants
@@ -248,7 +227,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  ): TypeManifest {
     const name = pascalCase(enumEmptyVariantType.name);
     const kindAttribute = `__kind: "${name}"`;
     return {
@@ -264,7 +243,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitEnumStructVariantType(
     enumStructVariantType: nodes.EnumStructVariantTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  ): TypeManifest {
     const name = pascalCase(enumStructVariantType.name);
     const kindAttribute = `__kind: "${name}"`;
     const type = visit(enumStructVariantType.struct, this);
@@ -278,7 +257,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitEnumTupleVariantType(
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  ): TypeManifest {
     const name = pascalCase(enumTupleVariantType.name);
     const kindAttribute = `__kind: "${name}"`;
     const struct = nodes.structTypeNode([
@@ -296,7 +275,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     };
   }
 
-  visitMapType(mapType: nodes.MapTypeNode): JavaScriptExperimentalTypeManifest {
+  visitMapType(mapType: nodes.MapTypeNode): TypeManifest {
     const key = visit(mapType.key, this);
     const value = visit(mapType.value, this);
     const mergedManifest = this.mergeManifests([key, value]);
@@ -314,9 +293,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     };
   }
 
-  visitOptionType(
-    optionType: nodes.OptionTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitOptionType(optionType: nodes.OptionTypeNode): TypeManifest {
     const childManifest = visit(optionType.child, this);
     childManifest.strictImports.add('umi', 'Option');
     childManifest.looseImports.add('umi', 'OptionOrNullable');
@@ -353,7 +330,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     };
   }
 
-  visitSetType(setType: nodes.SetTypeNode): JavaScriptExperimentalTypeManifest {
+  visitSetType(setType: nodes.SetTypeNode): TypeManifest {
     const childManifest = visit(setType.child, this);
     childManifest.serializerImports.add('umiSerializers', 'set');
     const sizeOption = this.getArrayLikeSizeOption(setType.size, childManifest);
@@ -366,35 +343,34 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     };
   }
 
-  visitStructType(
-    structType: nodes.StructTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitStructType(structType: nodes.StructTypeNode): TypeManifest {
     const { parentName } = this;
     this.parentName = null;
-
-    const fields = structType.fields.map((field) => visit(field, this));
-    const mergedManifest = this.mergeManifests(fields);
-    mergedManifest.serializerImports.add('umiSerializers', 'struct');
-    const fieldSerializers = fields.map((field) => field.serializer).join(', ');
+    const serializerTypeParams = parentName ? parentName.strict : 'any';
     const structDescription =
       parentName?.strict && !parentName.strict.match(/['"<>]/)
         ? `, { description: '${pascalCase(parentName.strict)}' }`
         : '';
-    const serializerTypeParams = parentName ? parentName.strict : 'any';
-    const baseManifest = {
-      ...mergedManifest,
-      strictType: `{ ${fields.map((field) => field.strictType).join('')} }`,
-      looseType: `{ ${fields.map((field) => field.looseType).join('')} }`,
-      serializer:
-        `struct<${serializerTypeParams}>` +
-        `([${fieldSerializers}]${structDescription})`,
-    };
+
+    const fields = structType.fields.map((field) => visit(field, this));
+    const mergedManifest = mergeManifests(
+      fields,
+      (renders) => `{ ${renders.join('')} }`,
+      (renders) =>
+        `<${serializerTypeParams}>([${renders.join(', ')}]${structDescription})`
+    );
+    mergedManifest.encoder
+      .mapRender((r) => `getStructEncoder${r}`)
+      .addImports('solanaCodecsDataStructures', 'getStructEncoder');
+    mergedManifest.decoder
+      .mapRender((r) => `getStructDecoder${r}`)
+      .addImports('solanaCodecsDataStructures', 'getStructDecoder');
 
     const optionalFields = structType.fields.filter(
       (f) => f.defaultsTo !== null
     );
     if (optionalFields.length === 0) {
-      return baseManifest;
+      return mergedManifest;
     }
 
     const defaultValues = optionalFields
@@ -403,132 +379,144 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
         const defaultsTo = f.defaultsTo as NonNullable<typeof f.defaultsTo>;
         const { render: renderedValue, imports } =
           renderJavaScriptExperimentalValueNode(defaultsTo.value);
-        baseManifest.serializerImports.mergeWith(imports);
-        if (defaultsTo.strategy === 'omitted') {
-          return `${key}: ${renderedValue}`;
-        }
-        return `${key}: value.${key} ?? ${renderedValue}`;
+        mergedManifest.encoder.mergeImportsWith(imports);
+        return defaultsTo.strategy === 'omitted'
+          ? `${key}: ${renderedValue}`
+          : `${key}: value.${key} ?? ${renderedValue}`;
       })
       .join(', ');
-    const mapSerializerTypeParams = parentName
+    const mapEncoderTypeParams = parentName
       ? `${parentName.loose}, any, ${parentName.strict}`
       : 'any, any, any';
-    const mappedSerializer =
-      `mapSerializer<${mapSerializerTypeParams}>(` +
-      `${baseManifest.serializer}, ` +
-      `(value) => ({ ...value, ${defaultValues} }) ` +
-      `)`;
-    baseManifest.serializerImports.add('umiSerializers', 'mapSerializer');
-    return { ...baseManifest, serializer: mappedSerializer };
+    mergedManifest.encoder
+      .mapRender(
+        (r) =>
+          `mapEncoder<${mapEncoderTypeParams}>(${r}, ` +
+          `(value) => ({ ...value, ${defaultValues} }) ` +
+          `)`
+      )
+      .addImports('solanaCodecsCore', 'mapEncoder');
+    return mergedManifest;
   }
 
   visitStructFieldType(
     structFieldType: nodes.StructFieldTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  ): TypeManifest {
     const name = camelCase(structFieldType.name);
-    const fieldChild = visit(structFieldType.child, this);
+    const childManifest = visit(structFieldType.child, this);
     const docblock = this.createDocblock(structFieldType.docs);
-    const baseField = {
-      ...fieldChild,
-      strictType: `${docblock}${name}: ${fieldChild.strictType}; `,
-      looseType: `${docblock}${name}: ${fieldChild.looseType}; `,
-      serializer: `['${name}', ${fieldChild.serializer}]`,
-    };
+    const originalLooseType = childManifest.looseType.render;
+    childManifest.strictType.mapRender((r) => `${docblock}${name}: ${r}; `);
+    childManifest.looseType.mapRender((r) => `${docblock}${name}: ${r}; `);
+    childManifest.encoder.mapRender((r) => `['${name}', ${r}]`);
+    childManifest.decoder.mapRender((r) => `['${name}', ${r}]`);
+
+    // No default value.
     if (structFieldType.defaultsTo === null) {
-      return baseField;
+      return childManifest;
     }
+
+    // Optional default value.
     if (structFieldType.defaultsTo.strategy === 'optional') {
-      return {
-        ...baseField,
-        looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,
-      };
+      childManifest.looseType.render = `${docblock}${name}?: ${originalLooseType}; `;
+      return childManifest;
     }
-    return {
-      ...baseField,
-      looseType: '',
-      looseImports: new ImportMap(),
-    };
+
+    // Omitted default value.
+    childManifest.looseType = fragment('');
+    return childManifest;
   }
 
-  visitTupleType(
-    tupleType: nodes.TupleTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitTupleType(tupleType: nodes.TupleTypeNode): TypeManifest {
     const children = tupleType.children.map((item) => visit(item, this));
-    const mergedManifest = this.mergeManifests(children);
-    mergedManifest.serializerImports.add('umiSerializers', 'tuple');
-    const childrenSerializers = children
-      .map((child) => child.serializer)
-      .join(', ');
-    return {
-      ...mergedManifest,
-      strictType: `[${children.map((item) => item.strictType).join(', ')}]`,
-      looseType: `[${children.map((item) => item.looseType).join(', ')}]`,
-      serializer: `tuple([${childrenSerializers}])`,
-    };
+    const mergedManifest = mergeManifests(
+      children,
+      (types) => `[${types.join(', ')}]`,
+      (codecs) => `[${codecs.join(', ')}]`
+    );
+    mergedManifest.encoder
+      .mapRender((render) => `getTupleEncoder([${render}])`)
+      .addImports('solanaCodecsDataStructures', 'getTupleEncoder');
+    mergedManifest.decoder
+      .mapRender((render) => `getTupleDecoder([${render}])`)
+      .addImports('solanaCodecsDataStructures', 'getTupleDecoder');
+    return mergedManifest;
   }
 
-  visitBoolType(
-    boolType: nodes.BoolTypeNode
-  ): JavaScriptExperimentalTypeManifest {
-    const looseImports = new ImportMap();
-    const strictImports = new ImportMap();
-    const serializerImports = new ImportMap().add('umiSerializers', 'bool');
-    let sizeSerializer = '';
+  visitBoolType(boolType: nodes.BoolTypeNode): TypeManifest {
+    const encoderImports = new ImportMap().add(
+      'solanaCodecsDataStructure',
+      'getBooleanEncoder'
+    );
+    const decoderImports = new ImportMap().add(
+      'solanaCodecsDataStructure',
+      'getBooleanDecoder'
+    );
+
+    let sizeEncoder = '';
+    let sizeDecoder = '';
     if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
       const size = visit(boolType.size, this);
-      looseImports.mergeWith(size.looseImports);
-      strictImports.mergeWith(size.strictImports);
-      serializerImports.mergeWith(size.serializerImports);
-      sizeSerializer = `{ size: ${size.serializer} }`;
+      encoderImports.mergeWith(size.encoder);
+      decoderImports.mergeWith(size.decoder);
+      sizeEncoder = `{ size: ${size.encoder.render} }`;
+      sizeDecoder = `{ size: ${size.decoder.render} }`;
     }
 
     return {
       isEnum: false,
-      strictType: 'boolean',
-      looseType: 'boolean',
-      serializer: `bool(${sizeSerializer})`,
-      looseImports,
-      strictImports,
-      serializerImports,
+      strictType: fragment('boolean'),
+      looseType: fragment('boolean'),
+      encoder: fragment(`getBooleanEncoder(${sizeEncoder})`, encoderImports),
+      decoder: fragment(`getBooleanDecoder(${sizeDecoder})`, decoderImports),
     };
   }
 
-  visitBytesType(
-    bytesType: nodes.BytesTypeNode
-  ): JavaScriptExperimentalTypeManifest {
-    const strictImports = new ImportMap();
-    const looseImports = new ImportMap();
-    const serializerImports = new ImportMap().add('umiSerializers', 'bytes');
-    const options: string[] = [];
+  visitBytesType(bytesType: nodes.BytesTypeNode): TypeManifest {
+    const encoderImports = new ImportMap().add(
+      'solanaCodecsDataStructures',
+      'getBytesEncoder'
+    );
+    const decoderImports = new ImportMap().add(
+      'solanaCodecsDataStructures',
+      'getBytesDecoder'
+    );
+    const encoderOptions: string[] = [];
+    const decoderOptions: string[] = [];
 
     // Size option.
     if (bytesType.size.kind === 'prefixed') {
       const prefix = visit(bytesType.size.prefix, this);
-      strictImports.mergeWith(prefix.strictImports);
-      looseImports.mergeWith(prefix.looseImports);
-      serializerImports.mergeWith(prefix.serializerImports);
-      options.push(`size: ${prefix.serializer}`);
+      encoderImports.mergeWith(prefix.encoder);
+      decoderImports.mergeWith(prefix.decoder);
+      encoderOptions.push(`size: ${prefix.encoder.render}`);
+      decoderOptions.push(`size: ${prefix.decoder.render}`);
     } else if (bytesType.size.kind === 'fixed') {
-      options.push(`size: ${bytesType.size.value}`);
+      encoderOptions.push(`size: ${bytesType.size.value}`);
+      decoderOptions.push(`size: ${bytesType.size.value}`);
     }
 
-    const optionsAsString =
-      options.length > 0 ? `{ ${options.join(', ')} }` : '';
+    const encoderOptionsAsString =
+      encoderOptions.length > 0 ? `{ ${encoderOptions.join(', ')} }` : '';
+    const decoderOptionsAsString =
+      decoderOptions.length > 0 ? `{ ${decoderOptions.join(', ')} }` : '';
 
     return {
       isEnum: false,
-      strictType: 'Uint8Array',
-      strictImports,
-      looseType: 'Uint8Array',
-      looseImports,
-      serializer: `bytes(${optionsAsString})`,
-      serializerImports,
+      strictType: fragment('Uint8Array'),
+      looseType: fragment('Uint8Array'),
+      encoder: fragment(
+        `getBytesEncoder(${encoderOptionsAsString})`,
+        encoderImports
+      ),
+      decoder: fragment(
+        `getBytesDecoder(${decoderOptionsAsString})`,
+        decoderImports
+      ),
     };
   }
 
-  visitNumberType(
-    numberType: nodes.NumberTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitNumberType(numberType: nodes.NumberTypeNode): TypeManifest {
     const encoderFunction = getEncoderFunction(numberType.format);
     const decoderFunction = getDecoderFunction(numberType.format);
     const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
@@ -559,13 +547,13 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitNumberWrapperType(
     numberWrapperType: nodes.NumberWrapperTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  ): TypeManifest {
     // TODO: Support number wrapper types.
     const { number } = numberWrapperType;
     return visit(number, this);
   }
 
-  visitPublicKeyType(): JavaScriptExperimentalTypeManifest {
+  visitPublicKeyType(): TypeManifest {
     const imports = new ImportMap().add(
       'solanaAddresses',
       'Base58EncodedAddress'
@@ -574,20 +562,18 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
       isEnum: false,
       strictType: fragment('Base58EncodedAddress', imports),
       looseType: fragment('Base58EncodedAddress', imports),
-      encoder: fragment('getAddressEncoder()').add(
+      encoder: fragment('getAddressEncoder()').addImports(
         'solanaAddresses',
         'getAddressEncoder'
       ),
-      decoder: fragment('getAddressDecoder()').add(
+      decoder: fragment('getAddressDecoder()').addImports(
         'solanaAddresses',
         'getAddressDecoder'
       ),
     };
   }
 
-  visitStringType(
-    stringType: nodes.StringTypeNode
-  ): JavaScriptExperimentalTypeManifest {
+  visitStringType(stringType: nodes.StringTypeNode): TypeManifest {
     const encoderImports = new ImportMap().add(
       'solanaCodecsStrings',
       'getStringEncoder'
@@ -656,7 +642,7 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   protected getArrayLikeSizeOption(
     size: SizeStrategy,
-    manifest: JavaScriptExperimentalTypeManifest
+    manifest: TypeManifest
   ): string | null {
     if (size.kind === 'fixed') return `size: ${size.value}`;
     if (size.kind === 'remainder') return `size: 'remainder'`;

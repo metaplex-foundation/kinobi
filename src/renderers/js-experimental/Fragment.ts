@@ -5,6 +5,16 @@ export function fragment(render: string, imports?: ImportMap): Fragment {
   return new Fragment(render, imports);
 }
 
+export function mergeFragments(
+  fragments: Fragment[],
+  mergeRenders: (renders: string[]) => string
+): Fragment {
+  return new Fragment(
+    mergeRenders(fragments.map((f) => f.render)),
+    new ImportMap().mergeWith(...fragments)
+  );
+}
+
 export class Fragment {
   public render: string;
 
@@ -15,12 +25,20 @@ export class Fragment {
     this.imports = imports ?? new ImportMap();
   }
 
-  add(module: ImportFrom, imports: string | string[] | Set<string>): Fragment {
+  mapRender(fn: (render: string) => string): Fragment {
+    this.render = fn(this.render);
+    return this;
+  }
+
+  addImports(
+    module: ImportFrom,
+    imports: string | string[] | Set<string>
+  ): Fragment {
     this.imports.add(module, imports);
     return this;
   }
 
-  remove(
+  removeImports(
     module: ImportFrom,
     imports: string | string[] | Set<string>
   ): Fragment {
@@ -35,7 +53,7 @@ export class Fragment {
     return this;
   }
 
-  addAlias(module: ImportFrom, name: string, alias: string): Fragment {
+  addImportAlias(module: ImportFrom, name: string, alias: string): Fragment {
     this.imports.addAlias(module, name, alias);
     return this;
   }
