@@ -6,37 +6,62 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from 'umi';
 import {
-  Serializer,
-  bool,
-  publicKey as publicKeySerializer,
-  struct,
-} from 'umiSerializers';
-import { DelegateRole, DelegateRoleArgs, getDelegateRoleSerializer } from '.';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getBooleanDecoder,
+  getBooleanEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import {
+  DelegateRole,
+  DelegateRoleArgs,
+  getDelegateRoleDecoder,
+  getDelegateRoleEncoder,
+} from '.';
 
 export type DelegateState = {
   role: DelegateRole;
-  delegate: PublicKey;
+  delegate: Base58EncodedAddress;
   hasData: boolean;
 };
 
 export type DelegateStateArgs = {
   role: DelegateRoleArgs;
-  delegate: PublicKey;
+  delegate: Base58EncodedAddress;
   hasData: boolean;
 };
 
-export function getDelegateStateSerializer(): Serializer<
+export function getDelegateStateEncoder(): Encoder<DelegateStateArgs> {
+  return getStructEncoder<DelegateState>(
+    [
+      ['role', getDelegateRoleEncoder()],
+      ['delegate', getAddressEncoder()],
+      ['hasData', getBooleanEncoder()],
+    ],
+    { description: 'DelegateState' }
+  ) as Encoder<DelegateStateArgs>;
+}
+
+export function getDelegateStateDecoder(): Decoder<DelegateState> {
+  return getStructDecoder<DelegateState>(
+    [
+      ['role', getDelegateRoleDecoder()],
+      ['delegate', getAddressDecoder()],
+      ['hasData', getBooleanDecoder()],
+    ],
+    { description: 'DelegateState' }
+  ) as Decoder<DelegateState>;
+}
+
+export function getDelegateStateCodec(): Codec<
   DelegateStateArgs,
   DelegateState
 > {
-  return struct<DelegateState>(
-    [
-      ['role', getDelegateRoleSerializer()],
-      ['delegate', publicKeySerializer()],
-      ['hasData', bool()],
-    ],
-    { description: 'DelegateState' }
-  ) as Serializer<DelegateStateArgs, DelegateState>;
+  return combineCodec(getDelegateStateEncoder(), getDelegateStateDecoder());
 }

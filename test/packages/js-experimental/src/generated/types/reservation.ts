@@ -6,36 +6,52 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from 'umi';
 import {
-  Serializer,
-  publicKey as publicKeySerializer,
-  struct,
-  u64,
-} from 'umiSerializers';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type Reservation = {
-  address: PublicKey;
+  address: Base58EncodedAddress;
   spotsRemaining: bigint;
   totalSpots: bigint;
 };
 
 export type ReservationArgs = {
-  address: PublicKey;
+  address: Base58EncodedAddress;
   spotsRemaining: number | bigint;
   totalSpots: number | bigint;
 };
 
-export function getReservationSerializer(): Serializer<
-  ReservationArgs,
-  Reservation
-> {
-  return struct<Reservation>(
+export function getReservationEncoder(): Encoder<ReservationArgs> {
+  return getStructEncoder<Reservation>(
     [
-      ['address', publicKeySerializer()],
-      ['spotsRemaining', u64()],
-      ['totalSpots', u64()],
+      ['address', getAddressEncoder()],
+      ['spotsRemaining', getU64Encoder()],
+      ['totalSpots', getU64Encoder()],
     ],
     { description: 'Reservation' }
-  ) as Serializer<ReservationArgs, Reservation>;
+  ) as Encoder<ReservationArgs>;
+}
+
+export function getReservationDecoder(): Decoder<Reservation> {
+  return getStructDecoder<Reservation>(
+    [
+      ['address', getAddressDecoder()],
+      ['spotsRemaining', getU64Decoder()],
+      ['totalSpots', getU64Decoder()],
+    ],
+    { description: 'Reservation' }
+  ) as Decoder<Reservation>;
+}
+
+export function getReservationCodec(): Codec<ReservationArgs, Reservation> {
+  return combineCodec(getReservationEncoder(), getReservationDecoder());
 }

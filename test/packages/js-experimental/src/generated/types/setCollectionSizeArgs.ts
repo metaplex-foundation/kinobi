@@ -6,17 +6,35 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, struct, u64 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type SetCollectionSizeArgs = { size: bigint };
 
 export type SetCollectionSizeArgsArgs = { size: number | bigint };
 
-export function getSetCollectionSizeArgsSerializer(): Serializer<
+export function getSetCollectionSizeArgsEncoder(): Encoder<SetCollectionSizeArgsArgs> {
+  return getStructEncoder<SetCollectionSizeArgs>([['size', getU64Encoder()]], {
+    description: 'SetCollectionSizeArgs',
+  }) as Encoder<SetCollectionSizeArgsArgs>;
+}
+
+export function getSetCollectionSizeArgsDecoder(): Decoder<SetCollectionSizeArgs> {
+  return getStructDecoder<SetCollectionSizeArgs>([['size', getU64Decoder()]], {
+    description: 'SetCollectionSizeArgs',
+  }) as Decoder<SetCollectionSizeArgs>;
+}
+
+export function getSetCollectionSizeArgsCodec(): Codec<
   SetCollectionSizeArgsArgs,
   SetCollectionSizeArgs
 > {
-  return struct<SetCollectionSizeArgs>([['size', u64()]], {
-    description: 'SetCollectionSizeArgs',
-  }) as Serializer<SetCollectionSizeArgsArgs, SetCollectionSizeArgs>;
+  return combineCodec(
+    getSetCollectionSizeArgsEncoder(),
+    getSetCollectionSizeArgsDecoder()
+  );
 }

@@ -6,7 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum, u64 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export enum BurnArgs {
   V1,
@@ -14,9 +19,20 @@ export enum BurnArgs {
 
 export type BurnArgsArgs = BurnArgs;
 
-export function getBurnArgsSerializer(): Serializer<BurnArgsArgs, BurnArgs> {
-  return scalarEnum<BurnArgs>(BurnArgs, {
-    size: u64(),
+export function getBurnArgsEncoder(): Encoder<BurnArgsArgs> {
+  return getScalarEnumEncoder<BurnArgs>(BurnArgs, {
+    size: getU64Encoder(),
     description: 'BurnArgs',
-  }) as Serializer<BurnArgsArgs, BurnArgs>;
+  }) as Encoder<BurnArgsArgs>;
+}
+
+export function getBurnArgsDecoder(): Decoder<BurnArgs> {
+  return getScalarEnumDecoder<BurnArgs>(BurnArgs, {
+    size: getU64Decoder(),
+    description: 'BurnArgs',
+  }) as Decoder<BurnArgs>;
+}
+
+export function getBurnArgsCodec(): Codec<BurnArgsArgs, BurnArgs> {
+  return combineCodec(getBurnArgsEncoder(), getBurnArgsDecoder());
 }

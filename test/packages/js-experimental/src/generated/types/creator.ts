@@ -6,31 +6,45 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from 'umi';
 import {
-  Serializer,
-  bool,
-  mapSerializer,
-  publicKey as publicKeySerializer,
-  struct,
-  u8,
-} from 'umiSerializers';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
+import {
+  getBooleanDecoder,
+  getBooleanEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
-export type Creator = { address: PublicKey; verified: boolean; share: number };
+export type Creator = {
+  address: Base58EncodedAddress;
+  verified: boolean;
+  share: number;
+};
 
 export type CreatorArgs = {
-  address: PublicKey;
+  address: Base58EncodedAddress;
   verified?: boolean;
   share?: number;
 };
 
-export function getCreatorSerializer(): Serializer<CreatorArgs, Creator> {
-  return mapSerializer<CreatorArgs, any, Creator>(
-    struct<Creator>(
+export function getCreatorEncoder(): Encoder<CreatorArgs> {
+  return mapEncoder(
+    getStructEncoder<Creator>(
       [
-        ['address', publicKeySerializer()],
-        ['verified', bool()],
-        ['share', u8()],
+        ['address', getAddressEncoder()],
+        ['verified', getBooleanEncoder()],
+        ['share', getU8Encoder()],
       ],
       { description: 'Creator' }
     ),
@@ -39,5 +53,20 @@ export function getCreatorSerializer(): Serializer<CreatorArgs, Creator> {
       verified: value.verified ?? false,
       share: value.share ?? 42,
     })
-  ) as Serializer<CreatorArgs, Creator>;
+  ) as Encoder<CreatorArgs>;
+}
+
+export function getCreatorDecoder(): Decoder<Creator> {
+  return getStructDecoder<Creator>(
+    [
+      ['address', getAddressDecoder()],
+      ['verified', getBooleanDecoder()],
+      ['share', getU8Decoder()],
+    ],
+    { description: 'Creator' }
+  ) as Decoder<Creator>;
+}
+
+export function getCreatorCodec(): Codec<CreatorArgs, Creator> {
+  return combineCodec(getCreatorEncoder(), getCreatorDecoder());
 }

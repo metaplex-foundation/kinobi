@@ -6,34 +6,51 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Serializer,
-  dataEnum,
-  struct,
-  u64,
-} from 'umiSerializers';
+  getDataEnumDecoder,
+  getDataEnumEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 
 export type UseAssetArgsArgs = { __kind: 'V1'; useCount: number | bigint };
 
-export function getUseAssetArgsSerializer(): Serializer<
-  UseAssetArgsArgs,
-  UseAssetArgs
-> {
-  return dataEnum<UseAssetArgs>(
+export function getUseAssetArgsEncoder(): Encoder<UseAssetArgsArgs> {
+  return getDataEnumEncoder<UseAssetArgs>(
     [
       [
         'V1',
-        struct<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
-          ['useCount', u64()],
+        getStructEncoder<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
+          ['useCount', getU64Encoder()],
         ]),
       ],
     ],
     { description: 'UseAssetArgs' }
-  ) as Serializer<UseAssetArgsArgs, UseAssetArgs>;
+  ) as Encoder<UseAssetArgsArgs>;
+}
+
+export function getUseAssetArgsDecoder(): Decoder<UseAssetArgs> {
+  return getDataEnumDecoder<UseAssetArgs>(
+    [
+      [
+        'V1',
+        getStructDecoder<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
+          ['useCount', getU64Decoder()],
+        ]),
+      ],
+    ],
+    { description: 'UseAssetArgs' }
+  ) as Decoder<UseAssetArgs>;
+}
+
+export function getUseAssetArgsCodec(): Codec<UseAssetArgsArgs, UseAssetArgs> {
+  return combineCodec(getUseAssetArgsEncoder(), getUseAssetArgsDecoder());
 }
 
 // Data Enum Helpers.

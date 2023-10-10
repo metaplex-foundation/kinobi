@@ -6,20 +6,27 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable } from 'umi';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Serializer,
-  dataEnum,
-  option,
-  struct,
-  u64,
-} from 'umiSerializers';
+  getDataEnumDecoder,
+  getDataEnumEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
 import {
   AuthorizationData,
   AuthorizationDataArgs,
-  getAuthorizationDataSerializer,
+  getAuthorizationDataDecoder,
+  getAuthorizationDataEncoder,
 } from '.';
 
 export type TransferArgs = {
@@ -34,22 +41,44 @@ export type TransferArgsArgs = {
   amount: number | bigint;
 };
 
-export function getTransferArgsSerializer(): Serializer<
-  TransferArgsArgs,
-  TransferArgs
-> {
-  return dataEnum<TransferArgs>(
+export function getTransferArgsEncoder(): Encoder<TransferArgsArgs> {
+  return getDataEnumEncoder<TransferArgs>(
     [
       [
         'V1',
-        struct<GetDataEnumKindContent<TransferArgs, 'V1'>>([
-          ['authorizationData', option(getAuthorizationDataSerializer())],
-          ['amount', u64()],
+        getStructEncoder<GetDataEnumKindContent<TransferArgs, 'V1'>>([
+          [
+            'authorizationData',
+            getOptionEncoder(getAuthorizationDataEncoder()),
+          ],
+          ['amount', getU64Encoder()],
         ]),
       ],
     ],
     { description: 'TransferArgs' }
-  ) as Serializer<TransferArgsArgs, TransferArgs>;
+  ) as Encoder<TransferArgsArgs>;
+}
+
+export function getTransferArgsDecoder(): Decoder<TransferArgs> {
+  return getDataEnumDecoder<TransferArgs>(
+    [
+      [
+        'V1',
+        getStructDecoder<GetDataEnumKindContent<TransferArgs, 'V1'>>([
+          [
+            'authorizationData',
+            getOptionDecoder(getAuthorizationDataDecoder()),
+          ],
+          ['amount', getU64Decoder()],
+        ]),
+      ],
+    ],
+    { description: 'TransferArgs' }
+  ) as Decoder<TransferArgs>;
+}
+
+export function getTransferArgsCodec(): Codec<TransferArgsArgs, TransferArgs> {
+  return combineCodec(getTransferArgsEncoder(), getTransferArgsDecoder());
 }
 
 // Data Enum Helpers.

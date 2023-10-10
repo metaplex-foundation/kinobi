@@ -6,8 +6,18 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable } from 'umi';
-import { Serializer, option, struct, u64 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
 
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };
 
@@ -15,11 +25,26 @@ export type CreateMasterEditionArgsArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
-export function getCreateMasterEditionArgsSerializer(): Serializer<
+export function getCreateMasterEditionArgsEncoder(): Encoder<CreateMasterEditionArgsArgs> {
+  return getStructEncoder<CreateMasterEditionArgs>(
+    [['maxSupply', getOptionEncoder(getU64Encoder())]],
+    { description: 'CreateMasterEditionArgs' }
+  ) as Encoder<CreateMasterEditionArgsArgs>;
+}
+
+export function getCreateMasterEditionArgsDecoder(): Decoder<CreateMasterEditionArgs> {
+  return getStructDecoder<CreateMasterEditionArgs>(
+    [['maxSupply', getOptionDecoder(getU64Decoder())]],
+    { description: 'CreateMasterEditionArgs' }
+  ) as Decoder<CreateMasterEditionArgs>;
+}
+
+export function getCreateMasterEditionArgsCodec(): Codec<
   CreateMasterEditionArgsArgs,
   CreateMasterEditionArgs
 > {
-  return struct<CreateMasterEditionArgs>([['maxSupply', option(u64())]], {
-    description: 'CreateMasterEditionArgs',
-  }) as Serializer<CreateMasterEditionArgsArgs, CreateMasterEditionArgs>;
+  return combineCodec(
+    getCreateMasterEditionArgsEncoder(),
+    getCreateMasterEditionArgsDecoder()
+  );
 }

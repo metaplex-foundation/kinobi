@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum DelegateRole {
   Authority,
@@ -20,11 +24,18 @@ export enum DelegateRole {
 
 export type DelegateRoleArgs = DelegateRole;
 
-export function getDelegateRoleSerializer(): Serializer<
-  DelegateRoleArgs,
-  DelegateRole
-> {
-  return scalarEnum<DelegateRole>(DelegateRole, {
+export function getDelegateRoleEncoder(): Encoder<DelegateRoleArgs> {
+  return getScalarEnumEncoder<DelegateRole>(DelegateRole, {
     description: 'DelegateRole',
-  }) as Serializer<DelegateRoleArgs, DelegateRole>;
+  }) as Encoder<DelegateRoleArgs>;
+}
+
+export function getDelegateRoleDecoder(): Decoder<DelegateRole> {
+  return getScalarEnumDecoder<DelegateRole>(DelegateRole, {
+    description: 'DelegateRole',
+  }) as Decoder<DelegateRole>;
+}
+
+export function getDelegateRoleCodec(): Codec<DelegateRoleArgs, DelegateRole> {
+  return combineCodec(getDelegateRoleEncoder(), getDelegateRoleDecoder());
 }

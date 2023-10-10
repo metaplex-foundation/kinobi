@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum TmKey {
   Uninitialized,
@@ -25,9 +29,18 @@ export enum TmKey {
 
 export type TmKeyArgs = TmKey;
 
-export function getTmKeySerializer(): Serializer<TmKeyArgs, TmKey> {
-  return scalarEnum<TmKey>(TmKey, { description: 'TmKey' }) as Serializer<
-    TmKeyArgs,
-    TmKey
-  >;
+export function getTmKeyEncoder(): Encoder<TmKeyArgs> {
+  return getScalarEnumEncoder<TmKey>(TmKey, {
+    description: 'TmKey',
+  }) as Encoder<TmKeyArgs>;
+}
+
+export function getTmKeyDecoder(): Decoder<TmKey> {
+  return getScalarEnumDecoder<TmKey>(TmKey, {
+    description: 'TmKey',
+  }) as Decoder<TmKey>;
+}
+
+export function getTmKeyCodec(): Codec<TmKeyArgs, TmKey> {
+  return combineCodec(getTmKeyEncoder(), getTmKeyDecoder());
 }

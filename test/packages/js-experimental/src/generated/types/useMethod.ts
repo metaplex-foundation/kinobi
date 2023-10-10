@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum UseMethod {
   Burn,
@@ -16,8 +20,18 @@ export enum UseMethod {
 
 export type UseMethodArgs = UseMethod;
 
-export function getUseMethodSerializer(): Serializer<UseMethodArgs, UseMethod> {
-  return scalarEnum<UseMethod>(UseMethod, {
+export function getUseMethodEncoder(): Encoder<UseMethodArgs> {
+  return getScalarEnumEncoder<UseMethod>(UseMethod, {
     description: 'UseMethod',
-  }) as Serializer<UseMethodArgs, UseMethod>;
+  }) as Encoder<UseMethodArgs>;
+}
+
+export function getUseMethodDecoder(): Decoder<UseMethod> {
+  return getScalarEnumDecoder<UseMethod>(UseMethod, {
+    description: 'UseMethod',
+  }) as Decoder<UseMethod>;
+}
+
+export function getUseMethodCodec(): Codec<UseMethodArgs, UseMethod> {
+  return combineCodec(getUseMethodEncoder(), getUseMethodDecoder());
 }

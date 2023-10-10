@@ -6,7 +6,14 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, bytes, string, struct } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getBytesDecoder,
+  getBytesEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 
 /** Hidden settings for large mints used with off-chain data. */
 export type HiddenSettings = {
@@ -20,16 +27,31 @@ export type HiddenSettings = {
 
 export type HiddenSettingsArgs = HiddenSettings;
 
-export function getHiddenSettingsSerializer(): Serializer<
+export function getHiddenSettingsEncoder(): Encoder<HiddenSettingsArgs> {
+  return getStructEncoder<HiddenSettings>(
+    [
+      ['name', getStringEncoder()],
+      ['uri', getStringEncoder()],
+      ['hash', getBytesEncoder({ size: 32 })],
+    ],
+    { description: 'HiddenSettings' }
+  ) as Encoder<HiddenSettingsArgs>;
+}
+
+export function getHiddenSettingsDecoder(): Decoder<HiddenSettings> {
+  return getStructDecoder<HiddenSettings>(
+    [
+      ['name', getStringDecoder()],
+      ['uri', getStringDecoder()],
+      ['hash', getBytesDecoder({ size: 32 })],
+    ],
+    { description: 'HiddenSettings' }
+  ) as Decoder<HiddenSettings>;
+}
+
+export function getHiddenSettingsCodec(): Codec<
   HiddenSettingsArgs,
   HiddenSettings
 > {
-  return struct<HiddenSettings>(
-    [
-      ['name', string()],
-      ['uri', string()],
-      ['hash', bytes({ size: 32 })],
-    ],
-    { description: 'HiddenSettings' }
-  ) as Serializer<HiddenSettingsArgs, HiddenSettings>;
+  return combineCodec(getHiddenSettingsEncoder(), getHiddenSettingsDecoder());
 }

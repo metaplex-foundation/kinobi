@@ -6,18 +6,37 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, struct } from 'umiSerializers';
-import { Payload, PayloadArgs, getPayloadSerializer } from '.';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { Payload, PayloadArgs, getPayloadDecoder, getPayloadEncoder } from '.';
 
 export type AuthorizationData = { payload: Payload };
 
 export type AuthorizationDataArgs = { payload: PayloadArgs };
 
-export function getAuthorizationDataSerializer(): Serializer<
+export function getAuthorizationDataEncoder(): Encoder<AuthorizationDataArgs> {
+  return getStructEncoder<AuthorizationData>(
+    [['payload', getPayloadEncoder()]],
+    { description: 'AuthorizationData' }
+  ) as Encoder<AuthorizationDataArgs>;
+}
+
+export function getAuthorizationDataDecoder(): Decoder<AuthorizationData> {
+  return getStructDecoder<AuthorizationData>(
+    [['payload', getPayloadDecoder()]],
+    { description: 'AuthorizationData' }
+  ) as Decoder<AuthorizationData>;
+}
+
+export function getAuthorizationDataCodec(): Codec<
   AuthorizationDataArgs,
   AuthorizationData
 > {
-  return struct<AuthorizationData>([['payload', getPayloadSerializer()]], {
-    description: 'AuthorizationData',
-  }) as Serializer<AuthorizationDataArgs, AuthorizationData>;
+  return combineCodec(
+    getAuthorizationDataEncoder(),
+    getAuthorizationDataDecoder()
+  );
 }

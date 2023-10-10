@@ -6,34 +6,57 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Serializer,
-  dataEnum,
-  struct,
-  u64,
-} from 'umiSerializers';
+  getDataEnumDecoder,
+  getDataEnumEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type CollectionDetails = { __kind: 'V1'; size: bigint };
 
 export type CollectionDetailsArgs = { __kind: 'V1'; size: number | bigint };
 
-export function getCollectionDetailsSerializer(): Serializer<
-  CollectionDetailsArgs,
-  CollectionDetails
-> {
-  return dataEnum<CollectionDetails>(
+export function getCollectionDetailsEncoder(): Encoder<CollectionDetailsArgs> {
+  return getDataEnumEncoder<CollectionDetails>(
     [
       [
         'V1',
-        struct<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
-          ['size', u64()],
+        getStructEncoder<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
+          ['size', getU64Encoder()],
         ]),
       ],
     ],
     { description: 'CollectionDetails' }
-  ) as Serializer<CollectionDetailsArgs, CollectionDetails>;
+  ) as Encoder<CollectionDetailsArgs>;
+}
+
+export function getCollectionDetailsDecoder(): Decoder<CollectionDetails> {
+  return getDataEnumDecoder<CollectionDetails>(
+    [
+      [
+        'V1',
+        getStructDecoder<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
+          ['size', getU64Decoder()],
+        ]),
+      ],
+    ],
+    { description: 'CollectionDetails' }
+  ) as Decoder<CollectionDetails>;
+}
+
+export function getCollectionDetailsCodec(): Codec<
+  CollectionDetailsArgs,
+  CollectionDetails
+> {
+  return combineCodec(
+    getCollectionDetailsEncoder(),
+    getCollectionDetailsDecoder()
+  );
 }
 
 // Data Enum Helpers.

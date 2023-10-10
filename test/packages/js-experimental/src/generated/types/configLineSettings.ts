@@ -6,7 +6,15 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, bool, string, struct, u32 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getBooleanDecoder,
+  getBooleanEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU32Decoder, getU32Encoder } from '@solana/codecs-numbers';
+import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 
 /** Config line settings to allocate space for individual name + URI. */
 export type ConfigLineSettings = {
@@ -24,18 +32,38 @@ export type ConfigLineSettings = {
 
 export type ConfigLineSettingsArgs = ConfigLineSettings;
 
-export function getConfigLineSettingsSerializer(): Serializer<
+export function getConfigLineSettingsEncoder(): Encoder<ConfigLineSettingsArgs> {
+  return getStructEncoder<ConfigLineSettings>(
+    [
+      ['prefixName', getStringEncoder()],
+      ['nameLength', getU32Encoder()],
+      ['prefixUri', getStringEncoder()],
+      ['uriLength', getU32Encoder()],
+      ['isSequential', getBooleanEncoder()],
+    ],
+    { description: 'ConfigLineSettings' }
+  ) as Encoder<ConfigLineSettingsArgs>;
+}
+
+export function getConfigLineSettingsDecoder(): Decoder<ConfigLineSettings> {
+  return getStructDecoder<ConfigLineSettings>(
+    [
+      ['prefixName', getStringDecoder()],
+      ['nameLength', getU32Decoder()],
+      ['prefixUri', getStringDecoder()],
+      ['uriLength', getU32Decoder()],
+      ['isSequential', getBooleanDecoder()],
+    ],
+    { description: 'ConfigLineSettings' }
+  ) as Decoder<ConfigLineSettings>;
+}
+
+export function getConfigLineSettingsCodec(): Codec<
   ConfigLineSettingsArgs,
   ConfigLineSettings
 > {
-  return struct<ConfigLineSettings>(
-    [
-      ['prefixName', string()],
-      ['nameLength', u32()],
-      ['prefixUri', string()],
-      ['uriLength', u32()],
-      ['isSequential', bool()],
-    ],
-    { description: 'ConfigLineSettings' }
-  ) as Serializer<ConfigLineSettingsArgs, ConfigLineSettings>;
+  return combineCodec(
+    getConfigLineSettingsEncoder(),
+    getConfigLineSettingsDecoder()
+  );
 }

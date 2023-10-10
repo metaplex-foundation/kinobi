@@ -6,20 +6,27 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable } from 'umi';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Serializer,
-  dataEnum,
-  option,
-  struct,
-  u64,
-} from 'umiSerializers';
+  getDataEnumDecoder,
+  getDataEnumEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
 import {
   AuthorizationData,
   AuthorizationDataArgs,
-  getAuthorizationDataSerializer,
+  getAuthorizationDataDecoder,
+  getAuthorizationDataEncoder,
 } from '.';
 
 export type MintArgs = {
@@ -34,19 +41,44 @@ export type MintArgsArgs = {
   authorizationData: OptionOrNullable<AuthorizationDataArgs>;
 };
 
-export function getMintArgsSerializer(): Serializer<MintArgsArgs, MintArgs> {
-  return dataEnum<MintArgs>(
+export function getMintArgsEncoder(): Encoder<MintArgsArgs> {
+  return getDataEnumEncoder<MintArgs>(
     [
       [
         'V1',
-        struct<GetDataEnumKindContent<MintArgs, 'V1'>>([
-          ['amount', u64()],
-          ['authorizationData', option(getAuthorizationDataSerializer())],
+        getStructEncoder<GetDataEnumKindContent<MintArgs, 'V1'>>([
+          ['amount', getU64Encoder()],
+          [
+            'authorizationData',
+            getOptionEncoder(getAuthorizationDataEncoder()),
+          ],
         ]),
       ],
     ],
     { description: 'MintArgs' }
-  ) as Serializer<MintArgsArgs, MintArgs>;
+  ) as Encoder<MintArgsArgs>;
+}
+
+export function getMintArgsDecoder(): Decoder<MintArgs> {
+  return getDataEnumDecoder<MintArgs>(
+    [
+      [
+        'V1',
+        getStructDecoder<GetDataEnumKindContent<MintArgs, 'V1'>>([
+          ['amount', getU64Decoder()],
+          [
+            'authorizationData',
+            getOptionDecoder(getAuthorizationDataDecoder()),
+          ],
+        ]),
+      ],
+    ],
+    { description: 'MintArgs' }
+  ) as Decoder<MintArgs>;
+}
+
+export function getMintArgsCodec(): Codec<MintArgsArgs, MintArgs> {
+  return combineCodec(getMintArgsEncoder(), getMintArgsDecoder());
 }
 
 // Data Enum Helpers.

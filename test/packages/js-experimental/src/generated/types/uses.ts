@@ -6,8 +6,18 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, struct, u64 } from 'umiSerializers';
-import { UseMethod, UseMethodArgs, getUseMethodSerializer } from '.';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
+import {
+  UseMethod,
+  UseMethodArgs,
+  getUseMethodDecoder,
+  getUseMethodEncoder,
+} from '.';
 
 export type Uses = { useMethod: UseMethod; remaining: bigint; total: bigint };
 
@@ -17,13 +27,28 @@ export type UsesArgs = {
   total: number | bigint;
 };
 
-export function getUsesSerializer(): Serializer<UsesArgs, Uses> {
-  return struct<Uses>(
+export function getUsesEncoder(): Encoder<UsesArgs> {
+  return getStructEncoder<Uses>(
     [
-      ['useMethod', getUseMethodSerializer()],
-      ['remaining', u64()],
-      ['total', u64()],
+      ['useMethod', getUseMethodEncoder()],
+      ['remaining', getU64Encoder()],
+      ['total', getU64Encoder()],
     ],
     { description: 'Uses' }
-  ) as Serializer<UsesArgs, Uses>;
+  ) as Encoder<UsesArgs>;
+}
+
+export function getUsesDecoder(): Decoder<Uses> {
+  return getStructDecoder<Uses>(
+    [
+      ['useMethod', getUseMethodDecoder()],
+      ['remaining', getU64Decoder()],
+      ['total', getU64Decoder()],
+    ],
+    { description: 'Uses' }
+  ) as Decoder<Uses>;
+}
+
+export function getUsesCodec(): Codec<UsesArgs, Uses> {
+  return combineCodec(getUsesEncoder(), getUsesDecoder());
 }

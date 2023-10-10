@@ -6,22 +6,41 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from 'umi';
 import {
-  Serializer,
-  publicKey as publicKeySerializer,
-  struct,
-} from 'umiSerializers';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
 
-export type ProgrammableConfig = { ruleSet: PublicKey };
+export type ProgrammableConfig = { ruleSet: Base58EncodedAddress };
 
 export type ProgrammableConfigArgs = ProgrammableConfig;
 
-export function getProgrammableConfigSerializer(): Serializer<
+export function getProgrammableConfigEncoder(): Encoder<ProgrammableConfigArgs> {
+  return getStructEncoder<ProgrammableConfig>(
+    [['ruleSet', getAddressEncoder()]],
+    { description: 'ProgrammableConfig' }
+  ) as Encoder<ProgrammableConfigArgs>;
+}
+
+export function getProgrammableConfigDecoder(): Decoder<ProgrammableConfig> {
+  return getStructDecoder<ProgrammableConfig>(
+    [['ruleSet', getAddressDecoder()]],
+    { description: 'ProgrammableConfig' }
+  ) as Decoder<ProgrammableConfig>;
+}
+
+export function getProgrammableConfigCodec(): Codec<
   ProgrammableConfigArgs,
   ProgrammableConfig
 > {
-  return struct<ProgrammableConfig>([['ruleSet', publicKeySerializer()]], {
-    description: 'ProgrammableConfig',
-  }) as Serializer<ProgrammableConfigArgs, ProgrammableConfig>;
+  return combineCodec(
+    getProgrammableConfigEncoder(),
+    getProgrammableConfigDecoder()
+  );
 }

@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum TokenStandard {
   NonFungible,
@@ -18,11 +22,21 @@ export enum TokenStandard {
 
 export type TokenStandardArgs = TokenStandard;
 
-export function getTokenStandardSerializer(): Serializer<
+export function getTokenStandardEncoder(): Encoder<TokenStandardArgs> {
+  return getScalarEnumEncoder<TokenStandard>(TokenStandard, {
+    description: 'TokenStandard',
+  }) as Encoder<TokenStandardArgs>;
+}
+
+export function getTokenStandardDecoder(): Decoder<TokenStandard> {
+  return getScalarEnumDecoder<TokenStandard>(TokenStandard, {
+    description: 'TokenStandard',
+  }) as Decoder<TokenStandard>;
+}
+
+export function getTokenStandardCodec(): Codec<
   TokenStandardArgs,
   TokenStandard
 > {
-  return scalarEnum<TokenStandard>(TokenStandard, {
-    description: 'TokenStandard',
-  }) as Serializer<TokenStandardArgs, TokenStandard>;
+  return combineCodec(getTokenStandardEncoder(), getTokenStandardDecoder());
 }

@@ -11,8 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@solana/addresses": "2.0.0-experimental.f040ea3",
-    "@solana/instructions": "2.0.0-experimental.f4b7fd3"
+    "@solana/addresses": "^2.0.0-experimental",
+    "@solana/codecs-core": "^2.0.0-experimental",
+    "@solana/codecs-data-structures": "^2.0.0-experimental",
+    "@solana/codecs-numbers": "^2.0.0-experimental",
+    "@solana/codecs-strings": "^2.0.0-experimental",
+    "@solana/instructions": "^2.0.0-experimental",
+    "@solana/options": "^2.0.0-experimental"
   },
   "devDependencies": {
     "typescript": "^4.9.4"

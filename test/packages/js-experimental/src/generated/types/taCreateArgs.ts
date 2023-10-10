@@ -6,7 +6,15 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, bytes, string, struct, u32 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getBytesDecoder,
+  getBytesEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU32Decoder, getU32Encoder } from '@solana/codecs-numbers';
+import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 
 export type TaCreateArgs = {
   ruleSetName: string;
@@ -15,15 +23,26 @@ export type TaCreateArgs = {
 
 export type TaCreateArgsArgs = TaCreateArgs;
 
-export function getTaCreateArgsSerializer(): Serializer<
-  TaCreateArgsArgs,
-  TaCreateArgs
-> {
-  return struct<TaCreateArgs>(
+export function getTaCreateArgsEncoder(): Encoder<TaCreateArgsArgs> {
+  return getStructEncoder<TaCreateArgs>(
     [
-      ['ruleSetName', string()],
-      ['serializedRuleSet', bytes({ size: u32() })],
+      ['ruleSetName', getStringEncoder()],
+      ['serializedRuleSet', getBytesEncoder({ size: getU32Encoder() })],
     ],
     { description: 'TaCreateArgs' }
-  ) as Serializer<TaCreateArgsArgs, TaCreateArgs>;
+  ) as Encoder<TaCreateArgsArgs>;
+}
+
+export function getTaCreateArgsDecoder(): Decoder<TaCreateArgs> {
+  return getStructDecoder<TaCreateArgs>(
+    [
+      ['ruleSetName', getStringDecoder()],
+      ['serializedRuleSet', getBytesDecoder({ size: getU32Decoder() })],
+    ],
+    { description: 'TaCreateArgs' }
+  ) as Decoder<TaCreateArgs>;
+}
+
+export function getTaCreateArgsCodec(): Codec<TaCreateArgsArgs, TaCreateArgs> {
+  return combineCodec(getTaCreateArgsEncoder(), getTaCreateArgsDecoder());
 }

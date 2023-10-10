@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum AuthorityType {
   Metadata,
@@ -17,11 +21,21 @@ export enum AuthorityType {
 
 export type AuthorityTypeArgs = AuthorityType;
 
-export function getAuthorityTypeSerializer(): Serializer<
+export function getAuthorityTypeEncoder(): Encoder<AuthorityTypeArgs> {
+  return getScalarEnumEncoder<AuthorityType>(AuthorityType, {
+    description: 'AuthorityType',
+  }) as Encoder<AuthorityTypeArgs>;
+}
+
+export function getAuthorityTypeDecoder(): Decoder<AuthorityType> {
+  return getScalarEnumDecoder<AuthorityType>(AuthorityType, {
+    description: 'AuthorityType',
+  }) as Decoder<AuthorityType>;
+}
+
+export function getAuthorityTypeCodec(): Codec<
   AuthorityTypeArgs,
   AuthorityType
 > {
-  return scalarEnum<AuthorityType>(AuthorityType, {
-    description: 'AuthorityType',
-  }) as Serializer<AuthorityTypeArgs, AuthorityType>;
+  return combineCodec(getAuthorityTypeEncoder(), getAuthorityTypeDecoder());
 }

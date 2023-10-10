@@ -6,7 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, struct, u64 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type MintNewEditionFromMasterEditionViaTokenArgs = { edition: bigint };
 
@@ -14,15 +19,26 @@ export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
   edition: number | bigint;
 };
 
-export function getMintNewEditionFromMasterEditionViaTokenArgsSerializer(): Serializer<
+export function getMintNewEditionFromMasterEditionViaTokenArgsEncoder(): Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs> {
+  return getStructEncoder<MintNewEditionFromMasterEditionViaTokenArgs>(
+    [['edition', getU64Encoder()]],
+    { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
+  ) as Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>;
+}
+
+export function getMintNewEditionFromMasterEditionViaTokenArgsDecoder(): Decoder<MintNewEditionFromMasterEditionViaTokenArgs> {
+  return getStructDecoder<MintNewEditionFromMasterEditionViaTokenArgs>(
+    [['edition', getU64Decoder()]],
+    { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
+  ) as Decoder<MintNewEditionFromMasterEditionViaTokenArgs>;
+}
+
+export function getMintNewEditionFromMasterEditionViaTokenArgsCodec(): Codec<
   MintNewEditionFromMasterEditionViaTokenArgsArgs,
   MintNewEditionFromMasterEditionViaTokenArgs
 > {
-  return struct<MintNewEditionFromMasterEditionViaTokenArgs>(
-    [['edition', u64()]],
-    { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
-  ) as Serializer<
-    MintNewEditionFromMasterEditionViaTokenArgsArgs,
-    MintNewEditionFromMasterEditionViaTokenArgs
-  >;
+  return combineCodec(
+    getMintNewEditionFromMasterEditionViaTokenArgsEncoder(),
+    getMintNewEditionFromMasterEditionViaTokenArgsDecoder()
+  );
 }

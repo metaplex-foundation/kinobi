@@ -6,49 +6,73 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { SolAmount, mapAmountSerializer } from 'umi';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Serializer,
-  dataEnum,
-  struct,
-  u64,
-  unit,
-} from 'umiSerializers';
+  getDataEnumDecoder,
+  getDataEnumEncoder,
+  getStructDecoder,
+  getStructEncoder,
+  getUnitDecoder,
+  getUnitEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type DelegateArgs =
   | { __kind: 'CollectionV1' }
-  | { __kind: 'SaleV1'; amount: SolAmount }
+  | { __kind: 'SaleV1'; amount: bigint }
   | { __kind: 'TransferV1'; amount: bigint };
 
 export type DelegateArgsArgs =
   | { __kind: 'CollectionV1' }
-  | { __kind: 'SaleV1'; amount: SolAmount }
+  | { __kind: 'SaleV1'; amount: number | bigint }
   | { __kind: 'TransferV1'; amount: number | bigint };
 
-export function getDelegateArgsSerializer(): Serializer<
-  DelegateArgsArgs,
-  DelegateArgs
-> {
-  return dataEnum<DelegateArgs>(
+export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
+  return getDataEnumEncoder<DelegateArgs>(
     [
-      ['CollectionV1', unit()],
+      ['CollectionV1', getUnitEncoder()],
       [
         'SaleV1',
-        struct<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
-          ['amount', mapAmountSerializer(u64(), 'SOL', 9)],
+        getStructEncoder<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
+          ['amount', getU64Encoder()],
         ]),
       ],
       [
         'TransferV1',
-        struct<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
-          ['amount', u64()],
+        getStructEncoder<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
+          ['amount', getU64Encoder()],
         ]),
       ],
     ],
     { description: 'DelegateArgs' }
-  ) as Serializer<DelegateArgsArgs, DelegateArgs>;
+  ) as Encoder<DelegateArgsArgs>;
+}
+
+export function getDelegateArgsDecoder(): Decoder<DelegateArgs> {
+  return getDataEnumDecoder<DelegateArgs>(
+    [
+      ['CollectionV1', getUnitDecoder()],
+      [
+        'SaleV1',
+        getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
+          ['amount', getU64Decoder()],
+        ]),
+      ],
+      [
+        'TransferV1',
+        getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
+          ['amount', getU64Decoder()],
+        ]),
+      ],
+    ],
+    { description: 'DelegateArgs' }
+  ) as Decoder<DelegateArgs>;
+}
+
+export function getDelegateArgsCodec(): Codec<DelegateArgsArgs, DelegateArgs> {
+  return combineCodec(getDelegateArgsEncoder(), getDelegateArgsDecoder());
 }
 
 // Data Enum Helpers.

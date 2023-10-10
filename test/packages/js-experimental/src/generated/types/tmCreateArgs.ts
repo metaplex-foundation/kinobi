@@ -6,18 +6,33 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable } from 'umi';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Serializer,
-  dataEnum,
-  option,
-  struct,
-  u64,
-  u8,
-} from 'umiSerializers';
-import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
+  getDataEnumDecoder,
+  getDataEnumEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import {
+  getU64Decoder,
+  getU64Encoder,
+  getU8Decoder,
+  getU8Encoder,
+} from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
+import {
+  AssetData,
+  AssetDataArgs,
+  getAssetDataDecoder,
+  getAssetDataEncoder,
+} from '.';
 
 export type TmCreateArgs =
   | {
@@ -41,30 +56,54 @@ export type TmCreateArgsArgs =
       maxSupply: OptionOrNullable<number | bigint>;
     };
 
-export function getTmCreateArgsSerializer(): Serializer<
-  TmCreateArgsArgs,
-  TmCreateArgs
-> {
-  return dataEnum<TmCreateArgs>(
+export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
+  return getDataEnumEncoder<TmCreateArgs>(
     [
       [
         'V1',
-        struct<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
-          ['assetData', getAssetDataSerializer()],
-          ['decimals', option(u8())],
-          ['maxSupply', option(u64())],
+        getStructEncoder<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
+          ['assetData', getAssetDataEncoder()],
+          ['decimals', getOptionEncoder(getU8Encoder())],
+          ['maxSupply', getOptionEncoder(getU64Encoder())],
         ]),
       ],
       [
         'V2',
-        struct<GetDataEnumKindContent<TmCreateArgs, 'V2'>>([
-          ['assetData', getAssetDataSerializer()],
-          ['maxSupply', option(u64())],
+        getStructEncoder<GetDataEnumKindContent<TmCreateArgs, 'V2'>>([
+          ['assetData', getAssetDataEncoder()],
+          ['maxSupply', getOptionEncoder(getU64Encoder())],
         ]),
       ],
     ],
     { description: 'TmCreateArgs' }
-  ) as Serializer<TmCreateArgsArgs, TmCreateArgs>;
+  ) as Encoder<TmCreateArgsArgs>;
+}
+
+export function getTmCreateArgsDecoder(): Decoder<TmCreateArgs> {
+  return getDataEnumDecoder<TmCreateArgs>(
+    [
+      [
+        'V1',
+        getStructDecoder<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
+          ['assetData', getAssetDataDecoder()],
+          ['decimals', getOptionDecoder(getU8Decoder())],
+          ['maxSupply', getOptionDecoder(getU64Decoder())],
+        ]),
+      ],
+      [
+        'V2',
+        getStructDecoder<GetDataEnumKindContent<TmCreateArgs, 'V2'>>([
+          ['assetData', getAssetDataDecoder()],
+          ['maxSupply', getOptionDecoder(getU64Decoder())],
+        ]),
+      ],
+    ],
+    { description: 'TmCreateArgs' }
+  ) as Decoder<TmCreateArgs>;
+}
+
+export function getTmCreateArgsCodec(): Codec<TmCreateArgsArgs, TmCreateArgs> {
+  return combineCodec(getTmCreateArgsEncoder(), getTmCreateArgsDecoder());
 }
 
 // Data Enum Helpers.

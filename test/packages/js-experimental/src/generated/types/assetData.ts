@@ -6,18 +6,33 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { getArrayCodec } from '@solana/codecs-data-structures';
-import { Option, OptionOrNullable, PublicKey } from 'umi';
 import {
-  Serializer,
-  bool,
-  option,
-  publicKey as publicKeySerializer,
-  string,
-  struct,
-  u16,
-  u8,
-} from 'umiSerializers';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getArrayDecoder,
+  getArrayEncoder,
+  getBooleanDecoder,
+  getBooleanEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import {
+  getU16Decoder,
+  getU16Encoder,
+  getU8Decoder,
+  getU8Encoder,
+} from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
+import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 import {
   Collection,
   CollectionArgs,
@@ -33,17 +48,24 @@ import {
   TokenStandardArgs,
   Uses,
   UsesArgs,
-  getCollectionDetailsSerializer,
-  getCollectionSerializer,
-  getCreatorSerializer,
-  getDelegateStateSerializer,
-  getProgrammableConfigSerializer,
-  getTokenStandardSerializer,
-  getUsesSerializer,
+  getCollectionDecoder,
+  getCollectionDetailsDecoder,
+  getCollectionDetailsEncoder,
+  getCollectionEncoder,
+  getCreatorDecoder,
+  getCreatorEncoder,
+  getDelegateStateDecoder,
+  getDelegateStateEncoder,
+  getProgrammableConfigDecoder,
+  getProgrammableConfigEncoder,
+  getTokenStandardDecoder,
+  getTokenStandardEncoder,
+  getUsesDecoder,
+  getUsesEncoder,
 } from '.';
 
 export type AssetData = {
-  updateAuthority: PublicKey;
+  updateAuthority: Base58EncodedAddress;
   name: string;
   symbol: string;
   uri: string;
@@ -61,7 +83,7 @@ export type AssetData = {
 };
 
 export type AssetDataArgs = {
-  updateAuthority: PublicKey;
+  updateAuthority: Base58EncodedAddress;
   name: string;
   symbol: string;
   uri: string;
@@ -78,25 +100,52 @@ export type AssetDataArgs = {
   delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
-export function getAssetDataSerializer(): Serializer<AssetDataArgs, AssetData> {
-  return struct<AssetData>(
+export function getAssetDataEncoder(): Encoder<AssetDataArgs> {
+  return getStructEncoder<AssetData>(
     [
-      ['updateAuthority', publicKeySerializer()],
-      ['name', string()],
-      ['symbol', string()],
-      ['uri', string()],
-      ['sellerFeeBasisPoints', u16()],
-      ['creators', option(array(getCreatorSerializer()))],
-      ['primarySaleHappened', bool()],
-      ['isMutable', bool()],
-      ['editionNonce', option(u8())],
-      ['tokenStandard', getTokenStandardSerializer()],
-      ['collection', option(getCollectionSerializer())],
-      ['uses', option(getUsesSerializer())],
-      ['collectionDetails', option(getCollectionDetailsSerializer())],
-      ['programmableConfig', option(getProgrammableConfigSerializer())],
-      ['delegateState', option(getDelegateStateSerializer())],
+      ['updateAuthority', getAddressEncoder()],
+      ['name', getStringEncoder()],
+      ['symbol', getStringEncoder()],
+      ['uri', getStringEncoder()],
+      ['sellerFeeBasisPoints', getU16Encoder()],
+      ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+      ['primarySaleHappened', getBooleanEncoder()],
+      ['isMutable', getBooleanEncoder()],
+      ['editionNonce', getOptionEncoder(getU8Encoder())],
+      ['tokenStandard', getTokenStandardEncoder()],
+      ['collection', getOptionEncoder(getCollectionEncoder())],
+      ['uses', getOptionEncoder(getUsesEncoder())],
+      ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
+      ['programmableConfig', getOptionEncoder(getProgrammableConfigEncoder())],
+      ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
     ],
     { description: 'AssetData' }
-  ) as Serializer<AssetDataArgs, AssetData>;
+  ) as Encoder<AssetDataArgs>;
+}
+
+export function getAssetDataDecoder(): Decoder<AssetData> {
+  return getStructDecoder<AssetData>(
+    [
+      ['updateAuthority', getAddressDecoder()],
+      ['name', getStringDecoder()],
+      ['symbol', getStringDecoder()],
+      ['uri', getStringDecoder()],
+      ['sellerFeeBasisPoints', getU16Decoder()],
+      ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+      ['primarySaleHappened', getBooleanDecoder()],
+      ['isMutable', getBooleanDecoder()],
+      ['editionNonce', getOptionDecoder(getU8Decoder())],
+      ['tokenStandard', getTokenStandardDecoder()],
+      ['collection', getOptionDecoder(getCollectionDecoder())],
+      ['uses', getOptionDecoder(getUsesDecoder())],
+      ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
+      ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
+      ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
+    ],
+    { description: 'AssetData' }
+  ) as Decoder<AssetData>;
+}
+
+export function getAssetDataCodec(): Codec<AssetDataArgs, AssetData> {
+  return combineCodec(getAssetDataEncoder(), getAssetDataDecoder());
 }

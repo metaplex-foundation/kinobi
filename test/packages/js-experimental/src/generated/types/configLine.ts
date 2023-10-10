@@ -6,7 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, string, struct } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 
 /** Config line struct for storing asset (NFT) data pre-mint. */
 export type ConfigLine = {
@@ -18,15 +23,26 @@ export type ConfigLine = {
 
 export type ConfigLineArgs = ConfigLine;
 
-export function getConfigLineSerializer(): Serializer<
-  ConfigLineArgs,
-  ConfigLine
-> {
-  return struct<ConfigLine>(
+export function getConfigLineEncoder(): Encoder<ConfigLineArgs> {
+  return getStructEncoder<ConfigLine>(
     [
-      ['name', string()],
-      ['uri', string()],
+      ['name', getStringEncoder()],
+      ['uri', getStringEncoder()],
     ],
     { description: 'ConfigLine' }
-  ) as Serializer<ConfigLineArgs, ConfigLine>;
+  ) as Encoder<ConfigLineArgs>;
+}
+
+export function getConfigLineDecoder(): Decoder<ConfigLine> {
+  return getStructDecoder<ConfigLine>(
+    [
+      ['name', getStringDecoder()],
+      ['uri', getStringDecoder()],
+    ],
+    { description: 'ConfigLine' }
+  ) as Decoder<ConfigLine>;
+}
+
+export function getConfigLineCodec(): Codec<ConfigLineArgs, ConfigLine> {
+  return combineCodec(getConfigLineEncoder(), getConfigLineDecoder());
 }

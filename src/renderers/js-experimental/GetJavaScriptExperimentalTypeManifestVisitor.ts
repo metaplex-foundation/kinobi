@@ -444,15 +444,9 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
           : `${key}: value.${key} ?? ${renderedValue}`;
       })
       .join(', ');
-    const mapEncoderTypeParams = parentName
-      ? `${parentName.loose}, any, ${parentName.strict}`
-      : 'any, any, any';
     mergedManifest.encoder
       .mapRender(
-        (r) =>
-          `mapEncoder<${mapEncoderTypeParams}>(${r}, ` +
-          `(value) => ({ ...value, ${defaultValues} }) ` +
-          `)`
+        (r) => `mapEncoder(${r}, (value) => ({ ...value, ${defaultValues} }))`
       )
       .addImports('solanaCodecsCore', 'mapEncoder');
     return mergedManifest;
@@ -504,11 +498,11 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitBoolType(boolType: nodes.BoolTypeNode): TypeManifest {
     const encoderImports = new ImportMap().add(
-      'solanaCodecsDataStructure',
+      'solanaCodecsDataStructures',
       'getBooleanEncoder'
     );
     const decoderImports = new ImportMap().add(
-      'solanaCodecsDataStructure',
+      'solanaCodecsDataStructures',
       'getBooleanDecoder'
     );
 

@@ -6,20 +6,37 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, struct, u64 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type MintPrintingTokensViaTokenArgs = { supply: bigint };
 
 export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
-export function getMintPrintingTokensViaTokenArgsSerializer(): Serializer<
+export function getMintPrintingTokensViaTokenArgsEncoder(): Encoder<MintPrintingTokensViaTokenArgsArgs> {
+  return getStructEncoder<MintPrintingTokensViaTokenArgs>(
+    [['supply', getU64Encoder()]],
+    { description: 'MintPrintingTokensViaTokenArgs' }
+  ) as Encoder<MintPrintingTokensViaTokenArgsArgs>;
+}
+
+export function getMintPrintingTokensViaTokenArgsDecoder(): Decoder<MintPrintingTokensViaTokenArgs> {
+  return getStructDecoder<MintPrintingTokensViaTokenArgs>(
+    [['supply', getU64Decoder()]],
+    { description: 'MintPrintingTokensViaTokenArgs' }
+  ) as Decoder<MintPrintingTokensViaTokenArgs>;
+}
+
+export function getMintPrintingTokensViaTokenArgsCodec(): Codec<
   MintPrintingTokensViaTokenArgsArgs,
   MintPrintingTokensViaTokenArgs
 > {
-  return struct<MintPrintingTokensViaTokenArgs>([['supply', u64()]], {
-    description: 'MintPrintingTokensViaTokenArgs',
-  }) as Serializer<
-    MintPrintingTokensViaTokenArgsArgs,
-    MintPrintingTokensViaTokenArgs
-  >;
+  return combineCodec(
+    getMintPrintingTokensViaTokenArgsEncoder(),
+    getMintPrintingTokensViaTokenArgsDecoder()
+  );
 }

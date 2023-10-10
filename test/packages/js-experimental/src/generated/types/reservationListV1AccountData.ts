@@ -6,58 +6,87 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { getArrayCodec } from '@solana/codecs-data-structures';
-import { Option, OptionOrNullable, PublicKey } from 'umi';
 import {
-  Serializer,
-  mapSerializer,
-  option,
-  publicKey as publicKeySerializer,
-  struct,
-  u64,
-} from 'umiSerializers';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
+import {
+  getArrayDecoder,
+  getArrayEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
 import {
   ReservationV1,
   ReservationV1Args,
   TmKey,
-  getReservationV1Serializer,
-  getTmKeySerializer,
+  getReservationV1Decoder,
+  getReservationV1Encoder,
+  getTmKeyDecoder,
+  getTmKeyEncoder,
 } from '.';
 
 export type ReservationListV1AccountData = {
   key: TmKey;
-  masterEdition: PublicKey;
+  masterEdition: Base58EncodedAddress;
   supplySnapshot: Option<bigint>;
   reservations: Array<ReservationV1>;
 };
 
 export type ReservationListV1AccountDataArgs = {
-  masterEdition: PublicKey;
+  masterEdition: Base58EncodedAddress;
   supplySnapshot: OptionOrNullable<number | bigint>;
   reservations: Array<ReservationV1Args>;
 };
 
-export function getReservationListV1AccountDataSerializer(): Serializer<
-  ReservationListV1AccountDataArgs,
-  ReservationListV1AccountData
-> {
-  return mapSerializer<
-    ReservationListV1AccountDataArgs,
-    any,
-    ReservationListV1AccountData
-  >(
-    struct<ReservationListV1AccountData>(
+export function getReservationListV1AccountDataEncoder(): Encoder<ReservationListV1AccountDataArgs> {
+  return mapEncoder(
+    getStructEncoder<ReservationListV1AccountData>(
       [
-        ['key', getTmKeySerializer()],
-        ['masterEdition', publicKeySerializer()],
-        ['supplySnapshot', option(u64())],
-        ['reservations', array(getReservationV1Serializer())],
+        ['key', getTmKeyEncoder()],
+        ['masterEdition', getAddressEncoder()],
+        ['supplySnapshot', getOptionEncoder(getU64Encoder())],
+        ['reservations', getArrayEncoder(getReservationV1Encoder())],
       ],
       { description: 'ReservationListV1AccountData' }
     ),
     (value) => ({ ...value, key: TmKey.ReservationListV1 })
-  ) as Serializer<
-    ReservationListV1AccountDataArgs,
-    ReservationListV1AccountData
-  >;
+  ) as Encoder<ReservationListV1AccountDataArgs>;
+}
+
+export function getReservationListV1AccountDataDecoder(): Decoder<ReservationListV1AccountData> {
+  return getStructDecoder<ReservationListV1AccountData>(
+    [
+      ['key', getTmKeyDecoder()],
+      ['masterEdition', getAddressDecoder()],
+      ['supplySnapshot', getOptionDecoder(getU64Decoder())],
+      ['reservations', getArrayDecoder(getReservationV1Decoder())],
+    ],
+    { description: 'ReservationListV1AccountData' }
+  ) as Decoder<ReservationListV1AccountData>;
+}
+
+export function getReservationListV1AccountDataCodec(): Codec<
+  ReservationListV1AccountDataArgs,
+  ReservationListV1AccountData
+> {
+  return combineCodec(
+    getReservationListV1AccountDataEncoder(),
+    getReservationListV1AccountDataDecoder()
+  );
 }

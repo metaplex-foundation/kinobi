@@ -6,40 +6,66 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from 'umi';
+import {
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
-  Serializer,
-  dataEnum,
-  publicKey as publicKeySerializer,
-  struct,
-  tuple,
-  unit,
-} from 'umiSerializers';
+  getDataEnumDecoder,
+  getDataEnumEncoder,
+  getStructDecoder,
+  getStructEncoder,
+  getTupleDecoder,
+  getTupleEncoder,
+  getUnitDecoder,
+  getUnitEncoder,
+} from '@solana/codecs-data-structures';
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }
-  | { __kind: 'Creator'; fields: [PublicKey] };
+  | { __kind: 'Creator'; fields: [Base58EncodedAddress] };
 
 export type EscrowAuthorityArgs = EscrowAuthority;
 
-export function getEscrowAuthoritySerializer(): Serializer<
-  EscrowAuthorityArgs,
-  EscrowAuthority
-> {
-  return dataEnum<EscrowAuthority>(
+export function getEscrowAuthorityEncoder(): Encoder<EscrowAuthorityArgs> {
+  return getDataEnumEncoder<EscrowAuthority>(
     [
-      ['TokenOwner', unit()],
+      ['TokenOwner', getUnitEncoder()],
       [
         'Creator',
-        struct<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
-          ['fields', tuple([publicKeySerializer()])],
+        getStructEncoder<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
+          ['fields', getTupleEncoder([[getAddressEncoder()]])],
         ]),
       ],
     ],
     { description: 'EscrowAuthority' }
-  ) as Serializer<EscrowAuthorityArgs, EscrowAuthority>;
+  ) as Encoder<EscrowAuthorityArgs>;
+}
+
+export function getEscrowAuthorityDecoder(): Decoder<EscrowAuthority> {
+  return getDataEnumDecoder<EscrowAuthority>(
+    [
+      ['TokenOwner', getUnitDecoder()],
+      [
+        'Creator',
+        getStructDecoder<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
+          ['fields', getTupleDecoder([[getAddressDecoder()]])],
+        ]),
+      ],
+    ],
+    { description: 'EscrowAuthority' }
+  ) as Decoder<EscrowAuthority>;
+}
+
+export function getEscrowAuthorityCodec(): Codec<
+  EscrowAuthorityArgs,
+  EscrowAuthority
+> {
+  return combineCodec(getEscrowAuthorityEncoder(), getEscrowAuthorityDecoder());
 }
 
 // Data Enum Helpers.

@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum Operation {
   Transfer,
@@ -17,8 +21,18 @@ export enum Operation {
 
 export type OperationArgs = Operation;
 
-export function getOperationSerializer(): Serializer<OperationArgs, Operation> {
-  return scalarEnum<Operation>(Operation, {
+export function getOperationEncoder(): Encoder<OperationArgs> {
+  return getScalarEnumEncoder<Operation>(Operation, {
     description: 'Operation',
-  }) as Serializer<OperationArgs, Operation>;
+  }) as Encoder<OperationArgs>;
+}
+
+export function getOperationDecoder(): Decoder<Operation> {
+  return getScalarEnumDecoder<Operation>(Operation, {
+    description: 'Operation',
+  }) as Decoder<Operation>;
+}
+
+export function getOperationCodec(): Codec<OperationArgs, Operation> {
+  return combineCodec(getOperationEncoder(), getOperationDecoder());
 }

@@ -6,17 +6,28 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { getArrayCodec } from '@solana/codecs-data-structures';
-import { Amount, Option, OptionOrNullable, mapAmountSerializer } from 'umi';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
-  Serializer,
-  bool,
-  option,
-  string,
-  struct,
-  u16,
-  u64,
-} from 'umiSerializers';
+  getArrayDecoder,
+  getArrayEncoder,
+  getBooleanDecoder,
+  getBooleanEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import {
+  getU16Decoder,
+  getU16Encoder,
+  getU64Decoder,
+  getU64Encoder,
+} from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
+import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 import {
   CmCreator,
   CmCreatorArgs,
@@ -24,9 +35,12 @@ import {
   ConfigLineSettingsArgs,
   HiddenSettings,
   HiddenSettingsArgs,
-  getCmCreatorSerializer,
-  getConfigLineSettingsSerializer,
-  getHiddenSettingsSerializer,
+  getCmCreatorDecoder,
+  getCmCreatorEncoder,
+  getConfigLineSettingsDecoder,
+  getConfigLineSettingsEncoder,
+  getHiddenSettingsDecoder,
+  getHiddenSettingsEncoder,
 } from '.';
 
 /** Candy machine configuration data. */
@@ -36,7 +50,7 @@ export type CandyMachineData = {
   /** Symbol for the asset */
   symbol: string;
   /** Secondary sales royalty basis points (0-10000) */
-  sellerFeeBasisPoints: Amount<'%', 2>;
+  sellerFeeBasisPoints: number;
   /** Max supply of each individual asset (default 0) */
   maxSupply: bigint;
   /** Indicates if the asset is mutable or not (default yes) */
@@ -55,7 +69,7 @@ export type CandyMachineDataArgs = {
   /** Symbol for the asset */
   symbol: string;
   /** Secondary sales royalty basis points (0-10000) */
-  sellerFeeBasisPoints: Amount<'%', 2>;
+  sellerFeeBasisPoints: number;
   /** Max supply of each individual asset (default 0) */
   maxSupply: number | bigint;
   /** Indicates if the asset is mutable or not (default yes) */
@@ -68,21 +82,44 @@ export type CandyMachineDataArgs = {
   hiddenSettings: OptionOrNullable<HiddenSettingsArgs>;
 };
 
-export function getCandyMachineDataSerializer(): Serializer<
+export function getCandyMachineDataEncoder(): Encoder<CandyMachineDataArgs> {
+  return getStructEncoder<CandyMachineData>(
+    [
+      ['itemsAvailable', getU64Encoder()],
+      ['symbol', getStringEncoder()],
+      ['sellerFeeBasisPoints', getU16Encoder()],
+      ['maxSupply', getU64Encoder()],
+      ['isMutable', getBooleanEncoder()],
+      ['creators', getArrayEncoder(getCmCreatorEncoder())],
+      ['configLineSettings', getOptionEncoder(getConfigLineSettingsEncoder())],
+      ['hiddenSettings', getOptionEncoder(getHiddenSettingsEncoder())],
+    ],
+    { description: 'CandyMachineData' }
+  ) as Encoder<CandyMachineDataArgs>;
+}
+
+export function getCandyMachineDataDecoder(): Decoder<CandyMachineData> {
+  return getStructDecoder<CandyMachineData>(
+    [
+      ['itemsAvailable', getU64Decoder()],
+      ['symbol', getStringDecoder()],
+      ['sellerFeeBasisPoints', getU16Decoder()],
+      ['maxSupply', getU64Decoder()],
+      ['isMutable', getBooleanDecoder()],
+      ['creators', getArrayDecoder(getCmCreatorDecoder())],
+      ['configLineSettings', getOptionDecoder(getConfigLineSettingsDecoder())],
+      ['hiddenSettings', getOptionDecoder(getHiddenSettingsDecoder())],
+    ],
+    { description: 'CandyMachineData' }
+  ) as Decoder<CandyMachineData>;
+}
+
+export function getCandyMachineDataCodec(): Codec<
   CandyMachineDataArgs,
   CandyMachineData
 > {
-  return struct<CandyMachineData>(
-    [
-      ['itemsAvailable', u64()],
-      ['symbol', string()],
-      ['sellerFeeBasisPoints', mapAmountSerializer(u16(), '%', 2)],
-      ['maxSupply', u64()],
-      ['isMutable', bool()],
-      ['creators', array(getCmCreatorSerializer())],
-      ['configLineSettings', option(getConfigLineSettingsSerializer())],
-      ['hiddenSettings', option(getHiddenSettingsSerializer())],
-    ],
-    { description: 'CandyMachineData' }
-  ) as Serializer<CandyMachineDataArgs, CandyMachineData>;
+  return combineCodec(
+    getCandyMachineDataEncoder(),
+    getCandyMachineDataDecoder()
+  );
 }

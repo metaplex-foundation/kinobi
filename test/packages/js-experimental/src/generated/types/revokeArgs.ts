@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum RevokeArgs {
   CollectionV1,
@@ -16,11 +20,18 @@ export enum RevokeArgs {
 
 export type RevokeArgsArgs = RevokeArgs;
 
-export function getRevokeArgsSerializer(): Serializer<
-  RevokeArgsArgs,
-  RevokeArgs
-> {
-  return scalarEnum<RevokeArgs>(RevokeArgs, {
+export function getRevokeArgsEncoder(): Encoder<RevokeArgsArgs> {
+  return getScalarEnumEncoder<RevokeArgs>(RevokeArgs, {
     description: 'RevokeArgs',
-  }) as Serializer<RevokeArgsArgs, RevokeArgs>;
+  }) as Encoder<RevokeArgsArgs>;
+}
+
+export function getRevokeArgsDecoder(): Decoder<RevokeArgs> {
+  return getScalarEnumDecoder<RevokeArgs>(RevokeArgs, {
+    description: 'RevokeArgs',
+  }) as Decoder<RevokeArgs>;
+}
+
+export function getRevokeArgsCodec(): Codec<RevokeArgsArgs, RevokeArgs> {
+  return combineCodec(getRevokeArgsEncoder(), getRevokeArgsDecoder());
 }

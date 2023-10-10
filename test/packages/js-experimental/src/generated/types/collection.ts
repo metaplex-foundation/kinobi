@@ -6,31 +6,52 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from 'umi';
 import {
-  Serializer,
-  bool,
-  mapSerializer,
-  publicKey as publicKeySerializer,
-  struct,
-} from 'umiSerializers';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
+import {
+  getBooleanDecoder,
+  getBooleanEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
 
-export type Collection = { verified: boolean; key: PublicKey };
+export type Collection = { verified: boolean; key: Base58EncodedAddress };
 
-export type CollectionArgs = { verified?: boolean; key: PublicKey };
+export type CollectionArgs = { verified?: boolean; key: Base58EncodedAddress };
 
-export function getCollectionSerializer(): Serializer<
-  CollectionArgs,
-  Collection
-> {
-  return mapSerializer<CollectionArgs, any, Collection>(
-    struct<Collection>(
+export function getCollectionEncoder(): Encoder<CollectionArgs> {
+  return mapEncoder(
+    getStructEncoder<Collection>(
       [
-        ['verified', bool()],
-        ['key', publicKeySerializer()],
+        ['verified', getBooleanEncoder()],
+        ['key', getAddressEncoder()],
       ],
       { description: 'Collection' }
     ),
     (value) => ({ ...value, verified: value.verified ?? false })
-  ) as Serializer<CollectionArgs, Collection>;
+  ) as Encoder<CollectionArgs>;
+}
+
+export function getCollectionDecoder(): Decoder<Collection> {
+  return getStructDecoder<Collection>(
+    [
+      ['verified', getBooleanDecoder()],
+      ['key', getAddressDecoder()],
+    ],
+    { description: 'Collection' }
+  ) as Decoder<Collection>;
+}
+
+export function getCollectionCodec(): Codec<CollectionArgs, Collection> {
+  return combineCodec(getCollectionEncoder(), getCollectionDecoder());
 }

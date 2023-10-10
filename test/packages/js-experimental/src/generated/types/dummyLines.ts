@@ -6,9 +6,19 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { getArrayCodec } from '@solana/codecs-data-structures';
-import { Serializer, struct } from 'umiSerializers';
-import { ConfigLine, ConfigLineArgs, getConfigLineSerializer } from '.';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getArrayDecoder,
+  getArrayEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import {
+  ConfigLine,
+  ConfigLineArgs,
+  getConfigLineDecoder,
+  getConfigLineEncoder,
+} from '.';
 
 /** Dummy lines. */
 export type DummyLines = {
@@ -21,12 +31,20 @@ export type DummyLinesArgs = {
   lines: Array<ConfigLineArgs>;
 };
 
-export function getDummyLinesSerializer(): Serializer<
-  DummyLinesArgs,
-  DummyLines
-> {
-  return struct<DummyLines>(
-    [['lines', array(getConfigLineSerializer(), { size: 'remainder' })]],
+export function getDummyLinesEncoder(): Encoder<DummyLinesArgs> {
+  return getStructEncoder<DummyLines>(
+    [['lines', getArrayEncoder(getConfigLineEncoder(), { size: 'remainder' })]],
     { description: 'DummyLines' }
-  ) as Serializer<DummyLinesArgs, DummyLines>;
+  ) as Encoder<DummyLinesArgs>;
+}
+
+export function getDummyLinesDecoder(): Decoder<DummyLines> {
+  return getStructDecoder<DummyLines>(
+    [['lines', getArrayDecoder(getConfigLineDecoder(), { size: 'remainder' })]],
+    { description: 'DummyLines' }
+  ) as Decoder<DummyLines>;
+}
+
+export function getDummyLinesCodec(): Codec<DummyLinesArgs, DummyLines> {
+  return combineCodec(getDummyLinesEncoder(), getDummyLinesDecoder());
 }

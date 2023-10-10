@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum PayloadKey {
   Target,
@@ -17,11 +21,18 @@ export enum PayloadKey {
 
 export type PayloadKeyArgs = PayloadKey;
 
-export function getPayloadKeySerializer(): Serializer<
-  PayloadKeyArgs,
-  PayloadKey
-> {
-  return scalarEnum<PayloadKey>(PayloadKey, {
+export function getPayloadKeyEncoder(): Encoder<PayloadKeyArgs> {
+  return getScalarEnumEncoder<PayloadKey>(PayloadKey, {
     description: 'PayloadKey',
-  }) as Serializer<PayloadKeyArgs, PayloadKey>;
+  }) as Encoder<PayloadKeyArgs>;
+}
+
+export function getPayloadKeyDecoder(): Decoder<PayloadKey> {
+  return getScalarEnumDecoder<PayloadKey>(PayloadKey, {
+    description: 'PayloadKey',
+  }) as Decoder<PayloadKey>;
+}
+
+export function getPayloadKeyCodec(): Codec<PayloadKeyArgs, PayloadKey> {
+  return combineCodec(getPayloadKeyEncoder(), getPayloadKeyDecoder());
 }

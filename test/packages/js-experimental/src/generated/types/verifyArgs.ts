@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum VerifyArgs {
   V1,
@@ -14,11 +18,18 @@ export enum VerifyArgs {
 
 export type VerifyArgsArgs = VerifyArgs;
 
-export function getVerifyArgsSerializer(): Serializer<
-  VerifyArgsArgs,
-  VerifyArgs
-> {
-  return scalarEnum<VerifyArgs>(VerifyArgs, {
+export function getVerifyArgsEncoder(): Encoder<VerifyArgsArgs> {
+  return getScalarEnumEncoder<VerifyArgs>(VerifyArgs, {
     description: 'VerifyArgs',
-  }) as Serializer<VerifyArgsArgs, VerifyArgs>;
+  }) as Encoder<VerifyArgsArgs>;
+}
+
+export function getVerifyArgsDecoder(): Decoder<VerifyArgs> {
+  return getScalarEnumDecoder<VerifyArgs>(VerifyArgs, {
+    description: 'VerifyArgs',
+  }) as Decoder<VerifyArgs>;
+}
+
+export function getVerifyArgsCodec(): Codec<VerifyArgsArgs, VerifyArgs> {
+  return combineCodec(getVerifyArgsEncoder(), getVerifyArgsDecoder());
 }

@@ -6,18 +6,23 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from 'umi';
 import {
-  Serializer,
-  bool,
-  publicKey as publicKeySerializer,
-  struct,
-  u8,
-} from 'umiSerializers';
+  Base58EncodedAddress,
+  getAddressDecoder,
+  getAddressEncoder,
+} from '@solana/addresses';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getBooleanDecoder,
+  getBooleanEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
 export type CmCreator = {
   /** Pubkey address */
-  address: PublicKey;
+  address: Base58EncodedAddress;
   /** Whether the creator is verified or not */
   verified: boolean;
   percentageShare: number;
@@ -25,13 +30,28 @@ export type CmCreator = {
 
 export type CmCreatorArgs = CmCreator;
 
-export function getCmCreatorSerializer(): Serializer<CmCreatorArgs, CmCreator> {
-  return struct<CmCreator>(
+export function getCmCreatorEncoder(): Encoder<CmCreatorArgs> {
+  return getStructEncoder<CmCreator>(
     [
-      ['address', publicKeySerializer()],
-      ['verified', bool()],
-      ['percentageShare', u8()],
+      ['address', getAddressEncoder()],
+      ['verified', getBooleanEncoder()],
+      ['percentageShare', getU8Encoder()],
     ],
     { description: 'CmCreator' }
-  ) as Serializer<CmCreatorArgs, CmCreator>;
+  ) as Encoder<CmCreatorArgs>;
+}
+
+export function getCmCreatorDecoder(): Decoder<CmCreator> {
+  return getStructDecoder<CmCreator>(
+    [
+      ['address', getAddressDecoder()],
+      ['verified', getBooleanDecoder()],
+      ['percentageShare', getU8Decoder()],
+    ],
+    { description: 'CmCreator' }
+  ) as Decoder<CmCreator>;
+}
+
+export function getCmCreatorCodec(): Codec<CmCreatorArgs, CmCreator> {
+  return combineCodec(getCmCreatorEncoder(), getCmCreatorDecoder());
 }

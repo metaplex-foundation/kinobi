@@ -6,23 +6,42 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, map, struct } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getMapDecoder,
+  getMapEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
 import {
   PayloadKey,
   PayloadKeyArgs,
   PayloadType,
   PayloadTypeArgs,
-  getPayloadKeySerializer,
-  getPayloadTypeSerializer,
+  getPayloadKeyDecoder,
+  getPayloadKeyEncoder,
+  getPayloadTypeDecoder,
+  getPayloadTypeEncoder,
 } from '.';
 
 export type Payload = { map: Map<PayloadKey, PayloadType> };
 
 export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
 
-export function getPayloadSerializer(): Serializer<PayloadArgs, Payload> {
-  return struct<Payload>(
-    [['map', map(getPayloadKeySerializer(), getPayloadTypeSerializer())]],
+export function getPayloadEncoder(): Encoder<PayloadArgs> {
+  return getStructEncoder<Payload>(
+    [['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())]],
     { description: 'Payload' }
-  ) as Serializer<PayloadArgs, Payload>;
+  ) as Encoder<PayloadArgs>;
+}
+
+export function getPayloadDecoder(): Decoder<Payload> {
+  return getStructDecoder<Payload>(
+    [['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())]],
+    { description: 'Payload' }
+  ) as Decoder<Payload>;
+}
+
+export function getPayloadCodec(): Codec<PayloadArgs, Payload> {
+  return combineCodec(getPayloadEncoder(), getPayloadDecoder());
 }

@@ -6,9 +6,21 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { getArrayCodec } from '@solana/codecs-data-structures';
-import { Option, OptionOrNullable } from 'umi';
-import { Serializer, option, string, struct, u16 } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getArrayDecoder,
+  getArrayEncoder,
+  getStructDecoder,
+  getStructEncoder,
+} from '@solana/codecs-data-structures';
+import { getU16Decoder, getU16Encoder } from '@solana/codecs-numbers';
+import {
+  Option,
+  OptionOrNullable,
+  getOptionDecoder,
+  getOptionEncoder,
+} from '@solana/options';
+import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 import {
   Collection,
   CollectionArgs,
@@ -16,9 +28,12 @@ import {
   CreatorArgs,
   Uses,
   UsesArgs,
-  getCollectionSerializer,
-  getCreatorSerializer,
-  getUsesSerializer,
+  getCollectionDecoder,
+  getCollectionEncoder,
+  getCreatorDecoder,
+  getCreatorEncoder,
+  getUsesDecoder,
+  getUsesEncoder,
 } from '.';
 
 export type DataV2 = {
@@ -41,17 +56,36 @@ export type DataV2Args = {
   uses: OptionOrNullable<UsesArgs>;
 };
 
-export function getDataV2Serializer(): Serializer<DataV2Args, DataV2> {
-  return struct<DataV2>(
+export function getDataV2Encoder(): Encoder<DataV2Args> {
+  return getStructEncoder<DataV2>(
     [
-      ['name', string()],
-      ['symbol', string()],
-      ['uri', string()],
-      ['sellerFeeBasisPoints', u16()],
-      ['creators', option(array(getCreatorSerializer()))],
-      ['collection', option(getCollectionSerializer())],
-      ['uses', option(getUsesSerializer())],
+      ['name', getStringEncoder()],
+      ['symbol', getStringEncoder()],
+      ['uri', getStringEncoder()],
+      ['sellerFeeBasisPoints', getU16Encoder()],
+      ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+      ['collection', getOptionEncoder(getCollectionEncoder())],
+      ['uses', getOptionEncoder(getUsesEncoder())],
     ],
     { description: 'DataV2' }
-  ) as Serializer<DataV2Args, DataV2>;
+  ) as Encoder<DataV2Args>;
+}
+
+export function getDataV2Decoder(): Decoder<DataV2> {
+  return getStructDecoder<DataV2>(
+    [
+      ['name', getStringDecoder()],
+      ['symbol', getStringDecoder()],
+      ['uri', getStringDecoder()],
+      ['sellerFeeBasisPoints', getU16Decoder()],
+      ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+      ['collection', getOptionDecoder(getCollectionDecoder())],
+      ['uses', getOptionDecoder(getUsesDecoder())],
+    ],
+    { description: 'DataV2' }
+  ) as Decoder<DataV2>;
+}
+
+export function getDataV2Codec(): Codec<DataV2Args, DataV2> {
+  return combineCodec(getDataV2Encoder(), getDataV2Decoder());
 }

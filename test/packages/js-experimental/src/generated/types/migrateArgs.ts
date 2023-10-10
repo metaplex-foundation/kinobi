@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from 'umiSerializers';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
+import {
+  getScalarEnumDecoder,
+  getScalarEnumEncoder,
+} from '@solana/codecs-data-structures';
 
 export enum MigrateArgs {
   V1,
@@ -14,11 +18,18 @@ export enum MigrateArgs {
 
 export type MigrateArgsArgs = MigrateArgs;
 
-export function getMigrateArgsSerializer(): Serializer<
-  MigrateArgsArgs,
-  MigrateArgs
-> {
-  return scalarEnum<MigrateArgs>(MigrateArgs, {
+export function getMigrateArgsEncoder(): Encoder<MigrateArgsArgs> {
+  return getScalarEnumEncoder<MigrateArgs>(MigrateArgs, {
     description: 'MigrateArgs',
-  }) as Serializer<MigrateArgsArgs, MigrateArgs>;
+  }) as Encoder<MigrateArgsArgs>;
+}
+
+export function getMigrateArgsDecoder(): Decoder<MigrateArgs> {
+  return getScalarEnumDecoder<MigrateArgs>(MigrateArgs, {
+    description: 'MigrateArgs',
+  }) as Decoder<MigrateArgs>;
+}
+
+export function getMigrateArgsCodec(): Codec<MigrateArgsArgs, MigrateArgs> {
+  return combineCodec(getMigrateArgsEncoder(), getMigrateArgsDecoder());
 }
