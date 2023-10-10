@@ -6,11 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Serializer,
-  array,
-  struct,
-} from '@metaplex-foundation/umi/serializers';
+import { getArrayCodec } from '@solana/codecs-data-structures';
+import { Serializer, struct } from 'umiSerializers';
 import { ConfigLine, ConfigLineArgs, getConfigLineSerializer } from '.';
 
 /** Dummy lines. */

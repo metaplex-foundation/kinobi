@@ -6,10 +6,10 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable, PublicKey } from '@metaplex-foundation/umi';
+import { getArrayCodec } from '@solana/codecs-data-structures';
+import { Option, OptionOrNullable, PublicKey } from 'umi';
 import {
   Serializer,
-  array,
   bool,
   option,
   publicKey as publicKeySerializer,
@@ -17,7 +17,7 @@ import {
   struct,
   u16,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 import {
   Collection,
   CollectionArgs,

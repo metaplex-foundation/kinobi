@@ -13,7 +13,7 @@ import {
   dataEnum,
   struct,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 export type CollectionDetails = { __kind: 'V1'; size: bigint };
 

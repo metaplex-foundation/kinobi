@@ -6,11 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Serializer,
-  scalarEnum,
-  u64,
-} from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum, u64 } from 'umiSerializers';
 
 export enum BurnArgs {
   V1,

@@ -111,7 +111,10 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     arrayType: nodes.ArrayTypeNode
   ): JavaScriptExperimentalTypeManifest {
     const childManifest = visit(arrayType.child, this);
-    childManifest.serializerImports.add('umiSerializers', 'array');
+    childManifest.serializerImports.add(
+      'solanaCodecsDataStructures',
+      'getArrayCodec'
+    );
     const sizeOption = this.getArrayLikeSizeOption(
       arrayType.size,
       childManifest

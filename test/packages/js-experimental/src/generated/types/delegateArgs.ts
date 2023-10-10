@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { SolAmount, mapAmountSerializer } from '@metaplex-foundation/umi';
+import { SolAmount, mapAmountSerializer } from 'umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
@@ -15,7 +15,7 @@ import {
   struct,
   u64,
   unit,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 export type DelegateArgs =
   | { __kind: 'CollectionV1' }

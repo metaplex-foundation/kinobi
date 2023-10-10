@@ -6,12 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Serializer,
-  bytes,
-  string,
-  struct,
-} from '@metaplex-foundation/umi/serializers';
+import { Serializer, bytes, string, struct } from 'umiSerializers';
 
 /** Hidden settings for large mints used with off-chain data. */
 export type HiddenSettings = {

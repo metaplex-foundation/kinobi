@@ -13,7 +13,7 @@ import {
   dataEnum,
   struct,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 

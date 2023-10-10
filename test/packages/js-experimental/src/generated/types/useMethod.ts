@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, scalarEnum } from '@metaplex-foundation/umi/serializers';
+import { Serializer, scalarEnum } from 'umiSerializers';
 
 export enum UseMethod {
   Burn,

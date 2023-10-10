@@ -2,11 +2,23 @@ import type { ImportFrom } from '../../shared';
 import { JavaScriptExperimentalTypeManifest } from './GetJavaScriptExperimentalTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
-  umi: '@metaplex-foundation/umi',
-  umiSerializers: '@metaplex-foundation/umi/serializers',
+  // External.
+  solanaAddresses: '@solana/addresses',
+  solanaInstructions: '@solana/instructions',
+  solanaCodecsCore: '@solana/codecs-core',
+  solanaCodecsNumbers: '@solana/codecs-numbers',
+  solanaCodecsString: '@solana/codecs-string',
+  solanaCodecsDataStructures: '@solana/codecs-data-structures',
+
+  // Internal.
   types: '../types',
   errors: '../errors',
   shared: '../shared',
+  generated: '..',
+  hooked: '../../hooked',
+  generatedAccounts: '../accounts',
+  generatedErrors: '../errors',
+  generatedTypes: '../types',
 };
 
 export class JavaScriptExperimentalImportMap {

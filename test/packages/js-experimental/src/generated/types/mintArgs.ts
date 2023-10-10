@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
+import { Option, OptionOrNullable } from 'umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
@@ -15,7 +15,7 @@ import {
   option,
   struct,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 import {
   AuthorizationData,
   AuthorizationDataArgs,

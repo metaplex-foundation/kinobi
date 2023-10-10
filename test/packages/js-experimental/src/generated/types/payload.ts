@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, map, struct } from '@metaplex-foundation/umi/serializers';
+import { Serializer, map, struct } from 'umiSerializers';
 import {
   PayloadKey,
   PayloadKeyArgs,

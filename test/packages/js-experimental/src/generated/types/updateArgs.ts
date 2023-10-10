@@ -6,17 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Option,
-  OptionOrNullable,
-  PublicKey,
-  some,
-} from '@metaplex-foundation/umi';
+import { getArrayCodec } from '@solana/codecs-data-structures';
+import { Option, OptionOrNullable, PublicKey, some } from 'umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
-  array,
   bool,
   dataEnum,
   mapSerializer,
@@ -25,7 +20,7 @@ import {
   string,
   struct,
   u16,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 import {
   AuthorityType,
   AuthorityTypeArgs,

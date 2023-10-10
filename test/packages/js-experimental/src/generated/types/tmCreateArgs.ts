@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
+import { Option, OptionOrNullable } from 'umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
@@ -16,7 +16,7 @@ import {
   struct,
   u64,
   u8,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 import { AssetData, AssetDataArgs, getAssetDataSerializer } from '.';
 
 export type TmCreateArgs =

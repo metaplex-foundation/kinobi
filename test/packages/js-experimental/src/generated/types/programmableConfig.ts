@@ -6,12 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from 'umi';
 import {
   Serializer,
   publicKey as publicKeySerializer,
   struct,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 export type ProgrammableConfig = { ruleSet: PublicKey };
 

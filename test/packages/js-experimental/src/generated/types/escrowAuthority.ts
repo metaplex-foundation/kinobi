@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from 'umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
@@ -16,7 +16,7 @@ import {
   struct,
   tuple,
   unit,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }

@@ -65,19 +65,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
         ...DEFAULT_PRETTIER_OPTIONS,
         ...options.prettierOptions,
       },
-      dependencyMap: {
-        generated: '..',
-        hooked: '../../hooked',
-        umi: '@metaplex-foundation/umi',
-        umiSerializers: '@metaplex-foundation/umi/serializers',
-        mplEssentials: '@metaplex-foundation/mpl-toolbox',
-        mplToolbox: '@metaplex-foundation/mpl-toolbox',
-        ...options.dependencyMap,
-        // Custom relative dependencies to link generated files together.
-        generatedAccounts: '../accounts',
-        generatedErrors: '../errors',
-        generatedTypes: '../types',
-      },
+      dependencyMap: options.dependencyMap ?? {},
       typeManifestVisitor:
         options.typeManifestVisitor ??
         new GetJavaScriptExperimentalTypeManifestVisitor(),
@@ -148,8 +136,12 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
     const { name } = program;
     const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
-      .mergeWith(...program.accounts.map((account) => visit(account, this)))
+      // .mergeWith(...program.accounts.map((account) => visit(account, this)))
       .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
+
+    // TODO: remove when types are sorted.
+    this.program = null;
+    return renderMap;
 
     // Internal programs are support programs that
     // were added to fill missing types or accounts.

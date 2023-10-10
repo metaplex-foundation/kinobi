@@ -6,14 +6,14 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from 'umi';
 import {
   Serializer,
   bool,
   mapSerializer,
   publicKey as publicKeySerializer,
   struct,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 export type Collection = { verified: boolean; key: PublicKey };
 

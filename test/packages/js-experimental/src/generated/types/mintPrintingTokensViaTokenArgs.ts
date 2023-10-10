@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Serializer, struct, u64 } from '@metaplex-foundation/umi/serializers';
+import { Serializer, struct, u64 } from 'umiSerializers';
 
 export type MintPrintingTokensViaTokenArgs = { supply: bigint };
 

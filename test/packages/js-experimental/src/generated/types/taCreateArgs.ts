@@ -6,13 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Serializer,
-  bytes,
-  string,
-  struct,
-  u32,
-} from '@metaplex-foundation/umi/serializers';
+import { Serializer, bytes, string, struct, u32 } from 'umiSerializers';
 
 export type TaCreateArgs = {
   ruleSetName: string;

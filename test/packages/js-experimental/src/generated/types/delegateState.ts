@@ -6,13 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from 'umi';
 import {
   Serializer,
   bool,
   publicKey as publicKeySerializer,
   struct,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 import { DelegateRole, DelegateRoleArgs, getDelegateRoleSerializer } from '.';
 
 export type DelegateState = {

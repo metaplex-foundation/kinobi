@@ -6,13 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { PublicKey } from 'umi';
 import {
   Serializer,
   publicKey as publicKeySerializer,
   struct,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 export type Reservation = {
   address: PublicKey;

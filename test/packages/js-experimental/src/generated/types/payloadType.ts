@@ -6,12 +6,12 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { PublicKey } from '@metaplex-foundation/umi';
+import { getArrayCodec } from '@solana/codecs-data-structures';
+import { PublicKey } from 'umi';
 import {
   GetDataEnumKind,
   GetDataEnumKindContent,
   Serializer,
-  array,
   bytes,
   dataEnum,
   publicKey as publicKeySerializer,
@@ -19,7 +19,7 @@ import {
   tuple,
   u32,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 
 /** This is a union of all the possible payload types. */
 export type PayloadType =

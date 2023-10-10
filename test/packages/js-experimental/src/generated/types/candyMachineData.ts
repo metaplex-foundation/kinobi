@@ -6,22 +6,17 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Amount,
-  Option,
-  OptionOrNullable,
-  mapAmountSerializer,
-} from '@metaplex-foundation/umi';
+import { getArrayCodec } from '@solana/codecs-data-structures';
+import { Amount, Option, OptionOrNullable, mapAmountSerializer } from 'umi';
 import {
   Serializer,
-  array,
   bool,
   option,
   string,
   struct,
   u16,
   u64,
-} from '@metaplex-foundation/umi/serializers';
+} from 'umiSerializers';
 import {
   CmCreator,
   CmCreatorArgs,

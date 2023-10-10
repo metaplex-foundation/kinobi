@@ -6,13 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Serializer,
-  bool,
-  string,
-  struct,
-  u32,
-} from '@metaplex-foundation/umi/serializers';
+import { Serializer, bool, string, struct, u32 } from 'umiSerializers';
 
 /** Config line settings to allocate space for individual name + URI. */
 export type ConfigLineSettings = {

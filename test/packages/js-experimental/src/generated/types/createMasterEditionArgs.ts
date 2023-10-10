@@ -6,13 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Option, OptionOrNullable } from '@metaplex-foundation/umi';
-import {
-  Serializer,
-  option,
-  struct,
-  u64,
-} from '@metaplex-foundation/umi/serializers';
+import { Option, OptionOrNullable } from 'umi';
+import { Serializer, option, struct, u64 } from 'umiSerializers';
 
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };
 
