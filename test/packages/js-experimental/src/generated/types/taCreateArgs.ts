@@ -14,7 +14,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU32Decoder, getU32Encoder } from '@solana/codecs-numbers';
-import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
+import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 
 export type TaCreateArgs = {
   ruleSetName: string;

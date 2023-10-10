@@ -11,7 +11,7 @@ import {
   getStructDecoder,
   getStructEncoder,
 } from '@solana/codecs-data-structures';
-import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
+import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 
 /** Config line struct for storing asset (NFT) data pre-mint. */
 export type ConfigLine = {

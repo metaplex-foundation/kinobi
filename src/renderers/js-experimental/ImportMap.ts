@@ -7,7 +7,7 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   solanaAddresses: '@solana/addresses',
   solanaCodecsCore: '@solana/codecs-core',
   solanaCodecsNumbers: '@solana/codecs-numbers',
-  solanaCodecsString: '@solana/codecs-string',
+  solanaCodecsStrings: '@solana/codecs-strings',
   solanaCodecsDataStructures: '@solana/codecs-data-structures',
   solanaInstructions: '@solana/instructions',
   solanaOptions: '@solana/options',

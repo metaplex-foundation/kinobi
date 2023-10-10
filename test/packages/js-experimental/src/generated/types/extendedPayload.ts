@@ -16,7 +16,7 @@ import {
   getTupleEncoder,
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
-import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
+import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
   PayloadKey,
   PayloadKeyArgs,

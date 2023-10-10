@@ -21,13 +21,13 @@ import {
   getU64Decoder,
   getU64Encoder,
 } from '@solana/codecs-numbers';
+import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 import {
   CmCreator,
   CmCreatorArgs,

@@ -13,7 +13,7 @@ import {
   getStructDecoder,
   getStructEncoder,
 } from '@solana/codecs-data-structures';
-import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
+import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 
 /** Hidden settings for large mints used with off-chain data. */
 export type HiddenSettings = {

@@ -14,7 +14,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU32Decoder, getU32Encoder } from '@solana/codecs-numbers';
-import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
+import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 
 /** Config line settings to allocate space for individual name + URI. */
 export type ConfigLineSettings = {

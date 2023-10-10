@@ -31,13 +31,13 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU16Decoder, getU16Encoder } from '@solana/codecs-numbers';
+import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { getStringDecoder, getStringEncoder } from 'solanaCodecsStrings';
 import { some } from 'umi';
 import {
   AuthorityType,
