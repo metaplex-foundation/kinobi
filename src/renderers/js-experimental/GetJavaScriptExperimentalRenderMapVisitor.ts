@@ -24,7 +24,10 @@ import { ContextMap } from './ContextMap';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalInstructionDefaults } from './RenderJavaScriptExperimentalInstructionDefaults';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
-import { TypeManifest } from './TypeManifest';
+import {
+  getTypeWithCodecFragmentFromManifest,
+  TypeManifest,
+} from './TypeManifest';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -512,9 +515,12 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
     const pascalCaseName = pascalCase(definedType.name);
     const typeManifest = visit(definedType, this.typeManifestVisitor);
+    const typeWithCodecFragment = getTypeWithCodecFragmentFromManifest(
+      pascalCaseName,
+      typeManifest
+    );
     const imports = new ImportMap()
-      .mergeWithManifest(typeManifest)
-      .add('umiSerializers', ['Serializer'])
+      .mergeWith(typeWithCodecFragment)
       .remove('generatedTypes', [
         pascalCaseName,
         `${pascalCaseName}Args`,
@@ -530,6 +536,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
           generatedTypes: '.',
         }),
         typeManifest,
+        typeWithCodecFragment,
         isDataEnum:
           nodes.isEnumTypeNode(definedType.data) &&
           nodes.isDataEnum(definedType.data),

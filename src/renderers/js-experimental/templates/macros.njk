@@ -15,20 +15,20 @@
 {% macro exportType(name, typeManifest) %}
 {% set looseName = name + 'Args' %}
 {%- if typeManifest.isEnum -%}
-export enum {{ name }} {{ typeManifest.strictType }};
+export enum {{ name }} {{ typeManifest.strictType.render }};
 
 export type {{ looseName }} = {{ name }};
 {%- else -%}
-export type {{ name }} = {{ typeManifest.strictType }};
+export type {{ name }} = {{ typeManifest.strictType.render }};
 
-export type {{ looseName }} = {{ typeManifest.looseType if typeManifest.strictType != typeManifest.looseType else name }};
+export type {{ looseName }} = {{ typeManifest.looseType.render if typeManifest.strictType.render != typeManifest.looseType.render else name }};
 {% endif %}
 {% endmacro %}
 
-{# Export a serializer. #}
-{% macro exportSerializer(name, typeManifest) %}
+{# Export a codec. #}
+{% macro exportCodec(name, typeManifest) %}
 {% set looseName = name + 'Args' %}
-export function get{{ name }}Serializer(): Serializer<{{ looseName }}, {{ name }}> {
+export function get{{ name }}Encoder(): Encoder<{{ looseName }}, {{ name }}> {
   return {{ typeManifest.serializer }} as Serializer<{{ looseName }}, {{ name }}>;
 }
 {% endmacro %}

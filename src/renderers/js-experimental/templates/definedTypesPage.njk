@@ -5,9 +5,7 @@
 {{ imports }}
 
 {{ macros.docblock(definedType.docs) }}
-{{ macros.exportType(definedType.name | pascalCase, typeManifest) }}
-
-{{ macros.exportSerializer(definedType.name | pascalCase, typeManifest) }}
+{{ typeWithCodecFragment.render }}
 
 {% include "definedTypesPageDataEnums.njk" %}
 {% endblock %}

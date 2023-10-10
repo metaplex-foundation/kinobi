@@ -13,7 +13,7 @@
 
   {{ macros.exportType(account.name | pascalCase + 'AccountData', typeManifest) }}
 
-  {{ macros.exportSerializer(account.name | pascalCase + 'AccountData', typeManifest) }}
+  {{ macros.exportCodec(account.name | pascalCase + 'AccountData', typeManifest) }}
 {% endif %}
 
 export function deserialize{{ account.name | pascalCase }}(rawAccount: RpcAccount): {{ account.name | pascalCase }} {
