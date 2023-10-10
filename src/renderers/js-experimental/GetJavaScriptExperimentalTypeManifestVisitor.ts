@@ -259,13 +259,16 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
   ): TypeManifest {
     const name = pascalCase(enumStructVariantType.name);
     const kindAttribute = `__kind: "${name}"`;
-    const type = visit(enumStructVariantType.struct, this);
-    return {
-      ...type,
-      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-      serializer: `['${name}', ${type.serializer}]`,
-    };
+    const structManifest = visit(enumStructVariantType.struct, this);
+    structManifest.strictType.mapRender(
+      (r) => `{ ${kindAttribute},${r.slice(1, -1)}}`
+    );
+    structManifest.looseType.mapRender(
+      (r) => `{ ${kindAttribute},${r.slice(1, -1)}}`
+    );
+    structManifest.encoder.mapRender((r) => `['${name}', ${r}]`);
+    structManifest.decoder.mapRender((r) => `['${name}', ${r}]`);
+    return structManifest;
   }
 
   visitEnumTupleVariantType(
@@ -279,13 +282,16 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
         child: enumTupleVariantType.tuple,
       }),
     ]);
-    const type = visit(struct, this);
-    return {
-      ...type,
-      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-      serializer: `['${name}', ${type.serializer}]`,
-    };
+    const structManifest = visit(struct, this);
+    structManifest.strictType.mapRender(
+      (r) => `{ ${kindAttribute},${r.slice(1, -1)}}`
+    );
+    structManifest.looseType.mapRender(
+      (r) => `{ ${kindAttribute},${r.slice(1, -1)}}`
+    );
+    structManifest.encoder.mapRender((r) => `['${name}', ${r}]`);
+    structManifest.decoder.mapRender((r) => `['${name}', ${r}]`);
+    return structManifest;
   }
 
   visitMapType(mapType: nodes.MapTypeNode): TypeManifest {
