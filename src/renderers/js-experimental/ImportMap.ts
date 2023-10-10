@@ -5,11 +5,12 @@ import { TypeManifest } from './TypeManifest';
 const DEFAULT_MODULE_MAP: Record<string, string> = {
   // External.
   solanaAddresses: '@solana/addresses',
-  solanaInstructions: '@solana/instructions',
   solanaCodecsCore: '@solana/codecs-core',
   solanaCodecsNumbers: '@solana/codecs-numbers',
   solanaCodecsString: '@solana/codecs-string',
   solanaCodecsDataStructures: '@solana/codecs-data-structures',
+  solanaInstructions: '@solana/instructions',
+  solanaOptions: '@solana/options',
 
   // Internal.
   types: '../types',

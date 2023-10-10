@@ -1,17 +1,17 @@
 import * as nodes from '../../nodes';
-import { SizeStrategy, camelCase, capitalize, pascalCase } from '../../shared';
+import { SizeStrategy, camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
-import { fragment, mergeFragments } from './Fragment';
+import { Fragment, fragment } from './Fragment';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
 import { TypeManifest, mergeManifests } from './TypeManifest';
 
 function getEncoderFunction(name: string) {
-  return `get${capitalize(name)}Encoder`;
+  return `get${pascalCase(name)}Encoder`;
 }
 
 function getDecoderFunction(name: string) {
-  return `get${capitalize(name)}Decoder`;
+  return `get${pascalCase(name)}Decoder`;
 }
 
 export class GetJavaScriptExperimentalTypeManifestVisitor
@@ -101,26 +101,28 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): TypeManifest {
     const childManifest = visit(arrayType.child, this);
-    childManifest.serializerImports.add(
-      'solanaCodecsDataStructures',
-      'getArrayCodec'
-    );
-    const sizeOption = this.getArrayLikeSizeOption(
-      arrayType.size,
-      childManifest
-    );
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...childManifest,
-      strictType: `Array<${childManifest.strictType}>`,
-      looseType: `Array<${childManifest.looseType}>`,
-      serializer: `array(${childManifest.serializer + options})`,
-    };
+    childManifest.looseType.mapRender((r) => `Array<${r}>`);
+    childManifest.strictType.mapRender((r) => `Array<${r}>`);
+    const sizeManifest = this.getArrayLikeSizeOption(arrayType.size);
+    const encoderOptions = sizeManifest.encoder.render
+      ? `, { ${sizeManifest.encoder.render} }`
+      : '';
+    const decoderOptions = sizeManifest.decoder.render
+      ? `, { ${sizeManifest.decoder.render} }`
+      : '';
+    childManifest.encoder
+      .mapRender((r) => `getArrayEncoder(${r + encoderOptions})`)
+      .addImports('solanaCodecsDataStructures', 'getArrayEncoder');
+    childManifest.decoder
+      .mapRender((r) => `getArrayDecoder(${r + decoderOptions})`)
+      .addImports('solanaCodecsDataStructures', 'getArrayDecoder');
+    return childManifest;
   }
 
   visitLinkType(linkType: nodes.LinkTypeNode): TypeManifest {
     const pascalCaseDefinedType = pascalCase(linkType.name);
-    const serializerName = `get${pascalCaseDefinedType}Serializer`;
+    const encoderFunction = getEncoderFunction(linkType.name);
+    const decoderFunction = getDecoderFunction(linkType.name);
     const importFrom =
       linkType.importFrom === 'generated'
         ? 'generatedTypes'
@@ -128,15 +130,22 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
 
     return {
       isEnum: false,
-      strictType: pascalCaseDefinedType,
-      strictImports: new ImportMap().add(importFrom, pascalCaseDefinedType),
-      looseType: `${pascalCaseDefinedType}Args`,
-      looseImports: new ImportMap().add(
+      strictType: fragment(pascalCaseDefinedType).addImports(
+        importFrom,
+        pascalCaseDefinedType
+      ),
+      looseType: fragment(`${pascalCaseDefinedType}Args`).addImports(
         importFrom,
         `${pascalCaseDefinedType}Args`
       ),
-      serializer: `${serializerName}()`,
-      serializerImports: new ImportMap().add(importFrom, serializerName),
+      encoder: fragment(`${encoderFunction}()`).addImports(
+        importFrom,
+        encoderFunction
+      ),
+      decoder: fragment(`${decoderFunction}()`).addImports(
+        importFrom,
+        decoderFunction
+      ),
     };
   }
 
@@ -232,12 +241,16 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     const kindAttribute = `__kind: "${name}"`;
     return {
       isEnum: false,
-      strictType: `{ ${kindAttribute} }`,
-      strictImports: new ImportMap(),
-      looseType: `{ ${kindAttribute} }`,
-      looseImports: new ImportMap(),
-      serializer: `['${name}', unit()]`,
-      serializerImports: new ImportMap().add('umiSerializers', 'unit'),
+      strictType: fragment(`{ ${kindAttribute} }`),
+      looseType: fragment(`{ ${kindAttribute} }`),
+      encoder: fragment(`['${name}', getUnitEncoder()]`).addImports(
+        'solanaCodecsDataStructures',
+        'getUnitEncoder'
+      ),
+      decoder: fragment(`['${name}', getUnitDecoder()]`).addImports(
+        'solanaCodecsDataStructures',
+        'getUnitDecoder'
+      ),
     };
   }
 
@@ -278,27 +291,37 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
   visitMapType(mapType: nodes.MapTypeNode): TypeManifest {
     const key = visit(mapType.key, this);
     const value = visit(mapType.value, this);
-    const mergedManifest = this.mergeManifests([key, value]);
-    mergedManifest.serializerImports.add('umiSerializers', 'map');
-    const sizeOption = this.getArrayLikeSizeOption(
-      mapType.size,
-      mergedManifest
+    const mergedManifest = mergeManifests(
+      [key, value],
+      ([k, v]) => `Map<${k}, ${v}>`,
+      ([k, v]) => `${k}, ${v}`
     );
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...mergedManifest,
-      strictType: `Map<${key.strictType}, ${value.strictType}>`,
-      looseType: `Map<${key.looseType}, ${value.looseType}>`,
-      serializer: `map(${key.serializer}, ${value.serializer}${options})`,
-    };
+    const sizeManifest = this.getArrayLikeSizeOption(mapType.size);
+    const encoderOptions = sizeManifest.encoder.render
+      ? `, { ${sizeManifest.encoder.render} }`
+      : '';
+    const decoderOptions = sizeManifest.decoder.render
+      ? `, { ${sizeManifest.decoder.render} }`
+      : '';
+    mergedManifest.encoder
+      .mapRender((r) => `getMapEncoder(${r}${encoderOptions})`)
+      .addImports('solanaCodecsDataStructures', 'getMapEncoder');
+    mergedManifest.decoder
+      .mapRender((r) => `getMapDecoder(${r}${decoderOptions})`)
+      .addImports('solanaCodecsDataStructures', 'getMapDecoder');
+    return mergedManifest;
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): TypeManifest {
     const childManifest = visit(optionType.child, this);
-    childManifest.strictImports.add('umi', 'Option');
-    childManifest.looseImports.add('umi', 'OptionOrNullable');
-    childManifest.serializerImports.add('umiSerializers', 'option');
-    const options: string[] = [];
+    childManifest.strictType
+      .mapRender((r) => `Option<${r}>`)
+      .addImports('solanaOptions', 'Option');
+    childManifest.looseType
+      .mapRender((r) => `OptionOrNullable<${r}>`)
+      .addImports('solanaOptions', 'OptionOrNullable');
+    const encoderOptions: string[] = [];
+    const decoderOptions: string[] = [];
 
     // Prefix option.
     if (
@@ -306,41 +329,53 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
       optionType.prefix.endian !== 'le'
     ) {
       const prefixManifest = visit(optionType.prefix, this);
-      childManifest.strictImports.mergeWith(prefixManifest.strictImports);
-      childManifest.looseImports.mergeWith(prefixManifest.looseImports);
-      childManifest.serializerImports.mergeWith(
-        prefixManifest.serializerImports
-      );
-      options.push(`prefix: ${prefixManifest.serializer}`);
+      childManifest.encoder.mergeImportsWith(prefixManifest.encoder);
+      childManifest.decoder.mergeImportsWith(prefixManifest.decoder);
+      encoderOptions.push(`prefix: ${prefixManifest.encoder.render}`);
+      decoderOptions.push(`prefix: ${prefixManifest.decoder.render}`);
     }
 
     // Fixed option.
     if (optionType.fixed) {
-      options.push(`fixed: true`);
+      encoderOptions.push(`fixed: true`);
+      decoderOptions.push(`fixed: true`);
     }
 
-    const optionsAsString =
-      options.length > 0 ? `, { ${options.join(', ')} }` : '';
-
-    return {
-      ...childManifest,
-      strictType: `Option<${childManifest.strictType}>`,
-      looseType: `OptionOrNullable<${childManifest.looseType}>`,
-      serializer: `option(${childManifest.serializer}${optionsAsString})`,
-    };
+    const encoderOptionsAsString =
+      encoderOptions.length > 0 ? `, { ${encoderOptions.join(', ')} }` : '';
+    const decoderOptionsAsString =
+      decoderOptions.length > 0 ? `, { ${decoderOptions.join(', ')} }` : '';
+    childManifest.encoder
+      .mapRender((r) => `getOptionEncoder(${r + encoderOptionsAsString})`)
+      .addImports('solanaOptions', 'getOptionEncoder');
+    childManifest.decoder
+      .mapRender((r) => `getOptionDecoder(${r + decoderOptionsAsString})`)
+      .addImports('solanaOptions', 'getOptionDecoder');
+    return childManifest;
   }
 
   visitSetType(setType: nodes.SetTypeNode): TypeManifest {
     const childManifest = visit(setType.child, this);
-    childManifest.serializerImports.add('umiSerializers', 'set');
-    const sizeOption = this.getArrayLikeSizeOption(setType.size, childManifest);
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...childManifest,
-      strictType: `Set<${childManifest.strictType}>`,
-      looseType: `Set<${childManifest.looseType}>`,
-      serializer: `set(${childManifest.serializer + options})`,
-    };
+    childManifest.strictType.mapRender((r) => `Set<${r}>`);
+    childManifest.looseType.mapRender((r) => `Set<${r}>`);
+
+    const sizeManifest = this.getArrayLikeSizeOption(setType.size);
+    const encoderOptions = sizeManifest.encoder.render
+      ? `, { ${sizeManifest.encoder.render} }`
+      : '';
+    const decoderOptions = sizeManifest.decoder.render
+      ? `, { ${sizeManifest.decoder.render} }`
+      : '';
+    childManifest.encoder
+      .mergeImportsWith(sizeManifest.encoder)
+      .mapRender((r) => `getSetEncoder(${r + encoderOptions})`)
+      .addImports('solanaCodecsDataStructures', 'getSetEncoder');
+    childManifest.decoder
+      .mergeImportsWith(sizeManifest.decoder)
+      .mapRender((r) => `getSetDecoder(${r + decoderOptions})`)
+      .addImports('solanaCodecsDataStructures', 'getSetDecoder');
+
+    return childManifest;
   }
 
   visitStructType(structType: nodes.StructTypeNode): TypeManifest {
@@ -640,19 +675,28 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
     return `\n/**\n${lines.join('\n')}\n */\n`;
   }
 
-  protected getArrayLikeSizeOption(
-    size: SizeStrategy,
-    manifest: TypeManifest
-  ): string | null {
-    if (size.kind === 'fixed') return `size: ${size.value}`;
-    if (size.kind === 'remainder') return `size: 'remainder'`;
-    if (size.prefix.format === 'u32' && size.prefix.endian === 'le')
-      return null;
-
+  protected getArrayLikeSizeOption(size: SizeStrategy): {
+    encoder: Fragment;
+    decoder: Fragment;
+  } {
+    if (size.kind === 'fixed') {
+      return {
+        encoder: fragment(`size: ${size.value}`),
+        decoder: fragment(`size: ${size.value}`),
+      };
+    }
+    if (size.kind === 'remainder') {
+      return {
+        encoder: fragment(`size: 'remainder'`),
+        decoder: fragment(`size: 'remainder'`),
+      };
+    }
+    if (size.prefix.format === 'u32' && size.prefix.endian === 'le') {
+      return { encoder: fragment(''), decoder: fragment('') };
+    }
     const prefixManifest = visit(size.prefix, this);
-    manifest.strictType.imports.mergeWith(prefixManifest.strictType.imports);
-    manifest.looseType.imports.mergeWith(prefixManifest.looseType.imports);
-    manifest.serializerImports.mergeWith(prefixManifest.serializerImports);
-    return `size: ${prefixManifest.serializer}`;
+    prefixManifest.encoder.mapRender((r) => `size: ${r}`);
+    prefixManifest.decoder.mapRender((r) => `size: ${r}`);
+    return prefixManifest;
   }
 }
