@@ -1,0 +1,9 @@
+{% if instruction.remainingAccounts.kind === 'arg' %}
+  // Remaining Accounts.
+  const remainingAccounts = resolvedArgs.{{ instruction.remainingAccounts.name | camelCase }}.map((value, index) => ({ index, value, isWritable: {{ "true" if instruction.remainingAccounts.isWritable else "false" }} }));
+  orderedAccounts.push(...remainingAccounts);
+{% elif instruction.remainingAccounts.kind === 'resolver' %}
+  // Remaining Accounts.
+  const remainingAccounts = {{ instruction.remainingAccounts.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+  orderedAccounts.push(...remainingAccounts);
+{% endif %}

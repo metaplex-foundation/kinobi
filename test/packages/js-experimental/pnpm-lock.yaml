@@ -1,0 +1,73 @@
+lockfileVersion: '6.0'
+
+dependencies:
+  '@solana/addresses':
+    specifier: 2.0.0-experimental.f040ea3
+    version: 2.0.0-experimental.f040ea3
+  '@solana/instructions':
+    specifier: 2.0.0-experimental.f4b7fd3
+    version: 2.0.0-experimental.f4b7fd3
+
+devDependencies:
+  typescript:
+    specifier: ^4.9.4
+    version: 4.9.5
+
+packages:
+
+  /@metaplex-foundation/umi-options@0.8.9:
+    resolution: {integrity: sha512-jSQ61sZMPSAk/TXn8v8fPqtz3x8d0/blVZXLLbpVbo2/T5XobiI6/MfmlUosAjAUaQl6bHRF8aIIqZEFkJiy4A==}
+    dev: false
+
+  /@metaplex-foundation/umi-public-keys@0.8.9:
+    resolution: {integrity: sha512-CxMzN7dgVGOq9OcNCJe2casKUpJ3RmTVoOvDFyeoTQuK+vkZ1YSSahbqC1iGuHEtKTLSjtWjKvUU6O7zWFTw3Q==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers-encodings': 0.8.9
+    dev: false
+
+  /@metaplex-foundation/umi-serializers-core@0.8.9:
+    resolution: {integrity: sha512-WT82tkiYJ0Qmscp7uTj1Hz6aWQPETwaKLAENAUN5DeWghkuBKtuxyBKVvEOuoXerJSdhiAk0e8DWA4cxcTTQ/w==}
+    dev: false
+
+  /@metaplex-foundation/umi-serializers-encodings@0.8.9:
+    resolution: {integrity: sha512-N3VWLDTJ0bzzMKcJDL08U3FaqRmwlN79FyE4BHj6bbAaJ9LEHjDQ9RJijZyWqTm0jE7I750fU7Ow5EZL38Xi6Q==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers-core': 0.8.9
+    dev: false
+
+  /@metaplex-foundation/umi-serializers-numbers@0.8.9:
+    resolution: {integrity: sha512-NtBf1fnVNQJHFQjLFzRu2i9GGnigb9hOm/Gfrk628d0q0tRJB7BOM3bs5C61VAs7kJs4yd+pDNVAERJkknQ7Lg==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers-core': 0.8.9
+    dev: false
+
+  /@metaplex-foundation/umi-serializers@0.8.9:
+    resolution: {integrity: sha512-Sve8Etm3zqvLSUfza+MYRkjTnCpiaAFT7VWdqeHzA3n58P0AfT3p74RrZwVt/UFkxI+ln8BslwBDJmwzcPkuHw==}
+    dependencies:
+      '@metaplex-foundation/umi-options': 0.8.9
+      '@metaplex-foundation/umi-public-keys': 0.8.9
+      '@metaplex-foundation/umi-serializers-core': 0.8.9
+      '@metaplex-foundation/umi-serializers-encodings': 0.8.9
+      '@metaplex-foundation/umi-serializers-numbers': 0.8.9
+    dev: false
+
+  /@solana/addresses@2.0.0-experimental.f040ea3:
+    resolution: {integrity: sha512-6f0k5X2+HaG85qF3t5cV51k6ysd5MVLi2e3/SBmrjbd+7pxm9M+ySH9ihVXEq6y8qU2hpRH8ouIsTGdJb5YbOA==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers': 0.8.9
+      '@solana/assertions': 2.0.0-experimental.f040ea3
+    dev: false
+
+  /@solana/assertions@2.0.0-experimental.f040ea3:
+    resolution: {integrity: sha512-vXDToQtVdeHAiadkgZhMu77ig+c9lmt64WynVqaZ/qQCBQnGPtnHDZRM8/u3yQE5RNz2lYBYIxGVb/ldxC8ckQ==}
+    dev: false
+
+  /@solana/instructions@2.0.0-experimental.f4b7fd3:
+    resolution: {integrity: sha512-ix4HJifZCg7tV3y+ftjsfSv72GBE6pq2YH7InKw4OBK4YdSXLVbOM26zrgAT4txyuis0perrAIFJ1V7rLZF3ng==}
+    dev: false
+
+  /typescript@4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true

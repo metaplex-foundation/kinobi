@@ -1,0 +1,20 @@
+{
+  "name": "@metaplex-foundation/kinobi-dummy-generated-experimental",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/addresses": "2.0.0-experimental.f040ea3",
+    "@solana/instructions": "2.0.0-experimental.f4b7fd3"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
