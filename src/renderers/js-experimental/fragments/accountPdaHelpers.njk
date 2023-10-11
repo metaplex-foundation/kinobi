@@ -12,7 +12,7 @@ export function find{{ pascalCaseName }}Pda(
       {% endfor %}
     }
   {% endif %}
-): Pda {
+): ProgramDerivedAddress {
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}

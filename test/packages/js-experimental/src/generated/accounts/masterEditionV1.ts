@@ -191,7 +191,7 @@ export function findMasterEditionV1Pda(
     /** The role of the delegate */
     delegateRole: DelegateRoleArgs;
   }
-): Pda {
+): ProgramDerivedAddress {
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

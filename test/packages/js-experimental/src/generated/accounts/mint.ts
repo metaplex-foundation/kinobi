@@ -198,6 +198,7 @@ export function getMintGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
     })
     .deserializeUsing<Mint>((account) => deserializeMint(account));
 }
+
 export function getMintSize(): number {
   return 82;
 }

@@ -239,6 +239,7 @@ export function getTokenGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
     })
     .deserializeUsing<Token>((account) => deserializeToken(account));
 }
+
 export function getTokenSize(): number {
   return 165;
 }

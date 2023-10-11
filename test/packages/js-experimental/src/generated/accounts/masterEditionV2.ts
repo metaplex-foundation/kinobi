@@ -164,6 +164,7 @@ export function getMasterEditionV2GpaBuilder(
     )
     .whereField('key', TmKey.MasterEditionV2);
 }
+
 export function getMasterEditionV2Size(): number {
   return 282;
 }
@@ -174,7 +175,7 @@ export function findMasterEditionV2Pda(
     /** The address of the mint account */
     mint: Base58EncodedAddress;
   }
-): Pda {
+): ProgramDerivedAddress {
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

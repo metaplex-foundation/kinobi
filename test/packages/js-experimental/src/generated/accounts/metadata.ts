@@ -293,6 +293,7 @@ export function getMetadataGpaBuilder(
     .deserializeUsing<Metadata>((account) => deserializeMetadata(account))
     .whereField('key', TmKey.MetadataV1);
 }
+
 export function getMetadataSize(): number {
   return 679;
 }
@@ -303,7 +304,7 @@ export function findMetadataPda(
     /** The address of the mint account */
     mint: Base58EncodedAddress;
   }
-): Pda {
+): ProgramDerivedAddress {
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

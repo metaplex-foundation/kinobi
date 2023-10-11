@@ -141,6 +141,7 @@ export function getEditionMarkerGpaBuilder(
     )
     .whereField('key', TmKey.EditionMarker);
 }
+
 export function getEditionMarkerSize(): number {
   return 32;
 }

@@ -162,6 +162,7 @@ export function getDelegateRecordGpaBuilder(
     )
     .whereField('key', TmKey.Delegate);
 }
+
 export function getDelegateRecordSize(): number {
   return 282;
 }
@@ -172,7 +173,7 @@ export function findDelegateRecordPda(
     /** The delegate role */
     role: DelegateRoleArgs;
   }
-): Pda {
+): ProgramDerivedAddress {
   const programId = context.programs.getPublicKey(
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

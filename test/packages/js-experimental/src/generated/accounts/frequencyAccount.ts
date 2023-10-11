@@ -175,13 +175,14 @@ export function getFrequencyAccountGpaBuilder(
     )
     .whereField('key', TaKey.Frequency);
 }
+
 export function getFrequencyAccountSize(): number {
   return 24;
 }
 
 export function findFrequencyAccountPda(
   context: Pick<Context, 'eddsa' | 'programs'>
-): Pda {
+): ProgramDerivedAddress {
   const programId = context.programs.getPublicKey(
     'mplTokenAuthRules',
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'

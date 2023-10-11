@@ -145,6 +145,7 @@ export function getMultisigGpaBuilder(
     })
     .deserializeUsing<Multisig>((account) => deserializeMultisig(account));
 }
+
 export function getMultisigSize(): number {
   return 355;
 }

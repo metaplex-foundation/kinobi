@@ -150,6 +150,7 @@ export function getEditionGpaBuilder(
     .deserializeUsing<Edition>((account) => deserializeEdition(account))
     .whereField('key', TmKey.EditionV1);
 }
+
 export function getEditionSize(): number {
   return 41;
 }
