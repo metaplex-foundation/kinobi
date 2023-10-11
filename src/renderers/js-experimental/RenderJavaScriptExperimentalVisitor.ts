@@ -4,15 +4,14 @@ import { BaseThrowVisitor, visit } from '../../visitors';
 import { deleteFolder } from '../utils';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
 import {
-  GetJavaScriptExperimentalRenderMapOptions,
-  GetJavaScriptExperimentalRenderMapVisitor,
-} from './GetJavaScriptExperimentalRenderMapVisitor';
+  GetRenderMapOptions,
+  GetRenderMapVisitor,
+} from './GetRenderMapVisitor';
 
-export type RenderJavaScriptExperimentalOptions =
-  GetJavaScriptExperimentalRenderMapOptions & {
-    deleteFolderBeforeRendering?: boolean;
-    throwLevel?: LogLevel;
-  };
+export type RenderJavaScriptExperimentalOptions = GetRenderMapOptions & {
+  deleteFolderBeforeRendering?: boolean;
+  throwLevel?: LogLevel;
+};
 
 export class RenderJavaScriptExperimentalVisitor extends BaseThrowVisitor<void> {
   constructor(
@@ -32,7 +31,7 @@ export class RenderJavaScriptExperimentalVisitor extends BaseThrowVisitor<void> 
     visit(
       root,
       new WriteRenderMapVisitor(
-        new GetJavaScriptExperimentalRenderMapVisitor(this.options),
+        new GetRenderMapVisitor(this.options),
         this.path
       )
     );

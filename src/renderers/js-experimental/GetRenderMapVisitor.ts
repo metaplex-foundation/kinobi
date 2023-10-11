@@ -41,7 +41,7 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   parser: 'typescript',
 };
 
-export type GetJavaScriptExperimentalRenderMapOptions = {
+export type GetRenderMapOptions = {
   renderParentInstructions?: boolean;
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
@@ -53,12 +53,12 @@ export type GetJavaScriptExperimentalRenderMapOptions = {
   resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
 };
 
-export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
-  readonly options: Required<GetJavaScriptExperimentalRenderMapOptions>;
+export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
+  readonly options: Required<GetRenderMapOptions>;
 
   private program: nodes.ProgramNode | null = null;
 
-  constructor(options: GetJavaScriptExperimentalRenderMapOptions = {}) {
+  constructor(options: GetRenderMapOptions = {}) {
     super();
     this.options = {
       renderParentInstructions: options.renderParentInstructions ?? false,
