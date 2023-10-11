@@ -467,7 +467,9 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
 
     // Optional default value.
     if (structFieldType.defaultsTo.strategy === 'optional') {
-      childManifest.looseType.render = `${docblock}${name}?: ${originalLooseType}; `;
+      childManifest.looseType.setRender(
+        `${docblock}${name}?: ${originalLooseType}; `
+      );
       return childManifest;
     }
 
