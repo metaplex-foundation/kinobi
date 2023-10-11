@@ -8,6 +8,7 @@ import { getValueNodeFragment } from './valueNode';
 
 export function getAccountPdaHelpersFragment(
   accountNode: nodes.AccountNode,
+  programNode: nodes.ProgramNode,
   typeManifestVisitor: Visitor<TypeManifest>
 ): Fragment {
   if (accountNode.seeds.length === 0) {
@@ -39,6 +40,7 @@ export function getAccountPdaHelpersFragment(
 
   return fragmentFromTemplate('accountPdaHelpers.njk', {
     pascalCaseName: pascalCase(accountNode.name),
+    program: programNode,
     seeds,
     hasVariableSeeds,
   })

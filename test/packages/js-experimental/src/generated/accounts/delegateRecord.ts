@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import {
+  Base58EncodedAddress,
+  ProgramDerivedAddress,
+  getAddressEncoder,
+} from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -31,8 +35,7 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { Pda, gpaBuilder } from 'umi';
-import { publicKey as publicKeySerializer } from 'umiSerializers';
+import { gpaBuilder } from 'umi';
 import {
   DelegateRole,
   DelegateRoleArgs,
@@ -162,4 +165,46 @@ export function getDelegateRecordGpaBuilder(
 }
 export function getDelegateRecordSize(): number {
   return 282;
+}
+
+export function findDelegateRecordPda(
+  context: Pick<Context, 'eddsa' | 'programs'>,
+  seeds: {
+    /** The delegate role */
+    role: DelegateRoleArgs;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return context.eddsa.findPda(programId, [
+    getStringEncoder({ size: 'variable' }).encode('delegate_record'),
+    getAddressEncoder().encode(programId),
+    getDelegateRoleEncoder().encode(seeds.role),
+  ]);
+}
+
+export async function fetchDelegateRecordFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findDelegateRecordPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<DelegateRecord> {
+  return fetchDelegateRecord(
+    context,
+    findDelegateRecordPda(context, seeds),
+    options
+  );
+}
+
+export async function safeFetchDelegateRecordFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findDelegateRecordPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<DelegateRecord | null> {
+  return safeFetchDelegateRecord(
+    context,
+    findDelegateRecordPda(context, seeds),
+    options
+  );
 }

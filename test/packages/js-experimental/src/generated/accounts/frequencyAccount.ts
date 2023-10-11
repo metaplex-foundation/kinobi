@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import {
+  Base58EncodedAddress,
+  ProgramDerivedAddress,
+  getAddressEncoder,
+} from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -36,8 +40,7 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { Pda, gpaBuilder } from 'umi';
-import { publicKey as publicKeySerializer } from 'umiSerializers';
+import { gpaBuilder } from 'umi';
 import { TaKey } from '../types';
 
 export type FrequencyAccount = Account<FrequencyAccountAccountData>;
@@ -175,4 +178,39 @@ export function getFrequencyAccountGpaBuilder(
 }
 export function getFrequencyAccountSize(): number {
   return 24;
+}
+
+export function findFrequencyAccountPda(
+  context: Pick<Context, 'eddsa' | 'programs'>
+): Pda {
+  const programId = context.programs.getPublicKey(
+    'mplTokenAuthRules',
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  );
+  return context.eddsa.findPda(programId, [
+    getStringEncoder({ size: 'variable' }).encode('frequency_pda'),
+    getAddressEncoder().encode(programId),
+  ]);
+}
+
+export async function fetchFrequencyAccountFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  options?: RpcGetAccountOptions
+): Promise<FrequencyAccount> {
+  return fetchFrequencyAccount(
+    context,
+    findFrequencyAccountPda(context),
+    options
+  );
+}
+
+export async function safeFetchFrequencyAccountFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  options?: RpcGetAccountOptions
+): Promise<FrequencyAccount | null> {
+  return safeFetchFrequencyAccount(
+    context,
+    findFrequencyAccountPda(context),
+    options
+  );
 }

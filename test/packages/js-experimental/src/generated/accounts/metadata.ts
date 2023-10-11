@@ -8,6 +8,7 @@
 
 import {
   Base58EncodedAddress,
+  ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -50,8 +51,7 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { Pda, gpaBuilder } from 'umi';
-import { publicKey as publicKeySerializer } from 'umiSerializers';
+import { gpaBuilder } from 'umi';
 import {
   Collection,
   CollectionArgs,
@@ -296,4 +296,38 @@ export function getMetadataGpaBuilder(
 }
 export function getMetadataSize(): number {
   return 679;
+}
+
+export function findMetadataPda(
+  context: Pick<Context, 'eddsa' | 'programs'>,
+  seeds: {
+    /** The address of the mint account */
+    mint: Base58EncodedAddress;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return context.eddsa.findPda(programId, [
+    getStringEncoder({ size: 'variable' }).encode('metadata'),
+    getAddressEncoder().encode(programId),
+    getAddressEncoder().encode(seeds.mint),
+  ]);
+}
+
+export async function fetchMetadataFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findMetadataPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Metadata> {
+  return fetchMetadata(context, findMetadataPda(context, seeds), options);
+}
+
+export async function safeFetchMetadataFromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findMetadataPda>[1],
+  options?: RpcGetAccountOptions
+): Promise<Metadata | null> {
+  return safeFetchMetadata(context, findMetadataPda(context, seeds), options);
 }

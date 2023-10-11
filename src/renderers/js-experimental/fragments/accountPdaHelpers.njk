@@ -1,3 +1,5 @@
+{% import "templates/macros.njk" as macros %}
+
 export function find{{ pascalCaseName }}Pda(
   context: Pick<Context, 'eddsa' | 'programs'>,
   {% if hasVariableSeeds %}

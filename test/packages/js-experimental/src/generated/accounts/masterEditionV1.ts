@@ -8,6 +8,7 @@
 
 import {
   Base58EncodedAddress,
+  ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -41,8 +42,7 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { Pda, gpaBuilder } from 'umi';
-import { publicKey as publicKeySerializer } from 'umiSerializers';
+import { gpaBuilder } from 'umi';
 import {
   DelegateRoleArgs,
   TmKey,
@@ -184,4 +184,46 @@ export function getMasterEditionV1GpaBuilder(
       deserializeMasterEditionV1(account)
     )
     .whereField('key', TmKey.MasterEditionV1);
+}
+
+export function findMasterEditionV1Pda(
+  context: Pick<Context, 'eddsa' | 'programs'>,
+  seeds: {
+    /** The role of the delegate */
+    delegateRole: DelegateRoleArgs;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return context.eddsa.findPda(programId, [
+    getStringEncoder({ size: 'variable' }).encode('metadata'),
+    getAddressEncoder().encode(programId),
+    getDelegateRoleEncoder().encode(seeds.delegateRole),
+  ]);
+}
+
+export async function fetchMasterEditionV1FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findMasterEditionV1Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV1> {
+  return fetchMasterEditionV1(
+    context,
+    findMasterEditionV1Pda(context, seeds),
+    options
+  );
+}
+
+export async function safeFetchMasterEditionV1FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findMasterEditionV1Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV1 | null> {
+  return safeFetchMasterEditionV1(
+    context,
+    findMasterEditionV1Pda(context, seeds),
+    options
+  );
 }

@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress, getAddressEncoder } from '@solana/addresses';
+import {
+  Base58EncodedAddress,
+  ProgramDerivedAddress,
+  getAddressEncoder,
+} from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -37,8 +41,7 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { Pda, gpaBuilder } from 'umi';
-import { publicKey as publicKeySerializer } from 'umiSerializers';
+import { gpaBuilder } from 'umi';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;
@@ -164,4 +167,47 @@ export function getMasterEditionV2GpaBuilder(
 }
 export function getMasterEditionV2Size(): number {
   return 282;
+}
+
+export function findMasterEditionV2Pda(
+  context: Pick<Context, 'eddsa' | 'programs'>,
+  seeds: {
+    /** The address of the mint account */
+    mint: Base58EncodedAddress;
+  }
+): Pda {
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return context.eddsa.findPda(programId, [
+    getStringEncoder({ size: 'variable' }).encode('metadata'),
+    getAddressEncoder().encode(programId),
+    getAddressEncoder().encode(seeds.mint),
+    getStringEncoder({ size: 'variable' }).encode('edition'),
+  ]);
+}
+
+export async function fetchMasterEditionV2FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findMasterEditionV2Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV2> {
+  return fetchMasterEditionV2(
+    context,
+    findMasterEditionV2Pda(context, seeds),
+    options
+  );
+}
+
+export async function safeFetchMasterEditionV2FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  seeds: Parameters<typeof findMasterEditionV2Pda>[1],
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV2 | null> {
+  return safeFetchMasterEditionV2(
+    context,
+    findMasterEditionV2Pda(context, seeds),
+    options
+  );
 }
