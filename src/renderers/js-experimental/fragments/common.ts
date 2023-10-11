@@ -2,6 +2,7 @@ import { ConfigureOptions } from 'nunjucks';
 import { ImportFrom } from '../../../shared';
 import { resolveTemplate } from '../../utils';
 import { ImportMap } from '../ImportMap';
+import { ContextMap } from '../ContextMap';
 
 export function fragment(render: string, imports?: ImportMap): Fragment {
   return new Fragment(render, imports);
@@ -37,9 +38,12 @@ export class Fragment {
 
   public imports: ImportMap;
 
+  public context: ContextMap;
+
   constructor(render: string, imports?: ImportMap) {
     this.render = render;
     this.imports = imports ?? new ImportMap();
+    this.context = new ContextMap();
   }
 
   mapRender(fn: (render: string) => string): Fragment {

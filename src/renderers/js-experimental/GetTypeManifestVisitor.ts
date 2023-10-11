@@ -13,9 +13,7 @@ function getDecoderFunction(name: string) {
   return `get${pascalCase(name)}Decoder`;
 }
 
-export class GetJavaScriptExperimentalTypeManifestVisitor
-  implements Visitor<TypeManifest>
-{
+export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   private parentName: { strict: string; loose: string } | null = null;
 
   visitRoot(): TypeManifest {

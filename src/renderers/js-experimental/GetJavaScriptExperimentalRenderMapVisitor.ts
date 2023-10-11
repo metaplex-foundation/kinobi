@@ -19,7 +19,7 @@ import {
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
-import { GetJavaScriptExperimentalTypeManifestVisitor } from './GetJavaScriptExperimentalTypeManifestVisitor';
+import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ContextMap } from './ContextMap';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalInstructionDefaults } from './RenderJavaScriptExperimentalInstructionDefaults';
@@ -69,8 +69,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
       },
       dependencyMap: options.dependencyMap ?? {},
       typeManifestVisitor:
-        options.typeManifestVisitor ??
-        new GetJavaScriptExperimentalTypeManifestVisitor(),
+        options.typeManifestVisitor ?? new GetTypeManifestVisitor(),
       byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
