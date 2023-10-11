@@ -1,3 +1,5 @@
+import { Fragment } from './fragments';
+
 export type ContextInterface =
   | 'downloader'
   | 'eddsa'
@@ -30,8 +32,12 @@ export class ContextMap {
     return this;
   }
 
-  mergeWith(...others: ContextMap[]): ContextMap {
-    others.forEach((other) => this.add([...other._interfaces]));
+  mergeWith(...others: (ContextMap | Fragment)[]): ContextMap {
+    others.forEach((other) =>
+      this.add([
+        ...('interfaces' in other ? other.interfaces : other)._interfaces,
+      ])
+    );
     return this;
   }
 

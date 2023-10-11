@@ -19,16 +19,16 @@ import {
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
-import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ContextMap } from './ContextMap';
-import { ImportMap } from './ImportMap';
-import { renderJavaScriptExperimentalInstructionDefaults } from './RenderJavaScriptExperimentalInstructionDefaults';
-import { TypeManifest } from './TypeManifest';
 import {
+  getInstructionDefaultFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
   getValueNodeFragment,
 } from './fragments';
+import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
+import { ImportMap } from './ImportMap';
+import { TypeManifest } from './TypeManifest';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -388,7 +388,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       this.resolvedInstructionInputVisitor
     ).map((input: ResolvedInstructionInput) => {
-      const renderedInput = renderJavaScriptExperimentalInstructionDefaults(
+      const renderedInput = getInstructionDefaultFragment(
         input,
         instruction.optionalAccountStrategy,
         argObject

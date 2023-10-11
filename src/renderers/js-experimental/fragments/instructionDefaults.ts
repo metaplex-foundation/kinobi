@@ -4,120 +4,99 @@ import {
   InstructionDefault,
   camelCase,
   pascalCase,
-} from '../../shared';
-import { ResolvedInstructionInput } from '../../visitors';
-import { ContextMap } from './ContextMap';
-import { ImportMap } from './ImportMap';
-import { getValueNodeFragment } from './fragments';
+} from '../../../shared';
+import { ResolvedInstructionInput } from '../../../visitors';
+import { Fragment, fragment } from './common';
+import { getValueNodeFragment } from './valueNode';
 
-export function renderJavaScriptExperimentalInstructionDefaults(
+export function getInstructionDefaultFragment(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
   argObject: string
-): {
-  imports: ImportMap;
-  interfaces: ContextMap;
-  render: string;
-} {
-  const imports = new ImportMap();
-  const interfaces = new ContextMap();
-
+): Fragment {
   if (!input.defaultsTo) {
-    return { imports, interfaces, render: '' };
+    return fragment('');
   }
 
   const { defaultsTo } = input;
-  const render = (
+  const defaultFragment = (
     defaultValue: string,
     isWritable?: boolean
-  ): {
-    imports: ImportMap;
-    interfaces: ContextMap;
-    render: string;
-  } => {
+  ): Fragment => {
     const inputName = camelCase(input.name);
     if (input.kind === 'account' && defaultsTo.kind === 'resolver') {
-      return {
-        imports,
-        interfaces,
-        render: `resolvedAccounts.${inputName} = { ...resolvedAccounts.${inputName}, ...${defaultValue} };`,
-      };
+      return fragment(
+        `resolvedAccounts.${inputName} = { ...resolvedAccounts.${inputName}, ...${defaultValue} };`
+      );
     }
     if (input.kind === 'account' && isWritable === undefined) {
-      return {
-        imports,
-        interfaces,
-        render: `resolvedAccounts.${inputName}.value = ${defaultValue};`,
-      };
+      return fragment(`resolvedAccounts.${inputName}.value = ${defaultValue};`);
     }
     if (input.kind === 'account') {
-      return {
-        imports,
-        interfaces,
-        render:
-          `resolvedAccounts.${inputName}.value = ${defaultValue};\n` +
+      return fragment(
+        `resolvedAccounts.${inputName}.value = ${defaultValue};\n` +
           `resolvedAccounts.${inputName}.isWritable = ${
             isWritable ? 'true' : 'false'
-          }`,
-      };
+          }`
+      );
     }
-    return {
-      imports,
-      interfaces,
-      render: `${argObject}.${inputName} = ${defaultValue};`,
-    };
+    return fragment(`${argObject}.${inputName} = ${defaultValue};`);
   };
 
   switch (defaultsTo.kind) {
     case 'account':
       const name = camelCase(defaultsTo.name);
       if (input.kind === 'account') {
-        imports.add('shared', 'expectSome');
-        if (input.resolvedIsSigner && !input.isSigner) {
-          return render(`expectSome(resolvedAccounts.${name}.value).publicKey`);
-        }
-        return render(`expectSome(resolvedAccounts.${name}.value)`);
+        return defaultFragment(
+          input.resolvedIsSigner && !input.isSigner
+            ? `expectSome(resolvedAccounts.${name}.value).publicKey`
+            : `expectSome(resolvedAccounts.${name}.value)`
+        ).addImports('shared', 'expectSome');
       }
-      imports.add('shared', 'expectPublicKey');
-      return render(`expectPublicKey(resolvedAccounts.${name}.value)`);
+      return defaultFragment(
+        `expectPublicKey(resolvedAccounts.${name}.value)`
+      ).addImports('shared', 'expectPublicKey');
+
     case 'pda':
       const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
       const pdaImportFrom =
         defaultsTo.importFrom === 'generated'
           ? 'generatedAccounts'
           : defaultsTo.importFrom;
-      imports.add(pdaImportFrom, pdaFunction);
-      interfaces.add('eddsa');
       const pdaArgs = ['context'];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
-        (seed: string): string => {
+        (seed: string): Fragment => {
           const seedValue = defaultsTo.seeds[seed];
           if (seedValue.kind === 'account') {
-            imports.add('shared', 'expectPublicKey');
-            return `${seed}: expectPublicKey(resolvedAccounts.${camelCase(
-              seedValue.name
-            )}.value)`;
+            return fragment(
+              `${seed}: expectPublicKey(resolvedAccounts.${camelCase(
+                seedValue.name
+              )}.value)`
+            ).addImports('shared', 'expectPublicKey');
           }
           if (seedValue.kind === 'arg') {
-            imports.add('shared', 'expectSome');
-            return `${seed}: expectSome(${argObject}.${camelCase(
-              seedValue.name
-            )})`;
+            return fragment(
+              `${seed}: expectSome(${argObject}.${camelCase(seedValue.name)})`
+            ).addImports('shared', 'expectSome');
           }
-          const valueManifest = getValueNodeFragment(seedValue.value);
-          imports.mergeWith(valueManifest.imports);
-          return `${seed}: ${valueManifest.render}`;
+          return getValueNodeFragment(seedValue.value).mapRender(
+            (r) => `${seed}: ${r}`
+          );
         }
       );
       if (pdaSeeds.length > 0) {
         pdaArgs.push(`{ ${pdaSeeds.join(', ')} }`);
       }
-      return render(`${pdaFunction}(${pdaArgs.join(', ')})`);
+      return defaultFragment(`${pdaFunction}(${pdaArgs.join(', ')})`)
+        .addImports(pdaImportFrom, pdaFunction)
+        .addInterfaces('eddsa');
     case 'publicKey':
-      imports.add('umi', 'publicKey');
-      return render(`publicKey('${defaultsTo.publicKey}')`);
+      return defaultFragment(`address('${defaultsTo.publicKey}')`).addImports(
+        'solanaAddresses',
+        'address'
+      );
     case 'program':
-      return render(
+      return defaultFragment(
         `context.programs.getPublicKey('${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
         false
       );
@@ -127,42 +106,43 @@ export function renderJavaScriptExperimentalInstructionDefaults(
         input.kind === 'account' &&
         input.isOptional
       ) {
-        return { imports, interfaces, render: '' };
+        return fragment('');
       }
-      return render('programId', false);
+      return defaultFragment('programId', false);
     case 'identity':
-      interfaces.add('identity');
-      if (input.kind === 'account' && input.isSigner !== false) {
-        return render('context.identity');
-      }
-      return render('context.identity.publicKey');
+      return defaultFragment(
+        input.kind === 'account' && input.isSigner !== false
+          ? 'context.identity'
+          : 'context.identity.publicKey'
+      ).addInterfaces('identity');
     case 'payer':
-      interfaces.add('payer');
-      if (input.kind === 'account' && input.isSigner !== false) {
-        return render('context.payer');
-      }
-      return render('context.payer.publicKey');
+      return defaultFragment(
+        input.kind === 'account' && input.isSigner !== false
+          ? 'context.payer'
+          : 'context.payer.publicKey'
+      ).addInterfaces('payer');
     case 'accountBump':
-      imports.add('shared', 'expectPda');
-      return render(
+      return defaultFragment(
         `expectPda(resolvedAccounts.${camelCase(defaultsTo.name)}.value)[1]`
-      );
+      ).addImports('shared', 'expectPda');
     case 'arg':
-      imports.add('shared', 'expectSome');
-      return render(`expectSome(${argObject}.${camelCase(defaultsTo.name)})`);
+      return defaultFragment(
+        `expectSome(${argObject}.${camelCase(defaultsTo.name)})`
+      ).addImports('shared', 'expectSome');
     case 'value':
       const valueManifest = getValueNodeFragment(defaultsTo.value);
-      imports.mergeWith(valueManifest.imports);
-      return render(valueManifest.render);
+      return defaultFragment(valueManifest.render).mergeImportsWith(
+        valueManifest
+      );
     case 'resolver':
       const resolverName = camelCase(defaultsTo.name);
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
-      imports.add(defaultsTo.importFrom, resolverName);
-      interfaces.add(['eddsa', 'identity', 'payer']);
-      return render(
+      return defaultFragment(
         `${resolverName}(context, resolvedAccounts, ${argObject}, programId, ${isWritable})`
-      );
+      )
+        .addImports(defaultsTo.importFrom, resolverName)
+        .addInterfaces(['eddsa', 'identity', 'payer']);
     case 'conditional':
     case 'conditionalResolver':
       const ifTrueRenderer = renderNestedInstructionDefault(
@@ -178,15 +158,16 @@ export function renderJavaScriptExperimentalInstructionDefaults(
         argObject
       );
       if (!ifTrueRenderer && !ifFalseRenderer) {
-        return { imports, interfaces, render: '' };
+        return fragment('');
       }
+      const conditionalFragment = fragment('');
       if (ifTrueRenderer) {
-        imports.mergeWith(ifTrueRenderer.imports);
-        interfaces.mergeWith(ifTrueRenderer.interfaces);
+        conditionalFragment.mergeImportsWith(ifTrueRenderer.imports);
+        conditionalFragment.mergeInterfacesWith(ifTrueRenderer.interfaces);
       }
       if (ifFalseRenderer) {
-        imports.mergeWith(ifFalseRenderer.imports);
-        interfaces.mergeWith(ifFalseRenderer.interfaces);
+        conditionalFragment.mergeImportsWith(ifFalseRenderer.imports);
+        conditionalFragment.mergeInterfacesWith(ifFalseRenderer.interfaces);
       }
       const negatedCondition = !ifTrueRenderer;
       let condition = 'true';
@@ -198,7 +179,7 @@ export function renderJavaScriptExperimentalInstructionDefaults(
             : `${argObject}.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
           const comparedValue = getValueNodeFragment(defaultsTo.value);
-          imports.mergeWith(comparedValue.imports);
+          conditionalFragment.mergeImportsWith(comparedValue.imports);
           const operator = negatedCondition ? '!==' : '===';
           condition = `${comparedInputName} ${operator} ${comparedValue.render}`;
         } else {
@@ -210,27 +191,26 @@ export function renderJavaScriptExperimentalInstructionDefaults(
         const conditionalResolverName = camelCase(defaultsTo.resolver.name);
         const conditionalIsWritable =
           input.kind === 'account' && input.isWritable ? 'true' : 'false';
-        imports.add(defaultsTo.resolver.importFrom, conditionalResolverName);
-        interfaces.add(['eddsa', 'identity', 'payer']);
+        conditionalFragment.addImports(
+          defaultsTo.resolver.importFrom,
+          conditionalResolverName
+        );
+        conditionalFragment.addInterfaces(['eddsa', 'identity', 'payer']);
         condition = `${conditionalResolverName}(context, resolvedAccounts, ${argObject}, programId, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 
       if (ifTrueRenderer && ifFalseRenderer) {
-        return {
-          imports,
-          interfaces,
-          render: `if (${condition}) {\n${ifTrueRenderer.render}\n} else {\n${ifFalseRenderer.render}\n}`,
-        };
+        return conditionalFragment.setRender(
+          `if (${condition}) {\n${ifTrueRenderer.render}\n} else {\n${ifFalseRenderer.render}\n}`
+        );
       }
 
-      return {
-        imports,
-        interfaces,
-        render: `if (${condition}) {\n${
+      return conditionalFragment.setRender(
+        `if (${condition}) {\n${
           ifTrueRenderer ? ifTrueRenderer.render : ifFalseRenderer?.render
-        }\n}`,
-      };
+        }\n}`
+      );
     default:
       const neverDefault: never = defaultsTo;
       throw new Error(`Unexpected value type ${(neverDefault as any).kind}`);
@@ -242,24 +222,18 @@ function renderNestedInstructionDefault(
   optionalAccountStrategy: 'programId' | 'omitted',
   defaultsTo: InstructionDefault | undefined,
   argObject: string
-):
-  | {
-      imports: ImportMap;
-      interfaces: ContextMap;
-      render: string;
-    }
-  | undefined {
+): Fragment | undefined {
   if (!defaultsTo) return undefined;
 
   if (input.kind === 'account') {
-    return renderJavaScriptExperimentalInstructionDefaults(
+    return getInstructionDefaultFragment(
       { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
       optionalAccountStrategy,
       argObject
     );
   }
 
-  return renderJavaScriptExperimentalInstructionDefaults(
+  return getInstructionDefaultFragment(
     { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
     optionalAccountStrategy,
     argObject

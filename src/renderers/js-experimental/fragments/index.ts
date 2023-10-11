@@ -1,4 +1,5 @@
 export * from './common';
+export * from './instructionDefaults';
 export * from './type';
 export * from './typeCodec';
 export * from './typeDataEnumHelpers';
