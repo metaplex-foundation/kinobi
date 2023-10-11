@@ -18,12 +18,12 @@ import { ContextMap } from './ContextMap';
 import {
   getAccountFetchHelpersFragment,
   getAccountGpaHelpersFragment,
+  getAccountPdaHelpersFragment,
   getAccountSizeHelpersFragment,
   getAccountTypeFragment,
   getInstructionDefaultFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
-  getValueNodeFragment,
 } from './fragments';
 import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
@@ -201,53 +201,27 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.byteSizeVisitor
     );
     const accountSizeHelpersFragment = getAccountSizeHelpersFragment(account);
+    const accountPdaHelpersFragment = getAccountPdaHelpersFragment(
+      account,
+      this.typeManifestVisitor
+    );
     const imports = new ImportMap().mergeWith(
       accountTypeFragment,
       accountFetchHelpersFragment,
       accountGpaHelpersFragment,
-      accountSizeHelpersFragment
+      accountSizeHelpersFragment,
+      accountPdaHelpersFragment
     );
-
-    // Seeds.
-    const seeds = account.seeds.map((seed) => {
-      if (seed.kind === 'constant') {
-        const seedManifest = visit(seed.type, this.typeManifestVisitor);
-        imports.mergeWith(seedManifest.encoder);
-        const seedValue = seed.value;
-        const valueManifest = getValueNodeFragment(seedValue);
-        (seedValue as any).render = valueManifest.render;
-        imports.mergeWith(valueManifest.imports);
-        return { ...seed, typeManifest: seedManifest };
-      }
-      if (seed.kind === 'variable') {
-        const seedManifest = visit(seed.type, this.typeManifestVisitor);
-        imports.mergeWith(seedManifest.looseType, seedManifest.encoder);
-        return { ...seed, typeManifest: seedManifest };
-      }
-      imports
-        .add('umiSerializers', 'publicKey')
-        .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
-      return seed;
-    });
-    if (seeds.length > 0) {
-      imports.add('umi', ['Pda']);
-    }
-    const hasVariableSeeds =
-      account.seeds.filter((seed) => seed.kind === 'variable').length > 0;
 
     return new RenderMap().add(
       `accounts/${camelCase(account.name)}.ts`,
       this.render('accountsPage.njk', {
-        account,
         imports: imports.toString(this.options.dependencyMap),
         accountTypeFragment,
         accountFetchHelpersFragment,
         accountGpaHelpersFragment,
         accountSizeHelpersFragment,
-        program: this.program,
-        typeManifest,
-        seeds,
-        hasVariableSeeds,
+        accountPdaHelpersFragment,
       })
     );
   }

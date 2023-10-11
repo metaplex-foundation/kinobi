@@ -1,0 +1,46 @@
+export function find{{ pascalCaseName }}Pda(
+  context: Pick<Context, 'eddsa' | 'programs'>,
+  {% if hasVariableSeeds %}
+    seeds: {
+      {% for seed in seeds %}
+        {% if seed.kind === 'variable' %}
+          {{ macros.docblock(seed.docs) }}
+          {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType.render }};
+        {% endif %}
+      {% endfor %}
+    }
+  {% endif %}
+): Pda {
+  const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
+  return context.eddsa.findPda(programId, [
+    {% for seed in seeds %}
+      {% if seed.kind === 'programId' %}
+        getAddressEncoder().encode(programId),
+      {% elif seed.kind === 'constant' %}
+        {{ seed.typeManifest.encoder.render }}.encode({{ seed.value.render }}),
+      {% else %}
+        {{ seed.typeManifest.encoder.render }}.encode(seeds.{{ seed.name | camelCase }}),
+      {% endif %}
+    {% endfor %}
+  ]);
+}
+
+export async function fetch{{ pascalCaseName }}FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  {% if hasVariableSeeds %}
+    seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
+  {% endif %}
+  options?: RpcGetAccountOptions,
+): Promise<{{ pascalCaseName }}> {
+  return fetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %}), options);
+}
+
+export async function safeFetch{{ pascalCaseName }}FromSeeds(
+  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  {% if hasVariableSeeds %}
+    seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
+  {% endif %}
+  options?: RpcGetAccountOptions,
+): Promise<{{ pascalCaseName }} | null> {
+  return safeFetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %}), options);
+}
