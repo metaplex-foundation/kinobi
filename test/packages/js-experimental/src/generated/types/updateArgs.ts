@@ -37,8 +37,8 @@ import {
   OptionOrNullable,
   getOptionDecoder,
   getOptionEncoder,
+  some,
 } from '@solana/options';
-import { some } from 'umi';
 import {
   AuthorityType,
   AuthorityTypeArgs,

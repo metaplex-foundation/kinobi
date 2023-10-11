@@ -1,9 +1,8 @@
 import * as nodes from '../../nodes';
 import { SizeStrategy, camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
-import { Fragment, fragment } from './fragments';
+import { Fragment, fragment, getValueNodeFragment } from './fragments';
 import { ImportMap } from './ImportMap';
-import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
 import { TypeManifest, mergeManifests } from './TypeManifest';
 
 function getEncoderFunction(name: string) {
@@ -434,8 +433,9 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
       .map((f) => {
         const key = camelCase(f.name);
         const defaultsTo = f.defaultsTo as NonNullable<typeof f.defaultsTo>;
-        const { render: renderedValue, imports } =
-          renderJavaScriptExperimentalValueNode(defaultsTo.value);
+        const { render: renderedValue, imports } = getValueNodeFragment(
+          defaultsTo.value
+        );
         mergedManifest.encoder.mergeImportsWith(imports);
         return defaultsTo.strategy === 'omitted'
           ? `${key}: ${renderedValue}`

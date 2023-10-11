@@ -23,11 +23,11 @@ import { GetJavaScriptExperimentalTypeManifestVisitor } from './GetJavaScriptExp
 import { ContextMap } from './ContextMap';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalInstructionDefaults } from './RenderJavaScriptExperimentalInstructionDefaults';
-import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
 import { TypeManifest } from './TypeManifest';
 import {
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
+  getValueNodeFragment,
 } from './fragments';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
@@ -230,9 +230,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
         (f) => f.name === discriminator.name
       );
       const discriminatorValue = discriminatorField?.defaultsTo?.value
-        ? renderJavaScriptExperimentalValueNode(
-            discriminatorField.defaultsTo.value
-          )
+        ? getValueNodeFragment(discriminatorField.defaultsTo.value)
         : undefined;
       if (discriminatorValue) {
         imports.mergeWith(discriminatorValue.imports);
@@ -280,7 +278,7 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
         const seedManifest = visit(seed.type, this.typeManifestVisitor);
         imports.mergeWith(seedManifest.encoder);
         const seedValue = seed.value;
-        const valueManifest = renderJavaScriptExperimentalValueNode(seedValue);
+        const valueManifest = getValueNodeFragment(seedValue);
         (seedValue as any).render = valueManifest.render;
         imports.mergeWith(valueManifest.imports);
         return { ...seed, typeManifest: seedManifest };

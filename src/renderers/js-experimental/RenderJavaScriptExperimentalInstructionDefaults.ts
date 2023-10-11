@@ -8,7 +8,7 @@ import {
 import { ResolvedInstructionInput } from '../../visitors';
 import { ContextMap } from './ContextMap';
 import { ImportMap } from './ImportMap';
-import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
+import { getValueNodeFragment } from './fragments';
 
 export function renderJavaScriptExperimentalInstructionDefaults(
   input: ResolvedInstructionInput,
@@ -104,9 +104,7 @@ export function renderJavaScriptExperimentalInstructionDefaults(
               seedValue.name
             )})`;
           }
-          const valueManifest = renderJavaScriptExperimentalValueNode(
-            seedValue.value
-          );
+          const valueManifest = getValueNodeFragment(seedValue.value);
           imports.mergeWith(valueManifest.imports);
           return `${seed}: ${valueManifest.render}`;
         }
@@ -153,9 +151,7 @@ export function renderJavaScriptExperimentalInstructionDefaults(
       imports.add('shared', 'expectSome');
       return render(`expectSome(${argObject}.${camelCase(defaultsTo.name)})`);
     case 'value':
-      const valueManifest = renderJavaScriptExperimentalValueNode(
-        defaultsTo.value
-      );
+      const valueManifest = getValueNodeFragment(defaultsTo.value);
       imports.mergeWith(valueManifest.imports);
       return render(valueManifest.render);
     case 'resolver':
@@ -201,9 +197,7 @@ export function renderJavaScriptExperimentalInstructionDefaults(
             ? `resolvedAccounts.${camelCase(defaultsTo.input.name)}.value`
             : `${argObject}.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
-          const comparedValue = renderJavaScriptExperimentalValueNode(
-            defaultsTo.value
-          );
+          const comparedValue = getValueNodeFragment(defaultsTo.value);
           imports.mergeWith(comparedValue.imports);
           const operator = negatedCondition ? '!==' : '===';
           condition = `${comparedInputName} ${operator} ${comparedValue.render}`;
