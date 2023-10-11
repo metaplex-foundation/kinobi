@@ -1,8 +1,25 @@
-import { ImportFrom } from '../../shared';
-import { ImportMap } from './ImportMap';
+import { ConfigureOptions } from 'nunjucks';
+import { ImportFrom } from '../../../shared';
+import { resolveTemplate } from '../../utils';
+import { ImportMap } from '../ImportMap';
 
 export function fragment(render: string, imports?: ImportMap): Fragment {
   return new Fragment(render, imports);
+}
+
+export function fragmentFromTemplate(
+  fragmentFile: string,
+  context?: object,
+  options?: ConfigureOptions
+): Fragment {
+  return fragment(
+    resolveTemplate(
+      `${__dirname}/..`,
+      `fragments/${fragmentFile}`,
+      context,
+      options
+    )
+  );
 }
 
 export function mergeFragments(

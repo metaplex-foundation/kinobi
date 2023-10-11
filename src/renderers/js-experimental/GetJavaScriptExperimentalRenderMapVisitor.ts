@@ -24,10 +24,8 @@ import { ContextMap } from './ContextMap';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalInstructionDefaults } from './RenderJavaScriptExperimentalInstructionDefaults';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
-import {
-  getTypeWithCodecFragmentFromManifest,
-  TypeManifest,
-} from './TypeManifest';
+import { TypeManifest } from './TypeManifest';
+import { getTypeWithCodecFragment } from './fragments';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -515,9 +513,10 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
     const pascalCaseName = pascalCase(definedType.name);
     const typeManifest = visit(definedType, this.typeManifestVisitor);
-    const typeWithCodecFragment = getTypeWithCodecFragmentFromManifest(
+    const typeWithCodecFragment = getTypeWithCodecFragment(
       pascalCaseName,
-      typeManifest
+      typeManifest,
+      definedType.docs
     );
     const imports = new ImportMap()
       .mergeWith(typeWithCodecFragment)

@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { SizeStrategy, camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
-import { Fragment, fragment } from './Fragment';
+import { Fragment, fragment } from './fragments';
 import { ImportMap } from './ImportMap';
 import { renderJavaScriptExperimentalValueNode } from './RenderJavaScriptExperimentalValueNode';
 import { TypeManifest, mergeManifests } from './TypeManifest';

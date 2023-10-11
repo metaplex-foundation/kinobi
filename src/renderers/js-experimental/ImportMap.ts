@@ -1,5 +1,5 @@
 import type { ImportFrom } from '../../shared';
-import { Fragment } from './Fragment';
+import { Fragment } from './fragments';
 import { TypeManifest } from './TypeManifest';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
