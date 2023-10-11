@@ -4,6 +4,10 @@ const kinobi = k.createFromIdls([
   __dirname + '/mpl_candy_machine_core.json',
   __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
+  __dirname + '/spl_compute_budget.json',
+  __dirname + '/spl_memo.json',
+  __dirname + '/spl_system.json',
+  __dirname + '/spl_token.json',
 ]);
 
 kinobi.update(
@@ -62,11 +66,13 @@ kinobi.update(
     'mplTokenMetadata.Key': { name: 'TmKey' },
     'mplTokenMetadata.CreateArgs': { name: 'TmCreateArgs' },
     'mplTokenAuthRules.CreateArgs': { name: 'TaCreateArgs' },
+    'splToken.authorityType': { name: 'tokenAuthorityType' },
   })
 );
 
 kinobi.update(
   new k.UpdateInstructionsVisitor({
+    'splToken.setAuthority': { name: 'setTokenAuthority' },
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
       args: {
@@ -255,9 +261,9 @@ kinobiReconstructed.accept(
   )
 );
 
-kinobiReconstructed.accept(
-  new k.RenderRustVisitor('./test/packages/rust/src/generated', {
-    crateFolder: './test/packages/rust',
-    formatCode: true,
-  })
-);
+// kinobiReconstructed.accept(
+//   new k.RenderRustVisitor('./test/packages/rust/src/generated', {
+//     crateFolder: './test/packages/rust',
+//     formatCode: true,
+//   })
+// );
