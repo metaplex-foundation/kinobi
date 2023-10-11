@@ -534,12 +534,10 @@ export class GetJavaScriptExperimentalRenderMapVisitor extends BaseThrowVisitor<
     return new RenderMap().add(
       `types/${camelCase(definedType.name)}.ts`,
       this.render('definedTypesPage.njk', {
-        definedType,
         imports: imports.toString({
           ...this.options.dependencyMap,
           generatedTypes: '.',
         }),
-        typeManifest,
         typeWithCodecFragment,
         typeDataEnumHelpersFragment,
       })
