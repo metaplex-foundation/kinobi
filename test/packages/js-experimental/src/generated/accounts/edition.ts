@@ -24,19 +24,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition = Account<EditionAccountData>;
@@ -85,4 +81,50 @@ export function getEditionAccountDataCodec(): Codec<
     getEditionAccountDataEncoder(),
     getEditionAccountDataDecoder()
   );
+}
+
+export function deserializeEdition(rawAccount: RpcAccount): Edition {
+  return deserializeAccount(rawAccount, getEditionAccountDataEncoder());
+}
+
+export async function fetchEdition(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Edition> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'Edition');
+  return deserializeEdition(maybeAccount);
+}
+
+export async function safeFetchEdition(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Edition | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeEdition(maybeAccount) : null;
+}
+
+export async function fetchAllEdition(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Edition[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'Edition');
+    return deserializeEdition(maybeAccount);
+  });
+}
+
+export async function safeFetchAllEdition(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Edition[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserializeEdition(maybeAccount as RpcAccount));
 }

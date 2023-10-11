@@ -22,19 +22,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 
 export type Multisig = Account<MultisigAccountData>;
 
@@ -79,4 +75,50 @@ export function getMultisigAccountDataCodec(): Codec<
     getMultisigAccountDataEncoder(),
     getMultisigAccountDataDecoder()
   );
+}
+
+export function deserializeMultisig(rawAccount: RpcAccount): Multisig {
+  return deserializeAccount(rawAccount, getMultisigAccountDataEncoder());
+}
+
+export async function fetchMultisig(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Multisig> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'Multisig');
+  return deserializeMultisig(maybeAccount);
+}
+
+export async function safeFetchMultisig(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Multisig | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeMultisig(maybeAccount) : null;
+}
+
+export async function fetchAllMultisig(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Multisig[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'Multisig');
+    return deserializeMultisig(maybeAccount);
+  });
+}
+
+export async function safeFetchAllMultisig(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Multisig[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserializeMultisig(maybeAccount as RpcAccount));
 }

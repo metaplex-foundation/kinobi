@@ -40,19 +40,16 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer, publicKey as publicKeySerializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { Pda, gpaBuilder } from 'umi';
+import { publicKey as publicKeySerializer } from 'umiSerializers';
 import {
   Collection,
   CollectionArgs,
@@ -193,4 +190,50 @@ export function getMetadataAccountDataCodec(): Codec<
     getMetadataAccountDataEncoder(),
     getMetadataAccountDataDecoder()
   );
+}
+
+export function deserializeMetadata(rawAccount: RpcAccount): Metadata {
+  return deserializeAccount(rawAccount, getMetadataAccountDataEncoder());
+}
+
+export async function fetchMetadata(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Metadata> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'Metadata');
+  return deserializeMetadata(maybeAccount);
+}
+
+export async function safeFetchMetadata(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Metadata | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeMetadata(maybeAccount) : null;
+}
+
+export async function fetchAllMetadata(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Metadata[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'Metadata');
+    return deserializeMetadata(maybeAccount);
+  });
+}
+
+export async function safeFetchAllMetadata(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Metadata[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserializeMetadata(maybeAccount as RpcAccount));
 }

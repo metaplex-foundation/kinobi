@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -20,19 +21,16 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import { getStringEncoder } from '@solana/codecs-strings';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer, publicKey as publicKeySerializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { Pda, gpaBuilder } from 'umi';
+import { publicKey as publicKeySerializer } from 'umiSerializers';
 import {
   DelegateRole,
   DelegateRoleArgs,
@@ -90,4 +88,54 @@ export function getDelegateRecordAccountDataCodec(): Codec<
     getDelegateRecordAccountDataEncoder(),
     getDelegateRecordAccountDataDecoder()
   );
+}
+
+export function deserializeDelegateRecord(
+  rawAccount: RpcAccount
+): DelegateRecord {
+  return deserializeAccount(rawAccount, getDelegateRecordAccountDataEncoder());
+}
+
+export async function fetchDelegateRecord(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<DelegateRecord> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'DelegateRecord');
+  return deserializeDelegateRecord(maybeAccount);
+}
+
+export async function safeFetchDelegateRecord(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<DelegateRecord | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeDelegateRecord(maybeAccount) : null;
+}
+
+export async function fetchAllDelegateRecord(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<DelegateRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'DelegateRecord');
+    return deserializeDelegateRecord(maybeAccount);
+  });
+}
+
+export async function safeFetchAllDelegateRecord(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<DelegateRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeDelegateRecord(maybeAccount as RpcAccount)
+    );
 }

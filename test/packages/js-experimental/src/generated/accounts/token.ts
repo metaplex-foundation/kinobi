@@ -29,19 +29,15 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 import {
   TokenState,
   TokenStateArgs,
@@ -149,4 +145,50 @@ export function getTokenAccountDataCodec(): Codec<
     getTokenAccountDataEncoder(),
     getTokenAccountDataDecoder()
   );
+}
+
+export function deserializeToken(rawAccount: RpcAccount): Token {
+  return deserializeAccount(rawAccount, getTokenAccountDataEncoder());
+}
+
+export async function fetchToken(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Token> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'Token');
+  return deserializeToken(maybeAccount);
+}
+
+export async function safeFetchToken(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Token | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeToken(maybeAccount) : null;
+}
+
+export async function fetchAllToken(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Token[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'Token');
+    return deserializeToken(maybeAccount);
+  });
+}
+
+export async function safeFetchAllToken(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Token[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserializeToken(maybeAccount as RpcAccount));
 }

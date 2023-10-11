@@ -27,19 +27,16 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer, publicKey as publicKeySerializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { Pda, gpaBuilder } from 'umi';
+import { publicKey as publicKeySerializer } from 'umiSerializers';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;
@@ -89,4 +86,54 @@ export function getMasterEditionV2AccountDataCodec(): Codec<
     getMasterEditionV2AccountDataEncoder(),
     getMasterEditionV2AccountDataDecoder()
   );
+}
+
+export function deserializeMasterEditionV2(
+  rawAccount: RpcAccount
+): MasterEditionV2 {
+  return deserializeAccount(rawAccount, getMasterEditionV2AccountDataEncoder());
+}
+
+export async function fetchMasterEditionV2(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV2> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'MasterEditionV2');
+  return deserializeMasterEditionV2(maybeAccount);
+}
+
+export async function safeFetchMasterEditionV2(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<MasterEditionV2 | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeMasterEditionV2(maybeAccount) : null;
+}
+
+export async function fetchAllMasterEditionV2(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<MasterEditionV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'MasterEditionV2');
+    return deserializeMasterEditionV2(maybeAccount);
+  });
+}
+
+export async function safeFetchAllMasterEditionV2(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<MasterEditionV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeMasterEditionV2(maybeAccount as RpcAccount)
+    );
 }

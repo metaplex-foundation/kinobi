@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -21,19 +22,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker = Account<EditionMarkerAccountData>;
@@ -74,4 +71,54 @@ export function getEditionMarkerAccountDataCodec(): Codec<
     getEditionMarkerAccountDataEncoder(),
     getEditionMarkerAccountDataDecoder()
   );
+}
+
+export function deserializeEditionMarker(
+  rawAccount: RpcAccount
+): EditionMarker {
+  return deserializeAccount(rawAccount, getEditionMarkerAccountDataEncoder());
+}
+
+export async function fetchEditionMarker(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<EditionMarker> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'EditionMarker');
+  return deserializeEditionMarker(maybeAccount);
+}
+
+export async function safeFetchEditionMarker(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<EditionMarker | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeEditionMarker(maybeAccount) : null;
+}
+
+export async function fetchAllEditionMarker(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<EditionMarker[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'EditionMarker');
+    return deserializeEditionMarker(maybeAccount);
+  });
+}
+
+export async function safeFetchAllEditionMarker(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<EditionMarker[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeEditionMarker(maybeAccount as RpcAccount)
+    );
 }

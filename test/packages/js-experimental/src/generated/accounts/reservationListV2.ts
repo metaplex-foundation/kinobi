@@ -32,19 +32,15 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 import {
   Reservation,
   ReservationArgs,
@@ -118,4 +114,59 @@ export function getReservationListV2AccountDataCodec(): Codec<
     getReservationListV2AccountDataEncoder(),
     getReservationListV2AccountDataDecoder()
   );
+}
+
+export function deserializeReservationListV2(
+  rawAccount: RpcAccount
+): ReservationListV2 {
+  return deserializeAccount(
+    rawAccount,
+    getReservationListV2AccountDataEncoder()
+  );
+}
+
+export async function fetchReservationListV2(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<ReservationListV2> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'ReservationListV2');
+  return deserializeReservationListV2(maybeAccount);
+}
+
+export async function safeFetchReservationListV2(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<ReservationListV2 | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists
+    ? deserializeReservationListV2(maybeAccount)
+    : null;
+}
+
+export async function fetchAllReservationListV2(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<ReservationListV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'ReservationListV2');
+    return deserializeReservationListV2(maybeAccount);
+  });
+}
+
+export async function safeFetchAllReservationListV2(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<ReservationListV2[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeReservationListV2(maybeAccount as RpcAccount)
+    );
 }

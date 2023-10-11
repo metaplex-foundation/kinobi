@@ -33,19 +33,15 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 
 export type Mint = Account<MintAccountData>;
 
@@ -120,4 +116,50 @@ export function getMintAccountDataCodec(): Codec<
   MintAccountData
 > {
   return combineCodec(getMintAccountDataEncoder(), getMintAccountDataDecoder());
+}
+
+export function deserializeMint(rawAccount: RpcAccount): Mint {
+  return deserializeAccount(rawAccount, getMintAccountDataEncoder());
+}
+
+export async function fetchMint(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Mint> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'Mint');
+  return deserializeMint(maybeAccount);
+}
+
+export async function safeFetchMint(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<Mint | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeMint(maybeAccount) : null;
+}
+
+export async function fetchAllMint(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Mint[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'Mint');
+    return deserializeMint(maybeAccount);
+  });
+}
+
+export async function safeFetchAllMint(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<Mint[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserializeMint(maybeAccount as RpcAccount));
 }

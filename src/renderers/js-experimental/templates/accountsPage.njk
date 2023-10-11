@@ -5,55 +5,9 @@
 {{ imports }}
 
 {{ accountTypeFragment.render }}
+{{ accountFetchHelpersFragment.render }}
 
 {# 
-export function deserialize{{ account.name | pascalCase }}(rawAccount: RpcAccount): {{ account.name | pascalCase }} {
-  return deserializeAccount(rawAccount, get{{ account.name | pascalCase }}AccountDataSerializer());
-}
-
-export async function fetch{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc'>,
-  publicKey: PublicKey | Pda,
-  options?: RpcGetAccountOptions,
-): Promise<{{ account.name | pascalCase }}> {
-  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
-  assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
-  return deserialize{{ account.name | pascalCase }}(maybeAccount);
-}
-
-export async function safeFetch{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc'>,
-  publicKey: PublicKey | Pda,
-  options?: RpcGetAccountOptions,
-): Promise<{{ account.name | pascalCase }} | null> {
-  const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
-  return maybeAccount.exists
-    ? deserialize{{ account.name | pascalCase }}(maybeAccount)
-    : null;
-}
-
-export async function fetchAll{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc'>,
-  publicKeys: Array<PublicKey | Pda>,
-  options?: RpcGetAccountsOptions,
-): Promise<{{ account.name | pascalCase }}[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, '{{ account.name | pascalCase }}');
-    return deserialize{{ account.name | pascalCase }}(maybeAccount);
-  });
-}
-
-export async function safeFetchAll{{ account.name | pascalCase }}(
-  context: Pick<Context, 'rpc'>,
-  publicKeys: Array<PublicKey | Pda>,
-  options?: RpcGetAccountsOptions,
-): Promise<{{ account.name | pascalCase }}[]> {
-  const maybeAccounts = await context.rpc.getAccounts(publicKeys.map(key => toPublicKey(key, false)), options);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserialize{{ account.name | pascalCase }}(maybeAccount as RpcAccount));
-}
 
 export function get{{ account.name | pascalCase }}GpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');

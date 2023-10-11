@@ -21,6 +21,8 @@ import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
 import { ContextMap } from './ContextMap';
 import {
+  getAccountFetchHelpersFragment,
+  getAccountTypeFragment,
   getInstructionDefaultFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
@@ -29,7 +31,6 @@ import {
 import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 import { TypeManifest } from './TypeManifest';
-import { getAccountTypeFragment } from './fragments/accountType';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -193,25 +194,13 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
-    const isLinked = !!account.data.link;
     const typeManifest = visit(account, this.typeManifestVisitor);
     const accountTypeFragment = getAccountTypeFragment(account, typeManifest);
-
-    const imports = new ImportMap()
-      .mergeWith(accountTypeFragment)
-      .add('umi', [
-        'assertAccountExists',
-        'Context',
-        'deserializeAccount',
-        'Pda',
-        'PublicKey',
-        'publicKey',
-        'RpcAccount',
-        'RpcGetAccountOptions',
-        'RpcGetAccountsOptions',
-      ])
-      .add('umiSerializers', !isLinked ? ['Serializer'] : [])
-      .addAlias('umi', 'publicKey', 'toPublicKey');
+    const accountFetchHelpersFragment = getAccountFetchHelpersFragment(account);
+    const imports = new ImportMap().mergeWith(
+      accountTypeFragment,
+      accountFetchHelpersFragment
+    );
 
     // Discriminator.
     const { discriminator } = account;
@@ -299,6 +288,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         account,
         imports: imports.toString(this.options.dependencyMap),
         accountTypeFragment,
+        accountFetchHelpersFragment,
         program: this.program,
         typeManifest,
         discriminator: resolvedDiscriminator,

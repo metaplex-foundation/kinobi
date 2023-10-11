@@ -31,19 +31,15 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -129,4 +125,50 @@ export function getCandyMachineAccountDataCodec(): Codec<
     getCandyMachineAccountDataEncoder(),
     getCandyMachineAccountDataDecoder()
   );
+}
+
+export function deserializeCandyMachine(rawAccount: RpcAccount): CandyMachine {
+  return deserializeAccount(rawAccount, getCandyMachineAccountDataEncoder());
+}
+
+export async function fetchCandyMachine(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<CandyMachine> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'CandyMachine');
+  return deserializeCandyMachine(maybeAccount);
+}
+
+export async function safeFetchCandyMachine(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<CandyMachine | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeCandyMachine(maybeAccount) : null;
+}
+
+export async function fetchAllCandyMachine(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<CandyMachine[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'CandyMachine');
+    return deserializeCandyMachine(maybeAccount);
+  });
+}
+
+export async function safeFetchAllCandyMachine(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<CandyMachine[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserializeCandyMachine(maybeAccount as RpcAccount));
 }

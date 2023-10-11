@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -25,19 +26,16 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringEncoder } from '@solana/codecs-strings';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer, publicKey as publicKeySerializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { Pda, gpaBuilder } from 'umi';
+import { publicKey as publicKeySerializer } from 'umiSerializers';
 import { TaKey } from '../types';
 
 export type FrequencyAccount = Account<FrequencyAccountAccountData>;
@@ -96,4 +94,57 @@ export function getFrequencyAccountAccountDataCodec(): Codec<
     getFrequencyAccountAccountDataEncoder(),
     getFrequencyAccountAccountDataDecoder()
   );
+}
+
+export function deserializeFrequencyAccount(
+  rawAccount: RpcAccount
+): FrequencyAccount {
+  return deserializeAccount(
+    rawAccount,
+    getFrequencyAccountAccountDataEncoder()
+  );
+}
+
+export async function fetchFrequencyAccount(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<FrequencyAccount> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'FrequencyAccount');
+  return deserializeFrequencyAccount(maybeAccount);
+}
+
+export async function safeFetchFrequencyAccount(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<FrequencyAccount | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists ? deserializeFrequencyAccount(maybeAccount) : null;
+}
+
+export async function fetchAllFrequencyAccount(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<FrequencyAccount[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'FrequencyAccount');
+    return deserializeFrequencyAccount(maybeAccount);
+  });
+}
+
+export async function safeFetchAllFrequencyAccount(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<FrequencyAccount[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeFrequencyAccount(maybeAccount as RpcAccount)
+    );
 }

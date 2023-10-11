@@ -30,19 +30,15 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
+  Account,
   Context,
-  Pda,
-  PublicKey,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
-  publicKey as toPublicKey,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { Account } from '../shared';
+} from 'some-magical-place';
+import { gpaBuilder } from 'umi';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord =
@@ -96,4 +92,59 @@ export function getCollectionAuthorityRecordAccountDataCodec(): Codec<
     getCollectionAuthorityRecordAccountDataEncoder(),
     getCollectionAuthorityRecordAccountDataDecoder()
   );
+}
+
+export function deserializeCollectionAuthorityRecord(
+  rawAccount: RpcAccount
+): CollectionAuthorityRecord {
+  return deserializeAccount(
+    rawAccount,
+    getCollectionAuthorityRecordAccountDataEncoder()
+  );
+}
+
+export async function fetchCollectionAuthorityRecord(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<CollectionAuthorityRecord> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
+  return deserializeCollectionAuthorityRecord(maybeAccount);
+}
+
+export async function safeFetchCollectionAuthorityRecord(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions
+): Promise<CollectionAuthorityRecord | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists
+    ? deserializeCollectionAuthorityRecord(maybeAccount)
+    : null;
+}
+
+export async function fetchAllCollectionAuthorityRecord(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<CollectionAuthorityRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
+    return deserializeCollectionAuthorityRecord(maybeAccount);
+  });
+}
+
+export async function safeFetchAllCollectionAuthorityRecord(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions
+): Promise<CollectionAuthorityRecord[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) =>
+      deserializeCollectionAuthorityRecord(maybeAccount as RpcAccount)
+    );
 }

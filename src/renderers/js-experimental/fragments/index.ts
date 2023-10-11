@@ -1,3 +1,5 @@
+export * from './accountFetchHelpers';
+export * from './accountType';
 export * from './common';
 export * from './instructionDefaults';
 export * from './type';

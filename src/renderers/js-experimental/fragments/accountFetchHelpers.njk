@@ -1,0 +1,47 @@
+export function deserialize{{ pascalCaseName }}(rawAccount: RpcAccount): {{ pascalCaseName }} {
+  return deserializeAccount(rawAccount, {{ encoderFunction }}());
+}
+
+export async function fetch{{ pascalCaseName }}(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions,
+): Promise<{{ pascalCaseName }}> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  assertAccountExists(maybeAccount, '{{ pascalCaseName }}');
+  return deserialize{{ pascalCaseName }}(maybeAccount);
+}
+
+export async function safeFetch{{ pascalCaseName }}(
+  context: Pick<Context, 'rpc'>,
+  address: Base58EncodedAddress,
+  options?: RpcGetAccountOptions,
+): Promise<{{ pascalCaseName }} | null> {
+  const maybeAccount = await context.rpc.getAccount(address, options);
+  return maybeAccount.exists
+    ? deserialize{{ pascalCaseName }}(maybeAccount)
+    : null;
+}
+
+export async function fetchAll{{ pascalCaseName }}(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions,
+): Promise<{{ pascalCaseName }}[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount, '{{ pascalCaseName }}');
+    return deserialize{{ pascalCaseName }}(maybeAccount);
+  });
+}
+
+export async function safeFetchAll{{ pascalCaseName }}(
+  context: Pick<Context, 'rpc'>,
+  addresses: Array<Base58EncodedAddress>,
+  options?: RpcGetAccountsOptions,
+): Promise<{{ pascalCaseName }}[]> {
+  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  return maybeAccounts
+    .filter((maybeAccount) => maybeAccount.exists)
+    .map((maybeAccount) => deserialize{{ pascalCaseName }}(maybeAccount as RpcAccount));
+}
