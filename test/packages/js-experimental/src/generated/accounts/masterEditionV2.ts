@@ -41,7 +41,6 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { gpaBuilder } from 'umi';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;

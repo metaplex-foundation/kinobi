@@ -52,7 +52,6 @@ export function getAccountGpaHelpersFragment(
   );
   let resolvedGpaFields: { type: string; argument: string } | null = null;
   if (gpaFields.length > 0) {
-    imports.add('umi', ['gpaBuilder']);
     resolvedGpaFields = {
       type: `{ ${gpaFields
         .map((f) => `'${f.name}': ${f.manifest.looseType.render}`)

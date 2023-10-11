@@ -32,7 +32,6 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { gpaBuilder } from 'umi';
 
 export type Multisig = Account<MultisigAccountData>;
 

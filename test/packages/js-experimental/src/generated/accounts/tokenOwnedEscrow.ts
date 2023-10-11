@@ -34,7 +34,6 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { gpaBuilder } from 'umi';
 import {
   EscrowAuthority,
   EscrowAuthorityArgs,

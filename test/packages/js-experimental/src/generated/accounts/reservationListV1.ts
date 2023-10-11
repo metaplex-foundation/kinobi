@@ -21,7 +21,6 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { gpaBuilder } from 'umi';
 import {
   ReservationV1Args,
   TmKey,

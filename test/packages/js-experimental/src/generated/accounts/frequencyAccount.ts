@@ -40,7 +40,6 @@ import {
   deserializeAccount,
   gpaBuilder,
 } from 'some-magical-place';
-import { gpaBuilder } from 'umi';
 import { TaKey } from '../types';
 
 export type FrequencyAccount = Account<FrequencyAccountAccountData>;
