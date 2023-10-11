@@ -236,7 +236,6 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
       )
       .addImports('solanaCodecsDataStructures', [
         'GetDataEnumKindContent',
-        'GetDataEnumKind',
         'getDataEnumEncoder',
       ]);
     mergedManifest.decoder
@@ -245,7 +244,6 @@ export class GetJavaScriptExperimentalTypeManifestVisitor
           `getDataEnumDecoder<${typeParam}>([${r}]${decoderOptionsAsString})`
       )
       .addImports('solanaCodecsDataStructures', [
-        'GetDataEnumKindContent',
         'GetDataEnumKind',
         'getDataEnumDecoder',
       ]);
