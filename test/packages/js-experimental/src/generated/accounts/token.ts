@@ -31,11 +31,13 @@ import {
 import {
   Account,
   Context,
+  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
 } from 'some-magical-place';
 import { gpaBuilder } from 'umi';
 import {
@@ -191,4 +193,53 @@ export async function safeFetchAllToken(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserializeToken(maybeAccount as RpcAccount));
+}
+
+export function getTokenGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
+  const programId = context.programs.getPublicKey(
+    'splToken',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  );
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      mint: Base58EncodedAddress;
+      owner: Base58EncodedAddress;
+      amount: number | bigint;
+      delegate: OptionOrNullable<Base58EncodedAddress>;
+      state: TokenStateArgs;
+      isNative: OptionOrNullable<number | bigint>;
+      delegatedAmount: number | bigint;
+      closeAuthority: OptionOrNullable<Base58EncodedAddress>;
+    }>({
+      mint: [0, getAddressEncoder()],
+      owner: [32, getAddressEncoder()],
+      amount: [64, getU64Encoder()],
+      delegate: [
+        72,
+        getOptionEncoder(getAddressEncoder(), {
+          prefix: getU32Encoder(),
+          fixed: true,
+        }),
+      ],
+      state: [108, getTokenStateEncoder()],
+      isNative: [
+        109,
+        getOptionEncoder(getU64Encoder(), {
+          prefix: getU32Encoder(),
+          fixed: true,
+        }),
+      ],
+      delegatedAmount: [121, getU64Encoder()],
+      closeAuthority: [
+        129,
+        getOptionEncoder(getAddressEncoder(), {
+          prefix: getU32Encoder(),
+          fixed: true,
+        }),
+      ],
+    })
+    .deserializeUsing<Token>((account) => deserializeToken(account));
+}
+export function getTokenSize(): number {
+  return 165;
 }

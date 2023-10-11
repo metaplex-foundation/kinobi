@@ -34,11 +34,13 @@ import {
 import {
   Account,
   Context,
+  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
 } from 'some-magical-place';
 import { gpaBuilder } from 'umi';
 import {
@@ -169,4 +171,33 @@ export async function safeFetchAllReservationListV2(
     .map((maybeAccount) =>
       deserializeReservationListV2(maybeAccount as RpcAccount)
     );
+}
+
+export function getReservationListV2GpaBuilder(
+  context: Pick<Context, 'rpc' | 'programs'>
+) {
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKeyArgs;
+      masterEdition: Base58EncodedAddress;
+      supplySnapshot: OptionOrNullable<number | bigint>;
+      reservations: Array<ReservationArgs>;
+      totalReservationSpots: number | bigint;
+      currentReservationSpots: number | bigint;
+    }>({
+      key: [0, getTmKeyEncoder()],
+      masterEdition: [1, getAddressEncoder()],
+      supplySnapshot: [33, getOptionEncoder(getU64Encoder())],
+      reservations: [null, getArrayEncoder(getReservationEncoder())],
+      totalReservationSpots: [null, getU64Encoder()],
+      currentReservationSpots: [null, getU64Encoder()],
+    })
+    .deserializeUsing<ReservationListV2>((account) =>
+      deserializeReservationListV2(account)
+    )
+    .whereField('key', TmKey.ReservationListV2);
 }

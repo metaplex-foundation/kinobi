@@ -28,11 +28,13 @@ import { getStringEncoder } from '@solana/codecs-strings';
 import {
   Account,
   Context,
+  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
 } from 'some-magical-place';
 import { Pda, gpaBuilder } from 'umi';
 import { publicKey as publicKeySerializer } from 'umiSerializers';
@@ -147,4 +149,30 @@ export async function safeFetchAllFrequencyAccount(
     .map((maybeAccount) =>
       deserializeFrequencyAccount(maybeAccount as RpcAccount)
     );
+}
+
+export function getFrequencyAccountGpaBuilder(
+  context: Pick<Context, 'rpc' | 'programs'>
+) {
+  const programId = context.programs.getPublicKey(
+    'mplTokenAuthRules',
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  );
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: number | bigint;
+      lastUpdate: number | bigint;
+      period: number | bigint;
+    }>({
+      key: [0, getU64Encoder()],
+      lastUpdate: [8, getI64Encoder()],
+      period: [16, getI64Encoder()],
+    })
+    .deserializeUsing<FrequencyAccount>((account) =>
+      deserializeFrequencyAccount(account)
+    )
+    .whereField('key', TaKey.Frequency);
+}
+export function getFrequencyAccountSize(): number {
+  return 24;
 }

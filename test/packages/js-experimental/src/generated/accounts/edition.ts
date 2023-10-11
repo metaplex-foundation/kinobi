@@ -26,11 +26,13 @@ import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 import {
   Account,
   Context,
+  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
 } from 'some-magical-place';
 import { gpaBuilder } from 'umi';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
@@ -127,4 +129,28 @@ export async function safeFetchAllEdition(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserializeEdition(maybeAccount as RpcAccount));
+}
+
+export function getEditionGpaBuilder(
+  context: Pick<Context, 'rpc' | 'programs'>
+) {
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKeyArgs;
+      parent: Base58EncodedAddress;
+      edition: number | bigint;
+    }>({
+      key: [0, getTmKeyEncoder()],
+      parent: [1, getAddressEncoder()],
+      edition: [33, getU64Encoder()],
+    })
+    .deserializeUsing<Edition>((account) => deserializeEdition(account))
+    .whereField('key', TmKey.EditionV1);
+}
+export function getEditionSize(): number {
+  return 41;
 }

@@ -32,11 +32,13 @@ import {
 import {
   Account,
   Context,
+  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
+  gpaBuilder,
 } from 'some-magical-place';
 import { gpaBuilder } from 'umi';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
@@ -147,4 +149,27 @@ export async function safeFetchAllCollectionAuthorityRecord(
     .map((maybeAccount) =>
       deserializeCollectionAuthorityRecord(maybeAccount as RpcAccount)
     );
+}
+
+export function getCollectionAuthorityRecordGpaBuilder(
+  context: Pick<Context, 'rpc' | 'programs'>
+) {
+  const programId = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  return gpaBuilder(context, programId)
+    .registerFields<{
+      key: TmKeyArgs;
+      bump: number;
+      updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+    }>({
+      key: [0, getTmKeyEncoder()],
+      bump: [1, getU8Encoder()],
+      updateAuthority: [2, getOptionEncoder(getAddressEncoder())],
+    })
+    .deserializeUsing<CollectionAuthorityRecord>((account) =>
+      deserializeCollectionAuthorityRecord(account)
+    )
+    .whereField('key', TmKey.CollectionAuthorityRecord);
 }

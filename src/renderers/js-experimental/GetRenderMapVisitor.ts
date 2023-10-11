@@ -1,12 +1,7 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import {
-  camelCase,
-  getGpaFieldsFromAccount,
-  ImportFrom,
-  pascalCase,
-} from '../../shared';
+import { camelCase, ImportFrom, pascalCase } from '../../shared';
 import { logWarn } from '../../shared/logs';
 import {
   BaseThrowVisitor,
@@ -22,6 +17,8 @@ import { resolveTemplate } from '../utils';
 import { ContextMap } from './ContextMap';
 import {
   getAccountFetchHelpersFragment,
+  getAccountGpaHelpersFragment,
+  getAccountSizeHelpersFragment,
   getAccountTypeFragment,
   getInstructionDefaultFragment,
   getTypeDataEnumHelpersFragment,
@@ -197,63 +194,19 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const typeManifest = visit(account, this.typeManifestVisitor);
     const accountTypeFragment = getAccountTypeFragment(account, typeManifest);
     const accountFetchHelpersFragment = getAccountFetchHelpersFragment(account);
+    const accountGpaHelpersFragment = getAccountGpaHelpersFragment(
+      account,
+      this.program!,
+      this.typeManifestVisitor,
+      this.byteSizeVisitor
+    );
+    const accountSizeHelpersFragment = getAccountSizeHelpersFragment(account);
     const imports = new ImportMap().mergeWith(
       accountTypeFragment,
-      accountFetchHelpersFragment
+      accountFetchHelpersFragment,
+      accountGpaHelpersFragment,
+      accountSizeHelpersFragment
     );
-
-    // Discriminator.
-    const { discriminator } = account;
-    let resolvedDiscriminator:
-      | { kind: 'size'; value: string }
-      | { kind: 'field'; name: string; value: string }
-      | null = null;
-    if (discriminator?.kind === 'field') {
-      const discriminatorField = account.data.struct.fields.find(
-        (f) => f.name === discriminator.name
-      );
-      const discriminatorValue = discriminatorField?.defaultsTo?.value
-        ? getValueNodeFragment(discriminatorField.defaultsTo.value)
-        : undefined;
-      if (discriminatorValue) {
-        imports.mergeWith(discriminatorValue.imports);
-        resolvedDiscriminator = {
-          kind: 'field',
-          name: discriminator.name,
-          value: discriminatorValue.render,
-        };
-      }
-    } else if (discriminator?.kind === 'size') {
-      resolvedDiscriminator =
-        account.size !== undefined
-          ? { kind: 'size', value: `${account.size}` }
-          : null;
-    }
-
-    // GPA Fields.
-    const gpaFields = getGpaFieldsFromAccount(
-      account,
-      this.byteSizeVisitor
-    ).map((gpaField) => {
-      const gpaFieldManifest = visit(gpaField.type, this.typeManifestVisitor);
-      imports.mergeWith(gpaFieldManifest.looseType, gpaFieldManifest.encoder);
-      return { ...gpaField, manifest: gpaFieldManifest };
-    });
-    let resolvedGpaFields: { type: string; argument: string } | null = null;
-    if (gpaFields.length > 0) {
-      imports.add('umi', ['gpaBuilder']);
-      resolvedGpaFields = {
-        type: `{ ${gpaFields
-          .map((f) => `'${f.name}': ${f.manifest.looseType}`)
-          .join(', ')} }`,
-        argument: `{ ${gpaFields
-          .map((f) => {
-            const offset = f.offset === null ? 'null' : `${f.offset}`;
-            return `'${f.name}': [${offset}, ${f.manifest.encoder.render}]`;
-          })
-          .join(', ')} }`,
-      };
-    }
 
     // Seeds.
     const seeds = account.seeds.map((seed) => {
@@ -289,10 +242,10 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         accountTypeFragment,
         accountFetchHelpersFragment,
+        accountGpaHelpersFragment,
+        accountSizeHelpersFragment,
         program: this.program,
         typeManifest,
-        discriminator: resolvedDiscriminator,
-        gpaFields: resolvedGpaFields,
         seeds,
         hasVariableSeeds,
       })
