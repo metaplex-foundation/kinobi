@@ -48,11 +48,12 @@ export function getCreatorEncoder(): Encoder<CreatorArgs> {
       ],
       { description: 'Creator' }
     ),
-    (value) => ({
-      ...value,
-      verified: value.verified ?? false,
-      share: value.share ?? 42,
-    })
+    (value) =>
+      ({
+        ...value,
+        verified: value.verified ?? false,
+        share: value.share ?? 42,
+      } as Creator)
   ) as Encoder<CreatorArgs>;
 }
 

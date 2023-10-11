@@ -156,7 +156,7 @@ export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs
       ],
       { description: 'MetadataAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.MetadataV1 })
+    (value) => ({ ...value, key: TmKey.MetadataV1 } as MetadataAccountData)
   ) as Encoder<MetadataAccountDataArgs>;
 }
 

@@ -72,7 +72,8 @@ export function getFrequencyAccountAccountDataEncoder(): Encoder<FrequencyAccoun
       ],
       { description: 'FrequencyAccountAccountData' }
     ),
-    (value) => ({ ...value, key: TaKey.Frequency })
+    (value) =>
+      ({ ...value, key: TaKey.Frequency } as FrequencyAccountAccountData)
   ) as Encoder<FrequencyAccountAccountDataArgs>;
 }
 

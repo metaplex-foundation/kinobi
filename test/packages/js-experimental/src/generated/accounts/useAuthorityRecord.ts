@@ -62,7 +62,11 @@ export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityR
       ],
       { description: 'UseAuthorityRecordAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.UseAuthorityRecord })
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.UseAuthorityRecord,
+      } as UseAuthorityRecordAccountData)
   ) as Encoder<UseAuthorityRecordAccountDataArgs>;
 }
 

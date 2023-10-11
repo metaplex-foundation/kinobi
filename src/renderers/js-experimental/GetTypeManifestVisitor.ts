@@ -440,9 +440,11 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
           : `${key}: value.${key} ?? ${renderedValue}`;
       })
       .join(', ');
+    const typeCast = parentName ? ` as ${parentName.strict}` : '';
     mergedManifest.encoder
       .mapRender(
-        (r) => `mapEncoder(${r}, (value) => ({ ...value, ${defaultValues} }))`
+        (r) =>
+          `mapEncoder(${r}, (value) => ({ ...value, ${defaultValues} }${typeCast}))`
       )
       .addImports('solanaCodecsCore', 'mapEncoder');
     return mergedManifest;

@@ -82,7 +82,8 @@ export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1A
       ],
       { description: 'MasterEditionV1AccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.MasterEditionV1 })
+    (value) =>
+      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
   ) as Encoder<MasterEditionV1AccountDataArgs>;
 }
 

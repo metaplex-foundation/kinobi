@@ -62,7 +62,7 @@ export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> 
       ],
       { description: 'EditionAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.EditionV1 })
+    (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
   ) as Encoder<EditionAccountDataArgs>;
 }
 

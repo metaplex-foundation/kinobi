@@ -67,7 +67,7 @@ export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAcc
       ],
       { description: 'DelegateRecordAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.Delegate })
+    (value) => ({ ...value, key: TmKey.Delegate } as DelegateRecordAccountData)
   ) as Encoder<DelegateRecordAccountDataArgs>;
 }
 

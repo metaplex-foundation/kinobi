@@ -51,7 +51,8 @@ export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccou
       ],
       { description: 'EditionMarkerAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.EditionMarker })
+    (value) =>
+      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
   ) as Encoder<EditionMarkerAccountDataArgs>;
 }
 

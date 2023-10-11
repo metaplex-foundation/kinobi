@@ -38,7 +38,7 @@ export function getCollectionEncoder(): Encoder<CollectionArgs> {
       ],
       { description: 'Collection' }
     ),
-    (value) => ({ ...value, verified: value.verified ?? false })
+    (value) => ({ ...value, verified: value.verified ?? false } as Collection)
   ) as Encoder<CollectionArgs>;
 }
 

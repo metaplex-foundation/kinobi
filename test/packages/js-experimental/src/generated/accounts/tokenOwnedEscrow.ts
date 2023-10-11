@@ -74,7 +74,8 @@ export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscro
       ],
       { description: 'TokenOwnedEscrowAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.TokenOwnedEscrow })
+    (value) =>
+      ({ ...value, key: TmKey.TokenOwnedEscrow } as TokenOwnedEscrowAccountData)
   ) as Encoder<TokenOwnedEscrowAccountDataArgs>;
 }
 

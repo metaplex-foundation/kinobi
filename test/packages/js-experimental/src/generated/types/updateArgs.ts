@@ -165,11 +165,12 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
             ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
             ['authorityType', getAuthorityTypeEncoder()],
           ]),
-          (value) => ({
-            ...value,
-            tokenStandard:
-              value.tokenStandard ?? some(TokenStandard.NonFungible),
-          })
+          (value) =>
+            ({
+              ...value,
+              tokenStandard:
+                value.tokenStandard ?? some(TokenStandard.NonFungible),
+            } as GetDataEnumKindContent<UpdateArgs, 'V1'>)
         ),
       ],
     ],

@@ -98,10 +98,11 @@ export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccount
       ],
       { description: 'CandyMachineAccountData' }
     ),
-    (value) => ({
-      ...value,
-      discriminator: [51, 173, 177, 113, 25, 241, 109, 189],
-    })
+    (value) =>
+      ({
+        ...value,
+        discriminator: [51, 173, 177, 113, 25, 241, 109, 189],
+      } as CandyMachineAccountData)
   ) as Encoder<CandyMachineAccountDataArgs>;
 }
 

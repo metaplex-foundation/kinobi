@@ -65,7 +65,11 @@ export function getReservationListV1AccountDataEncoder(): Encoder<ReservationLis
       ],
       { description: 'ReservationListV1AccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.ReservationListV1 })
+    (value) =>
+      ({
+        ...value,
+        key: TmKey.ReservationListV1,
+      } as ReservationListV1AccountData)
   ) as Encoder<ReservationListV1AccountDataArgs>;
 }
 
