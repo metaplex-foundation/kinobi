@@ -29,6 +29,7 @@ import {
 import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 import { TypeManifest } from './TypeManifest';
+import { getAccountTypeFragment } from './fragments/accountType';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -137,7 +138,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const { name } = program;
     const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
-      // .mergeWith(...program.accounts.map((account) => visit(account, this)))
+      .mergeWith(...program.accounts.map((account) => visit(account, this)))
       .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
 
     // TODO: remove when types are sorted.
@@ -194,17 +195,11 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   visitAccount(account: nodes.AccountNode): RenderMap {
     const isLinked = !!account.data.link;
     const typeManifest = visit(account, this.typeManifestVisitor);
-    const imports = new ImportMap().mergeWith(
-      typeManifest.strictType,
-      typeManifest.encoder,
-      typeManifest.decoder
-    );
-    if (!isLinked) {
-      imports.mergeWith(typeManifest.looseType);
-    }
-    imports
+    const accountTypeFragment = getAccountTypeFragment(account, typeManifest);
+
+    const imports = new ImportMap()
+      .mergeWith(accountTypeFragment)
       .add('umi', [
-        'Account',
         'assertAccountExists',
         'Context',
         'deserializeAccount',
@@ -303,6 +298,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.render('accountsPage.njk', {
         account,
         imports: imports.toString(this.options.dependencyMap),
+        accountTypeFragment,
         program: this.program,
         typeManifest,
         discriminator: resolvedDiscriminator,

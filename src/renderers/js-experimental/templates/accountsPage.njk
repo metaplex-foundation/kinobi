@@ -4,18 +4,9 @@
 {% block main %}
 {{ imports }}
 
-{% if account.data.link %}
-  {{ macros.docblock(account.docs) }}
-  export type {{ account.name | pascalCase }} = Account<{{ account.data.link.name | pascalCase }}>;
-{% else %}
-  {{ macros.docblock(account.docs) }}
-  export type {{ account.name | pascalCase }} = Account<{{ account.name | pascalCase }}AccountData>;
+{{ accountTypeFragment.render }}
 
-  {{ macros.exportType(account.name | pascalCase + 'AccountData', typeManifest) }}
-
-  {{ macros.exportCodec(account.name | pascalCase + 'AccountData', typeManifest) }}
-{% endif %}
-
+{# 
 export function deserialize{{ account.name | pascalCase }}(rawAccount: RpcAccount): {{ account.name | pascalCase }} {
   return deserializeAccount(rawAccount, get{{ account.name | pascalCase }}AccountDataSerializer());
 }
@@ -130,5 +121,5 @@ export async function safeFetch{{ account.name | pascalCase }}FromSeeds(
 ): Promise<{{ account.name | pascalCase }} | null> {
   return safeFetch{{ account.name | pascalCase }}(context, find{{ account.name | pascalCase }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %}), options);
 }
-{% endif %}
+{% endif %} #}
 {% endblock %}

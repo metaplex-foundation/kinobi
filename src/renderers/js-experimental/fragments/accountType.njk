@@ -1,0 +1,10 @@
+{% import "templates/macros.njk" as macros %}
+
+{{ macros.docblock(docs) }}
+{% if link %}
+  export type {{ name }} = Account<{{ link.name | pascalCase }}>;
+{% else %}
+  export type {{ name }} = Account<{{ dataName }}>;
+
+  {{ typeWithCodecFragment.render }}
+{% endif %}
