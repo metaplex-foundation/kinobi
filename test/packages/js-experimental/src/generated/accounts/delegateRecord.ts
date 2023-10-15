@@ -27,7 +27,6 @@ import { getStringEncoder } from '@solana/codecs-strings';
 import {
   Account,
   Context,
-  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,

@@ -72,5 +72,5 @@ export function getAccountGpaHelpersFragment(
     gpaFields: resolvedGpaFields,
   })
     .mergeImportsWith(imports)
-    .addImports('some-magical-place', ['GpaBuilder', 'Context', 'gpaBuilder']);
+    .addImports('some-magical-place', ['Context', 'gpaBuilder']);
 }

@@ -27,7 +27,6 @@ import {
 import {
   Account,
   Context,
-  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,

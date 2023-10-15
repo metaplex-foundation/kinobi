@@ -24,7 +24,6 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   Account,
   Context,
-  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,

@@ -26,7 +26,6 @@ import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 import {
   Account,
   Context,
-  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,

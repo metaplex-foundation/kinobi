@@ -13,7 +13,6 @@ import { OptionOrNullable, getOptionEncoder } from '@solana/options';
 import {
   Account,
   Context,
-  GpaBuilder,
   RpcAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
