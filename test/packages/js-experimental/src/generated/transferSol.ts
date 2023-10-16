@@ -98,7 +98,7 @@ export function getTransferSolInstructionDataCodec(): Codec<
 function helper<T extends string | IAccountMeta<string>, U extends AccountRole>(
   account: T,
   role: U
-): T extends string ? { address: Base58EncodedAddress<T>; role: U } : T {
+) {
   return (
     typeof account === 'string' ? { address: account, role } : account
   ) as T extends string ? { address: Base58EncodedAddress<T>; role: U } : T;
