@@ -8,7 +8,8 @@ export type {{ instruction.name | pascalCase }}Instruction<
   {% endif %}
 > = IInstruction<TProgram>
   {% if hasData %}
-    & IInstructionWithData<{{ dataType }}>
+    & IInstructionWithData<Uint8Array>
+    {# & IInstructionWithData<{{ dataType }}> #}
   {% endif %}
   {% if hasAccounts %}
     & IInstructionWithAccounts<[{{ accountMetas }}]>

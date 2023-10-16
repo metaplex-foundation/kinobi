@@ -26,7 +26,7 @@ export function getInstructionTypeFragment(
     (renders) => renders.join(', ')
   );
 
-  return fragmentFromTemplate('instructionType.njk', {
+  const fragment = fragmentFromTemplate('instructionType.njk', {
     instruction: instructionNode,
     program: programNode,
     hasData,
@@ -41,4 +41,8 @@ export function getInstructionTypeFragment(
       ...(hasData ? ['IInstructionWithData'] : []),
       ...(hasAccounts ? ['IInstructionWithAccounts'] : []),
     ]);
+
+  // TODO: if link, add import for data type.
+
+  return fragment;
 }

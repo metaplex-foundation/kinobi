@@ -1,5 +1,5 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { InstructionAccountDefault, pascalCase } from '../../../shared';
 import { Fragment, fragment } from './common';
 
 export function getInstructionAccountTypeParamFragment(
@@ -7,22 +7,26 @@ export function getInstructionAccountTypeParamFragment(
   programNode: nodes.ProgramNode
 ): Fragment {
   const typeParam = `TAccount${pascalCase(instructionAccountNode.name)}`;
+  const defaultValue = getDefaultValue(
+    instructionAccountNode.defaultsTo,
+    programNode.publicKey
+  );
 
-  if (instructionAccountNode.defaultsTo?.kind === 'publicKey') {
-    return fragment(
-      `${typeParam} extends string = "${instructionAccountNode.defaultsTo.publicKey}"`
-    );
+  return fragment(`${typeParam} extends string = ${defaultValue}`);
+}
+
+function getDefaultValue(
+  defaultsTo: InstructionAccountDefault | undefined,
+  programId: string
+): string {
+  switch (defaultsTo?.kind) {
+    case 'publicKey':
+      return `"${defaultsTo.publicKey}"`;
+    case 'program':
+      return `"${defaultsTo.program.publicKey}"`;
+    case 'programId':
+      return `"${programId}"`;
+    default:
+      return `string`;
   }
-
-  if (instructionAccountNode.defaultsTo?.kind === 'program') {
-    return fragment(
-      `${typeParam} extends string = "${instructionAccountNode.defaultsTo.program.publicKey}"`
-    );
-  }
-
-  if (instructionAccountNode.defaultsTo?.kind === 'programId') {
-    return fragment(`${typeParam} extends string = "${programNode.publicKey}"`);
-  }
-
-  return fragment(`${typeParam} extends string = string`);
 }
