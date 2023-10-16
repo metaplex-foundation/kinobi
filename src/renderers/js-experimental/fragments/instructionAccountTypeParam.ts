@@ -6,8 +6,9 @@ export function getInstructionAccountTypeParamFragment(
   instructionAccountNode: nodes.InstructionAccountNode,
   programNode: nodes.ProgramNode
 ): Fragment {
-  const typeParam = `TAccount${pascalCase(instructionAccountNode.name)}`;
-  const defaultValue = getDefaultValue(
+  const pascalCaseName = pascalCase(instructionAccountNode.name);
+  const typeParam = `TAccount${pascalCaseName}`;
+  const defaultAddress = getDefaultAddress(
     instructionAccountNode.defaultsTo,
     programNode.publicKey
   );
@@ -15,7 +16,7 @@ export function getInstructionAccountTypeParamFragment(
   return fragment(`${typeParam} extends string = ${defaultValue}`);
 }
 
-function getDefaultValue(
+function getDefaultAddress(
   defaultsTo: InstructionAccountDefault | undefined,
   programId: string
 ): string {
