@@ -15,7 +15,8 @@ import {
   Signer,
   isPda,
 } from '@metaplex-foundation/umi';
-import { IAccountMeta, AccountRole } from '@solana/instructions';
+import { AccountRole, IAccountMeta } from '@solana/instructions';
+import { Base58EncodedAddress } from '@solana/addresses';
 
 /**
  * Transforms the given object such that the given keys are optional.
