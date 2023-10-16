@@ -25,15 +25,16 @@ export function getInstructionTypeFragment(
     ),
     (renders) => renders.join(', ')
   );
-  const usesOmmitableAccounts =
+  const usesLegacyOptionalAccounts =
     instructionNode.optionalAccountStrategy === 'omitted';
   const accountMetasFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountMetaFragment(account).mapRender((r) => {
         const typeParam = `TAccount${pascalCase(account.name)}`;
-        const isOmmitable = account.isOptional && usesOmmitableAccounts;
+        const isLegacyOptional =
+          account.isOptional && usesLegacyOptionalAccounts;
         const type = `${typeParam} extends string ? ${r} : ${typeParam}`;
-        if (!isOmmitable) return type;
+        if (!isLegacyOptional) return type;
         return `...(${typeParam} extends undefined ? [] : [${type}])`;
       })
     ),

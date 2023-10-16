@@ -325,28 +325,28 @@ export function updateV1Instruction<
     metadata: TAccountMetadata extends string
       ? Base58EncodedAddress<TAccountMetadata>
       : TAccountMetadata;
-    masterEdition: TAccountMasterEdition extends string
+    masterEdition?: TAccountMasterEdition extends string
       ? Base58EncodedAddress<TAccountMasterEdition>
       : TAccountMasterEdition;
     mint: TAccountMint extends string
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    sysvarInstructions: TAccountSysvarInstructions extends string
+    sysvarInstructions?: TAccountSysvarInstructions extends string
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
-    token: TAccountToken extends string
+    token?: TAccountToken extends string
       ? Base58EncodedAddress<TAccountToken>
       : TAccountToken;
-    delegateRecord: TAccountDelegateRecord extends string
+    delegateRecord?: TAccountDelegateRecord extends string
       ? Base58EncodedAddress<TAccountDelegateRecord>
       : TAccountDelegateRecord;
-    authorizationRulesProgram: TAccountAuthorizationRulesProgram extends string
+    authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
       ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
-    authorizationRules: TAccountAuthorizationRules extends string
+    authorizationRules?: TAccountAuthorizationRules extends string
       ? Base58EncodedAddress<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
   },
@@ -357,17 +357,60 @@ export function updateV1Instruction<
     accounts: [
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.token, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.delegateRecord, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.authorizationRulesProgram,
+        accounts.masterEdition ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
         AccountRole.READONLY
       ),
-      accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.token ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.delegateRecord ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRulesProgram ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRules ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getUpdateV1InstructionDataEncoder().encode(args),
     programAddress,

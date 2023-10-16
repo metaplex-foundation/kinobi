@@ -143,10 +143,10 @@ export function verifyInstruction<
     payer: TAccountPayer extends string
       ? Base58EncodedAddress<TAccountPayer>
       : TAccountPayer;
-    authorizationRules: TAccountAuthorizationRules extends string
+    authorizationRules?: TAccountAuthorizationRules extends string
       ? Base58EncodedAddress<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
-    authorizationRulesProgram: TAccountAuthorizationRulesProgram extends string
+    authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
       ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
   },
@@ -161,9 +161,20 @@ export function verifyInstruction<
         AccountRole.WRITABLE_SIGNER
       ),
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.authorizationRulesProgram,
+        accounts.authorizationRules ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRulesProgram ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
         AccountRole.READONLY
       ),
     ],

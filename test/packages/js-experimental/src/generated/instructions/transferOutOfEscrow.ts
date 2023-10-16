@@ -213,19 +213,19 @@ export function transferOutOfEscrowInstruction<
     escrowAccount: TAccountEscrowAccount extends string
       ? Base58EncodedAddress<TAccountEscrowAccount>
       : TAccountEscrowAccount;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    ataProgram: TAccountAtaProgram extends string
+    ataProgram?: TAccountAtaProgram extends string
       ? Base58EncodedAddress<TAccountAtaProgram>
       : TAccountAtaProgram;
-    tokenProgram: TAccountTokenProgram extends string
+    tokenProgram?: TAccountTokenProgram extends string
       ? Base58EncodedAddress<TAccountTokenProgram>
       : TAccountTokenProgram;
-    sysvarInstructions: TAccountSysvarInstructions extends string
+    sysvarInstructions?: TAccountSysvarInstructions extends string
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
-    authority: TAccountAuthority extends string
+    authority?: TAccountAuthority extends string
       ? Base58EncodedAddress<TAccountAuthority>
       : TAccountAuthority;
   },
@@ -242,11 +242,43 @@ export function transferOutOfEscrowInstruction<
       accountMetaWithDefault(accounts.attributeDst, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.escrowMint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.escrowAccount, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.ataProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.ataProgram ?? {
+          address:
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authority ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY_SIGNER
+      ),
     ],
     data: getTransferOutOfEscrowInstructionDataEncoder().encode(args),
     programAddress,

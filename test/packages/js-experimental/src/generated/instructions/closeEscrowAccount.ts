@@ -157,10 +157,10 @@ export function closeEscrowAccountInstruction<
     payer: TAccountPayer extends string
       ? Base58EncodedAddress<TAccountPayer>
       : TAccountPayer;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    sysvarInstructions: TAccountSysvarInstructions extends string
+    sysvarInstructions?: TAccountSysvarInstructions extends string
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
   },
@@ -174,8 +174,19 @@ export function closeEscrowAccountInstruction<
       accountMetaWithDefault(accounts.tokenAccount, AccountRole.READONLY),
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
     ],
     data: getCloseEscrowAccountInstructionDataEncoder().encode({}),
     programAddress,

@@ -180,7 +180,7 @@ export function burnEditionNftInstruction<
     editionMarkerAccount: TAccountEditionMarkerAccount extends string
       ? Base58EncodedAddress<TAccountEditionMarkerAccount>
       : TAccountEditionMarkerAccount;
-    splTokenProgram: TAccountSplTokenProgram extends string
+    splTokenProgram?: TAccountSplTokenProgram extends string
       ? Base58EncodedAddress<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
   },
@@ -212,7 +212,14 @@ export function burnEditionNftInstruction<
         accounts.editionMarkerAccount,
         AccountRole.WRITABLE
       ),
-      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.splTokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getBurnEditionNftInstructionDataEncoder().encode({}),
     programAddress,

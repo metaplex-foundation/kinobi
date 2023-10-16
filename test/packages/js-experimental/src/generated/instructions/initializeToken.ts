@@ -120,7 +120,7 @@ export function initializeTokenInstruction<
     owner: TAccountOwner extends string
       ? Base58EncodedAddress<TAccountOwner>
       : TAccountOwner;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
@@ -131,7 +131,10 @@ export function initializeTokenInstruction<
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
     ],
     data: getInitializeTokenInstructionDataEncoder().encode({}),
     programAddress,

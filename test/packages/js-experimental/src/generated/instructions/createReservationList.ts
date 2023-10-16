@@ -115,10 +115,10 @@ export function createReservationListInstruction<
     metadata: TAccountMetadata extends string
       ? Base58EncodedAddress<TAccountMetadata>
       : TAccountMetadata;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
@@ -136,8 +136,18 @@ export function createReservationListInstruction<
       accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.resource, AccountRole.READONLY),
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
     ],
     data: getCreateReservationListInstructionDataEncoder().encode(args),
     programAddress,

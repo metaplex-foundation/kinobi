@@ -117,7 +117,7 @@ export function transferSolInstruction<
   TAccountDestination extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    source: TAccountSource extends string
+    source?: TAccountSource extends string
       ? Base58EncodedAddress<TAccountSource>
       : TAccountSource;
     destination: TAccountDestination extends string

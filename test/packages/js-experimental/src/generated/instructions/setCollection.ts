@@ -227,10 +227,10 @@ export function setCollectionInstruction<
     newCollectionAuthorityRecord: TAccountNewCollectionAuthorityRecord extends string
       ? Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>
       : TAccountNewCollectionAuthorityRecord;
-    tokenMetadataProgram: TAccountTokenMetadataProgram extends string
+    tokenMetadataProgram?: TAccountTokenMetadataProgram extends string
       ? Base58EncodedAddress<TAccountTokenMetadataProgram>
       : TAccountTokenMetadataProgram;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
   },
@@ -266,10 +266,21 @@ export function setCollectionInstruction<
         AccountRole.WRITABLE
       ),
       accountMetaWithDefault(
-        accounts.tokenMetadataProgram,
+        accounts.tokenMetadataProgram ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
         AccountRole.READONLY
       ),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getSetCollectionInstructionDataEncoder().encode({}),
     programAddress,

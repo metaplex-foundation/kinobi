@@ -138,7 +138,7 @@ export function createRuleSetInstruction<
     ruleSetPda: TAccountRuleSetPda extends string
       ? Base58EncodedAddress<TAccountRuleSetPda>
       : TAccountRuleSetPda;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
   },
@@ -149,7 +149,14 @@ export function createRuleSetInstruction<
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.ruleSetPda, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getCreateRuleSetInstructionDataEncoder().encode(args),
     programAddress,

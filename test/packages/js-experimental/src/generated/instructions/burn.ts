@@ -170,16 +170,16 @@ export function burnInstruction<
     masterEditionAccount: TAccountMasterEditionAccount extends string
       ? Base58EncodedAddress<TAccountMasterEditionAccount>
       : TAccountMasterEditionAccount;
-    splTokenProgram: TAccountSplTokenProgram extends string
+    splTokenProgram?: TAccountSplTokenProgram extends string
       ? Base58EncodedAddress<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
-    collectionMetadata: TAccountCollectionMetadata extends string
+    collectionMetadata?: TAccountCollectionMetadata extends string
       ? Base58EncodedAddress<TAccountCollectionMetadata>
       : TAccountCollectionMetadata;
-    authorizationRules: TAccountAuthorizationRules extends string
+    authorizationRules?: TAccountAuthorizationRules extends string
       ? Base58EncodedAddress<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
-    authorizationRulesProgram: TAccountAuthorizationRulesProgram extends string
+    authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
       ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
   },
@@ -196,11 +196,36 @@ export function burnInstruction<
         accounts.masterEditionAccount,
         AccountRole.WRITABLE
       ),
-      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.authorizationRulesProgram,
+        accounts.splTokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.collectionMetadata ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRules ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRulesProgram ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
         AccountRole.READONLY
       ),
     ],

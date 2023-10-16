@@ -190,22 +190,22 @@ export function utilizeInstruction<
     owner: TAccountOwner extends string
       ? Base58EncodedAddress<TAccountOwner>
       : TAccountOwner;
-    tokenProgram: TAccountTokenProgram extends string
+    tokenProgram?: TAccountTokenProgram extends string
       ? Base58EncodedAddress<TAccountTokenProgram>
       : TAccountTokenProgram;
-    ataProgram: TAccountAtaProgram extends string
+    ataProgram?: TAccountAtaProgram extends string
       ? Base58EncodedAddress<TAccountAtaProgram>
       : TAccountAtaProgram;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
-    useAuthorityRecord: TAccountUseAuthorityRecord extends string
+    useAuthorityRecord?: TAccountUseAuthorityRecord extends string
       ? Base58EncodedAddress<TAccountUseAuthorityRecord>
       : TAccountUseAuthorityRecord;
-    burner: TAccountBurner extends string
+    burner?: TAccountBurner extends string
       ? Base58EncodedAddress<TAccountBurner>
       : TAccountBurner;
   },
@@ -222,12 +222,50 @@ export function utilizeInstruction<
         AccountRole.WRITABLE_SIGNER
       ),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.ataProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.burner, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.ataProgram ?? {
+          address:
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.useAuthorityRecord ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.burner ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getUtilizeInstructionDataEncoder().encode(args),
     programAddress,

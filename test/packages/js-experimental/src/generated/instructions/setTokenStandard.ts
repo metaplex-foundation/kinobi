@@ -120,7 +120,7 @@ export function setTokenStandardInstruction<
     mint: TAccountMint extends string
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
-    edition: TAccountEdition extends string
+    edition?: TAccountEdition extends string
       ? Base58EncodedAddress<TAccountEdition>
       : TAccountEdition;
   },
@@ -134,7 +134,14 @@ export function setTokenStandardInstruction<
         AccountRole.WRITABLE_SIGNER
       ),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.edition ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getSetTokenStandardInstructionDataEncoder().encode({}),
     programAddress,

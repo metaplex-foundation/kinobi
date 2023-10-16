@@ -189,7 +189,7 @@ export function mintInstruction<
     metadata: TAccountMetadata extends string
       ? Base58EncodedAddress<TAccountMetadata>
       : TAccountMetadata;
-    masterEdition: TAccountMasterEdition extends string
+    masterEdition?: TAccountMasterEdition extends string
       ? Base58EncodedAddress<TAccountMasterEdition>
       : TAccountMasterEdition;
     mint: TAccountMint extends string
@@ -201,22 +201,22 @@ export function mintInstruction<
     authority: TAccountAuthority extends string
       ? Base58EncodedAddress<TAccountAuthority>
       : TAccountAuthority;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    sysvarInstructions: TAccountSysvarInstructions extends string
+    sysvarInstructions?: TAccountSysvarInstructions extends string
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
-    splTokenProgram: TAccountSplTokenProgram extends string
+    splTokenProgram?: TAccountSplTokenProgram extends string
       ? Base58EncodedAddress<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
-    splAtaProgram: TAccountSplAtaProgram extends string
+    splAtaProgram?: TAccountSplAtaProgram extends string
       ? Base58EncodedAddress<TAccountSplAtaProgram>
       : TAccountSplAtaProgram;
-    authorizationRulesProgram: TAccountAuthorizationRulesProgram extends string
+    authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
       ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
-    authorizationRules: TAccountAuthorizationRules extends string
+    authorizationRules?: TAccountAuthorizationRules extends string
       ? Base58EncodedAddress<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
   },
@@ -227,19 +227,62 @@ export function mintInstruction<
     accounts: [
       accountMetaWithDefault(accounts.token, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.masterEdition ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.splAtaProgram, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.authorizationRulesProgram,
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
         AccountRole.READONLY
       ),
-      accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.splTokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.splAtaProgram ?? {
+          address:
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRulesProgram ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRules ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getMintInstructionDataEncoder().encode(args),
     programAddress,

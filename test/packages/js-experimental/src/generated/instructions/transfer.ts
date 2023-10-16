@@ -207,7 +207,7 @@ export function transferInstruction<
     authority: TAccountAuthority extends string
       ? Base58EncodedAddress<TAccountAuthority>
       : TAccountAuthority;
-    delegateRecord: TAccountDelegateRecord extends string
+    delegateRecord?: TAccountDelegateRecord extends string
       ? Base58EncodedAddress<TAccountDelegateRecord>
       : TAccountDelegateRecord;
     token: TAccountToken extends string
@@ -228,25 +228,25 @@ export function transferInstruction<
     metadata: TAccountMetadata extends string
       ? Base58EncodedAddress<TAccountMetadata>
       : TAccountMetadata;
-    masterEdition: TAccountMasterEdition extends string
+    masterEdition?: TAccountMasterEdition extends string
       ? Base58EncodedAddress<TAccountMasterEdition>
       : TAccountMasterEdition;
-    splTokenProgram: TAccountSplTokenProgram extends string
+    splTokenProgram?: TAccountSplTokenProgram extends string
       ? Base58EncodedAddress<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
-    splAtaProgram: TAccountSplAtaProgram extends string
+    splAtaProgram?: TAccountSplAtaProgram extends string
       ? Base58EncodedAddress<TAccountSplAtaProgram>
       : TAccountSplAtaProgram;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    sysvarInstructions: TAccountSysvarInstructions extends string
+    sysvarInstructions?: TAccountSysvarInstructions extends string
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
-    authorizationRulesProgram: TAccountAuthorizationRulesProgram extends string
+    authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
       ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
-    authorizationRules: TAccountAuthorizationRules extends string
+    authorizationRules?: TAccountAuthorizationRules extends string
       ? Base58EncodedAddress<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
   },
@@ -256,23 +256,73 @@ export function transferInstruction<
   return {
     accounts: [
       accountMetaWithDefault(accounts.authority, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.delegateRecord, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.delegateRecord ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
       accountMetaWithDefault(accounts.token, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.tokenOwner, AccountRole.READONLY),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destinationOwner, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.splAtaProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.authorizationRulesProgram,
+        accounts.masterEdition ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
         AccountRole.READONLY
       ),
-      accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.splTokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.splAtaProgram ?? {
+          address:
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRulesProgram ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRules ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getTransferInstructionDataEncoder().encode(args),
     programAddress,

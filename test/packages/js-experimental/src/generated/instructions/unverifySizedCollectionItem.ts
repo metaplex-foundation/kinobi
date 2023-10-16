@@ -158,7 +158,7 @@ export function unverifySizedCollectionItemInstruction<
     collectionMasterEditionAccount: TAccountCollectionMasterEditionAccount extends string
       ? Base58EncodedAddress<TAccountCollectionMasterEditionAccount>
       : TAccountCollectionMasterEditionAccount;
-    collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
+    collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
       ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
       : TAccountCollectionAuthorityRecord;
   },
@@ -179,7 +179,11 @@ export function unverifySizedCollectionItemInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
-        accounts.collectionAuthorityRecord,
+        accounts.collectionAuthorityRecord ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
         AccountRole.READONLY
       ),
     ],

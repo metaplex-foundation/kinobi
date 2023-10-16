@@ -156,7 +156,7 @@ export function dummyInstruction<
     edition: TAccountEdition extends string
       ? Base58EncodedAddress<TAccountEdition>
       : TAccountEdition;
-    mint: TAccountMint extends string
+    mint?: TAccountMint extends string
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
     updateAuthority: TAccountUpdateAuthority extends string
@@ -171,13 +171,13 @@ export function dummyInstruction<
     foo: TAccountFoo extends string
       ? Base58EncodedAddress<TAccountFoo>
       : TAccountFoo;
-    bar: TAccountBar extends string
+    bar?: TAccountBar extends string
       ? Base58EncodedAddress<TAccountBar>
       : TAccountBar;
-    delegate: TAccountDelegate extends string
+    delegate?: TAccountDelegate extends string
       ? Base58EncodedAddress<TAccountDelegate>
       : TAccountDelegate;
-    delegateRecord: TAccountDelegateRecord extends string
+    delegateRecord?: TAccountDelegateRecord extends string
       ? Base58EncodedAddress<TAccountDelegateRecord>
       : TAccountDelegateRecord;
     tokenOrAtaProgram: TAccountTokenOrAtaProgram extends string
@@ -189,7 +189,14 @@ export function dummyInstruction<
   return {
     accounts: [
       accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.mint ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
       accountMetaWithDefault(
         accounts.updateAuthority,
         AccountRole.READONLY_SIGNER
@@ -200,9 +207,30 @@ export function dummyInstruction<
       ),
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.foo, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.bar, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(accounts.delegate, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(accounts.delegateRecord, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.bar ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.delegate ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.delegateRecord ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
       accountMetaWithDefault(accounts.tokenOrAtaProgram, AccountRole.READONLY),
     ],
     data: getDummyInstructionDataEncoder().encode({}),

@@ -133,7 +133,7 @@ export function initializeMintInstruction<
     mint: TAccountMint extends string
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
@@ -143,7 +143,10 @@ export function initializeMintInstruction<
   return {
     accounts: [
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
     ],
     data: getInitializeMintInstructionDataEncoder().encode(args),
     programAddress,

@@ -160,13 +160,13 @@ export function revokeUseAuthorityInstruction<
     metadata: TAccountMetadata extends string
       ? Base58EncodedAddress<TAccountMetadata>
       : TAccountMetadata;
-    tokenProgram: TAccountTokenProgram extends string
+    tokenProgram?: TAccountTokenProgram extends string
       ? Base58EncodedAddress<TAccountTokenProgram>
       : TAccountTokenProgram;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
@@ -180,9 +180,30 @@ export function revokeUseAuthorityInstruction<
       accountMetaWithDefault(accounts.ownerTokenAccount, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.rent ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getRevokeUseAuthorityInstructionDataEncoder().encode({}),
     programAddress,

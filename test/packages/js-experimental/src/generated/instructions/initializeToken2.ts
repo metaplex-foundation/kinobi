@@ -128,7 +128,7 @@ export function initializeToken2Instruction<
     mint: TAccountMint extends string
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
@@ -139,7 +139,10 @@ export function initializeToken2Instruction<
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
     ],
     data: getInitializeToken2InstructionDataEncoder().encode(args),
     programAddress,

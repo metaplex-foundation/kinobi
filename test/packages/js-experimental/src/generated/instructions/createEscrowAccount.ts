@@ -163,13 +163,13 @@ export function createEscrowAccountInstruction<
     payer: TAccountPayer extends string
       ? Base58EncodedAddress<TAccountPayer>
       : TAccountPayer;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    sysvarInstructions: TAccountSysvarInstructions extends string
+    sysvarInstructions?: TAccountSysvarInstructions extends string
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
-    authority: TAccountAuthority extends string
+    authority?: TAccountAuthority extends string
       ? Base58EncodedAddress<TAccountAuthority>
       : TAccountAuthority;
   },
@@ -183,9 +183,27 @@ export function createEscrowAccountInstruction<
       accountMetaWithDefault(accounts.tokenAccount, AccountRole.READONLY),
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authority ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY_SIGNER
+      ),
     ],
     data: getCreateEscrowAccountInstructionDataEncoder().encode({}),
     programAddress,

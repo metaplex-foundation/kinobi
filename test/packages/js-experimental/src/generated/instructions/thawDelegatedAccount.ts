@@ -132,7 +132,7 @@ export function thawDelegatedAccountInstruction<
     mint: TAccountMint extends string
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
-    tokenProgram: TAccountTokenProgram extends string
+    tokenProgram?: TAccountTokenProgram extends string
       ? Base58EncodedAddress<TAccountTokenProgram>
       : TAccountTokenProgram;
   },
@@ -144,7 +144,14 @@ export function thawDelegatedAccountInstruction<
       accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getThawDelegatedAccountInstructionDataEncoder().encode({}),
     programAddress,

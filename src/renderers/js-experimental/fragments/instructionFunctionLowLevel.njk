@@ -7,7 +7,7 @@ export function {{ instruction.name | camelCase }}Instruction<
   {% if hasAccounts %}
     accounts: {
     {% for account in accounts %}
-      {{ account.name | camelCase }}: {{ account.typeParam }} extends string ? Base58EncodedAddress<{{ account.typeParam }}> : {{ account.typeParam }};
+      {{ account.name | camelCase }}{{ "?" if account.isOptionalOrHasLowLevelDefaultValues }}: {{ account.typeParam }} extends string ? Base58EncodedAddress<{{ account.typeParam }}> : {{ account.typeParam }};
     {% endfor %}
     },
   {% endif %}
@@ -20,10 +20,10 @@ export function {{ instruction.name | camelCase }}Instruction<
     {% if hasAccounts %}
       accounts: [
         {% for account in accounts %}
-          accountMetaWithDefault(accounts.{{ account.name | camelCase }}, {{ account.defaultRole }}),
+          accountMetaWithDefault(accounts.{{ account.name | camelCase }}{{ " ?? " + account.defaultValue if account.defaultValue }}, {{ account.defaultRole }}),
         {% endfor %}
       ]
-      {%- if hasOmmitableAccounts -%}
+      {%- if hasLegacyOptionalAccounts -%}
         .filter(<T>(x: T | undefined): x is T => x !== undefined)
       {% endif %}
       ,

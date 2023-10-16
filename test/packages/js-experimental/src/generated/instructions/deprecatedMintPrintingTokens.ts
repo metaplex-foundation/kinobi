@@ -173,10 +173,10 @@ export function deprecatedMintPrintingTokensInstruction<
     masterEdition: TAccountMasterEdition extends string
       ? Base58EncodedAddress<TAccountMasterEdition>
       : TAccountMasterEdition;
-    tokenProgram: TAccountTokenProgram extends string
+    tokenProgram?: TAccountTokenProgram extends string
       ? Base58EncodedAddress<TAccountTokenProgram>
       : TAccountTokenProgram;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
@@ -193,8 +193,18 @@ export function deprecatedMintPrintingTokensInstruction<
       ),
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
       accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
     ],
     data: getDeprecatedMintPrintingTokensInstructionDataEncoder().encode(args),
     programAddress,

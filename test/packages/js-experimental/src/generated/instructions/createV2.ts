@@ -191,7 +191,7 @@ export function createV2Instruction<
     metadata: TAccountMetadata extends string
       ? Base58EncodedAddress<TAccountMetadata>
       : TAccountMetadata;
-    masterEdition: TAccountMasterEdition extends string
+    masterEdition?: TAccountMasterEdition extends string
       ? Base58EncodedAddress<TAccountMasterEdition>
       : TAccountMasterEdition;
     mint: TAccountMint extends string
@@ -206,13 +206,13 @@ export function createV2Instruction<
     updateAuthority: TAccountUpdateAuthority extends string
       ? Base58EncodedAddress<TAccountUpdateAuthority>
       : TAccountUpdateAuthority;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    sysvarInstructions: TAccountSysvarInstructions extends string
+    sysvarInstructions?: TAccountSysvarInstructions extends string
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
-    splTokenProgram: TAccountSplTokenProgram extends string
+    splTokenProgram?: TAccountSplTokenProgram extends string
       ? Base58EncodedAddress<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
   },
@@ -222,7 +222,14 @@ export function createV2Instruction<
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.masterEdition ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
       accountMetaWithDefault(
         accounts.mintAuthority,
@@ -230,9 +237,27 @@ export function createV2Instruction<
       ),
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.updateAuthority, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.splTokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getCreateV2InstructionDataEncoder().encode(args),
     programAddress,

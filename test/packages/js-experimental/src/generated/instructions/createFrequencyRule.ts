@@ -145,7 +145,7 @@ export function createFrequencyRuleInstruction<
     frequencyPda: TAccountFrequencyPda extends string
       ? Base58EncodedAddress<TAccountFrequencyPda>
       : TAccountFrequencyPda;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
   },
@@ -156,7 +156,14 @@ export function createFrequencyRuleInstruction<
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.frequencyPda, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
     ],
     data: getCreateFrequencyRuleInstructionDataEncoder().encode(args),
     programAddress,

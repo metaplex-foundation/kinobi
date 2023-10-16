@@ -296,37 +296,37 @@ export function validateInstruction<
     ruleSet: TAccountRuleSet extends string
       ? Base58EncodedAddress<TAccountRuleSet>
       : TAccountRuleSet;
-    systemProgram: TAccountSystemProgram extends string
+    systemProgram?: TAccountSystemProgram extends string
       ? Base58EncodedAddress<TAccountSystemProgram>
       : TAccountSystemProgram;
-    optRuleSigner1: TAccountOptRuleSigner1 extends string
+    optRuleSigner1?: TAccountOptRuleSigner1 extends string
       ? Base58EncodedAddress<TAccountOptRuleSigner1>
       : TAccountOptRuleSigner1;
-    optRuleSigner2: TAccountOptRuleSigner2 extends string
+    optRuleSigner2?: TAccountOptRuleSigner2 extends string
       ? Base58EncodedAddress<TAccountOptRuleSigner2>
       : TAccountOptRuleSigner2;
-    optRuleSigner3: TAccountOptRuleSigner3 extends string
+    optRuleSigner3?: TAccountOptRuleSigner3 extends string
       ? Base58EncodedAddress<TAccountOptRuleSigner3>
       : TAccountOptRuleSigner3;
-    optRuleSigner4: TAccountOptRuleSigner4 extends string
+    optRuleSigner4?: TAccountOptRuleSigner4 extends string
       ? Base58EncodedAddress<TAccountOptRuleSigner4>
       : TAccountOptRuleSigner4;
-    optRuleSigner5: TAccountOptRuleSigner5 extends string
+    optRuleSigner5?: TAccountOptRuleSigner5 extends string
       ? Base58EncodedAddress<TAccountOptRuleSigner5>
       : TAccountOptRuleSigner5;
-    optRuleNonsigner1: TAccountOptRuleNonsigner1 extends string
+    optRuleNonsigner1?: TAccountOptRuleNonsigner1 extends string
       ? Base58EncodedAddress<TAccountOptRuleNonsigner1>
       : TAccountOptRuleNonsigner1;
-    optRuleNonsigner2: TAccountOptRuleNonsigner2 extends string
+    optRuleNonsigner2?: TAccountOptRuleNonsigner2 extends string
       ? Base58EncodedAddress<TAccountOptRuleNonsigner2>
       : TAccountOptRuleNonsigner2;
-    optRuleNonsigner3: TAccountOptRuleNonsigner3 extends string
+    optRuleNonsigner3?: TAccountOptRuleNonsigner3 extends string
       ? Base58EncodedAddress<TAccountOptRuleNonsigner3>
       : TAccountOptRuleNonsigner3;
-    optRuleNonsigner4: TAccountOptRuleNonsigner4 extends string
+    optRuleNonsigner4?: TAccountOptRuleNonsigner4 extends string
       ? Base58EncodedAddress<TAccountOptRuleNonsigner4>
       : TAccountOptRuleNonsigner4;
-    optRuleNonsigner5: TAccountOptRuleNonsigner5 extends string
+    optRuleNonsigner5?: TAccountOptRuleNonsigner5 extends string
       ? Base58EncodedAddress<TAccountOptRuleNonsigner5>
       : TAccountOptRuleNonsigner5;
   },
@@ -337,7 +337,14 @@ export function validateInstruction<
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.ruleSet, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
       accountMetaWithDefault(accounts.optRuleSigner1, AccountRole.READONLY),
       accountMetaWithDefault(
         accounts.optRuleSigner2,

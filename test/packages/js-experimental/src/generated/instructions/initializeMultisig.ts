@@ -113,7 +113,7 @@ export function initializeMultisigInstruction<
     multisig: TAccountMultisig extends string
       ? Base58EncodedAddress<TAccountMultisig>
       : TAccountMultisig;
-    rent: TAccountRent extends string
+    rent?: TAccountRent extends string
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
@@ -123,7 +123,10 @@ export function initializeMultisigInstruction<
   return {
     accounts: [
       accountMetaWithDefault(accounts.multisig, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
     ],
     data: getInitializeMultisigInstructionDataEncoder().encode(args),
     programAddress,

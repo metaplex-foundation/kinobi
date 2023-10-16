@@ -8,7 +8,7 @@ export function getInstructionFunctionLowLevelFragment(
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
-  const hasOmmitableAccounts =
+  const hasLegacyOptionalAccounts =
     instructionNode.optionalAccountStrategy === 'omitted' &&
     instructionNode.accounts.some((account) => account.isOptional);
   const hasData =
@@ -37,11 +37,20 @@ export function getInstructionFunctionLowLevelFragment(
 
   const accounts = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
+    const defaultValue = getDefaultValue(
+      account,
+      programNode,
+      hasLegacyOptionalAccounts
+    );
+    const isOptionalOrHasLowLevelDefaultValues =
+      account.isOptional || defaultValue !== null;
 
     return {
       ...account,
       typeParam,
       defaultRole: getDefaultRole(account),
+      defaultValue,
+      isOptionalOrHasLowLevelDefaultValues,
     };
   });
 
@@ -49,7 +58,7 @@ export function getInstructionFunctionLowLevelFragment(
     instruction: instructionNode,
     program: programNode,
     hasAccounts,
-    hasOmmitableAccounts,
+    hasLegacyOptionalAccounts,
     accounts,
     hasData,
     hasArgs,
@@ -66,9 +75,34 @@ export function getInstructionFunctionLowLevelFragment(
 }
 
 function getDefaultRole(account: nodes.InstructionAccountNode): string {
-  if (account.isSigner === true && account.isWritable)
+  if (account.isSigner === true && account.isWritable) {
     return 'AccountRole.WRITABLE_SIGNER';
-  if (account.isSigner === true) return 'AccountRole.READONLY_SIGNER';
-  if (account.isWritable) return 'AccountRole.WRITABLE';
+  }
+  if (account.isSigner === true) {
+    return 'AccountRole.READONLY_SIGNER';
+  }
+  if (account.isWritable) {
+    return 'AccountRole.WRITABLE';
+  }
   return 'AccountRole.READONLY';
+}
+
+function getDefaultValue(
+  account: nodes.InstructionAccountNode,
+  program: nodes.ProgramNode,
+  usesLegacyOptionalAccounts: boolean
+): string | null {
+  if (account.isOptional && usesLegacyOptionalAccounts) {
+    return null;
+  }
+  if (account.isOptional || account.defaultsTo?.kind === 'programId') {
+    return `{ address: "${program.publicKey}" as Base58EncodedAddress<"${program.publicKey}">, role: AccountRole.READONLY }`;
+  }
+  if (account.defaultsTo?.kind === 'program') {
+    return `{ address: "${account.defaultsTo.program.publicKey}" as Base58EncodedAddress<"${account.defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
+  }
+  if (account.defaultsTo?.kind === 'publicKey') {
+    return `"${account.defaultsTo.publicKey}"`;
+  }
+  return null;
 }
