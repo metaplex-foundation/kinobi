@@ -140,7 +140,7 @@ export function approveTokenDelegateInstruction<
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.delegate, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getApproveTokenDelegateInstructionDataEncoder().encode(args),
     programAddress,
   } as ApproveTokenDelegateInstruction<

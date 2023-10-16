@@ -150,7 +150,7 @@ export function createRuleSetInstruction<
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.ruleSetPda, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCreateRuleSetInstructionDataEncoder().encode(args),
     programAddress,
   } as CreateRuleSetInstruction<

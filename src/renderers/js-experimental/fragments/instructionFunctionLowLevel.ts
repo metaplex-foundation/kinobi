@@ -8,6 +8,9 @@ export function getInstructionFunctionLowLevelFragment(
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
+  const hasOmmitableAccounts =
+    instructionNode.optionalAccountStrategy === 'omitted' &&
+    instructionNode.accounts.some((account) => account.isOptional);
   const hasData =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.length > 0;
@@ -46,6 +49,7 @@ export function getInstructionFunctionLowLevelFragment(
     instruction: instructionNode,
     program: programNode,
     hasAccounts,
+    hasOmmitableAccounts,
     accounts,
     hasData,
     hasArgs,

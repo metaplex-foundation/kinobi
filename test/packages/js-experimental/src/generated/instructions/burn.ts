@@ -203,7 +203,7 @@ export function burnInstruction<
         accounts.authorizationRulesProgram,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getBurnInstructionDataEncoder().encode(args),
     programAddress,
   } as BurnInstruction<

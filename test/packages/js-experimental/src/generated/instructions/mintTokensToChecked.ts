@@ -146,7 +146,7 @@ export function mintTokensToCheckedInstruction<
         accounts.mintAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getMintTokensToCheckedInstructionDataEncoder().encode(args),
     programAddress,
   } as MintTokensToCheckedInstruction<

@@ -210,7 +210,7 @@ export function createMasterEditionV3Instruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCreateMasterEditionV3InstructionDataEncoder().encode(args),
     programAddress,
   } as CreateMasterEditionV3Instruction<

@@ -249,7 +249,7 @@ export function initializeInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getInitializeInstructionDataEncoder().encode(args),
     programAddress,
   } as InitializeInstruction<

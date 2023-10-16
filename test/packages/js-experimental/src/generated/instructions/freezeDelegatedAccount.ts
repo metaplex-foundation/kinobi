@@ -145,7 +145,7 @@ export function freezeDelegatedAccountInstruction<
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
     programAddress,
   } as FreezeDelegatedAccountInstruction<

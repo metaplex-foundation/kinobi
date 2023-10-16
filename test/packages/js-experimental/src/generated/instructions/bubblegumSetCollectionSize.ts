@@ -176,7 +176,7 @@ export function bubblegumSetCollectionSizeInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getBubblegumSetCollectionSizeInstructionDataEncoder().encode(args),
     programAddress,
   } as BubblegumSetCollectionSizeInstruction<

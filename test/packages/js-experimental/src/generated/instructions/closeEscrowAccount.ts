@@ -176,7 +176,7 @@ export function closeEscrowAccountInstruction<
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCloseEscrowAccountInstructionDataEncoder().encode({}),
     programAddress,
   } as CloseEscrowAccountInstruction<

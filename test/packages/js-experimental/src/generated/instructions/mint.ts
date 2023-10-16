@@ -240,7 +240,7 @@ export function mintInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getMintInstructionDataEncoder().encode(args),
     programAddress,
   } as MintInstruction<

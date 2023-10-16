@@ -121,7 +121,7 @@ export function closeTokenInstruction<
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCloseTokenInstructionDataEncoder().encode({}),
     programAddress,
   } as CloseTokenInstruction<

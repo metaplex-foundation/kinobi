@@ -368,7 +368,7 @@ export function updateV1Instruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUpdateV1InstructionDataEncoder().encode(args),
     programAddress,
   } as UpdateV1Instruction<

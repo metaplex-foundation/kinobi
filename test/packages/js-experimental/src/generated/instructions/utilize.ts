@@ -228,7 +228,7 @@ export function utilizeInstruction<
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
       accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.burner, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUtilizeInstructionDataEncoder().encode(args),
     programAddress,
   } as UtilizeInstruction<

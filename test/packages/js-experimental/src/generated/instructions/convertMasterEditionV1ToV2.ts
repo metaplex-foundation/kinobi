@@ -125,7 +125,7 @@ export function convertMasterEditionV1ToV2Instruction<
       accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.oneTimeAuth, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
     programAddress,
   } as ConvertMasterEditionV1ToV2Instruction<

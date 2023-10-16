@@ -122,7 +122,7 @@ export function thawTokenInstruction<
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getThawTokenInstructionDataEncoder().encode({}),
     programAddress,
   } as ThawTokenInstruction<

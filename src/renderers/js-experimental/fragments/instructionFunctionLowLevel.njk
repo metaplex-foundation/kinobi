@@ -22,7 +22,11 @@ export function {{ instruction.name | camelCase }}Instruction<
         {% for account in accounts %}
           accountMetaWithDefault(accounts.{{ account.name | camelCase }}, {{ account.defaultRole }}),
         {% endfor %}
-      ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+      ]
+      {%- if hasOmmitableAccounts -%}
+        .filter(<T>(x: T | undefined): x is T => x !== undefined)
+      {% endif %}
+      ,
     {% endif %}
     {% if hasData and hasArgs %}
       data: {{ encoderFunction }}().encode(args),

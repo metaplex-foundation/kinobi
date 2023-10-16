@@ -103,9 +103,7 @@ export function initializeImmutableOwnerInstruction<
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ) {
   return {
-    accounts: [
-      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    accounts: [accountMetaWithDefault(accounts.account, AccountRole.WRITABLE)],
     data: getInitializeImmutableOwnerInstructionDataEncoder().encode({}),
     programAddress,
   } as InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>;

@@ -153,7 +153,7 @@ export function transferTokensCheckedInstruction<
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getTransferTokensCheckedInstructionDataEncoder().encode(args),
     programAddress,
   } as TransferTokensCheckedInstruction<

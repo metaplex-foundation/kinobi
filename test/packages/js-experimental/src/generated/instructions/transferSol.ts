@@ -52,15 +52,19 @@ import {
 // Output.
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
   TAccountDestination extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      TAccountSource extends string
-        ? WritableSignerAccount<TAccountSource>
-        : TAccountSource,
+      ...(TAccountSource extends undefined
+        ? []
+        : [
+            TAccountSource extends string
+              ? WritableSignerAccount<TAccountSource>
+              : TAccountSource
+          ]),
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
         : TAccountDestination
@@ -109,7 +113,7 @@ export function getTransferSolInstructionDataCodec(): Codec<
 
 export function transferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
   TAccountDestination extends string | IAccountMeta<string> = string
 >(
   accounts: {

@@ -154,7 +154,7 @@ export function revokeCollectionAuthorityInstruction<
       ),
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),
     programAddress,
   } as RevokeCollectionAuthorityInstruction<

@@ -185,7 +185,7 @@ export function setAndVerifyCollectionInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSetAndVerifyCollectionInstructionDataEncoder().encode({}),
     programAddress,
   } as SetAndVerifyCollectionInstruction<

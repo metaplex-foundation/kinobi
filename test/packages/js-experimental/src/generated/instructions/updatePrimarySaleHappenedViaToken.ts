@@ -128,7 +128,7 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
       accountMetaWithDefault(accounts.token, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
       {}
     ),

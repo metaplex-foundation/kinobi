@@ -299,7 +299,7 @@ export function mintFromCandyMachineInstruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.recentSlothashes, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getMintFromCandyMachineInstructionDataEncoder().encode({}),
     programAddress,
   } as MintFromCandyMachineInstruction<

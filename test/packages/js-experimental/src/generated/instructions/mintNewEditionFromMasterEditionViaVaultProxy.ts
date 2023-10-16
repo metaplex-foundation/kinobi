@@ -302,7 +302,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
       accountMetaWithDefault(accounts.tokenVaultProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder().encode(
       args
     ),

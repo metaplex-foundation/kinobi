@@ -213,7 +213,7 @@ export function burnEditionNftInstruction<
         AccountRole.WRITABLE
       ),
       accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getBurnEditionNftInstructionDataEncoder().encode({}),
     programAddress,
   } as BurnEditionNftInstruction<

@@ -247,7 +247,7 @@ export function transferOutOfEscrowInstruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getTransferOutOfEscrowInstructionDataEncoder().encode(args),
     programAddress,
   } as TransferOutOfEscrowInstruction<

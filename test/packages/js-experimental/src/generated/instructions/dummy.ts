@@ -204,7 +204,7 @@ export function dummyInstruction<
       accountMetaWithDefault(accounts.delegate, AccountRole.READONLY_SIGNER),
       accountMetaWithDefault(accounts.delegateRecord, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.tokenOrAtaProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getDummyInstructionDataEncoder().encode({}),
     programAddress,
   } as DummyInstruction<

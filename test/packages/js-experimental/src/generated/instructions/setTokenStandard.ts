@@ -135,7 +135,7 @@ export function setTokenStandardInstruction<
       ),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSetTokenStandardInstructionDataEncoder().encode({}),
     programAddress,
   } as SetTokenStandardInstruction<

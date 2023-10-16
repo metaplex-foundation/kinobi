@@ -143,7 +143,7 @@ export function burnTokenCheckedInstruction<
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getBurnTokenCheckedInstructionDataEncoder().encode(args),
     programAddress,
   } as BurnTokenCheckedInstruction<

@@ -270,7 +270,7 @@ export function setCollectionInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSetCollectionInstructionDataEncoder().encode({}),
     programAddress,
   } as SetCollectionInstruction<

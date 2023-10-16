@@ -118,7 +118,7 @@ export function withdrawInstruction<
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.WRITABLE_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getWithdrawInstructionDataEncoder().encode({}),
     programAddress,
   } as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;

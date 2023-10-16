@@ -244,7 +244,7 @@ export function delegateInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getDelegateInstructionDataEncoder().encode(args),
     programAddress,
   } as DelegateInstruction<

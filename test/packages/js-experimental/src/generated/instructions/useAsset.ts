@@ -232,7 +232,7 @@ export function useAssetInstruction<
         accounts.authorizationRulesProgram,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUseAssetInstructionDataEncoder().encode(args),
     programAddress,
   } as UseAssetInstruction<

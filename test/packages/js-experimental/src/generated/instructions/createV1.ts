@@ -237,7 +237,7 @@ export function createV1Instruction<
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
       accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCreateV1InstructionDataEncoder().encode(args),
     programAddress,
   } as CreateV1Instruction<

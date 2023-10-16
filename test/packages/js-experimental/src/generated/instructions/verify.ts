@@ -166,7 +166,7 @@ export function verifyInstruction<
         accounts.authorizationRulesProgram,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getVerifyInstructionDataEncoder().encode(args),
     programAddress,
   } as VerifyInstruction<

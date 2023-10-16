@@ -144,7 +144,7 @@ export function initializeMintInstruction<
     accounts: [
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getInitializeMintInstructionDataEncoder().encode(args),
     programAddress,
   } as InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>;

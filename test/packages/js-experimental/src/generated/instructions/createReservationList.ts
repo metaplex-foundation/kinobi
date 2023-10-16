@@ -138,7 +138,7 @@ export function createReservationListInstruction<
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCreateReservationListInstructionDataEncoder().encode(args),
     programAddress,
   } as CreateReservationListInstruction<

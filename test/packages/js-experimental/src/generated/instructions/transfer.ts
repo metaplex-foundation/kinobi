@@ -273,7 +273,7 @@ export function transferInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getTransferInstructionDataEncoder().encode(args),
     programAddress,
   } as TransferInstruction<

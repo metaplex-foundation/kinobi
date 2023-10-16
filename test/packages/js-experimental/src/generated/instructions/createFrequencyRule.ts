@@ -157,7 +157,7 @@ export function createFrequencyRuleInstruction<
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.frequencyPda, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCreateFrequencyRuleInstructionDataEncoder().encode(args),
     programAddress,
   } as CreateFrequencyRuleInstruction<

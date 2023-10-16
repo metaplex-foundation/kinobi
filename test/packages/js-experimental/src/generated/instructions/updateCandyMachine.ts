@@ -136,7 +136,7 @@ export function updateCandyMachineInstruction<
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUpdateCandyMachineInstructionDataEncoder().encode(args),
     programAddress,
   } as UpdateCandyMachineInstruction<

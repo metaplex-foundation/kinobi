@@ -207,7 +207,7 @@ export function createMetadataAccountV3Instruction<
       accountMetaWithDefault(accounts.updateAuthority, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCreateMetadataAccountV3InstructionDataEncoder().encode(args),
     programAddress,
   } as CreateMetadataAccountV3Instruction<

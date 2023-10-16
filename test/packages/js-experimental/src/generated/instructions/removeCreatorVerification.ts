@@ -118,7 +118,7 @@ export function removeCreatorVerificationInstruction<
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
     programAddress,
   } as RemoveCreatorVerificationInstruction<

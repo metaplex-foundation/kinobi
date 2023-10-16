@@ -216,7 +216,7 @@ export function migrateInstruction<
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getMigrateInstructionDataEncoder().encode(args),
     programAddress,
   } as MigrateInstruction<

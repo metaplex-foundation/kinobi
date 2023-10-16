@@ -132,7 +132,7 @@ export function initializeTokenInstruction<
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getInitializeTokenInstructionDataEncoder().encode({}),
     programAddress,
   } as InitializeTokenInstruction<

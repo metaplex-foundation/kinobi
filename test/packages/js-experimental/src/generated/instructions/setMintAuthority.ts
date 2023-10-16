@@ -130,7 +130,7 @@ export function setMintAuthorityInstruction<
         accounts.mintAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSetMintAuthorityInstructionDataEncoder().encode({}),
     programAddress,
   } as SetMintAuthorityInstruction<

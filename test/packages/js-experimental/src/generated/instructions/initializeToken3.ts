@@ -126,7 +126,7 @@ export function initializeToken3Instruction<
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getInitializeToken3InstructionDataEncoder().encode(args),
     programAddress,
   } as InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>;

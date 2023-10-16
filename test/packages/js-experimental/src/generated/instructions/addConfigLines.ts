@@ -145,7 +145,7 @@ export function addConfigLinesInstruction<
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getAddConfigLinesInstructionDataEncoder().encode(args),
     programAddress,
   } as AddConfigLinesInstruction<

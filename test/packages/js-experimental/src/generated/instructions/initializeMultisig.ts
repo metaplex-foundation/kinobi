@@ -124,7 +124,7 @@ export function initializeMultisigInstruction<
     accounts: [
       accountMetaWithDefault(accounts.multisig, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getInitializeMultisigInstructionDataEncoder().encode(args),
     programAddress,
   } as InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>;

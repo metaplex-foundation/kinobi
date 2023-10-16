@@ -167,7 +167,7 @@ export function unverifyCollectionInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUnverifyCollectionInstructionDataEncoder().encode({}),
     programAddress,
   } as UnverifyCollectionInstruction<

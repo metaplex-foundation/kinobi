@@ -272,7 +272,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruc
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
       accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder().encode(
       {}
     ),

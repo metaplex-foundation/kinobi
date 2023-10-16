@@ -182,7 +182,7 @@ export function unverifySizedCollectionItemInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUnverifySizedCollectionItemInstructionDataEncoder().encode({}),
     programAddress,
   } as UnverifySizedCollectionItemInstruction<

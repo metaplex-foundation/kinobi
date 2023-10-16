@@ -191,7 +191,7 @@ export function setAndVerifySizedCollectionItemInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSetAndVerifySizedCollectionItemInstructionDataEncoder().encode({}),
     programAddress,
   } as SetAndVerifySizedCollectionItemInstruction<

@@ -136,7 +136,7 @@ export function transferTokensInstruction<
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getTransferTokensInstructionDataEncoder().encode(args),
     programAddress,
   } as TransferTokensInstruction<

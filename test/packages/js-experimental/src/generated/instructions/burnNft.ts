@@ -165,7 +165,7 @@ export function burnNftInstruction<
       ),
       accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getBurnNftInstructionDataEncoder().encode({}),
     programAddress,
   } as BurnNftInstruction<

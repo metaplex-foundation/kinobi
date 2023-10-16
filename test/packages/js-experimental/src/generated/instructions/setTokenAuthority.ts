@@ -145,7 +145,7 @@ export function setTokenAuthorityInstruction<
     accounts: [
       accountMetaWithDefault(accounts.owned, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSetTokenAuthorityInstructionDataEncoder().encode(args),
     programAddress,
   } as SetTokenAuthorityInstruction<TProgram, TAccountOwned, TAccountOwner>;

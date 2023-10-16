@@ -269,7 +269,7 @@ export function deprecatedCreateMasterEditionInstruction<
         accounts.oneTimePrintingAuthorizationMintAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getDeprecatedCreateMasterEditionInstructionDataEncoder().encode(args),
     programAddress,
   } as DeprecatedCreateMasterEditionInstruction<

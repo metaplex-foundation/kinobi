@@ -139,7 +139,7 @@ export function mintTokensToInstruction<
         accounts.mintAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getMintTokensToInstructionDataEncoder().encode(args),
     programAddress,
   } as MintTokensToInstruction<

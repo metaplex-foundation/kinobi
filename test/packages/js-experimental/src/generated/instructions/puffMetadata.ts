@@ -99,9 +99,7 @@ export function puffMetadataInstruction<
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ) {
   return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    accounts: [accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE)],
     data: getPuffMetadataInstructionDataEncoder().encode({}),
     programAddress,
   } as PuffMetadataInstruction<TProgram, TAccountMetadata>;

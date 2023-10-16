@@ -112,7 +112,7 @@ export function signMetadataInstruction<
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSignMetadataInstructionDataEncoder().encode({}),
     programAddress,
   } as SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;

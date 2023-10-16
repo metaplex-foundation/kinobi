@@ -122,7 +122,7 @@ export function initializeMultisig2Instruction<
     accounts: [
       accountMetaWithDefault(accounts.multisig, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.signer, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getInitializeMultisig2InstructionDataEncoder().encode(args),
     programAddress,
   } as InitializeMultisig2Instruction<

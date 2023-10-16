@@ -126,9 +126,7 @@ export function initializeMint2Instruction<
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ) {
   return {
-    accounts: [
-      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE)],
     data: getInitializeMint2InstructionDataEncoder().encode(args),
     programAddress,
   } as InitializeMint2Instruction<TProgram, TAccountMint>;

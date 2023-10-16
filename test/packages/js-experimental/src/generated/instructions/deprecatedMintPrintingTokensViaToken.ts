@@ -220,7 +220,7 @@ export function deprecatedMintPrintingTokensViaTokenInstruction<
       accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder().encode(
       args
     ),

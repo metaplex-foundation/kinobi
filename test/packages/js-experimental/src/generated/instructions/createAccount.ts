@@ -133,7 +133,7 @@ export function createAccountInstruction<
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.newAccount, AccountRole.WRITABLE_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getCreateAccountInstructionDataEncoder().encode(args),
     programAddress,
   } as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;

@@ -160,7 +160,7 @@ export function setCollectionSizeInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getSetCollectionSizeInstructionDataEncoder().encode(args),
     programAddress,
   } as SetCollectionSizeInstruction<

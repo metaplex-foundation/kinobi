@@ -168,7 +168,7 @@ export function deprecatedSetReservationListInstruction<
       accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.resource, AccountRole.READONLY_SIGNER),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
     programAddress,
   } as DeprecatedSetReservationListInstruction<

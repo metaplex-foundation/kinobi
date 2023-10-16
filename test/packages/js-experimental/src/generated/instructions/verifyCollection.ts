@@ -160,7 +160,7 @@ export function verifyCollectionInstruction<
         accounts.collectionMasterEditionAccount,
         AccountRole.READONLY
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getVerifyCollectionInstructionDataEncoder().encode({}),
     programAddress,
   } as VerifyCollectionInstruction<

@@ -161,7 +161,7 @@ export function updateMetadataAccountV2Instruction<
         accounts.updateAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getUpdateMetadataAccountV2InstructionDataEncoder().encode(args),
     programAddress,
   } as UpdateMetadataAccountV2Instruction<
