@@ -3,17 +3,9 @@
 // Output.
 export type {{ instruction.name | pascalCase }}Instruction<
   TProgram extends string = "{{ program.publicKey }}",
-  {% for account in instruction.accounts %}
-    {% if account.defaultsTo.kind === 'publicKey' %}
-      TAccount{{ account.name | pascalCase }} extends string = "{{ account.defaultsTo.publicKey }}",
-    {% elif account.defaultsTo.kind === 'program' %}
-      TAccount{{ account.name | pascalCase }} extends string = "{{ account.defaultsTo.program.publicKey }}",
-    {% elif account.defaultsTo.kind === 'programId' %}
-      TAccount{{ account.name | pascalCase }} extends string = "{{ program.publicKey }}",
-    {% else %}
-      TAccount{{ account.name | pascalCase }} extends string = string,
-    {% endif %}
-  {% endfor %}
+  {% if hasAccounts %}
+    {{ accountTypeParams }}
+  {% endif %}
 > = IInstruction<TProgram>
   {% if hasData %}
     & IInstructionWithData<{{ dataType }}>

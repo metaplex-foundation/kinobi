@@ -1,44 +1,37 @@
 import * as nodes from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
-import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionTypeFragment(
+export function getInstructionFunctionLowLevelFragment(
   instructionNode: nodes.InstructionNodeInput,
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
-  const hasData =
+  const hasArgs =
     !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.length > 0;
+    instructionNode.dataArgs.struct.fields.filter(
+      (field) => field.defaultsTo?.strategy !== 'omitted'
+    ).length > 0;
   const dataType = instructionNode.dataArgs.link
     ? pascalCase(instructionNode.dataArgs.link.name)
     : pascalCase(instructionNode.dataArgs.name);
+  const argsType = `${dataType}Args`;
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountTypeParamFragment(account, programNode)
     ),
     (renders) => renders.join(', ')
   );
-  const accountMetasFragment = mergeFragments(
-    instructionNode.accounts.map(getInstructionAccountMetaFragment),
-    (renders) => renders.join(', ')
-  );
 
-  return fragmentFromTemplate('instructionType.njk', {
+  return fragmentFromTemplate('instructionFunctionLowLevel.njk', {
     instruction: instructionNode,
     program: programNode,
-    hasData,
     hasAccounts,
-    dataType,
-    accountMetas: accountMetasFragment.render,
+    hasArgs,
+    argsType,
     accountTypeParams: accountTypeParamsFragment.render,
   })
-    .mergeImportsWith(accountMetasFragment, accountTypeParamsFragment)
-    .addImports('solanaInstructions', [
-      'IInstruction',
-      ...(hasData ? ['IInstructionWithData'] : []),
-      ...(hasAccounts ? ['IInstructionWithAccounts'] : []),
-    ]);
+    .mergeImportsWith(accountTypeParamsFragment)
+    .addImports('solanaAddresses', ['Base58EncodedAddress']);
 }
