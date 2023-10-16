@@ -147,13 +147,7 @@ export function setCollectionSizeInstruction<
   },
   args: SetCollectionSizeInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): SetCollectionSizeInstruction<
-  TProgram,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthority,
-  TAccountCollectionMint,
-  TAccountCollectionAuthorityRecord
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
@@ -166,8 +160,14 @@ export function setCollectionSizeInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getSetCollectionSizeInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >;
 }

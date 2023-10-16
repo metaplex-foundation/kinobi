@@ -185,18 +185,7 @@ export function burnInstruction<
   },
   args: BurnInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): BurnInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountSplTokenProgram,
-  TAccountCollectionMetadata,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -214,8 +203,19 @@ export function burnInstruction<
         accounts.authorizationRulesProgram,
         AccountRole.READONLY
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getBurnInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as BurnInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >;
 }

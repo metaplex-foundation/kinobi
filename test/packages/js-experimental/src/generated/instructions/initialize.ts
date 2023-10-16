@@ -223,20 +223,7 @@ export function initializeInstruction<
   },
   args: InitializeInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): InitializeInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountAuthority,
-  TAccountPayer,
-  TAccountCollectionMetadata,
-  TAccountCollectionMint,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountCollectionAuthorityRecord,
-  TAccountTokenMetadataProgram,
-  TAccountSystemProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
@@ -262,8 +249,21 @@ export function initializeInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getInitializeInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as InitializeInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >;
 }

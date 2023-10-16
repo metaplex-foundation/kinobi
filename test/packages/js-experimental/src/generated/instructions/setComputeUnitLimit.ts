@@ -93,9 +93,9 @@ export function setComputeUnitLimitInstruction<
 >(
   args: SetComputeUnitLimitInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
-): SetComputeUnitLimitInstruction<TProgram> {
+) {
   return {
     data: getSetComputeUnitLimitInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as SetComputeUnitLimitInstruction<TProgram>;
 }

@@ -122,13 +122,13 @@ export function transferSolInstruction<
   },
   args: TransferSolInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
-): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getTransferSolInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 }

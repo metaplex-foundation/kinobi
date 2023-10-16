@@ -125,13 +125,7 @@ export function setTokenStandardInstruction<
       : TAccountEdition;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): SetTokenStandardInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority,
-  TAccountMint,
-  TAccountEdition
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -141,8 +135,14 @@ export function setTokenStandardInstruction<
       ),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getSetTokenStandardInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >;
 }

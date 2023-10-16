@@ -212,20 +212,7 @@ export function useAssetInstruction<
   },
   args: UseAssetInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): UseAssetInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUseAuthority,
-  TAccountOwner,
-  TAccountSplTokenProgram,
-  TAccountAtaProgram,
-  TAccountSystemProgram,
-  TAccountUseAuthorityRecord,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -245,8 +232,21 @@ export function useAssetInstruction<
         accounts.authorizationRulesProgram,
         AccountRole.READONLY
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getUseAssetInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as UseAssetInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >;
 }

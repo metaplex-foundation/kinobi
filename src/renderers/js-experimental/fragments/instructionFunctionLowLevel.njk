@@ -15,19 +15,14 @@ export function {{ instruction.name | camelCase }}Instruction<
     args: {{ argsType }},
   {% endif %}
   programAddress: Base58EncodedAddress<TProgram> = "{{ program.publicKey }}" as Base58EncodedAddress<TProgram>,
-): {{ instruction.name | pascalCase }}Instruction<
-  TProgram,
-  {% for account in accounts %}
-    {{ account.typeParam }},
-  {% endfor %}
-> {
+) {
   return {
     {% if hasAccounts %}
       accounts: [
         {% for account in accounts %}
           accountMetaWithDefault(accounts.{{ account.name | camelCase }}, {{ account.defaultRole }}),
         {% endfor %}
-      ],
+      ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     {% endif %}
     {% if hasData and hasArgs %}
       data: {{ encoderFunction }}().encode(args),
@@ -35,5 +30,10 @@ export function {{ instruction.name | camelCase }}Instruction<
       data: {{ encoderFunction }}().encode({}),
     {% endif %}
     programAddress,
-  };
+  } as {{ instruction.name | pascalCase }}Instruction<
+    TProgram,
+    {% for account in accounts %}
+      {{ account.typeParam }},
+    {% endfor %}
+  >;
 }

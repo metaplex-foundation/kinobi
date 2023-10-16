@@ -109,10 +109,12 @@ export function uiAmountToAmountInstruction<
   },
   args: UiAmountToAmountInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): UiAmountToAmountInstruction<TProgram, TAccountMint> {
+) {
   return {
-    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.READONLY)],
+    accounts: [
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getUiAmountToAmountInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as UiAmountToAmountInstruction<TProgram, TAccountMint>;
 }

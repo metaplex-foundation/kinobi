@@ -128,13 +128,13 @@ export function createAccountInstruction<
   },
   args: CreateAccountInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
-): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.newAccount, AccountRole.WRITABLE_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCreateAccountInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 }

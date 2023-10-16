@@ -192,18 +192,7 @@ export function createMasterEditionV3Instruction<
   },
   args: CreateMasterEditionV3InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): CreateMasterEditionV3Instruction<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE),
@@ -221,8 +210,19 @@ export function createMasterEditionV3Instruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCreateMasterEditionV3InstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as CreateMasterEditionV3Instruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 }

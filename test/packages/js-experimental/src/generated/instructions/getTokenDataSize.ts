@@ -94,10 +94,12 @@ export function getTokenDataSizeInstruction<
       : TAccountMint;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): GetTokenDataSizeInstruction<TProgram, TAccountMint> {
+) {
   return {
-    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.READONLY)],
+    accounts: [
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getGetTokenDataSizeInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as GetTokenDataSizeInstruction<TProgram, TAccountMint>;
 }

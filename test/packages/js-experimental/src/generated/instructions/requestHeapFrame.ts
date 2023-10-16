@@ -99,9 +99,9 @@ export function requestHeapFrameInstruction<
 >(
   args: RequestHeapFrameInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
-): RequestHeapFrameInstruction<TProgram> {
+) {
   return {
     data: getRequestHeapFrameInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as RequestHeapFrameInstruction<TProgram>;
 }

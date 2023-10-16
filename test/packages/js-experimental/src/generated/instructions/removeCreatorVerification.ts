@@ -113,17 +113,17 @@ export function removeCreatorVerificationInstruction<
       : TAccountCreator;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): RemoveCreatorVerificationInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountCreator
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as RemoveCreatorVerificationInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCreator
+  >;
 }

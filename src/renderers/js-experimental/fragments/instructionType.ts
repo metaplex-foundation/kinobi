@@ -5,7 +5,7 @@ import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionTypeFragment(
-  instructionNode: nodes.InstructionNodeInput,
+  instructionNode: nodes.InstructionNode,
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
@@ -17,15 +17,24 @@ export function getInstructionTypeFragment(
     : pascalCase(instructionNode.dataArgs.name);
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountTypeParamFragment(account, programNode)
+      getInstructionAccountTypeParamFragment(
+        instructionNode,
+        account,
+        programNode
+      )
     ),
     (renders) => renders.join(', ')
   );
+  const usesOmmitableAccounts =
+    instructionNode.optionalAccountStrategy === 'omitted';
   const accountMetasFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountMetaFragment(account).mapRender((r) => {
         const typeParam = `TAccount${pascalCase(account.name)}`;
-        return `${typeParam} extends string ? ${r} : ${typeParam}`;
+        const isOmmitable = account.isOptional && usesOmmitableAccounts;
+        const type = `${typeParam} extends string ? ${r} : ${typeParam}`;
+        if (!isOmmitable) return type;
+        return `...(${typeParam} extends undefined ? [] : [${type}])`;
       })
     ),
     (renders) => renders.join(', ')

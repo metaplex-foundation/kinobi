@@ -244,25 +244,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruc
       : TAccountReservationList;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountEdition,
-  TAccountMasterEdition,
-  TAccountMint,
-  TAccountMintAuthority,
-  TAccountPrintingMint,
-  TAccountMasterTokenAccount,
-  TAccountEditionMarker,
-  TAccountBurnAuthority,
-  TAccountPayer,
-  TAccountMasterUpdateAuthority,
-  TAccountMasterMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountReservationList
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -290,10 +272,28 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruc
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
       accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder().encode(
       {}
     ),
     programAddress,
-  };
+  } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >;
 }

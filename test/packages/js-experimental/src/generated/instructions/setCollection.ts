@@ -235,23 +235,7 @@ export function setCollectionInstruction<
       : TAccountSystemProgram;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): SetCollectionInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority,
-  TAccountAuthorityPda,
-  TAccountPayer,
-  TAccountCollectionMint,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthorityRecord,
-  TAccountNewCollectionUpdateAuthority,
-  TAccountNewCollectionMetadata,
-  TAccountNewCollectionMint,
-  TAccountNewCollectionMasterEdition,
-  TAccountNewCollectionAuthorityRecord,
-  TAccountTokenMetadataProgram,
-  TAccountSystemProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
@@ -286,8 +270,24 @@ export function setCollectionInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getSetCollectionInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as SetCollectionInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountAuthorityPda,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionUpdateAuthority,
+    TAccountNewCollectionMetadata,
+    TAccountNewCollectionMint,
+    TAccountNewCollectionMasterEdition,
+    TAccountNewCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >;
 }

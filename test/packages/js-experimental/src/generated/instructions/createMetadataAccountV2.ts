@@ -179,16 +179,7 @@ export function createMetadataAccountV2Instruction<
   },
   args: CreateMetadataAccountV2InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): CreateMetadataAccountV2Instruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountSystemProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -201,8 +192,17 @@ export function createMetadataAccountV2Instruction<
       accountMetaWithDefault(accounts.updateAuthority, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCreateMetadataAccountV2InstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as CreateMetadataAccountV2Instruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 }

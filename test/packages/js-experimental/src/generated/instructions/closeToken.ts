@@ -115,19 +115,19 @@ export function closeTokenInstruction<
       : TAccountOwner;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): CloseTokenInstruction<
-  TProgram,
-  TAccountAccount,
-  TAccountDestination,
-  TAccountOwner
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCloseTokenInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as CloseTokenInstruction<
+    TProgram,
+    TAccountAccount,
+    TAccountDestination,
+    TAccountOwner
+  >;
 }

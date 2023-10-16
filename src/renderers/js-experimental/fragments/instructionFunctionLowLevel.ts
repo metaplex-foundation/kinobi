@@ -4,7 +4,7 @@ import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionFunctionLowLevelFragment(
-  instructionNode: nodes.InstructionNodeInput,
+  instructionNode: nodes.InstructionNode,
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
@@ -23,7 +23,11 @@ export function getInstructionFunctionLowLevelFragment(
   const encoderFunction = `get${dataType}Encoder`;
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountTypeParamFragment(account, programNode)
+      getInstructionAccountTypeParamFragment(
+        instructionNode,
+        account,
+        programNode
+      )
     ),
     (renders) => renders.join(', ')
   );

@@ -168,17 +168,7 @@ export function approveCollectionAuthorityInstruction<
       : TAccountRent;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): ApproveCollectionAuthorityInstruction<
-  TProgram,
-  TAccountCollectionAuthorityRecord,
-  TAccountNewCollectionAuthority,
-  TAccountUpdateAuthority,
-  TAccountPayer,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountSystemProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(
@@ -198,8 +188,18 @@ export function approveCollectionAuthorityInstruction<
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getApproveCollectionAuthorityInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as ApproveCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 }

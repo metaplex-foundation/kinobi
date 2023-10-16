@@ -194,11 +194,7 @@ export function updateMetadataAccountInstruction<
   },
   args: UpdateMetadataAccountInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): UpdateMetadataAccountInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -206,8 +202,12 @@ export function updateMetadataAccountInstruction<
         accounts.updateAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getUpdateMetadataAccountInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as UpdateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >;
 }

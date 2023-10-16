@@ -174,18 +174,7 @@ export function createEscrowAccountInstruction<
       : TAccountAuthority;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): CreateEscrowAccountInstruction<
-  TProgram,
-  TAccountEscrow,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountEdition,
-  TAccountPayer,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.escrow, AccountRole.WRITABLE),
@@ -197,8 +186,19 @@ export function createEscrowAccountInstruction<
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCreateEscrowAccountInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as CreateEscrowAccountInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >;
 }

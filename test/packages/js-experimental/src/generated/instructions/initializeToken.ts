@@ -125,21 +125,21 @@ export function initializeTokenInstruction<
       : TAccountRent;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): InitializeTokenInstruction<
-  TProgram,
-  TAccountAccount,
-  TAccountMint,
-  TAccountOwner,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getInitializeTokenInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as InitializeTokenInstruction<
+    TProgram,
+    TAccountAccount,
+    TAccountMint,
+    TAccountOwner,
+    TAccountRent
+  >;
 }

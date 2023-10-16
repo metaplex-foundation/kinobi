@@ -273,26 +273,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
   },
   args: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-  TProgram,
-  TAccountNewMetadata,
-  TAccountNewEdition,
-  TAccountMasterEdition,
-  TAccountNewMint,
-  TAccountEditionMarkPda,
-  TAccountNewMintAuthority,
-  TAccountPayer,
-  TAccountVaultAuthority,
-  TAccountSafetyDepositStore,
-  TAccountSafetyDepositBox,
-  TAccountVault,
-  TAccountNewMetadataUpdateAuthority,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountTokenVaultProgram,
-  TAccountSystemProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.newMetadata, AccountRole.WRITABLE),
@@ -321,10 +302,29 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
       accountMetaWithDefault(accounts.tokenVaultProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder().encode(
       args
     ),
     programAddress,
-  };
+  } as MintNewEditionFromMasterEditionViaVaultProxyInstruction<
+    TProgram,
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountVaultAuthority,
+    TAccountSafetyDepositStore,
+    TAccountSafetyDepositBox,
+    TAccountVault,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountTokenVaultProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 }

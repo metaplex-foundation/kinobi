@@ -116,19 +116,19 @@ export function thawTokenInstruction<
       : TAccountOwner;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): ThawTokenInstruction<
-  TProgram,
-  TAccountAccount,
-  TAccountMint,
-  TAccountOwner
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getThawTokenInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as ThawTokenInstruction<
+    TProgram,
+    TAccountAccount,
+    TAccountMint,
+    TAccountOwner
+  >;
 }

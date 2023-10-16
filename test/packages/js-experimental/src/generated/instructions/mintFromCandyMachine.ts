@@ -261,26 +261,7 @@ export function mintFromCandyMachineInstruction<
       : TAccountRecentSlothashes;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): MintFromCandyMachineInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountNftMint,
-  TAccountNftMintAuthority,
-  TAccountNftMetadata,
-  TAccountNftMasterEdition,
-  TAccountCollectionAuthorityRecord,
-  TAccountCollectionMint,
-  TAccountCollectionMetadata,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountTokenMetadataProgram,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRecentSlothashes
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
@@ -318,8 +299,27 @@ export function mintFromCandyMachineInstruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.recentSlothashes, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getMintFromCandyMachineInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as MintFromCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountNftMint,
+    TAccountNftMintAuthority,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  >;
 }

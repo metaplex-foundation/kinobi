@@ -121,13 +121,13 @@ export function initializeToken3Instruction<
   },
   args: InitializeToken3InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getInitializeToken3InstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>;
 }

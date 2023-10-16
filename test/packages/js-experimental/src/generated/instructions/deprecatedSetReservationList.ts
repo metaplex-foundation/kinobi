@@ -162,19 +162,19 @@ export function deprecatedSetReservationListInstruction<
   },
   args: DeprecatedSetReservationListInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): DeprecatedSetReservationListInstruction<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountReservationList,
-  TAccountResource
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.resource, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as DeprecatedSetReservationListInstruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >;
 }

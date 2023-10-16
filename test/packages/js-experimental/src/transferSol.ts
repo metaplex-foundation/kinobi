@@ -38,16 +38,20 @@ import {
 // Output.
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
   TAccountDestination extends string | IAccountMeta<string> = string
   // TRemainingAccounts extends IAccountMeta<string>[] = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      TAccountSource extends string
-        ? WritableSignerAccount<TAccountSource>
-        : TAccountSource,
+      ...(TAccountSource extends undefined
+        ? []
+        : [
+            TAccountSource extends string
+              ? WritableSignerAccount<TAccountSource>
+              : TAccountSource
+          ]),
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
         : TAccountDestination
@@ -96,9 +100,10 @@ export function getTransferSolInstructionDataCodec(): Codec<
 }
 
 function helper<T extends string | IAccountMeta<string>, U extends AccountRole>(
-  account: T,
+  account: T | undefined,
   role: U
 ) {
+  if (account === undefined) return undefined;
   return (
     typeof account === 'string' ? { address: account, role } : account
   ) as T extends string ? { address: Base58EncodedAddress<T>; role: U } : T;
@@ -106,11 +111,11 @@ function helper<T extends string | IAccountMeta<string>, U extends AccountRole>(
 
 export function transferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
   TAccountDestination extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    source: TAccountSource extends string
+    source?: TAccountSource extends string
       ? Base58EncodedAddress<TAccountSource>
       : TAccountSource;
     destination: TAccountDestination extends string
@@ -119,15 +124,15 @@ export function transferSolInstruction<
   },
   args: TransferSolInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
-): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination> {
+) {
   return {
     accounts: [
       helper(accounts.source, AccountRole.WRITABLE_SIGNER),
       helper(accounts.destination, AccountRole.WRITABLE),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getTransferSolInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 }
 
 export const foo = transferSolInstruction(

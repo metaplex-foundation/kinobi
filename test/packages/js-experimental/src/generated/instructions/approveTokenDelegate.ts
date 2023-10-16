@@ -134,19 +134,19 @@ export function approveTokenDelegateInstruction<
   },
   args: ApproveTokenDelegateInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): ApproveTokenDelegateInstruction<
-  TProgram,
-  TAccountSource,
-  TAccountDelegate,
-  TAccountOwner
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.delegate, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getApproveTokenDelegateInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as ApproveTokenDelegateInstruction<
+    TProgram,
+    TAccountSource,
+    TAccountDelegate,
+    TAccountOwner
+  >;
 }

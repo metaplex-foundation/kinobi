@@ -238,22 +238,7 @@ export function deprecatedCreateMasterEditionInstruction<
   },
   args: DeprecatedCreateMasterEditionInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): DeprecatedCreateMasterEditionInstruction<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountPrintingMint,
-  TAccountOneTimePrintingAuthorizationMint,
-  TAccountUpdateAuthority,
-  TAccountPrintingMintAuthority,
-  TAccountMintAuthority,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountOneTimePrintingAuthorizationMintAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE),
@@ -284,8 +269,23 @@ export function deprecatedCreateMasterEditionInstruction<
         accounts.oneTimePrintingAuthorizationMintAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getDeprecatedCreateMasterEditionInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as DeprecatedCreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  >;
 }

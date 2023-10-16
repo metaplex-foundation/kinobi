@@ -152,16 +152,7 @@ export function burnNftInstruction<
       : TAccountCollectionMetadata;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): BurnNftInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountSplTokenProgram,
-  TAccountCollectionMetadata
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -174,8 +165,17 @@ export function burnNftInstruction<
       ),
       accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getBurnNftInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as BurnNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >;
 }

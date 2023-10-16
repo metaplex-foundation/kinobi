@@ -117,13 +117,17 @@ export function initializeMultisig2Instruction<
   },
   args: InitializeMultisig2InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.multisig, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.signer, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getInitializeMultisig2InstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as InitializeMultisig2Instruction<
+    TProgram,
+    TAccountMultisig,
+    TAccountSigner
+  >;
 }

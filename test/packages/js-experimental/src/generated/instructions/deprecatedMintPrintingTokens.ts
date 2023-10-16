@@ -182,16 +182,7 @@ export function deprecatedMintPrintingTokensInstruction<
   },
   args: DeprecatedMintPrintingTokensInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): DeprecatedMintPrintingTokensInstruction<
-  TProgram,
-  TAccountDestination,
-  TAccountPrintingMint,
-  TAccountUpdateAuthority,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountTokenProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
@@ -204,8 +195,17 @@ export function deprecatedMintPrintingTokensInstruction<
       accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getDeprecatedMintPrintingTokensInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as DeprecatedMintPrintingTokensInstruction<
+    TProgram,
+    TAccountDestination,
+    TAccountPrintingMint,
+    TAccountUpdateAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  >;
 }

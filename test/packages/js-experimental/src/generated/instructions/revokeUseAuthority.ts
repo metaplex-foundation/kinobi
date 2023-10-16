@@ -171,18 +171,7 @@ export function revokeUseAuthorityInstruction<
       : TAccountRent;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): RevokeUseAuthorityInstruction<
-  TProgram,
-  TAccountUseAuthorityRecord,
-  TAccountOwner,
-  TAccountUser,
-  TAccountOwnerTokenAccount,
-  TAccountMint,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
@@ -194,8 +183,19 @@ export function revokeUseAuthorityInstruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getRevokeUseAuthorityInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as RevokeUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 }

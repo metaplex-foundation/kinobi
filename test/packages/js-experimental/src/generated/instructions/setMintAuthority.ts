@@ -121,12 +121,7 @@ export function setMintAuthorityInstruction<
       : TAccountMintAuthority;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): SetMintAuthorityInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority,
-  TAccountMintAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
@@ -135,8 +130,13 @@ export function setMintAuthorityInstruction<
         accounts.mintAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getSetMintAuthorityInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as SetMintAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >;
 }

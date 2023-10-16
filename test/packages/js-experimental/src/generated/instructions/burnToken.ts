@@ -130,19 +130,19 @@ export function burnTokenInstruction<
   },
   args: BurnTokenInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): BurnTokenInstruction<
-  TProgram,
-  TAccountAccount,
-  TAccountMint,
-  TAccountAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getBurnTokenInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as BurnTokenInstruction<
+    TProgram,
+    TAccountAccount,
+    TAccountMint,
+    TAccountAuthority
+  >;
 }

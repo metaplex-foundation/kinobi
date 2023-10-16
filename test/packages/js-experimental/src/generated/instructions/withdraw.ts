@@ -113,13 +113,13 @@ export function withdrawInstruction<
       : TAccountAuthority;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.WRITABLE_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getWithdrawInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 }

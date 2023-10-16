@@ -104,9 +104,10 @@ export function getAccountMetasAndSigners(
  * @internal
  */
  export function accountMetaWithDefault<TAccount extends string | IAccountMeta<string>, TRole extends AccountRole>(
-   account: TAccount,
+   account: TAccount | undefined,
    role: TRole
  ) {
+  if (account === undefined) return undefined;
    return (
      typeof account === 'string' ? { address: account, role } : account
    ) as TAccount extends string ? { address: Base58EncodedAddress<TAccount>; role: TRole } : TAccount;

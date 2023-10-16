@@ -129,13 +129,17 @@ export function setAuthorityInstruction<
   },
   args: SetAuthorityInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getSetAuthorityInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as SetAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority
+  >;
 }

@@ -137,12 +137,7 @@ export function mintTokensToCheckedInstruction<
   },
   args: MintTokensToCheckedInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): MintTokensToCheckedInstruction<
-  TProgram,
-  TAccountMint,
-  TAccountToken,
-  TAccountMintAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
@@ -151,8 +146,13 @@ export function mintTokensToCheckedInstruction<
         accounts.mintAuthority,
         AccountRole.READONLY_SIGNER
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getMintTokensToCheckedInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as MintTokensToCheckedInstruction<
+    TProgram,
+    TAccountMint,
+    TAccountToken,
+    TAccountMintAuthority
+  >;
 }

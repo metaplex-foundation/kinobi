@@ -159,14 +159,7 @@ export function bubblegumSetCollectionSizeInstruction<
   },
   args: BubblegumSetCollectionSizeInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): BubblegumSetCollectionSizeInstruction<
-  TProgram,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthority,
-  TAccountCollectionMint,
-  TAccountBubblegumSigner,
-  TAccountCollectionAuthorityRecord
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
@@ -183,8 +176,15 @@ export function bubblegumSetCollectionSizeInstruction<
         accounts.collectionAuthorityRecord,
         AccountRole.READONLY
       ),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getBubblegumSetCollectionSizeInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as BubblegumSetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >;
 }

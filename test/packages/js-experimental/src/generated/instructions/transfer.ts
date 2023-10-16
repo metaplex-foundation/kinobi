@@ -252,24 +252,7 @@ export function transferInstruction<
   },
   args: TransferInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): TransferInstruction<
-  TProgram,
-  TAccountAuthority,
-  TAccountDelegateRecord,
-  TAccountToken,
-  TAccountTokenOwner,
-  TAccountDestination,
-  TAccountDestinationOwner,
-  TAccountMint,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountSplTokenProgram,
-  TAccountSplAtaProgram,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.authority, AccountRole.WRITABLE_SIGNER),
@@ -290,8 +273,25 @@ export function transferInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getTransferInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as TransferInstruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountDelegateRecord,
+    TAccountToken,
+    TAccountTokenOwner,
+    TAccountDestination,
+    TAccountDestinationOwner,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >;
 }

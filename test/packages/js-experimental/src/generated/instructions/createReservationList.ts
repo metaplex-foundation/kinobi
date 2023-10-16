@@ -124,17 +124,7 @@ export function createReservationListInstruction<
   },
   args: CreateReservationListInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): CreateReservationListInstruction<
-  TProgram,
-  TAccountReservationList,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountMasterEdition,
-  TAccountResource,
-  TAccountMetadata,
-  TAccountSystemProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
@@ -148,8 +138,18 @@ export function createReservationListInstruction<
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCreateReservationListInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as CreateReservationListInstruction<
+    TProgram,
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 }

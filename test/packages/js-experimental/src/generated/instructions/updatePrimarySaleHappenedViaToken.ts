@@ -122,21 +122,21 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
       : TAccountToken;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): UpdatePrimarySaleHappenedViaTokenInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountToken
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
       accountMetaWithDefault(accounts.token, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
       {}
     ),
     programAddress,
-  };
+  } as UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >;
 }

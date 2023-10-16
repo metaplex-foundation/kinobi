@@ -119,19 +119,19 @@ export function convertMasterEditionV1ToV2Instruction<
       : TAccountPrintingMint;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): ConvertMasterEditionV1ToV2Instruction<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountOneTimeAuth,
-  TAccountPrintingMint
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.oneTimeAuth, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >;
 }

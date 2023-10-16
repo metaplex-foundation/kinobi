@@ -131,17 +131,17 @@ export function updateCandyMachineInstruction<
   },
   args: UpdateCandyMachineInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): UpdateCandyMachineInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getUpdateCandyMachineInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority
+  >;
 }

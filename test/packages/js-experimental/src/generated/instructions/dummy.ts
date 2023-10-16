@@ -185,19 +185,7 @@ export function dummyInstruction<
       : TAccountTokenOrAtaProgram;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): DummyInstruction<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountFoo,
-  TAccountBar,
-  TAccountDelegate,
-  TAccountDelegateRecord,
-  TAccountTokenOrAtaProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE_SIGNER),
@@ -216,8 +204,20 @@ export function dummyInstruction<
       accountMetaWithDefault(accounts.delegate, AccountRole.READONLY_SIGNER),
       accountMetaWithDefault(accounts.delegateRecord, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.tokenOrAtaProgram, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getDummyInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as DummyInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >;
 }

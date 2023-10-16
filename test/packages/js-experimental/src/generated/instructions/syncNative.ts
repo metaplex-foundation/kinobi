@@ -97,10 +97,12 @@ export function syncNativeInstruction<
       : TAccountAccount;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): SyncNativeInstruction<TProgram, TAccountAccount> {
+) {
   return {
-    accounts: [accountMetaWithDefault(accounts.account, AccountRole.WRITABLE)],
+    accounts: [
+      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getSyncNativeInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as SyncNativeInstruction<TProgram, TAccountAccount>;
 }

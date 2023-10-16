@@ -222,21 +222,7 @@ export function mintInstruction<
   },
   args: MintInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): MintInstruction<
-  TProgram,
-  TAccountToken,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountMint,
-  TAccountPayer,
-  TAccountAuthority,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountSplTokenProgram,
-  TAccountSplAtaProgram,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.token, AccountRole.WRITABLE),
@@ -254,8 +240,22 @@ export function mintInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getMintInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as MintInstruction<
+    TProgram,
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountPayer,
+    TAccountAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >;
 }

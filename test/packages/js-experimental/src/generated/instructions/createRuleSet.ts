@@ -144,19 +144,19 @@ export function createRuleSetInstruction<
   },
   args: CreateRuleSetInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
-): CreateRuleSetInstruction<
-  TProgram,
-  TAccountPayer,
-  TAccountRuleSetPda,
-  TAccountSystemProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.ruleSetPda, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCreateRuleSetInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as CreateRuleSetInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >;
 }

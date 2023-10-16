@@ -204,20 +204,7 @@ export function approveUseAuthorityInstruction<
   },
   args: ApproveUseAuthorityInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): ApproveUseAuthorityInstruction<
-  TProgram,
-  TAccountUseAuthorityRecord,
-  TAccountOwner,
-  TAccountPayer,
-  TAccountUser,
-  TAccountOwnerTokenAccount,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountBurner,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
@@ -231,8 +218,21 @@ export function approveUseAuthorityInstruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getApproveUseAuthorityInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as ApproveUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountPayer,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountBurner,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 }

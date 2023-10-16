@@ -124,10 +124,12 @@ export function initializeMint2Instruction<
   },
   args: InitializeMint2InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): InitializeMint2Instruction<TProgram, TAccountMint> {
+) {
   return {
-    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE)],
+    accounts: [
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getInitializeMint2InstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as InitializeMint2Instruction<TProgram, TAccountMint>;
 }

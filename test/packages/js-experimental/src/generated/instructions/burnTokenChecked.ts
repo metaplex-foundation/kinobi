@@ -137,19 +137,19 @@ export function burnTokenCheckedInstruction<
   },
   args: BurnTokenCheckedInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): BurnTokenCheckedInstruction<
-  TProgram,
-  TAccountAccount,
-  TAccountMint,
-  TAccountAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getBurnTokenCheckedInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as BurnTokenCheckedInstruction<
+    TProgram,
+    TAccountAccount,
+    TAccountMint,
+    TAccountAuthority
+  >;
 }

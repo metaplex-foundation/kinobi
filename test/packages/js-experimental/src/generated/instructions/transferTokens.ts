@@ -130,19 +130,19 @@ export function transferTokensInstruction<
   },
   args: TransferTokensInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): TransferTokensInstruction<
-  TProgram,
-  TAccountSource,
-  TAccountDestination,
-  TAccountAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getTransferTokensInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as TransferTokensInstruction<
+    TProgram,
+    TAccountSource,
+    TAccountDestination,
+    TAccountAuthority
+  >;
 }

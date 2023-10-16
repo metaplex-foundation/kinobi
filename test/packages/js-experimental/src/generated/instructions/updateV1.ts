@@ -352,19 +352,7 @@ export function updateV1Instruction<
   },
   args: UpdateV1InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): UpdateV1Instruction<
-  TProgram,
-  TAccountAuthority,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountMint,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountToken,
-  TAccountDelegateRecord,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
@@ -380,8 +368,20 @@ export function updateV1Instruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getUpdateV1InstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as UpdateV1Instruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >;
 }

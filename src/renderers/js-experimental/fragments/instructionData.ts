@@ -5,7 +5,7 @@ import { Fragment, fragment } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getInstructionDataFragment(
-  instructionNode: nodes.InstructionNodeInput,
+  instructionNode: nodes.InstructionNode,
   typeManifestVisitor: Visitor<TypeManifest>
 ): Fragment {
   if (

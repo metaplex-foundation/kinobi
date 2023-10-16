@@ -140,17 +140,17 @@ export function addConfigLinesInstruction<
   },
   args: AddConfigLinesInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
-): AddConfigLinesInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getAddConfigLinesInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as AddConfigLinesInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority
+  >;
 }

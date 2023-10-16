@@ -151,19 +151,19 @@ export function createFrequencyRuleInstruction<
   },
   args: CreateFrequencyRuleInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
-): CreateFrequencyRuleInstruction<
-  TProgram,
-  TAccountPayer,
-  TAccountFrequencyPda,
-  TAccountSystemProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.frequencyPda, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getCreateFrequencyRuleInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as CreateFrequencyRuleInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >;
 }

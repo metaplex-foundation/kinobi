@@ -119,13 +119,13 @@ export function initializeMultisigInstruction<
   },
   args: InitializeMultisigInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
-): InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.multisig, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getInitializeMultisigInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>;
 }

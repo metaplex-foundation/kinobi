@@ -137,14 +137,7 @@ export function freezeDelegatedAccountInstruction<
       : TAccountTokenProgram;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): FreezeDelegatedAccountInstruction<
-  TProgram,
-  TAccountDelegate,
-  TAccountTokenAccount,
-  TAccountEdition,
-  TAccountMint,
-  TAccountTokenProgram
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.delegate, AccountRole.WRITABLE_SIGNER),
@@ -152,8 +145,15 @@ export function freezeDelegatedAccountInstruction<
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
     programAddress,
-  };
+  } as FreezeDelegatedAccountInstruction<
+    TProgram,
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >;
 }

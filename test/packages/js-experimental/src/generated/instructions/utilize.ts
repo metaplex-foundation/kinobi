@@ -211,20 +211,7 @@ export function utilizeInstruction<
   },
   args: UtilizeInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): UtilizeInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUseAuthority,
-  TAccountOwner,
-  TAccountTokenProgram,
-  TAccountAtaProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountUseAuthorityRecord,
-  TAccountBurner
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
@@ -241,8 +228,21 @@ export function utilizeInstruction<
       accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
       accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.burner, AccountRole.READONLY),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getUtilizeInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as UtilizeInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  >;
 }

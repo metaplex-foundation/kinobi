@@ -231,22 +231,7 @@ export function transferOutOfEscrowInstruction<
   },
   args: TransferOutOfEscrowInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
-): TransferOutOfEscrowInstruction<
-  TProgram,
-  TAccountEscrow,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountAttributeMint,
-  TAccountAttributeSrc,
-  TAccountAttributeDst,
-  TAccountEscrowMint,
-  TAccountEscrowAccount,
-  TAccountSystemProgram,
-  TAccountAtaProgram,
-  TAccountTokenProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthority
-> {
+) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.escrow, AccountRole.READONLY),
@@ -262,8 +247,23 @@ export function transferOutOfEscrowInstruction<
       accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
       accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-    ],
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getTransferOutOfEscrowInstructionDataEncoder().encode(args),
     programAddress,
-  };
+  } as TransferOutOfEscrowInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >;
 }
