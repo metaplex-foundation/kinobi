@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -64,3 +70,35 @@ export type CreateEscrowAccountInstruction<
       ReadonlySignerAccount<TAccountAuthority>
     ]
   >;
+
+export type CreateEscrowAccountInstructionData = { discriminator: number };
+
+export type CreateEscrowAccountInstructionDataArgs = {};
+
+export function getCreateEscrowAccountInstructionDataEncoder(): Encoder<CreateEscrowAccountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateEscrowAccountInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'CreateEscrowAccountInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 38 } as CreateEscrowAccountInstructionData)
+  ) as Encoder<CreateEscrowAccountInstructionDataArgs>;
+}
+
+export function getCreateEscrowAccountInstructionDataDecoder(): Decoder<CreateEscrowAccountInstructionData> {
+  return getStructDecoder<CreateEscrowAccountInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'CreateEscrowAccountInstructionData' }
+  ) as Decoder<CreateEscrowAccountInstructionData>;
+}
+
+export function getCreateEscrowAccountInstructionDataCodec(): Codec<
+  CreateEscrowAccountInstructionDataArgs,
+  CreateEscrowAccountInstructionData
+> {
+  return combineCodec(
+    getCreateEscrowAccountInstructionDataEncoder(),
+    getCreateEscrowAccountInstructionDataDecoder()
+  );
+}

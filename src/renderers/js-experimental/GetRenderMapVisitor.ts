@@ -21,6 +21,7 @@ import {
   getAccountPdaHelpersFragment,
   getAccountSizeHelpersFragment,
   getAccountTypeFragment,
+  getInstructionDataFragment,
   getInstructionDefaultFragment,
   getInstructionTypeFragment,
   getTypeDataEnumHelpersFragment,
@@ -231,10 +232,14 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       this.program!
     );
+    const instructionDataFragment = getInstructionDataFragment(
+      instruction,
+      this.typeManifestVisitor
+    );
 
     // Imports and interfaces.
     const imports = new ImportMap()
-      .mergeWith(instructionTypeFragment)
+      .mergeWith(instructionTypeFragment, instructionDataFragment)
       // TODO: Remove once these are imported in the fragments.
       .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
       .add('shared', [
@@ -406,6 +411,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
         instructionTypeFragment,
+        instructionDataFragment,
         interfaces: interfaces.toString(),
         program: this.program,
         resolvedInputs,

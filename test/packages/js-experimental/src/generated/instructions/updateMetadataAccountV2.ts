@@ -11,7 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getBooleanDecoder,
   getBooleanEncoder,
@@ -66,3 +72,61 @@ export type UpdateMetadataAccountV2Instruction<
       ReadonlySignerAccount<TAccountUpdateAuthority>
     ]
   >;
+
+export type UpdateMetadataAccountV2InstructionData = {
+  discriminator: number;
+  data: Option<DataV2>;
+  updateAuthority: Option<Base58EncodedAddress>;
+  primarySaleHappened: Option<boolean>;
+  isMutable: Option<boolean>;
+};
+
+export type UpdateMetadataAccountV2InstructionDataArgs = {
+  data: OptionOrNullable<DataV2Args>;
+  updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  primarySaleHappened: OptionOrNullable<boolean>;
+  isMutable: OptionOrNullable<boolean>;
+};
+
+export function getUpdateMetadataAccountV2InstructionDataEncoder(): Encoder<UpdateMetadataAccountV2InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UpdateMetadataAccountV2InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['data', getOptionEncoder(getDataV2Encoder())],
+        ['updateAuthority', getOptionEncoder(getAddressEncoder())],
+        ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+        ['isMutable', getOptionEncoder(getBooleanEncoder())],
+      ],
+      { description: 'UpdateMetadataAccountV2InstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 15,
+      } as UpdateMetadataAccountV2InstructionData)
+  ) as Encoder<UpdateMetadataAccountV2InstructionDataArgs>;
+}
+
+export function getUpdateMetadataAccountV2InstructionDataDecoder(): Decoder<UpdateMetadataAccountV2InstructionData> {
+  return getStructDecoder<UpdateMetadataAccountV2InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['data', getOptionDecoder(getDataV2Decoder())],
+      ['updateAuthority', getOptionDecoder(getAddressDecoder())],
+      ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+      ['isMutable', getOptionDecoder(getBooleanDecoder())],
+    ],
+    { description: 'UpdateMetadataAccountV2InstructionData' }
+  ) as Decoder<UpdateMetadataAccountV2InstructionData>;
+}
+
+export function getUpdateMetadataAccountV2InstructionDataCodec(): Codec<
+  UpdateMetadataAccountV2InstructionDataArgs,
+  UpdateMetadataAccountV2InstructionData
+> {
+  return combineCodec(
+    getUpdateMetadataAccountV2InstructionDataEncoder(),
+    getUpdateMetadataAccountV2InstructionDataDecoder()
+  );
+}

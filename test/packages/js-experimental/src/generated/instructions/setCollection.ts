@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -75,3 +81,38 @@ export type SetCollectionInstruction<
       ReadonlyAccount<TAccountSystemProgram>
     ]
   >;
+
+export type SetCollectionInstructionData = { discriminator: Array<number> };
+
+export type SetCollectionInstructionDataArgs = {};
+
+export function getSetCollectionInstructionDataEncoder(): Encoder<SetCollectionInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SetCollectionInstructionData>(
+      [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
+      { description: 'SetCollectionInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
+      } as SetCollectionInstructionData)
+  ) as Encoder<SetCollectionInstructionDataArgs>;
+}
+
+export function getSetCollectionInstructionDataDecoder(): Decoder<SetCollectionInstructionData> {
+  return getStructDecoder<SetCollectionInstructionData>(
+    [['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })]],
+    { description: 'SetCollectionInstructionData' }
+  ) as Decoder<SetCollectionInstructionData>;
+}
+
+export function getSetCollectionInstructionDataCodec(): Codec<
+  SetCollectionInstructionDataArgs,
+  SetCollectionInstructionData
+> {
+  return combineCodec(
+    getSetCollectionInstructionDataEncoder(),
+    getSetCollectionInstructionDataDecoder()
+  );
+}

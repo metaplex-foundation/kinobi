@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,40 @@ export type RevokeCollectionAuthorityInstruction<
       ReadonlyAccount<TAccountMint>
     ]
   >;
+
+export type RevokeCollectionAuthorityInstructionData = {
+  discriminator: number;
+};
+
+export type RevokeCollectionAuthorityInstructionDataArgs = {};
+
+export function getRevokeCollectionAuthorityInstructionDataEncoder(): Encoder<RevokeCollectionAuthorityInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<RevokeCollectionAuthorityInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'RevokeCollectionAuthorityInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 24,
+      } as RevokeCollectionAuthorityInstructionData)
+  ) as Encoder<RevokeCollectionAuthorityInstructionDataArgs>;
+}
+
+export function getRevokeCollectionAuthorityInstructionDataDecoder(): Decoder<RevokeCollectionAuthorityInstructionData> {
+  return getStructDecoder<RevokeCollectionAuthorityInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'RevokeCollectionAuthorityInstructionData' }
+  ) as Decoder<RevokeCollectionAuthorityInstructionData>;
+}
+
+export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<
+  RevokeCollectionAuthorityInstructionDataArgs,
+  RevokeCollectionAuthorityInstructionData
+> {
+  return combineCodec(
+    getRevokeCollectionAuthorityInstructionDataEncoder(),
+    getRevokeCollectionAuthorityInstructionDataDecoder()
+  );
+}

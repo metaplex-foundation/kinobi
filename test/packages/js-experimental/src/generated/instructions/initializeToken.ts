@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -51,3 +57,35 @@ export type InitializeTokenInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type InitializeTokenInstructionData = { discriminator: number };
+
+export type InitializeTokenInstructionDataArgs = {};
+
+export function getInitializeTokenInstructionDataEncoder(): Encoder<InitializeTokenInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeTokenInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'InitializeTokenInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 1 } as InitializeTokenInstructionData)
+  ) as Encoder<InitializeTokenInstructionDataArgs>;
+}
+
+export function getInitializeTokenInstructionDataDecoder(): Decoder<InitializeTokenInstructionData> {
+  return getStructDecoder<InitializeTokenInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'InitializeTokenInstructionData' }
+  ) as Decoder<InitializeTokenInstructionData>;
+}
+
+export function getInitializeTokenInstructionDataCodec(): Codec<
+  InitializeTokenInstructionDataArgs,
+  InitializeTokenInstructionData
+> {
+  return combineCodec(
+    getInitializeTokenInstructionDataEncoder(),
+    getInitializeTokenInstructionDataDecoder()
+  );
+}

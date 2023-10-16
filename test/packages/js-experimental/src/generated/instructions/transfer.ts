@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -85,3 +91,43 @@ export type TransferInstruction<
       ReadonlyAccount<TAccountAuthorizationRules>
     ]
   >;
+
+export type TransferInstructionData = {
+  discriminator: number;
+  transferArgs: TransferArgs;
+};
+
+export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
+
+export function getTransferInstructionDataEncoder(): Encoder<TransferInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<TransferInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['transferArgs', getTransferArgsEncoder()],
+      ],
+      { description: 'TransferInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 46 } as TransferInstructionData)
+  ) as Encoder<TransferInstructionDataArgs>;
+}
+
+export function getTransferInstructionDataDecoder(): Decoder<TransferInstructionData> {
+  return getStructDecoder<TransferInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['transferArgs', getTransferArgsDecoder()],
+    ],
+    { description: 'TransferInstructionData' }
+  ) as Decoder<TransferInstructionData>;
+}
+
+export function getTransferInstructionDataCodec(): Codec<
+  TransferInstructionDataArgs,
+  TransferInstructionData
+> {
+  return combineCodec(
+    getTransferInstructionDataEncoder(),
+    getTransferInstructionDataDecoder()
+  );
+}

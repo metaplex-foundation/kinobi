@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -85,3 +91,61 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type MintNewEditionFromMasterEditionViaVaultProxyInstructionData = {
+  discriminator: number;
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
+};
+
+export type MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs = {
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
+};
+
+export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder(): Encoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        [
+          'mintNewEditionFromMasterEditionViaTokenArgs',
+          getMintNewEditionFromMasterEditionViaTokenArgsEncoder(),
+        ],
+      ],
+      {
+        description:
+          'MintNewEditionFromMasterEditionViaVaultProxyInstructionData',
+      }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 13,
+      } as MintNewEditionFromMasterEditionViaVaultProxyInstructionData)
+  ) as Encoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs>;
+}
+
+export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataDecoder(): Decoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionData> {
+  return getStructDecoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      [
+        'mintNewEditionFromMasterEditionViaTokenArgs',
+        getMintNewEditionFromMasterEditionViaTokenArgsDecoder(),
+      ],
+    ],
+    {
+      description:
+        'MintNewEditionFromMasterEditionViaVaultProxyInstructionData',
+    }
+  ) as Decoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionData>;
+}
+
+export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataCodec(): Codec<
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
+  MintNewEditionFromMasterEditionViaVaultProxyInstructionData
+> {
+  return combineCodec(
+    getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder(),
+    getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataDecoder()
+  );
+}

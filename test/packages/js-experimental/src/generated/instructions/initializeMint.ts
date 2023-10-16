@@ -12,7 +12,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -55,3 +61,53 @@ export type InitializeMintInstruction<
   IInstructionWithAccounts<
     [WritableAccount<TAccountMint>, ReadonlyAccount<TAccountRent>]
   >;
+
+export type InitializeMintInstructionData = {
+  discriminator: number;
+  decimals: number;
+  mintAuthority: Base58EncodedAddress;
+  freezeAuthority: Option<Base58EncodedAddress>;
+};
+
+export type InitializeMintInstructionDataArgs = {
+  decimals: number;
+  mintAuthority: Base58EncodedAddress;
+  freezeAuthority: OptionOrNullable<Base58EncodedAddress>;
+};
+
+export function getInitializeMintInstructionDataEncoder(): Encoder<InitializeMintInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeMintInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['decimals', getU8Encoder()],
+        ['mintAuthority', getAddressEncoder()],
+        ['freezeAuthority', getOptionEncoder(getAddressEncoder())],
+      ],
+      { description: 'InitializeMintInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 0 } as InitializeMintInstructionData)
+  ) as Encoder<InitializeMintInstructionDataArgs>;
+}
+
+export function getInitializeMintInstructionDataDecoder(): Decoder<InitializeMintInstructionData> {
+  return getStructDecoder<InitializeMintInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['decimals', getU8Decoder()],
+      ['mintAuthority', getAddressDecoder()],
+      ['freezeAuthority', getOptionDecoder(getAddressDecoder())],
+    ],
+    { description: 'InitializeMintInstructionData' }
+  ) as Decoder<InitializeMintInstructionData>;
+}
+
+export function getInitializeMintInstructionDataCodec(): Codec<
+  InitializeMintInstructionDataArgs,
+  InitializeMintInstructionData
+> {
+  return combineCodec(
+    getInitializeMintInstructionDataEncoder(),
+    getInitializeMintInstructionDataDecoder()
+  );
+}

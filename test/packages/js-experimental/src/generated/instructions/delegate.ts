@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -78,3 +84,43 @@ export type DelegateInstruction<
       ReadonlyAccount<TAccountAuthorizationRules>
     ]
   >;
+
+export type DelegateInstructionData = {
+  discriminator: number;
+  delegateArgs: DelegateArgs;
+};
+
+export type DelegateInstructionDataArgs = { delegateArgs: DelegateArgsArgs };
+
+export function getDelegateInstructionDataEncoder(): Encoder<DelegateInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<DelegateInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['delegateArgs', getDelegateArgsEncoder()],
+      ],
+      { description: 'DelegateInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 48 } as DelegateInstructionData)
+  ) as Encoder<DelegateInstructionDataArgs>;
+}
+
+export function getDelegateInstructionDataDecoder(): Decoder<DelegateInstructionData> {
+  return getStructDecoder<DelegateInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['delegateArgs', getDelegateArgsDecoder()],
+    ],
+    { description: 'DelegateInstructionData' }
+  ) as Decoder<DelegateInstructionData>;
+}
+
+export function getDelegateInstructionDataCodec(): Codec<
+  DelegateInstructionDataArgs,
+  DelegateInstructionData
+> {
+  return combineCodec(
+    getDelegateInstructionDataEncoder(),
+    getDelegateInstructionDataDecoder()
+  );
+}

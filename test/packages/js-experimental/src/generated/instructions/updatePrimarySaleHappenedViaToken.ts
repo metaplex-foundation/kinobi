@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -50,3 +56,40 @@ export type UpdatePrimarySaleHappenedViaTokenInstruction<
       ReadonlyAccount<TAccountToken>
     ]
   >;
+
+export type UpdatePrimarySaleHappenedViaTokenInstructionData = {
+  discriminator: number;
+};
+
+export type UpdatePrimarySaleHappenedViaTokenInstructionDataArgs = {};
+
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder(): Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UpdatePrimarySaleHappenedViaTokenInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'UpdatePrimarySaleHappenedViaTokenInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 4,
+      } as UpdatePrimarySaleHappenedViaTokenInstructionData)
+  ) as Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs>;
+}
+
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder(): Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData> {
+  return getStructDecoder<UpdatePrimarySaleHappenedViaTokenInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'UpdatePrimarySaleHappenedViaTokenInstructionData' }
+  ) as Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData>;
+}
+
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Codec<
+  UpdatePrimarySaleHappenedViaTokenInstructionDataArgs,
+  UpdatePrimarySaleHappenedViaTokenInstructionData
+> {
+  return combineCodec(
+    getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder(),
+    getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder()
+  );
+}

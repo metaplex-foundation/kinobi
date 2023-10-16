@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -64,3 +70,35 @@ export type BurnEditionNftInstruction<
       ReadonlyAccount<TAccountSplTokenProgram>
     ]
   >;
+
+export type BurnEditionNftInstructionData = { discriminator: number };
+
+export type BurnEditionNftInstructionDataArgs = {};
+
+export function getBurnEditionNftInstructionDataEncoder(): Encoder<BurnEditionNftInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<BurnEditionNftInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'BurnEditionNftInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 37 } as BurnEditionNftInstructionData)
+  ) as Encoder<BurnEditionNftInstructionDataArgs>;
+}
+
+export function getBurnEditionNftInstructionDataDecoder(): Decoder<BurnEditionNftInstructionData> {
+  return getStructDecoder<BurnEditionNftInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'BurnEditionNftInstructionData' }
+  ) as Decoder<BurnEditionNftInstructionData>;
+}
+
+export function getBurnEditionNftInstructionDataCodec(): Codec<
+  BurnEditionNftInstructionDataArgs,
+  BurnEditionNftInstructionData
+> {
+  return combineCodec(
+    getBurnEditionNftInstructionDataEncoder(),
+    getBurnEditionNftInstructionDataDecoder()
+  );
+}

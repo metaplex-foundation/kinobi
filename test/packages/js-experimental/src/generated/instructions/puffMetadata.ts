@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -39,3 +45,34 @@ export type PuffMetadataInstruction<
 > = IInstruction<TProgram> &
   IInstructionWithData<PuffMetadataInstructionData> &
   IInstructionWithAccounts<[WritableAccount<TAccountMetadata>]>;
+
+export type PuffMetadataInstructionData = { discriminator: number };
+
+export type PuffMetadataInstructionDataArgs = {};
+
+export function getPuffMetadataInstructionDataEncoder(): Encoder<PuffMetadataInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<PuffMetadataInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'PuffMetadataInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 14 } as PuffMetadataInstructionData)
+  ) as Encoder<PuffMetadataInstructionDataArgs>;
+}
+
+export function getPuffMetadataInstructionDataDecoder(): Decoder<PuffMetadataInstructionData> {
+  return getStructDecoder<PuffMetadataInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'PuffMetadataInstructionData' }
+  ) as Decoder<PuffMetadataInstructionData>;
+}
+
+export function getPuffMetadataInstructionDataCodec(): Codec<
+  PuffMetadataInstructionDataArgs,
+  PuffMetadataInstructionData
+> {
+  return combineCodec(
+    getPuffMetadataInstructionDataEncoder(),
+    getPuffMetadataInstructionDataDecoder()
+  );
+}

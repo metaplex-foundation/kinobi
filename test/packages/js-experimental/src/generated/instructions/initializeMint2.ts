@@ -11,7 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -50,3 +56,54 @@ export type InitializeMint2Instruction<
 > = IInstruction<TProgram> &
   IInstructionWithData<InitializeMint2InstructionData> &
   IInstructionWithAccounts<[WritableAccount<TAccountMint>]>;
+
+export type InitializeMint2InstructionData = {
+  discriminator: number;
+  decimals: number;
+  mintAuthority: Base58EncodedAddress;
+  freezeAuthority: Option<Base58EncodedAddress>;
+};
+
+export type InitializeMint2InstructionDataArgs = {
+  decimals: number;
+  mintAuthority: Base58EncodedAddress;
+  freezeAuthority: OptionOrNullable<Base58EncodedAddress>;
+};
+
+export function getInitializeMint2InstructionDataEncoder(): Encoder<InitializeMint2InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeMint2InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['decimals', getU8Encoder()],
+        ['mintAuthority', getAddressEncoder()],
+        ['freezeAuthority', getOptionEncoder(getAddressEncoder())],
+      ],
+      { description: 'InitializeMint2InstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 20 } as InitializeMint2InstructionData)
+  ) as Encoder<InitializeMint2InstructionDataArgs>;
+}
+
+export function getInitializeMint2InstructionDataDecoder(): Decoder<InitializeMint2InstructionData> {
+  return getStructDecoder<InitializeMint2InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['decimals', getU8Decoder()],
+      ['mintAuthority', getAddressDecoder()],
+      ['freezeAuthority', getOptionDecoder(getAddressDecoder())],
+    ],
+    { description: 'InitializeMint2InstructionData' }
+  ) as Decoder<InitializeMint2InstructionData>;
+}
+
+export function getInitializeMint2InstructionDataCodec(): Codec<
+  InitializeMint2InstructionDataArgs,
+  InitializeMint2InstructionData
+> {
+  return combineCodec(
+    getInitializeMint2InstructionDataEncoder(),
+    getInitializeMint2InstructionDataDecoder()
+  );
+}

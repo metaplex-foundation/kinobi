@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -56,3 +62,58 @@ export type CreateFrequencyRuleInstruction<
       ReadonlyAccount<TAccountSystemProgram>
     ]
   >;
+
+export type CreateFrequencyRuleInstructionData = {
+  discriminator: number;
+  ruleSetName: string;
+  freqRuleName: string;
+  lastUpdate: bigint;
+  period: bigint;
+};
+
+export type CreateFrequencyRuleInstructionDataArgs = {
+  ruleSetName: string;
+  freqRuleName: string;
+  lastUpdate: number | bigint;
+  period: number | bigint;
+};
+
+export function getCreateFrequencyRuleInstructionDataEncoder(): Encoder<CreateFrequencyRuleInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateFrequencyRuleInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['ruleSetName', getStringEncoder()],
+        ['freqRuleName', getStringEncoder()],
+        ['lastUpdate', getI64Encoder()],
+        ['period', getI64Encoder()],
+      ],
+      { description: 'CreateFrequencyRuleInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 2 } as CreateFrequencyRuleInstructionData)
+  ) as Encoder<CreateFrequencyRuleInstructionDataArgs>;
+}
+
+export function getCreateFrequencyRuleInstructionDataDecoder(): Decoder<CreateFrequencyRuleInstructionData> {
+  return getStructDecoder<CreateFrequencyRuleInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['ruleSetName', getStringDecoder()],
+      ['freqRuleName', getStringDecoder()],
+      ['lastUpdate', getI64Decoder()],
+      ['period', getI64Decoder()],
+    ],
+    { description: 'CreateFrequencyRuleInstructionData' }
+  ) as Decoder<CreateFrequencyRuleInstructionData>;
+}
+
+export function getCreateFrequencyRuleInstructionDataCodec(): Codec<
+  CreateFrequencyRuleInstructionDataArgs,
+  CreateFrequencyRuleInstructionData
+> {
+  return combineCodec(
+    getCreateFrequencyRuleInstructionDataEncoder(),
+    getCreateFrequencyRuleInstructionDataDecoder()
+  );
+}

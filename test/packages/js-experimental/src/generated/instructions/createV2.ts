@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -81,3 +87,57 @@ export type CreateV2Instruction<
       ReadonlyAccount<TAccountSplTokenProgram>
     ]
   >;
+
+export type CreateV2InstructionData = {
+  discriminator: number;
+  createV2Discriminator: number;
+  assetData: AssetData;
+  maxSupply: Option<bigint>;
+};
+
+export type CreateV2InstructionDataArgs = {
+  assetData: AssetDataArgs;
+  maxSupply: OptionOrNullable<number | bigint>;
+};
+
+export function getCreateV2InstructionDataEncoder(): Encoder<CreateV2InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateV2InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['createV2Discriminator', getU8Encoder()],
+        ['assetData', getAssetDataEncoder()],
+        ['maxSupply', getOptionEncoder(getU64Encoder())],
+      ],
+      { description: 'CreateV2InstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 41,
+        createV2Discriminator: 1,
+      } as CreateV2InstructionData)
+  ) as Encoder<CreateV2InstructionDataArgs>;
+}
+
+export function getCreateV2InstructionDataDecoder(): Decoder<CreateV2InstructionData> {
+  return getStructDecoder<CreateV2InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['createV2Discriminator', getU8Decoder()],
+      ['assetData', getAssetDataDecoder()],
+      ['maxSupply', getOptionDecoder(getU64Decoder())],
+    ],
+    { description: 'CreateV2InstructionData' }
+  ) as Decoder<CreateV2InstructionData>;
+}
+
+export function getCreateV2InstructionDataCodec(): Codec<
+  CreateV2InstructionDataArgs,
+  CreateV2InstructionData
+> {
+  return combineCodec(
+    getCreateV2InstructionDataEncoder(),
+    getCreateV2InstructionDataDecoder()
+  );
+}

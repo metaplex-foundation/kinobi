@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -39,3 +45,35 @@ export type GetTokenDataSizeInstruction<
 > = IInstruction<TProgram> &
   IInstructionWithData<GetTokenDataSizeInstructionData> &
   IInstructionWithAccounts<[ReadonlyAccount<TAccountMint>]>;
+
+export type GetTokenDataSizeInstructionData = { discriminator: number };
+
+export type GetTokenDataSizeInstructionDataArgs = {};
+
+export function getGetTokenDataSizeInstructionDataEncoder(): Encoder<GetTokenDataSizeInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<GetTokenDataSizeInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'GetTokenDataSizeInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 21 } as GetTokenDataSizeInstructionData)
+  ) as Encoder<GetTokenDataSizeInstructionDataArgs>;
+}
+
+export function getGetTokenDataSizeInstructionDataDecoder(): Decoder<GetTokenDataSizeInstructionData> {
+  return getStructDecoder<GetTokenDataSizeInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'GetTokenDataSizeInstructionData' }
+  ) as Decoder<GetTokenDataSizeInstructionData>;
+}
+
+export function getGetTokenDataSizeInstructionDataCodec(): Codec<
+  GetTokenDataSizeInstructionDataArgs,
+  GetTokenDataSizeInstructionData
+> {
+  return combineCodec(
+    getGetTokenDataSizeInstructionDataEncoder(),
+    getGetTokenDataSizeInstructionDataDecoder()
+  );
+}

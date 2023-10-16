@@ -12,7 +12,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -125,3 +131,141 @@ export type UpdateV1Instruction<
       ReadonlyAccount<TAccountAuthorizationRules>
     ]
   >;
+
+export type UpdateV1InstructionData = {
+  discriminator: number;
+  updateV1Discriminator: number;
+  authorizationData: Option<AuthorizationData>;
+  newUpdateAuthority: Option<Base58EncodedAddress>;
+  data: Option<{
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: Option<Array<Creator>>;
+  }>;
+  primarySaleHappened: Option<boolean>;
+  isMutable: Option<boolean>;
+  tokenStandard: Option<TokenStandard>;
+  collection: Option<Collection>;
+  uses: Option<Uses>;
+  collectionDetails: Option<CollectionDetails>;
+  programmableConfig: Option<ProgrammableConfig>;
+  delegateState: Option<DelegateState>;
+  authorityType: AuthorityType;
+};
+
+export type UpdateV1InstructionDataArgs = {
+  authorizationData: OptionOrNullable<AuthorizationDataArgs>;
+  newUpdateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  data: OptionOrNullable<{
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: OptionOrNullable<Array<CreatorArgs>>;
+  }>;
+  primarySaleHappened: OptionOrNullable<boolean>;
+  isMutable: OptionOrNullable<boolean>;
+  tokenStandard?: OptionOrNullable<TokenStandardArgs>;
+  collection: OptionOrNullable<CollectionArgs>;
+  uses: OptionOrNullable<UsesArgs>;
+  collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+  programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+  delegateState: OptionOrNullable<DelegateStateArgs>;
+  authorityType: AuthorityTypeArgs;
+};
+
+export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UpdateV1InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['updateV1Discriminator', getU8Encoder()],
+        ['authorizationData', getOptionEncoder(getAuthorizationDataEncoder())],
+        ['newUpdateAuthority', getOptionEncoder(getAddressEncoder())],
+        [
+          'data',
+          getOptionEncoder(
+            getStructEncoder<any>([
+              ['name', getStringEncoder()],
+              ['symbol', getStringEncoder()],
+              ['uri', getStringEncoder()],
+              ['sellerFeeBasisPoints', getU16Encoder()],
+              [
+                'creators',
+                getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
+              ],
+            ])
+          ),
+        ],
+        ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+        ['isMutable', getOptionEncoder(getBooleanEncoder())],
+        ['tokenStandard', getOptionEncoder(getTokenStandardEncoder())],
+        ['collection', getOptionEncoder(getCollectionEncoder())],
+        ['uses', getOptionEncoder(getUsesEncoder())],
+        ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
+        [
+          'programmableConfig',
+          getOptionEncoder(getProgrammableConfigEncoder()),
+        ],
+        ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
+        ['authorityType', getAuthorityTypeEncoder()],
+      ],
+      { description: 'UpdateV1InstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 43,
+        updateV1Discriminator: 0,
+        tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
+      } as UpdateV1InstructionData)
+  ) as Encoder<UpdateV1InstructionDataArgs>;
+}
+
+export function getUpdateV1InstructionDataDecoder(): Decoder<UpdateV1InstructionData> {
+  return getStructDecoder<UpdateV1InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['updateV1Discriminator', getU8Decoder()],
+      ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
+      ['newUpdateAuthority', getOptionDecoder(getAddressDecoder())],
+      [
+        'data',
+        getOptionDecoder(
+          getStructDecoder<any>([
+            ['name', getStringDecoder()],
+            ['symbol', getStringDecoder()],
+            ['uri', getStringDecoder()],
+            ['sellerFeeBasisPoints', getU16Decoder()],
+            [
+              'creators',
+              getOptionDecoder(getArrayDecoder(getCreatorDecoder())),
+            ],
+          ])
+        ),
+      ],
+      ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+      ['isMutable', getOptionDecoder(getBooleanDecoder())],
+      ['tokenStandard', getOptionDecoder(getTokenStandardDecoder())],
+      ['collection', getOptionDecoder(getCollectionDecoder())],
+      ['uses', getOptionDecoder(getUsesDecoder())],
+      ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
+      ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
+      ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
+      ['authorityType', getAuthorityTypeDecoder()],
+    ],
+    { description: 'UpdateV1InstructionData' }
+  ) as Decoder<UpdateV1InstructionData>;
+}
+
+export function getUpdateV1InstructionDataCodec(): Codec<
+  UpdateV1InstructionDataArgs,
+  UpdateV1InstructionData
+> {
+  return combineCodec(
+    getUpdateV1InstructionDataEncoder(),
+    getUpdateV1InstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -62,3 +68,35 @@ export type RevokeUseAuthorityInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type RevokeUseAuthorityInstructionData = { discriminator: number };
+
+export type RevokeUseAuthorityInstructionDataArgs = {};
+
+export function getRevokeUseAuthorityInstructionDataEncoder(): Encoder<RevokeUseAuthorityInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<RevokeUseAuthorityInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'RevokeUseAuthorityInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 21 } as RevokeUseAuthorityInstructionData)
+  ) as Encoder<RevokeUseAuthorityInstructionDataArgs>;
+}
+
+export function getRevokeUseAuthorityInstructionDataDecoder(): Decoder<RevokeUseAuthorityInstructionData> {
+  return getStructDecoder<RevokeUseAuthorityInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'RevokeUseAuthorityInstructionData' }
+  ) as Decoder<RevokeUseAuthorityInstructionData>;
+}
+
+export function getRevokeUseAuthorityInstructionDataCodec(): Codec<
+  RevokeUseAuthorityInstructionDataArgs,
+  RevokeUseAuthorityInstructionData
+> {
+  return combineCodec(
+    getRevokeUseAuthorityInstructionDataEncoder(),
+    getRevokeUseAuthorityInstructionDataDecoder()
+  );
+}

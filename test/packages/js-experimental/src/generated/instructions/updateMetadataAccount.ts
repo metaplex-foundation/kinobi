@@ -11,7 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -74,3 +80,94 @@ export type UpdateMetadataAccountInstruction<
       ReadonlySignerAccount<TAccountUpdateAuthority>
     ]
   >;
+
+export type UpdateMetadataAccountInstructionData = {
+  discriminator: number;
+  data: Option<{
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: Option<Array<Creator>>;
+  }>;
+  updateAuthority: Option<Base58EncodedAddress>;
+  primarySaleHappened: Option<boolean>;
+};
+
+export type UpdateMetadataAccountInstructionDataArgs = {
+  data: OptionOrNullable<{
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: OptionOrNullable<Array<CreatorArgs>>;
+  }>;
+  updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  primarySaleHappened: OptionOrNullable<boolean>;
+};
+
+export function getUpdateMetadataAccountInstructionDataEncoder(): Encoder<UpdateMetadataAccountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UpdateMetadataAccountInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        [
+          'data',
+          getOptionEncoder(
+            getStructEncoder<any>([
+              ['name', getStringEncoder()],
+              ['symbol', getStringEncoder()],
+              ['uri', getStringEncoder()],
+              ['sellerFeeBasisPoints', getU16Encoder()],
+              [
+                'creators',
+                getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
+              ],
+            ])
+          ),
+        ],
+        ['updateAuthority', getOptionEncoder(getAddressEncoder())],
+        ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+      ],
+      { description: 'UpdateMetadataAccountInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 1 } as UpdateMetadataAccountInstructionData)
+  ) as Encoder<UpdateMetadataAccountInstructionDataArgs>;
+}
+
+export function getUpdateMetadataAccountInstructionDataDecoder(): Decoder<UpdateMetadataAccountInstructionData> {
+  return getStructDecoder<UpdateMetadataAccountInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      [
+        'data',
+        getOptionDecoder(
+          getStructDecoder<any>([
+            ['name', getStringDecoder()],
+            ['symbol', getStringDecoder()],
+            ['uri', getStringDecoder()],
+            ['sellerFeeBasisPoints', getU16Decoder()],
+            [
+              'creators',
+              getOptionDecoder(getArrayDecoder(getCreatorDecoder())),
+            ],
+          ])
+        ),
+      ],
+      ['updateAuthority', getOptionDecoder(getAddressDecoder())],
+      ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+    ],
+    { description: 'UpdateMetadataAccountInstructionData' }
+  ) as Decoder<UpdateMetadataAccountInstructionData>;
+}
+
+export function getUpdateMetadataAccountInstructionDataCodec(): Codec<
+  UpdateMetadataAccountInstructionDataArgs,
+  UpdateMetadataAccountInstructionData
+> {
+  return combineCodec(
+    getUpdateMetadataAccountInstructionDataEncoder(),
+    getUpdateMetadataAccountInstructionDataDecoder()
+  );
+}

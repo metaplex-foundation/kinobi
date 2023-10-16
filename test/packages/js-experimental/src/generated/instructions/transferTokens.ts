@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,43 @@ export type TransferTokensInstruction<
       ReadonlySignerAccount<TAccountAuthority>
     ]
   >;
+
+export type TransferTokensInstructionData = {
+  discriminator: number;
+  amount: bigint;
+};
+
+export type TransferTokensInstructionDataArgs = { amount: number | bigint };
+
+export function getTransferTokensInstructionDataEncoder(): Encoder<TransferTokensInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<TransferTokensInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['amount', getU64Encoder()],
+      ],
+      { description: 'TransferTokensInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 3 } as TransferTokensInstructionData)
+  ) as Encoder<TransferTokensInstructionDataArgs>;
+}
+
+export function getTransferTokensInstructionDataDecoder(): Decoder<TransferTokensInstructionData> {
+  return getStructDecoder<TransferTokensInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['amount', getU64Decoder()],
+    ],
+    { description: 'TransferTokensInstructionData' }
+  ) as Decoder<TransferTokensInstructionData>;
+}
+
+export function getTransferTokensInstructionDataCodec(): Codec<
+  TransferTokensInstructionDataArgs,
+  TransferTokensInstructionData
+> {
+  return combineCodec(
+    getTransferTokensInstructionDataEncoder(),
+    getTransferTokensInstructionDataDecoder()
+  );
+}

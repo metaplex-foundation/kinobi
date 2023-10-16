@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -81,3 +87,61 @@ export type CreateV1Instruction<
       ReadonlyAccount<TAccountSplTokenProgram>
     ]
   >;
+
+export type CreateV1InstructionData = {
+  discriminator: number;
+  createV1Discriminator: number;
+  assetData: AssetData;
+  decimals: Option<number>;
+  maxSupply: Option<bigint>;
+};
+
+export type CreateV1InstructionDataArgs = {
+  assetData: AssetDataArgs;
+  decimals: OptionOrNullable<number>;
+  maxSupply: OptionOrNullable<number | bigint>;
+};
+
+export function getCreateV1InstructionDataEncoder(): Encoder<CreateV1InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateV1InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['createV1Discriminator', getU8Encoder()],
+        ['assetData', getAssetDataEncoder()],
+        ['decimals', getOptionEncoder(getU8Encoder())],
+        ['maxSupply', getOptionEncoder(getU64Encoder())],
+      ],
+      { description: 'CreateV1InstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 41,
+        createV1Discriminator: 0,
+      } as CreateV1InstructionData)
+  ) as Encoder<CreateV1InstructionDataArgs>;
+}
+
+export function getCreateV1InstructionDataDecoder(): Decoder<CreateV1InstructionData> {
+  return getStructDecoder<CreateV1InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['createV1Discriminator', getU8Decoder()],
+      ['assetData', getAssetDataDecoder()],
+      ['decimals', getOptionDecoder(getU8Decoder())],
+      ['maxSupply', getOptionDecoder(getU64Decoder())],
+    ],
+    { description: 'CreateV1InstructionData' }
+  ) as Decoder<CreateV1InstructionData>;
+}
+
+export function getCreateV1InstructionDataCodec(): Codec<
+  CreateV1InstructionDataArgs,
+  CreateV1InstructionData
+> {
+  return combineCodec(
+    getCreateV1InstructionDataEncoder(),
+    getCreateV1InstructionDataDecoder()
+  );
+}

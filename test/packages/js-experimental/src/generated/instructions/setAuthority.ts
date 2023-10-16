@@ -11,7 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -54,3 +60,49 @@ export type SetAuthorityInstruction<
       ReadonlySignerAccount<TAccountAuthority>
     ]
   >;
+
+export type SetAuthorityInstructionData = {
+  discriminator: Array<number>;
+  newAuthority: Base58EncodedAddress;
+};
+
+export type SetAuthorityInstructionDataArgs = {
+  newAuthority: Base58EncodedAddress;
+};
+
+export function getSetAuthorityInstructionDataEncoder(): Encoder<SetAuthorityInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SetAuthorityInstructionData>(
+      [
+        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+        ['newAuthority', getAddressEncoder()],
+      ],
+      { description: 'SetAuthorityInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
+      } as SetAuthorityInstructionData)
+  ) as Encoder<SetAuthorityInstructionDataArgs>;
+}
+
+export function getSetAuthorityInstructionDataDecoder(): Decoder<SetAuthorityInstructionData> {
+  return getStructDecoder<SetAuthorityInstructionData>(
+    [
+      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+      ['newAuthority', getAddressDecoder()],
+    ],
+    { description: 'SetAuthorityInstructionData' }
+  ) as Decoder<SetAuthorityInstructionData>;
+}
+
+export function getSetAuthorityInstructionDataCodec(): Codec<
+  SetAuthorityInstructionDataArgs,
+  SetAuthorityInstructionData
+> {
+  return combineCodec(
+    getSetAuthorityInstructionDataEncoder(),
+    getSetAuthorityInstructionDataDecoder()
+  );
+}

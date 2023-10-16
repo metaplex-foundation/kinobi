@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,50 @@ export type BurnTokenCheckedInstruction<
       ReadonlySignerAccount<TAccountAuthority>
     ]
   >;
+
+export type BurnTokenCheckedInstructionData = {
+  discriminator: number;
+  amount: bigint;
+  decimals: number;
+};
+
+export type BurnTokenCheckedInstructionDataArgs = {
+  amount: number | bigint;
+  decimals: number;
+};
+
+export function getBurnTokenCheckedInstructionDataEncoder(): Encoder<BurnTokenCheckedInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<BurnTokenCheckedInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['amount', getU64Encoder()],
+        ['decimals', getU8Encoder()],
+      ],
+      { description: 'BurnTokenCheckedInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 15 } as BurnTokenCheckedInstructionData)
+  ) as Encoder<BurnTokenCheckedInstructionDataArgs>;
+}
+
+export function getBurnTokenCheckedInstructionDataDecoder(): Decoder<BurnTokenCheckedInstructionData> {
+  return getStructDecoder<BurnTokenCheckedInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['amount', getU64Decoder()],
+      ['decimals', getU8Decoder()],
+    ],
+    { description: 'BurnTokenCheckedInstructionData' }
+  ) as Decoder<BurnTokenCheckedInstructionData>;
+}
+
+export function getBurnTokenCheckedInstructionDataCodec(): Codec<
+  BurnTokenCheckedInstructionDataArgs,
+  BurnTokenCheckedInstructionData
+> {
+  return combineCodec(
+    getBurnTokenCheckedInstructionDataEncoder(),
+    getBurnTokenCheckedInstructionDataDecoder()
+  );
+}

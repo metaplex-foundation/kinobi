@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -86,3 +92,87 @@ export type CreateMetadataAccountInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type CreateMetadataAccountInstructionData = {
+  discriminator: number;
+  data: {
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: Option<Array<Creator>>;
+  };
+  isMutable: boolean;
+  metadataBump: number;
+};
+
+export type CreateMetadataAccountInstructionDataArgs = {
+  data: {
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: OptionOrNullable<Array<CreatorArgs>>;
+  };
+  isMutable: boolean;
+  metadataBump: number;
+};
+
+export function getCreateMetadataAccountInstructionDataEncoder(): Encoder<CreateMetadataAccountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateMetadataAccountInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        [
+          'data',
+          getStructEncoder<any>([
+            ['name', getStringEncoder()],
+            ['symbol', getStringEncoder()],
+            ['uri', getStringEncoder()],
+            ['sellerFeeBasisPoints', getU16Encoder()],
+            [
+              'creators',
+              getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
+            ],
+          ]),
+        ],
+        ['isMutable', getBooleanEncoder()],
+        ['metadataBump', getU8Encoder()],
+      ],
+      { description: 'CreateMetadataAccountInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 0 } as CreateMetadataAccountInstructionData)
+  ) as Encoder<CreateMetadataAccountInstructionDataArgs>;
+}
+
+export function getCreateMetadataAccountInstructionDataDecoder(): Decoder<CreateMetadataAccountInstructionData> {
+  return getStructDecoder<CreateMetadataAccountInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      [
+        'data',
+        getStructDecoder<any>([
+          ['name', getStringDecoder()],
+          ['symbol', getStringDecoder()],
+          ['uri', getStringDecoder()],
+          ['sellerFeeBasisPoints', getU16Decoder()],
+          ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+        ]),
+      ],
+      ['isMutable', getBooleanDecoder()],
+      ['metadataBump', getU8Decoder()],
+    ],
+    { description: 'CreateMetadataAccountInstructionData' }
+  ) as Decoder<CreateMetadataAccountInstructionData>;
+}
+
+export function getCreateMetadataAccountInstructionDataCodec(): Codec<
+  CreateMetadataAccountInstructionDataArgs,
+  CreateMetadataAccountInstructionData
+> {
+  return combineCodec(
+    getCreateMetadataAccountInstructionDataEncoder(),
+    getCreateMetadataAccountInstructionDataDecoder()
+  );
+}

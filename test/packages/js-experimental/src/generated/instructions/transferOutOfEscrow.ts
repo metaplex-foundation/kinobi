@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -77,3 +83,46 @@ export type TransferOutOfEscrowInstruction<
       ReadonlySignerAccount<TAccountAuthority>
     ]
   >;
+
+export type TransferOutOfEscrowInstructionData = {
+  discriminator: number;
+  amount: bigint;
+};
+
+export type TransferOutOfEscrowInstructionDataArgs = {
+  amount: number | bigint;
+};
+
+export function getTransferOutOfEscrowInstructionDataEncoder(): Encoder<TransferOutOfEscrowInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<TransferOutOfEscrowInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['amount', getU64Encoder()],
+      ],
+      { description: 'TransferOutOfEscrowInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 40 } as TransferOutOfEscrowInstructionData)
+  ) as Encoder<TransferOutOfEscrowInstructionDataArgs>;
+}
+
+export function getTransferOutOfEscrowInstructionDataDecoder(): Decoder<TransferOutOfEscrowInstructionData> {
+  return getStructDecoder<TransferOutOfEscrowInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['amount', getU64Decoder()],
+    ],
+    { description: 'TransferOutOfEscrowInstructionData' }
+  ) as Decoder<TransferOutOfEscrowInstructionData>;
+}
+
+export function getTransferOutOfEscrowInstructionDataCodec(): Codec<
+  TransferOutOfEscrowInstructionDataArgs,
+  TransferOutOfEscrowInstructionData
+> {
+  return combineCodec(
+    getTransferOutOfEscrowInstructionDataEncoder(),
+    getTransferOutOfEscrowInstructionDataDecoder()
+  );
+}

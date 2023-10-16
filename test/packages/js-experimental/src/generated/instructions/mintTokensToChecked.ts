@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,50 @@ export type MintTokensToCheckedInstruction<
       ReadonlySignerAccount<TAccountMintAuthority>
     ]
   >;
+
+export type MintTokensToCheckedInstructionData = {
+  discriminator: number;
+  amount: bigint;
+  decimals: number;
+};
+
+export type MintTokensToCheckedInstructionDataArgs = {
+  amount: number | bigint;
+  decimals: number;
+};
+
+export function getMintTokensToCheckedInstructionDataEncoder(): Encoder<MintTokensToCheckedInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<MintTokensToCheckedInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['amount', getU64Encoder()],
+        ['decimals', getU8Encoder()],
+      ],
+      { description: 'MintTokensToCheckedInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 14 } as MintTokensToCheckedInstructionData)
+  ) as Encoder<MintTokensToCheckedInstructionDataArgs>;
+}
+
+export function getMintTokensToCheckedInstructionDataDecoder(): Decoder<MintTokensToCheckedInstructionData> {
+  return getStructDecoder<MintTokensToCheckedInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['amount', getU64Decoder()],
+      ['decimals', getU8Decoder()],
+    ],
+    { description: 'MintTokensToCheckedInstructionData' }
+  ) as Decoder<MintTokensToCheckedInstructionData>;
+}
+
+export function getMintTokensToCheckedInstructionDataCodec(): Codec<
+  MintTokensToCheckedInstructionDataArgs,
+  MintTokensToCheckedInstructionData
+> {
+  return combineCodec(
+    getMintTokensToCheckedInstructionDataEncoder(),
+    getMintTokensToCheckedInstructionDataDecoder()
+  );
+}

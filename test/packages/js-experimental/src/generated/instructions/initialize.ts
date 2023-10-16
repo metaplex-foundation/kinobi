@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -75,3 +81,47 @@ export type InitializeInstruction<
       ReadonlyAccount<TAccountSystemProgram>
     ]
   >;
+
+export type InitializeInstructionData = {
+  discriminator: Array<number>;
+  data: CandyMachineData;
+};
+
+export type InitializeInstructionDataArgs = { data: CandyMachineDataArgs };
+
+export function getInitializeInstructionDataEncoder(): Encoder<InitializeInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeInstructionData>(
+      [
+        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+        ['data', getCandyMachineDataEncoder()],
+      ],
+      { description: 'InitializeInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
+      } as InitializeInstructionData)
+  ) as Encoder<InitializeInstructionDataArgs>;
+}
+
+export function getInitializeInstructionDataDecoder(): Decoder<InitializeInstructionData> {
+  return getStructDecoder<InitializeInstructionData>(
+    [
+      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+      ['data', getCandyMachineDataDecoder()],
+    ],
+    { description: 'InitializeInstructionData' }
+  ) as Decoder<InitializeInstructionData>;
+}
+
+export function getInitializeInstructionDataCodec(): Codec<
+  InitializeInstructionDataArgs,
+  InitializeInstructionData
+> {
+  return combineCodec(
+    getInitializeInstructionDataEncoder(),
+    getInitializeInstructionDataDecoder()
+  );
+}

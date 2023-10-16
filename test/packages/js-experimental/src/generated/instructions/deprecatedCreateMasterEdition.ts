@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -77,3 +83,49 @@ export type DeprecatedCreateMasterEditionInstruction<
       ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority>
     ]
   >;
+
+export type DeprecatedCreateMasterEditionInstructionData = {
+  discriminator: number;
+  createMasterEditionArgs: CreateMasterEditionArgs;
+};
+
+export type DeprecatedCreateMasterEditionInstructionDataArgs = {
+  createMasterEditionArgs: CreateMasterEditionArgsArgs;
+};
+
+export function getDeprecatedCreateMasterEditionInstructionDataEncoder(): Encoder<DeprecatedCreateMasterEditionInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<DeprecatedCreateMasterEditionInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
+      ],
+      { description: 'DeprecatedCreateMasterEditionInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 2,
+      } as DeprecatedCreateMasterEditionInstructionData)
+  ) as Encoder<DeprecatedCreateMasterEditionInstructionDataArgs>;
+}
+
+export function getDeprecatedCreateMasterEditionInstructionDataDecoder(): Decoder<DeprecatedCreateMasterEditionInstructionData> {
+  return getStructDecoder<DeprecatedCreateMasterEditionInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
+    ],
+    { description: 'DeprecatedCreateMasterEditionInstructionData' }
+  ) as Decoder<DeprecatedCreateMasterEditionInstructionData>;
+}
+
+export function getDeprecatedCreateMasterEditionInstructionDataCodec(): Codec<
+  DeprecatedCreateMasterEditionInstructionDataArgs,
+  DeprecatedCreateMasterEditionInstructionData
+> {
+  return combineCodec(
+    getDeprecatedCreateMasterEditionInstructionDataEncoder(),
+    getDeprecatedCreateMasterEditionInstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -31,3 +37,48 @@ export type SetComputeUnitPriceInstruction<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 > = IInstruction<TProgram> &
   IInstructionWithData<SetComputeUnitPriceInstructionData>;
+
+export type SetComputeUnitPriceInstructionData = {
+  discriminator: number;
+  /** Transaction compute unit price used for prioritization fees. */
+  microLamports: bigint;
+};
+
+export type SetComputeUnitPriceInstructionDataArgs = {
+  /** Transaction compute unit price used for prioritization fees. */
+  microLamports: number | bigint;
+};
+
+export function getSetComputeUnitPriceInstructionDataEncoder(): Encoder<SetComputeUnitPriceInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SetComputeUnitPriceInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['microLamports', getU64Encoder()],
+      ],
+      { description: 'SetComputeUnitPriceInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 3 } as SetComputeUnitPriceInstructionData)
+  ) as Encoder<SetComputeUnitPriceInstructionDataArgs>;
+}
+
+export function getSetComputeUnitPriceInstructionDataDecoder(): Decoder<SetComputeUnitPriceInstructionData> {
+  return getStructDecoder<SetComputeUnitPriceInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['microLamports', getU64Decoder()],
+    ],
+    { description: 'SetComputeUnitPriceInstructionData' }
+  ) as Decoder<SetComputeUnitPriceInstructionData>;
+}
+
+export function getSetComputeUnitPriceInstructionDataCodec(): Codec<
+  SetComputeUnitPriceInstructionDataArgs,
+  SetComputeUnitPriceInstructionData
+> {
+  return combineCodec(
+    getSetComputeUnitPriceInstructionDataEncoder(),
+    getSetComputeUnitPriceInstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -49,3 +55,38 @@ export type WithdrawInstruction<
       WritableSignerAccount<TAccountAuthority>
     ]
   >;
+
+export type WithdrawInstructionData = { discriminator: Array<number> };
+
+export type WithdrawInstructionDataArgs = {};
+
+export function getWithdrawInstructionDataEncoder(): Encoder<WithdrawInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<WithdrawInstructionData>(
+      [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
+      { description: 'WithdrawInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
+      } as WithdrawInstructionData)
+  ) as Encoder<WithdrawInstructionDataArgs>;
+}
+
+export function getWithdrawInstructionDataDecoder(): Decoder<WithdrawInstructionData> {
+  return getStructDecoder<WithdrawInstructionData>(
+    [['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })]],
+    { description: 'WithdrawInstructionData' }
+  ) as Decoder<WithdrawInstructionData>;
+}
+
+export function getWithdrawInstructionDataCodec(): Codec<
+  WithdrawInstructionDataArgs,
+  WithdrawInstructionData
+> {
+  return combineCodec(
+    getWithdrawInstructionDataEncoder(),
+    getWithdrawInstructionDataDecoder()
+  );
+}

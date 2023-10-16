@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -60,3 +66,43 @@ export type VerifyInstruction<
       ReadonlyAccount<TAccountAuthorizationRulesProgram>
     ]
   >;
+
+export type VerifyInstructionData = {
+  discriminator: number;
+  verifyArgs: VerifyArgs;
+};
+
+export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
+
+export function getVerifyInstructionDataEncoder(): Encoder<VerifyInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<VerifyInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['verifyArgs', getVerifyArgsEncoder()],
+      ],
+      { description: 'VerifyInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 47 } as VerifyInstructionData)
+  ) as Encoder<VerifyInstructionDataArgs>;
+}
+
+export function getVerifyInstructionDataDecoder(): Decoder<VerifyInstructionData> {
+  return getStructDecoder<VerifyInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['verifyArgs', getVerifyArgsDecoder()],
+    ],
+    { description: 'VerifyInstructionData' }
+  ) as Decoder<VerifyInstructionData>;
+}
+
+export function getVerifyInstructionDataCodec(): Codec<
+  VerifyInstructionDataArgs,
+  VerifyInstructionData
+> {
+  return combineCodec(
+    getVerifyInstructionDataEncoder(),
+    getVerifyInstructionDataDecoder()
+  );
+}

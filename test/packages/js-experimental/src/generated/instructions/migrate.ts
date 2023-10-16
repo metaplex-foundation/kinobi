@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -71,3 +77,43 @@ export type MigrateInstruction<
       ReadonlyAccount<TAccountAuthorizationRules>
     ]
   >;
+
+export type MigrateInstructionData = {
+  discriminator: number;
+  migrateArgs: MigrateArgs;
+};
+
+export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
+
+export function getMigrateInstructionDataEncoder(): Encoder<MigrateInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<MigrateInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['migrateArgs', getMigrateArgsEncoder()],
+      ],
+      { description: 'MigrateInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 50 } as MigrateInstructionData)
+  ) as Encoder<MigrateInstructionDataArgs>;
+}
+
+export function getMigrateInstructionDataDecoder(): Decoder<MigrateInstructionData> {
+  return getStructDecoder<MigrateInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['migrateArgs', getMigrateArgsDecoder()],
+    ],
+    { description: 'MigrateInstructionData' }
+  ) as Decoder<MigrateInstructionData>;
+}
+
+export function getMigrateInstructionDataCodec(): Codec<
+  MigrateInstructionDataArgs,
+  MigrateInstructionData
+> {
+  return combineCodec(
+    getMigrateInstructionDataEncoder(),
+    getMigrateInstructionDataDecoder()
+  );
+}

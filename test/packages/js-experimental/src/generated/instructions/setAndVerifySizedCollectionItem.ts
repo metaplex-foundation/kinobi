@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -61,3 +67,40 @@ export type SetAndVerifySizedCollectionItemInstruction<
       ReadonlyAccount<TAccountCollectionAuthorityRecord>
     ]
   >;
+
+export type SetAndVerifySizedCollectionItemInstructionData = {
+  discriminator: number;
+};
+
+export type SetAndVerifySizedCollectionItemInstructionDataArgs = {};
+
+export function getSetAndVerifySizedCollectionItemInstructionDataEncoder(): Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SetAndVerifySizedCollectionItemInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'SetAndVerifySizedCollectionItemInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 32,
+      } as SetAndVerifySizedCollectionItemInstructionData)
+  ) as Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs>;
+}
+
+export function getSetAndVerifySizedCollectionItemInstructionDataDecoder(): Decoder<SetAndVerifySizedCollectionItemInstructionData> {
+  return getStructDecoder<SetAndVerifySizedCollectionItemInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'SetAndVerifySizedCollectionItemInstructionData' }
+  ) as Decoder<SetAndVerifySizedCollectionItemInstructionData>;
+}
+
+export function getSetAndVerifySizedCollectionItemInstructionDataCodec(): Codec<
+  SetAndVerifySizedCollectionItemInstructionDataArgs,
+  SetAndVerifySizedCollectionItemInstructionData
+> {
+  return combineCodec(
+    getSetAndVerifySizedCollectionItemInstructionDataEncoder(),
+    getSetAndVerifySizedCollectionItemInstructionDataDecoder()
+  );
+}

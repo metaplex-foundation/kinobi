@@ -5,6 +5,7 @@ export * from './accountSizeHelpers';
 export * from './accountType';
 export * from './common';
 export * from './instructionAccountMeta';
+export * from './instructionData';
 export * from './instructionDefaults';
 export * from './instructionType';
 export * from './type';

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -49,3 +55,34 @@ export type CloseTokenInstruction<
       ReadonlySignerAccount<TAccountOwner>
     ]
   >;
+
+export type CloseTokenInstructionData = { discriminator: number };
+
+export type CloseTokenInstructionDataArgs = {};
+
+export function getCloseTokenInstructionDataEncoder(): Encoder<CloseTokenInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CloseTokenInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'CloseTokenInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 9 } as CloseTokenInstructionData)
+  ) as Encoder<CloseTokenInstructionDataArgs>;
+}
+
+export function getCloseTokenInstructionDataDecoder(): Decoder<CloseTokenInstructionData> {
+  return getStructDecoder<CloseTokenInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'CloseTokenInstructionData' }
+  ) as Decoder<CloseTokenInstructionData>;
+}
+
+export function getCloseTokenInstructionDataCodec(): Codec<
+  CloseTokenInstructionDataArgs,
+  CloseTokenInstructionData
+> {
+  return combineCodec(
+    getCloseTokenInstructionDataEncoder(),
+    getCloseTokenInstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -44,3 +50,40 @@ export type RemoveCreatorVerificationInstruction<
   IInstructionWithAccounts<
     [WritableAccount<TAccountMetadata>, ReadonlySignerAccount<TAccountCreator>]
   >;
+
+export type RemoveCreatorVerificationInstructionData = {
+  discriminator: number;
+};
+
+export type RemoveCreatorVerificationInstructionDataArgs = {};
+
+export function getRemoveCreatorVerificationInstructionDataEncoder(): Encoder<RemoveCreatorVerificationInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<RemoveCreatorVerificationInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'RemoveCreatorVerificationInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 28,
+      } as RemoveCreatorVerificationInstructionData)
+  ) as Encoder<RemoveCreatorVerificationInstructionDataArgs>;
+}
+
+export function getRemoveCreatorVerificationInstructionDataDecoder(): Decoder<RemoveCreatorVerificationInstructionData> {
+  return getStructDecoder<RemoveCreatorVerificationInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'RemoveCreatorVerificationInstructionData' }
+  ) as Decoder<RemoveCreatorVerificationInstructionData>;
+}
+
+export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<
+  RemoveCreatorVerificationInstructionDataArgs,
+  RemoveCreatorVerificationInstructionData
+> {
+  return combineCodec(
+    getRemoveCreatorVerificationInstructionDataEncoder(),
+    getRemoveCreatorVerificationInstructionDataDecoder()
+  );
+}

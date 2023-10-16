@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -44,3 +50,34 @@ export type SignMetadataInstruction<
   IInstructionWithAccounts<
     [WritableAccount<TAccountMetadata>, ReadonlySignerAccount<TAccountCreator>]
   >;
+
+export type SignMetadataInstructionData = { discriminator: number };
+
+export type SignMetadataInstructionDataArgs = {};
+
+export function getSignMetadataInstructionDataEncoder(): Encoder<SignMetadataInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SignMetadataInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'SignMetadataInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 7 } as SignMetadataInstructionData)
+  ) as Encoder<SignMetadataInstructionDataArgs>;
+}
+
+export function getSignMetadataInstructionDataDecoder(): Decoder<SignMetadataInstructionData> {
+  return getStructDecoder<SignMetadataInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'SignMetadataInstructionData' }
+  ) as Decoder<SignMetadataInstructionData>;
+}
+
+export function getSignMetadataInstructionDataCodec(): Codec<
+  SignMetadataInstructionDataArgs,
+  SignMetadataInstructionData
+> {
+  return combineCodec(
+    getSignMetadataInstructionDataEncoder(),
+    getSignMetadataInstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -55,3 +61,46 @@ export type ApproveTokenDelegateInstruction<
       ReadonlySignerAccount<TAccountOwner>
     ]
   >;
+
+export type ApproveTokenDelegateInstructionData = {
+  discriminator: number;
+  amount: bigint;
+};
+
+export type ApproveTokenDelegateInstructionDataArgs = {
+  amount: number | bigint;
+};
+
+export function getApproveTokenDelegateInstructionDataEncoder(): Encoder<ApproveTokenDelegateInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<ApproveTokenDelegateInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['amount', getU64Encoder()],
+      ],
+      { description: 'ApproveTokenDelegateInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 4 } as ApproveTokenDelegateInstructionData)
+  ) as Encoder<ApproveTokenDelegateInstructionDataArgs>;
+}
+
+export function getApproveTokenDelegateInstructionDataDecoder(): Decoder<ApproveTokenDelegateInstructionData> {
+  return getStructDecoder<ApproveTokenDelegateInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['amount', getU64Decoder()],
+    ],
+    { description: 'ApproveTokenDelegateInstructionData' }
+  ) as Decoder<ApproveTokenDelegateInstructionData>;
+}
+
+export function getApproveTokenDelegateInstructionDataCodec(): Codec<
+  ApproveTokenDelegateInstructionDataArgs,
+  ApproveTokenDelegateInstructionData
+> {
+  return combineCodec(
+    getApproveTokenDelegateInstructionDataEncoder(),
+    getApproveTokenDelegateInstructionDataDecoder()
+  );
+}

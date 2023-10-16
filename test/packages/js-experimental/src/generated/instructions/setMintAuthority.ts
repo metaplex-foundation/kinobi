@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -51,3 +57,38 @@ export type SetMintAuthorityInstruction<
       ReadonlySignerAccount<TAccountMintAuthority>
     ]
   >;
+
+export type SetMintAuthorityInstructionData = { discriminator: Array<number> };
+
+export type SetMintAuthorityInstructionDataArgs = {};
+
+export function getSetMintAuthorityInstructionDataEncoder(): Encoder<SetMintAuthorityInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SetMintAuthorityInstructionData>(
+      [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
+      { description: 'SetMintAuthorityInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
+      } as SetMintAuthorityInstructionData)
+  ) as Encoder<SetMintAuthorityInstructionDataArgs>;
+}
+
+export function getSetMintAuthorityInstructionDataDecoder(): Decoder<SetMintAuthorityInstructionData> {
+  return getStructDecoder<SetMintAuthorityInstructionData>(
+    [['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })]],
+    { description: 'SetMintAuthorityInstructionData' }
+  ) as Decoder<SetMintAuthorityInstructionData>;
+}
+
+export function getSetMintAuthorityInstructionDataCodec(): Codec<
+  SetMintAuthorityInstructionDataArgs,
+  SetMintAuthorityInstructionData
+> {
+  return combineCodec(
+    getSetMintAuthorityInstructionDataEncoder(),
+    getSetMintAuthorityInstructionDataDecoder()
+  );
+}

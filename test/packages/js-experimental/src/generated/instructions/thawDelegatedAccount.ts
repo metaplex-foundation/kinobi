@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,35 @@ export type ThawDelegatedAccountInstruction<
       ReadonlyAccount<TAccountTokenProgram>
     ]
   >;
+
+export type ThawDelegatedAccountInstructionData = { discriminator: number };
+
+export type ThawDelegatedAccountInstructionDataArgs = {};
+
+export function getThawDelegatedAccountInstructionDataEncoder(): Encoder<ThawDelegatedAccountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<ThawDelegatedAccountInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'ThawDelegatedAccountInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 27 } as ThawDelegatedAccountInstructionData)
+  ) as Encoder<ThawDelegatedAccountInstructionDataArgs>;
+}
+
+export function getThawDelegatedAccountInstructionDataDecoder(): Decoder<ThawDelegatedAccountInstructionData> {
+  return getStructDecoder<ThawDelegatedAccountInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'ThawDelegatedAccountInstructionData' }
+  ) as Decoder<ThawDelegatedAccountInstructionData>;
+}
+
+export function getThawDelegatedAccountInstructionDataCodec(): Codec<
+  ThawDelegatedAccountInstructionDataArgs,
+  ThawDelegatedAccountInstructionData
+> {
+  return combineCodec(
+    getThawDelegatedAccountInstructionDataEncoder(),
+    getThawDelegatedAccountInstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,43 @@ export type MintTokensToInstruction<
       ReadonlySignerAccount<TAccountMintAuthority>
     ]
   >;
+
+export type MintTokensToInstructionData = {
+  discriminator: number;
+  amount: bigint;
+};
+
+export type MintTokensToInstructionDataArgs = { amount: number | bigint };
+
+export function getMintTokensToInstructionDataEncoder(): Encoder<MintTokensToInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<MintTokensToInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['amount', getU64Encoder()],
+      ],
+      { description: 'MintTokensToInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 7 } as MintTokensToInstructionData)
+  ) as Encoder<MintTokensToInstructionDataArgs>;
+}
+
+export function getMintTokensToInstructionDataDecoder(): Decoder<MintTokensToInstructionData> {
+  return getStructDecoder<MintTokensToInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['amount', getU64Decoder()],
+    ],
+    { description: 'MintTokensToInstructionData' }
+  ) as Decoder<MintTokensToInstructionData>;
+}
+
+export function getMintTokensToInstructionDataCodec(): Codec<
+  MintTokensToInstructionDataArgs,
+  MintTokensToInstructionData
+> {
+  return combineCodec(
+    getMintTokensToInstructionDataEncoder(),
+    getMintTokensToInstructionDataDecoder()
+  );
+}

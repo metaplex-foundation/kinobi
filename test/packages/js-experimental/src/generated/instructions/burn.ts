@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -68,3 +74,40 @@ export type BurnInstruction<
       ReadonlyAccount<TAccountAuthorizationRulesProgram>
     ]
   >;
+
+export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
+
+export type BurnInstructionDataArgs = { burnArgs: BurnArgsArgs };
+
+export function getBurnInstructionDataEncoder(): Encoder<BurnInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<BurnInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['burnArgs', getBurnArgsEncoder()],
+      ],
+      { description: 'BurnInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 44 } as BurnInstructionData)
+  ) as Encoder<BurnInstructionDataArgs>;
+}
+
+export function getBurnInstructionDataDecoder(): Decoder<BurnInstructionData> {
+  return getStructDecoder<BurnInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['burnArgs', getBurnArgsDecoder()],
+    ],
+    { description: 'BurnInstructionData' }
+  ) as Decoder<BurnInstructionData>;
+}
+
+export function getBurnInstructionDataCodec(): Codec<
+  BurnInstructionDataArgs,
+  BurnInstructionData
+> {
+  return combineCodec(
+    getBurnInstructionDataEncoder(),
+    getBurnInstructionDataDecoder()
+  );
+}

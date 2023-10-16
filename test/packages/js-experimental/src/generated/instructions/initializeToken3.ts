@@ -11,7 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -48,3 +54,46 @@ export type InitializeToken3Instruction<
   IInstructionWithAccounts<
     [WritableAccount<TAccountAccount>, ReadonlyAccount<TAccountMint>]
   >;
+
+export type InitializeToken3InstructionData = {
+  discriminator: number;
+  owner: Base58EncodedAddress;
+};
+
+export type InitializeToken3InstructionDataArgs = {
+  owner: Base58EncodedAddress;
+};
+
+export function getInitializeToken3InstructionDataEncoder(): Encoder<InitializeToken3InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeToken3InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['owner', getAddressEncoder()],
+      ],
+      { description: 'InitializeToken3InstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 18 } as InitializeToken3InstructionData)
+  ) as Encoder<InitializeToken3InstructionDataArgs>;
+}
+
+export function getInitializeToken3InstructionDataDecoder(): Decoder<InitializeToken3InstructionData> {
+  return getStructDecoder<InitializeToken3InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['owner', getAddressDecoder()],
+    ],
+    { description: 'InitializeToken3InstructionData' }
+  ) as Decoder<InitializeToken3InstructionData>;
+}
+
+export function getInitializeToken3InstructionDataCodec(): Codec<
+  InitializeToken3InstructionDataArgs,
+  InitializeToken3InstructionData
+> {
+  return combineCodec(
+    getInitializeToken3InstructionDataEncoder(),
+    getInitializeToken3InstructionDataDecoder()
+  );
+}

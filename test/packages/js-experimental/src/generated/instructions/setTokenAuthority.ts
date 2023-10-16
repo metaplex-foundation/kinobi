@@ -11,7 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -65,3 +71,50 @@ export type SetTokenAuthorityInstruction<
       ReadonlySignerAccount<TAccountOwner> | ReadonlyAccount<TAccountOwner>
     ]
   >;
+
+export type SetTokenAuthorityInstructionData = {
+  discriminator: number;
+  authorityType: TokenAuthorityType;
+  newAuthority: Option<Base58EncodedAddress>;
+};
+
+export type SetTokenAuthorityInstructionDataArgs = {
+  authorityType: TokenAuthorityTypeArgs;
+  newAuthority: OptionOrNullable<Base58EncodedAddress>;
+};
+
+export function getSetTokenAuthorityInstructionDataEncoder(): Encoder<SetTokenAuthorityInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SetTokenAuthorityInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['authorityType', getTokenAuthorityTypeEncoder()],
+        ['newAuthority', getOptionEncoder(getAddressEncoder())],
+      ],
+      { description: 'SetTokenAuthorityInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 6 } as SetTokenAuthorityInstructionData)
+  ) as Encoder<SetTokenAuthorityInstructionDataArgs>;
+}
+
+export function getSetTokenAuthorityInstructionDataDecoder(): Decoder<SetTokenAuthorityInstructionData> {
+  return getStructDecoder<SetTokenAuthorityInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['authorityType', getTokenAuthorityTypeDecoder()],
+      ['newAuthority', getOptionDecoder(getAddressDecoder())],
+    ],
+    { description: 'SetTokenAuthorityInstructionData' }
+  ) as Decoder<SetTokenAuthorityInstructionData>;
+}
+
+export function getSetTokenAuthorityInstructionDataCodec(): Codec<
+  SetTokenAuthorityInstructionDataArgs,
+  SetTokenAuthorityInstructionData
+> {
+  return combineCodec(
+    getSetTokenAuthorityInstructionDataEncoder(),
+    getSetTokenAuthorityInstructionDataDecoder()
+  );
+}

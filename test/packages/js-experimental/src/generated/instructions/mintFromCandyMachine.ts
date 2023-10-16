@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -81,3 +87,40 @@ export type MintFromCandyMachineInstruction<
       ReadonlyAccount<TAccountRecentSlothashes>
     ]
   >;
+
+export type MintFromCandyMachineInstructionData = {
+  discriminator: Array<number>;
+};
+
+export type MintFromCandyMachineInstructionDataArgs = {};
+
+export function getMintFromCandyMachineInstructionDataEncoder(): Encoder<MintFromCandyMachineInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<MintFromCandyMachineInstructionData>(
+      [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
+      { description: 'MintFromCandyMachineInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
+      } as MintFromCandyMachineInstructionData)
+  ) as Encoder<MintFromCandyMachineInstructionDataArgs>;
+}
+
+export function getMintFromCandyMachineInstructionDataDecoder(): Decoder<MintFromCandyMachineInstructionData> {
+  return getStructDecoder<MintFromCandyMachineInstructionData>(
+    [['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })]],
+    { description: 'MintFromCandyMachineInstructionData' }
+  ) as Decoder<MintFromCandyMachineInstructionData>;
+}
+
+export function getMintFromCandyMachineInstructionDataCodec(): Codec<
+  MintFromCandyMachineInstructionDataArgs,
+  MintFromCandyMachineInstructionData
+> {
+  return combineCodec(
+    getMintFromCandyMachineInstructionDataEncoder(),
+    getMintFromCandyMachineInstructionDataDecoder()
+  );
+}

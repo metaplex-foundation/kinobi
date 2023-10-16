@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -52,3 +58,43 @@ export type TransferSolInstruction<
       WritableAccount<TAccountDestination>
     ]
   >;
+
+export type TransferSolInstructionData = {
+  discriminator: number;
+  amount: bigint;
+};
+
+export type TransferSolInstructionDataArgs = { amount: number | bigint };
+
+export function getTransferSolInstructionDataEncoder(): Encoder<TransferSolInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<TransferSolInstructionData>(
+      [
+        ['discriminator', getU32Encoder()],
+        ['amount', getU64Encoder()],
+      ],
+      { description: 'TransferSolInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 2 } as TransferSolInstructionData)
+  ) as Encoder<TransferSolInstructionDataArgs>;
+}
+
+export function getTransferSolInstructionDataDecoder(): Decoder<TransferSolInstructionData> {
+  return getStructDecoder<TransferSolInstructionData>(
+    [
+      ['discriminator', getU32Decoder()],
+      ['amount', getU64Decoder()],
+    ],
+    { description: 'TransferSolInstructionData' }
+  ) as Decoder<TransferSolInstructionData>;
+}
+
+export function getTransferSolInstructionDataCodec(): Codec<
+  TransferSolInstructionDataArgs,
+  TransferSolInstructionData
+> {
+  return combineCodec(
+    getTransferSolInstructionDataEncoder(),
+    getTransferSolInstructionDataDecoder()
+  );
+}

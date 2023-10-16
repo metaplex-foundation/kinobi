@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -72,3 +78,43 @@ export type UseAssetInstruction<
       ReadonlyAccount<TAccountAuthorizationRulesProgram>
     ]
   >;
+
+export type UseAssetInstructionData = {
+  discriminator: number;
+  useAssetArgs: UseAssetArgs;
+};
+
+export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
+
+export function getUseAssetInstructionDataEncoder(): Encoder<UseAssetInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UseAssetInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['useAssetArgs', getUseAssetArgsEncoder()],
+      ],
+      { description: 'UseAssetInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 45 } as UseAssetInstructionData)
+  ) as Encoder<UseAssetInstructionDataArgs>;
+}
+
+export function getUseAssetInstructionDataDecoder(): Decoder<UseAssetInstructionData> {
+  return getStructDecoder<UseAssetInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['useAssetArgs', getUseAssetArgsDecoder()],
+    ],
+    { description: 'UseAssetInstructionData' }
+  ) as Decoder<UseAssetInstructionData>;
+}
+
+export function getUseAssetInstructionDataCodec(): Codec<
+  UseAssetInstructionDataArgs,
+  UseAssetInstructionData
+> {
+  return combineCodec(
+    getUseAssetInstructionDataEncoder(),
+    getUseAssetInstructionDataDecoder()
+  );
+}

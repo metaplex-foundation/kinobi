@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -44,3 +50,44 @@ export type UiAmountToAmountInstruction<
 > = IInstruction<TProgram> &
   IInstructionWithData<UiAmountToAmountInstructionData> &
   IInstructionWithAccounts<[ReadonlyAccount<TAccountMint>]>;
+
+export type UiAmountToAmountInstructionData = {
+  discriminator: number;
+  uiAmount: bigint;
+};
+
+export type UiAmountToAmountInstructionDataArgs = { uiAmount: number | bigint };
+
+export function getUiAmountToAmountInstructionDataEncoder(): Encoder<UiAmountToAmountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UiAmountToAmountInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['uiAmount', getU64Encoder()],
+      ],
+      { description: 'UiAmountToAmountInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 24 } as UiAmountToAmountInstructionData)
+  ) as Encoder<UiAmountToAmountInstructionDataArgs>;
+}
+
+export function getUiAmountToAmountInstructionDataDecoder(): Decoder<UiAmountToAmountInstructionData> {
+  return getStructDecoder<UiAmountToAmountInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['uiAmount', getU64Decoder()],
+    ],
+    { description: 'UiAmountToAmountInstructionData' }
+  ) as Decoder<UiAmountToAmountInstructionData>;
+}
+
+export function getUiAmountToAmountInstructionDataCodec(): Codec<
+  UiAmountToAmountInstructionDataArgs,
+  UiAmountToAmountInstructionData
+> {
+  return combineCodec(
+    getUiAmountToAmountInstructionDataEncoder(),
+    getUiAmountToAmountInstructionDataDecoder()
+  );
+}

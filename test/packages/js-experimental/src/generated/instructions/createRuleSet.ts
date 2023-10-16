@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -58,3 +64,49 @@ export type CreateRuleSetInstruction<
       ReadonlyAccount<TAccountSystemProgram>
     ]
   >;
+
+export type CreateRuleSetInstructionData = {
+  discriminator: number;
+  createArgs: TaCreateArgs;
+  ruleSetBump: number;
+};
+
+export type CreateRuleSetInstructionDataArgs = {
+  createArgs: TaCreateArgsArgs;
+  ruleSetBump: number;
+};
+
+export function getCreateRuleSetInstructionDataEncoder(): Encoder<CreateRuleSetInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateRuleSetInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['createArgs', getTaCreateArgsEncoder()],
+        ['ruleSetBump', getU8Encoder()],
+      ],
+      { description: 'CreateRuleSetInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 0 } as CreateRuleSetInstructionData)
+  ) as Encoder<CreateRuleSetInstructionDataArgs>;
+}
+
+export function getCreateRuleSetInstructionDataDecoder(): Decoder<CreateRuleSetInstructionData> {
+  return getStructDecoder<CreateRuleSetInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['createArgs', getTaCreateArgsDecoder()],
+      ['ruleSetBump', getU8Decoder()],
+    ],
+    { description: 'CreateRuleSetInstructionData' }
+  ) as Decoder<CreateRuleSetInstructionData>;
+}
+
+export function getCreateRuleSetInstructionDataCodec(): Codec<
+  CreateRuleSetInstructionDataArgs,
+  CreateRuleSetInstructionData
+> {
+  return combineCodec(
+    getCreateRuleSetInstructionDataEncoder(),
+    getCreateRuleSetInstructionDataDecoder()
+  );
+}

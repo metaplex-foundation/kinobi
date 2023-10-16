@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -44,3 +50,44 @@ export type InitializeMultisigInstruction<
   IInstructionWithAccounts<
     [WritableAccount<TAccountMultisig>, ReadonlyAccount<TAccountRent>]
   >;
+
+export type InitializeMultisigInstructionData = {
+  discriminator: number;
+  m: number;
+};
+
+export type InitializeMultisigInstructionDataArgs = { m: number };
+
+export function getInitializeMultisigInstructionDataEncoder(): Encoder<InitializeMultisigInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeMultisigInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['m', getU8Encoder()],
+      ],
+      { description: 'InitializeMultisigInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 2 } as InitializeMultisigInstructionData)
+  ) as Encoder<InitializeMultisigInstructionDataArgs>;
+}
+
+export function getInitializeMultisigInstructionDataDecoder(): Decoder<InitializeMultisigInstructionData> {
+  return getStructDecoder<InitializeMultisigInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['m', getU8Decoder()],
+    ],
+    { description: 'InitializeMultisigInstructionData' }
+  ) as Decoder<InitializeMultisigInstructionData>;
+}
+
+export function getInitializeMultisigInstructionDataCodec(): Codec<
+  InitializeMultisigInstructionDataArgs,
+  InitializeMultisigInstructionData
+> {
+  return combineCodec(
+    getInitializeMultisigInstructionDataEncoder(),
+    getInitializeMultisigInstructionDataDecoder()
+  );
+}

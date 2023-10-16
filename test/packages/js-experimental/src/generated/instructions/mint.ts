@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -76,3 +82,40 @@ export type MintInstruction<
       ReadonlyAccount<TAccountAuthorizationRules>
     ]
   >;
+
+export type MintInstructionData = { discriminator: number; mintArgs: MintArgs };
+
+export type MintInstructionDataArgs = { mintArgs: MintArgsArgs };
+
+export function getMintInstructionDataEncoder(): Encoder<MintInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<MintInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['mintArgs', getMintArgsEncoder()],
+      ],
+      { description: 'MintInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 42 } as MintInstructionData)
+  ) as Encoder<MintInstructionDataArgs>;
+}
+
+export function getMintInstructionDataDecoder(): Decoder<MintInstructionData> {
+  return getStructDecoder<MintInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['mintArgs', getMintArgsDecoder()],
+    ],
+    { description: 'MintInstructionData' }
+  ) as Decoder<MintInstructionData>;
+}
+
+export function getMintInstructionDataCodec(): Codec<
+  MintInstructionDataArgs,
+  MintInstructionData
+> {
+  return combineCodec(
+    getMintInstructionDataEncoder(),
+    getMintInstructionDataDecoder()
+  );
+}

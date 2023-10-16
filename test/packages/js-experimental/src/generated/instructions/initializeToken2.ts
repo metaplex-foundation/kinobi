@@ -12,7 +12,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,46 @@ export type InitializeToken2Instruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type InitializeToken2InstructionData = {
+  discriminator: number;
+  owner: Base58EncodedAddress;
+};
+
+export type InitializeToken2InstructionDataArgs = {
+  owner: Base58EncodedAddress;
+};
+
+export function getInitializeToken2InstructionDataEncoder(): Encoder<InitializeToken2InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeToken2InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['owner', getAddressEncoder()],
+      ],
+      { description: 'InitializeToken2InstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 16 } as InitializeToken2InstructionData)
+  ) as Encoder<InitializeToken2InstructionDataArgs>;
+}
+
+export function getInitializeToken2InstructionDataDecoder(): Decoder<InitializeToken2InstructionData> {
+  return getStructDecoder<InitializeToken2InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['owner', getAddressDecoder()],
+    ],
+    { description: 'InitializeToken2InstructionData' }
+  ) as Decoder<InitializeToken2InstructionData>;
+}
+
+export function getInitializeToken2InstructionDataCodec(): Codec<
+  InitializeToken2InstructionDataArgs,
+  InitializeToken2InstructionData
+> {
+  return combineCodec(
+    getInitializeToken2InstructionDataEncoder(),
+    getInitializeToken2InstructionDataDecoder()
+  );
+}

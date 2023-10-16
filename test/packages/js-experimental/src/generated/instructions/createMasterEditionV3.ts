@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -71,3 +77,46 @@ export type CreateMasterEditionV3Instruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type CreateMasterEditionV3InstructionData = {
+  discriminator: number;
+  createMasterEditionArgs: CreateMasterEditionArgs;
+};
+
+export type CreateMasterEditionV3InstructionDataArgs = {
+  createMasterEditionArgs: CreateMasterEditionArgsArgs;
+};
+
+export function getCreateMasterEditionV3InstructionDataEncoder(): Encoder<CreateMasterEditionV3InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateMasterEditionV3InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
+      ],
+      { description: 'CreateMasterEditionV3InstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 17 } as CreateMasterEditionV3InstructionData)
+  ) as Encoder<CreateMasterEditionV3InstructionDataArgs>;
+}
+
+export function getCreateMasterEditionV3InstructionDataDecoder(): Decoder<CreateMasterEditionV3InstructionData> {
+  return getStructDecoder<CreateMasterEditionV3InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
+    ],
+    { description: 'CreateMasterEditionV3InstructionData' }
+  ) as Decoder<CreateMasterEditionV3InstructionData>;
+}
+
+export function getCreateMasterEditionV3InstructionDataCodec(): Codec<
+  CreateMasterEditionV3InstructionDataArgs,
+  CreateMasterEditionV3InstructionData
+> {
+  return combineCodec(
+    getCreateMasterEditionV3InstructionDataEncoder(),
+    getCreateMasterEditionV3InstructionDataDecoder()
+  );
+}

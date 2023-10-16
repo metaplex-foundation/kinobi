@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -65,3 +71,55 @@ export type DeprecatedMintPrintingTokensInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type DeprecatedMintPrintingTokensInstructionData = {
+  discriminator: number;
+  mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgs;
+};
+
+export type DeprecatedMintPrintingTokensInstructionDataArgs = {
+  mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
+};
+
+export function getDeprecatedMintPrintingTokensInstructionDataEncoder(): Encoder<DeprecatedMintPrintingTokensInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<DeprecatedMintPrintingTokensInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        [
+          'mintPrintingTokensViaTokenArgs',
+          getMintPrintingTokensViaTokenArgsEncoder(),
+        ],
+      ],
+      { description: 'DeprecatedMintPrintingTokensInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 9,
+      } as DeprecatedMintPrintingTokensInstructionData)
+  ) as Encoder<DeprecatedMintPrintingTokensInstructionDataArgs>;
+}
+
+export function getDeprecatedMintPrintingTokensInstructionDataDecoder(): Decoder<DeprecatedMintPrintingTokensInstructionData> {
+  return getStructDecoder<DeprecatedMintPrintingTokensInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      [
+        'mintPrintingTokensViaTokenArgs',
+        getMintPrintingTokensViaTokenArgsDecoder(),
+      ],
+    ],
+    { description: 'DeprecatedMintPrintingTokensInstructionData' }
+  ) as Decoder<DeprecatedMintPrintingTokensInstructionData>;
+}
+
+export function getDeprecatedMintPrintingTokensInstructionDataCodec(): Codec<
+  DeprecatedMintPrintingTokensInstructionDataArgs,
+  DeprecatedMintPrintingTokensInstructionData
+> {
+  return combineCodec(
+    getDeprecatedMintPrintingTokensInstructionDataEncoder(),
+    getDeprecatedMintPrintingTokensInstructionDataDecoder()
+  );
+}

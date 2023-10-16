@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -39,3 +45,34 @@ export type SyncNativeInstruction<
 > = IInstruction<TProgram> &
   IInstructionWithData<SyncNativeInstructionData> &
   IInstructionWithAccounts<[WritableAccount<TAccountAccount>]>;
+
+export type SyncNativeInstructionData = { discriminator: number };
+
+export type SyncNativeInstructionDataArgs = {};
+
+export function getSyncNativeInstructionDataEncoder(): Encoder<SyncNativeInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SyncNativeInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'SyncNativeInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 17 } as SyncNativeInstructionData)
+  ) as Encoder<SyncNativeInstructionDataArgs>;
+}
+
+export function getSyncNativeInstructionDataDecoder(): Decoder<SyncNativeInstructionData> {
+  return getStructDecoder<SyncNativeInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'SyncNativeInstructionData' }
+  ) as Decoder<SyncNativeInstructionData>;
+}
+
+export function getSyncNativeInstructionDataCodec(): Codec<
+  SyncNativeInstructionDataArgs,
+  SyncNativeInstructionData
+> {
+  return combineCodec(
+    getSyncNativeInstructionDataEncoder(),
+    getSyncNativeInstructionDataDecoder()
+  );
+}

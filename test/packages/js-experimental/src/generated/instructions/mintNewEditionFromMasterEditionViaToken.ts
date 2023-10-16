@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -79,3 +85,55 @@ export type MintNewEditionFromMasterEditionViaTokenInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type MintNewEditionFromMasterEditionViaTokenInstructionData = {
+  discriminator: number;
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;
+};
+
+export type MintNewEditionFromMasterEditionViaTokenInstructionDataArgs = {
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
+};
+
+export function getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder(): Encoder<MintNewEditionFromMasterEditionViaTokenInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<MintNewEditionFromMasterEditionViaTokenInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        [
+          'mintNewEditionFromMasterEditionViaTokenArgs',
+          getMintNewEditionFromMasterEditionViaTokenArgsEncoder(),
+        ],
+      ],
+      { description: 'MintNewEditionFromMasterEditionViaTokenInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 11,
+      } as MintNewEditionFromMasterEditionViaTokenInstructionData)
+  ) as Encoder<MintNewEditionFromMasterEditionViaTokenInstructionDataArgs>;
+}
+
+export function getMintNewEditionFromMasterEditionViaTokenInstructionDataDecoder(): Decoder<MintNewEditionFromMasterEditionViaTokenInstructionData> {
+  return getStructDecoder<MintNewEditionFromMasterEditionViaTokenInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      [
+        'mintNewEditionFromMasterEditionViaTokenArgs',
+        getMintNewEditionFromMasterEditionViaTokenArgsDecoder(),
+      ],
+    ],
+    { description: 'MintNewEditionFromMasterEditionViaTokenInstructionData' }
+  ) as Decoder<MintNewEditionFromMasterEditionViaTokenInstructionData>;
+}
+
+export function getMintNewEditionFromMasterEditionViaTokenInstructionDataCodec(): Codec<
+  MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
+  MintNewEditionFromMasterEditionViaTokenInstructionData
+> {
+  return combineCodec(
+    getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder(),
+    getMintNewEditionFromMasterEditionViaTokenInstructionDataDecoder()
+  );
+}

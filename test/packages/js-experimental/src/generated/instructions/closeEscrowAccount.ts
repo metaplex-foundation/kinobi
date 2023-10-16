@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -61,3 +67,35 @@ export type CloseEscrowAccountInstruction<
       ReadonlyAccount<TAccountSysvarInstructions>
     ]
   >;
+
+export type CloseEscrowAccountInstructionData = { discriminator: number };
+
+export type CloseEscrowAccountInstructionDataArgs = {};
+
+export function getCloseEscrowAccountInstructionDataEncoder(): Encoder<CloseEscrowAccountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CloseEscrowAccountInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'CloseEscrowAccountInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 39 } as CloseEscrowAccountInstructionData)
+  ) as Encoder<CloseEscrowAccountInstructionDataArgs>;
+}
+
+export function getCloseEscrowAccountInstructionDataDecoder(): Decoder<CloseEscrowAccountInstructionData> {
+  return getStructDecoder<CloseEscrowAccountInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'CloseEscrowAccountInstructionData' }
+  ) as Decoder<CloseEscrowAccountInstructionData>;
+}
+
+export function getCloseEscrowAccountInstructionDataCodec(): Codec<
+  CloseEscrowAccountInstructionDataArgs,
+  CloseEscrowAccountInstructionData
+> {
+  return combineCodec(
+    getCloseEscrowAccountInstructionDataEncoder(),
+    getCloseEscrowAccountInstructionDataDecoder()
+  );
+}

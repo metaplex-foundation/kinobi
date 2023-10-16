@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -50,3 +56,34 @@ export type ThawTokenInstruction<
       ReadonlySignerAccount<TAccountOwner>
     ]
   >;
+
+export type ThawTokenInstructionData = { discriminator: number };
+
+export type ThawTokenInstructionDataArgs = {};
+
+export function getThawTokenInstructionDataEncoder(): Encoder<ThawTokenInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<ThawTokenInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'ThawTokenInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 11 } as ThawTokenInstructionData)
+  ) as Encoder<ThawTokenInstructionDataArgs>;
+}
+
+export function getThawTokenInstructionDataDecoder(): Decoder<ThawTokenInstructionData> {
+  return getStructDecoder<ThawTokenInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'ThawTokenInstructionData' }
+  ) as Decoder<ThawTokenInstructionData>;
+}
+
+export function getThawTokenInstructionDataCodec(): Codec<
+  ThawTokenInstructionDataArgs,
+  ThawTokenInstructionData
+> {
+  return combineCodec(
+    getThawTokenInstructionDataEncoder(),
+    getThawTokenInstructionDataDecoder()
+  );
+}

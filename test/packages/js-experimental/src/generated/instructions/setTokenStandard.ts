@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -52,3 +58,35 @@ export type SetTokenStandardInstruction<
       ReadonlyAccount<TAccountEdition>
     ]
   >;
+
+export type SetTokenStandardInstructionData = { discriminator: number };
+
+export type SetTokenStandardInstructionDataArgs = {};
+
+export function getSetTokenStandardInstructionDataEncoder(): Encoder<SetTokenStandardInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<SetTokenStandardInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'SetTokenStandardInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 35 } as SetTokenStandardInstructionData)
+  ) as Encoder<SetTokenStandardInstructionDataArgs>;
+}
+
+export function getSetTokenStandardInstructionDataDecoder(): Decoder<SetTokenStandardInstructionData> {
+  return getStructDecoder<SetTokenStandardInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'SetTokenStandardInstructionData' }
+  ) as Decoder<SetTokenStandardInstructionData>;
+}
+
+export function getSetTokenStandardInstructionDataCodec(): Codec<
+  SetTokenStandardInstructionDataArgs,
+  SetTokenStandardInstructionData
+> {
+  return combineCodec(
+    getSetTokenStandardInstructionDataEncoder(),
+    getSetTokenStandardInstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -54,3 +60,35 @@ export type FreezeDelegatedAccountInstruction<
       ReadonlyAccount<TAccountTokenProgram>
     ]
   >;
+
+export type FreezeDelegatedAccountInstructionData = { discriminator: number };
+
+export type FreezeDelegatedAccountInstructionDataArgs = {};
+
+export function getFreezeDelegatedAccountInstructionDataEncoder(): Encoder<FreezeDelegatedAccountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<FreezeDelegatedAccountInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'FreezeDelegatedAccountInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 26 } as FreezeDelegatedAccountInstructionData)
+  ) as Encoder<FreezeDelegatedAccountInstructionDataArgs>;
+}
+
+export function getFreezeDelegatedAccountInstructionDataDecoder(): Decoder<FreezeDelegatedAccountInstructionData> {
+  return getStructDecoder<FreezeDelegatedAccountInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'FreezeDelegatedAccountInstructionData' }
+  ) as Decoder<FreezeDelegatedAccountInstructionData>;
+}
+
+export function getFreezeDelegatedAccountInstructionDataCodec(): Codec<
+  FreezeDelegatedAccountInstructionDataArgs,
+  FreezeDelegatedAccountInstructionData
+> {
+  return combineCodec(
+    getFreezeDelegatedAccountInstructionDataEncoder(),
+    getFreezeDelegatedAccountInstructionDataDecoder()
+  );
+}

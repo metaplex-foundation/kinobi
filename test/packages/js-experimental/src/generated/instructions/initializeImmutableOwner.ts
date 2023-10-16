@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -39,3 +45,38 @@ export type InitializeImmutableOwnerInstruction<
 > = IInstruction<TProgram> &
   IInstructionWithData<InitializeImmutableOwnerInstructionData> &
   IInstructionWithAccounts<[WritableAccount<TAccountAccount>]>;
+
+export type InitializeImmutableOwnerInstructionData = { discriminator: number };
+
+export type InitializeImmutableOwnerInstructionDataArgs = {};
+
+export function getInitializeImmutableOwnerInstructionDataEncoder(): Encoder<InitializeImmutableOwnerInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeImmutableOwnerInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'InitializeImmutableOwnerInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 22,
+      } as InitializeImmutableOwnerInstructionData)
+  ) as Encoder<InitializeImmutableOwnerInstructionDataArgs>;
+}
+
+export function getInitializeImmutableOwnerInstructionDataDecoder(): Decoder<InitializeImmutableOwnerInstructionData> {
+  return getStructDecoder<InitializeImmutableOwnerInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'InitializeImmutableOwnerInstructionData' }
+  ) as Decoder<InitializeImmutableOwnerInstructionData>;
+}
+
+export function getInitializeImmutableOwnerInstructionDataCodec(): Codec<
+  InitializeImmutableOwnerInstructionDataArgs,
+  InitializeImmutableOwnerInstructionData
+> {
+  return combineCodec(
+    getInitializeImmutableOwnerInstructionDataEncoder(),
+    getInitializeImmutableOwnerInstructionDataDecoder()
+  );
+}

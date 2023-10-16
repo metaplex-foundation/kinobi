@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -61,3 +67,49 @@ export type BubblegumSetCollectionSizeInstruction<
       ReadonlyAccount<TAccountCollectionAuthorityRecord>
     ]
   >;
+
+export type BubblegumSetCollectionSizeInstructionData = {
+  discriminator: number;
+  setCollectionSizeArgs: SetCollectionSizeArgs;
+};
+
+export type BubblegumSetCollectionSizeInstructionDataArgs = {
+  setCollectionSizeArgs: SetCollectionSizeArgsArgs;
+};
+
+export function getBubblegumSetCollectionSizeInstructionDataEncoder(): Encoder<BubblegumSetCollectionSizeInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<BubblegumSetCollectionSizeInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
+      ],
+      { description: 'BubblegumSetCollectionSizeInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 36,
+      } as BubblegumSetCollectionSizeInstructionData)
+  ) as Encoder<BubblegumSetCollectionSizeInstructionDataArgs>;
+}
+
+export function getBubblegumSetCollectionSizeInstructionDataDecoder(): Decoder<BubblegumSetCollectionSizeInstructionData> {
+  return getStructDecoder<BubblegumSetCollectionSizeInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
+    ],
+    { description: 'BubblegumSetCollectionSizeInstructionData' }
+  ) as Decoder<BubblegumSetCollectionSizeInstructionData>;
+}
+
+export function getBubblegumSetCollectionSizeInstructionDataCodec(): Codec<
+  BubblegumSetCollectionSizeInstructionDataArgs,
+  BubblegumSetCollectionSizeInstructionData
+> {
+  return combineCodec(
+    getBubblegumSetCollectionSizeInstructionDataEncoder(),
+    getBubblegumSetCollectionSizeInstructionDataDecoder()
+  );
+}

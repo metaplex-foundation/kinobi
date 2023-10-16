@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -44,3 +50,35 @@ export type RevokeTokenDelegateInstruction<
   IInstructionWithAccounts<
     [WritableAccount<TAccountSource>, ReadonlySignerAccount<TAccountOwner>]
   >;
+
+export type RevokeTokenDelegateInstructionData = { discriminator: number };
+
+export type RevokeTokenDelegateInstructionDataArgs = {};
+
+export function getRevokeTokenDelegateInstructionDataEncoder(): Encoder<RevokeTokenDelegateInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<RevokeTokenDelegateInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'RevokeTokenDelegateInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 5 } as RevokeTokenDelegateInstructionData)
+  ) as Encoder<RevokeTokenDelegateInstructionDataArgs>;
+}
+
+export function getRevokeTokenDelegateInstructionDataDecoder(): Decoder<RevokeTokenDelegateInstructionData> {
+  return getStructDecoder<RevokeTokenDelegateInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'RevokeTokenDelegateInstructionData' }
+  ) as Decoder<RevokeTokenDelegateInstructionData>;
+}
+
+export function getRevokeTokenDelegateInstructionDataCodec(): Codec<
+  RevokeTokenDelegateInstructionDataArgs,
+  RevokeTokenDelegateInstructionData
+> {
+  return combineCodec(
+    getRevokeTokenDelegateInstructionDataEncoder(),
+    getRevokeTokenDelegateInstructionDataDecoder()
+  );
+}

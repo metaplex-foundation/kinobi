@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getBooleanDecoder,
   getBooleanEncoder,
@@ -67,3 +73,53 @@ export type CreateMetadataAccountV2Instruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type CreateMetadataAccountV2InstructionData = {
+  discriminator: number;
+  data: DataV2;
+  isMutable: boolean;
+};
+
+export type CreateMetadataAccountV2InstructionDataArgs = {
+  data: DataV2Args;
+  isMutable: boolean;
+};
+
+export function getCreateMetadataAccountV2InstructionDataEncoder(): Encoder<CreateMetadataAccountV2InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateMetadataAccountV2InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['data', getDataV2Encoder()],
+        ['isMutable', getBooleanEncoder()],
+      ],
+      { description: 'CreateMetadataAccountV2InstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 16,
+      } as CreateMetadataAccountV2InstructionData)
+  ) as Encoder<CreateMetadataAccountV2InstructionDataArgs>;
+}
+
+export function getCreateMetadataAccountV2InstructionDataDecoder(): Decoder<CreateMetadataAccountV2InstructionData> {
+  return getStructDecoder<CreateMetadataAccountV2InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['data', getDataV2Decoder()],
+      ['isMutable', getBooleanDecoder()],
+    ],
+    { description: 'CreateMetadataAccountV2InstructionData' }
+  ) as Decoder<CreateMetadataAccountV2InstructionData>;
+}
+
+export function getCreateMetadataAccountV2InstructionDataCodec(): Codec<
+  CreateMetadataAccountV2InstructionDataArgs,
+  CreateMetadataAccountV2InstructionData
+> {
+  return combineCodec(
+    getCreateMetadataAccountV2InstructionDataEncoder(),
+    getCreateMetadataAccountV2InstructionDataDecoder()
+  );
+}

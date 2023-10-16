@@ -7,7 +7,13 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -72,3 +78,38 @@ export type DummyInstruction<
       ReadonlyAccount<TAccountTokenOrAtaProgram>
     ]
   >;
+
+export type DummyInstructionData = { discriminator: Array<number> };
+
+export type DummyInstructionDataArgs = {};
+
+export function getDummyInstructionDataEncoder(): Encoder<DummyInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<DummyInstructionData>(
+      [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
+      { description: 'DummyInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
+      } as DummyInstructionData)
+  ) as Encoder<DummyInstructionDataArgs>;
+}
+
+export function getDummyInstructionDataDecoder(): Decoder<DummyInstructionData> {
+  return getStructDecoder<DummyInstructionData>(
+    [['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })]],
+    { description: 'DummyInstructionData' }
+  ) as Decoder<DummyInstructionData>;
+}
+
+export function getDummyInstructionDataCodec(): Codec<
+  DummyInstructionDataArgs,
+  DummyInstructionData
+> {
+  return combineCodec(
+    getDummyInstructionDataEncoder(),
+    getDummyInstructionDataDecoder()
+  );
+}

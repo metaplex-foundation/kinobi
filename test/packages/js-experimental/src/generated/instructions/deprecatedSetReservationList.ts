@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -68,3 +74,61 @@ export type DeprecatedSetReservationListInstruction<
       ReadonlySignerAccount<TAccountResource>
     ]
   >;
+
+export type DeprecatedSetReservationListInstructionData = {
+  discriminator: number;
+  reservations: Array<Reservation>;
+  totalReservationSpots: Option<bigint>;
+  offset: bigint;
+  totalSpotOffset: bigint;
+};
+
+export type DeprecatedSetReservationListInstructionDataArgs = {
+  reservations: Array<ReservationArgs>;
+  totalReservationSpots: OptionOrNullable<number | bigint>;
+  offset: number | bigint;
+  totalSpotOffset: number | bigint;
+};
+
+export function getDeprecatedSetReservationListInstructionDataEncoder(): Encoder<DeprecatedSetReservationListInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<DeprecatedSetReservationListInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['reservations', getArrayEncoder(getReservationEncoder())],
+        ['totalReservationSpots', getOptionEncoder(getU64Encoder())],
+        ['offset', getU64Encoder()],
+        ['totalSpotOffset', getU64Encoder()],
+      ],
+      { description: 'DeprecatedSetReservationListInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 5,
+      } as DeprecatedSetReservationListInstructionData)
+  ) as Encoder<DeprecatedSetReservationListInstructionDataArgs>;
+}
+
+export function getDeprecatedSetReservationListInstructionDataDecoder(): Decoder<DeprecatedSetReservationListInstructionData> {
+  return getStructDecoder<DeprecatedSetReservationListInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['reservations', getArrayDecoder(getReservationDecoder())],
+      ['totalReservationSpots', getOptionDecoder(getU64Decoder())],
+      ['offset', getU64Decoder()],
+      ['totalSpotOffset', getU64Decoder()],
+    ],
+    { description: 'DeprecatedSetReservationListInstructionData' }
+  ) as Decoder<DeprecatedSetReservationListInstructionData>;
+}
+
+export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
+  DeprecatedSetReservationListInstructionDataArgs,
+  DeprecatedSetReservationListInstructionData
+> {
+  return combineCodec(
+    getDeprecatedSetReservationListInstructionDataEncoder(),
+    getDeprecatedSetReservationListInstructionDataDecoder()
+  );
+}

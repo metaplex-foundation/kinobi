@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -70,3 +76,46 @@ export type CreateMasterEditionInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type CreateMasterEditionInstructionData = {
+  discriminator: number;
+  createMasterEditionArgs: CreateMasterEditionArgs;
+};
+
+export type CreateMasterEditionInstructionDataArgs = {
+  createMasterEditionArgs: CreateMasterEditionArgsArgs;
+};
+
+export function getCreateMasterEditionInstructionDataEncoder(): Encoder<CreateMasterEditionInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateMasterEditionInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
+      ],
+      { description: 'CreateMasterEditionInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 10 } as CreateMasterEditionInstructionData)
+  ) as Encoder<CreateMasterEditionInstructionDataArgs>;
+}
+
+export function getCreateMasterEditionInstructionDataDecoder(): Decoder<CreateMasterEditionInstructionData> {
+  return getStructDecoder<CreateMasterEditionInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
+    ],
+    { description: 'CreateMasterEditionInstructionData' }
+  ) as Decoder<CreateMasterEditionInstructionData>;
+}
+
+export function getCreateMasterEditionInstructionDataCodec(): Codec<
+  CreateMasterEditionInstructionDataArgs,
+  CreateMasterEditionInstructionData
+> {
+  return combineCodec(
+    getCreateMasterEditionInstructionDataEncoder(),
+    getCreateMasterEditionInstructionDataDecoder()
+  );
+}

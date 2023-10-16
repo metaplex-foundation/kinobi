@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -85,3 +91,53 @@ export type ValidateInstruction<
       ReadonlyAccount<TAccountOptRuleNonsigner5>
     ]
   >;
+
+export type ValidateInstructionData = {
+  discriminator: number;
+  ruleSetName: string;
+  operation: Operation;
+  payload: Payload;
+};
+
+export type ValidateInstructionDataArgs = {
+  ruleSetName: string;
+  operation: OperationArgs;
+  payload: PayloadArgs;
+};
+
+export function getValidateInstructionDataEncoder(): Encoder<ValidateInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<ValidateInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['ruleSetName', getStringEncoder()],
+        ['operation', getOperationEncoder()],
+        ['payload', getPayloadEncoder()],
+      ],
+      { description: 'ValidateInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 1 } as ValidateInstructionData)
+  ) as Encoder<ValidateInstructionDataArgs>;
+}
+
+export function getValidateInstructionDataDecoder(): Decoder<ValidateInstructionData> {
+  return getStructDecoder<ValidateInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['ruleSetName', getStringDecoder()],
+      ['operation', getOperationDecoder()],
+      ['payload', getPayloadDecoder()],
+    ],
+    { description: 'ValidateInstructionData' }
+  ) as Decoder<ValidateInstructionData>;
+}
+
+export function getValidateInstructionDataCodec(): Codec<
+  ValidateInstructionDataArgs,
+  ValidateInstructionData
+> {
+  return combineCodec(
+    getValidateInstructionDataEncoder(),
+    getValidateInstructionDataDecoder()
+  );
+}

@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -50,3 +56,34 @@ export type FreezeTokenInstruction<
       ReadonlySignerAccount<TAccountOwner>
     ]
   >;
+
+export type FreezeTokenInstructionData = { discriminator: number };
+
+export type FreezeTokenInstructionDataArgs = {};
+
+export function getFreezeTokenInstructionDataEncoder(): Encoder<FreezeTokenInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<FreezeTokenInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'FreezeTokenInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 10 } as FreezeTokenInstructionData)
+  ) as Encoder<FreezeTokenInstructionDataArgs>;
+}
+
+export function getFreezeTokenInstructionDataDecoder(): Decoder<FreezeTokenInstructionData> {
+  return getStructDecoder<FreezeTokenInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'FreezeTokenInstructionData' }
+  ) as Decoder<FreezeTokenInstructionData>;
+}
+
+export function getFreezeTokenInstructionDataCodec(): Codec<
+  FreezeTokenInstructionDataArgs,
+  FreezeTokenInstructionData
+> {
+  return combineCodec(
+    getFreezeTokenInstructionDataEncoder(),
+    getFreezeTokenInstructionDataDecoder()
+  );
+}

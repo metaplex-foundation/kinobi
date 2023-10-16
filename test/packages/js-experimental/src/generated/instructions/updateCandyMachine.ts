@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -55,3 +61,49 @@ export type UpdateCandyMachineInstruction<
       ReadonlySignerAccount<TAccountAuthority>
     ]
   >;
+
+export type UpdateCandyMachineInstructionData = {
+  discriminator: Array<number>;
+  data: CandyMachineData;
+};
+
+export type UpdateCandyMachineInstructionDataArgs = {
+  data: CandyMachineDataArgs;
+};
+
+export function getUpdateCandyMachineInstructionDataEncoder(): Encoder<UpdateCandyMachineInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UpdateCandyMachineInstructionData>(
+      [
+        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+        ['data', getCandyMachineDataEncoder()],
+      ],
+      { description: 'UpdateCandyMachineInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
+      } as UpdateCandyMachineInstructionData)
+  ) as Encoder<UpdateCandyMachineInstructionDataArgs>;
+}
+
+export function getUpdateCandyMachineInstructionDataDecoder(): Decoder<UpdateCandyMachineInstructionData> {
+  return getStructDecoder<UpdateCandyMachineInstructionData>(
+    [
+      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+      ['data', getCandyMachineDataDecoder()],
+    ],
+    { description: 'UpdateCandyMachineInstructionData' }
+  ) as Decoder<UpdateCandyMachineInstructionData>;
+}
+
+export function getUpdateCandyMachineInstructionDataCodec(): Codec<
+  UpdateCandyMachineInstructionDataArgs,
+  UpdateCandyMachineInstructionData
+> {
+  return combineCodec(
+    getUpdateCandyMachineInstructionDataEncoder(),
+    getUpdateCandyMachineInstructionDataDecoder()
+  );
+}

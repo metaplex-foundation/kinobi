@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -77,3 +83,46 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
       WritableAccount<TAccountReservationList>
     ]
   >;
+
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData =
+  { discriminator: number };
+
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs =
+  {};
+
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder(): Encoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      {
+        description:
+          'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData',
+      }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 3,
+      } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData)
+  ) as Encoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs>;
+}
+
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataDecoder(): Decoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData> {
+  return getStructDecoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    {
+      description:
+        'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData',
+    }
+  ) as Decoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>;
+}
+
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataCodec(): Codec<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs,
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData
+> {
+  return combineCodec(
+    getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder(),
+    getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataDecoder()
+  );
+}

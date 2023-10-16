@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -56,3 +62,35 @@ export type VerifyCollectionInstruction<
       ReadonlyAccount<TAccountCollectionMasterEditionAccount>
     ]
   >;
+
+export type VerifyCollectionInstructionData = { discriminator: number };
+
+export type VerifyCollectionInstructionDataArgs = {};
+
+export function getVerifyCollectionInstructionDataEncoder(): Encoder<VerifyCollectionInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<VerifyCollectionInstructionData>(
+      [['discriminator', getU8Encoder()]],
+      { description: 'VerifyCollectionInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 18 } as VerifyCollectionInstructionData)
+  ) as Encoder<VerifyCollectionInstructionDataArgs>;
+}
+
+export function getVerifyCollectionInstructionDataDecoder(): Decoder<VerifyCollectionInstructionData> {
+  return getStructDecoder<VerifyCollectionInstructionData>(
+    [['discriminator', getU8Decoder()]],
+    { description: 'VerifyCollectionInstructionData' }
+  ) as Decoder<VerifyCollectionInstructionData>;
+}
+
+export function getVerifyCollectionInstructionDataCodec(): Codec<
+  VerifyCollectionInstructionDataArgs,
+  VerifyCollectionInstructionData
+> {
+  return combineCodec(
+    getVerifyCollectionInstructionDataEncoder(),
+    getVerifyCollectionInstructionDataDecoder()
+  );
+}

@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -24,3 +25,31 @@ import {
 export type AddMemoInstruction<
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
 > = IInstruction<TProgram> & IInstructionWithData<AddMemoInstructionData>;
+
+export type AddMemoInstructionData = { memo: string };
+
+export type AddMemoInstructionDataArgs = AddMemoInstructionData;
+
+export function getAddMemoInstructionDataEncoder(): Encoder<AddMemoInstructionDataArgs> {
+  return getStructEncoder<AddMemoInstructionData>(
+    [['memo', getStringEncoder()]],
+    { description: 'AddMemoInstructionData' }
+  ) as Encoder<AddMemoInstructionDataArgs>;
+}
+
+export function getAddMemoInstructionDataDecoder(): Decoder<AddMemoInstructionData> {
+  return getStructDecoder<AddMemoInstructionData>(
+    [['memo', getStringDecoder()]],
+    { description: 'AddMemoInstructionData' }
+  ) as Decoder<AddMemoInstructionData>;
+}
+
+export function getAddMemoInstructionDataCodec(): Codec<
+  AddMemoInstructionDataArgs,
+  AddMemoInstructionData
+> {
+  return combineCodec(
+    getAddMemoInstructionDataEncoder(),
+    getAddMemoInstructionDataDecoder()
+  );
+}

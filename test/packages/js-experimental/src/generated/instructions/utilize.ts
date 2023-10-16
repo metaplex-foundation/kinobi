@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -72,3 +78,43 @@ export type UtilizeInstruction<
       ReadonlyAccount<TAccountBurner>
     ]
   >;
+
+export type UtilizeInstructionData = {
+  discriminator: number;
+  numberOfUses: bigint;
+};
+
+export type UtilizeInstructionDataArgs = { numberOfUses: number | bigint };
+
+export function getUtilizeInstructionDataEncoder(): Encoder<UtilizeInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<UtilizeInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['numberOfUses', getU64Encoder()],
+      ],
+      { description: 'UtilizeInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 19 } as UtilizeInstructionData)
+  ) as Encoder<UtilizeInstructionDataArgs>;
+}
+
+export function getUtilizeInstructionDataDecoder(): Decoder<UtilizeInstructionData> {
+  return getStructDecoder<UtilizeInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['numberOfUses', getU64Decoder()],
+    ],
+    { description: 'UtilizeInstructionData' }
+  ) as Decoder<UtilizeInstructionData>;
+}
+
+export function getUtilizeInstructionDataCodec(): Codec<
+  UtilizeInstructionDataArgs,
+  UtilizeInstructionData
+> {
+  return combineCodec(
+    getUtilizeInstructionDataEncoder(),
+    getUtilizeInstructionDataDecoder()
+  );
+}

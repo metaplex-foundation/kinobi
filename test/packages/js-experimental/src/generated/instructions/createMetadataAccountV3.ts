@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getBooleanDecoder,
   getBooleanEncoder,
@@ -78,3 +84,57 @@ export type CreateMetadataAccountV3Instruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type CreateMetadataAccountV3InstructionData = {
+  discriminator: number;
+  data: DataV2;
+  isMutable: boolean;
+  collectionDetails: Option<CollectionDetails>;
+};
+
+export type CreateMetadataAccountV3InstructionDataArgs = {
+  data: DataV2Args;
+  isMutable: boolean;
+  collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+};
+
+export function getCreateMetadataAccountV3InstructionDataEncoder(): Encoder<CreateMetadataAccountV3InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateMetadataAccountV3InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['data', getDataV2Encoder()],
+        ['isMutable', getBooleanEncoder()],
+        ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
+      ],
+      { description: 'CreateMetadataAccountV3InstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 33,
+      } as CreateMetadataAccountV3InstructionData)
+  ) as Encoder<CreateMetadataAccountV3InstructionDataArgs>;
+}
+
+export function getCreateMetadataAccountV3InstructionDataDecoder(): Decoder<CreateMetadataAccountV3InstructionData> {
+  return getStructDecoder<CreateMetadataAccountV3InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['data', getDataV2Decoder()],
+      ['isMutable', getBooleanDecoder()],
+      ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
+    ],
+    { description: 'CreateMetadataAccountV3InstructionData' }
+  ) as Decoder<CreateMetadataAccountV3InstructionData>;
+}
+
+export function getCreateMetadataAccountV3InstructionDataCodec(): Codec<
+  CreateMetadataAccountV3InstructionDataArgs,
+  CreateMetadataAccountV3InstructionData
+> {
+  return combineCodec(
+    getCreateMetadataAccountV3InstructionDataEncoder(),
+    getCreateMetadataAccountV3InstructionDataDecoder()
+  );
+}

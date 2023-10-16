@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -43,3 +49,44 @@ export type InitializeMultisig2Instruction<
   IInstructionWithAccounts<
     [WritableAccount<TAccountMultisig>, ReadonlyAccount<TAccountSigner>]
   >;
+
+export type InitializeMultisig2InstructionData = {
+  discriminator: number;
+  m: number;
+};
+
+export type InitializeMultisig2InstructionDataArgs = { m: number };
+
+export function getInitializeMultisig2InstructionDataEncoder(): Encoder<InitializeMultisig2InstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<InitializeMultisig2InstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['m', getU8Encoder()],
+      ],
+      { description: 'InitializeMultisig2InstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 19 } as InitializeMultisig2InstructionData)
+  ) as Encoder<InitializeMultisig2InstructionDataArgs>;
+}
+
+export function getInitializeMultisig2InstructionDataDecoder(): Decoder<InitializeMultisig2InstructionData> {
+  return getStructDecoder<InitializeMultisig2InstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['m', getU8Decoder()],
+    ],
+    { description: 'InitializeMultisig2InstructionData' }
+  ) as Decoder<InitializeMultisig2InstructionData>;
+}
+
+export function getInitializeMultisig2InstructionDataCodec(): Codec<
+  InitializeMultisig2InstructionDataArgs,
+  InitializeMultisig2InstructionData
+> {
+  return combineCodec(
+    getInitializeMultisig2InstructionDataEncoder(),
+    getInitializeMultisig2InstructionDataDecoder()
+  );
+}

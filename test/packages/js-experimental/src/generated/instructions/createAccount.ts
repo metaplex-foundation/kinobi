@@ -11,7 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -49,3 +55,53 @@ export type CreateAccountInstruction<
       WritableSignerAccount<TAccountNewAccount>
     ]
   >;
+
+export type CreateAccountInstructionData = {
+  discriminator: number;
+  lamports: bigint;
+  space: bigint;
+  programId: Base58EncodedAddress;
+};
+
+export type CreateAccountInstructionDataArgs = {
+  lamports: number | bigint;
+  space: number | bigint;
+  programId: Base58EncodedAddress;
+};
+
+export function getCreateAccountInstructionDataEncoder(): Encoder<CreateAccountInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<CreateAccountInstructionData>(
+      [
+        ['discriminator', getU32Encoder()],
+        ['lamports', getU64Encoder()],
+        ['space', getU64Encoder()],
+        ['programId', getAddressEncoder()],
+      ],
+      { description: 'CreateAccountInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 0 } as CreateAccountInstructionData)
+  ) as Encoder<CreateAccountInstructionDataArgs>;
+}
+
+export function getCreateAccountInstructionDataDecoder(): Decoder<CreateAccountInstructionData> {
+  return getStructDecoder<CreateAccountInstructionData>(
+    [
+      ['discriminator', getU32Decoder()],
+      ['lamports', getU64Decoder()],
+      ['space', getU64Decoder()],
+      ['programId', getAddressDecoder()],
+    ],
+    { description: 'CreateAccountInstructionData' }
+  ) as Decoder<CreateAccountInstructionData>;
+}
+
+export function getCreateAccountInstructionDataCodec(): Codec<
+  CreateAccountInstructionDataArgs,
+  CreateAccountInstructionData
+> {
+  return combineCodec(
+    getCreateAccountInstructionDataEncoder(),
+    getCreateAccountInstructionDataDecoder()
+  );
+}

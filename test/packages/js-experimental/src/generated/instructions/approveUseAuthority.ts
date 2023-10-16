@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -71,3 +77,46 @@ export type ApproveUseAuthorityInstruction<
       ReadonlyAccount<TAccountRent>
     ]
   >;
+
+export type ApproveUseAuthorityInstructionData = {
+  discriminator: number;
+  numberOfUses: bigint;
+};
+
+export type ApproveUseAuthorityInstructionDataArgs = {
+  numberOfUses: number | bigint;
+};
+
+export function getApproveUseAuthorityInstructionDataEncoder(): Encoder<ApproveUseAuthorityInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<ApproveUseAuthorityInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['numberOfUses', getU64Encoder()],
+      ],
+      { description: 'ApproveUseAuthorityInstructionData' }
+    ),
+    (value) =>
+      ({ ...value, discriminator: 20 } as ApproveUseAuthorityInstructionData)
+  ) as Encoder<ApproveUseAuthorityInstructionDataArgs>;
+}
+
+export function getApproveUseAuthorityInstructionDataDecoder(): Decoder<ApproveUseAuthorityInstructionData> {
+  return getStructDecoder<ApproveUseAuthorityInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['numberOfUses', getU64Decoder()],
+    ],
+    { description: 'ApproveUseAuthorityInstructionData' }
+  ) as Decoder<ApproveUseAuthorityInstructionData>;
+}
+
+export function getApproveUseAuthorityInstructionDataCodec(): Codec<
+  ApproveUseAuthorityInstructionDataArgs,
+  ApproveUseAuthorityInstructionData
+> {
+  return combineCodec(
+    getApproveUseAuthorityInstructionDataEncoder(),
+    getApproveUseAuthorityInstructionDataDecoder()
+  );
+}

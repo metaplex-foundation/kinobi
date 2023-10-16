@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -57,3 +63,53 @@ export type ApproveTokenDelegateCheckedInstruction<
       ReadonlySignerAccount<TAccountOwner>
     ]
   >;
+
+export type ApproveTokenDelegateCheckedInstructionData = {
+  discriminator: number;
+  amount: bigint;
+  decimals: number;
+};
+
+export type ApproveTokenDelegateCheckedInstructionDataArgs = {
+  amount: number | bigint;
+  decimals: number;
+};
+
+export function getApproveTokenDelegateCheckedInstructionDataEncoder(): Encoder<ApproveTokenDelegateCheckedInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<ApproveTokenDelegateCheckedInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['amount', getU64Encoder()],
+        ['decimals', getU8Encoder()],
+      ],
+      { description: 'ApproveTokenDelegateCheckedInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: 13,
+      } as ApproveTokenDelegateCheckedInstructionData)
+  ) as Encoder<ApproveTokenDelegateCheckedInstructionDataArgs>;
+}
+
+export function getApproveTokenDelegateCheckedInstructionDataDecoder(): Decoder<ApproveTokenDelegateCheckedInstructionData> {
+  return getStructDecoder<ApproveTokenDelegateCheckedInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['amount', getU64Decoder()],
+      ['decimals', getU8Decoder()],
+    ],
+    { description: 'ApproveTokenDelegateCheckedInstructionData' }
+  ) as Decoder<ApproveTokenDelegateCheckedInstructionData>;
+}
+
+export function getApproveTokenDelegateCheckedInstructionDataCodec(): Codec<
+  ApproveTokenDelegateCheckedInstructionDataArgs,
+  ApproveTokenDelegateCheckedInstructionData
+> {
+  return combineCodec(
+    getApproveTokenDelegateCheckedInstructionDataEncoder(),
+    getApproveTokenDelegateCheckedInstructionDataDecoder()
+  );
+}

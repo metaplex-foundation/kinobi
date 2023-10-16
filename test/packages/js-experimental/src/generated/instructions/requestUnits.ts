@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -30,3 +36,53 @@ import {
 export type RequestUnitsInstruction<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 > = IInstruction<TProgram> & IInstructionWithData<RequestUnitsInstructionData>;
+
+export type RequestUnitsInstructionData = {
+  discriminator: number;
+  /** Units to request for transaction-wide compute. */
+  units: number;
+  /** Prioritization fee lamports. */
+  additionalFee: number;
+};
+
+export type RequestUnitsInstructionDataArgs = {
+  /** Units to request for transaction-wide compute. */
+  units: number;
+  /** Prioritization fee lamports. */
+  additionalFee: number;
+};
+
+export function getRequestUnitsInstructionDataEncoder(): Encoder<RequestUnitsInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<RequestUnitsInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['units', getU32Encoder()],
+        ['additionalFee', getU32Encoder()],
+      ],
+      { description: 'RequestUnitsInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 0 } as RequestUnitsInstructionData)
+  ) as Encoder<RequestUnitsInstructionDataArgs>;
+}
+
+export function getRequestUnitsInstructionDataDecoder(): Decoder<RequestUnitsInstructionData> {
+  return getStructDecoder<RequestUnitsInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['units', getU32Decoder()],
+      ['additionalFee', getU32Decoder()],
+    ],
+    { description: 'RequestUnitsInstructionData' }
+  ) as Decoder<RequestUnitsInstructionData>;
+}
+
+export function getRequestUnitsInstructionDataCodec(): Codec<
+  RequestUnitsInstructionDataArgs,
+  RequestUnitsInstructionData
+> {
+  return combineCodec(
+    getRequestUnitsInstructionDataEncoder(),
+    getRequestUnitsInstructionDataDecoder()
+  );
+}

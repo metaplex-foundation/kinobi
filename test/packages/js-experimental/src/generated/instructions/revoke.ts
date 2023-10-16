@@ -7,7 +7,13 @@
  */
 
 import { address } from '@solana/addresses';
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getStructDecoder,
   getStructEncoder,
@@ -78,3 +84,43 @@ export type RevokeInstruction<
       ReadonlyAccount<TAccountAuthorizationRules>
     ]
   >;
+
+export type RevokeInstructionData = {
+  discriminator: number;
+  revokeArgs: RevokeArgs;
+};
+
+export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
+
+export function getRevokeInstructionDataEncoder(): Encoder<RevokeInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<RevokeInstructionData>(
+      [
+        ['discriminator', getU8Encoder()],
+        ['revokeArgs', getRevokeArgsEncoder()],
+      ],
+      { description: 'RevokeInstructionData' }
+    ),
+    (value) => ({ ...value, discriminator: 49 } as RevokeInstructionData)
+  ) as Encoder<RevokeInstructionDataArgs>;
+}
+
+export function getRevokeInstructionDataDecoder(): Decoder<RevokeInstructionData> {
+  return getStructDecoder<RevokeInstructionData>(
+    [
+      ['discriminator', getU8Decoder()],
+      ['revokeArgs', getRevokeArgsDecoder()],
+    ],
+    { description: 'RevokeInstructionData' }
+  ) as Decoder<RevokeInstructionData>;
+}
+
+export function getRevokeInstructionDataCodec(): Codec<
+  RevokeInstructionDataArgs,
+  RevokeInstructionData
+> {
+  return combineCodec(
+    getRevokeInstructionDataEncoder(),
+    getRevokeInstructionDataDecoder()
+  );
+}

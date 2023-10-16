@@ -6,7 +6,13 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { mapEncoder } from '@solana/codecs-core';
+import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  mapEncoder,
+} from '@solana/codecs-core';
 import {
   getArrayDecoder,
   getArrayEncoder,
@@ -60,3 +66,53 @@ export type AddConfigLinesInstruction<
       ReadonlySignerAccount<TAccountAuthority>
     ]
   >;
+
+export type AddConfigLinesInstructionData = {
+  discriminator: Array<number>;
+  index: number;
+  configLines: Array<ConfigLine>;
+};
+
+export type AddConfigLinesInstructionDataArgs = {
+  index: number;
+  configLines: Array<ConfigLineArgs>;
+};
+
+export function getAddConfigLinesInstructionDataEncoder(): Encoder<AddConfigLinesInstructionDataArgs> {
+  return mapEncoder(
+    getStructEncoder<AddConfigLinesInstructionData>(
+      [
+        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+        ['index', getU32Encoder()],
+        ['configLines', getArrayEncoder(getConfigLineEncoder())],
+      ],
+      { description: 'AddConfigLinesInstructionData' }
+    ),
+    (value) =>
+      ({
+        ...value,
+        discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
+      } as AddConfigLinesInstructionData)
+  ) as Encoder<AddConfigLinesInstructionDataArgs>;
+}
+
+export function getAddConfigLinesInstructionDataDecoder(): Decoder<AddConfigLinesInstructionData> {
+  return getStructDecoder<AddConfigLinesInstructionData>(
+    [
+      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+      ['index', getU32Decoder()],
+      ['configLines', getArrayDecoder(getConfigLineDecoder())],
+    ],
+    { description: 'AddConfigLinesInstructionData' }
+  ) as Decoder<AddConfigLinesInstructionData>;
+}
+
+export function getAddConfigLinesInstructionDataCodec(): Codec<
+  AddConfigLinesInstructionDataArgs,
+  AddConfigLinesInstructionData
+> {
+  return combineCodec(
+    getAddConfigLinesInstructionDataEncoder(),
+    getAddConfigLinesInstructionDataDecoder()
+  );
+}
