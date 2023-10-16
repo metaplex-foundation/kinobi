@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -43,6 +44,7 @@ import { getMasterEditionV2Size } from '../accounts';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -55,28 +57,48 @@ import {
 // Output.
 export type CreateMasterEditionV3Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<CreateMasterEditionV3InstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountEdition>,
-      WritableAccount<TAccountMint>,
-      ReadonlySignerAccount<TAccountUpdateAuthority>,
-      ReadonlySignerAccount<TAccountMintAuthority>,
-      WritableSignerAccount<TAccountPayer>,
-      WritableAccount<TAccountMetadata>,
-      ReadonlyAccount<TAccountTokenProgram>,
-      ReadonlyAccount<TAccountSystemProgram>,
-      ReadonlyAccount<TAccountRent>
+      TAccountEdition extends string
+        ? WritableAccount<TAccountEdition>
+        : TAccountEdition,
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountUpdateAuthority extends string
+        ? ReadonlySignerAccount<TAccountUpdateAuthority>
+        : TAccountUpdateAuthority,
+      TAccountMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountMintAuthority>
+        : TAccountMintAuthority,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
     ]
   >;
 
@@ -125,26 +147,48 @@ export function getCreateMasterEditionV3InstructionDataCodec(): Codec<
 
 export function createMasterEditionV3Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    edition: Base58EncodedAddress<TAccountEdition>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
-    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
-    payer: Base58EncodedAddress<TAccountPayer>;
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-    rent: Base58EncodedAddress<TAccountRent>;
+    edition: TAccountEdition extends string
+      ? Base58EncodedAddress<TAccountEdition>
+      : TAccountEdition;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    updateAuthority: TAccountUpdateAuthority extends string
+      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      : TAccountUpdateAuthority;
+    mintAuthority: TAccountMintAuthority extends string
+      ? Base58EncodedAddress<TAccountMintAuthority>
+      : TAccountMintAuthority;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    tokenProgram: TAccountTokenProgram extends string
+      ? Base58EncodedAddress<TAccountTokenProgram>
+      : TAccountTokenProgram;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    rent: TAccountRent extends string
+      ? Base58EncodedAddress<TAccountRent>
+      : TAccountRent;
   },
   args: CreateMasterEditionV3InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
@@ -162,15 +206,21 @@ export function createMasterEditionV3Instruction<
 > {
   return {
     accounts: [
-      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.updateAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.mintAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
     ],
     data: getCreateMasterEditionV3InstructionDataEncoder().encode(args),
     programAddress,

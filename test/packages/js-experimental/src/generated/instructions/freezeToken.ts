@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,22 +41,29 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type FreezeTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<FreezeTokenInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountAccount>,
-      ReadonlyAccount<TAccountMint>,
-      ReadonlySignerAccount<TAccountOwner>
+      TAccountAccount extends string
+        ? WritableAccount<TAccountAccount>
+        : TAccountAccount,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountOwner extends string
+        ? ReadonlySignerAccount<TAccountOwner>
+        : TAccountOwner
     ]
   >;
 
@@ -92,14 +100,20 @@ export function getFreezeTokenInstructionDataCodec(): Codec<
 
 export function freezeTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    account: Base58EncodedAddress<TAccountAccount>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    owner: Base58EncodedAddress<TAccountOwner>;
+    account: TAccountAccount extends string
+      ? Base58EncodedAddress<TAccountAccount>
+      : TAccountAccount;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): FreezeTokenInstruction<
@@ -110,9 +124,9 @@ export function freezeTokenInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
     ],
     data: getFreezeTokenInstructionDataEncoder().encode({}),
     programAddress,

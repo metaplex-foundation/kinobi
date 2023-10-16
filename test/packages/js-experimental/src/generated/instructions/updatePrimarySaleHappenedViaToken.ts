@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,22 +41,29 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type UpdatePrimarySaleHappenedViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountOwner extends string = string,
-  TAccountToken extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<UpdatePrimarySaleHappenedViaTokenInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMetadata>,
-      ReadonlySignerAccount<TAccountOwner>,
-      ReadonlyAccount<TAccountToken>
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountOwner extends string
+        ? ReadonlySignerAccount<TAccountOwner>
+        : TAccountOwner,
+      TAccountToken extends string
+        ? ReadonlyAccount<TAccountToken>
+        : TAccountToken
     ]
   >;
 
@@ -98,14 +106,20 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
 
 export function updatePrimarySaleHappenedViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountOwner extends string = string,
-  TAccountToken extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    owner: Base58EncodedAddress<TAccountOwner>;
-    token: Base58EncodedAddress<TAccountToken>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
+    token: TAccountToken extends string
+      ? Base58EncodedAddress<TAccountToken>
+      : TAccountToken;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): UpdatePrimarySaleHappenedViaTokenInstruction<
@@ -116,9 +130,9 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.token, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(accounts.token, AccountRole.READONLY),
     ],
     data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
       {}

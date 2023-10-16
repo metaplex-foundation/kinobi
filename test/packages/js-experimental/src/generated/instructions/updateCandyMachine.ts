@@ -23,6 +23,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -41,6 +42,7 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -53,14 +55,18 @@ import {
 // Output.
 export type UpdateCandyMachineInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<UpdateCandyMachineInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountCandyMachine>,
-      ReadonlySignerAccount<TAccountAuthority>
+      TAccountCandyMachine extends string
+        ? WritableAccount<TAccountCandyMachine>
+        : TAccountCandyMachine,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority>
+        : TAccountAuthority
     ]
   >;
 
@@ -112,12 +118,16 @@ export function getUpdateCandyMachineInstructionDataCodec(): Codec<
 
 export function updateCandyMachineInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
-    authority: Base58EncodedAddress<TAccountAuthority>;
+    candyMachine: TAccountCandyMachine extends string
+      ? Base58EncodedAddress<TAccountCandyMachine>
+      : TAccountCandyMachine;
+    authority: TAccountAuthority extends string
+      ? Base58EncodedAddress<TAccountAuthority>
+      : TAccountAuthority;
   },
   args: UpdateCandyMachineInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
@@ -128,8 +138,8 @@ export function updateCandyMachineInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.candyMachine, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
     ],
     data: getUpdateCandyMachineInstructionDataEncoder().encode(args),
     programAddress,

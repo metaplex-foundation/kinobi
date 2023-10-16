@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -41,30 +42,49 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type UnverifySizedCollectionItemInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollection extends string = string,
-  TAccountCollectionMasterEditionAccount extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollection extends string | IAccountMeta<string> = string,
+  TAccountCollectionMasterEditionAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<UnverifySizedCollectionItemInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMetadata>,
-      ReadonlySignerAccount<TAccountCollectionAuthority>,
-      WritableSignerAccount<TAccountPayer>,
-      ReadonlyAccount<TAccountCollectionMint>,
-      WritableAccount<TAccountCollection>,
-      ReadonlyAccount<TAccountCollectionMasterEditionAccount>,
-      ReadonlyAccount<TAccountCollectionAuthorityRecord>
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountCollectionAuthority extends string
+        ? ReadonlySignerAccount<TAccountCollectionAuthority>
+        : TAccountCollectionAuthority,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountCollectionMint extends string
+        ? ReadonlyAccount<TAccountCollectionMint>
+        : TAccountCollectionMint,
+      TAccountCollection extends string
+        ? WritableAccount<TAccountCollection>
+        : TAccountCollection,
+      TAccountCollectionMasterEditionAccount extends string
+        ? ReadonlyAccount<TAccountCollectionMasterEditionAccount>
+        : TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord extends string
+        ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord
     ]
   >;
 
@@ -107,22 +127,40 @@ export function getUnverifySizedCollectionItemInstructionDataCodec(): Codec<
 
 export function unverifySizedCollectionItemInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollection extends string = string,
-  TAccountCollectionMasterEditionAccount extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollection extends string | IAccountMeta<string> = string,
+  TAccountCollectionMasterEditionAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    collectionAuthority: Base58EncodedAddress<TAccountCollectionAuthority>;
-    payer: Base58EncodedAddress<TAccountPayer>;
-    collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
-    collection: Base58EncodedAddress<TAccountCollection>;
-    collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
-    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    collectionAuthority: TAccountCollectionAuthority extends string
+      ? Base58EncodedAddress<TAccountCollectionAuthority>
+      : TAccountCollectionAuthority;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    collectionMint: TAccountCollectionMint extends string
+      ? Base58EncodedAddress<TAccountCollectionMint>
+      : TAccountCollectionMint;
+    collection: TAccountCollection extends string
+      ? Base58EncodedAddress<TAccountCollection>
+      : TAccountCollection;
+    collectionMasterEditionAccount: TAccountCollectionMasterEditionAccount extends string
+      ? Base58EncodedAddress<TAccountCollectionMasterEditionAccount>
+      : TAccountCollectionMasterEditionAccount;
+    collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
+      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
+      : TAccountCollectionAuthorityRecord;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): UnverifySizedCollectionItemInstruction<
@@ -137,22 +175,22 @@ export function unverifySizedCollectionItemInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.collectionAuthority,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.collectionMint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.collection, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.collectionMasterEditionAccount,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.collectionAuthorityRecord,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.collectionAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.collection, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.collectionMasterEditionAccount,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.collectionAuthorityRecord,
+        AccountRole.READONLY
+      ),
     ],
     data: getUnverifySizedCollectionItemInstructionDataEncoder().encode({}),
     programAddress,

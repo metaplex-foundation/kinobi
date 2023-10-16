@@ -23,6 +23,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -43,44 +44,85 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type SetCollectionInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountAuthorityPda extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountNewCollectionUpdateAuthority extends string = string,
-  TAccountNewCollectionMetadata extends string = string,
-  TAccountNewCollectionMint extends string = string,
-  TAccountNewCollectionMasterEdition extends string = string,
-  TAccountNewCollectionAuthorityRecord extends string = string,
-  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TAccountAuthorityPda extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionUpdateAuthority extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountNewCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountNewCollectionMasterEdition extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountTokenMetadataProgram extends
+    | string
+    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111'
 > = IInstruction<TProgram> &
-  IInstructionWithData<SetCollectionInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountCandyMachine>,
-      ReadonlySignerAccount<TAccountAuthority>,
-      WritableAccount<TAccountAuthorityPda>,
-      ReadonlySignerAccount<TAccountPayer>,
-      ReadonlyAccount<TAccountCollectionMint>,
-      ReadonlyAccount<TAccountCollectionMetadata>,
-      WritableAccount<TAccountCollectionAuthorityRecord>,
-      WritableSignerAccount<TAccountNewCollectionUpdateAuthority>,
-      ReadonlyAccount<TAccountNewCollectionMetadata>,
-      ReadonlyAccount<TAccountNewCollectionMint>,
-      ReadonlyAccount<TAccountNewCollectionMasterEdition>,
-      WritableAccount<TAccountNewCollectionAuthorityRecord>,
-      ReadonlyAccount<TAccountTokenMetadataProgram>,
-      ReadonlyAccount<TAccountSystemProgram>
+      TAccountCandyMachine extends string
+        ? WritableAccount<TAccountCandyMachine>
+        : TAccountCandyMachine,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority>
+        : TAccountAuthority,
+      TAccountAuthorityPda extends string
+        ? WritableAccount<TAccountAuthorityPda>
+        : TAccountAuthorityPda,
+      TAccountPayer extends string
+        ? ReadonlySignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountCollectionMint extends string
+        ? ReadonlyAccount<TAccountCollectionMint>
+        : TAccountCollectionMint,
+      TAccountCollectionMetadata extends string
+        ? ReadonlyAccount<TAccountCollectionMetadata>
+        : TAccountCollectionMetadata,
+      TAccountCollectionAuthorityRecord extends string
+        ? WritableAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionUpdateAuthority extends string
+        ? WritableSignerAccount<TAccountNewCollectionUpdateAuthority>
+        : TAccountNewCollectionUpdateAuthority,
+      TAccountNewCollectionMetadata extends string
+        ? ReadonlyAccount<TAccountNewCollectionMetadata>
+        : TAccountNewCollectionMetadata,
+      TAccountNewCollectionMint extends string
+        ? ReadonlyAccount<TAccountNewCollectionMint>
+        : TAccountNewCollectionMint,
+      TAccountNewCollectionMasterEdition extends string
+        ? ReadonlyAccount<TAccountNewCollectionMasterEdition>
+        : TAccountNewCollectionMasterEdition,
+      TAccountNewCollectionAuthorityRecord extends string
+        ? WritableAccount<TAccountNewCollectionAuthorityRecord>
+        : TAccountNewCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram extends string
+        ? ReadonlyAccount<TAccountTokenMetadataProgram>
+        : TAccountTokenMetadataProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram
     ]
   >;
 
@@ -121,36 +163,76 @@ export function getSetCollectionInstructionDataCodec(): Codec<
 
 export function setCollectionInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountAuthorityPda extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountNewCollectionUpdateAuthority extends string = string,
-  TAccountNewCollectionMetadata extends string = string,
-  TAccountNewCollectionMint extends string = string,
-  TAccountNewCollectionMasterEdition extends string = string,
-  TAccountNewCollectionAuthorityRecord extends string = string,
-  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TAccountAuthorityPda extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionUpdateAuthority extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountNewCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountNewCollectionMasterEdition extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountTokenMetadataProgram extends
+    | string
+    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111'
 >(
   accounts: {
-    candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
-    authority: Base58EncodedAddress<TAccountAuthority>;
-    authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
-    payer: Base58EncodedAddress<TAccountPayer>;
-    collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
-    collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
-    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
-    newCollectionUpdateAuthority: Base58EncodedAddress<TAccountNewCollectionUpdateAuthority>;
-    newCollectionMetadata: Base58EncodedAddress<TAccountNewCollectionMetadata>;
-    newCollectionMint: Base58EncodedAddress<TAccountNewCollectionMint>;
-    newCollectionMasterEdition: Base58EncodedAddress<TAccountNewCollectionMasterEdition>;
-    newCollectionAuthorityRecord: Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>;
-    tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    candyMachine: TAccountCandyMachine extends string
+      ? Base58EncodedAddress<TAccountCandyMachine>
+      : TAccountCandyMachine;
+    authority: TAccountAuthority extends string
+      ? Base58EncodedAddress<TAccountAuthority>
+      : TAccountAuthority;
+    authorityPda: TAccountAuthorityPda extends string
+      ? Base58EncodedAddress<TAccountAuthorityPda>
+      : TAccountAuthorityPda;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    collectionMint: TAccountCollectionMint extends string
+      ? Base58EncodedAddress<TAccountCollectionMint>
+      : TAccountCollectionMint;
+    collectionMetadata: TAccountCollectionMetadata extends string
+      ? Base58EncodedAddress<TAccountCollectionMetadata>
+      : TAccountCollectionMetadata;
+    collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
+      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
+      : TAccountCollectionAuthorityRecord;
+    newCollectionUpdateAuthority: TAccountNewCollectionUpdateAuthority extends string
+      ? Base58EncodedAddress<TAccountNewCollectionUpdateAuthority>
+      : TAccountNewCollectionUpdateAuthority;
+    newCollectionMetadata: TAccountNewCollectionMetadata extends string
+      ? Base58EncodedAddress<TAccountNewCollectionMetadata>
+      : TAccountNewCollectionMetadata;
+    newCollectionMint: TAccountNewCollectionMint extends string
+      ? Base58EncodedAddress<TAccountNewCollectionMint>
+      : TAccountNewCollectionMint;
+    newCollectionMasterEdition: TAccountNewCollectionMasterEdition extends string
+      ? Base58EncodedAddress<TAccountNewCollectionMasterEdition>
+      : TAccountNewCollectionMasterEdition;
+    newCollectionAuthorityRecord: TAccountNewCollectionAuthorityRecord extends string
+      ? Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>
+      : TAccountNewCollectionAuthorityRecord;
+    tokenMetadataProgram: TAccountTokenMetadataProgram extends string
+      ? Base58EncodedAddress<TAccountTokenMetadataProgram>
+      : TAccountTokenMetadataProgram;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
 ): SetCollectionInstruction<
@@ -172,44 +254,38 @@ export function setCollectionInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.candyMachine, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.authorityPda, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.collectionMint, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.collectionMetadata,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.collectionAuthorityRecord,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.newCollectionUpdateAuthority,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.newCollectionMetadata,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.newCollectionMint,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.newCollectionMasterEdition,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.newCollectionAuthorityRecord,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.tokenMetadataProgram,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(accounts.authorityPda, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.payer, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.collectionAuthorityRecord,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.newCollectionUpdateAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.newCollectionMetadata,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(accounts.newCollectionMint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.newCollectionMasterEdition,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.newCollectionAuthorityRecord,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.tokenMetadataProgram,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
     ],
     data: getSetCollectionInstructionDataEncoder().encode({}),
     programAddress,

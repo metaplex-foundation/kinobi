@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -39,22 +40,29 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type CloseTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountDestination extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<CloseTokenInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountAccount>,
-      WritableAccount<TAccountDestination>,
-      ReadonlySignerAccount<TAccountOwner>
+      TAccountAccount extends string
+        ? WritableAccount<TAccountAccount>
+        : TAccountAccount,
+      TAccountDestination extends string
+        ? WritableAccount<TAccountDestination>
+        : TAccountDestination,
+      TAccountOwner extends string
+        ? ReadonlySignerAccount<TAccountOwner>
+        : TAccountOwner
     ]
   >;
 
@@ -91,14 +99,20 @@ export function getCloseTokenInstructionDataCodec(): Codec<
 
 export function closeTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountDestination extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    account: Base58EncodedAddress<TAccountAccount>;
-    destination: Base58EncodedAddress<TAccountDestination>;
-    owner: Base58EncodedAddress<TAccountOwner>;
+    account: TAccountAccount extends string
+      ? Base58EncodedAddress<TAccountAccount>
+      : TAccountAccount;
+    destination: TAccountDestination extends string
+      ? Base58EncodedAddress<TAccountDestination>
+      : TAccountDestination;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): CloseTokenInstruction<
@@ -109,9 +123,9 @@ export function closeTokenInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
     ],
     data: getCloseTokenInstructionDataEncoder().encode({}),
     programAddress,

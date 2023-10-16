@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -37,16 +38,23 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type PuffMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<PuffMetadataInstructionData> &
-  IInstructionWithAccounts<[WritableAccount<TAccountMetadata>]>;
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata
+    ]
+  >;
 
 export type PuffMetadataInstructionData = { discriminator: number };
 
@@ -81,17 +89,17 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
 
 export function puffMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): PuffMetadataInstruction<TProgram, TAccountMetadata> {
   return {
-    accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-    ],
+    accounts: [accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE)],
     data: getPuffMetadataInstructionDataEncoder().encode({}),
     programAddress,
   };

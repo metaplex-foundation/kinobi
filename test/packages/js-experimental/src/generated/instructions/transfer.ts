@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -42,6 +43,7 @@ import {
   PickPartial,
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -56,40 +58,80 @@ import {
 // Output.
 export type TransferInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountAuthority extends string = string,
-  TAccountDelegateRecord extends string = string,
-  TAccountToken extends string = string,
-  TAccountTokenOwner extends string = string,
-  TAccountDestination extends string = string,
-  TAccountDestinationOwner extends string = string,
-  TAccountMint extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRulesProgram extends string = string,
-  TAccountAuthorizationRules extends string = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TAccountTokenOwner extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountDestinationOwner extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends
+    | string
+    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRulesProgram extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<TransferInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableSignerAccount<TAccountAuthority>,
-      WritableAccount<TAccountDelegateRecord>,
-      WritableAccount<TAccountToken>,
-      ReadonlyAccount<TAccountTokenOwner>,
-      WritableAccount<TAccountDestination>,
-      ReadonlyAccount<TAccountDestinationOwner>,
-      ReadonlyAccount<TAccountMint>,
-      WritableAccount<TAccountMetadata>,
-      ReadonlyAccount<TAccountMasterEdition>,
-      ReadonlyAccount<TAccountSplTokenProgram>,
-      ReadonlyAccount<TAccountSplAtaProgram>,
-      ReadonlyAccount<TAccountSystemProgram>,
-      ReadonlyAccount<TAccountSysvarInstructions>,
-      ReadonlyAccount<TAccountAuthorizationRulesProgram>,
-      ReadonlyAccount<TAccountAuthorizationRules>
+      TAccountAuthority extends string
+        ? WritableSignerAccount<TAccountAuthority>
+        : TAccountAuthority,
+      TAccountDelegateRecord extends string
+        ? WritableAccount<TAccountDelegateRecord>
+        : TAccountDelegateRecord,
+      TAccountToken extends string
+        ? WritableAccount<TAccountToken>
+        : TAccountToken,
+      TAccountTokenOwner extends string
+        ? ReadonlyAccount<TAccountTokenOwner>
+        : TAccountTokenOwner,
+      TAccountDestination extends string
+        ? WritableAccount<TAccountDestination>
+        : TAccountDestination,
+      TAccountDestinationOwner extends string
+        ? ReadonlyAccount<TAccountDestinationOwner>
+        : TAccountDestinationOwner,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMasterEdition extends string
+        ? ReadonlyAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountSplTokenProgram extends string
+        ? ReadonlyAccount<TAccountSplTokenProgram>
+        : TAccountSplTokenProgram,
+      TAccountSplAtaProgram extends string
+        ? ReadonlyAccount<TAccountSplAtaProgram>
+        : TAccountSplAtaProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountSysvarInstructions extends string
+        ? ReadonlyAccount<TAccountSysvarInstructions>
+        : TAccountSysvarInstructions,
+      TAccountAuthorizationRulesProgram extends string
+        ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
+        : TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules extends string
+        ? ReadonlyAccount<TAccountAuthorizationRules>
+        : TAccountAuthorizationRules
     ]
   >;
 
@@ -135,38 +177,78 @@ export function getTransferInstructionDataCodec(): Codec<
 
 export function transferInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountAuthority extends string = string,
-  TAccountDelegateRecord extends string = string,
-  TAccountToken extends string = string,
-  TAccountTokenOwner extends string = string,
-  TAccountDestination extends string = string,
-  TAccountDestinationOwner extends string = string,
-  TAccountMint extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRulesProgram extends string = string,
-  TAccountAuthorizationRules extends string = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TAccountTokenOwner extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountDestinationOwner extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends
+    | string
+    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRulesProgram extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    authority: Base58EncodedAddress<TAccountAuthority>;
-    delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
-    token: Base58EncodedAddress<TAccountToken>;
-    tokenOwner: Base58EncodedAddress<TAccountTokenOwner>;
-    destination: Base58EncodedAddress<TAccountDestination>;
-    destinationOwner: Base58EncodedAddress<TAccountDestinationOwner>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
-    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
-    splAtaProgram: Base58EncodedAddress<TAccountSplAtaProgram>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
-    authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
-    authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+    authority: TAccountAuthority extends string
+      ? Base58EncodedAddress<TAccountAuthority>
+      : TAccountAuthority;
+    delegateRecord: TAccountDelegateRecord extends string
+      ? Base58EncodedAddress<TAccountDelegateRecord>
+      : TAccountDelegateRecord;
+    token: TAccountToken extends string
+      ? Base58EncodedAddress<TAccountToken>
+      : TAccountToken;
+    tokenOwner: TAccountTokenOwner extends string
+      ? Base58EncodedAddress<TAccountTokenOwner>
+      : TAccountTokenOwner;
+    destination: TAccountDestination extends string
+      ? Base58EncodedAddress<TAccountDestination>
+      : TAccountDestination;
+    destinationOwner: TAccountDestinationOwner extends string
+      ? Base58EncodedAddress<TAccountDestinationOwner>
+      : TAccountDestinationOwner;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    masterEdition: TAccountMasterEdition extends string
+      ? Base58EncodedAddress<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    splTokenProgram: TAccountSplTokenProgram extends string
+      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      : TAccountSplTokenProgram;
+    splAtaProgram: TAccountSplAtaProgram extends string
+      ? Base58EncodedAddress<TAccountSplAtaProgram>
+      : TAccountSplAtaProgram;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    sysvarInstructions: TAccountSysvarInstructions extends string
+      ? Base58EncodedAddress<TAccountSysvarInstructions>
+      : TAccountSysvarInstructions;
+    authorizationRulesProgram: TAccountAuthorizationRulesProgram extends string
+      ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
+      : TAccountAuthorizationRulesProgram;
+    authorizationRules: TAccountAuthorizationRules extends string
+      ? Base58EncodedAddress<TAccountAuthorizationRules>
+      : TAccountAuthorizationRules;
   },
   args: TransferInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
@@ -190,30 +272,24 @@ export function transferInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.delegateRecord, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.token, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenOwner, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.destinationOwner, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.splAtaProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.sysvarInstructions,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.authorizationRulesProgram,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.authorizationRules,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
+      accountMetaWithDefault(accounts.authority, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.delegateRecord, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.token, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.tokenOwner, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.destinationOwner, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.splAtaProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.authorizationRulesProgram,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
     ],
     data: getTransferInstructionDataEncoder().encode(args),
     programAddress,

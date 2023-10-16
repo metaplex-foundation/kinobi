@@ -24,20 +24,24 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import {
+  IAccountMeta,
+  IInstruction,
+  IInstructionWithData,
+} from '@solana/instructions';
 import { Context, TransactionBuilder, transactionBuilder } from 'umi';
 import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type SetComputeUnitLimitInstruction<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
-> = IInstruction<TProgram> &
-  IInstructionWithData<SetComputeUnitLimitInstructionData>;
+> = IInstruction<TProgram> & IInstructionWithData<Uint8Array>;
 
 export type SetComputeUnitLimitInstructionData = {
   discriminator: number;

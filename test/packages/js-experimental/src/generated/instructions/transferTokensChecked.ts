@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -45,24 +46,33 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type TransferTokensCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<TransferTokensCheckedInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountSource>,
-      ReadonlyAccount<TAccountMint>,
-      WritableAccount<TAccountDestination>,
-      ReadonlySignerAccount<TAccountAuthority>
+      TAccountSource extends string
+        ? WritableAccount<TAccountSource>
+        : TAccountSource,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountDestination extends string
+        ? WritableAccount<TAccountDestination>
+        : TAccountDestination,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority>
+        : TAccountAuthority
     ]
   >;
 
@@ -115,16 +125,24 @@ export function getTransferTokensCheckedInstructionDataCodec(): Codec<
 
 export function transferTokensCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    source: Base58EncodedAddress<TAccountSource>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    destination: Base58EncodedAddress<TAccountDestination>;
-    authority: Base58EncodedAddress<TAccountAuthority>;
+    source: TAccountSource extends string
+      ? Base58EncodedAddress<TAccountSource>
+      : TAccountSource;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    destination: TAccountDestination extends string
+      ? Base58EncodedAddress<TAccountDestination>
+      : TAccountDestination;
+    authority: TAccountAuthority extends string
+      ? Base58EncodedAddress<TAccountAuthority>
+      : TAccountAuthority;
   },
   args: TransferTokensCheckedInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
@@ -137,10 +155,10 @@ export function transferTokensCheckedInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.source, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
     ],
     data: getTransferTokensCheckedInstructionDataEncoder().encode(args),
     programAddress,

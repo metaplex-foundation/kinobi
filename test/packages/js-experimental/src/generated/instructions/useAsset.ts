@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,6 +41,7 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -52,32 +54,62 @@ import {
 // Output.
 export type UseAssetInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountUseAuthority extends string = string,
-  TAccountOwner extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountUseAuthorityRecord extends string = string,
-  TAccountAuthorizationRules extends string = string,
-  TAccountAuthorizationRulesProgram extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountUseAuthority extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAtaProgram extends
+    | string
+    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
+  TAccountAuthorizationRulesProgram extends
+    | string
+    | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<UseAssetInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMetadata>,
-      WritableAccount<TAccountTokenAccount>,
-      WritableAccount<TAccountMint>,
-      WritableSignerAccount<TAccountUseAuthority>,
-      ReadonlyAccount<TAccountOwner>,
-      ReadonlyAccount<TAccountSplTokenProgram>,
-      ReadonlyAccount<TAccountAtaProgram>,
-      ReadonlyAccount<TAccountSystemProgram>,
-      WritableAccount<TAccountUseAuthorityRecord>,
-      ReadonlyAccount<TAccountAuthorizationRules>,
-      ReadonlyAccount<TAccountAuthorizationRulesProgram>
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountTokenAccount extends string
+        ? WritableAccount<TAccountTokenAccount>
+        : TAccountTokenAccount,
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountUseAuthority extends string
+        ? WritableSignerAccount<TAccountUseAuthority>
+        : TAccountUseAuthority,
+      TAccountOwner extends string
+        ? ReadonlyAccount<TAccountOwner>
+        : TAccountOwner,
+      TAccountSplTokenProgram extends string
+        ? ReadonlyAccount<TAccountSplTokenProgram>
+        : TAccountSplTokenProgram,
+      TAccountAtaProgram extends string
+        ? ReadonlyAccount<TAccountAtaProgram>
+        : TAccountAtaProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountUseAuthorityRecord extends string
+        ? WritableAccount<TAccountUseAuthorityRecord>
+        : TAccountUseAuthorityRecord,
+      TAccountAuthorizationRules extends string
+        ? ReadonlyAccount<TAccountAuthorizationRules>
+        : TAccountAuthorizationRules,
+      TAccountAuthorizationRulesProgram extends string
+        ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
+        : TAccountAuthorizationRulesProgram
     ]
   >;
 
@@ -123,30 +155,60 @@ export function getUseAssetInstructionDataCodec(): Codec<
 
 export function useAssetInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountUseAuthority extends string = string,
-  TAccountOwner extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountUseAuthorityRecord extends string = string,
-  TAccountAuthorizationRules extends string = string,
-  TAccountAuthorizationRulesProgram extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountUseAuthority extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAtaProgram extends
+    | string
+    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
+  TAccountAuthorizationRulesProgram extends
+    | string
+    | IAccountMeta<string> = string
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    useAuthority: Base58EncodedAddress<TAccountUseAuthority>;
-    owner: Base58EncodedAddress<TAccountOwner>;
-    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
-    ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-    useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
-    authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
-    authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    tokenAccount: TAccountTokenAccount extends string
+      ? Base58EncodedAddress<TAccountTokenAccount>
+      : TAccountTokenAccount;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    useAuthority: TAccountUseAuthority extends string
+      ? Base58EncodedAddress<TAccountUseAuthority>
+      : TAccountUseAuthority;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
+    splTokenProgram: TAccountSplTokenProgram extends string
+      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      : TAccountSplTokenProgram;
+    ataProgram: TAccountAtaProgram extends string
+      ? Base58EncodedAddress<TAccountAtaProgram>
+      : TAccountAtaProgram;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    useAuthorityRecord: TAccountUseAuthorityRecord extends string
+      ? Base58EncodedAddress<TAccountUseAuthorityRecord>
+      : TAccountUseAuthorityRecord;
+    authorizationRules: TAccountAuthorizationRules extends string
+      ? Base58EncodedAddress<TAccountAuthorizationRules>
+      : TAccountAuthorizationRules;
+    authorizationRulesProgram: TAccountAuthorizationRulesProgram extends string
+      ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
+      : TAccountAuthorizationRulesProgram;
   },
   args: UseAssetInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
@@ -166,26 +228,23 @@ export function useAssetInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenAccount, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.useAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.ataProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.useAuthorityRecord,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.authorizationRules,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.authorizationRulesProgram,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.useAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.ataProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authorizationRules, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.authorizationRulesProgram,
+        AccountRole.READONLY
+      ),
     ],
     data: getUseAssetInstructionDataEncoder().encode(args),
     programAddress,

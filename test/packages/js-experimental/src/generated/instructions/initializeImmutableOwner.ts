@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -37,16 +38,23 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type InitializeImmutableOwnerInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<InitializeImmutableOwnerInstructionData> &
-  IInstructionWithAccounts<[WritableAccount<TAccountAccount>]>;
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountAccount extends string
+        ? WritableAccount<TAccountAccount>
+        : TAccountAccount
+    ]
+  >;
 
 export type InitializeImmutableOwnerInstructionData = { discriminator: number };
 
@@ -85,17 +93,17 @@ export function getInitializeImmutableOwnerInstructionDataCodec(): Codec<
 
 export function initializeImmutableOwnerInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    account: Base58EncodedAddress<TAccountAccount>;
+    account: TAccountAccount extends string
+      ? Base58EncodedAddress<TAccountAccount>
+      : TAccountAccount;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeImmutableOwnerInstruction<TProgram, TAccountAccount> {
   return {
-    accounts: [
-      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
-    ],
+    accounts: [accountMetaWithDefault(accounts.account, AccountRole.WRITABLE)],
     data: getInitializeImmutableOwnerInstructionDataEncoder().encode({}),
     programAddress,
   };

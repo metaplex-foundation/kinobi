@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,26 +41,39 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type FreezeDelegatedAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegate extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 > = IInstruction<TProgram> &
-  IInstructionWithData<FreezeDelegatedAccountInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableSignerAccount<TAccountDelegate>,
-      WritableAccount<TAccountTokenAccount>,
-      ReadonlyAccount<TAccountEdition>,
-      ReadonlyAccount<TAccountMint>,
-      ReadonlyAccount<TAccountTokenProgram>
+      TAccountDelegate extends string
+        ? WritableSignerAccount<TAccountDelegate>
+        : TAccountDelegate,
+      TAccountTokenAccount extends string
+        ? WritableAccount<TAccountTokenAccount>
+        : TAccountTokenAccount,
+      TAccountEdition extends string
+        ? ReadonlyAccount<TAccountEdition>
+        : TAccountEdition,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram
     ]
   >;
 
@@ -97,18 +111,30 @@ export function getFreezeDelegatedAccountInstructionDataCodec(): Codec<
 
 export function freezeDelegatedAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegate extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   accounts: {
-    delegate: Base58EncodedAddress<TAccountDelegate>;
-    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
-    edition: Base58EncodedAddress<TAccountEdition>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    delegate: TAccountDelegate extends string
+      ? Base58EncodedAddress<TAccountDelegate>
+      : TAccountDelegate;
+    tokenAccount: TAccountTokenAccount extends string
+      ? Base58EncodedAddress<TAccountTokenAccount>
+      : TAccountTokenAccount;
+    edition: TAccountEdition extends string
+      ? Base58EncodedAddress<TAccountEdition>
+      : TAccountEdition;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    tokenProgram: TAccountTokenProgram extends string
+      ? Base58EncodedAddress<TAccountTokenProgram>
+      : TAccountTokenProgram;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): FreezeDelegatedAccountInstruction<
@@ -121,11 +147,11 @@ export function freezeDelegatedAccountInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.delegate, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenAccount, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.delegate, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
     ],
     data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
     programAddress,

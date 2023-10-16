@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -38,24 +39,33 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type InitializeTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
 > = IInstruction<TProgram> &
-  IInstructionWithData<InitializeTokenInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountAccount>,
-      ReadonlyAccount<TAccountMint>,
-      ReadonlyAccount<TAccountOwner>,
-      ReadonlyAccount<TAccountRent>
+      TAccountAccount extends string
+        ? WritableAccount<TAccountAccount>
+        : TAccountAccount,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountOwner extends string
+        ? ReadonlyAccount<TAccountOwner>
+        : TAccountOwner,
+      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
     ]
   >;
 
@@ -93,16 +103,26 @@ export function getInitializeTokenInstructionDataCodec(): Codec<
 
 export function initializeTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
 >(
   accounts: {
-    account: Base58EncodedAddress<TAccountAccount>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    owner: Base58EncodedAddress<TAccountOwner>;
-    rent: Base58EncodedAddress<TAccountRent>;
+    account: TAccountAccount extends string
+      ? Base58EncodedAddress<TAccountAccount>
+      : TAccountAccount;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
+    rent: TAccountRent extends string
+      ? Base58EncodedAddress<TAccountRent>
+      : TAccountRent;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeTokenInstruction<
@@ -114,10 +134,10 @@ export function initializeTokenInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
     ],
     data: getInitializeTokenInstructionDataEncoder().encode({}),
     programAddress,

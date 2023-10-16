@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -45,24 +46,33 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type ApproveTokenDelegateCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDelegate extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<ApproveTokenDelegateCheckedInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountSource>,
-      ReadonlyAccount<TAccountMint>,
-      ReadonlyAccount<TAccountDelegate>,
-      ReadonlySignerAccount<TAccountOwner>
+      TAccountSource extends string
+        ? WritableAccount<TAccountSource>
+        : TAccountSource,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountDelegate extends string
+        ? ReadonlyAccount<TAccountDelegate>
+        : TAccountDelegate,
+      TAccountOwner extends string
+        ? ReadonlySignerAccount<TAccountOwner>
+        : TAccountOwner
     ]
   >;
 
@@ -118,16 +128,24 @@ export function getApproveTokenDelegateCheckedInstructionDataCodec(): Codec<
 
 export function approveTokenDelegateCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDelegate extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    source: Base58EncodedAddress<TAccountSource>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    delegate: Base58EncodedAddress<TAccountDelegate>;
-    owner: Base58EncodedAddress<TAccountOwner>;
+    source: TAccountSource extends string
+      ? Base58EncodedAddress<TAccountSource>
+      : TAccountSource;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    delegate: TAccountDelegate extends string
+      ? Base58EncodedAddress<TAccountDelegate>
+      : TAccountDelegate;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
   },
   args: ApproveTokenDelegateCheckedInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
@@ -140,10 +158,10 @@ export function approveTokenDelegateCheckedInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.source, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.delegate, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.delegate, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
     ],
     data: getApproveTokenDelegateCheckedInstructionDataEncoder().encode(args),
     programAddress,

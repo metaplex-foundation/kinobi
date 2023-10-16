@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -44,22 +45,29 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type MintTokensToCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountToken extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<MintTokensToCheckedInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMint>,
-      WritableAccount<TAccountToken>,
-      ReadonlySignerAccount<TAccountMintAuthority>
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountToken extends string
+        ? WritableAccount<TAccountToken>
+        : TAccountToken,
+      TAccountMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountMintAuthority>
+        : TAccountMintAuthority
     ]
   >;
 
@@ -112,14 +120,20 @@ export function getMintTokensToCheckedInstructionDataCodec(): Codec<
 
 export function mintTokensToCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountToken extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    mint: Base58EncodedAddress<TAccountMint>;
-    token: Base58EncodedAddress<TAccountToken>;
-    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    token: TAccountToken extends string
+      ? Base58EncodedAddress<TAccountToken>
+      : TAccountToken;
+    mintAuthority: TAccountMintAuthority extends string
+      ? Base58EncodedAddress<TAccountMintAuthority>
+      : TAccountMintAuthority;
   },
   args: MintTokensToCheckedInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
@@ -131,9 +145,12 @@ export function mintTokensToCheckedInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.token, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.token, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.mintAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
     ],
     data: getMintTokensToCheckedInstructionDataEncoder().encode(args),
     programAddress,

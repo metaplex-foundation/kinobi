@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,36 +41,63 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type BurnEditionNftInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountOwner extends string = string,
-  TAccountPrintEditionMint extends string = string,
-  TAccountMasterEditionMint extends string = string,
-  TAccountPrintEditionTokenAccount extends string = string,
-  TAccountMasterEditionTokenAccount extends string = string,
-  TAccountMasterEditionAccount extends string = string,
-  TAccountPrintEditionAccount extends string = string,
-  TAccountEditionMarkerAccount extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionMint extends string | IAccountMeta<string> = string,
+  TAccountMasterEditionMint extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountEditionMarkerAccount extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 > = IInstruction<TProgram> &
-  IInstructionWithData<BurnEditionNftInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMetadata>,
-      WritableSignerAccount<TAccountOwner>,
-      WritableAccount<TAccountPrintEditionMint>,
-      ReadonlyAccount<TAccountMasterEditionMint>,
-      WritableAccount<TAccountPrintEditionTokenAccount>,
-      ReadonlyAccount<TAccountMasterEditionTokenAccount>,
-      WritableAccount<TAccountMasterEditionAccount>,
-      WritableAccount<TAccountPrintEditionAccount>,
-      WritableAccount<TAccountEditionMarkerAccount>,
-      ReadonlyAccount<TAccountSplTokenProgram>
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountOwner extends string
+        ? WritableSignerAccount<TAccountOwner>
+        : TAccountOwner,
+      TAccountPrintEditionMint extends string
+        ? WritableAccount<TAccountPrintEditionMint>
+        : TAccountPrintEditionMint,
+      TAccountMasterEditionMint extends string
+        ? ReadonlyAccount<TAccountMasterEditionMint>
+        : TAccountMasterEditionMint,
+      TAccountPrintEditionTokenAccount extends string
+        ? WritableAccount<TAccountPrintEditionTokenAccount>
+        : TAccountPrintEditionTokenAccount,
+      TAccountMasterEditionTokenAccount extends string
+        ? ReadonlyAccount<TAccountMasterEditionTokenAccount>
+        : TAccountMasterEditionTokenAccount,
+      TAccountMasterEditionAccount extends string
+        ? WritableAccount<TAccountMasterEditionAccount>
+        : TAccountMasterEditionAccount,
+      TAccountPrintEditionAccount extends string
+        ? WritableAccount<TAccountPrintEditionAccount>
+        : TAccountPrintEditionAccount,
+      TAccountEditionMarkerAccount extends string
+        ? WritableAccount<TAccountEditionMarkerAccount>
+        : TAccountEditionMarkerAccount,
+      TAccountSplTokenProgram extends string
+        ? ReadonlyAccount<TAccountSplTokenProgram>
+        : TAccountSplTokenProgram
     ]
   >;
 
@@ -107,28 +135,54 @@ export function getBurnEditionNftInstructionDataCodec(): Codec<
 
 export function burnEditionNftInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountOwner extends string = string,
-  TAccountPrintEditionMint extends string = string,
-  TAccountMasterEditionMint extends string = string,
-  TAccountPrintEditionTokenAccount extends string = string,
-  TAccountMasterEditionTokenAccount extends string = string,
-  TAccountMasterEditionAccount extends string = string,
-  TAccountPrintEditionAccount extends string = string,
-  TAccountEditionMarkerAccount extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionMint extends string | IAccountMeta<string> = string,
+  TAccountMasterEditionMint extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountEditionMarkerAccount extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    owner: Base58EncodedAddress<TAccountOwner>;
-    printEditionMint: Base58EncodedAddress<TAccountPrintEditionMint>;
-    masterEditionMint: Base58EncodedAddress<TAccountMasterEditionMint>;
-    printEditionTokenAccount: Base58EncodedAddress<TAccountPrintEditionTokenAccount>;
-    masterEditionTokenAccount: Base58EncodedAddress<TAccountMasterEditionTokenAccount>;
-    masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
-    printEditionAccount: Base58EncodedAddress<TAccountPrintEditionAccount>;
-    editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
-    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
+    printEditionMint: TAccountPrintEditionMint extends string
+      ? Base58EncodedAddress<TAccountPrintEditionMint>
+      : TAccountPrintEditionMint;
+    masterEditionMint: TAccountMasterEditionMint extends string
+      ? Base58EncodedAddress<TAccountMasterEditionMint>
+      : TAccountMasterEditionMint;
+    printEditionTokenAccount: TAccountPrintEditionTokenAccount extends string
+      ? Base58EncodedAddress<TAccountPrintEditionTokenAccount>
+      : TAccountPrintEditionTokenAccount;
+    masterEditionTokenAccount: TAccountMasterEditionTokenAccount extends string
+      ? Base58EncodedAddress<TAccountMasterEditionTokenAccount>
+      : TAccountMasterEditionTokenAccount;
+    masterEditionAccount: TAccountMasterEditionAccount extends string
+      ? Base58EncodedAddress<TAccountMasterEditionAccount>
+      : TAccountMasterEditionAccount;
+    printEditionAccount: TAccountPrintEditionAccount extends string
+      ? Base58EncodedAddress<TAccountPrintEditionAccount>
+      : TAccountPrintEditionAccount;
+    editionMarkerAccount: TAccountEditionMarkerAccount extends string
+      ? Base58EncodedAddress<TAccountEditionMarkerAccount>
+      : TAccountEditionMarkerAccount;
+    splTokenProgram: TAccountSplTokenProgram extends string
+      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      : TAccountSplTokenProgram;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): BurnEditionNftInstruction<
@@ -146,34 +200,31 @@ export function burnEditionNftInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.printEditionMint, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.masterEditionMint,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.printEditionTokenAccount,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.masterEditionTokenAccount,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.masterEditionAccount,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.printEditionAccount,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.editionMarkerAccount,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.printEditionMint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterEditionMint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.printEditionTokenAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.masterEditionTokenAccount,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.masterEditionAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.printEditionAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.editionMarkerAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
     ],
     data: getBurnEditionNftInstructionDataEncoder().encode({}),
     programAddress,

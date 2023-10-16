@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,6 +41,7 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -52,28 +54,50 @@ import {
 // Output.
 export type DeprecatedMintPrintingTokensViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string = string,
-  TAccountToken extends string = string,
-  TAccountOneTimePrintingAuthorizationMint extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountBurnAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TAccountOneTimePrintingAuthorizationMint extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TAccountBurnAuthority extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
 > = IInstruction<TProgram> &
-  IInstructionWithData<DeprecatedMintPrintingTokensViaTokenInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountDestination>,
-      WritableAccount<TAccountToken>,
-      WritableAccount<TAccountOneTimePrintingAuthorizationMint>,
-      WritableAccount<TAccountPrintingMint>,
-      ReadonlySignerAccount<TAccountBurnAuthority>,
-      ReadonlyAccount<TAccountMetadata>,
-      ReadonlyAccount<TAccountMasterEdition>,
-      ReadonlyAccount<TAccountTokenProgram>,
-      ReadonlyAccount<TAccountRent>
+      TAccountDestination extends string
+        ? WritableAccount<TAccountDestination>
+        : TAccountDestination,
+      TAccountToken extends string
+        ? WritableAccount<TAccountToken>
+        : TAccountToken,
+      TAccountOneTimePrintingAuthorizationMint extends string
+        ? WritableAccount<TAccountOneTimePrintingAuthorizationMint>
+        : TAccountOneTimePrintingAuthorizationMint,
+      TAccountPrintingMint extends string
+        ? WritableAccount<TAccountPrintingMint>
+        : TAccountPrintingMint,
+      TAccountBurnAuthority extends string
+        ? ReadonlySignerAccount<TAccountBurnAuthority>
+        : TAccountBurnAuthority,
+      TAccountMetadata extends string
+        ? ReadonlyAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMasterEdition extends string
+        ? ReadonlyAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
     ]
   >;
 
@@ -131,26 +155,50 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataCodec(): C
 
 export function deprecatedMintPrintingTokensViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string = string,
-  TAccountToken extends string = string,
-  TAccountOneTimePrintingAuthorizationMint extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountBurnAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TAccountOneTimePrintingAuthorizationMint extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TAccountBurnAuthority extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
 >(
   accounts: {
-    destination: Base58EncodedAddress<TAccountDestination>;
-    token: Base58EncodedAddress<TAccountToken>;
-    oneTimePrintingAuthorizationMint: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>;
-    printingMint: Base58EncodedAddress<TAccountPrintingMint>;
-    burnAuthority: Base58EncodedAddress<TAccountBurnAuthority>;
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
-    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
-    rent: Base58EncodedAddress<TAccountRent>;
+    destination: TAccountDestination extends string
+      ? Base58EncodedAddress<TAccountDestination>
+      : TAccountDestination;
+    token: TAccountToken extends string
+      ? Base58EncodedAddress<TAccountToken>
+      : TAccountToken;
+    oneTimePrintingAuthorizationMint: TAccountOneTimePrintingAuthorizationMint extends string
+      ? Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>
+      : TAccountOneTimePrintingAuthorizationMint;
+    printingMint: TAccountPrintingMint extends string
+      ? Base58EncodedAddress<TAccountPrintingMint>
+      : TAccountPrintingMint;
+    burnAuthority: TAccountBurnAuthority extends string
+      ? Base58EncodedAddress<TAccountBurnAuthority>
+      : TAccountBurnAuthority;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    masterEdition: TAccountMasterEdition extends string
+      ? Base58EncodedAddress<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    tokenProgram: TAccountTokenProgram extends string
+      ? Base58EncodedAddress<TAccountTokenProgram>
+      : TAccountTokenProgram;
+    rent: TAccountRent extends string
+      ? Base58EncodedAddress<TAccountRent>
+      : TAccountRent;
   },
   args: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
@@ -168,18 +216,21 @@ export function deprecatedMintPrintingTokensViaTokenInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.token, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.oneTimePrintingAuthorizationMint,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.printingMint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.burnAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.token, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.oneTimePrintingAuthorizationMint,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.burnAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
     ],
     data: getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder().encode(
       args

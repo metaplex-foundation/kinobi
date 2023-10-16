@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -38,18 +39,26 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type InitializeMultisig2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountSigner extends string = string
+  TAccountMultisig extends string | IAccountMeta<string> = string,
+  TAccountSigner extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<InitializeMultisig2InstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
-    [WritableAccount<TAccountMultisig>, ReadonlyAccount<TAccountSigner>]
+    [
+      TAccountMultisig extends string
+        ? WritableAccount<TAccountMultisig>
+        : TAccountMultisig,
+      TAccountSigner extends string
+        ? ReadonlyAccount<TAccountSigner>
+        : TAccountSigner
+    ]
   >;
 
 export type InitializeMultisig2InstructionData = {
@@ -95,20 +104,24 @@ export function getInitializeMultisig2InstructionDataCodec(): Codec<
 
 export function initializeMultisig2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountSigner extends string = string
+  TAccountMultisig extends string | IAccountMeta<string> = string,
+  TAccountSigner extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    multisig: Base58EncodedAddress<TAccountMultisig>;
-    signer: Base58EncodedAddress<TAccountSigner>;
+    multisig: TAccountMultisig extends string
+      ? Base58EncodedAddress<TAccountMultisig>
+      : TAccountMultisig;
+    signer: TAccountSigner extends string
+      ? Base58EncodedAddress<TAccountSigner>
+      : TAccountSigner;
   },
   args: InitializeMultisig2InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner> {
   return {
     accounts: [
-      { address: accounts.multisig, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.signer, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.multisig, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.signer, AccountRole.READONLY),
     ],
     data: getInitializeMultisig2InstructionDataEncoder().encode(args),
     programAddress,

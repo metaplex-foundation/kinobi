@@ -13,7 +13,9 @@ export function getInstructionAccountTypeParamFragment(
     programNode.publicKey
   );
 
-  return fragment(`${typeParam} extends string = ${defaultValue}`);
+  return fragment(
+    `${typeParam} extends string | IAccountMeta<string> = ${defaultAddress}`
+  );
 }
 
 function getDefaultAddress(

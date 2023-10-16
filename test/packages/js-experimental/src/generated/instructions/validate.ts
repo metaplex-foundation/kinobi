@@ -22,6 +22,7 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -42,6 +43,7 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -58,39 +60,64 @@ import {
 // Output.
 export type ValidateInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSet extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends string = string,
-  TAccountOptRuleSigner2 extends string = string,
-  TAccountOptRuleSigner3 extends string = string,
-  TAccountOptRuleSigner4 extends string = string,
-  TAccountOptRuleSigner5 extends string = string,
-  TAccountOptRuleNonsigner1 extends string = string,
-  TAccountOptRuleNonsigner2 extends string = string,
-  TAccountOptRuleNonsigner3 extends string = string,
-  TAccountOptRuleNonsigner4 extends string = string,
-  TAccountOptRuleNonsigner5 extends string = string
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountRuleSet extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountOptRuleSigner1 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner2 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner3 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner4 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner5 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner1 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner2 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner3 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner4 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner5 extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<ValidateInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableSignerAccount<TAccountPayer>,
-      WritableAccount<TAccountRuleSet>,
-      ReadonlyAccount<TAccountSystemProgram>,
-      (
-        | ReadonlySignerAccount<TAccountOptRuleSigner1>
-        | ReadonlyAccount<TAccountOptRuleSigner1>
-      ),
-      ReadonlySignerAccount<TAccountOptRuleSigner2>,
-      ReadonlySignerAccount<TAccountOptRuleSigner3>,
-      ReadonlySignerAccount<TAccountOptRuleSigner4>,
-      ReadonlySignerAccount<TAccountOptRuleSigner5>,
-      ReadonlyAccount<TAccountOptRuleNonsigner1>,
-      ReadonlyAccount<TAccountOptRuleNonsigner2>,
-      ReadonlyAccount<TAccountOptRuleNonsigner3>,
-      ReadonlyAccount<TAccountOptRuleNonsigner4>,
-      ReadonlyAccount<TAccountOptRuleNonsigner5>
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountRuleSet extends string
+        ? WritableAccount<TAccountRuleSet>
+        : TAccountRuleSet,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountOptRuleSigner1 extends string
+        ? ReadonlyAccount<TAccountOptRuleSigner1>
+        : TAccountOptRuleSigner1,
+      TAccountOptRuleSigner2 extends string
+        ? ReadonlySignerAccount<TAccountOptRuleSigner2>
+        : TAccountOptRuleSigner2,
+      TAccountOptRuleSigner3 extends string
+        ? ReadonlySignerAccount<TAccountOptRuleSigner3>
+        : TAccountOptRuleSigner3,
+      TAccountOptRuleSigner4 extends string
+        ? ReadonlySignerAccount<TAccountOptRuleSigner4>
+        : TAccountOptRuleSigner4,
+      TAccountOptRuleSigner5 extends string
+        ? ReadonlySignerAccount<TAccountOptRuleSigner5>
+        : TAccountOptRuleSigner5,
+      TAccountOptRuleNonsigner1 extends string
+        ? ReadonlyAccount<TAccountOptRuleNonsigner1>
+        : TAccountOptRuleNonsigner1,
+      TAccountOptRuleNonsigner2 extends string
+        ? ReadonlyAccount<TAccountOptRuleNonsigner2>
+        : TAccountOptRuleNonsigner2,
+      TAccountOptRuleNonsigner3 extends string
+        ? ReadonlyAccount<TAccountOptRuleNonsigner3>
+        : TAccountOptRuleNonsigner3,
+      TAccountOptRuleNonsigner4 extends string
+        ? ReadonlyAccount<TAccountOptRuleNonsigner4>
+        : TAccountOptRuleNonsigner4,
+      TAccountOptRuleNonsigner5 extends string
+        ? ReadonlyAccount<TAccountOptRuleNonsigner5>
+        : TAccountOptRuleNonsigner5
     ]
   >;
 
@@ -146,34 +173,62 @@ export function getValidateInstructionDataCodec(): Codec<
 
 export function validateInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSet extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends string = string,
-  TAccountOptRuleSigner2 extends string = string,
-  TAccountOptRuleSigner3 extends string = string,
-  TAccountOptRuleSigner4 extends string = string,
-  TAccountOptRuleSigner5 extends string = string,
-  TAccountOptRuleNonsigner1 extends string = string,
-  TAccountOptRuleNonsigner2 extends string = string,
-  TAccountOptRuleNonsigner3 extends string = string,
-  TAccountOptRuleNonsigner4 extends string = string,
-  TAccountOptRuleNonsigner5 extends string = string
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountRuleSet extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountOptRuleSigner1 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner2 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner3 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner4 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleSigner5 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner1 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner2 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner3 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner4 extends string | IAccountMeta<string> = string,
+  TAccountOptRuleNonsigner5 extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    payer: Base58EncodedAddress<TAccountPayer>;
-    ruleSet: Base58EncodedAddress<TAccountRuleSet>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-    optRuleSigner1: Base58EncodedAddress<TAccountOptRuleSigner1>;
-    optRuleSigner2: Base58EncodedAddress<TAccountOptRuleSigner2>;
-    optRuleSigner3: Base58EncodedAddress<TAccountOptRuleSigner3>;
-    optRuleSigner4: Base58EncodedAddress<TAccountOptRuleSigner4>;
-    optRuleSigner5: Base58EncodedAddress<TAccountOptRuleSigner5>;
-    optRuleNonsigner1: Base58EncodedAddress<TAccountOptRuleNonsigner1>;
-    optRuleNonsigner2: Base58EncodedAddress<TAccountOptRuleNonsigner2>;
-    optRuleNonsigner3: Base58EncodedAddress<TAccountOptRuleNonsigner3>;
-    optRuleNonsigner4: Base58EncodedAddress<TAccountOptRuleNonsigner4>;
-    optRuleNonsigner5: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    ruleSet: TAccountRuleSet extends string
+      ? Base58EncodedAddress<TAccountRuleSet>
+      : TAccountRuleSet;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    optRuleSigner1: TAccountOptRuleSigner1 extends string
+      ? Base58EncodedAddress<TAccountOptRuleSigner1>
+      : TAccountOptRuleSigner1;
+    optRuleSigner2: TAccountOptRuleSigner2 extends string
+      ? Base58EncodedAddress<TAccountOptRuleSigner2>
+      : TAccountOptRuleSigner2;
+    optRuleSigner3: TAccountOptRuleSigner3 extends string
+      ? Base58EncodedAddress<TAccountOptRuleSigner3>
+      : TAccountOptRuleSigner3;
+    optRuleSigner4: TAccountOptRuleSigner4 extends string
+      ? Base58EncodedAddress<TAccountOptRuleSigner4>
+      : TAccountOptRuleSigner4;
+    optRuleSigner5: TAccountOptRuleSigner5 extends string
+      ? Base58EncodedAddress<TAccountOptRuleSigner5>
+      : TAccountOptRuleSigner5;
+    optRuleNonsigner1: TAccountOptRuleNonsigner1 extends string
+      ? Base58EncodedAddress<TAccountOptRuleNonsigner1>
+      : TAccountOptRuleNonsigner1;
+    optRuleNonsigner2: TAccountOptRuleNonsigner2 extends string
+      ? Base58EncodedAddress<TAccountOptRuleNonsigner2>
+      : TAccountOptRuleNonsigner2;
+    optRuleNonsigner3: TAccountOptRuleNonsigner3 extends string
+      ? Base58EncodedAddress<TAccountOptRuleNonsigner3>
+      : TAccountOptRuleNonsigner3;
+    optRuleNonsigner4: TAccountOptRuleNonsigner4 extends string
+      ? Base58EncodedAddress<TAccountOptRuleNonsigner4>
+      : TAccountOptRuleNonsigner4;
+    optRuleNonsigner5: TAccountOptRuleNonsigner5 extends string
+      ? Base58EncodedAddress<TAccountOptRuleNonsigner5>
+      : TAccountOptRuleNonsigner5;
   },
   args: ValidateInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
@@ -195,34 +250,31 @@ export function validateInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.ruleSet, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.optRuleSigner1, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.optRuleSigner2, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.optRuleSigner3, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.optRuleSigner4, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.optRuleSigner5, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.optRuleNonsigner1,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.optRuleNonsigner2,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.optRuleNonsigner3,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.optRuleNonsigner4,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.optRuleNonsigner5,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.ruleSet, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.optRuleSigner1, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.optRuleSigner2,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.optRuleSigner3,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.optRuleSigner4,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.optRuleSigner5,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.optRuleNonsigner1, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.optRuleNonsigner2, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.optRuleNonsigner3, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.optRuleNonsigner4, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.optRuleNonsigner5, AccountRole.READONLY),
     ],
     data: getValidateInstructionDataEncoder().encode(args),
     programAddress,

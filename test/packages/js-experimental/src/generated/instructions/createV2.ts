@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -52,6 +53,7 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -64,28 +66,52 @@ import {
 // Output.
 export type CreateV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 > = IInstruction<TProgram> &
-  IInstructionWithData<CreateV2InstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMetadata>,
-      WritableAccount<TAccountMasterEdition>,
-      WritableSignerAccount<TAccountMint> | WritableAccount<TAccountMint>,
-      ReadonlySignerAccount<TAccountMintAuthority>,
-      WritableSignerAccount<TAccountPayer>,
-      ReadonlyAccount<TAccountUpdateAuthority>,
-      ReadonlyAccount<TAccountSystemProgram>,
-      ReadonlyAccount<TAccountSysvarInstructions>,
-      ReadonlyAccount<TAccountSplTokenProgram>
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMasterEdition extends string
+        ? WritableAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountMintAuthority>
+        : TAccountMintAuthority,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountUpdateAuthority extends string
+        ? ReadonlyAccount<TAccountUpdateAuthority>
+        : TAccountUpdateAuthority,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountSysvarInstructions extends string
+        ? ReadonlyAccount<TAccountSysvarInstructions>
+        : TAccountSysvarInstructions,
+      TAccountSplTokenProgram extends string
+        ? ReadonlyAccount<TAccountSplTokenProgram>
+        : TAccountSplTokenProgram
     ]
   >;
 
@@ -145,26 +171,50 @@ export function getCreateV2InstructionDataCodec(): Codec<
 
 export function createV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
-    payer: Base58EncodedAddress<TAccountPayer>;
-    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
-    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    masterEdition: TAccountMasterEdition extends string
+      ? Base58EncodedAddress<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    mintAuthority: TAccountMintAuthority extends string
+      ? Base58EncodedAddress<TAccountMintAuthority>
+      : TAccountMintAuthority;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    updateAuthority: TAccountUpdateAuthority extends string
+      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      : TAccountUpdateAuthority;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    sysvarInstructions: TAccountSysvarInstructions extends string
+      ? Base58EncodedAddress<TAccountSysvarInstructions>
+      : TAccountSysvarInstructions;
+    splTokenProgram: TAccountSplTokenProgram extends string
+      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      : TAccountSplTokenProgram;
   },
   args: CreateV2InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
@@ -182,18 +232,18 @@ export function createV2Instruction<
 > {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.sysvarInstructions,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.mintAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.updateAuthority, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
     ],
     data: getCreateV2InstructionDataEncoder().encode(args),
     programAddress,

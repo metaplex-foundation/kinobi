@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,32 +41,53 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type CloseEscrowAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEscrow extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountEdition extends string = string,
-  TAccountPayer extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
+  TAccountEscrow extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111'
 > = IInstruction<TProgram> &
-  IInstructionWithData<CloseEscrowAccountInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountEscrow>,
-      WritableAccount<TAccountMetadata>,
-      ReadonlyAccount<TAccountMint>,
-      ReadonlyAccount<TAccountTokenAccount>,
-      ReadonlyAccount<TAccountEdition>,
-      WritableSignerAccount<TAccountPayer>,
-      ReadonlyAccount<TAccountSystemProgram>,
-      ReadonlyAccount<TAccountSysvarInstructions>
+      TAccountEscrow extends string
+        ? WritableAccount<TAccountEscrow>
+        : TAccountEscrow,
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountTokenAccount extends string
+        ? ReadonlyAccount<TAccountTokenAccount>
+        : TAccountTokenAccount,
+      TAccountEdition extends string
+        ? ReadonlyAccount<TAccountEdition>
+        : TAccountEdition,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountSysvarInstructions extends string
+        ? ReadonlyAccount<TAccountSysvarInstructions>
+        : TAccountSysvarInstructions
     ]
   >;
 
@@ -103,24 +125,44 @@ export function getCloseEscrowAccountInstructionDataCodec(): Codec<
 
 export function closeEscrowAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEscrow extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountEdition extends string = string,
-  TAccountPayer extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
+  TAccountEscrow extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111'
 >(
   accounts: {
-    escrow: Base58EncodedAddress<TAccountEscrow>;
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
-    edition: Base58EncodedAddress<TAccountEdition>;
-    payer: Base58EncodedAddress<TAccountPayer>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+    escrow: TAccountEscrow extends string
+      ? Base58EncodedAddress<TAccountEscrow>
+      : TAccountEscrow;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    tokenAccount: TAccountTokenAccount extends string
+      ? Base58EncodedAddress<TAccountTokenAccount>
+      : TAccountTokenAccount;
+    edition: TAccountEdition extends string
+      ? Base58EncodedAddress<TAccountEdition>
+      : TAccountEdition;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    sysvarInstructions: TAccountSysvarInstructions extends string
+      ? Base58EncodedAddress<TAccountSysvarInstructions>
+      : TAccountSysvarInstructions;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): CloseEscrowAccountInstruction<
@@ -136,17 +178,14 @@ export function closeEscrowAccountInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.escrow, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenAccount, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.sysvarInstructions,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
+      accountMetaWithDefault(accounts.escrow, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.tokenAccount, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.sysvarInstructions, AccountRole.READONLY),
     ],
     data: getCloseEscrowAccountInstructionDataEncoder().encode({}),
     programAddress,

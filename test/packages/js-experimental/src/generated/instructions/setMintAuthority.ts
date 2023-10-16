@@ -23,6 +23,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -41,22 +42,29 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type SetMintAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<SetMintAuthorityInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountCandyMachine>,
-      ReadonlySignerAccount<TAccountAuthority>,
-      ReadonlySignerAccount<TAccountMintAuthority>
+      TAccountCandyMachine extends string
+        ? WritableAccount<TAccountCandyMachine>
+        : TAccountCandyMachine,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority>
+        : TAccountAuthority,
+      TAccountMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountMintAuthority>
+        : TAccountMintAuthority
     ]
   >;
 
@@ -97,14 +105,20 @@ export function getSetMintAuthorityInstructionDataCodec(): Codec<
 
 export function setMintAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
-    authority: Base58EncodedAddress<TAccountAuthority>;
-    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    candyMachine: TAccountCandyMachine extends string
+      ? Base58EncodedAddress<TAccountCandyMachine>
+      : TAccountCandyMachine;
+    authority: TAccountAuthority extends string
+      ? Base58EncodedAddress<TAccountAuthority>
+      : TAccountAuthority;
+    mintAuthority: TAccountMintAuthority extends string
+      ? Base58EncodedAddress<TAccountMintAuthority>
+      : TAccountMintAuthority;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
 ): SetMintAuthorityInstruction<
@@ -115,9 +129,12 @@ export function setMintAuthorityInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.candyMachine, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(
+        accounts.mintAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
     ],
     data: getSetMintAuthorityInstructionDataEncoder().encode({}),
     programAddress,

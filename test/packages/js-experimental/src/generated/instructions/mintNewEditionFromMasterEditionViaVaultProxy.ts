@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -41,6 +42,7 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -53,44 +55,82 @@ import {
 // Output.
 export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string = string,
-  TAccountNewEdition extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountNewMint extends string = string,
-  TAccountEditionMarkPda extends string = string,
-  TAccountNewMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountVaultAuthority extends string = string,
-  TAccountSafetyDepositStore extends string = string,
-  TAccountSafetyDepositBox extends string = string,
-  TAccountVault extends string = string,
-  TAccountNewMetadataUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountTokenVaultProgram extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountNewMetadata extends string | IAccountMeta<string> = string,
+  TAccountNewEdition extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountNewMint extends string | IAccountMeta<string> = string,
+  TAccountEditionMarkPda extends string | IAccountMeta<string> = string,
+  TAccountNewMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountVaultAuthority extends string | IAccountMeta<string> = string,
+  TAccountSafetyDepositStore extends string | IAccountMeta<string> = string,
+  TAccountSafetyDepositBox extends string | IAccountMeta<string> = string,
+  TAccountVault extends string | IAccountMeta<string> = string,
+  TAccountNewMetadataUpdateAuthority extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenVaultProgram extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<MintNewEditionFromMasterEditionViaVaultProxyInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountNewMetadata>,
-      WritableAccount<TAccountNewEdition>,
-      WritableAccount<TAccountMasterEdition>,
-      WritableAccount<TAccountNewMint>,
-      WritableAccount<TAccountEditionMarkPda>,
-      ReadonlySignerAccount<TAccountNewMintAuthority>,
-      WritableSignerAccount<TAccountPayer>,
-      ReadonlySignerAccount<TAccountVaultAuthority>,
-      ReadonlyAccount<TAccountSafetyDepositStore>,
-      ReadonlyAccount<TAccountSafetyDepositBox>,
-      ReadonlyAccount<TAccountVault>,
-      ReadonlyAccount<TAccountNewMetadataUpdateAuthority>,
-      ReadonlyAccount<TAccountMetadata>,
-      ReadonlyAccount<TAccountTokenProgram>,
-      ReadonlyAccount<TAccountTokenVaultProgram>,
-      ReadonlyAccount<TAccountSystemProgram>,
-      ReadonlyAccount<TAccountRent>
+      TAccountNewMetadata extends string
+        ? WritableAccount<TAccountNewMetadata>
+        : TAccountNewMetadata,
+      TAccountNewEdition extends string
+        ? WritableAccount<TAccountNewEdition>
+        : TAccountNewEdition,
+      TAccountMasterEdition extends string
+        ? WritableAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountNewMint extends string
+        ? WritableAccount<TAccountNewMint>
+        : TAccountNewMint,
+      TAccountEditionMarkPda extends string
+        ? WritableAccount<TAccountEditionMarkPda>
+        : TAccountEditionMarkPda,
+      TAccountNewMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountNewMintAuthority>
+        : TAccountNewMintAuthority,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountVaultAuthority extends string
+        ? ReadonlySignerAccount<TAccountVaultAuthority>
+        : TAccountVaultAuthority,
+      TAccountSafetyDepositStore extends string
+        ? ReadonlyAccount<TAccountSafetyDepositStore>
+        : TAccountSafetyDepositStore,
+      TAccountSafetyDepositBox extends string
+        ? ReadonlyAccount<TAccountSafetyDepositBox>
+        : TAccountSafetyDepositBox,
+      TAccountVault extends string
+        ? ReadonlyAccount<TAccountVault>
+        : TAccountVault,
+      TAccountNewMetadataUpdateAuthority extends string
+        ? ReadonlyAccount<TAccountNewMetadataUpdateAuthority>
+        : TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata extends string
+        ? ReadonlyAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountTokenVaultProgram extends string
+        ? ReadonlyAccount<TAccountTokenVaultProgram>
+        : TAccountTokenVaultProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
     ]
   >;
 
@@ -154,42 +194,82 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataCo
 
 export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string = string,
-  TAccountNewEdition extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountNewMint extends string = string,
-  TAccountEditionMarkPda extends string = string,
-  TAccountNewMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountVaultAuthority extends string = string,
-  TAccountSafetyDepositStore extends string = string,
-  TAccountSafetyDepositBox extends string = string,
-  TAccountVault extends string = string,
-  TAccountNewMetadataUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountTokenVaultProgram extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountNewMetadata extends string | IAccountMeta<string> = string,
+  TAccountNewEdition extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountNewMint extends string | IAccountMeta<string> = string,
+  TAccountEditionMarkPda extends string | IAccountMeta<string> = string,
+  TAccountNewMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountVaultAuthority extends string | IAccountMeta<string> = string,
+  TAccountSafetyDepositStore extends string | IAccountMeta<string> = string,
+  TAccountSafetyDepositBox extends string | IAccountMeta<string> = string,
+  TAccountVault extends string | IAccountMeta<string> = string,
+  TAccountNewMetadataUpdateAuthority extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenVaultProgram extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    newMetadata: Base58EncodedAddress<TAccountNewMetadata>;
-    newEdition: Base58EncodedAddress<TAccountNewEdition>;
-    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
-    newMint: Base58EncodedAddress<TAccountNewMint>;
-    editionMarkPda: Base58EncodedAddress<TAccountEditionMarkPda>;
-    newMintAuthority: Base58EncodedAddress<TAccountNewMintAuthority>;
-    payer: Base58EncodedAddress<TAccountPayer>;
-    vaultAuthority: Base58EncodedAddress<TAccountVaultAuthority>;
-    safetyDepositStore: Base58EncodedAddress<TAccountSafetyDepositStore>;
-    safetyDepositBox: Base58EncodedAddress<TAccountSafetyDepositBox>;
-    vault: Base58EncodedAddress<TAccountVault>;
-    newMetadataUpdateAuthority: Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>;
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
-    tokenVaultProgram: Base58EncodedAddress<TAccountTokenVaultProgram>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-    rent: Base58EncodedAddress<TAccountRent>;
+    newMetadata: TAccountNewMetadata extends string
+      ? Base58EncodedAddress<TAccountNewMetadata>
+      : TAccountNewMetadata;
+    newEdition: TAccountNewEdition extends string
+      ? Base58EncodedAddress<TAccountNewEdition>
+      : TAccountNewEdition;
+    masterEdition: TAccountMasterEdition extends string
+      ? Base58EncodedAddress<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    newMint: TAccountNewMint extends string
+      ? Base58EncodedAddress<TAccountNewMint>
+      : TAccountNewMint;
+    editionMarkPda: TAccountEditionMarkPda extends string
+      ? Base58EncodedAddress<TAccountEditionMarkPda>
+      : TAccountEditionMarkPda;
+    newMintAuthority: TAccountNewMintAuthority extends string
+      ? Base58EncodedAddress<TAccountNewMintAuthority>
+      : TAccountNewMintAuthority;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    vaultAuthority: TAccountVaultAuthority extends string
+      ? Base58EncodedAddress<TAccountVaultAuthority>
+      : TAccountVaultAuthority;
+    safetyDepositStore: TAccountSafetyDepositStore extends string
+      ? Base58EncodedAddress<TAccountSafetyDepositStore>
+      : TAccountSafetyDepositStore;
+    safetyDepositBox: TAccountSafetyDepositBox extends string
+      ? Base58EncodedAddress<TAccountSafetyDepositBox>
+      : TAccountSafetyDepositBox;
+    vault: TAccountVault extends string
+      ? Base58EncodedAddress<TAccountVault>
+      : TAccountVault;
+    newMetadataUpdateAuthority: TAccountNewMetadataUpdateAuthority extends string
+      ? Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>
+      : TAccountNewMetadataUpdateAuthority;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    tokenProgram: TAccountTokenProgram extends string
+      ? Base58EncodedAddress<TAccountTokenProgram>
+      : TAccountTokenProgram;
+    tokenVaultProgram: TAccountTokenVaultProgram extends string
+      ? Base58EncodedAddress<TAccountTokenVaultProgram>
+      : TAccountTokenVaultProgram;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    rent: TAccountRent extends string
+      ? Base58EncodedAddress<TAccountRent>
+      : TAccountRent;
   },
   args: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
@@ -215,32 +295,32 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.newMetadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.newEdition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.newMint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.editionMarkPda, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.newMintAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.vaultAuthority, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.safetyDepositStore,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.safetyDepositBox, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.vault, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.newMetadataUpdateAuthority,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.tokenVaultProgram,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.newMetadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.newEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.newMint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.editionMarkPda, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.newMintAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(
+        accounts.vaultAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.safetyDepositStore, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.safetyDepositBox, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.vault, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.newMetadataUpdateAuthority,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.tokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.tokenVaultProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
     ],
     data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder().encode(
       args

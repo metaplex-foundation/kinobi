@@ -25,11 +25,11 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
   ReadonlyAccount,
-  ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
 import {
@@ -50,6 +50,7 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -62,14 +63,18 @@ import {
 // Output.
 export type SetTokenAuthorityInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountOwned extends string = string,
-  TAccountOwner extends string = string
+  TAccountOwned extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<SetTokenAuthorityInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountOwned>,
-      ReadonlySignerAccount<TAccountOwner> | ReadonlyAccount<TAccountOwner>
+      TAccountOwned extends string
+        ? WritableAccount<TAccountOwned>
+        : TAccountOwned,
+      TAccountOwner extends string
+        ? ReadonlyAccount<TAccountOwner>
+        : TAccountOwner
     ]
   >;
 
@@ -122,20 +127,24 @@ export function getSetTokenAuthorityInstructionDataCodec(): Codec<
 
 export function setTokenAuthorityInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountOwned extends string = string,
-  TAccountOwner extends string = string
+  TAccountOwned extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    owned: Base58EncodedAddress<TAccountOwned>;
-    owner: Base58EncodedAddress<TAccountOwner>;
+    owned: TAccountOwned extends string
+      ? Base58EncodedAddress<TAccountOwned>
+      : TAccountOwned;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
   },
   args: SetTokenAuthorityInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): SetTokenAuthorityInstruction<TProgram, TAccountOwned, TAccountOwner> {
   return {
     accounts: [
-      { address: accounts.owned, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.owned, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
     ],
     data: getSetTokenAuthorityInstructionDataEncoder().encode(args),
     programAddress,

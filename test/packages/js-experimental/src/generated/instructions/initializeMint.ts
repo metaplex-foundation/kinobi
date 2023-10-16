@@ -26,6 +26,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -49,18 +50,26 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type InitializeMintInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
 > = IInstruction<TProgram> &
-  IInstructionWithData<InitializeMintInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
-    [WritableAccount<TAccountMint>, ReadonlyAccount<TAccountRent>]
+    [
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+    ]
   >;
 
 export type InitializeMintInstructionData = {
@@ -115,20 +124,26 @@ export function getInitializeMintInstructionDataCodec(): Codec<
 
 export function initializeMintInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
 >(
   accounts: {
-    mint: Base58EncodedAddress<TAccountMint>;
-    rent: Base58EncodedAddress<TAccountRent>;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    rent: TAccountRent extends string
+      ? Base58EncodedAddress<TAccountRent>
+      : TAccountRent;
   },
   args: InitializeMintInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeMintInstruction<TProgram, TAccountMint, TAccountRent> {
   return {
     accounts: [
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.rent, AccountRole.READONLY),
     ],
     data: getInitializeMintInstructionDataEncoder().encode(args),
     programAddress,

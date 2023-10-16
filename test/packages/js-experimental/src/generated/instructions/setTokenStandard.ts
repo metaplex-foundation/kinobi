@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,24 +41,33 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type SetTokenStandardInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMint extends string = string,
-  TAccountEdition extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<SetTokenStandardInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMetadata>,
-      WritableSignerAccount<TAccountUpdateAuthority>,
-      ReadonlyAccount<TAccountMint>,
-      ReadonlyAccount<TAccountEdition>
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountUpdateAuthority extends string
+        ? WritableSignerAccount<TAccountUpdateAuthority>
+        : TAccountUpdateAuthority,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountEdition extends string
+        ? ReadonlyAccount<TAccountEdition>
+        : TAccountEdition
     ]
   >;
 
@@ -95,16 +105,24 @@ export function getSetTokenStandardInstructionDataCodec(): Codec<
 
 export function setTokenStandardInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMint extends string = string,
-  TAccountEdition extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    edition: Base58EncodedAddress<TAccountEdition>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    updateAuthority: TAccountUpdateAuthority extends string
+      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      : TAccountUpdateAuthority;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    edition: TAccountEdition extends string
+      ? Base58EncodedAddress<TAccountEdition>
+      : TAccountEdition;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): SetTokenStandardInstruction<
@@ -116,10 +134,13 @@ export function setTokenStandardInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.updateAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
     ],
     data: getSetTokenStandardInstructionDataEncoder().encode({}),
     programAddress,

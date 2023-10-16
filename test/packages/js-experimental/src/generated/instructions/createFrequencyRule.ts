@@ -27,6 +27,7 @@ import {
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -46,22 +47,31 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type CreateFrequencyRuleInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountFrequencyPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountFrequencyPda extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111'
 > = IInstruction<TProgram> &
-  IInstructionWithData<CreateFrequencyRuleInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableSignerAccount<TAccountPayer>,
-      WritableAccount<TAccountFrequencyPda>,
-      ReadonlyAccount<TAccountSystemProgram>
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountFrequencyPda extends string
+        ? WritableAccount<TAccountFrequencyPda>
+        : TAccountFrequencyPda,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram
     ]
   >;
 
@@ -122,14 +132,22 @@ export function getCreateFrequencyRuleInstructionDataCodec(): Codec<
 
 export function createFrequencyRuleInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountFrequencyPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountFrequencyPda extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111'
 >(
   accounts: {
-    payer: Base58EncodedAddress<TAccountPayer>;
-    frequencyPda: Base58EncodedAddress<TAccountFrequencyPda>;
-    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    frequencyPda: TAccountFrequencyPda extends string
+      ? Base58EncodedAddress<TAccountFrequencyPda>
+      : TAccountFrequencyPda;
+    systemProgram: TAccountSystemProgram extends string
+      ? Base58EncodedAddress<TAccountSystemProgram>
+      : TAccountSystemProgram;
   },
   args: CreateFrequencyRuleInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
@@ -141,9 +159,9 @@ export function createFrequencyRuleInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.frequencyPda, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.frequencyPda, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.systemProgram, AccountRole.READONLY),
     ],
     data: getCreateFrequencyRuleInstructionDataEncoder().encode(args),
     programAddress,

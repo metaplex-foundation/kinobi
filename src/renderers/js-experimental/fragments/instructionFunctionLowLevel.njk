@@ -7,7 +7,7 @@ export function {{ instruction.name | camelCase }}Instruction<
   {% if hasAccounts %}
     accounts: {
     {% for account in instruction.accounts %}
-      {{ account.name | camelCase }}: Base58EncodedAddress<TAccount{{ account.name | pascalCase }}>,
+      {{ account.name | camelCase }}: TAccount{{ account.name | pascalCase }} extends string ? Base58EncodedAddress<TAccount{{ account.name | pascalCase }}> : TAccount{{ account.name | pascalCase }};
     {% endfor %}
     },
   {% endif %}
@@ -25,7 +25,17 @@ export function {{ instruction.name | camelCase }}Instruction<
     {% if hasAccounts %}
       accounts: [
         {% for account in instruction.accounts %}
-          { address: accounts.{{ account.name | camelCase }}, role: AccountRole.WRITABLE_SIGNER },
+          accountMetaWithDefault(accounts.{{ account.name | camelCase }}, 
+            {%- if account.isSigner == true and account.isWritable -%}
+              AccountRole.WRITABLE_SIGNER
+            {%- elif account.isSigner == true -%}
+              AccountRole.READONLY_SIGNER
+            {%- elif account.isWritable -%}
+              AccountRole.WRITABLE
+            {%- else -%}
+              AccountRole.READONLY
+            {% endif %}
+          ),
         {% endfor %}
       ],
     {% endif %}

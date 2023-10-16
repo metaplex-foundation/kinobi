@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -44,22 +45,29 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type BurnTokenCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountAuthority extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<BurnTokenCheckedInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountAccount>,
-      WritableAccount<TAccountMint>,
-      ReadonlySignerAccount<TAccountAuthority>
+      TAccountAccount extends string
+        ? WritableAccount<TAccountAccount>
+        : TAccountAccount,
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority>
+        : TAccountAuthority
     ]
   >;
 
@@ -112,14 +120,20 @@ export function getBurnTokenCheckedInstructionDataCodec(): Codec<
 
 export function burnTokenCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountAuthority extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    account: Base58EncodedAddress<TAccountAccount>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    authority: Base58EncodedAddress<TAccountAuthority>;
+    account: TAccountAccount extends string
+      ? Base58EncodedAddress<TAccountAccount>
+      : TAccountAccount;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    authority: TAccountAuthority extends string
+      ? Base58EncodedAddress<TAccountAuthority>
+      : TAccountAuthority;
   },
   args: BurnTokenCheckedInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
@@ -131,9 +145,9 @@ export function burnTokenCheckedInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
     ],
     data: getBurnTokenCheckedInstructionDataEncoder().encode(args),
     programAddress,

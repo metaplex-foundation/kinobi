@@ -39,6 +39,7 @@ export function getInstructionFunctionLowLevelFragment(
     accountTypeParams: accountTypeParamsFragment.render,
   })
     .mergeImportsWith(accountTypeParamsFragment)
+    .addImports('shared', ['accountMetaWithDefault'])
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
     .addImports('solanaInstructions', [
       ...(hasAccounts ? ['AccountRole'] : []),

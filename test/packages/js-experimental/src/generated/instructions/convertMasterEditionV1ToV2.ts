@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -37,22 +38,29 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type ConvertMasterEditionV1ToV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountOneTimeAuth extends string = string,
-  TAccountPrintingMint extends string = string
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<ConvertMasterEditionV1ToV2InstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMasterEdition>,
-      WritableAccount<TAccountOneTimeAuth>,
-      WritableAccount<TAccountPrintingMint>
+      TAccountMasterEdition extends string
+        ? WritableAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountOneTimeAuth extends string
+        ? WritableAccount<TAccountOneTimeAuth>
+        : TAccountOneTimeAuth,
+      TAccountPrintingMint extends string
+        ? WritableAccount<TAccountPrintingMint>
+        : TAccountPrintingMint
     ]
   >;
 
@@ -95,14 +103,20 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
 
 export function convertMasterEditionV1ToV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountOneTimeAuth extends string = string,
-  TAccountPrintingMint extends string = string
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
-    oneTimeAuth: Base58EncodedAddress<TAccountOneTimeAuth>;
-    printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+    masterEdition: TAccountMasterEdition extends string
+      ? Base58EncodedAddress<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    oneTimeAuth: TAccountOneTimeAuth extends string
+      ? Base58EncodedAddress<TAccountOneTimeAuth>
+      : TAccountOneTimeAuth;
+    printingMint: TAccountPrintingMint extends string
+      ? Base58EncodedAddress<TAccountPrintingMint>
+      : TAccountPrintingMint;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): ConvertMasterEditionV1ToV2Instruction<
@@ -113,9 +127,9 @@ export function convertMasterEditionV1ToV2Instruction<
 > {
   return {
     accounts: [
-      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.oneTimeAuth, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.printingMint, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.oneTimeAuth, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
     ],
     data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
     programAddress,

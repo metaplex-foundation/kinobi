@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,26 +41,37 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type RevokeCollectionAuthorityInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountDelegateAuthority extends string = string,
-  TAccountRevokeAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
+  TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<RevokeCollectionAuthorityInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountCollectionAuthorityRecord>,
-      WritableAccount<TAccountDelegateAuthority>,
-      WritableSignerAccount<TAccountRevokeAuthority>,
-      ReadonlyAccount<TAccountMetadata>,
-      ReadonlyAccount<TAccountMint>
+      TAccountCollectionAuthorityRecord extends string
+        ? WritableAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord,
+      TAccountDelegateAuthority extends string
+        ? WritableAccount<TAccountDelegateAuthority>
+        : TAccountDelegateAuthority,
+      TAccountRevokeAuthority extends string
+        ? WritableSignerAccount<TAccountRevokeAuthority>
+        : TAccountRevokeAuthority,
+      TAccountMetadata extends string
+        ? ReadonlyAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMint extends string ? ReadonlyAccount<TAccountMint> : TAccountMint
     ]
   >;
 
@@ -102,18 +114,30 @@ export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<
 
 export function revokeCollectionAuthorityInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountDelegateAuthority extends string = string,
-  TAccountRevokeAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
+  TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
-    delegateAuthority: Base58EncodedAddress<TAccountDelegateAuthority>;
-    revokeAuthority: Base58EncodedAddress<TAccountRevokeAuthority>;
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    mint: Base58EncodedAddress<TAccountMint>;
+    collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
+      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
+      : TAccountCollectionAuthorityRecord;
+    delegateAuthority: TAccountDelegateAuthority extends string
+      ? Base58EncodedAddress<TAccountDelegateAuthority>
+      : TAccountDelegateAuthority;
+    revokeAuthority: TAccountRevokeAuthority extends string
+      ? Base58EncodedAddress<TAccountRevokeAuthority>
+      : TAccountRevokeAuthority;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): RevokeCollectionAuthorityInstruction<
@@ -126,17 +150,17 @@ export function revokeCollectionAuthorityInstruction<
 > {
   return {
     accounts: [
-      {
-        address: accounts.collectionAuthorityRecord,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      {
-        address: accounts.delegateAuthority,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.revokeAuthority, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(
+        accounts.collectionAuthorityRecord,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(accounts.delegateAuthority, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.revokeAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
     ],
     data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),
     programAddress,

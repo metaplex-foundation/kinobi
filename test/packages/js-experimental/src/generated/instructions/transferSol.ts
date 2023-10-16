@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -44,20 +45,25 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string
+  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<TransferSolInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableSignerAccount<TAccountSource>,
-      WritableAccount<TAccountDestination>
+      TAccountSource extends string
+        ? WritableSignerAccount<TAccountSource>
+        : TAccountSource,
+      TAccountDestination extends string
+        ? WritableAccount<TAccountDestination>
+        : TAccountDestination
     ]
   >;
 
@@ -103,20 +109,24 @@ export function getTransferSolInstructionDataCodec(): Codec<
 
 export function transferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string
+  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    source: Base58EncodedAddress<TAccountSource>;
-    destination: Base58EncodedAddress<TAccountDestination>;
+    source: TAccountSource extends string
+      ? Base58EncodedAddress<TAccountSource>
+      : TAccountSource;
+    destination: TAccountDestination extends string
+      ? Base58EncodedAddress<TAccountDestination>
+      : TAccountDestination;
   },
   args: TransferSolInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
 ): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination> {
   return {
     accounts: [
-      { address: accounts.source, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
     ],
     data: getTransferSolInstructionDataEncoder().encode(args),
     programAddress,

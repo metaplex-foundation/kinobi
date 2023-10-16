@@ -13,19 +13,24 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
-import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import {
+  IAccountMeta,
+  IInstruction,
+  IInstructionWithData,
+} from '@solana/instructions';
 import { Context, TransactionBuilder, transactionBuilder } from 'umi';
 import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type AddMemoInstruction<
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
-> = IInstruction<TProgram> & IInstructionWithData<AddMemoInstructionData>;
+> = IInstruction<TProgram> & IInstructionWithData<Uint8Array>;
 
 export type AddMemoInstructionData = { memo: string };
 

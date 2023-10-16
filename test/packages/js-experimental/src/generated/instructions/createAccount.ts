@@ -30,6 +30,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,20 +41,25 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type CreateAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string = string,
-  TAccountNewAccount extends string = string
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountNewAccount extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<CreateAccountInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableSignerAccount<TAccountPayer>,
-      WritableSignerAccount<TAccountNewAccount>
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer>
+        : TAccountPayer,
+      TAccountNewAccount extends string
+        ? WritableSignerAccount<TAccountNewAccount>
+        : TAccountNewAccount
     ]
   >;
 
@@ -109,20 +115,24 @@ export function getCreateAccountInstructionDataCodec(): Codec<
 
 export function createAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string = string,
-  TAccountNewAccount extends string = string
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountNewAccount extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    payer: Base58EncodedAddress<TAccountPayer>;
-    newAccount: Base58EncodedAddress<TAccountNewAccount>;
+    payer: TAccountPayer extends string
+      ? Base58EncodedAddress<TAccountPayer>
+      : TAccountPayer;
+    newAccount: TAccountNewAccount extends string
+      ? Base58EncodedAddress<TAccountNewAccount>
+      : TAccountNewAccount;
   },
   args: CreateAccountInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
 ): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount> {
   return {
     accounts: [
-      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.newAccount, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.newAccount, AccountRole.WRITABLE_SIGNER),
     ],
     data: getCreateAccountInstructionDataEncoder().encode(args),
     programAddress,

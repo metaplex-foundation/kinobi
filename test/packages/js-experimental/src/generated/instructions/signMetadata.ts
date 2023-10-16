@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -39,18 +40,26 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type SignMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCreator extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountCreator extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<SignMetadataInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
-    [WritableAccount<TAccountMetadata>, ReadonlySignerAccount<TAccountCreator>]
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountCreator extends string
+        ? ReadonlySignerAccount<TAccountCreator>
+        : TAccountCreator
+    ]
   >;
 
 export type SignMetadataInstructionData = { discriminator: number };
@@ -86,19 +95,23 @@ export function getSignMetadataInstructionDataCodec(): Codec<
 
 export function signMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCreator extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountCreator extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    creator: Base58EncodedAddress<TAccountCreator>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    creator: TAccountCreator extends string
+      ? Base58EncodedAddress<TAccountCreator>
+      : TAccountCreator;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.creator, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
     ],
     data: getSignMetadataInstructionDataEncoder().encode({}),
     programAddress,

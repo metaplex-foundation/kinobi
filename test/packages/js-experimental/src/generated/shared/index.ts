@@ -15,6 +15,7 @@ import {
   Signer,
   isPda,
 } from '@metaplex-foundation/umi';
+import { IAccountMeta, AccountRole } from '@solana/instructions';
 
 /**
  * Transforms the given object such that the given keys are optional.
@@ -114,4 +115,19 @@ export function getAccountMetasAndSigners(
   });
 
   return [keys, signers];
+}
+
+/**
+ * Add an account meta with a default role if only an address is provided.
+ * @internal
+ */
+export function accountMetaWithDefault<
+  TAccount extends string | IAccountMeta<string>,
+  TRole extends AccountRole
+>(account: TAccount, role: TRole) {
+  return (
+    typeof account === 'string' ? { address: account, role } : account
+  ) as TAccount extends string
+    ? { address: Base58EncodedAddress<TAccount>; role: TRole }
+    : TAccount;
 }

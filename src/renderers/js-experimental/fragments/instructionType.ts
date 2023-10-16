@@ -22,7 +22,12 @@ export function getInstructionTypeFragment(
     (renders) => renders.join(', ')
   );
   const accountMetasFragment = mergeFragments(
-    instructionNode.accounts.map(getInstructionAccountMetaFragment),
+    instructionNode.accounts.map((account) =>
+      getInstructionAccountMetaFragment(account).mapRender((r) => {
+        const typeParam = `TAccount${pascalCase(account.name)}`;
+        return `${typeParam} extends string ? ${r} : ${typeParam}`;
+      })
+    ),
     (renders) => renders.join(', ')
   );
 
@@ -32,17 +37,18 @@ export function getInstructionTypeFragment(
     hasData,
     hasAccounts,
     dataType,
-    accountMetas: accountMetasFragment.render,
     accountTypeParams: accountTypeParamsFragment.render,
+    accountMetas: accountMetasFragment.render,
   })
-    .mergeImportsWith(accountMetasFragment, accountTypeParamsFragment)
+    .mergeImportsWith(accountTypeParamsFragment, accountMetasFragment)
     .addImports('solanaInstructions', [
+      'IAccountMeta',
       'IInstruction',
       ...(hasData ? ['IInstructionWithData'] : []),
       ...(hasAccounts ? ['IInstructionWithAccounts'] : []),
     ]);
 
-  // TODO: if link, add import for data type.
+  // TODO: if link, add import for data type. Unless we don't need to inject the data type in IInstructionWithData.
 
   return fragment;
 }

@@ -25,6 +25,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -47,16 +48,19 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type InitializeMint2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<InitializeMint2InstructionData> &
-  IInstructionWithAccounts<[WritableAccount<TAccountMint>]>;
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [TAccountMint extends string ? WritableAccount<TAccountMint> : TAccountMint]
+  >;
 
 export type InitializeMint2InstructionData = {
   discriminator: number;
@@ -111,16 +115,18 @@ export function getInitializeMint2InstructionDataCodec(): Codec<
 
 export function initializeMint2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    mint: Base58EncodedAddress<TAccountMint>;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
   },
   args: InitializeMint2InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeMint2Instruction<TProgram, TAccountMint> {
   return {
-    accounts: [{ address: accounts.mint, role: AccountRole.WRITABLE_SIGNER }],
+    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE)],
     data: getInitializeMint2InstructionDataEncoder().encode(args),
     programAddress,
   };

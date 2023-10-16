@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -42,16 +43,19 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type AmountToUiAmountInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<AmountToUiAmountInstructionData> &
-  IInstructionWithAccounts<[ReadonlyAccount<TAccountMint>]>;
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [TAccountMint extends string ? ReadonlyAccount<TAccountMint> : TAccountMint]
+  >;
 
 export type AmountToUiAmountInstructionData = {
   discriminator: number;
@@ -96,16 +100,18 @@ export function getAmountToUiAmountInstructionDataCodec(): Codec<
 
 export function amountToUiAmountInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    mint: Base58EncodedAddress<TAccountMint>;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
   },
   args: AmountToUiAmountInstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): AmountToUiAmountInstruction<TProgram, TAccountMint> {
   return {
-    accounts: [{ address: accounts.mint, role: AccountRole.WRITABLE_SIGNER }],
+    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.READONLY)],
     data: getAmountToUiAmountInstructionDataEncoder().encode(args),
     programAddress,
   };

@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -40,30 +41,47 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type BurnNftInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountOwner extends string = string,
-  TAccountMint extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMasterEditionAccount extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountCollectionMetadata extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<BurnNftInstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      WritableAccount<TAccountMetadata>,
-      WritableSignerAccount<TAccountOwner>,
-      WritableAccount<TAccountMint>,
-      WritableAccount<TAccountTokenAccount>,
-      WritableAccount<TAccountMasterEditionAccount>,
-      ReadonlyAccount<TAccountSplTokenProgram>,
-      WritableAccount<TAccountCollectionMetadata>
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountOwner extends string
+        ? WritableSignerAccount<TAccountOwner>
+        : TAccountOwner,
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountTokenAccount extends string
+        ? WritableAccount<TAccountTokenAccount>
+        : TAccountTokenAccount,
+      TAccountMasterEditionAccount extends string
+        ? WritableAccount<TAccountMasterEditionAccount>
+        : TAccountMasterEditionAccount,
+      TAccountSplTokenProgram extends string
+        ? ReadonlyAccount<TAccountSplTokenProgram>
+        : TAccountSplTokenProgram,
+      TAccountCollectionMetadata extends string
+        ? WritableAccount<TAccountCollectionMetadata>
+        : TAccountCollectionMetadata
     ]
   >;
 
@@ -100,22 +118,38 @@ export function getBurnNftInstructionDataCodec(): Codec<
 
 export function burnNftInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountOwner extends string = string,
-  TAccountMint extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMasterEditionAccount extends string = string,
-  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountCollectionMetadata extends string = string
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    metadata: Base58EncodedAddress<TAccountMetadata>;
-    owner: Base58EncodedAddress<TAccountOwner>;
-    mint: Base58EncodedAddress<TAccountMint>;
-    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
-    masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
-    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
-    collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+    metadata: TAccountMetadata extends string
+      ? Base58EncodedAddress<TAccountMetadata>
+      : TAccountMetadata;
+    owner: TAccountOwner extends string
+      ? Base58EncodedAddress<TAccountOwner>
+      : TAccountOwner;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
+    tokenAccount: TAccountTokenAccount extends string
+      ? Base58EncodedAddress<TAccountTokenAccount>
+      : TAccountTokenAccount;
+    masterEditionAccount: TAccountMasterEditionAccount extends string
+      ? Base58EncodedAddress<TAccountMasterEditionAccount>
+      : TAccountMasterEditionAccount;
+    splTokenProgram: TAccountSplTokenProgram extends string
+      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      : TAccountSplTokenProgram;
+    collectionMetadata: TAccountCollectionMetadata extends string
+      ? Base58EncodedAddress<TAccountCollectionMetadata>
+      : TAccountCollectionMetadata;
   },
   programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): BurnNftInstruction<
@@ -130,19 +164,16 @@ export function burnNftInstruction<
 > {
   return {
     accounts: [
-      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.tokenAccount, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.masterEditionAccount,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
-      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
-      {
-        address: accounts.collectionMetadata,
-        role: AccountRole.WRITABLE_SIGNER,
-      },
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.masterEditionAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(accounts.splTokenProgram, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
     ],
     data: getBurnNftInstructionDataEncoder().encode({}),
     programAddress,

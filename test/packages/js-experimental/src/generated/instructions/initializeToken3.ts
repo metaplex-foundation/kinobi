@@ -25,6 +25,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   AccountRole,
+  IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -42,18 +43,24 @@ import { Serializer } from 'umiSerializers';
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  accountMetaWithDefault,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
 export type InitializeToken3Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
-  IInstructionWithData<InitializeToken3InstructionData> &
+  IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
-    [WritableAccount<TAccountAccount>, ReadonlyAccount<TAccountMint>]
+    [
+      TAccountAccount extends string
+        ? WritableAccount<TAccountAccount>
+        : TAccountAccount,
+      TAccountMint extends string ? ReadonlyAccount<TAccountMint> : TAccountMint
+    ]
   >;
 
 export type InitializeToken3InstructionData = {
@@ -101,20 +108,24 @@ export function getInitializeToken3InstructionDataCodec(): Codec<
 
 export function initializeToken3Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    account: Base58EncodedAddress<TAccountAccount>;
-    mint: Base58EncodedAddress<TAccountMint>;
+    account: TAccountAccount extends string
+      ? Base58EncodedAddress<TAccountAccount>
+      : TAccountAccount;
+    mint: TAccountMint extends string
+      ? Base58EncodedAddress<TAccountMint>
+      : TAccountMint;
   },
   args: InitializeToken3InstructionDataArgs,
   programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint> {
   return {
     accounts: [
-      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
-      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
     ],
     data: getInitializeToken3InstructionDataEncoder().encode(args),
     programAddress,
