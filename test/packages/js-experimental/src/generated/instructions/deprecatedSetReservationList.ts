@@ -20,6 +20,13 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -45,3 +52,19 @@ import {
   getReservationDecoder,
   getReservationEncoder,
 } from '../types';
+
+// Output.
+export type DeprecatedSetReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountReservationList extends string = string,
+  TAccountResource extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<DeprecatedSetReservationListInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMasterEdition>,
+      WritableAccount<TAccountReservationList>,
+      ReadonlySignerAccount<TAccountResource>
+    ]
+  >;

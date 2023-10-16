@@ -13,6 +13,14 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -34,3 +42,19 @@ import {
   getTaCreateArgsDecoder,
   getTaCreateArgsEncoder,
 } from '../types';
+
+// Output.
+export type CreateRuleSetInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSetPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<CreateRuleSetInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableSignerAccount<TAccountPayer>,
+      WritableAccount<TAccountRuleSetPda>,
+      ReadonlyAccount<TAccountSystemProgram>
+    ]
+  >;

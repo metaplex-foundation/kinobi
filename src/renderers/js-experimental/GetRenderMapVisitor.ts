@@ -22,6 +22,7 @@ import {
   getAccountSizeHelpersFragment,
   getAccountTypeFragment,
   getInstructionDefaultFragment,
+  getInstructionTypeFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
 } from './fragments';
@@ -225,15 +226,23 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
+    // Fragments.
+    const instructionTypeFragment = getInstructionTypeFragment(
+      instruction,
+      this.program!
+    );
+
     // Imports and interfaces.
-    const interfaces = new ContextMap().add('programs');
     const imports = new ImportMap()
+      .mergeWith(instructionTypeFragment)
+      // TODO: Remove once these are imported in the fragments.
       .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
       .add('shared', [
         'ResolvedAccount',
         'ResolvedAccountsWithIndices',
         'getAccountMetasAndSigners',
       ]);
+    const interfaces = new ContextMap().add('programs');
 
     // Instruction helpers.
     const hasAccounts = instruction.accounts.length > 0;
@@ -396,6 +405,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.render('instructionsPage.njk', {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
+        instructionTypeFragment,
         interfaces: interfaces.toString(),
         program: this.program,
         resolvedInputs,

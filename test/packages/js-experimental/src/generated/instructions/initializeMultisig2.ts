@@ -13,6 +13,13 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -25,3 +32,14 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type InitializeMultisig2Instruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountSigner extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<InitializeMultisig2InstructionData> &
+  IInstructionWithAccounts<
+    [WritableAccount<TAccountMultisig>, ReadonlyAccount<TAccountSigner>]
+  >;

@@ -13,6 +13,13 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -26,3 +33,14 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type RemoveCreatorVerificationInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<RemoveCreatorVerificationInstructionData> &
+  IInstructionWithAccounts<
+    [WritableAccount<TAccountMetadata>, ReadonlySignerAccount<TAccountCreator>]
+  >;

@@ -19,6 +19,15 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -32,3 +41,39 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type TransferOutOfEscrowInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAttributeMint extends string = string,
+  TAccountAttributeSrc extends string = string,
+  TAccountAttributeDst extends string = string,
+  TAccountEscrowMint extends string = string,
+  TAccountEscrowAccount extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<TransferOutOfEscrowInstructionData> &
+  IInstructionWithAccounts<
+    [
+      ReadonlyAccount<TAccountEscrow>,
+      WritableAccount<TAccountMetadata>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountAttributeMint>,
+      WritableAccount<TAccountAttributeSrc>,
+      WritableAccount<TAccountAttributeDst>,
+      ReadonlyAccount<TAccountEscrowMint>,
+      ReadonlyAccount<TAccountEscrowAccount>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountAtaProgram>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountSysvarInstructions>,
+      ReadonlySignerAccount<TAccountAuthority>
+    ]
+  >;

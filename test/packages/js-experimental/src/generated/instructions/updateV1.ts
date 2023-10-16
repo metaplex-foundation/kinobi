@@ -29,6 +29,14 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -87,3 +95,33 @@ import {
   getUsesDecoder,
   getUsesEncoder,
 } from '../types';
+
+// Output.
+export type UpdateV1Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountToken extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<UpdateV1InstructionData> &
+  IInstructionWithAccounts<
+    [
+      ReadonlySignerAccount<TAccountAuthority>,
+      WritableAccount<TAccountMetadata>,
+      WritableAccount<TAccountMasterEdition>,
+      ReadonlyAccount<TAccountMint>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountSysvarInstructions>,
+      ReadonlyAccount<TAccountToken>,
+      ReadonlyAccount<TAccountDelegateRecord>,
+      ReadonlyAccount<TAccountAuthorizationRulesProgram>,
+      ReadonlyAccount<TAccountAuthorizationRules>
+    ]
+  >;

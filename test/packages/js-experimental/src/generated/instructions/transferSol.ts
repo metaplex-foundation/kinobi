@@ -18,6 +18,13 @@ import {
   getU64Encoder,
 } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -31,3 +38,17 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type TransferSolInstruction<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<TransferSolInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableSignerAccount<TAccountSource>,
+      WritableAccount<TAccountDestination>
+    ]
+  >;

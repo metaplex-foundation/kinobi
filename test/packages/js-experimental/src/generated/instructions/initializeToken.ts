@@ -14,6 +14,13 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -26,3 +33,21 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type InitializeTokenInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<InitializeTokenInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountAccount>,
+      ReadonlyAccount<TAccountMint>,
+      ReadonlyAccount<TAccountOwner>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;

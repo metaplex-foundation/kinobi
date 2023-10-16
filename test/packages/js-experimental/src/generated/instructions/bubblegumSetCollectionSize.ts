@@ -13,6 +13,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -32,3 +41,23 @@ import {
   getSetCollectionSizeArgsDecoder,
   getSetCollectionSizeArgsEncoder,
 } from '../types';
+
+// Output.
+export type BubblegumSetCollectionSizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountBubblegumSigner extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<BubblegumSetCollectionSizeInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountCollectionMetadata>,
+      WritableSignerAccount<TAccountCollectionAuthority>,
+      ReadonlyAccount<TAccountCollectionMint>,
+      ReadonlySignerAccount<TAccountBubblegumSigner>,
+      ReadonlyAccount<TAccountCollectionAuthorityRecord>
+    ]
+  >;

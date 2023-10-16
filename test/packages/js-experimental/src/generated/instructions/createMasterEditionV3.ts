@@ -13,6 +13,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   ACCOUNT_HEADER_SIZE,
   Context,
   Pda,
@@ -34,3 +43,31 @@ import {
   getCreateMasterEditionArgsDecoder,
   getCreateMasterEditionArgsEncoder,
 } from '../types';
+
+// Output.
+export type CreateMasterEditionV3Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<CreateMasterEditionV3InstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountEdition>,
+      WritableAccount<TAccountMint>,
+      ReadonlySignerAccount<TAccountUpdateAuthority>,
+      ReadonlySignerAccount<TAccountMintAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      WritableAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;

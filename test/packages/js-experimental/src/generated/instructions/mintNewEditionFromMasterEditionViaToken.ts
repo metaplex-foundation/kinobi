@@ -13,6 +13,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -32,3 +41,41 @@ import {
   getMintNewEditionFromMasterEditionViaTokenArgsDecoder,
   getMintNewEditionFromMasterEditionViaTokenArgsEncoder,
 } from '../types';
+
+// Output.
+export type MintNewEditionFromMasterEditionViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenAccountOwner extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<MintNewEditionFromMasterEditionViaTokenInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountNewMetadata>,
+      WritableAccount<TAccountNewEdition>,
+      WritableAccount<TAccountMasterEdition>,
+      WritableAccount<TAccountNewMint>,
+      WritableAccount<TAccountEditionMarkPda>,
+      ReadonlySignerAccount<TAccountNewMintAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlySignerAccount<TAccountTokenAccountOwner>,
+      ReadonlyAccount<TAccountTokenAccount>,
+      ReadonlyAccount<TAccountNewMetadataUpdateAuthority>,
+      ReadonlyAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;

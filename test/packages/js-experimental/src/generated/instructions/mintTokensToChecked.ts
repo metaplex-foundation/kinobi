@@ -18,6 +18,13 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -31,3 +38,19 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type MintTokensToCheckedInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountMintAuthority extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<MintTokensToCheckedInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMint>,
+      WritableAccount<TAccountToken>,
+      ReadonlySignerAccount<TAccountMintAuthority>
+    ]
+  >;

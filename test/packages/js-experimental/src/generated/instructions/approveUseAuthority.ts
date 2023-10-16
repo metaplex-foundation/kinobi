@@ -18,6 +18,14 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -31,3 +39,35 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type ApproveUseAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountOwner extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUser extends string = string,
+  TAccountOwnerTokenAccount extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountBurner extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<ApproveUseAuthorityInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountUseAuthorityRecord>,
+      WritableSignerAccount<TAccountOwner>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountUser>,
+      WritableAccount<TAccountOwnerTokenAccount>,
+      ReadonlyAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountMint>,
+      ReadonlyAccount<TAccountBurner>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;

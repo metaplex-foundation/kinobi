@@ -18,6 +18,14 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -43,3 +51,17 @@ import {
   getTokenAuthorityTypeDecoder,
   getTokenAuthorityTypeEncoder,
 } from '../types';
+
+// Output.
+export type SetTokenAuthorityInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountOwned extends string = string,
+  TAccountOwner extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<SetTokenAuthorityInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountOwned>,
+      ReadonlySignerAccount<TAccountOwner> | ReadonlyAccount<TAccountOwner>
+    ]
+  >;

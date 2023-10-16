@@ -19,6 +19,13 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -37,3 +44,14 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type InitializeMintInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<InitializeMintInstructionData> &
+  IInstructionWithAccounts<
+    [WritableAccount<TAccountMint>, ReadonlyAccount<TAccountRent>]
+  >;

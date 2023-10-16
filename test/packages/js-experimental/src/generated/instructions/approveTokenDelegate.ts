@@ -18,6 +18,14 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -31,3 +39,19 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type ApproveTokenDelegateInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<ApproveTokenDelegateInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountSource>,
+      ReadonlyAccount<TAccountDelegate>,
+      ReadonlySignerAccount<TAccountOwner>
+    ]
+  >;

@@ -22,6 +22,12 @@ import {
   getU64Decoder,
   getU64Encoder,
 } from '@solana/codecs-numbers';
+import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  WritableSignerAccount,
+} from '@solana/instructions';
 import { Context, Signer, TransactionBuilder, transactionBuilder } from 'umi';
 import { Serializer } from 'umiSerializers';
 import {
@@ -29,3 +35,17 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type CreateAccountInstruction<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountPayer extends string = string,
+  TAccountNewAccount extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<CreateAccountInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableSignerAccount<TAccountPayer>,
+      WritableSignerAccount<TAccountNewAccount>
+    ]
+  >;

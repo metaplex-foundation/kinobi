@@ -14,6 +14,14 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -27,3 +35,45 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountMasterTokenAccount extends string = string,
+  TAccountEditionMarker extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMasterUpdateAuthority extends string = string,
+  TAccountMasterMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMetadata>,
+      WritableAccount<TAccountEdition>,
+      WritableAccount<TAccountMasterEdition>,
+      WritableAccount<TAccountMint>,
+      ReadonlySignerAccount<TAccountMintAuthority>,
+      WritableAccount<TAccountPrintingMint>,
+      WritableAccount<TAccountMasterTokenAccount>,
+      WritableAccount<TAccountEditionMarker>,
+      ReadonlySignerAccount<TAccountBurnAuthority>,
+      ReadonlySignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountMasterUpdateAuthority>,
+      ReadonlyAccount<TAccountMasterMetadata>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRent>,
+      WritableAccount<TAccountReservationList>
+    ]
+  >;

@@ -14,6 +14,14 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -27,3 +35,29 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type CloseEscrowAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<CloseEscrowAccountInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountEscrow>,
+      WritableAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountMint>,
+      ReadonlyAccount<TAccountTokenAccount>,
+      ReadonlyAccount<TAccountEdition>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountSysvarInstructions>
+    ]
+  >;

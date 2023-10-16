@@ -8,6 +8,14 @@
 
 import { address } from '@solana/addresses';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -25,3 +33,29 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type CreateReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountReservationList extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountResource extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<CreateReservationListInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountReservationList>,
+      ReadonlySignerAccount<TAccountPayer>,
+      ReadonlySignerAccount<TAccountUpdateAuthority>,
+      ReadonlyAccount<TAccountMasterEdition>,
+      ReadonlyAccount<TAccountResource>,
+      ReadonlyAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;

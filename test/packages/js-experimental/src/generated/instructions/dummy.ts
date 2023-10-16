@@ -16,6 +16,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -33,3 +42,33 @@ import {
   expectSome,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type DummyInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountFoo extends string = string,
+  TAccountBar extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountDelegate extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountTokenOrAtaProgram extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<DummyInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableSignerAccount<TAccountEdition>,
+      WritableAccount<TAccountMint>,
+      ReadonlySignerAccount<TAccountUpdateAuthority>,
+      WritableSignerAccount<TAccountMintAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      WritableAccount<TAccountFoo>,
+      ReadonlySignerAccount<TAccountBar>,
+      ReadonlySignerAccount<TAccountDelegate>,
+      WritableAccount<TAccountDelegateRecord>,
+      ReadonlyAccount<TAccountTokenOrAtaProgram>
+    ]
+  >;

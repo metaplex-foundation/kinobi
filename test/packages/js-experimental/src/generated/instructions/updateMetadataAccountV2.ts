@@ -20,6 +20,13 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -45,3 +52,17 @@ import {
   getDataV2Decoder,
   getDataV2Encoder,
 } from '../types';
+
+// Output.
+export type UpdateMetadataAccountV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<UpdateMetadataAccountV2InstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMetadata>,
+      ReadonlySignerAccount<TAccountUpdateAuthority>
+    ]
+  >;

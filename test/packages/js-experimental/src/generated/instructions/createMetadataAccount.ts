@@ -24,6 +24,15 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -53,3 +62,27 @@ import {
   getCreatorDecoder,
   getCreatorEncoder,
 } from '../types';
+
+// Output.
+export type CreateMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<CreateMetadataAccountInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountMint>,
+      ReadonlySignerAccount<TAccountMintAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountUpdateAuthority>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;

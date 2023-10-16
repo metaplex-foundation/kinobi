@@ -13,6 +13,14 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -26,3 +34,19 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type FreezeTokenInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<FreezeTokenInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountAccount>,
+      ReadonlyAccount<TAccountMint>,
+      ReadonlySignerAccount<TAccountOwner>
+    ]
+  >;

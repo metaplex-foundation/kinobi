@@ -15,6 +15,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -28,3 +37,47 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type MintFromCandyMachineInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountNftMint extends string = string,
+  TAccountNftMintAuthority extends string = string,
+  TAccountNftMetadata extends string = string,
+  TAccountNftMasterEdition extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionMasterEdition extends string = string,
+  TAccountCollectionUpdateAuthority extends string = string,
+  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRecentSlothashes extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<MintFromCandyMachineInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountCandyMachine>,
+      WritableAccount<TAccountAuthorityPda>,
+      ReadonlySignerAccount<TAccountMintAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      WritableAccount<TAccountNftMint>,
+      ReadonlySignerAccount<TAccountNftMintAuthority>,
+      WritableAccount<TAccountNftMetadata>,
+      WritableAccount<TAccountNftMasterEdition>,
+      ReadonlyAccount<TAccountCollectionAuthorityRecord>,
+      ReadonlyAccount<TAccountCollectionMint>,
+      WritableAccount<TAccountCollectionMetadata>,
+      ReadonlyAccount<TAccountCollectionMasterEdition>,
+      ReadonlyAccount<TAccountCollectionUpdateAuthority>,
+      ReadonlyAccount<TAccountTokenMetadataProgram>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRecentSlothashes>
+    ]
+  >;

@@ -13,6 +13,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -26,3 +35,27 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type VerifySizedCollectionItemInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<VerifySizedCollectionItemInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMetadata>,
+      ReadonlySignerAccount<TAccountCollectionAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountCollectionMint>,
+      WritableAccount<TAccountCollection>,
+      ReadonlyAccount<TAccountCollectionMasterEditionAccount>,
+      ReadonlyAccount<TAccountCollectionAuthorityRecord>
+    ]
+  >;

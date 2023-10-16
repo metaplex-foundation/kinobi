@@ -13,6 +13,14 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -32,3 +40,23 @@ import {
   getVerifyArgsDecoder,
   getVerifyArgsEncoder,
 } from '../types';
+
+// Output.
+export type VerifyInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<VerifyInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMetadata>,
+      WritableSignerAccount<TAccountCollectionAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountAuthorizationRules>,
+      ReadonlyAccount<TAccountAuthorizationRulesProgram>
+    ]
+  >;

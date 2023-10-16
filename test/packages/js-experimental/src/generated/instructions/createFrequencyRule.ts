@@ -19,6 +19,14 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -32,3 +40,19 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type CreateFrequencyRuleInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountFrequencyPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<CreateFrequencyRuleInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableSignerAccount<TAccountPayer>,
+      WritableAccount<TAccountFrequencyPda>,
+      ReadonlyAccount<TAccountSystemProgram>
+    ]
+  >;

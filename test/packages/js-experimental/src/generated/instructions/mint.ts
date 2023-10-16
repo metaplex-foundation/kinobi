@@ -14,6 +14,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -33,3 +42,37 @@ import {
   getMintArgsDecoder,
   getMintArgsEncoder,
 } from '../types';
+
+// Output.
+export type MintInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountToken extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<MintInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountToken>,
+      ReadonlyAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountMasterEdition>,
+      WritableAccount<TAccountMint>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlySignerAccount<TAccountAuthority>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountSysvarInstructions>,
+      ReadonlyAccount<TAccountSplTokenProgram>,
+      ReadonlyAccount<TAccountSplAtaProgram>,
+      ReadonlyAccount<TAccountAuthorizationRulesProgram>,
+      ReadonlyAccount<TAccountAuthorizationRules>
+    ]
+  >;

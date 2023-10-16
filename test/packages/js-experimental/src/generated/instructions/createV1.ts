@@ -19,6 +19,15 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -44,3 +53,31 @@ import {
   getAssetDataDecoder,
   getAssetDataEncoder,
 } from '../types';
+
+// Output.
+export type CreateV1Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+> = IInstruction<TProgram> &
+  IInstructionWithData<CreateV1InstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMetadata>,
+      WritableAccount<TAccountMasterEdition>,
+      WritableSignerAccount<TAccountMint> | WritableAccount<TAccountMint>,
+      ReadonlySignerAccount<TAccountMintAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountUpdateAuthority>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountSysvarInstructions>,
+      ReadonlyAccount<TAccountSplTokenProgram>
+    ]
+  >;

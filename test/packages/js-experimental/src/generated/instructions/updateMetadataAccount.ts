@@ -28,6 +28,13 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
@@ -53,3 +60,17 @@ import {
   getCreatorDecoder,
   getCreatorEncoder,
 } from '../types';
+
+// Output.
+export type UpdateMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<UpdateMetadataAccountInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMetadata>,
+      ReadonlySignerAccount<TAccountUpdateAuthority>
+    ]
+  >;

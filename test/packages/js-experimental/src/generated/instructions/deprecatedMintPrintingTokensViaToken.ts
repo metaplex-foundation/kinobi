@@ -14,6 +14,14 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -33,3 +41,31 @@ import {
   getMintPrintingTokensViaTokenArgsDecoder,
   getMintPrintingTokensViaTokenArgsEncoder,
 } from '../types';
+
+// Output.
+export type DeprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDestination extends string = string,
+  TAccountToken extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+> = IInstruction<TProgram> &
+  IInstructionWithData<DeprecatedMintPrintingTokensViaTokenInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountDestination>,
+      WritableAccount<TAccountToken>,
+      WritableAccount<TAccountOneTimePrintingAuthorizationMint>,
+      WritableAccount<TAccountPrintingMint>,
+      ReadonlySignerAccount<TAccountBurnAuthority>,
+      ReadonlyAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountMasterEdition>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;

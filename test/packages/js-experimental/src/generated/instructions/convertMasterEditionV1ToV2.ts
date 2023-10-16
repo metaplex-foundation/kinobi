@@ -13,6 +13,12 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  WritableAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -25,3 +31,19 @@ import {
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
 } from '../shared';
+
+// Output.
+export type ConvertMasterEditionV1ToV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountOneTimeAuth extends string = string,
+  TAccountPrintingMint extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<ConvertMasterEditionV1ToV2InstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountMasterEdition>,
+      WritableAccount<TAccountOneTimeAuth>,
+      WritableAccount<TAccountPrintingMint>
+    ]
+  >;

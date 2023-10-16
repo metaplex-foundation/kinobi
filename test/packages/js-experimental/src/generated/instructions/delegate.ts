@@ -14,6 +14,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -33,3 +42,39 @@ import {
   getDelegateArgsDecoder,
   getDelegateArgsEncoder,
 } from '../types';
+
+// Output.
+export type DelegateInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegateRecord extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<DelegateInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountDelegateRecord>,
+      ReadonlyAccount<TAccountDelegate>,
+      WritableAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountMasterEdition>,
+      ReadonlyAccount<TAccountMint>,
+      WritableAccount<TAccountToken>,
+      ReadonlySignerAccount<TAccountAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountSysvarInstructions>,
+      ReadonlyAccount<TAccountSplTokenProgram>,
+      ReadonlyAccount<TAccountAuthorizationRulesProgram>,
+      ReadonlyAccount<TAccountAuthorizationRules>
+    ]
+  >;

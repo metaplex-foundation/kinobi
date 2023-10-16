@@ -14,6 +14,15 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -37,3 +46,42 @@ import {
   getPayloadDecoder,
   getPayloadEncoder,
 } from '../types';
+
+// Output.
+export type ValidateInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSet extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountOptRuleSigner1 extends string = string,
+  TAccountOptRuleSigner2 extends string = string,
+  TAccountOptRuleSigner3 extends string = string,
+  TAccountOptRuleSigner4 extends string = string,
+  TAccountOptRuleSigner5 extends string = string,
+  TAccountOptRuleNonsigner1 extends string = string,
+  TAccountOptRuleNonsigner2 extends string = string,
+  TAccountOptRuleNonsigner3 extends string = string,
+  TAccountOptRuleNonsigner4 extends string = string,
+  TAccountOptRuleNonsigner5 extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<ValidateInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableSignerAccount<TAccountPayer>,
+      WritableAccount<TAccountRuleSet>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      (
+        | ReadonlySignerAccount<TAccountOptRuleSigner1>
+        | ReadonlyAccount<TAccountOptRuleSigner1>
+      ),
+      ReadonlySignerAccount<TAccountOptRuleSigner2>,
+      ReadonlySignerAccount<TAccountOptRuleSigner3>,
+      ReadonlySignerAccount<TAccountOptRuleSigner4>,
+      ReadonlySignerAccount<TAccountOptRuleSigner5>,
+      ReadonlyAccount<TAccountOptRuleNonsigner1>,
+      ReadonlyAccount<TAccountOptRuleNonsigner2>,
+      ReadonlyAccount<TAccountOptRuleNonsigner3>,
+      ReadonlyAccount<TAccountOptRuleNonsigner4>,
+      ReadonlyAccount<TAccountOptRuleNonsigner5>
+    ]
+  >;

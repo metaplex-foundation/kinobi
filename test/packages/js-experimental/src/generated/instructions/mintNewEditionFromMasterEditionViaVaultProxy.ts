@@ -13,6 +13,15 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  WritableAccount,
+  WritableSignerAccount,
+} from '@solana/instructions';
+import {
   Context,
   Pda,
   PublicKey,
@@ -32,3 +41,47 @@ import {
   getMintNewEditionFromMasterEditionViaTokenArgsDecoder,
   getMintNewEditionFromMasterEditionViaTokenArgsEncoder,
 } from '../types';
+
+// Output.
+export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountVaultAuthority extends string = string,
+  TAccountSafetyDepositStore extends string = string,
+  TAccountSafetyDepositBox extends string = string,
+  TAccountVault extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenVaultProgram extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+> = IInstruction<TProgram> &
+  IInstructionWithData<MintNewEditionFromMasterEditionViaVaultProxyInstructionData> &
+  IInstructionWithAccounts<
+    [
+      WritableAccount<TAccountNewMetadata>,
+      WritableAccount<TAccountNewEdition>,
+      WritableAccount<TAccountMasterEdition>,
+      WritableAccount<TAccountNewMint>,
+      WritableAccount<TAccountEditionMarkPda>,
+      ReadonlySignerAccount<TAccountNewMintAuthority>,
+      WritableSignerAccount<TAccountPayer>,
+      ReadonlySignerAccount<TAccountVaultAuthority>,
+      ReadonlyAccount<TAccountSafetyDepositStore>,
+      ReadonlyAccount<TAccountSafetyDepositBox>,
+      ReadonlyAccount<TAccountVault>,
+      ReadonlyAccount<TAccountNewMetadataUpdateAuthority>,
+      ReadonlyAccount<TAccountMetadata>,
+      ReadonlyAccount<TAccountTokenProgram>,
+      ReadonlyAccount<TAccountTokenVaultProgram>,
+      ReadonlyAccount<TAccountSystemProgram>,
+      ReadonlyAccount<TAccountRent>
+    ]
+  >;
