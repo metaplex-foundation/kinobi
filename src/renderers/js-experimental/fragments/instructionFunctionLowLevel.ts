@@ -28,10 +28,21 @@ export function getInstructionFunctionLowLevelFragment(
     (renders) => renders.join(', ')
   );
 
+  const accounts = instructionNode.accounts.map((account) => {
+    const typeParam = `TAccount${pascalCase(account.name)}`;
+
+    return {
+      ...account,
+      typeParam,
+      defaultRole: getDefaultRole(account),
+    };
+  });
+
   return fragmentFromTemplate('instructionFunctionLowLevel.njk', {
     instruction: instructionNode,
     program: programNode,
     hasAccounts,
+    accounts,
     hasData,
     hasArgs,
     argsType,
@@ -44,4 +55,12 @@ export function getInstructionFunctionLowLevelFragment(
     .addImports('solanaInstructions', [
       ...(hasAccounts ? ['AccountRole'] : []),
     ]);
+}
+
+function getDefaultRole(account: nodes.InstructionAccountNode): string {
+  if (account.isSigner === true && account.isWritable)
+    return 'AccountRole.WRITABLE_SIGNER';
+  if (account.isSigner === true) return 'AccountRole.READONLY_SIGNER';
+  if (account.isWritable) return 'AccountRole.WRITABLE';
+  return 'AccountRole.READONLY';
 }

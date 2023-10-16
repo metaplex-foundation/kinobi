@@ -6,8 +6,8 @@ export function {{ instruction.name | camelCase }}Instruction<
 >(
   {% if hasAccounts %}
     accounts: {
-    {% for account in instruction.accounts %}
-      {{ account.name | camelCase }}: TAccount{{ account.name | pascalCase }} extends string ? Base58EncodedAddress<TAccount{{ account.name | pascalCase }}> : TAccount{{ account.name | pascalCase }};
+    {% for account in accounts %}
+      {{ account.name | camelCase }}: {{ account.typeParam }} extends string ? Base58EncodedAddress<{{ account.typeParam }}> : {{ account.typeParam }};
     {% endfor %}
     },
   {% endif %}
@@ -17,25 +17,15 @@ export function {{ instruction.name | camelCase }}Instruction<
   programAddress: Base58EncodedAddress<TProgram> = "{{ program.publicKey }}" as Base58EncodedAddress<TProgram>,
 ): {{ instruction.name | pascalCase }}Instruction<
   TProgram,
-  {% for account in instruction.accounts %}
-    TAccount{{ account.name | pascalCase }},
+  {% for account in accounts %}
+    {{ account.typeParam }},
   {% endfor %}
 > {
   return {
     {% if hasAccounts %}
       accounts: [
-        {% for account in instruction.accounts %}
-          accountMetaWithDefault(accounts.{{ account.name | camelCase }}, 
-            {%- if account.isSigner == true and account.isWritable -%}
-              AccountRole.WRITABLE_SIGNER
-            {%- elif account.isSigner == true -%}
-              AccountRole.READONLY_SIGNER
-            {%- elif account.isWritable -%}
-              AccountRole.WRITABLE
-            {%- else -%}
-              AccountRole.READONLY
-            {% endif %}
-          ),
+        {% for account in accounts %}
+          accountMetaWithDefault(accounts.{{ account.name | camelCase }}, {{ account.defaultRole }}),
         {% endfor %}
       ],
     {% endif %}
