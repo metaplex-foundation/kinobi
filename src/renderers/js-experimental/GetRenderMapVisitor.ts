@@ -139,10 +139,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       .mergeWith(...program.accounts.map((account) => visit(account, this)))
       .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
 
-    // TODO: remove when types are sorted.
-    this.program = null;
-    return renderMap;
-
     // Internal programs are support programs that
     // were added to fill missing types or accounts.
     // They don't need to render anything else.
