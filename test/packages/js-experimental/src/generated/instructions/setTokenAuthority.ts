@@ -118,3 +118,18 @@ export function getSetTokenAuthorityInstructionDataCodec(): Codec<
     getSetTokenAuthorityInstructionDataDecoder()
   );
 }
+
+export function setTokenAuthorityInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountOwned extends string = string,
+  TAccountOwner extends string = string
+>(
+  accounts: {
+    owned: Base58EncodedAddress<TAccountOwned>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+  },
+  args: SetTokenAuthorityInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+): SetTokenAuthorityInstruction<TProgram, TAccountOwned, TAccountOwner> {
+  // ...
+}

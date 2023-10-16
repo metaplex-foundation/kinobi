@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -101,4 +102,46 @@ export function getBurnEditionNftInstructionDataCodec(): Codec<
     getBurnEditionNftInstructionDataEncoder(),
     getBurnEditionNftInstructionDataDecoder()
   );
+}
+
+export function burnEditionNftInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountPrintEditionMint extends string = string,
+  TAccountMasterEditionMint extends string = string,
+  TAccountPrintEditionTokenAccount extends string = string,
+  TAccountMasterEditionTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountPrintEditionAccount extends string = string,
+  TAccountEditionMarkerAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+    printEditionMint: Base58EncodedAddress<TAccountPrintEditionMint>;
+    masterEditionMint: Base58EncodedAddress<TAccountMasterEditionMint>;
+    printEditionTokenAccount: Base58EncodedAddress<TAccountPrintEditionTokenAccount>;
+    masterEditionTokenAccount: Base58EncodedAddress<TAccountMasterEditionTokenAccount>;
+    masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+    printEditionAccount: Base58EncodedAddress<TAccountPrintEditionAccount>;
+    editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
+    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): BurnEditionNftInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountOwner,
+  TAccountPrintEditionMint,
+  TAccountMasterEditionMint,
+  TAccountPrintEditionTokenAccount,
+  TAccountMasterEditionTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountPrintEditionAccount,
+  TAccountEditionMarkerAccount,
+  TAccountSplTokenProgram
+> {
+  // ...
 }

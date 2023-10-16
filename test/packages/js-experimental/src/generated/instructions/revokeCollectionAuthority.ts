@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -96,4 +97,31 @@ export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<
     getRevokeCollectionAuthorityInstructionDataEncoder(),
     getRevokeCollectionAuthorityInstructionDataDecoder()
   );
+}
+
+export function revokeCollectionAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountDelegateAuthority extends string = string,
+  TAccountRevokeAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string
+>(
+  accounts: {
+    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+    delegateAuthority: Base58EncodedAddress<TAccountDelegateAuthority>;
+    revokeAuthority: Base58EncodedAddress<TAccountRevokeAuthority>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    mint: Base58EncodedAddress<TAccountMint>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): RevokeCollectionAuthorityInstruction<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountDelegateAuthority,
+  TAccountRevokeAuthority,
+  TAccountMetadata,
+  TAccountMint
+> {
+  // ...
 }

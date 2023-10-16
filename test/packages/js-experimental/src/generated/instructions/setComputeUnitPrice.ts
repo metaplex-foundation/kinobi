@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -81,4 +82,13 @@ export function getSetComputeUnitPriceInstructionDataCodec(): Codec<
     getSetComputeUnitPriceInstructionDataEncoder(),
     getSetComputeUnitPriceInstructionDataDecoder()
   );
+}
+
+export function setComputeUnitPriceInstruction<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  args: SetComputeUnitPriceInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+): SetComputeUnitPriceInstruction<TProgram> {
+  // ...
 }

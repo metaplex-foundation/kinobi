@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -119,4 +120,50 @@ export function getApproveUseAuthorityInstructionDataCodec(): Codec<
     getApproveUseAuthorityInstructionDataEncoder(),
     getApproveUseAuthorityInstructionDataDecoder()
   );
+}
+
+export function approveUseAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountOwner extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUser extends string = string,
+  TAccountOwnerTokenAccount extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountBurner extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  accounts: {
+    useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    user: Base58EncodedAddress<TAccountUser>;
+    ownerTokenAccount: Base58EncodedAddress<TAccountOwnerTokenAccount>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    burner: Base58EncodedAddress<TAccountBurner>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: ApproveUseAuthorityInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): ApproveUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  TAccountOwner,
+  TAccountPayer,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountBurner,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
+> {
+  // ...
 }

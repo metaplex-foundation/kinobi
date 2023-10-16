@@ -113,3 +113,45 @@ export function getDummyInstructionDataCodec(): Codec<
     getDummyInstructionDataDecoder()
   );
 }
+
+export function dummyInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountFoo extends string = string,
+  TAccountBar extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountDelegate extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountTokenOrAtaProgram extends string = string
+>(
+  accounts: {
+    edition: Base58EncodedAddress<TAccountEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    foo: Base58EncodedAddress<TAccountFoo>;
+    bar: Base58EncodedAddress<TAccountBar>;
+    delegate: Base58EncodedAddress<TAccountDelegate>;
+    delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+    tokenOrAtaProgram: Base58EncodedAddress<TAccountTokenOrAtaProgram>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+): DummyInstruction<
+  TProgram,
+  TAccountEdition,
+  TAccountMint,
+  TAccountUpdateAuthority,
+  TAccountMintAuthority,
+  TAccountPayer,
+  TAccountFoo,
+  TAccountBar,
+  TAccountDelegate,
+  TAccountDelegateRecord,
+  TAccountTokenOrAtaProgram
+> {
+  // ...
+}

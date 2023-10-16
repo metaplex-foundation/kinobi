@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -136,4 +137,59 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataCodec()
     getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder(),
     getMintNewEditionFromMasterEditionViaTokenInstructionDataDecoder()
   );
+}
+
+export function mintNewEditionFromMasterEditionViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenAccountOwner extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  accounts: {
+    newMetadata: Base58EncodedAddress<TAccountNewMetadata>;
+    newEdition: Base58EncodedAddress<TAccountNewEdition>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    newMint: Base58EncodedAddress<TAccountNewMint>;
+    editionMarkPda: Base58EncodedAddress<TAccountEditionMarkPda>;
+    newMintAuthority: Base58EncodedAddress<TAccountNewMintAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    tokenAccountOwner: Base58EncodedAddress<TAccountTokenAccountOwner>;
+    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+    newMetadataUpdateAuthority: Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): MintNewEditionFromMasterEditionViaTokenInstruction<
+  TProgram,
+  TAccountNewMetadata,
+  TAccountNewEdition,
+  TAccountMasterEdition,
+  TAccountNewMint,
+  TAccountEditionMarkPda,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountTokenAccountOwner,
+  TAccountTokenAccount,
+  TAccountNewMetadataUpdateAuthority,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
+> {
+  // ...
 }

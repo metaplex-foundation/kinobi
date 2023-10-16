@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -125,4 +125,64 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
     getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder(),
     getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataDecoder()
   );
+}
+
+export function deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountMasterTokenAccount extends string = string,
+  TAccountEditionMarker extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMasterUpdateAuthority extends string = string,
+  TAccountMasterMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string = string
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    edition: Base58EncodedAddress<TAccountEdition>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+    masterTokenAccount: Base58EncodedAddress<TAccountMasterTokenAccount>;
+    editionMarker: Base58EncodedAddress<TAccountEditionMarker>;
+    burnAuthority: Base58EncodedAddress<TAccountBurnAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    masterUpdateAuthority: Base58EncodedAddress<TAccountMasterUpdateAuthority>;
+    masterMetadata: Base58EncodedAddress<TAccountMasterMetadata>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+    reservationList: Base58EncodedAddress<TAccountReservationList>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountEdition,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountMintAuthority,
+  TAccountPrintingMint,
+  TAccountMasterTokenAccount,
+  TAccountEditionMarker,
+  TAccountBurnAuthority,
+  TAccountPayer,
+  TAccountMasterUpdateAuthority,
+  TAccountMasterMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent,
+  TAccountReservationList
+> {
+  // ...
 }

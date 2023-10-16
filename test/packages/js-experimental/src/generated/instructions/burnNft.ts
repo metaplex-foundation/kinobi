@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -94,4 +95,37 @@ export function getBurnNftInstructionDataCodec(): Codec<
     getBurnNftInstructionDataEncoder(),
     getBurnNftInstructionDataDecoder()
   );
+}
+
+export function burnNftInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+    masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+    collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): BurnNftInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountOwner,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountSplTokenProgram,
+  TAccountCollectionMetadata
+> {
+  // ...
 }

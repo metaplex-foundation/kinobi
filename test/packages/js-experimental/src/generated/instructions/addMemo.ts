@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   getStructDecoder,
@@ -52,4 +53,13 @@ export function getAddMemoInstructionDataCodec(): Codec<
     getAddMemoInstructionDataEncoder(),
     getAddMemoInstructionDataDecoder()
   );
+}
+
+export function addMemoInstruction<
+  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
+>(
+  args: AddMemoInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo' as Base58EncodedAddress<TProgram>
+): AddMemoInstruction<TProgram> {
+  // ...
 }

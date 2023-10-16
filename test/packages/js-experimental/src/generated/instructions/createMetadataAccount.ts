@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -175,4 +175,38 @@ export function getCreateMetadataAccountInstructionDataCodec(): Codec<
     getCreateMetadataAccountInstructionDataEncoder(),
     getCreateMetadataAccountInstructionDataDecoder()
   );
+}
+
+export function createMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: CreateMetadataAccountInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): CreateMetadataAccountInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountMintAuthority,
+  TAccountPayer,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
+> {
+  // ...
 }

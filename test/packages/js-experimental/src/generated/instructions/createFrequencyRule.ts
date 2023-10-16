@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -116,4 +117,26 @@ export function getCreateFrequencyRuleInstructionDataCodec(): Codec<
     getCreateFrequencyRuleInstructionDataEncoder(),
     getCreateFrequencyRuleInstructionDataDecoder()
   );
+}
+
+export function createFrequencyRuleInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountFrequencyPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  accounts: {
+    payer: Base58EncodedAddress<TAccountPayer>;
+    frequencyPda: Base58EncodedAddress<TAccountFrequencyPda>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  },
+  args: CreateFrequencyRuleInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+): CreateFrequencyRuleInstruction<
+  TProgram,
+  TAccountPayer,
+  TAccountFrequencyPda,
+  TAccountSystemProgram
+> {
+  // ...
 }

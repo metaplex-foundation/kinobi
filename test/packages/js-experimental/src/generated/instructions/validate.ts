@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -140,4 +141,56 @@ export function getValidateInstructionDataCodec(): Codec<
     getValidateInstructionDataEncoder(),
     getValidateInstructionDataDecoder()
   );
+}
+
+export function validateInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSet extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountOptRuleSigner1 extends string = string,
+  TAccountOptRuleSigner2 extends string = string,
+  TAccountOptRuleSigner3 extends string = string,
+  TAccountOptRuleSigner4 extends string = string,
+  TAccountOptRuleSigner5 extends string = string,
+  TAccountOptRuleNonsigner1 extends string = string,
+  TAccountOptRuleNonsigner2 extends string = string,
+  TAccountOptRuleNonsigner3 extends string = string,
+  TAccountOptRuleNonsigner4 extends string = string,
+  TAccountOptRuleNonsigner5 extends string = string
+>(
+  accounts: {
+    payer: Base58EncodedAddress<TAccountPayer>;
+    ruleSet: Base58EncodedAddress<TAccountRuleSet>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    optRuleSigner1: Base58EncodedAddress<TAccountOptRuleSigner1>;
+    optRuleSigner2: Base58EncodedAddress<TAccountOptRuleSigner2>;
+    optRuleSigner3: Base58EncodedAddress<TAccountOptRuleSigner3>;
+    optRuleSigner4: Base58EncodedAddress<TAccountOptRuleSigner4>;
+    optRuleSigner5: Base58EncodedAddress<TAccountOptRuleSigner5>;
+    optRuleNonsigner1: Base58EncodedAddress<TAccountOptRuleNonsigner1>;
+    optRuleNonsigner2: Base58EncodedAddress<TAccountOptRuleNonsigner2>;
+    optRuleNonsigner3: Base58EncodedAddress<TAccountOptRuleNonsigner3>;
+    optRuleNonsigner4: Base58EncodedAddress<TAccountOptRuleNonsigner4>;
+    optRuleNonsigner5: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
+  },
+  args: ValidateInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+): ValidateInstruction<
+  TProgram,
+  TAccountPayer,
+  TAccountRuleSet,
+  TAccountSystemProgram,
+  TAccountOptRuleSigner1,
+  TAccountOptRuleSigner2,
+  TAccountOptRuleSigner3,
+  TAccountOptRuleSigner4,
+  TAccountOptRuleSigner5,
+  TAccountOptRuleNonsigner1,
+  TAccountOptRuleNonsigner2,
+  TAccountOptRuleNonsigner3,
+  TAccountOptRuleNonsigner4,
+  TAccountOptRuleNonsigner5
+> {
+  // ...
 }

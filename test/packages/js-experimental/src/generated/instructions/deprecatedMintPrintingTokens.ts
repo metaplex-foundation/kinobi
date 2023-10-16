@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -122,4 +122,38 @@ export function getDeprecatedMintPrintingTokensInstructionDataCodec(): Codec<
     getDeprecatedMintPrintingTokensInstructionDataEncoder(),
     getDeprecatedMintPrintingTokensInstructionDataDecoder()
   );
+}
+
+export function deprecatedMintPrintingTokensInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDestination extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    destination: Base58EncodedAddress<TAccountDestination>;
+    printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: DeprecatedMintPrintingTokensInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): DeprecatedMintPrintingTokensInstruction<
+  TProgram,
+  TAccountDestination,
+  TAccountPrintingMint,
+  TAccountUpdateAuthority,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
+> {
+  // ...
 }

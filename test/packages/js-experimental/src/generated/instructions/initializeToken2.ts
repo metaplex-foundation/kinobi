@@ -103,3 +103,25 @@ export function getInitializeToken2InstructionDataCodec(): Codec<
     getInitializeToken2InstructionDataDecoder()
   );
 }
+
+export function initializeToken2Instruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    account: Base58EncodedAddress<TAccountAccount>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: InitializeToken2InstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+): InitializeToken2Instruction<
+  TProgram,
+  TAccountAccount,
+  TAccountMint,
+  TAccountRent
+> {
+  // ...
+}

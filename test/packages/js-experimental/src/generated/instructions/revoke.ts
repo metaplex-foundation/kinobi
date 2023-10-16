@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -123,4 +123,56 @@ export function getRevokeInstructionDataCodec(): Codec<
     getRevokeInstructionDataEncoder(),
     getRevokeInstructionDataDecoder()
   );
+}
+
+export function revokeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegateRecord extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  accounts: {
+    delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+    delegate: Base58EncodedAddress<TAccountDelegate>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    token: Base58EncodedAddress<TAccountToken>;
+    authority: Base58EncodedAddress<TAccountAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+    authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+    authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  },
+  args: RevokeInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): RevokeInstruction<
+  TProgram,
+  TAccountDelegateRecord,
+  TAccountDelegate,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountToken,
+  TAccountAuthority,
+  TAccountPayer,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
+> {
+  // ...
 }

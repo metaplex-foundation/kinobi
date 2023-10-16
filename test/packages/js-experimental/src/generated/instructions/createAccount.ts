@@ -105,3 +105,18 @@ export function getCreateAccountInstructionDataCodec(): Codec<
     getCreateAccountInstructionDataDecoder()
   );
 }
+
+export function createAccountInstruction<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountPayer extends string = string,
+  TAccountNewAccount extends string = string
+>(
+  accounts: {
+    payer: Base58EncodedAddress<TAccountPayer>;
+    newAccount: Base58EncodedAddress<TAccountNewAccount>;
+  },
+  args: CreateAccountInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount> {
+  // ...
+}

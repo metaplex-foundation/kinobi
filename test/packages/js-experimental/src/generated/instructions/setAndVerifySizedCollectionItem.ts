@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -103,4 +104,40 @@ export function getSetAndVerifySizedCollectionItemInstructionDataCodec(): Codec<
     getSetAndVerifySizedCollectionItemInstructionDataEncoder(),
     getSetAndVerifySizedCollectionItemInstructionDataDecoder()
   );
+}
+
+export function setAndVerifySizedCollectionItemInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    collectionAuthority: Base58EncodedAddress<TAccountCollectionAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+    collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+    collection: Base58EncodedAddress<TAccountCollection>;
+    collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
+    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): SetAndVerifySizedCollectionItemInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountCollectionAuthority,
+  TAccountPayer,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
+> {
+  // ...
 }

@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -87,4 +88,13 @@ export function getRequestHeapFrameInstructionDataCodec(): Codec<
     getRequestHeapFrameInstructionDataEncoder(),
     getRequestHeapFrameInstructionDataDecoder()
   );
+}
+
+export function requestHeapFrameInstruction<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  args: RequestHeapFrameInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+): RequestHeapFrameInstruction<TProgram> {
+  // ...
 }

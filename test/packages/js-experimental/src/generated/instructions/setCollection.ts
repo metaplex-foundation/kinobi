@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -115,4 +116,58 @@ export function getSetCollectionInstructionDataCodec(): Codec<
     getSetCollectionInstructionDataEncoder(),
     getSetCollectionInstructionDataDecoder()
   );
+}
+
+export function setCollectionInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionUpdateAuthority extends string = string,
+  TAccountNewCollectionMetadata extends string = string,
+  TAccountNewCollectionMint extends string = string,
+  TAccountNewCollectionMasterEdition extends string = string,
+  TAccountNewCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  accounts: {
+    candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+    authority: Base58EncodedAddress<TAccountAuthority>;
+    authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+    collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+    newCollectionUpdateAuthority: Base58EncodedAddress<TAccountNewCollectionUpdateAuthority>;
+    newCollectionMetadata: Base58EncodedAddress<TAccountNewCollectionMetadata>;
+    newCollectionMint: Base58EncodedAddress<TAccountNewCollectionMint>;
+    newCollectionMasterEdition: Base58EncodedAddress<TAccountNewCollectionMasterEdition>;
+    newCollectionAuthorityRecord: Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>;
+    tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+): SetCollectionInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthority,
+  TAccountAuthorityPda,
+  TAccountPayer,
+  TAccountCollectionMint,
+  TAccountCollectionMetadata,
+  TAccountCollectionAuthorityRecord,
+  TAccountNewCollectionUpdateAuthority,
+  TAccountNewCollectionMetadata,
+  TAccountNewCollectionMint,
+  TAccountNewCollectionMasterEdition,
+  TAccountNewCollectionAuthorityRecord,
+  TAccountTokenMetadataProgram,
+  TAccountSystemProgram
+> {
+  // ...
 }

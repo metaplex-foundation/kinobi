@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -88,4 +88,28 @@ export function getInitializeTokenInstructionDataCodec(): Codec<
     getInitializeTokenInstructionDataEncoder(),
     getInitializeTokenInstructionDataDecoder()
   );
+}
+
+export function initializeTokenInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    account: Base58EncodedAddress<TAccountAccount>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+): InitializeTokenInstruction<
+  TProgram,
+  TAccountAccount,
+  TAccountMint,
+  TAccountOwner,
+  TAccountRent
+> {
+  // ...
 }

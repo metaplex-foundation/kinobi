@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -128,4 +128,56 @@ export function getDeprecatedCreateMasterEditionInstructionDataCodec(): Codec<
     getDeprecatedCreateMasterEditionInstructionDataEncoder(),
     getDeprecatedCreateMasterEditionInstructionDataDecoder()
   );
+}
+
+export function deprecatedCreateMasterEditionInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPrintingMintAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+>(
+  accounts: {
+    edition: Base58EncodedAddress<TAccountEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+    oneTimePrintingAuthorizationMint: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+    printingMintAuthority: Base58EncodedAddress<TAccountPrintingMintAuthority>;
+    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+    oneTimePrintingAuthorizationMintAuthority: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMintAuthority>;
+  },
+  args: DeprecatedCreateMasterEditionInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): DeprecatedCreateMasterEditionInstruction<
+  TProgram,
+  TAccountEdition,
+  TAccountMint,
+  TAccountPrintingMint,
+  TAccountOneTimePrintingAuthorizationMint,
+  TAccountUpdateAuthority,
+  TAccountPrintingMintAuthority,
+  TAccountMintAuthority,
+  TAccountMetadata,
+  TAccountPayer,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent,
+  TAccountOneTimePrintingAuthorizationMintAuthority
+> {
+  // ...
 }

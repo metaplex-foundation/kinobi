@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -112,4 +113,32 @@ export function getBubblegumSetCollectionSizeInstructionDataCodec(): Codec<
     getBubblegumSetCollectionSizeInstructionDataEncoder(),
     getBubblegumSetCollectionSizeInstructionDataDecoder()
   );
+}
+
+export function bubblegumSetCollectionSizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountBubblegumSigner extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  accounts: {
+    collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+    collectionAuthority: Base58EncodedAddress<TAccountCollectionAuthority>;
+    collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+    bubblegumSigner: Base58EncodedAddress<TAccountBubblegumSigner>;
+    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  },
+  args: BubblegumSetCollectionSizeInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): BubblegumSetCollectionSizeInstruction<
+  TProgram,
+  TAccountCollectionMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountBubblegumSigner,
+  TAccountCollectionAuthorityRecord
+> {
+  // ...
 }

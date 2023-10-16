@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -125,4 +125,56 @@ export function getTransferOutOfEscrowInstructionDataCodec(): Codec<
     getTransferOutOfEscrowInstructionDataEncoder(),
     getTransferOutOfEscrowInstructionDataDecoder()
   );
+}
+
+export function transferOutOfEscrowInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAttributeMint extends string = string,
+  TAccountAttributeSrc extends string = string,
+  TAccountAttributeDst extends string = string,
+  TAccountEscrowMint extends string = string,
+  TAccountEscrowAccount extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string = string
+>(
+  accounts: {
+    escrow: Base58EncodedAddress<TAccountEscrow>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    attributeMint: Base58EncodedAddress<TAccountAttributeMint>;
+    attributeSrc: Base58EncodedAddress<TAccountAttributeSrc>;
+    attributeDst: Base58EncodedAddress<TAccountAttributeDst>;
+    escrowMint: Base58EncodedAddress<TAccountEscrowMint>;
+    escrowAccount: Base58EncodedAddress<TAccountEscrowAccount>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+    authority: Base58EncodedAddress<TAccountAuthority>;
+  },
+  args: TransferOutOfEscrowInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): TransferOutOfEscrowInstruction<
+  TProgram,
+  TAccountEscrow,
+  TAccountMetadata,
+  TAccountPayer,
+  TAccountAttributeMint,
+  TAccountAttributeSrc,
+  TAccountAttributeDst,
+  TAccountEscrowMint,
+  TAccountEscrowAccount,
+  TAccountSystemProgram,
+  TAccountAtaProgram,
+  TAccountTokenProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthority
+> {
+  // ...
 }

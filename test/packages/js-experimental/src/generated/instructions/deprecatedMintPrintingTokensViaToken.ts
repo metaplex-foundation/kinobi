@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -126,4 +126,44 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataCodec(): C
     getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder(),
     getDeprecatedMintPrintingTokensViaTokenInstructionDataDecoder()
   );
+}
+
+export function deprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDestination extends string = string,
+  TAccountToken extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    destination: Base58EncodedAddress<TAccountDestination>;
+    token: Base58EncodedAddress<TAccountToken>;
+    oneTimePrintingAuthorizationMint: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>;
+    printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+    burnAuthority: Base58EncodedAddress<TAccountBurnAuthority>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): DeprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram,
+  TAccountDestination,
+  TAccountToken,
+  TAccountOneTimePrintingAuthorizationMint,
+  TAccountPrintingMint,
+  TAccountBurnAuthority,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
+> {
+  // ...
 }

@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -92,4 +93,25 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
     getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder(),
     getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder()
   );
+}
+
+export function updatePrimarySaleHappenedViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountToken extends string = string
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+    token: Base58EncodedAddress<TAccountToken>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): UpdatePrimarySaleHappenedViaTokenInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountOwner,
+  TAccountToken
+> {
+  // ...
 }

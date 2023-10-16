@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -148,4 +149,68 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataCo
     getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder(),
     getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataDecoder()
   );
+}
+
+export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountVaultAuthority extends string = string,
+  TAccountSafetyDepositStore extends string = string,
+  TAccountSafetyDepositBox extends string = string,
+  TAccountVault extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenVaultProgram extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  accounts: {
+    newMetadata: Base58EncodedAddress<TAccountNewMetadata>;
+    newEdition: Base58EncodedAddress<TAccountNewEdition>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    newMint: Base58EncodedAddress<TAccountNewMint>;
+    editionMarkPda: Base58EncodedAddress<TAccountEditionMarkPda>;
+    newMintAuthority: Base58EncodedAddress<TAccountNewMintAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    vaultAuthority: Base58EncodedAddress<TAccountVaultAuthority>;
+    safetyDepositStore: Base58EncodedAddress<TAccountSafetyDepositStore>;
+    safetyDepositBox: Base58EncodedAddress<TAccountSafetyDepositBox>;
+    vault: Base58EncodedAddress<TAccountVault>;
+    newMetadataUpdateAuthority: Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    tokenVaultProgram: Base58EncodedAddress<TAccountTokenVaultProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): MintNewEditionFromMasterEditionViaVaultProxyInstruction<
+  TProgram,
+  TAccountNewMetadata,
+  TAccountNewEdition,
+  TAccountMasterEdition,
+  TAccountNewMint,
+  TAccountEditionMarkPda,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountVaultAuthority,
+  TAccountSafetyDepositStore,
+  TAccountSafetyDepositBox,
+  TAccountVault,
+  TAccountNewMetadataUpdateAuthority,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountTokenVaultProgram,
+  TAccountSystemProgram,
+  TAccountRent
+> {
+  // ...
 }

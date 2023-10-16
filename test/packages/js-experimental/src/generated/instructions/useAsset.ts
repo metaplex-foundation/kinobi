@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -117,4 +118,50 @@ export function getUseAssetInstructionDataCodec(): Codec<
     getUseAssetInstructionDataEncoder(),
     getUseAssetInstructionDataDecoder()
   );
+}
+
+export function useAssetInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUseAuthority extends string = string,
+  TAccountOwner extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    useAuthority: Base58EncodedAddress<TAccountUseAuthority>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+    ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+    authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+    authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  },
+  args: UseAssetInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): UseAssetInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  TAccountUseAuthority,
+  TAccountOwner,
+  TAccountSplTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountUseAuthorityRecord,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
+> {
+  // ...
 }

@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -75,4 +76,16 @@ export function getSyncNativeInstructionDataCodec(): Codec<
     getSyncNativeInstructionDataEncoder(),
     getSyncNativeInstructionDataDecoder()
   );
+}
+
+export function syncNativeInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>(
+  accounts: {
+    account: Base58EncodedAddress<TAccountAccount>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+): SyncNativeInstruction<TProgram, TAccountAccount> {
+  // ...
 }

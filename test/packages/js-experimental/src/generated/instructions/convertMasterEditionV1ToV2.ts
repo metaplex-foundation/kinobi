@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -89,4 +90,25 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
     getConvertMasterEditionV1ToV2InstructionDataEncoder(),
     getConvertMasterEditionV1ToV2InstructionDataDecoder()
   );
+}
+
+export function convertMasterEditionV1ToV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountOneTimeAuth extends string = string,
+  TAccountPrintingMint extends string = string
+>(
+  accounts: {
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    oneTimeAuth: Base58EncodedAddress<TAccountOneTimeAuth>;
+    printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): ConvertMasterEditionV1ToV2Instruction<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountOneTimeAuth,
+  TAccountPrintingMint
+> {
+  // ...
 }

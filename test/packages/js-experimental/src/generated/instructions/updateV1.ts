@@ -269,3 +269,46 @@ export function getUpdateV1InstructionDataCodec(): Codec<
     getUpdateV1InstructionDataDecoder()
   );
 }
+
+export function updateV1Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountToken extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  accounts: {
+    authority: Base58EncodedAddress<TAccountAuthority>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+    token: Base58EncodedAddress<TAccountToken>;
+    delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+    authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+    authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  },
+  args: UpdateV1InstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): UpdateV1Instruction<
+  TProgram,
+  TAccountAuthority,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountToken,
+  TAccountDelegateRecord,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
+> {
+  // ...
+}

@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -97,4 +98,19 @@ export function getTransferSolInstructionDataCodec(): Codec<
     getTransferSolInstructionDataEncoder(),
     getTransferSolInstructionDataDecoder()
   );
+}
+
+export function transferSolInstruction<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  accounts: {
+    source: Base58EncodedAddress<TAccountSource>;
+    destination: Base58EncodedAddress<TAccountDestination>;
+  },
+  args: TransferSolInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination> {
+  // ...
 }

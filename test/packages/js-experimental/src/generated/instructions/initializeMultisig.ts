@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -90,4 +90,19 @@ export function getInitializeMultisigInstructionDataCodec(): Codec<
     getInitializeMultisigInstructionDataEncoder(),
     getInitializeMultisigInstructionDataDecoder()
   );
+}
+
+export function initializeMultisigInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    multisig: Base58EncodedAddress<TAccountMultisig>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: InitializeMultisigInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+): InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent> {
+  // ...
 }

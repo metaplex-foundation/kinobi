@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -101,4 +101,43 @@ export function getCreateEscrowAccountInstructionDataCodec(): Codec<
     getCreateEscrowAccountInstructionDataEncoder(),
     getCreateEscrowAccountInstructionDataDecoder()
   );
+}
+
+export function createEscrowAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string = string
+>(
+  accounts: {
+    escrow: Base58EncodedAddress<TAccountEscrow>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+    edition: Base58EncodedAddress<TAccountEdition>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+    authority: Base58EncodedAddress<TAccountAuthority>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): CreateEscrowAccountInstruction<
+  TProgram,
+  TAccountEscrow,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountPayer,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthority
+> {
+  // ...
 }

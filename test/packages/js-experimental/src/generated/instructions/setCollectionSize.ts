@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -106,4 +107,29 @@ export function getSetCollectionSizeInstructionDataCodec(): Codec<
     getSetCollectionSizeInstructionDataEncoder(),
     getSetCollectionSizeInstructionDataDecoder()
   );
+}
+
+export function setCollectionSizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  accounts: {
+    collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+    collectionAuthority: Base58EncodedAddress<TAccountCollectionAuthority>;
+    collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  },
+  args: SetCollectionSizeInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): SetCollectionSizeInstruction<
+  TProgram,
+  TAccountCollectionMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
+> {
+  // ...
 }

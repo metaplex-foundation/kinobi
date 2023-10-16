@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -124,4 +125,50 @@ export function getInitializeInstructionDataCodec(): Codec<
     getInitializeInstructionDataEncoder(),
     getInitializeInstructionDataDecoder()
   );
+}
+
+export function initializeInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMasterEdition extends string = string,
+  TAccountCollectionUpdateAuthority extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  accounts: {
+    candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+    authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
+    authority: Base58EncodedAddress<TAccountAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+    collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+    collectionMasterEdition: Base58EncodedAddress<TAccountCollectionMasterEdition>;
+    collectionUpdateAuthority: Base58EncodedAddress<TAccountCollectionUpdateAuthority>;
+    collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+    tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  },
+  args: InitializeInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+): InitializeInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthorityPda,
+  TAccountAuthority,
+  TAccountPayer,
+  TAccountCollectionMetadata,
+  TAccountCollectionMint,
+  TAccountCollectionMasterEdition,
+  TAccountCollectionUpdateAuthority,
+  TAccountCollectionAuthorityRecord,
+  TAccountTokenMetadataProgram,
+  TAccountSystemProgram
+> {
+  // ...
 }

@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -99,4 +100,43 @@ export function getRevokeUseAuthorityInstructionDataCodec(): Codec<
     getRevokeUseAuthorityInstructionDataEncoder(),
     getRevokeUseAuthorityInstructionDataDecoder()
   );
+}
+
+export function revokeUseAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountOwner extends string = string,
+  TAccountUser extends string = string,
+  TAccountOwnerTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  accounts: {
+    useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+    owner: Base58EncodedAddress<TAccountOwner>;
+    user: Base58EncodedAddress<TAccountUser>;
+    ownerTokenAccount: Base58EncodedAddress<TAccountOwnerTokenAccount>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): RevokeUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  TAccountOwner,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
+> {
+  // ...
 }

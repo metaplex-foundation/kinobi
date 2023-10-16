@@ -23,6 +23,7 @@ import {
   getAccountTypeFragment,
   getInstructionDataFragment,
   getInstructionDefaultFragment,
+  getInstructionFunctionLowLevelFragment,
   getInstructionTypeFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
@@ -236,10 +237,16 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       this.typeManifestVisitor
     );
+    const instructionFunctionLowLevelFragment =
+      getInstructionFunctionLowLevelFragment(instruction, this.program!);
 
     // Imports and interfaces.
     const imports = new ImportMap()
-      .mergeWith(instructionTypeFragment, instructionDataFragment)
+      .mergeWith(
+        instructionTypeFragment,
+        instructionDataFragment,
+        instructionFunctionLowLevelFragment
+      )
       // TODO: Remove once these are imported in the fragments.
       .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
       .add('shared', [
@@ -412,6 +419,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         instructionTypeFragment,
         instructionDataFragment,
+        instructionFunctionLowLevelFragment,
         interfaces: interfaces.toString(),
         program: this.program,
         resolvedInputs,

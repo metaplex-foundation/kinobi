@@ -111,3 +111,18 @@ export function getInitializeMintInstructionDataCodec(): Codec<
     getInitializeMintInstructionDataDecoder()
   );
 }
+
+export function initializeMintInstruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    mint: Base58EncodedAddress<TAccountMint>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: InitializeMintInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+): InitializeMintInstruction<TProgram, TAccountMint, TAccountRent> {
+  // ...
+}

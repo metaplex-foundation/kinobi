@@ -97,3 +97,18 @@ export function getInitializeToken3InstructionDataCodec(): Codec<
     getInitializeToken3InstructionDataDecoder()
   );
 }
+
+export function initializeToken3Instruction<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string
+>(
+  accounts: {
+    account: Base58EncodedAddress<TAccountAccount>;
+    mint: Base58EncodedAddress<TAccountMint>;
+  },
+  args: InitializeToken3InstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+): InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint> {
+  // ...
+}

@@ -106,3 +106,18 @@ export function getSetAuthorityInstructionDataCodec(): Codec<
     getSetAuthorityInstructionDataDecoder()
   );
 }
+
+export function setAuthorityInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  accounts: {
+    candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+    authority: Base58EncodedAddress<TAccountAuthority>;
+  },
+  args: SetAuthorityInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+): SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> {
+  // ...
+}

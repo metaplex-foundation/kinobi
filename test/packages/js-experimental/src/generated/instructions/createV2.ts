@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -140,4 +140,44 @@ export function getCreateV2InstructionDataCodec(): Codec<
     getCreateV2InstructionDataEncoder(),
     getCreateV2InstructionDataDecoder()
   );
+}
+
+export function createV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+    splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  },
+  args: CreateV2InstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): CreateV2Instruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountMintAuthority,
+  TAccountPayer,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram
+> {
+  // ...
 }

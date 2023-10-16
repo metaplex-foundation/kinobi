@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -91,4 +92,31 @@ export function getFreezeDelegatedAccountInstructionDataCodec(): Codec<
     getFreezeDelegatedAccountInstructionDataEncoder(),
     getFreezeDelegatedAccountInstructionDataDecoder()
   );
+}
+
+export function freezeDelegatedAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegate extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  accounts: {
+    delegate: Base58EncodedAddress<TAccountDelegate>;
+    tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+    edition: Base58EncodedAddress<TAccountEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  },
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): FreezeDelegatedAccountInstruction<
+  TProgram,
+  TAccountDelegate,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
+> {
+  // ...
 }

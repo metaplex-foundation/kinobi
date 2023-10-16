@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -131,4 +132,26 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
     getDeprecatedSetReservationListInstructionDataEncoder(),
     getDeprecatedSetReservationListInstructionDataDecoder()
   );
+}
+
+export function deprecatedSetReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountReservationList extends string = string,
+  TAccountResource extends string = string
+>(
+  accounts: {
+    masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+    reservationList: Base58EncodedAddress<TAccountReservationList>;
+    resource: Base58EncodedAddress<TAccountResource>;
+  },
+  args: DeprecatedSetReservationListInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): DeprecatedSetReservationListInstruction<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountReservationList,
+  TAccountResource
+> {
+  // ...
 }

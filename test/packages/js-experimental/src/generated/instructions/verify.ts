@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -105,4 +106,32 @@ export function getVerifyInstructionDataCodec(): Codec<
     getVerifyInstructionDataEncoder(),
     getVerifyInstructionDataDecoder()
   );
+}
+
+export function verifyInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    collectionAuthority: Base58EncodedAddress<TAccountCollectionAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+    authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  },
+  args: VerifyInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): VerifyInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountCollectionAuthority,
+  TAccountPayer,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
+> {
+  // ...
 }

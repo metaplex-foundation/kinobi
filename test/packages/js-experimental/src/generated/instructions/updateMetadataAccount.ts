@@ -171,3 +171,22 @@ export function getUpdateMetadataAccountInstructionDataCodec(): Codec<
     getUpdateMetadataAccountInstructionDataDecoder()
   );
 }
+
+export function updateMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string
+>(
+  accounts: {
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  },
+  args: UpdateMetadataAccountInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): UpdateMetadataAccountInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountUpdateAuthority
+> {
+  // ...
+}

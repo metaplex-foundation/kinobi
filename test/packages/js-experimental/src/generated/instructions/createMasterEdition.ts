@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { address } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -118,4 +118,44 @@ export function getCreateMasterEditionInstructionDataCodec(): Codec<
     getCreateMasterEditionInstructionDataEncoder(),
     getCreateMasterEditionInstructionDataDecoder()
   );
+}
+
+export function createMasterEditionInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  accounts: {
+    edition: Base58EncodedAddress<TAccountEdition>;
+    mint: Base58EncodedAddress<TAccountMint>;
+    updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+    mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
+    payer: Base58EncodedAddress<TAccountPayer>;
+    metadata: Base58EncodedAddress<TAccountMetadata>;
+    tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+    systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+    rent: Base58EncodedAddress<TAccountRent>;
+  },
+  args: CreateMasterEditionInstructionDataArgs,
+  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+): CreateMasterEditionInstruction<
+  TProgram,
+  TAccountEdition,
+  TAccountMint,
+  TAccountUpdateAuthority,
+  TAccountMintAuthority,
+  TAccountPayer,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
+> {
+  // ...
 }
