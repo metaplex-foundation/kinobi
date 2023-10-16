@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -93,7 +94,14 @@ export function revokeTokenDelegateInstruction<
     source: Base58EncodedAddress<TAccountSource>;
     owner: Base58EncodedAddress<TAccountOwner>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner> {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.source, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getRevokeTokenDelegateInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

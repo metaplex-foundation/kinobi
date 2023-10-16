@@ -22,6 +22,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -139,7 +140,7 @@ export function dummyInstruction<
     delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
     tokenOrAtaProgram: Base58EncodedAddress<TAccountTokenOrAtaProgram>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
 ): DummyInstruction<
   TProgram,
   TAccountEdition,
@@ -153,5 +154,23 @@ export function dummyInstruction<
   TAccountDelegateRecord,
   TAccountTokenOrAtaProgram
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.foo, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.bar, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.delegate, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.delegateRecord, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.tokenOrAtaProgram,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getDummyInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

@@ -88,7 +88,10 @@ export function setComputeUnitPriceInstruction<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
   args: SetComputeUnitPriceInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
 ): SetComputeUnitPriceInstruction<TProgram> {
-  // ...
+  return {
+    data: getSetComputeUnitPriceInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

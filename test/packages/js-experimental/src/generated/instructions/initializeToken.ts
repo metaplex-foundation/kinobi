@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -103,7 +104,7 @@ export function initializeTokenInstruction<
     owner: Base58EncodedAddress<TAccountOwner>;
     rent: Base58EncodedAddress<TAccountRent>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeTokenInstruction<
   TProgram,
   TAccountAccount,
@@ -111,5 +112,14 @@ export function initializeTokenInstruction<
   TAccountOwner,
   TAccountRent
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getInitializeTokenInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

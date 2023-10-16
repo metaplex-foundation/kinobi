@@ -14,12 +14,26 @@ export function {{ instruction.name | camelCase }}Instruction<
   {% if hasArgs %}
     args: {{ argsType }},
   {% endif %}
-  programId: Base58EncodedAddress<TProgram> = "{{ program.publicKey }}" as Base58EncodedAddress<TProgram>,
+  programAddress: Base58EncodedAddress<TProgram> = "{{ program.publicKey }}" as Base58EncodedAddress<TProgram>,
 ): {{ instruction.name | pascalCase }}Instruction<
   TProgram,
   {% for account in instruction.accounts %}
     TAccount{{ account.name | pascalCase }},
   {% endfor %}
 > {
-  // ...
+  return {
+    {% if hasAccounts %}
+      accounts: [
+        {% for account in instruction.accounts %}
+          { address: accounts.{{ account.name | camelCase }}, role: AccountRole.WRITABLE_SIGNER },
+        {% endfor %}
+      ],
+    {% endif %}
+    {% if hasData and hasArgs %}
+      data: {{ encoderFunction }}().encode(args),
+    {% elif hasData %}
+      data: {{ encoderFunction }}().encode({}),
+    {% endif %}
+    programAddress,
+  };
 }

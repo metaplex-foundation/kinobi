@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -123,7 +124,7 @@ export function setCollectionSizeInstruction<
     collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
   },
   args: SetCollectionSizeInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): SetCollectionSizeInstruction<
   TProgram,
   TAccountCollectionMetadata,
@@ -131,5 +132,23 @@ export function setCollectionSizeInstruction<
   TAccountCollectionMint,
   TAccountCollectionAuthorityRecord
 > {
-  // ...
+  return {
+    accounts: [
+      {
+        address: accounts.collectionMetadata,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.collectionAuthority,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.collectionMint, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.collectionAuthorityRecord,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getSetCollectionSizeInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

@@ -27,6 +27,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -128,11 +129,18 @@ export function addConfigLinesInstruction<
     authority: Base58EncodedAddress<TAccountAuthority>;
   },
   args: AddConfigLinesInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
 ): AddConfigLinesInstruction<
   TProgram,
   TAccountCandyMachine,
   TAccountAuthority
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.candyMachine, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getAddConfigLinesInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

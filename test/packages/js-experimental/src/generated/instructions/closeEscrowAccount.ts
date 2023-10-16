@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -121,7 +122,7 @@ export function closeEscrowAccountInstruction<
     systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
     sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): CloseEscrowAccountInstruction<
   TProgram,
   TAccountEscrow,
@@ -133,5 +134,21 @@ export function closeEscrowAccountInstruction<
   TAccountSystemProgram,
   TAccountSysvarInstructions
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.escrow, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenAccount, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.sysvarInstructions,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getCloseEscrowAccountInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

@@ -8,6 +8,7 @@
 
 import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -82,7 +83,7 @@ export function createReservationListInstruction<
     rent: Base58EncodedAddress<TAccountRent>;
   },
   args: CreateReservationListInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): CreateReservationListInstruction<
   TProgram,
   TAccountReservationList,
@@ -94,5 +95,18 @@ export function createReservationListInstruction<
   TAccountSystemProgram,
   TAccountRent
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.reservationList, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.resource, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getCreateReservationListInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

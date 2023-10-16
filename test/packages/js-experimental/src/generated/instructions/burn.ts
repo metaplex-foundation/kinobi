@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -137,7 +138,7 @@ export function burnInstruction<
     authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   },
   args: BurnInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): BurnInstruction<
   TProgram,
   TAccountMetadata,
@@ -150,5 +151,31 @@ export function burnInstruction<
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenAccount, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.masterEditionAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.collectionMetadata,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.authorizationRules,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.authorizationRulesProgram,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getBurnInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

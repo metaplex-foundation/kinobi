@@ -25,6 +25,7 @@ import {
   getU64Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -110,7 +111,14 @@ export function transferSolInstruction<
     destination: Base58EncodedAddress<TAccountDestination>;
   },
   args: TransferSolInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
 ): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination> {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.source, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getTransferSolInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -103,12 +104,20 @@ export function convertMasterEditionV1ToV2Instruction<
     oneTimeAuth: Base58EncodedAddress<TAccountOneTimeAuth>;
     printingMint: Base58EncodedAddress<TAccountPrintingMint>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): ConvertMasterEditionV1ToV2Instruction<
   TProgram,
   TAccountMasterEdition,
   TAccountOneTimeAuth,
   TAccountPrintingMint
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.oneTimeAuth, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.printingMint, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

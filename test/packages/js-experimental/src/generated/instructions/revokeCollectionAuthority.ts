@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -114,7 +115,7 @@ export function revokeCollectionAuthorityInstruction<
     metadata: Base58EncodedAddress<TAccountMetadata>;
     mint: Base58EncodedAddress<TAccountMint>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): RevokeCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
@@ -123,5 +124,21 @@ export function revokeCollectionAuthorityInstruction<
   TAccountMetadata,
   TAccountMint
 > {
-  // ...
+  return {
+    accounts: [
+      {
+        address: accounts.collectionAuthorityRecord,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.delegateAuthority,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.revokeAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

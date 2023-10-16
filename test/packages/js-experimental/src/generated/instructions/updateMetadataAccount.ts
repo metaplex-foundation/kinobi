@@ -34,6 +34,7 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -182,11 +183,18 @@ export function updateMetadataAccountInstruction<
     updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
   },
   args: UpdateMetadataAccountInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): UpdateMetadataAccountInstruction<
   TProgram,
   TAccountMetadata,
   TAccountUpdateAuthority
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getUpdateMetadataAccountInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

@@ -25,6 +25,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -114,12 +115,20 @@ export function burnTokenInstruction<
     authority: Base58EncodedAddress<TAccountAuthority>;
   },
   args: BurnTokenInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): BurnTokenInstruction<
   TProgram,
   TAccountAccount,
   TAccountMint,
   TAccountAuthority
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.account, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getBurnTokenInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

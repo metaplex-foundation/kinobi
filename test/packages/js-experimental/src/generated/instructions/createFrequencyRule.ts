@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -131,12 +132,20 @@ export function createFrequencyRuleInstruction<
     systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
   },
   args: CreateFrequencyRuleInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
 ): CreateFrequencyRuleInstruction<
   TProgram,
   TAccountPayer,
   TAccountFrequencyPda,
   TAccountSystemProgram
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.frequencyPda, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getCreateFrequencyRuleInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

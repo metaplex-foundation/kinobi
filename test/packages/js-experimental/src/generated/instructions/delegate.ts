@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -157,7 +158,7 @@ export function delegateInstruction<
     authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
   },
   args: DelegateInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): DelegateInstruction<
   TProgram,
   TAccountDelegateRecord,
@@ -174,5 +175,32 @@ export function delegateInstruction<
   TAccountAuthorizationRulesProgram,
   TAccountAuthorizationRules
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.delegateRecord, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.delegate, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.token, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.sysvarInstructions,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.authorizationRulesProgram,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.authorizationRules,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getDelegateInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

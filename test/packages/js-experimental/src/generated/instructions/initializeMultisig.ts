@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -102,7 +103,14 @@ export function initializeMultisigInstruction<
     rent: Base58EncodedAddress<TAccountRent>;
   },
   args: InitializeMultisigInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent> {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.multisig, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getInitializeMultisigInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

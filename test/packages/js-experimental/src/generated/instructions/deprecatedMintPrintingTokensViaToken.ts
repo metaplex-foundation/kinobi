@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -152,7 +153,7 @@ export function deprecatedMintPrintingTokensViaTokenInstruction<
     rent: Base58EncodedAddress<TAccountRent>;
   },
   args: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): DeprecatedMintPrintingTokensViaTokenInstruction<
   TProgram,
   TAccountDestination,
@@ -165,5 +166,24 @@ export function deprecatedMintPrintingTokensViaTokenInstruction<
   TAccountTokenProgram,
   TAccountRent
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.token, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.oneTimePrintingAuthorizationMint,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.printingMint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.burnAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder().encode(
+      args
+    ),
+    programAddress,
+  };
 }

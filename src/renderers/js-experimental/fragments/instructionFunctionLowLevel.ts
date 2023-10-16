@@ -8,6 +8,9 @@ export function getInstructionFunctionLowLevelFragment(
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
+  const hasData =
+    !!instructionNode.dataArgs.link ||
+    instructionNode.dataArgs.struct.fields.length > 0;
   const hasArgs =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.filter(
@@ -17,6 +20,7 @@ export function getInstructionFunctionLowLevelFragment(
     ? pascalCase(instructionNode.dataArgs.link.name)
     : pascalCase(instructionNode.dataArgs.name);
   const argsType = `${dataType}Args`;
+  const encoderFunction = `get${dataType}Encoder`;
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountTypeParamFragment(account, programNode)
@@ -28,10 +32,15 @@ export function getInstructionFunctionLowLevelFragment(
     instruction: instructionNode,
     program: programNode,
     hasAccounts,
+    hasData,
     hasArgs,
     argsType,
+    encoderFunction,
     accountTypeParams: accountTypeParamsFragment.render,
   })
     .mergeImportsWith(accountTypeParamsFragment)
-    .addImports('solanaAddresses', ['Base58EncodedAddress']);
+    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('solanaInstructions', [
+      ...(hasAccounts ? ['AccountRole'] : []),
+    ]);
 }

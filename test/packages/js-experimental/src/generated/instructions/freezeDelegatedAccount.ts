@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -109,7 +110,7 @@ export function freezeDelegatedAccountInstruction<
     mint: Base58EncodedAddress<TAccountMint>;
     tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): FreezeDelegatedAccountInstruction<
   TProgram,
   TAccountDelegate,
@@ -118,5 +119,15 @@ export function freezeDelegatedAccountInstruction<
   TAccountMint,
   TAccountTokenProgram
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.delegate, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenAccount, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

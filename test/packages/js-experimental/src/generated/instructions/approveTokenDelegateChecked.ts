@@ -25,6 +25,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -129,7 +130,7 @@ export function approveTokenDelegateCheckedInstruction<
     owner: Base58EncodedAddress<TAccountOwner>;
   },
   args: ApproveTokenDelegateCheckedInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): ApproveTokenDelegateCheckedInstruction<
   TProgram,
   TAccountSource,
@@ -137,5 +138,14 @@ export function approveTokenDelegateCheckedInstruction<
   TAccountDelegate,
   TAccountOwner
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.source, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.delegate, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getApproveTokenDelegateCheckedInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

@@ -92,7 +92,10 @@ export function requestUnitsInstruction<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
   args: RequestUnitsInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
 ): RequestUnitsInstruction<TProgram> {
-  // ...
+  return {
+    data: getRequestUnitsInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

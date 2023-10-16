@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -124,12 +125,20 @@ export function createRuleSetInstruction<
     systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
   },
   args: CreateRuleSetInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
 ): CreateRuleSetInstruction<
   TProgram,
   TAccountPayer,
   TAccountRuleSetPda,
   TAccountSystemProgram
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.ruleSetPda, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getCreateRuleSetInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

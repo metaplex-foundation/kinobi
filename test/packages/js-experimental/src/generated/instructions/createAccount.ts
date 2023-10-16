@@ -29,6 +29,7 @@ import {
   getU64Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -116,7 +117,14 @@ export function createAccountInstruction<
     newAccount: Base58EncodedAddress<TAccountNewAccount>;
   },
   args: CreateAccountInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
 ): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount> {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.newAccount, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getCreateAccountInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

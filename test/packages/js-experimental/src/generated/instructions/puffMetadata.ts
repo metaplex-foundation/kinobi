@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -85,7 +86,13 @@ export function puffMetadataInstruction<
   accounts: {
     metadata: Base58EncodedAddress<TAccountMetadata>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): PuffMetadataInstruction<TProgram, TAccountMetadata> {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getPuffMetadataInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

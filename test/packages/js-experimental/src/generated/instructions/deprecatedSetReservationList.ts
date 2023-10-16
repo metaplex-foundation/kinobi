@@ -27,6 +27,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -146,12 +147,20 @@ export function deprecatedSetReservationListInstruction<
     resource: Base58EncodedAddress<TAccountResource>;
   },
   args: DeprecatedSetReservationListInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): DeprecatedSetReservationListInstruction<
   TProgram,
   TAccountMasterEdition,
   TAccountReservationList,
   TAccountResource
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.reservationList, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.resource, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

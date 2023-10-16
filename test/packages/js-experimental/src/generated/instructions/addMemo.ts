@@ -59,7 +59,10 @@ export function addMemoInstruction<
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
 >(
   args: AddMemoInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo' as Base58EncodedAddress<TProgram>
 ): AddMemoInstruction<TProgram> {
-  // ...
+  return {
+    data: getAddMemoInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

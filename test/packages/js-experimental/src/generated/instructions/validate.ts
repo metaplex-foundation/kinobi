@@ -21,6 +21,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -175,7 +176,7 @@ export function validateInstruction<
     optRuleNonsigner5: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
   },
   args: ValidateInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
 ): ValidateInstruction<
   TProgram,
   TAccountPayer,
@@ -192,5 +193,38 @@ export function validateInstruction<
   TAccountOptRuleNonsigner4,
   TAccountOptRuleNonsigner5
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.ruleSet, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.optRuleSigner1, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.optRuleSigner2, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.optRuleSigner3, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.optRuleSigner4, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.optRuleSigner5, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.optRuleNonsigner1,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.optRuleNonsigner2,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.optRuleNonsigner3,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.optRuleNonsigner4,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.optRuleNonsigner5,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getValidateInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

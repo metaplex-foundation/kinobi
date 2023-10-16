@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -191,7 +192,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
     rent: Base58EncodedAddress<TAccountRent>;
   },
   args: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): MintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TProgram,
   TAccountNewMetadata,
@@ -212,5 +213,38 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountSystemProgram,
   TAccountRent
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.newMetadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.newEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.newMint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.editionMarkPda, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.newMintAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.vaultAuthority, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.safetyDepositStore,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.safetyDepositBox, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.vault, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.newMetadataUpdateAuthority,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.tokenVaultProgram,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder().encode(
+      args
+    ),
+    programAddress,
+  };
 }

@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -105,7 +106,7 @@ export function setTokenStandardInstruction<
     mint: Base58EncodedAddress<TAccountMint>;
     edition: Base58EncodedAddress<TAccountEdition>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): SetTokenStandardInstruction<
   TProgram,
   TAccountMetadata,
@@ -113,5 +114,14 @@ export function setTokenStandardInstruction<
   TAccountMint,
   TAccountEdition
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getSetTokenStandardInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

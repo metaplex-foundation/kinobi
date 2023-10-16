@@ -22,6 +22,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -105,12 +106,20 @@ export function setMintAuthorityInstruction<
     authority: Base58EncodedAddress<TAccountAuthority>;
     mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
 ): SetMintAuthorityInstruction<
   TProgram,
   TAccountCandyMachine,
   TAccountAuthority,
   TAccountMintAuthority
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.candyMachine, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getSetMintAuthorityInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

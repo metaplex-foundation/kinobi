@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -144,7 +145,7 @@ export function createMasterEditionInstruction<
     rent: Base58EncodedAddress<TAccountRent>;
   },
   args: CreateMasterEditionInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): CreateMasterEditionInstruction<
   TProgram,
   TAccountEdition,
@@ -157,5 +158,19 @@ export function createMasterEditionInstruction<
   TAccountSystemProgram,
   TAccountRent
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getCreateMasterEditionInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

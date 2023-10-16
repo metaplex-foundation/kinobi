@@ -22,6 +22,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -101,7 +102,14 @@ export function withdrawInstruction<
     candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
     authority: Base58EncodedAddress<TAccountAuthority>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
 ): WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.candyMachine, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getWithdrawInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

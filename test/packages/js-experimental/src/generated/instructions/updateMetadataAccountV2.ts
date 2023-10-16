@@ -26,6 +26,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -141,11 +142,18 @@ export function updateMetadataAccountV2Instruction<
     updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
   },
   args: UpdateMetadataAccountV2InstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): UpdateMetadataAccountV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountUpdateAuthority
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.updateAuthority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getUpdateMetadataAccountV2InstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

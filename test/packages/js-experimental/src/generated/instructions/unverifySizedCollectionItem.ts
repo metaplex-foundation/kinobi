@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -123,7 +124,7 @@ export function unverifySizedCollectionItemInstruction<
     collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
     collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): UnverifySizedCollectionItemInstruction<
   TProgram,
   TAccountMetadata,
@@ -134,5 +135,26 @@ export function unverifySizedCollectionItemInstruction<
   TAccountCollectionMasterEditionAccount,
   TAccountCollectionAuthorityRecord
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.collectionAuthority,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.collectionMint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.collection, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.collectionMasterEditionAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.collectionAuthorityRecord,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getUnverifySizedCollectionItemInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

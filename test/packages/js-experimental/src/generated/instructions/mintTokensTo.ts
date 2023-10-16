@@ -25,6 +25,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -114,12 +115,20 @@ export function mintTokensToInstruction<
     mintAuthority: Base58EncodedAddress<TAccountMintAuthority>;
   },
   args: MintTokensToInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): MintTokensToInstruction<
   TProgram,
   TAccountMint,
   TAccountToken,
   TAccountMintAuthority
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.token, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getMintTokensToInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

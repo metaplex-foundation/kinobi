@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -98,11 +99,18 @@ export function removeCreatorVerificationInstruction<
     metadata: Base58EncodedAddress<TAccountMetadata>;
     creator: Base58EncodedAddress<TAccountCreator>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): RemoveCreatorVerificationInstruction<
   TProgram,
   TAccountMetadata,
   TAccountCreator
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.creator, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

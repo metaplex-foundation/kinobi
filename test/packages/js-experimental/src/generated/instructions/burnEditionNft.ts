@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -129,7 +130,7 @@ export function burnEditionNftInstruction<
     editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
     splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): BurnEditionNftInstruction<
   TProgram,
   TAccountMetadata,
@@ -143,5 +144,38 @@ export function burnEditionNftInstruction<
   TAccountEditionMarkerAccount,
   TAccountSplTokenProgram
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.owner, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.printEditionMint, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.masterEditionMint,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.printEditionTokenAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.masterEditionTokenAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.masterEditionAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.printEditionAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.editionMarkerAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.splTokenProgram, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getBurnEditionNftInstructionDataEncoder().encode({}),
+    programAddress,
+  };
 }

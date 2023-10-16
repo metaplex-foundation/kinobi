@@ -25,6 +25,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -126,7 +127,7 @@ export function transferTokensCheckedInstruction<
     authority: Base58EncodedAddress<TAccountAuthority>;
   },
   args: TransferTokensCheckedInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
 ): TransferTokensCheckedInstruction<
   TProgram,
   TAccountSource,
@@ -134,5 +135,14 @@ export function transferTokensCheckedInstruction<
   TAccountDestination,
   TAccountAuthority
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.source, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.destination, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.authority, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getTransferTokensCheckedInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

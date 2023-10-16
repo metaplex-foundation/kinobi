@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -124,7 +125,7 @@ export function verifyInstruction<
     authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   },
   args: VerifyInstructionDataArgs,
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): VerifyInstruction<
   TProgram,
   TAccountMetadata,
@@ -133,5 +134,24 @@ export function verifyInstruction<
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.collectionAuthority,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.authorizationRules,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      {
+        address: accounts.authorizationRulesProgram,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+    ],
+    data: getVerifyInstructionDataEncoder().encode(args),
+    programAddress,
+  };
 }

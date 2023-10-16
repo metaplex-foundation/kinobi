@@ -20,6 +20,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
+  AccountRole,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
@@ -164,7 +165,7 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruc
     rent: Base58EncodedAddress<TAccountRent>;
     reservationList: Base58EncodedAddress<TAccountReservationList>;
   },
-  programId: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
 ): DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
   TProgram,
   TAccountMetadata,
@@ -184,5 +185,34 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruc
   TAccountRent,
   TAccountReservationList
 > {
-  // ...
+  return {
+    accounts: [
+      { address: accounts.metadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.edition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.masterEdition, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mint, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.mintAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.printingMint, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.masterTokenAccount,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.editionMarker, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.burnAuthority, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.payer, role: AccountRole.WRITABLE_SIGNER },
+      {
+        address: accounts.masterUpdateAuthority,
+        role: AccountRole.WRITABLE_SIGNER,
+      },
+      { address: accounts.masterMetadata, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.tokenProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.systemProgram, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.rent, role: AccountRole.WRITABLE_SIGNER },
+      { address: accounts.reservationList, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder().encode(
+      {}
+    ),
+    programAddress,
+  };
 }
