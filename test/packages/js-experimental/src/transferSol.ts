@@ -39,8 +39,8 @@ import {
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends IAccountMeta<string>[] = []
+  TAccountDestination extends string | IAccountMeta<string> = string
+  // TRemainingAccounts extends IAccountMeta<string>[] = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -50,8 +50,8 @@ export type TransferSolInstruction<
         : TAccountSource,
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
-        : TAccountDestination,
-      ...TRemainingAccounts
+        : TAccountDestination
+      // ...TRemainingAccounts
     ]
   >;
 
