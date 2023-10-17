@@ -347,7 +347,7 @@ export async function closeEscrowAccount<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -374,7 +374,7 @@ export async function closeEscrowAccount<
         TAccountSystemProgram,
         TAccountSysvarInstructions
       >,
-  input?: CloseEscrowAccountInput<
+  rawInput?: CloseEscrowAccountInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -400,5 +400,50 @@ export async function closeEscrowAccount<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CloseEscrowAccountInstruction<
+            TProgram,
+            TAccountEscrow,
+            TAccountMetadata,
+            TAccountMint,
+            TAccountTokenAccount,
+            TAccountEdition,
+            TAccountPayer,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CloseEscrowAccountInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

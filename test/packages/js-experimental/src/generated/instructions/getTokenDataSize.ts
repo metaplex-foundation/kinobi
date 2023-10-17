@@ -133,7 +133,7 @@ export async function getTokenDataSize<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -141,10 +141,36 @@ export async function getTokenDataSize<
           TReturn
         >)
     | GetTokenDataSizeInput<TAccountMint>,
-  input?: GetTokenDataSizeInput<TAccountMint>
+  rawInput?: GetTokenDataSizeInput<TAccountMint>
 ): Promise<
   | TReturn
   | WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>>
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          GetTokenDataSizeInstruction<TProgram, TAccountMint>,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as GetTokenDataSizeInput<TAccountMint>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

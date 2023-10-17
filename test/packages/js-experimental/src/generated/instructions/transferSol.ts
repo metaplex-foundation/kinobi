@@ -177,7 +177,7 @@ export async function transferSol<
   TAccountSource extends string = string,
   TAccountDestination extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -185,12 +185,38 @@ export async function transferSol<
           TReturn
         >)
     | TransferSolInput<TAccountSource, TAccountDestination>,
-  input?: TransferSolInput<TAccountSource, TAccountDestination>
+  rawInput?: TransferSolInput<TAccountSource, TAccountDestination>
 ): Promise<
   | TReturn
   | WrappedInstruction<
       TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as TransferSolInput<TAccountSource, TAccountDestination>;
+
+  const defaultProgramAddress =
+    '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splSystem',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

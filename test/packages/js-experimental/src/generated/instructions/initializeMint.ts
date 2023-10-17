@@ -198,7 +198,7 @@ export async function initializeMint<
   TAccountMint extends string = string,
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -206,12 +206,38 @@ export async function initializeMint<
           TReturn
         >)
     | InitializeMintInput<TAccountMint, TAccountRent>,
-  input?: InitializeMintInput<TAccountMint, TAccountRent>
+  rawInput?: InitializeMintInput<TAccountMint, TAccountRent>
 ): Promise<
   | TReturn
   | WrappedInstruction<
       InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as InitializeMintInput<TAccountMint, TAccountRent>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

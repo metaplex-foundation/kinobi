@@ -305,7 +305,7 @@ export async function createReservationList<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -332,7 +332,7 @@ export async function createReservationList<
         TAccountSystemProgram,
         TAccountRent
       >,
-  input?: CreateReservationListInput<
+  rawInput?: CreateReservationListInput<
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -358,5 +358,50 @@ export async function createReservationList<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateReservationListInstruction<
+            TProgram,
+            TAccountReservationList,
+            TAccountPayer,
+            TAccountUpdateAuthority,
+            TAccountMasterEdition,
+            TAccountResource,
+            TAccountMetadata,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CreateReservationListInput<
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

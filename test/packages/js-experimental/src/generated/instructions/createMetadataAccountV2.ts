@@ -354,7 +354,7 @@ export async function createMetadataAccountV2<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -379,7 +379,7 @@ export async function createMetadataAccountV2<
         TAccountSystemProgram,
         TAccountRent
       >,
-  input?: CreateMetadataAccountV2Input<
+  rawInput?: CreateMetadataAccountV2Input<
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -403,5 +403,48 @@ export async function createMetadataAccountV2<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateMetadataAccountV2Instruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountMint,
+            TAccountMintAuthority,
+            TAccountPayer,
+            TAccountUpdateAuthority,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CreateMetadataAccountV2Input<
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

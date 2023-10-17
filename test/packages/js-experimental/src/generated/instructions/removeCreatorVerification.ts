@@ -185,7 +185,7 @@ export async function removeCreatorVerification<
   TAccountMetadata extends string = string,
   TAccountCreator extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -197,7 +197,7 @@ export async function removeCreatorVerification<
           TReturn
         >)
     | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
-  input?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+  rawInput?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
 ): Promise<
   | TReturn
   | WrappedInstruction<
@@ -208,5 +208,35 @@ export async function removeCreatorVerification<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RemoveCreatorVerificationInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountCreator
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

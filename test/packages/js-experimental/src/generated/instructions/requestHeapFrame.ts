@@ -127,7 +127,7 @@ export async function requestHeapFrame<
   TReturn,
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -135,9 +135,35 @@ export async function requestHeapFrame<
           TReturn
         >)
     | RequestHeapFrameInput,
-  input?: RequestHeapFrameInput
+  rawInput?: RequestHeapFrameInput
 ): Promise<
   TReturn | WrappedInstruction<RequestHeapFrameInstruction<TProgram>>
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RequestHeapFrameInstruction<TProgram>,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as RequestHeapFrameInput;
+
+  const defaultProgramAddress =
+    'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<'ComputeBudget111111111111111111111111111111'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splComputeBudget',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

@@ -262,7 +262,7 @@ export async function deprecatedSetReservationList<
   TAccountReservationList extends string = string,
   TAccountResource extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -279,7 +279,7 @@ export async function deprecatedSetReservationList<
         TAccountReservationList,
         TAccountResource
       >,
-  input?: DeprecatedSetReservationListInput<
+  rawInput?: DeprecatedSetReservationListInput<
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
@@ -295,5 +295,40 @@ export async function deprecatedSetReservationList<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DeprecatedSetReservationListInstruction<
+            TProgram,
+            TAccountMasterEdition,
+            TAccountReservationList,
+            TAccountResource
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as DeprecatedSetReservationListInput<
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

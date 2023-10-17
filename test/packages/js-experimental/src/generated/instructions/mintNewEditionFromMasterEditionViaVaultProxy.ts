@@ -612,7 +612,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -657,7 +657,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
         TAccountSystemProgram,
         TAccountRent
       >,
-  input?: MintNewEditionFromMasterEditionViaVaultProxyInput<
+  rawInput?: MintNewEditionFromMasterEditionViaVaultProxyInput<
     TAccountNewMetadata,
     TAccountNewEdition,
     TAccountMasterEdition,
@@ -701,5 +701,68 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          MintNewEditionFromMasterEditionViaVaultProxyInstruction<
+            TProgram,
+            TAccountNewMetadata,
+            TAccountNewEdition,
+            TAccountMasterEdition,
+            TAccountNewMint,
+            TAccountEditionMarkPda,
+            TAccountNewMintAuthority,
+            TAccountPayer,
+            TAccountVaultAuthority,
+            TAccountSafetyDepositStore,
+            TAccountSafetyDepositBox,
+            TAccountVault,
+            TAccountNewMetadataUpdateAuthority,
+            TAccountMetadata,
+            TAccountTokenProgram,
+            TAccountTokenVaultProgram,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as MintNewEditionFromMasterEditionViaVaultProxyInput<
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountVaultAuthority,
+    TAccountSafetyDepositStore,
+    TAccountSafetyDepositBox,
+    TAccountVault,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountTokenVaultProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

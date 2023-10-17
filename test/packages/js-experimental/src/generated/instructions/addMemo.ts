@@ -93,12 +93,35 @@ export async function addMemo<
   TReturn,
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>)
     | AddMemoInput,
-  input?: AddMemoInput
+  rawInput?: AddMemoInput
 ): Promise<TReturn | WrappedInstruction<AddMemoInstruction<TProgram>>> {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as AddMemoInput;
+
+  const defaultProgramAddress =
+    'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo' as Base58EncodedAddress<'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splMemo',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

@@ -215,7 +215,7 @@ export async function mintTokensTo<
   TAccountToken extends string = string,
   TAccountMintAuthority extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -228,7 +228,11 @@ export async function mintTokensTo<
           TReturn
         >)
     | MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>,
-  input?: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
+  rawInput?: MintTokensToInput<
+    TAccountMint,
+    TAccountToken,
+    TAccountMintAuthority
+  >
 ): Promise<
   | TReturn
   | WrappedInstruction<
@@ -240,5 +244,36 @@ export async function mintTokensTo<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          MintTokensToInstruction<
+            TProgram,
+            TAccountMint,
+            TAccountToken,
+            TAccountMintAuthority
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

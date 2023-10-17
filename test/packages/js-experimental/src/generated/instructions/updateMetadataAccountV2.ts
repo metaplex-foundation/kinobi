@@ -232,7 +232,7 @@ export async function updateMetadataAccountV2<
   TAccountMetadata extends string = string,
   TAccountUpdateAuthority extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -244,7 +244,7 @@ export async function updateMetadataAccountV2<
           TReturn
         >)
     | UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>,
-  input?: UpdateMetadataAccountV2Input<
+  rawInput?: UpdateMetadataAccountV2Input<
     TAccountMetadata,
     TAccountUpdateAuthority
   >
@@ -258,5 +258,35 @@ export async function updateMetadataAccountV2<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UpdateMetadataAccountV2Instruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountUpdateAuthority
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

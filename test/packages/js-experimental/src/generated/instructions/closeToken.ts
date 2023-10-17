@@ -196,7 +196,7 @@ export async function closeToken<
   TAccountDestination extends string = string,
   TAccountOwner extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -209,7 +209,11 @@ export async function closeToken<
           TReturn
         >)
     | CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>,
-  input?: CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>
+  rawInput?: CloseTokenInput<
+    TAccountAccount,
+    TAccountDestination,
+    TAccountOwner
+  >
 ): Promise<
   | TReturn
   | WrappedInstruction<
@@ -221,5 +225,36 @@ export async function closeToken<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CloseTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountDestination,
+            TAccountOwner
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

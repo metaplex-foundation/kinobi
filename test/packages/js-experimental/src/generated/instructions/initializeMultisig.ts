@@ -177,7 +177,7 @@ export async function initializeMultisig<
   TAccountMultisig extends string = string,
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -189,12 +189,42 @@ export async function initializeMultisig<
           TReturn
         >)
     | InitializeMultisigInput<TAccountMultisig, TAccountRent>,
-  input?: InitializeMultisigInput<TAccountMultisig, TAccountRent>
+  rawInput?: InitializeMultisigInput<TAccountMultisig, TAccountRent>
 ): Promise<
   | TReturn
   | WrappedInstruction<
       InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeMultisigInstruction<
+            TProgram,
+            TAccountMultisig,
+            TAccountRent
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as InitializeMultisigInput<TAccountMultisig, TAccountRent>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

@@ -407,7 +407,7 @@ export async function deprecatedMintPrintingTokensViaToken<
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -436,7 +436,7 @@ export async function deprecatedMintPrintingTokensViaToken<
         TAccountTokenProgram,
         TAccountRent
       >,
-  input?: DeprecatedMintPrintingTokensViaTokenInput<
+  rawInput?: DeprecatedMintPrintingTokensViaTokenInput<
     TAccountDestination,
     TAccountToken,
     TAccountOneTimePrintingAuthorizationMint,
@@ -464,5 +464,52 @@ export async function deprecatedMintPrintingTokensViaToken<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DeprecatedMintPrintingTokensViaTokenInstruction<
+            TProgram,
+            TAccountDestination,
+            TAccountToken,
+            TAccountOneTimePrintingAuthorizationMint,
+            TAccountPrintingMint,
+            TAccountBurnAuthority,
+            TAccountMetadata,
+            TAccountMasterEdition,
+            TAccountTokenProgram,
+            TAccountRent
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as DeprecatedMintPrintingTokensViaTokenInput<
+    TAccountDestination,
+    TAccountToken,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountPrintingMint,
+    TAccountBurnAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

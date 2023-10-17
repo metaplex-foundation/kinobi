@@ -38,12 +38,12 @@ export function getInstructionFunctionHighLevelFragment(
       instructionTypeFragment,
       inputTypeFragment
     )
-    .addImports('shared', ['WrappedInstruction', 'CustomGeneratedInstruction']);
-
-  if (context) {
-    // TODO: use context map.
-    functionFragment.addImports('shared', ['Context']);
-  }
+    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('shared', [
+      'WrappedInstruction',
+      'CustomGeneratedInstruction',
+      'Context',
+    ]);
 
   if (hasAccounts) {
     //

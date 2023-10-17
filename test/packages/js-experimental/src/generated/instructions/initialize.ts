@@ -452,7 +452,7 @@ export async function initialize<
   TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -485,7 +485,7 @@ export async function initialize<
         TAccountTokenMetadataProgram,
         TAccountSystemProgram
       >,
-  input?: InitializeInput<
+  rawInput?: InitializeInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountAuthority,
@@ -517,5 +517,56 @@ export async function initialize<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthorityPda,
+            TAccountAuthority,
+            TAccountPayer,
+            TAccountCollectionMetadata,
+            TAccountCollectionMint,
+            TAccountCollectionMasterEdition,
+            TAccountCollectionUpdateAuthority,
+            TAccountCollectionAuthorityRecord,
+            TAccountTokenMetadataProgram,
+            TAccountSystemProgram
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as InitializeInput<
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >;
+
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

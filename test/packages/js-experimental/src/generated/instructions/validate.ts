@@ -607,7 +607,7 @@ export async function validate<
   TAccountOptRuleNonsigner4 extends string | undefined = undefined,
   TAccountOptRuleNonsigner5 extends string | undefined = undefined
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -646,7 +646,7 @@ export async function validate<
         TAccountOptRuleNonsigner4,
         TAccountOptRuleNonsigner5
       >,
-  input?: ValidateInput<
+  rawInput?: ValidateInput<
     TAccountPayer,
     TAccountRuleSet,
     TAccountSystemProgram,
@@ -684,5 +684,62 @@ export async function validate<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          ValidateInstruction<
+            TProgram,
+            TAccountPayer,
+            TAccountRuleSet,
+            TAccountSystemProgram,
+            typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+              ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+              : TAccountOptRuleSigner1,
+            TAccountOptRuleSigner2,
+            TAccountOptRuleSigner3,
+            TAccountOptRuleSigner4,
+            TAccountOptRuleSigner5,
+            TAccountOptRuleNonsigner1,
+            TAccountOptRuleNonsigner2,
+            TAccountOptRuleNonsigner3,
+            TAccountOptRuleNonsigner4,
+            TAccountOptRuleNonsigner5
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as ValidateInput<
+    TAccountPayer,
+    TAccountRuleSet,
+    TAccountSystemProgram,
+    TAccountOptRuleSigner1,
+    TAccountOptRuleSigner2,
+    TAccountOptRuleSigner3,
+    TAccountOptRuleSigner4,
+    TAccountOptRuleSigner5,
+    TAccountOptRuleNonsigner1,
+    TAccountOptRuleNonsigner2,
+    TAccountOptRuleNonsigner3,
+    TAccountOptRuleNonsigner4,
+    TAccountOptRuleNonsigner5
+  >;
+
+  const defaultProgramAddress =
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenAuthRules',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

@@ -272,7 +272,7 @@ export async function revokeCollectionAuthority<
   TAccountMetadata extends string = string,
   TAccountMint extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -293,7 +293,7 @@ export async function revokeCollectionAuthority<
         TAccountMetadata,
         TAccountMint
       >,
-  input?: RevokeCollectionAuthorityInput<
+  rawInput?: RevokeCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
     TAccountDelegateAuthority,
     TAccountRevokeAuthority,
@@ -313,5 +313,44 @@ export async function revokeCollectionAuthority<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RevokeCollectionAuthorityInstruction<
+            TProgram,
+            TAccountCollectionAuthorityRecord,
+            TAccountDelegateAuthority,
+            TAccountRevokeAuthority,
+            TAccountMetadata,
+            TAccountMint
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as RevokeCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

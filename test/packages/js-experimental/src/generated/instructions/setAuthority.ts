@@ -192,7 +192,7 @@ export async function setAuthority<
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -204,12 +204,42 @@ export async function setAuthority<
           TReturn
         >)
     | SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>,
-  input?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+  rawInput?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   | TReturn
   | WrappedInstruction<
       SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetAuthorityInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthority
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>;
+
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

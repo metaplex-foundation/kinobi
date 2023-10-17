@@ -215,7 +215,7 @@ export async function setTokenAuthority<
   TAccountOwned extends string = string,
   TAccountOwner extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -229,7 +229,7 @@ export async function setTokenAuthority<
           TReturn
         >)
     | SetTokenAuthorityInput<TAccountOwned, TAccountOwner>,
-  input?: SetTokenAuthorityInput<TAccountOwned, TAccountOwner>
+  rawInput?: SetTokenAuthorityInput<TAccountOwned, TAccountOwner>
 ): Promise<
   | TReturn
   | WrappedInstruction<
@@ -242,5 +242,37 @@ export async function setTokenAuthority<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetTokenAuthorityInstruction<
+            TProgram,
+            TAccountOwned,
+            typeof input['owner'] extends Signer<TAccountOwner>
+              ? ReadonlySignerAccount<TAccountOwner>
+              : TAccountOwner
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SetTokenAuthorityInput<TAccountOwned, TAccountOwner>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

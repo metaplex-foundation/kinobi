@@ -1,6 +1,20 @@
 export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} & {{ customGeneratedInstruction }}, input: {{ inputType }}): Promise<TReturn>;
 export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
 export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
-export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} | {{ context }} & {{ customGeneratedInstruction }} | {{ inputType }}, input?: {{ inputType }}): Promise<TReturn | WrappedInstruction<{{ instructionType }}>> {
-  throw new Error('Not implemented');
+export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & {{ customGeneratedInstruction }} | {{ inputType }}, rawInput?: {{ inputType }}): Promise<TReturn | WrappedInstruction<{{ instructionType }}>> {
+  const context = (rawInput === undefined ? {} : rawInput) as {{ context }} | {{ context }} & {{ customGeneratedInstruction }};
+  const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
+
+  const defaultProgramAddress = "{{ program.publicKey }}" as Base58EncodedAddress<"{{ program.publicKey }}">;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

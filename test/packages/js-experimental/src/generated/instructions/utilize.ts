@@ -469,7 +469,7 @@ export async function utilize<
   TAccountUseAuthorityRecord extends string = string,
   TAccountBurner extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -502,7 +502,7 @@ export async function utilize<
         TAccountUseAuthorityRecord,
         TAccountBurner
       >,
-  input?: UtilizeInput<
+  rawInput?: UtilizeInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -534,5 +534,56 @@ export async function utilize<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UtilizeInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountTokenAccount,
+            TAccountMint,
+            TAccountUseAuthority,
+            TAccountOwner,
+            TAccountTokenProgram,
+            TAccountAtaProgram,
+            TAccountSystemProgram,
+            TAccountRent,
+            TAccountUseAuthorityRecord,
+            TAccountBurner
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UtilizeInput<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

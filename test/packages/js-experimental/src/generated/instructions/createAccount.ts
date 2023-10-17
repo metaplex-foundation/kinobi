@@ -192,7 +192,7 @@ export async function createAccount<
   TAccountPayer extends string = string,
   TAccountNewAccount extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -200,12 +200,38 @@ export async function createAccount<
           TReturn
         >)
     | CreateAccountInput<TAccountPayer, TAccountNewAccount>,
-  input?: CreateAccountInput<TAccountPayer, TAccountNewAccount>
+  rawInput?: CreateAccountInput<TAccountPayer, TAccountNewAccount>
 ): Promise<
   | TReturn
   | WrappedInstruction<
       CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CreateAccountInput<TAccountPayer, TAccountNewAccount>;
+
+  const defaultProgramAddress =
+    '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splSystem',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

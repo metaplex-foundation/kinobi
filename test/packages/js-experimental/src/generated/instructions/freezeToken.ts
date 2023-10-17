@@ -197,7 +197,7 @@ export async function freezeToken<
   TAccountMint extends string = string,
   TAccountOwner extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -210,7 +210,7 @@ export async function freezeToken<
           TReturn
         >)
     | FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>,
-  input?: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+  rawInput?: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
 ): Promise<
   | TReturn
   | WrappedInstruction<
@@ -222,5 +222,36 @@ export async function freezeToken<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          FreezeTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountMint,
+            TAccountOwner
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

@@ -220,7 +220,7 @@ export async function updatePrimarySaleHappenedViaToken<
   TAccountOwner extends string = string,
   TAccountToken extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -237,7 +237,7 @@ export async function updatePrimarySaleHappenedViaToken<
         TAccountOwner,
         TAccountToken
       >,
-  input?: UpdatePrimarySaleHappenedViaTokenInput<
+  rawInput?: UpdatePrimarySaleHappenedViaTokenInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountToken
@@ -253,5 +253,40 @@ export async function updatePrimarySaleHappenedViaToken<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UpdatePrimarySaleHappenedViaTokenInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountOwner,
+            TAccountToken
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

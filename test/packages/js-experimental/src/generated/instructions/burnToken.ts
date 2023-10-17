@@ -212,7 +212,7 @@ export async function burnToken<
   TAccountMint extends string = string,
   TAccountAuthority extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -225,7 +225,7 @@ export async function burnToken<
           TReturn
         >)
     | BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>,
-  input?: BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>
+  rawInput?: BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>
 ): Promise<
   | TReturn
   | WrappedInstruction<
@@ -237,5 +237,36 @@ export async function burnToken<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          BurnTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountMint,
+            TAccountAuthority
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>;
+
+  const defaultProgramAddress =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splToken',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

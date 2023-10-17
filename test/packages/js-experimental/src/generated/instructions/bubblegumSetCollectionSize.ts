@@ -299,7 +299,7 @@ export async function bubblegumSetCollectionSize<
   TAccountBubblegumSigner extends string = string,
   TAccountCollectionAuthorityRecord extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -320,7 +320,7 @@ export async function bubblegumSetCollectionSize<
         TAccountBubblegumSigner,
         TAccountCollectionAuthorityRecord
       >,
-  input?: BubblegumSetCollectionSizeInput<
+  rawInput?: BubblegumSetCollectionSizeInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
@@ -340,5 +340,44 @@ export async function bubblegumSetCollectionSize<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          BubblegumSetCollectionSizeInstruction<
+            TProgram,
+            TAccountCollectionMetadata,
+            TAccountCollectionAuthority,
+            TAccountCollectionMint,
+            TAccountBubblegumSigner,
+            TAccountCollectionAuthorityRecord
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

@@ -258,7 +258,7 @@ export async function createFrequencyRule<
   TAccountFrequencyPda extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -275,7 +275,7 @@ export async function createFrequencyRule<
         TAccountFrequencyPda,
         TAccountSystemProgram
       >,
-  input?: CreateFrequencyRuleInput<
+  rawInput?: CreateFrequencyRuleInput<
     TAccountPayer,
     TAccountFrequencyPda,
     TAccountSystemProgram
@@ -291,5 +291,40 @@ export async function createFrequencyRule<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateFrequencyRuleInstruction<
+            TProgram,
+            TAccountPayer,
+            TAccountFrequencyPda,
+            TAccountSystemProgram
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >;
+
+  const defaultProgramAddress =
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenAuthRules',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

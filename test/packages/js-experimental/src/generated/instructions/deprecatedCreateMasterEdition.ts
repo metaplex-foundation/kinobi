@@ -517,7 +517,7 @@ export async function deprecatedCreateMasterEdition<
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
   TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -554,7 +554,7 @@ export async function deprecatedCreateMasterEdition<
         TAccountRent,
         TAccountOneTimePrintingAuthorizationMintAuthority
       >,
-  input?: DeprecatedCreateMasterEditionInput<
+  rawInput?: DeprecatedCreateMasterEditionInput<
     TAccountEdition,
     TAccountMint,
     TAccountPrintingMint,
@@ -590,5 +590,60 @@ export async function deprecatedCreateMasterEdition<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DeprecatedCreateMasterEditionInstruction<
+            TProgram,
+            TAccountEdition,
+            TAccountMint,
+            TAccountPrintingMint,
+            TAccountOneTimePrintingAuthorizationMint,
+            TAccountUpdateAuthority,
+            TAccountPrintingMintAuthority,
+            TAccountMintAuthority,
+            TAccountMetadata,
+            TAccountPayer,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountRent,
+            TAccountOneTimePrintingAuthorizationMintAuthority
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as DeprecatedCreateMasterEditionInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

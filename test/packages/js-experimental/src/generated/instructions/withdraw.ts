@@ -167,7 +167,7 @@ export async function withdraw<
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -179,12 +179,42 @@ export async function withdraw<
           TReturn
         >)
     | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
-  input?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+  rawInput?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   | TReturn
   | WrappedInstruction<
       WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          WithdrawInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthority
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as WithdrawInput<TAccountCandyMachine, TAccountAuthority>;
+
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

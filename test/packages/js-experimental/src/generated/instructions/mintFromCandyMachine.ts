@@ -586,7 +586,7 @@ export async function mintFromCandyMachine<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRecentSlothashes extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -631,7 +631,7 @@ export async function mintFromCandyMachine<
         TAccountSystemProgram,
         TAccountRecentSlothashes
       >,
-  input?: MintFromCandyMachineInput<
+  rawInput?: MintFromCandyMachineInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountMintAuthority,
@@ -675,5 +675,68 @@ export async function mintFromCandyMachine<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          MintFromCandyMachineInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthorityPda,
+            TAccountMintAuthority,
+            TAccountPayer,
+            TAccountNftMint,
+            TAccountNftMintAuthority,
+            TAccountNftMetadata,
+            TAccountNftMasterEdition,
+            TAccountCollectionAuthorityRecord,
+            TAccountCollectionMint,
+            TAccountCollectionMetadata,
+            TAccountCollectionMasterEdition,
+            TAccountCollectionUpdateAuthority,
+            TAccountTokenMetadataProgram,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountRecentSlothashes
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as MintFromCandyMachineInput<
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountNftMint,
+    TAccountNftMintAuthority,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  >;
+
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

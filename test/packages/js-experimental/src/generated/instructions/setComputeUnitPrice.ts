@@ -124,7 +124,7 @@ export async function setComputeUnitPrice<
   TReturn,
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -132,9 +132,35 @@ export async function setComputeUnitPrice<
           TReturn
         >)
     | SetComputeUnitPriceInput,
-  input?: SetComputeUnitPriceInput
+  rawInput?: SetComputeUnitPriceInput
 ): Promise<
   TReturn | WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetComputeUnitPriceInstruction<TProgram>,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SetComputeUnitPriceInput;
+
+  const defaultProgramAddress =
+    'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<'ComputeBudget111111111111111111111111111111'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splComputeBudget',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

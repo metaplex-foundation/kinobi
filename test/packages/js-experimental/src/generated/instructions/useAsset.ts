@@ -474,7 +474,7 @@ export async function useAsset<
   TAccountAuthorizationRules extends string = string,
   TAccountAuthorizationRulesProgram extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -507,7 +507,7 @@ export async function useAsset<
         TAccountAuthorizationRules,
         TAccountAuthorizationRulesProgram
       >,
-  input?: UseAssetInput<
+  rawInput?: UseAssetInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -539,5 +539,56 @@ export async function useAsset<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UseAssetInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountTokenAccount,
+            TAccountMint,
+            TAccountUseAuthority,
+            TAccountOwner,
+            TAccountSplTokenProgram,
+            TAccountAtaProgram,
+            TAccountSystemProgram,
+            TAccountUseAuthorityRecord,
+            TAccountAuthorizationRules,
+            TAccountAuthorizationRulesProgram
+          >,
+          TReturn
+        >);
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UseAssetInput<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

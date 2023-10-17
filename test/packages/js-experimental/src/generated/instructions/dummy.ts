@@ -413,7 +413,7 @@ export async function dummy<
   TAccountDelegateRecord extends string = string,
   TAccountTokenOrAtaProgram extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -444,7 +444,7 @@ export async function dummy<
         TAccountDelegateRecord,
         TAccountTokenOrAtaProgram
       >,
-  input?: DummyInput<
+  rawInput?: DummyInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -474,5 +474,52 @@ export async function dummy<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DummyInstruction<
+            TProgram,
+            TAccountEdition,
+            TAccountMint,
+            TAccountUpdateAuthority,
+            TAccountMintAuthority,
+            TAccountPayer,
+            TAccountFoo,
+            TAccountBar,
+            TAccountDelegate,
+            TAccountDelegateRecord,
+            TAccountTokenOrAtaProgram
+          >,
+          TReturn
+        >);
+  const input = (rawInput === undefined ? rawContext : rawInput) as DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >;
+
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }

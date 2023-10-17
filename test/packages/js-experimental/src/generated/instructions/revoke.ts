@@ -518,7 +518,7 @@ export async function revoke<
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
 >(
-  context:
+  rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<
@@ -555,7 +555,7 @@ export async function revoke<
         TAccountAuthorizationRulesProgram,
         TAccountAuthorizationRules
       >,
-  input?: RevokeInput<
+  rawInput?: RevokeInput<
     TAccountDelegateRecord,
     TAccountDelegate,
     TAccountMetadata,
@@ -591,5 +591,58 @@ export async function revoke<
       >
     >
 > {
-  throw new Error('Not implemented');
+  const context = (rawInput === undefined ? {} : rawInput) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RevokeInstruction<
+            TProgram,
+            TAccountDelegateRecord,
+            TAccountDelegate,
+            TAccountMetadata,
+            TAccountMasterEdition,
+            TAccountMint,
+            TAccountToken,
+            TAccountAuthority,
+            TAccountPayer,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions,
+            TAccountSplTokenProgram,
+            TAccountAuthorizationRulesProgram,
+            TAccountAuthorizationRules
+          >,
+          TReturn
+        >);
+  const input = (rawInput === undefined ? rawContext : rawInput) as RevokeInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >;
+
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  return {
+    instruction: transferSolInstruction(input as any, input, programAddress),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
 }
