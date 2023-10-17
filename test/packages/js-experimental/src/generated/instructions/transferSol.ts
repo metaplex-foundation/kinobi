@@ -52,19 +52,15 @@ import {
 // Output.
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
+  TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      ...(TAccountSource extends undefined
-        ? []
-        : [
-            TAccountSource extends string
-              ? WritableSignerAccount<TAccountSource>
-              : TAccountSource
-          ]),
+      TAccountSource extends string
+        ? WritableSignerAccount<TAccountSource>
+        : TAccountSource,
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
         : TAccountDestination
@@ -113,11 +109,11 @@ export function getTransferSolInstructionDataCodec(): Codec<
 
 export function transferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
+  TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    source?: TAccountSource extends string
+    source: TAccountSource extends string
       ? Base58EncodedAddress<TAccountSource>
       : TAccountSource;
     destination: TAccountDestination extends string
@@ -131,7 +127,7 @@ export function transferSolInstruction<
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ],
     data: getTransferSolInstructionDataEncoder().encode(args),
     programAddress,
   } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;

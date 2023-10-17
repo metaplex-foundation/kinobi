@@ -19,9 +19,15 @@ dependencies:
   '@solana/instructions':
     specifier: ^2.0.0-experimental
     version: 2.0.0-experimental.f4b7fd3
+  '@solana/keys':
+    specifier: ^2.0.0-experimental
+    version: 2.0.0-experimental.506779
   '@solana/options':
     specifier: ^2.0.0-experimental
     version: 2.0.0-experimental.278784a
+  '@solana/transactions':
+    specifier: ^2.0.0-experimental
+    version: 2.0.0-experimental.506779
 
 devDependencies:
   typescript:
@@ -66,11 +72,22 @@ packages:
       '@metaplex-foundation/umi-serializers-numbers': 0.8.9
     dev: false
 
+  /@solana/addresses@2.0.0-experimental.506779:
+    resolution: {integrity: sha512-f2+mpEZ1opGY2tQv785grwTO0eDsTcZlTdMCwXlrg3FWHsWpLozO8aMKfbWS0dAdh5evk1fXnW8Tf7EI2kHW3Q==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers': 0.8.9
+      '@solana/assertions': 2.0.0-experimental.506779
+    dev: false
+
   /@solana/addresses@2.0.0-experimental.f040ea3:
     resolution: {integrity: sha512-6f0k5X2+HaG85qF3t5cV51k6ysd5MVLi2e3/SBmrjbd+7pxm9M+ySH9ihVXEq6y8qU2hpRH8ouIsTGdJb5YbOA==}
     dependencies:
       '@metaplex-foundation/umi-serializers': 0.8.9
       '@solana/assertions': 2.0.0-experimental.f040ea3
+    dev: false
+
+  /@solana/assertions@2.0.0-experimental.506779:
+    resolution: {integrity: sha512-F6xOEb7R5zrONjK9ClN9GKeBRU1QWTtJiq88a5HTulc+aaxvuGjlvpbVSSyMqL9MmZCK/GwpEESnhF2Wec6Hhg==}
     dev: false
 
   /@solana/assertions@2.0.0-experimental.f040ea3:
@@ -118,11 +135,25 @@ packages:
     resolution: {integrity: sha512-ix4HJifZCg7tV3y+ftjsfSv72GBE6pq2YH7InKw4OBK4YdSXLVbOM26zrgAT4txyuis0perrAIFJ1V7rLZF3ng==}
     dev: false
 
+  /@solana/keys@2.0.0-experimental.506779:
+    resolution: {integrity: sha512-Tp/vGOGbYQ4g/ow9ZHaEqDjiA3KpRLCnQCPLcFNY6X6qlmr9YL8P9hWP7OCEIXHwn14PcTHhYWGv3RzmvXXQHg==}
+    dependencies:
+      '@solana/assertions': 2.0.0-experimental.506779
+    dev: false
+
   /@solana/options@2.0.0-experimental.278784a:
     resolution: {integrity: sha512-RzX6V9Qj3BHQCNW+m93U4711W6zTShCBtFhuB/M+DBQ6DDo7Kzwsx2DKrEVG0s/hizBXDfWVNhLMLMH6KkK0vQ==}
     dependencies:
       '@solana/codecs-core': 2.0.0-experimental.278784a
       '@solana/codecs-numbers': 2.0.0-experimental.278784a
+    dev: false
+
+  /@solana/transactions@2.0.0-experimental.506779:
+    resolution: {integrity: sha512-3zt1oR/uKziLsJIZxdpqiCFatJKKuCijm0a1AjuYOBlNT0KhlwDctTYYClaGGiD3/9ZkIYAPK4kV3ZDFz9q+Ig==}
+    dependencies:
+      '@metaplex-foundation/umi-serializers': 0.8.9
+      '@solana/addresses': 2.0.0-experimental.506779
+      '@solana/keys': 2.0.0-experimental.506779
     dev: false
 
   /fastestsmallesttextencoderdecoder@1.0.22:

@@ -29,7 +29,7 @@ import {
 
 // Accounts.
 export type TransferSolInstructionAccounts = {
-  source?: Signer;
+  source: Signer;
   destination: PublicKey | Pda;
 };
 
@@ -96,7 +96,7 @@ export function transferSol(
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
-    'omitted',
+    'programId',
     programId
   );
 
