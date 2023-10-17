@@ -28,7 +28,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CloseTokenInstruction<
@@ -117,3 +117,14 @@ export function closeTokenInstruction<
     TAccountOwner
   >;
 }
+
+// Input.
+export type CloseTokenInput<
+  TAccountAccount extends string,
+  TAccountDestination extends string,
+  TAccountOwner extends string
+> = {
+  account: Base58EncodedAddress<TAccountAccount>;
+  destination: Base58EncodedAddress<TAccountDestination>;
+  owner: Signer<TAccountOwner>;
+};

@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type UpdatePrimarySaleHappenedViaTokenInstruction<
@@ -126,3 +126,14 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
     TAccountToken
   >;
 }
+
+// Input.
+export type UpdatePrimarySaleHappenedViaTokenInput<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  owner: Signer<TAccountOwner>;
+  token: Base58EncodedAddress<TAccountToken>;
+};

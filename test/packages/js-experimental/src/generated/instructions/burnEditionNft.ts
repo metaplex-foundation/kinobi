@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type BurnEditionNftInstruction<
@@ -223,3 +223,28 @@ export function burnEditionNftInstruction<
     TAccountSplTokenProgram
   >;
 }
+
+// Input.
+export type BurnEditionNftInput<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountPrintEditionMint extends string,
+  TAccountMasterEditionMint extends string,
+  TAccountPrintEditionTokenAccount extends string,
+  TAccountMasterEditionTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountPrintEditionAccount extends string,
+  TAccountEditionMarkerAccount extends string,
+  TAccountSplTokenProgram extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  owner: Signer<TAccountOwner>;
+  printEditionMint: Base58EncodedAddress<TAccountPrintEditionMint>;
+  masterEditionMint: Base58EncodedAddress<TAccountMasterEditionMint>;
+  printEditionTokenAccount: Base58EncodedAddress<TAccountPrintEditionTokenAccount>;
+  masterEditionTokenAccount: Base58EncodedAddress<TAccountMasterEditionTokenAccount>;
+  masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+  printEditionAccount: Base58EncodedAddress<TAccountPrintEditionAccount>;
+  editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
+  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+};

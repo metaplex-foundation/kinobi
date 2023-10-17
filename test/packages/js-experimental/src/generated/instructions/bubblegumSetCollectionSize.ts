@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -178,3 +178,18 @@ export function bubblegumSetCollectionSizeInstruction<
     TAccountCollectionAuthorityRecord
   >;
 }
+
+// Input.
+export type BubblegumSetCollectionSizeInput<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  bubblegumSigner: Signer<TAccountBubblegumSigner>;
+  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+};

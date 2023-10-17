@@ -33,7 +33,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type TransferSolInstruction<
@@ -118,3 +118,12 @@ export function transferSolInstruction<
     programAddress,
   } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 }
+
+// Input.
+export type TransferSolInput<
+  TAccountSource extends string,
+  TAccountDestination extends string
+> = {
+  source: Signer<TAccountSource>;
+  destination: Base58EncodedAddress<TAccountDestination>;
+};

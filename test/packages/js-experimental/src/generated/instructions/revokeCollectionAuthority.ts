@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RevokeCollectionAuthorityInstruction<
@@ -152,3 +152,18 @@ export function revokeCollectionAuthorityInstruction<
     TAccountMint
   >;
 }
+
+// Input.
+export type RevokeCollectionAuthorityInput<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountDelegateAuthority extends string,
+  TAccountRevokeAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string
+> = {
+  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  delegateAuthority: Base58EncodedAddress<TAccountDelegateAuthority>;
+  revokeAuthority: Signer<TAccountRevokeAuthority>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  mint: Base58EncodedAddress<TAccountMint>;
+};

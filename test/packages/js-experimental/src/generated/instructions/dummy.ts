@@ -32,7 +32,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type DummyInstruction<
@@ -231,3 +231,28 @@ export function dummyInstruction<
     TAccountTokenOrAtaProgram
   >;
 }
+
+// Input.
+export type DummyInput<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string
+> = {
+  edition: Signer<TAccountEdition>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  foo: Base58EncodedAddress<TAccountFoo>;
+  bar: Signer<TAccountBar>;
+  delegate: Signer<TAccountDelegate>;
+  delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  tokenOrAtaProgram: Base58EncodedAddress<TAccountTokenOrAtaProgram>;
+};

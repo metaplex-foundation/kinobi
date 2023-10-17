@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -234,3 +234,26 @@ export function deprecatedMintPrintingTokensViaTokenInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type DeprecatedMintPrintingTokensViaTokenInput<
+  TAccountDestination extends string,
+  TAccountToken extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountBurnAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string
+> = {
+  destination: Base58EncodedAddress<TAccountDestination>;
+  token: Base58EncodedAddress<TAccountToken>;
+  oneTimePrintingAuthorizationMint: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>;
+  printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  burnAuthority: Signer<TAccountBurnAuthority>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

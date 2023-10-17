@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Base58EncodedAddress, ProgramDerivedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   TaCreateArgs,
   TaCreateArgsArgs,
@@ -151,3 +151,14 @@ export function createRuleSetInstruction<
     TAccountSystemProgram
   >;
 }
+
+// Input.
+export type CreateRuleSetInput<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string
+> = {
+  payer: Signer<TAccountPayer>;
+  ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+};

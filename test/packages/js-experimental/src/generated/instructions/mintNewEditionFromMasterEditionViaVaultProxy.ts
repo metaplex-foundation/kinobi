@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
   MintNewEditionFromMasterEditionViaTokenArgsArgs,
@@ -335,3 +335,42 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type MintNewEditionFromMasterEditionViaVaultProxyInput<
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountVaultAuthority extends string,
+  TAccountSafetyDepositStore extends string,
+  TAccountSafetyDepositBox extends string,
+  TAccountVault extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountTokenVaultProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  newMetadata: Base58EncodedAddress<TAccountNewMetadata>;
+  newEdition: Base58EncodedAddress<TAccountNewEdition>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  newMint: Base58EncodedAddress<TAccountNewMint>;
+  editionMarkPda: Base58EncodedAddress<TAccountEditionMarkPda>;
+  newMintAuthority: Signer<TAccountNewMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  vaultAuthority: Signer<TAccountVaultAuthority>;
+  safetyDepositStore: Base58EncodedAddress<TAccountSafetyDepositStore>;
+  safetyDepositBox: Base58EncodedAddress<TAccountSafetyDepositBox>;
+  vault: Base58EncodedAddress<TAccountVault>;
+  newMetadataUpdateAuthority: Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenVaultProgram: Base58EncodedAddress<TAccountTokenVaultProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

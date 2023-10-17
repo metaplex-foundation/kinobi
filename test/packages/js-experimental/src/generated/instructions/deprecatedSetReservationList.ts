@@ -41,7 +41,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -164,3 +164,14 @@ export function deprecatedSetReservationListInstruction<
     TAccountResource
   >;
 }
+
+// Input.
+export type DeprecatedSetReservationListInput<
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string
+> = {
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  reservationList: Base58EncodedAddress<TAccountReservationList>;
+  resource: Signer<TAccountResource>;
+};

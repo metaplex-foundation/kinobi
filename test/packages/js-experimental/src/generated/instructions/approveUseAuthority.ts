@@ -34,7 +34,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type ApproveUseAuthorityInstruction<
@@ -243,3 +243,30 @@ export function approveUseAuthorityInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type ApproveUseAuthorityInput<
+  TAccountUseAuthorityRecord extends string,
+  TAccountOwner extends string,
+  TAccountPayer extends string,
+  TAccountUser extends string,
+  TAccountOwnerTokenAccount extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountBurner extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  owner: Signer<TAccountOwner>;
+  payer: Signer<TAccountPayer>;
+  user: Base58EncodedAddress<TAccountUser>;
+  ownerTokenAccount: Base58EncodedAddress<TAccountOwnerTokenAccount>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  burner: Base58EncodedAddress<TAccountBurner>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

@@ -122,3 +122,14 @@ export function convertMasterEditionV1ToV2Instruction<
     TAccountPrintingMint
   >;
 }
+
+// Input.
+export type ConvertMasterEditionV1ToV2Input<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string
+> = {
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  oneTimeAuth: Base58EncodedAddress<TAccountOneTimeAuth>;
+  printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+};

@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
@@ -307,3 +307,40 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruc
     TAccountReservationList
   >;
 }
+
+// Input.
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+  TAccountMetadata extends string,
+  TAccountEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPrintingMint extends string,
+  TAccountMasterTokenAccount extends string,
+  TAccountEditionMarker extends string,
+  TAccountBurnAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMasterUpdateAuthority extends string,
+  TAccountMasterMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountReservationList extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  edition: Base58EncodedAddress<TAccountEdition>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  masterTokenAccount: Base58EncodedAddress<TAccountMasterTokenAccount>;
+  editionMarker: Base58EncodedAddress<TAccountEditionMarker>;
+  burnAuthority: Signer<TAccountBurnAuthority>;
+  payer: Signer<TAccountPayer>;
+  masterUpdateAuthority: Base58EncodedAddress<TAccountMasterUpdateAuthority>;
+  masterMetadata: Base58EncodedAddress<TAccountMasterMetadata>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+  reservationList: Base58EncodedAddress<TAccountReservationList>;
+};

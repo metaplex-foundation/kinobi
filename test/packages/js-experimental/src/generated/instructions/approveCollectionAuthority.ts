@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type ApproveCollectionAuthorityInstruction<
@@ -203,3 +203,24 @@ export function approveCollectionAuthorityInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type ApproveCollectionAuthorityInput<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  newCollectionAuthority: Base58EncodedAddress<TAccountNewCollectionAuthority>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+  payer: Signer<TAccountPayer>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

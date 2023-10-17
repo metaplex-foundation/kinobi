@@ -28,7 +28,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RemoveCreatorVerificationInstruction<
@@ -113,3 +113,12 @@ export function removeCreatorVerificationInstruction<
     TAccountCreator
   >;
 }
+
+// Input.
+export type RemoveCreatorVerificationInput<
+  TAccountMetadata extends string,
+  TAccountCreator extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  creator: Signer<TAccountCreator>;
+};

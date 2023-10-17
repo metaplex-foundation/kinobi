@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type FreezeTokenInstruction<
@@ -118,3 +118,14 @@ export function freezeTokenInstruction<
     TAccountOwner
   >;
 }
+
+// Input.
+export type FreezeTokenInput<
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string
+> = {
+  account: Base58EncodedAddress<TAccountAccount>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  owner: Signer<TAccountOwner>;
+};

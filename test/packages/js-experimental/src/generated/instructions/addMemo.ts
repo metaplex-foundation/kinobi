@@ -59,3 +59,6 @@ export function addMemoInstruction<
     programAddress,
   } as AddMemoInstruction<TProgram>;
 }
+
+// Input.
+export type AddMemoInput = {};

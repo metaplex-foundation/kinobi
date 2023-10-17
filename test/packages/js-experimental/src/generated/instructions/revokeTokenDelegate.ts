@@ -28,7 +28,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RevokeTokenDelegateInstruction<
@@ -104,3 +104,12 @@ export function revokeTokenDelegateInstruction<
     programAddress,
   } as RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>;
 }
+
+// Input.
+export type RevokeTokenDelegateInput<
+  TAccountSource extends string,
+  TAccountOwner extends string
+> = {
+  source: Base58EncodedAddress<TAccountSource>;
+  owner: Signer<TAccountOwner>;
+};

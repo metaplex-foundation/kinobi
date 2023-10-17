@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type ThawDelegatedAccountInstruction<
@@ -150,3 +150,18 @@ export function thawDelegatedAccountInstruction<
     TAccountTokenProgram
   >;
 }
+
+// Input.
+export type ThawDelegatedAccountInput<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string
+> = {
+  delegate: Signer<TAccountDelegate>;
+  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  edition: Base58EncodedAddress<TAccountEdition>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+};

@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   MigrateArgs,
   MigrateArgsArgs,
@@ -244,3 +244,28 @@ export function migrateInstruction<
     TAccountAuthorizationRules
   >;
 }
+
+// Input.
+export type MigrateInput<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+};

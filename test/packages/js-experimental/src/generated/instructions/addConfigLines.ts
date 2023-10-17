@@ -35,7 +35,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   ConfigLine,
   ConfigLineArgs,
@@ -140,3 +140,12 @@ export function addConfigLinesInstruction<
     TAccountAuthority
   >;
 }
+
+// Input.
+export type AddConfigLinesInput<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+  authority: Signer<TAccountAuthority>;
+};

@@ -30,7 +30,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -131,3 +131,12 @@ export function updateCandyMachineInstruction<
     TAccountAuthority
   >;
 }
+
+// Input.
+export type UpdateCandyMachineInput<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+  authority: Signer<TAccountAuthority>;
+};

@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
   MintNewEditionFromMasterEditionViaTokenArgsArgs,
@@ -299,3 +299,36 @@ export function mintNewEditionFromMasterEditionViaTokenInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type MintNewEditionFromMasterEditionViaTokenInput<
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountTokenAccountOwner extends string,
+  TAccountTokenAccount extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  newMetadata: Base58EncodedAddress<TAccountNewMetadata>;
+  newEdition: Base58EncodedAddress<TAccountNewEdition>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  newMint: Base58EncodedAddress<TAccountNewMint>;
+  editionMarkPda: Base58EncodedAddress<TAccountEditionMarkPda>;
+  newMintAuthority: Signer<TAccountNewMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  tokenAccountOwner: Signer<TAccountTokenAccountOwner>;
+  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  newMetadataUpdateAuthority: Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

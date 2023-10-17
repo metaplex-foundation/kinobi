@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RevokeUseAuthorityInstruction<
@@ -206,3 +206,26 @@ export function revokeUseAuthorityInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type RevokeUseAuthorityInput<
+  TAccountUseAuthorityRecord extends string,
+  TAccountOwner extends string,
+  TAccountUser extends string,
+  TAccountOwnerTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  owner: Signer<TAccountOwner>;
+  user: Base58EncodedAddress<TAccountUser>;
+  ownerTokenAccount: Base58EncodedAddress<TAccountOwnerTokenAccount>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   RevokeArgs,
   RevokeArgsArgs,
@@ -293,3 +293,34 @@ export function revokeInstruction<
     TAccountAuthorizationRules
   >;
 }
+
+// Input.
+export type RevokeInput<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  delegate: Base58EncodedAddress<TAccountDelegate>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  token: Base58EncodedAddress<TAccountToken>;
+  authority: Signer<TAccountAuthority>;
+  payer: Signer<TAccountPayer>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+};

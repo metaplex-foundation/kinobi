@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   TransferArgs,
   TransferArgsArgs,
@@ -327,3 +327,38 @@ export function transferInstruction<
     TAccountAuthorizationRules
   >;
 }
+
+// Input.
+export type TransferInput<
+  TAccountAuthority extends string,
+  TAccountDelegateRecord extends string,
+  TAccountToken extends string,
+  TAccountTokenOwner extends string,
+  TAccountDestination extends string,
+  TAccountDestinationOwner extends string,
+  TAccountMint extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  authority: Signer<TAccountAuthority>;
+  delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  token: Base58EncodedAddress<TAccountToken>;
+  tokenOwner: Base58EncodedAddress<TAccountTokenOwner>;
+  destination: Base58EncodedAddress<TAccountDestination>;
+  destinationOwner: Base58EncodedAddress<TAccountDestinationOwner>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splAtaProgram: Base58EncodedAddress<TAccountSplAtaProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+};

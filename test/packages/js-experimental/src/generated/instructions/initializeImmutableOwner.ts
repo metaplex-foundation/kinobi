@@ -95,3 +95,8 @@ export function initializeImmutableOwnerInstruction<
     programAddress,
   } as InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>;
 }
+
+// Input.
+export type InitializeImmutableOwnerInput<TAccountAccount extends string> = {
+  account: Base58EncodedAddress<TAccountAccount>;
+};

@@ -24,6 +24,7 @@ import {
   getInstructionDataFragment,
   getInstructionFunctionLowLevelFragment,
   getInstructionInputDefaultFragment,
+  getInstructionInputTypeFragment,
   getInstructionTypeFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
@@ -228,23 +229,38 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitInstruction(instruction: nodes.InstructionNode): RenderMap {
+    if (!this.program) {
+      throw new Error('Instruction must be visited inside a program.');
+    }
+
+    const resolvedInputs = visit(
+      instruction,
+      this.resolvedInstructionInputVisitor
+    );
+
     // Fragments.
     const instructionTypeFragment = getInstructionTypeFragment(
       instruction,
-      this.program!
+      this.program
     );
     const instructionDataFragment = getInstructionDataFragment(
       instruction,
       this.typeManifestVisitor
     );
     const instructionFunctionLowLevelFragment =
-      getInstructionFunctionLowLevelFragment(instruction, this.program!);
+      getInstructionFunctionLowLevelFragment(instruction, this.program);
+    const instructionInputTypeFragment = getInstructionInputTypeFragment(
+      instruction,
+      resolvedInputs,
+      this.program
+    );
 
     // Imports and interfaces.
     const imports = new ImportMap().mergeWith(
       instructionTypeFragment,
       instructionDataFragment,
-      instructionFunctionLowLevelFragment
+      instructionFunctionLowLevelFragment,
+      instructionInputTypeFragment
     );
 
     // TODO: Remove once these are imported in the fragments.
@@ -317,7 +333,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Resolved inputs.
     let argObject = canMergeAccountsAndArgs ? 'input' : 'args';
     argObject = hasResolvedArgs ? 'resolvedArgs' : argObject;
-    const resolvedInputs = visit(
+    const oldResolvedInputs = visit(
       instruction,
       this.resolvedInstructionInputVisitor
     ).map((input: ResolvedInstructionInput) => {
@@ -330,7 +346,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       interfaces.mergeWith(renderedInput.interfaces);
       return { ...input, render: renderedInput.render };
     });
-    const resolvedInputsWithDefaults = resolvedInputs.filter(
+    const resolvedInputsWithDefaults = oldResolvedInputs.filter(
       (input) => input.defaultsTo !== undefined && input.render !== ''
     );
     const argsWithDefaults = resolvedInputsWithDefaults
@@ -340,7 +356,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Accounts.
     const accounts = instruction.accounts.map((account) => {
       const hasDefaultValue = !!account.defaultsTo;
-      const resolvedAccount = resolvedInputs.find(
+      const resolvedAccount = oldResolvedInputs.find(
         (input) => input.kind === 'account' && input.name === account.name
       ) as ResolvedInstructionAccount;
       return {
@@ -421,9 +437,11 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionTypeFragment,
         instructionDataFragment,
         instructionFunctionLowLevelFragment,
+        instructionInputTypeFragment,
+
         interfaces: interfaces.toString(),
         program: this.program,
-        resolvedInputs,
+        resolvedInputs: oldResolvedInputs,
         resolvedInputsWithDefaults,
         argsWithDefaults,
         accounts,

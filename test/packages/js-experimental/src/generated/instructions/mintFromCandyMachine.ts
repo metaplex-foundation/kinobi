@@ -32,7 +32,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type MintFromCandyMachineInstruction<
@@ -327,3 +327,42 @@ export function mintFromCandyMachineInstruction<
     TAccountRecentSlothashes
   >;
 }
+
+// Input.
+export type MintFromCandyMachineInput<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountNftMint extends string,
+  TAccountNftMintAuthority extends string,
+  TAccountNftMetadata extends string,
+  TAccountNftMasterEdition extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRecentSlothashes extends string
+> = {
+  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+  authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  nftMint: Base58EncodedAddress<TAccountNftMint>;
+  nftMintAuthority: Signer<TAccountNftMintAuthority>;
+  nftMetadata: Base58EncodedAddress<TAccountNftMetadata>;
+  nftMasterEdition: Base58EncodedAddress<TAccountNftMasterEdition>;
+  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionMasterEdition: Base58EncodedAddress<TAccountCollectionMasterEdition>;
+  collectionUpdateAuthority: Base58EncodedAddress<TAccountCollectionUpdateAuthority>;
+  tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  recentSlothashes: Base58EncodedAddress<TAccountRecentSlothashes>;
+};

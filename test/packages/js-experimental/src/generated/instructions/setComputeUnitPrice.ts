@@ -87,3 +87,6 @@ export function setComputeUnitPriceInstruction<
     programAddress,
   } as SetComputeUnitPriceInstruction<TProgram>;
 }
+
+// Input.
+export type SetComputeUnitPriceInput = {};

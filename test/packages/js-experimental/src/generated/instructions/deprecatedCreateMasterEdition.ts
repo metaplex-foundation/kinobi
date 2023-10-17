@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   CreateMasterEditionArgs,
   CreateMasterEditionArgsArgs,
@@ -292,3 +292,34 @@ export function deprecatedCreateMasterEditionInstruction<
     TAccountOneTimePrintingAuthorizationMintAuthority
   >;
 }
+
+// Input.
+export type DeprecatedCreateMasterEditionInput<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPrintingMintAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string
+> = {
+  edition: Base58EncodedAddress<TAccountEdition>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  oneTimePrintingAuthorizationMint: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+  printingMintAuthority: Signer<TAccountPrintingMintAuthority>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  payer: Signer<TAccountPayer>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+  oneTimePrintingAuthorizationMintAuthority: Signer<TAccountOneTimePrintingAuthorizationMintAuthority>;
+};

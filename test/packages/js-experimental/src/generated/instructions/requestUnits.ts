@@ -92,3 +92,6 @@ export function requestUnitsInstruction<
     programAddress,
   } as RequestUnitsInstruction<TProgram>;
 }
+
+// Input.
+export type RequestUnitsInput = {};

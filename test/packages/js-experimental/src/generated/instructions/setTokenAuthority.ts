@@ -38,7 +38,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   TokenAuthorityType,
   TokenAuthorityTypeArgs,
@@ -136,3 +136,12 @@ export function setTokenAuthorityInstruction<
     programAddress,
   } as SetTokenAuthorityInstruction<TProgram, TAccountOwned, TAccountOwner>;
 }
+
+// Input.
+export type SetTokenAuthorityInput<
+  TAccountOwned extends string,
+  TAccountOwner extends string
+> = {
+  owned: Base58EncodedAddress<TAccountOwned>;
+  owner: Base58EncodedAddress<TAccountOwner> | Signer<TAccountOwner>;
+};

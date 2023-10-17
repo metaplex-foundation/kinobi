@@ -34,7 +34,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type TransferTokensCheckedInstruction<
@@ -150,3 +150,16 @@ export function transferTokensCheckedInstruction<
     TAccountAuthority
   >;
 }
+
+// Input.
+export type TransferTokensCheckedInput<
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string
+> = {
+  source: Base58EncodedAddress<TAccountSource>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  destination: Base58EncodedAddress<TAccountDestination>;
+  authority: Signer<TAccountAuthority>;
+};

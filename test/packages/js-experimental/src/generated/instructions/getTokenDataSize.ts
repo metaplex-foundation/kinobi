@@ -88,3 +88,8 @@ export function getTokenDataSizeInstruction<
     programAddress,
   } as GetTokenDataSizeInstruction<TProgram, TAccountMint>;
 }
+
+// Input.
+export type GetTokenDataSizeInput<TAccountMint extends string> = {
+  mint: Base58EncodedAddress<TAccountMint>;
+};

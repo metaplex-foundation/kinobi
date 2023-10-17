@@ -41,7 +41,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   AssetData,
   AssetDataArgs,
@@ -260,3 +260,26 @@ export function createV2Instruction<
     TAccountSplTokenProgram
   >;
 }
+
+// Input.
+export type CreateV2Input<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  mint: Base58EncodedAddress<TAccountMint> | Signer<TAccountMint>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+};

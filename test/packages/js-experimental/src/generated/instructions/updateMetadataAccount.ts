@@ -48,7 +48,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   Creator,
   CreatorArgs,
@@ -197,3 +197,12 @@ export function updateMetadataAccountInstruction<
     TAccountUpdateAuthority
   >;
 }
+
+// Input.
+export type UpdateMetadataAccountInput<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+};

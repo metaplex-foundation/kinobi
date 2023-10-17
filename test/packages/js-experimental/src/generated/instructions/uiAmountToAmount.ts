@@ -103,3 +103,8 @@ export function uiAmountToAmountInstruction<
     programAddress,
   } as UiAmountToAmountInstruction<TProgram, TAccountMint>;
 }
+
+// Input.
+export type UiAmountToAmountInput<TAccountMint extends string> = {
+  mint: Base58EncodedAddress<TAccountMint>;
+};

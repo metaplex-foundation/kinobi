@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateEscrowAccountInstruction<
@@ -206,3 +206,26 @@ export function createEscrowAccountInstruction<
     TAccountAuthority
   >;
 }
+
+// Input.
+export type CreateEscrowAccountInput<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string
+> = {
+  escrow: Base58EncodedAddress<TAccountEscrow>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  edition: Base58EncodedAddress<TAccountEdition>;
+  payer: Signer<TAccountPayer>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  authority: Signer<TAccountAuthority>;
+};

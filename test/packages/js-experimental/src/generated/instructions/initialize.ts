@@ -32,7 +32,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -264,3 +264,30 @@ export function initializeInstruction<
     TAccountSystemProgram
   >;
 }
+
+// Input.
+export type InitializeInput<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string
+> = {
+  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+  authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
+  authority: Base58EncodedAddress<TAccountAuthority>;
+  payer: Signer<TAccountPayer>;
+  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  collectionMasterEdition: Base58EncodedAddress<TAccountCollectionMasterEdition>;
+  collectionUpdateAuthority: Signer<TAccountCollectionUpdateAuthority>;
+  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+};

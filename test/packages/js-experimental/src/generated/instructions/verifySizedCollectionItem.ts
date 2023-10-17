@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type VerifySizedCollectionItemInstruction<
@@ -186,3 +186,22 @@ export function verifySizedCollectionItemInstruction<
     TAccountCollectionAuthorityRecord
   >;
 }
+
+// Input.
+export type VerifySizedCollectionItemInput<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  payer: Signer<TAccountPayer>;
+  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  collection: Base58EncodedAddress<TAccountCollection>;
+  collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
+  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+};

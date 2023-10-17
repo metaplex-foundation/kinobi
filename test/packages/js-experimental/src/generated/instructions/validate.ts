@@ -31,7 +31,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   Operation,
   OperationArgs,
@@ -373,3 +373,36 @@ export function validateInstruction<
     TAccountOptRuleNonsigner5
   >;
 }
+
+// Input.
+export type ValidateInput<
+  TAccountPayer extends string,
+  TAccountRuleSet extends string,
+  TAccountSystemProgram extends string,
+  TAccountOptRuleSigner1 extends string,
+  TAccountOptRuleSigner2 extends string,
+  TAccountOptRuleSigner3 extends string,
+  TAccountOptRuleSigner4 extends string,
+  TAccountOptRuleSigner5 extends string,
+  TAccountOptRuleNonsigner1 extends string,
+  TAccountOptRuleNonsigner2 extends string,
+  TAccountOptRuleNonsigner3 extends string,
+  TAccountOptRuleNonsigner4 extends string,
+  TAccountOptRuleNonsigner5 extends string
+> = {
+  payer: Signer<TAccountPayer>;
+  ruleSet: Base58EncodedAddress<TAccountRuleSet>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  optRuleSigner1:
+    | Base58EncodedAddress<TAccountOptRuleSigner1>
+    | Signer<TAccountOptRuleSigner1>;
+  optRuleSigner2: Signer<TAccountOptRuleSigner2>;
+  optRuleSigner3: Signer<TAccountOptRuleSigner3>;
+  optRuleSigner4: Signer<TAccountOptRuleSigner4>;
+  optRuleSigner5: Signer<TAccountOptRuleSigner5>;
+  optRuleNonsigner1: Base58EncodedAddress<TAccountOptRuleNonsigner1>;
+  optRuleNonsigner2: Base58EncodedAddress<TAccountOptRuleNonsigner2>;
+  optRuleNonsigner3: Base58EncodedAddress<TAccountOptRuleNonsigner3>;
+  optRuleNonsigner4: Base58EncodedAddress<TAccountOptRuleNonsigner4>;
+  optRuleNonsigner5: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
+};

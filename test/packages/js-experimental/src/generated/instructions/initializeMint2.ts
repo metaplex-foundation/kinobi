@@ -118,3 +118,8 @@ export function initializeMint2Instruction<
     programAddress,
   } as InitializeMint2Instruction<TProgram, TAccountMint>;
 }
+
+// Input.
+export type InitializeMint2Input<TAccountMint extends string> = {
+  mint: Base58EncodedAddress<TAccountMint>;
+};

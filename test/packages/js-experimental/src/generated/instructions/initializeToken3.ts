@@ -118,3 +118,12 @@ export function initializeToken3Instruction<
     programAddress,
   } as InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>;
 }
+
+// Input.
+export type InitializeToken3Input<
+  TAccountAccount extends string,
+  TAccountMint extends string
+> = {
+  account: Base58EncodedAddress<TAccountAccount>;
+  mint: Base58EncodedAddress<TAccountMint>;
+};

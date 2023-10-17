@@ -33,7 +33,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type BurnTokenCheckedInstruction<
@@ -139,3 +139,14 @@ export function burnTokenCheckedInstruction<
     TAccountAuthority
   >;
 }
+
+// Input.
+export type BurnTokenCheckedInput<
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountAuthority extends string
+> = {
+  account: Base58EncodedAddress<TAccountAccount>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  authority: Signer<TAccountAuthority>;
+};

@@ -91,3 +91,8 @@ export function puffMetadataInstruction<
     programAddress,
   } as PuffMetadataInstruction<TProgram, TAccountMetadata>;
 }
+
+// Input.
+export type PuffMetadataInput<TAccountMetadata extends string> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+};

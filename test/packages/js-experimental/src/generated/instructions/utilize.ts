@@ -34,7 +34,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type UtilizeInstruction<
@@ -270,3 +270,30 @@ export function utilizeInstruction<
     TAccountBurner
   >;
 }
+
+// Input.
+export type UtilizeInput<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountBurner extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  useAuthority: Signer<TAccountUseAuthority>;
+  owner: Base58EncodedAddress<TAccountOwner>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+  useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  burner: Base58EncodedAddress<TAccountBurner>;
+};

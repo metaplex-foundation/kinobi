@@ -35,7 +35,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateFrequencyRuleInstruction<
@@ -160,3 +160,14 @@ export function createFrequencyRuleInstruction<
     TAccountSystemProgram
   >;
 }
+
+// Input.
+export type CreateFrequencyRuleInput<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string
+> = {
+  payer: Signer<TAccountPayer>;
+  frequencyPda: Base58EncodedAddress<TAccountFrequencyPda>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+};

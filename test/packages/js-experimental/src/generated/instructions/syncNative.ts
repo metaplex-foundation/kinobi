@@ -91,3 +91,8 @@ export function syncNativeInstruction<
     programAddress,
   } as SyncNativeInstruction<TProgram, TAccountAccount>;
 }
+
+// Input.
+export type SyncNativeInput<TAccountAccount extends string> = {
+  account: Base58EncodedAddress<TAccountAccount>;
+};

@@ -38,7 +38,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   CollectionDetails,
   CollectionDetailsArgs,
@@ -220,3 +220,22 @@ export function createMetadataAccountV3Instruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type CreateMetadataAccountV3Input<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

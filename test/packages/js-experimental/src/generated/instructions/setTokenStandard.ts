@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type SetTokenStandardInstruction<
@@ -139,3 +139,16 @@ export function setTokenStandardInstruction<
     TAccountEdition
   >;
 }
+
+// Input.
+export type SetTokenStandardInput<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  edition: Base58EncodedAddress<TAccountEdition>;
+};

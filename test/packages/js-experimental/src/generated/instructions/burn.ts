@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   BurnArgs,
   BurnArgsArgs,
@@ -230,3 +230,26 @@ export function burnInstruction<
     TAccountAuthorizationRulesProgram
   >;
 }
+
+// Input.
+export type BurnInput<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  owner: Signer<TAccountOwner>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+};

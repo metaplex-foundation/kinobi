@@ -93,3 +93,6 @@ export function requestHeapFrameInstruction<
     programAddress,
   } as RequestHeapFrameInstruction<TProgram>;
 }
+
+// Input.
+export type RequestHeapFrameInput = {};

@@ -139,3 +139,14 @@ export function initializeToken2Instruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type InitializeToken2Input<
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountRent extends string
+> = {
+  account: Base58EncodedAddress<TAccountAccount>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

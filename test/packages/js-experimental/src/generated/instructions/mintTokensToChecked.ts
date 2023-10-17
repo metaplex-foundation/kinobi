@@ -33,7 +33,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type MintTokensToCheckedInstruction<
@@ -142,3 +142,14 @@ export function mintTokensToCheckedInstruction<
     TAccountMintAuthority
   >;
 }
+
+// Input.
+export type MintTokensToCheckedInput<
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountMintAuthority extends string
+> = {
+  mint: Base58EncodedAddress<TAccountMint>;
+  token: Base58EncodedAddress<TAccountToken>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+};

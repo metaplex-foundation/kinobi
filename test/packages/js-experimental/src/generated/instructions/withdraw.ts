@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type WithdrawInstruction<
@@ -109,3 +109,12 @@ export function withdrawInstruction<
     programAddress,
   } as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 }
+
+// Input.
+export type WithdrawInput<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+  authority: Signer<TAccountAuthority>;
+};

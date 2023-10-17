@@ -87,3 +87,6 @@ export function setComputeUnitLimitInstruction<
     programAddress,
   } as SetComputeUnitLimitInstruction<TProgram>;
 }
+
+// Input.
+export type SetComputeUnitLimitInput = {};

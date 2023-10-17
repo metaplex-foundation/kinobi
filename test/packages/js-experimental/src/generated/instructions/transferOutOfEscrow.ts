@@ -35,7 +35,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type TransferOutOfEscrowInstruction<
@@ -285,3 +285,34 @@ export function transferOutOfEscrowInstruction<
     TAccountAuthority
   >;
 }
+
+// Input.
+export type TransferOutOfEscrowInput<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string
+> = {
+  escrow: Base58EncodedAddress<TAccountEscrow>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  payer: Signer<TAccountPayer>;
+  attributeMint: Base58EncodedAddress<TAccountAttributeMint>;
+  attributeSrc: Base58EncodedAddress<TAccountAttributeSrc>;
+  attributeDst: Base58EncodedAddress<TAccountAttributeDst>;
+  escrowMint: Base58EncodedAddress<TAccountEscrowMint>;
+  escrowAccount: Base58EncodedAddress<TAccountEscrowAccount>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  authority: Signer<TAccountAuthority>;
+};

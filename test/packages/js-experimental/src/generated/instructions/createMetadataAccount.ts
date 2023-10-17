@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Base58EncodedAddress, ProgramDerivedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -46,7 +46,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   Creator,
   CreatorArgs,
@@ -254,3 +254,22 @@ export function createMetadataAccountInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type CreateMetadataAccountInput<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  metadata: ProgramDerivedAddress<TAccountMetadata>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

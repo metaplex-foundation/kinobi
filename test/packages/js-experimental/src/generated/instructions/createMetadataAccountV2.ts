@@ -32,7 +32,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   DataV2,
   DataV2Args,
@@ -206,3 +206,22 @@ export function createMetadataAccountV2Instruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type CreateMetadataAccountV2Input<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

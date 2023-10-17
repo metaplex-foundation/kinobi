@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   CreateMasterEditionArgs,
   CreateMasterEditionArgsArgs,
@@ -231,3 +231,26 @@ export function createMasterEditionInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type CreateMasterEditionInput<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  edition: Base58EncodedAddress<TAccountEdition>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+  mintAuthority: Signer<TAccountMintAuthority>;
+  payer: Signer<TAccountPayer>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

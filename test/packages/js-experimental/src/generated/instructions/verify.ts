@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   VerifyArgs,
   VerifyArgsArgs,
@@ -175,3 +175,18 @@ export function verifyInstruction<
     TAccountAuthorizationRulesProgram
   >;
 }
+
+// Input.
+export type VerifyInput<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  payer: Signer<TAccountPayer>;
+  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+};

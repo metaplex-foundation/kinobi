@@ -17,7 +17,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateReservationListInstruction<
@@ -145,3 +145,24 @@ export function createReservationListInstruction<
     TAccountRent
   >;
 }
+
+// Input.
+export type CreateReservationListInput<
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  reservationList: Base58EncodedAddress<TAccountReservationList>;
+  payer: Signer<TAccountPayer>;
+  updateAuthority: Signer<TAccountUpdateAuthority>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  resource: Base58EncodedAddress<TAccountResource>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

@@ -118,3 +118,12 @@ export function initializeMultisig2Instruction<
     TAccountSigner
   >;
 }
+
+// Input.
+export type InitializeMultisig2Input<
+  TAccountMultisig extends string,
+  TAccountSigner extends string
+> = {
+  multisig: Base58EncodedAddress<TAccountMultisig>;
+  signer: Base58EncodedAddress<TAccountSigner>;
+};

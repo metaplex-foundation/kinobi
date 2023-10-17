@@ -1,0 +1,16 @@
+{% import "templates/macros.njk" as macros %}
+
+// Input.
+export type {{ instruction.name | pascalCase }}Input
+{%- if hasAccounts -%}
+<
+  {%- for account in accounts -%}
+    {{ account.typeParam }} extends string,
+  {% endfor %}
+>
+{% endif %}
+= {
+  {% for account in accounts %}
+    {{ account.name | camelCase }}{{ optionalSign }}: {{ account.type }},
+  {% endfor %}
+}

@@ -36,7 +36,7 @@ import {
   IInstructionWithData,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateAccountInstruction<
@@ -131,3 +131,12 @@ export function createAccountInstruction<
     programAddress,
   } as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 }
+
+// Input.
+export type CreateAccountInput<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string
+> = {
+  payer: Signer<TAccountPayer>;
+  newAccount: Signer<TAccountNewAccount>;
+};

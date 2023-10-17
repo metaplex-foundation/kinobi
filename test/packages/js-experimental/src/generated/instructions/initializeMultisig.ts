@@ -119,3 +119,12 @@ export function initializeMultisigInstruction<
     programAddress,
   } as InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>;
 }
+
+// Input.
+export type InitializeMultisigInput<
+  TAccountMultisig extends string,
+  TAccountRent extends string
+> = {
+  multisig: Base58EncodedAddress<TAccountMultisig>;
+  rent: Base58EncodedAddress<TAccountRent>;
+};

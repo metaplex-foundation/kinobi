@@ -9,6 +9,7 @@ export * from './instructionAccountTypeParam';
 export * from './instructionData';
 export * from './instructionFunctionLowLevel';
 export * from './instructionInputDefault';
+export * from './instructionInputType';
 export * from './instructionType';
 export * from './type';
 export * from './typeCodec';

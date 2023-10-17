@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   MintArgs,
   MintArgsArgs,
@@ -288,3 +288,32 @@ export function mintInstruction<
     TAccountAuthorizationRules
   >;
 }
+
+// Input.
+export type MintInput<
+  TAccountToken extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountPayer extends string,
+  TAccountAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  token: Base58EncodedAddress<TAccountToken>;
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  payer: Signer<TAccountPayer>;
+  authority: Signer<TAccountAuthority>;
+  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splAtaProgram: Base58EncodedAddress<TAccountSplAtaProgram>;
+  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+};

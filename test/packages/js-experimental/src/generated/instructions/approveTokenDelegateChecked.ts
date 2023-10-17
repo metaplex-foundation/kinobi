@@ -34,7 +34,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type ApproveTokenDelegateCheckedInstruction<
@@ -153,3 +153,16 @@ export function approveTokenDelegateCheckedInstruction<
     TAccountOwner
   >;
 }
+
+// Input.
+export type ApproveTokenDelegateCheckedInput<
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDelegate extends string,
+  TAccountOwner extends string
+> = {
+  source: Base58EncodedAddress<TAccountSource>;
+  mint: Base58EncodedAddress<TAccountMint>;
+  delegate: Base58EncodedAddress<TAccountDelegate>;
+  owner: Signer<TAccountOwner>;
+};

@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -161,3 +161,16 @@ export function setCollectionSizeInstruction<
     TAccountCollectionAuthorityRecord
   >;
 }
+
+// Input.
+export type SetCollectionSizeInput<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+};

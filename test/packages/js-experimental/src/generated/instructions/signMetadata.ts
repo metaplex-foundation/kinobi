@@ -28,7 +28,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type SignMetadataInstruction<
@@ -103,3 +103,12 @@ export function signMetadataInstruction<
     programAddress,
   } as SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
 }
+
+// Input.
+export type SignMetadataInput<
+  TAccountMetadata extends string,
+  TAccountCreator extends string
+> = {
+  metadata: Base58EncodedAddress<TAccountMetadata>;
+  creator: Signer<TAccountCreator>;
+};
