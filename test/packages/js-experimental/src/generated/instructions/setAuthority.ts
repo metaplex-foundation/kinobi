@@ -238,7 +238,7 @@ export async function setAuthority<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: setAuthorityInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

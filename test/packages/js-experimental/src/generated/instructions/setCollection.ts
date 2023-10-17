@@ -642,7 +642,7 @@ export async function setCollection<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: setCollectionInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

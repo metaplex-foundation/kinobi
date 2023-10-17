@@ -340,7 +340,11 @@ export async function setCollectionSize<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: setCollectionSizeInstruction(
+      input as any,
+      input,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

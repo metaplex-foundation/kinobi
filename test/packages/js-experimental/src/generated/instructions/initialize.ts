@@ -565,7 +565,7 @@ export async function initialize<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: initializeInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

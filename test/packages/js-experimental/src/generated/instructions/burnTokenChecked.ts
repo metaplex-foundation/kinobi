@@ -277,7 +277,11 @@ export async function burnTokenChecked<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: burnTokenCheckedInstruction(
+      input as any,
+      input,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

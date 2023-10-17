@@ -547,7 +547,7 @@ export async function createV2<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: createV2Instruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

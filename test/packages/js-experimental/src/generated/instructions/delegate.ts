@@ -643,7 +643,7 @@ export async function delegate<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: delegateInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

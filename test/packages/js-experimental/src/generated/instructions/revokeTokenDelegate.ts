@@ -208,7 +208,11 @@ export async function revokeTokenDelegate<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: revokeTokenDelegateInstruction(
+      input as any,
+      input,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

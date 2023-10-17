@@ -587,7 +587,7 @@ export async function useAsset<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: useAssetInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

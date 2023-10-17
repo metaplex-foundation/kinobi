@@ -492,7 +492,11 @@ export async function createMetadataAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: createMetadataAccountInstruction(
+      input as any,
+      input,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

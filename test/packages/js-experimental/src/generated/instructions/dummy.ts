@@ -518,7 +518,7 @@ export async function dummy<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: dummyInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

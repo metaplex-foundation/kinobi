@@ -236,7 +236,7 @@ export async function initializeMint<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: initializeMintInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

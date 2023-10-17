@@ -289,7 +289,7 @@ export async function transferTokens<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: transferTokensInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

@@ -280,7 +280,11 @@ export async function convertMasterEditionV1ToV2<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: convertMasterEditionV1ToV2Instruction(
+      input as any,
+      input,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

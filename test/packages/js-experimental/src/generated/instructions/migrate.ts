@@ -537,7 +537,7 @@ export async function migrate<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: migrateInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

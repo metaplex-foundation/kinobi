@@ -641,7 +641,7 @@ export async function revoke<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: revokeInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

@@ -371,7 +371,7 @@ export async function verify<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: verifyInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

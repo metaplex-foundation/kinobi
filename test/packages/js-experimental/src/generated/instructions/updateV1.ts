@@ -717,7 +717,7 @@ export async function updateV1<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: updateV1Instruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

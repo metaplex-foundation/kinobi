@@ -250,7 +250,7 @@ export async function freezeToken<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: freezeTokenInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

@@ -13,7 +13,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: {{ functionName }}Instruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

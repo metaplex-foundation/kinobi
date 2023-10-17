@@ -414,7 +414,7 @@ export async function burnNft<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: burnNftInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };
