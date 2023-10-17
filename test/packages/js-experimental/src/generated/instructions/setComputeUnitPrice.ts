@@ -24,11 +24,7 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import {
-  IAccountMeta,
-  IInstruction,
-  IInstructionWithData,
-} from '@solana/instructions';
+import { IInstruction, IInstructionWithData } from '@solana/instructions';
 import { Context, TransactionBuilder, transactionBuilder } from 'umi';
 import { Serializer } from 'umiSerializers';
 import {

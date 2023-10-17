@@ -13,11 +13,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
-import {
-  IAccountMeta,
-  IInstruction,
-  IInstructionWithData,
-} from '@solana/instructions';
+import { IInstruction, IInstructionWithData } from '@solana/instructions';
 import { Context, TransactionBuilder, transactionBuilder } from 'umi';
 import { Serializer } from 'umiSerializers';
 import {
