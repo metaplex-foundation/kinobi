@@ -168,3 +168,13 @@ export type ApproveTokenDelegateCheckedInput<
   amount: ApproveTokenDelegateCheckedInstructionDataArgs['amount'];
   decimals: ApproveTokenDelegateCheckedInstructionDataArgs['decimals'];
 };
+
+export function approveTokenDelegateChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>() {
+  throw new Error('Not implemented');
+}

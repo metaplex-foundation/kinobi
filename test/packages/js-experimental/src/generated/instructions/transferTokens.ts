@@ -144,3 +144,12 @@ export type TransferTokensInput<
   authority?: Signer<TAccountAuthority>;
   amount: TransferTokensInstructionDataArgs['amount'];
 };
+
+export function transferTokens<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string,
+  TAccountAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

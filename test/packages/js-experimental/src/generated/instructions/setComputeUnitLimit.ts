@@ -92,3 +92,9 @@ export function setComputeUnitLimitInstruction<
 export type SetComputeUnitLimitInput = {
   units: SetComputeUnitLimitInstructionDataArgs['units'];
 };
+
+export function setComputeUnitLimit<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

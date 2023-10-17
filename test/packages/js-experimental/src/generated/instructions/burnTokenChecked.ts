@@ -152,3 +152,12 @@ export type BurnTokenCheckedInput<
   amount: BurnTokenCheckedInstructionDataArgs['amount'];
   decimals: BurnTokenCheckedInstructionDataArgs['decimals'];
 };
+
+export function burnTokenChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

@@ -143,3 +143,11 @@ export type CreateAccountInput<
   space: CreateAccountInstructionDataArgs['space'];
   programId: CreateAccountInstructionDataArgs['programId'];
 };
+
+export function createAccount<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountPayer extends string = string,
+  TAccountNewAccount extends string = string
+>() {
+  throw new Error('Not implemented');
+}

@@ -113,3 +113,11 @@ export type RevokeTokenDelegateInput<
   source: Base58EncodedAddress<TAccountSource>;
   owner: Signer<TAccountOwner>;
 };
+
+export function revokeTokenDelegate<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountOwner extends string = string
+>() {
+  throw new Error('Not implemented');
+}

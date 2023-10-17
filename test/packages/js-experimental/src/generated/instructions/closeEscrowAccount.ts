@@ -217,3 +217,17 @@ export type CloseEscrowAccountInput<
   /** Instructions sysvar account */
   sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
 };
+
+export function closeEscrowAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

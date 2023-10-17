@@ -147,3 +147,12 @@ export type MintTokensToInput<
   mintAuthority: Signer<TAccountMintAuthority>;
   amount: MintTokensToInstructionDataArgs['amount'];
 };
+
+export function mintTokensTo<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountMintAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

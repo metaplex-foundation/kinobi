@@ -232,3 +232,16 @@ export type DeprecatedMintPrintingTokensInput<
   rent?: Base58EncodedAddress<TAccountRent>;
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
+
+export function deprecatedMintPrintingTokens<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDestination extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

@@ -165,3 +165,13 @@ export type TransferTokensCheckedInput<
   amount: TransferTokensCheckedInstructionDataArgs['amount'];
   decimals: TransferTokensCheckedInstructionDataArgs['decimals'];
 };
+
+export function transferTokensChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDestination extends string = string,
+  TAccountAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

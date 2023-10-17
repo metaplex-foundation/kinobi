@@ -124,3 +124,11 @@ export type RemoveCreatorVerificationInput<
   /** Creator */
   creator: Signer<TAccountCreator>;
 };
+
+export function removeCreatorVerification<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+>() {
+  throw new Error('Not implemented');
+}

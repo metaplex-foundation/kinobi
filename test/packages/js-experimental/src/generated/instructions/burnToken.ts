@@ -144,3 +144,12 @@ export type BurnTokenInput<
   authority?: Signer<TAccountAuthority>;
   amount: BurnTokenInstructionDataArgs['amount'];
 };
+
+export function burnToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

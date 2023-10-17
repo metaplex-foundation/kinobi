@@ -147,3 +147,11 @@ export type SetTokenAuthorityInput<
   authorityType: SetTokenAuthorityInstructionDataArgs['authorityType'];
   newAuthority: SetTokenAuthorityInstructionDataArgs['newAuthority'];
 };
+
+export function setTokenAuthority<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountOwned extends string = string,
+  TAccountOwner extends string = string
+>() {
+  throw new Error('Not implemented');
+}

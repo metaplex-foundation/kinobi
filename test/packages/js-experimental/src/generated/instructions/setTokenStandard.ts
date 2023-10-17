@@ -156,3 +156,13 @@ export type SetTokenStandardInput<
   /** Edition account */
   edition?: Base58EncodedAddress<TAccountEdition>;
 };
+
+export function setTokenStandard<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMint extends string = string,
+  TAccountEdition extends string = string
+>() {
+  throw new Error('Not implemented');
+}

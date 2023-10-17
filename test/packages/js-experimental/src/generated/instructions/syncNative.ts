@@ -96,3 +96,10 @@ export function syncNativeInstruction<
 export type SyncNativeInput<TAccountAccount extends string> = {
   account: Base58EncodedAddress<TAccountAccount>;
 };
+
+export function syncNative<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>() {
+  throw new Error('Not implemented');
+}

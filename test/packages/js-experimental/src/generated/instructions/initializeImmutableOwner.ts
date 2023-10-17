@@ -100,3 +100,10 @@ export function initializeImmutableOwnerInstruction<
 export type InitializeImmutableOwnerInput<TAccountAccount extends string> = {
   account: Base58EncodedAddress<TAccountAccount>;
 };
+
+export function initializeImmutableOwner<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>() {
+  throw new Error('Not implemented');
+}

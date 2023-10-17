@@ -211,3 +211,11 @@ export type UpdateMetadataAccountInput<
   updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
   primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
 };
+
+export function updateMetadataAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

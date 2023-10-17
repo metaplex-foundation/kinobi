@@ -460,3 +460,19 @@ export type UpdateV1Input<
   delegateState: UpdateV1InstructionDataArgs['delegateState'];
   authorityType: UpdateV1InstructionDataArgs['authorityType'];
 };
+
+export function updateV1<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountToken extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>() {
+  throw new Error('Not implemented');
+}

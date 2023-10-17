@@ -128,3 +128,11 @@ export type TransferSolInput<
   destination: Base58EncodedAddress<TAccountDestination>;
   amount: TransferSolInstructionDataArgs['amount'];
 };
+
+export function transferSol<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>() {
+  throw new Error('Not implemented');
+}

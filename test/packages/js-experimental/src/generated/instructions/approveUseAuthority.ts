@@ -282,3 +282,20 @@ export type ApproveUseAuthorityInput<
   rent?: Base58EncodedAddress<TAccountRent>;
   numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
 };
+
+export function approveUseAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountOwner extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUser extends string = string,
+  TAccountOwnerTokenAccount extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountBurner extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>() {
+  throw new Error('Not implemented');
+}

@@ -196,3 +196,14 @@ export type VerifyInput<
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
 };
+
+export function verify<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>() {
+  throw new Error('Not implemented');
+}

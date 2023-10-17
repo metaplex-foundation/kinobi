@@ -140,3 +140,12 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   /** Account containing tokens from the metadata's mint */
   token: Base58EncodedAddress<TAccountToken>;
 };
+
+export function updatePrimarySaleHappenedViaToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountToken extends string = string
+>() {
+  throw new Error('Not implemented');
+}

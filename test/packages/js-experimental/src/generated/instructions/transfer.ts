@@ -382,3 +382,24 @@ export type TransferInput<
   transferArgs: TransferInstructionDataArgs['transferArgs'];
   tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };
+
+export function transfer<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountToken extends string = string,
+  TAccountTokenOwner extends string = string,
+  TAccountDestination extends string = string,
+  TAccountDestinationOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>() {
+  throw new Error('Not implemented');
+}

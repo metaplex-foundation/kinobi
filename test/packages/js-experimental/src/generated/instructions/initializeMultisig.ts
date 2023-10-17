@@ -129,3 +129,11 @@ export type InitializeMultisigInput<
   rent?: Base58EncodedAddress<TAccountRent>;
   m: InitializeMultisigInstructionDataArgs['m'];
 };
+
+export function initializeMultisig<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

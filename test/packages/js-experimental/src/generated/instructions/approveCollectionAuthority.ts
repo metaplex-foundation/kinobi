@@ -232,3 +232,17 @@ export type ApproveCollectionAuthorityInput<
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
 };
+
+export function approveCollectionAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionAuthority extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>() {
+  throw new Error('Not implemented');
+}

@@ -178,3 +178,12 @@ export type CreateFrequencyRuleInput<
   lastUpdate: CreateFrequencyRuleInstructionDataArgs['lastUpdate'];
   period: CreateFrequencyRuleInstructionDataArgs['period'];
 };
+
+export function createFrequencyRule<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountFrequencyPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

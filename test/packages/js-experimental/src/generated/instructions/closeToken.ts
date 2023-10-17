@@ -128,3 +128,12 @@ export type CloseTokenInput<
   destination: Base58EncodedAddress<TAccountDestination>;
   owner: Signer<TAccountOwner>;
 };
+
+export function closeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountDestination extends string = string,
+  TAccountOwner extends string = string
+>() {
+  throw new Error('Not implemented');
+}

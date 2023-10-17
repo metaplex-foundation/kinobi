@@ -172,3 +172,14 @@ export type RevokeCollectionAuthorityInput<
   /** Mint of Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
 };
+
+export function revokeCollectionAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountDelegateAuthority extends string = string,
+  TAccountRevokeAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string
+>() {
+  throw new Error('Not implemented');
+}

@@ -151,3 +151,11 @@ export type AddConfigLinesInput<
   index: AddConfigLinesInstructionDataArgs['index'];
   configLines: AddConfigLinesInstructionDataArgs['configLines'];
 };
+
+export function addConfigLines<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

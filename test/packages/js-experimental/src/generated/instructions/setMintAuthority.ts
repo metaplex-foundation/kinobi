@@ -137,3 +137,12 @@ export type SetMintAuthorityInput<
   authority?: Signer<TAccountAuthority>;
   mintAuthority: Signer<TAccountMintAuthority>;
 };
+
+export function setMintAuthority<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountMintAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

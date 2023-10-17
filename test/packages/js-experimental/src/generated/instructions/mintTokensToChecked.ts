@@ -155,3 +155,12 @@ export type MintTokensToCheckedInput<
   amount: MintTokensToCheckedInstructionDataArgs['amount'];
   decimals: MintTokensToCheckedInstructionDataArgs['decimals'];
 };
+
+export function mintTokensToChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountMintAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

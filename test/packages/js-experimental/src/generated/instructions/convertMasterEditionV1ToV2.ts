@@ -136,3 +136,12 @@ export type ConvertMasterEditionV1ToV2Input<
   /** Printing mint */
   printingMint: Base58EncodedAddress<TAccountPrintingMint>;
 };
+
+export function convertMasterEditionV1ToV2<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountOneTimeAuth extends string = string,
+  TAccountPrintingMint extends string = string
+>() {
+  throw new Error('Not implemented');
+}

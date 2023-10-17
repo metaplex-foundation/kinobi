@@ -309,3 +309,20 @@ export type UtilizeInput<
   burner?: Base58EncodedAddress<TAccountBurner>;
   numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
 };
+
+export function utilize<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUseAuthority extends string = string,
+  TAccountOwner extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountBurner extends string = string
+>() {
+  throw new Error('Not implemented');
+}

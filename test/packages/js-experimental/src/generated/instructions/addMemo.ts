@@ -64,3 +64,9 @@ export function addMemoInstruction<
 export type AddMemoInput = {
   memo: AddMemoInstructionDataArgs['memo'];
 };
+
+export function addMemo<
+  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
+>() {
+  throw new Error('Not implemented');
+}

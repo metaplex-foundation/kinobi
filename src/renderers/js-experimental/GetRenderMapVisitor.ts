@@ -23,6 +23,7 @@ import {
   getAccountTypeFragment,
   getInstructionDataFragment,
   getInstructionExtraArgsFragment,
+  getInstructionFunctionHighLevelFragment,
   getInstructionFunctionLowLevelFragment,
   getInstructionInputDefaultFragment,
   getInstructionInputTypeFragment,
@@ -272,6 +273,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       extraArgsManifest,
       this.program
     );
+    const instructionFunctionHighLevelFragment =
+      getInstructionFunctionHighLevelFragment(instruction, this.program);
 
     // Imports and interfaces.
     const imports = new ImportMap().mergeWith(
@@ -279,7 +282,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instructionDataFragment,
       instructionExtraArgsFragment,
       instructionFunctionLowLevelFragment,
-      instructionInputTypeFragment
+      instructionInputTypeFragment,
+      instructionFunctionHighLevelFragment
     );
 
     // TODO: Remove once these are imported in the fragments.
@@ -458,6 +462,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionExtraArgsFragment,
         instructionFunctionLowLevelFragment,
         instructionInputTypeFragment,
+        instructionFunctionHighLevelFragment,
 
         interfaces: interfaces.toString(),
         program: this.program,

@@ -129,3 +129,12 @@ export type FreezeTokenInput<
   mint: Base58EncodedAddress<TAccountMint>;
   owner: Signer<TAccountOwner>;
 };
+
+export function freezeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+>() {
+  throw new Error('Not implemented');
+}

@@ -321,3 +321,23 @@ export type SetCollectionInput<
   tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
 };
+
+export function setCollection<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionUpdateAuthority extends string = string,
+  TAccountNewCollectionMetadata extends string = string,
+  TAccountNewCollectionMint extends string = string,
+  TAccountNewCollectionMasterEdition extends string = string,
+  TAccountNewCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

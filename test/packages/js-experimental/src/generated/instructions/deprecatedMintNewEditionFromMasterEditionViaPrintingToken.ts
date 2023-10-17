@@ -360,3 +360,25 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
   reservationList?: Base58EncodedAddress<TAccountReservationList>;
 };
+
+export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountMasterTokenAccount extends string = string,
+  TAccountEditionMarker extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMasterUpdateAuthority extends string = string,
+  TAccountMasterMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string = string
+>() {
+  throw new Error('Not implemented');
+}

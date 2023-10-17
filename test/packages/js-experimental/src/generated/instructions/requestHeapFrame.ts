@@ -98,3 +98,9 @@ export function requestHeapFrameInstruction<
 export type RequestHeapFrameInput = {
   bytes: RequestHeapFrameInstructionDataArgs['bytes'];
 };
+
+export function requestHeapFrame<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

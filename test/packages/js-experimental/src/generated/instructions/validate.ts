@@ -421,3 +421,22 @@ export type ValidateInput<
   operation: ValidateInstructionDataArgs['operation'];
   payload: ValidateInstructionDataArgs['payload'];
 };
+
+export function validate<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSet extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountOptRuleSigner1 extends string | undefined = undefined,
+  TAccountOptRuleSigner2 extends string | undefined = undefined,
+  TAccountOptRuleSigner3 extends string | undefined = undefined,
+  TAccountOptRuleSigner4 extends string | undefined = undefined,
+  TAccountOptRuleSigner5 extends string | undefined = undefined,
+  TAccountOptRuleNonsigner1 extends string | undefined = undefined,
+  TAccountOptRuleNonsigner2 extends string | undefined = undefined,
+  TAccountOptRuleNonsigner3 extends string | undefined = undefined,
+  TAccountOptRuleNonsigner4 extends string | undefined = undefined,
+  TAccountOptRuleNonsigner5 extends string | undefined = undefined
+>() {
+  throw new Error('Not implemented');
+}

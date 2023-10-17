@@ -170,3 +170,14 @@ export type ThawDelegatedAccountInput<
   /** Token Program */
   tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
 };
+
+export function thawDelegatedAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegate extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>() {
+  throw new Error('Not implemented');
+}

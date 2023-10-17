@@ -150,3 +150,11 @@ export type InitializeMintInput<
   mintAuthority: InitializeMintInstructionDataArgs['mintAuthority'];
   freezeAuthority: InitializeMintInstructionDataArgs['freezeAuthority'];
 };
+
+export function initializeMint<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

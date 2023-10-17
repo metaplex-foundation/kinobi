@@ -167,3 +167,12 @@ export type CreateRuleSetInput<
   createArgs: CreateRuleSetInstructionDataArgs['createArgs'];
   ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };
+
+export function createRuleSet<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSetPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

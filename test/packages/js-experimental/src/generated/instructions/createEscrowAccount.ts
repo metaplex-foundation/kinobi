@@ -238,3 +238,18 @@ export type CreateEscrowAccountInput<
   /** Authority/creator of the escrow account */
   authority?: Signer<TAccountAuthority>;
 };
+
+export function createEscrowAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string = string
+>() {
+  throw new Error('Not implemented');
+}

@@ -182,3 +182,12 @@ export type DeprecatedSetReservationListInput<
   offset: DeprecatedSetReservationListInstructionDataArgs['offset'];
   totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
 };
+
+export function deprecatedSetReservationList<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountReservationList extends string = string,
+  TAccountResource extends string = string
+>() {
+  throw new Error('Not implemented');
+}

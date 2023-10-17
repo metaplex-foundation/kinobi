@@ -205,3 +205,16 @@ export type BurnNftInput<
   /** Metadata of the Collection */
   collectionMetadata?: Base58EncodedAddress<TAccountCollectionMetadata>;
 };
+
+export function burnNft<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string
+>() {
+  throw new Error('Not implemented');
+}

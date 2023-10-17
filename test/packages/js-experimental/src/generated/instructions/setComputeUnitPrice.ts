@@ -92,3 +92,9 @@ export function setComputeUnitPriceInstruction<
 export type SetComputeUnitPriceInput = {
   microLamports: SetComputeUnitPriceInstructionDataArgs['microLamports'];
 };
+
+export function setComputeUnitPrice<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

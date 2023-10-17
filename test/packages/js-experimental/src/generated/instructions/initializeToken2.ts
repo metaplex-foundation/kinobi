@@ -151,3 +151,12 @@ export type InitializeToken2Input<
   rent?: Base58EncodedAddress<TAccountRent>;
   owner: InitializeToken2InstructionDataArgs['owner'];
 };
+
+export function initializeToken2<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

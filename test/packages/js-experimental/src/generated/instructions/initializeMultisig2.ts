@@ -128,3 +128,11 @@ export type InitializeMultisig2Input<
   signer: Base58EncodedAddress<TAccountSigner>;
   m: InitializeMultisig2InstructionDataArgs['m'];
 };
+
+export function initializeMultisig2<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountSigner extends string = string
+>() {
+  throw new Error('Not implemented');
+}

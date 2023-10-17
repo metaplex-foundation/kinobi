@@ -98,3 +98,9 @@ export type RequestUnitsInput = {
   units: RequestUnitsInstructionDataArgs['units'];
   additionalFee: RequestUnitsInstructionDataArgs['additionalFee'];
 };
+
+export function requestUnits<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

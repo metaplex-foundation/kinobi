@@ -97,3 +97,10 @@ export type PuffMetadataInput<TAccountMetadata extends string> = {
   /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
 };
+
+export function puffMetadata<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string
+>() {
+  throw new Error('Not implemented');
+}

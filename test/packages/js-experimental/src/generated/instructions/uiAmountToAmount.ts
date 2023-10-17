@@ -109,3 +109,10 @@ export type UiAmountToAmountInput<TAccountMint extends string> = {
   mint: Base58EncodedAddress<TAccountMint>;
   uiAmount: UiAmountToAmountInstructionDataArgs['uiAmount'];
 };
+
+export function uiAmountToAmount<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>() {
+  throw new Error('Not implemented');
+}

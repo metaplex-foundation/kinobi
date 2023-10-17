@@ -126,3 +126,10 @@ export type InitializeMint2Input<TAccountMint extends string> = {
   mintAuthority: InitializeMint2InstructionDataArgs['mintAuthority'];
   freezeAuthority: InitializeMint2InstructionDataArgs['freezeAuthority'];
 };
+
+export function initializeMint2<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>() {
+  throw new Error('Not implemented');
+}

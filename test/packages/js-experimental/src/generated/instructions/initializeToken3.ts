@@ -128,3 +128,11 @@ export type InitializeToken3Input<
   mint: Base58EncodedAddress<TAccountMint>;
   owner: InitializeToken3InstructionDataArgs['owner'];
 };
+
+export function initializeToken3<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string
+>() {
+  throw new Error('Not implemented');
+}

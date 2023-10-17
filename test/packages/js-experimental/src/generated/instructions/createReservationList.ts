@@ -175,3 +175,17 @@ export type CreateReservationListInput<
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
 };
+
+export function createReservationList<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountReservationList extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountResource extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>() {
+  throw new Error('Not implemented');
+}

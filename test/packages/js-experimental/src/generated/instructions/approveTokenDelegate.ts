@@ -148,3 +148,12 @@ export type ApproveTokenDelegateInput<
   owner: Signer<TAccountOwner>;
   amount: ApproveTokenDelegateInstructionDataArgs['amount'];
 };
+
+export function approveTokenDelegate<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>() {
+  throw new Error('Not implemented');
+}
