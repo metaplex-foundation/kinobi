@@ -29,7 +29,8 @@ export function getInstructionFunctionLowLevelFragment(
       getInstructionAccountTypeParamFragment(
         instructionNode,
         account,
-        programNode
+        programNode,
+        true
       )
     ),
     (renders) => renders.join(', ')

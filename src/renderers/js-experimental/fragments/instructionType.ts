@@ -20,7 +20,8 @@ export function getInstructionTypeFragment(
       getInstructionAccountTypeParamFragment(
         instructionNode,
         account,
-        programNode
+        programNode,
+        true
       )
     ),
     (renders) => renders.join(', ')

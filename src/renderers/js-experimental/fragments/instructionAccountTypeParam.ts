@@ -1,21 +1,29 @@
 import * as nodes from '../../../nodes';
 import { InstructionAccountDefault, pascalCase } from '../../../shared';
+import { ImportMap } from '../ImportMap';
 import { Fragment, fragment } from './common';
 
 export function getInstructionAccountTypeParamFragment(
   instructionNode: nodes.InstructionNode,
   instructionAccountNode: nodes.InstructionAccountNode,
-  programNode: nodes.ProgramNode
+  programNode: nodes.ProgramNode,
+  allowAccountMeta: boolean
 ): Fragment {
   const pascalCaseName = pascalCase(instructionAccountNode.name);
   const typeParam = `TAccount${pascalCaseName}`;
+  const accountMeta = allowAccountMeta ? ' | IAccountMeta<string>' : '';
+  const imports = new ImportMap();
+  if (allowAccountMeta) {
+    imports.add('solanaInstructions', 'IAccountMeta');
+  }
 
   if (
     instructionNode.optionalAccountStrategy === 'omitted' &&
     instructionAccountNode.isOptional
   ) {
     return fragment(
-      `${typeParam} extends string | IAccountMeta<string> | undefined = undefined`
+      `${typeParam} extends string${accountMeta} | undefined = undefined`,
+      imports
     );
   }
 
@@ -25,7 +33,8 @@ export function getInstructionAccountTypeParamFragment(
   );
 
   return fragment(
-    `${typeParam} extends string | IAccountMeta<string> = ${defaultAddress}`
+    `${typeParam} extends string${accountMeta} = ${defaultAddress}`,
+    imports
   );
 }
 
