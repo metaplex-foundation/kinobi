@@ -28,7 +28,12 @@ import {
   ReadonlyAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type InitializeTokenInstruction<
@@ -147,20 +152,125 @@ export type InitializeTokenInput<
   rent?: Base58EncodedAddress<TAccountRent>;
 };
 
-export function initializeToken<
+export async function initializeToken<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string,
   TAccountMint extends string = string,
   TAccountOwner extends string = string,
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->(): WrappedInstruction<
-  InitializeTokenInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountOwner,
+        TAccountRent
+      >,
+      TReturn
+    >,
+  input: InitializeTokenInput<
     TAccountAccount,
     TAccountMint,
     TAccountOwner,
     TAccountRent
   >
+): Promise<TReturn>;
+export async function initializeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeTokenInput<
+    TAccountAccount,
+    TAccountMint,
+    TAccountOwner,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    InitializeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner,
+      TAccountRent
+    >
+  >
+>;
+export async function initializeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  input: InitializeTokenInput<
+    TAccountAccount,
+    TAccountMint,
+    TAccountOwner,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    InitializeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner,
+      TAccountRent
+    >
+  >
+>;
+export async function initializeToken<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountMint,
+            TAccountOwner,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | InitializeTokenInput<
+        TAccountAccount,
+        TAccountMint,
+        TAccountOwner,
+        TAccountRent
+      >,
+  input?: InitializeTokenInput<
+    TAccountAccount,
+    TAccountMint,
+    TAccountOwner,
+    TAccountRent
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      InitializeTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountOwner,
+        TAccountRent
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

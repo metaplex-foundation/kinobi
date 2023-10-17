@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   TokenStandardArgs,
   TransferArgs,
@@ -383,7 +389,8 @@ export type TransferInput<
   tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };
 
-export function transfer<
+export async function transfer<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string = string,
   TAccountDelegateRecord extends string = string,
@@ -400,9 +407,30 @@ export function transfer<
   TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
->(): WrappedInstruction<
-  TransferInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      TransferInstruction<
+        TProgram,
+        TAccountAuthority,
+        TAccountDelegateRecord,
+        TAccountToken,
+        TAccountTokenOwner,
+        TAccountDestination,
+        TAccountDestinationOwner,
+        TAccountMint,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountSplTokenProgram,
+        TAccountSplAtaProgram,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >,
+      TReturn
+    >,
+  input: TransferInput<
     TAccountAuthority,
     TAccountDelegateRecord,
     TAccountToken,
@@ -419,6 +447,221 @@ export function transfer<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
+): Promise<TReturn>;
+export async function transfer<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountToken extends string = string,
+  TAccountTokenOwner extends string = string,
+  TAccountDestination extends string = string,
+  TAccountDestinationOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: TransferInput<
+    TAccountAuthority,
+    TAccountDelegateRecord,
+    TAccountToken,
+    TAccountTokenOwner,
+    TAccountDestination,
+    TAccountDestinationOwner,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    TransferInstruction<
+      TProgram,
+      TAccountAuthority,
+      TAccountDelegateRecord,
+      TAccountToken,
+      TAccountTokenOwner,
+      TAccountDestination,
+      TAccountDestinationOwner,
+      TAccountMint,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountSplTokenProgram,
+      TAccountSplAtaProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function transfer<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountToken extends string = string,
+  TAccountTokenOwner extends string = string,
+  TAccountDestination extends string = string,
+  TAccountDestinationOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  input: TransferInput<
+    TAccountAuthority,
+    TAccountDelegateRecord,
+    TAccountToken,
+    TAccountTokenOwner,
+    TAccountDestination,
+    TAccountDestinationOwner,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    TransferInstruction<
+      TProgram,
+      TAccountAuthority,
+      TAccountDelegateRecord,
+      TAccountToken,
+      TAccountTokenOwner,
+      TAccountDestination,
+      TAccountDestinationOwner,
+      TAccountMint,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountSplTokenProgram,
+      TAccountSplAtaProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function transfer<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountToken extends string = string,
+  TAccountTokenOwner extends string = string,
+  TAccountDestination extends string = string,
+  TAccountDestinationOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          TransferInstruction<
+            TProgram,
+            TAccountAuthority,
+            TAccountDelegateRecord,
+            TAccountToken,
+            TAccountTokenOwner,
+            TAccountDestination,
+            TAccountDestinationOwner,
+            TAccountMint,
+            TAccountMetadata,
+            TAccountMasterEdition,
+            TAccountSplTokenProgram,
+            TAccountSplAtaProgram,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions,
+            TAccountAuthorizationRulesProgram,
+            TAccountAuthorizationRules
+          >,
+          TReturn
+        >)
+    | TransferInput<
+        TAccountAuthority,
+        TAccountDelegateRecord,
+        TAccountToken,
+        TAccountTokenOwner,
+        TAccountDestination,
+        TAccountDestinationOwner,
+        TAccountMint,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountSplTokenProgram,
+        TAccountSplAtaProgram,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >,
+  input?: TransferInput<
+    TAccountAuthority,
+    TAccountDelegateRecord,
+    TAccountToken,
+    TAccountTokenOwner,
+    TAccountDestination,
+    TAccountDestinationOwner,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      TransferInstruction<
+        TProgram,
+        TAccountAuthority,
+        TAccountDelegateRecord,
+        TAccountToken,
+        TAccountTokenOwner,
+        TAccountDestination,
+        TAccountDestinationOwner,
+        TAccountMint,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountSplTokenProgram,
+        TAccountSplAtaProgram,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

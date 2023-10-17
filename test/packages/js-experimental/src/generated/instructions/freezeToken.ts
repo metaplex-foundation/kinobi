@@ -29,7 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type FreezeTokenInstruction<
@@ -130,13 +136,91 @@ export type FreezeTokenInput<
   owner: Signer<TAccountOwner>;
 };
 
-export function freezeToken<
+export async function freezeToken<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string,
   TAccountMint extends string = string,
   TAccountOwner extends string = string
->(): WrappedInstruction<
-  FreezeTokenInstruction<TProgram, TAccountAccount, TAccountMint, TAccountOwner>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      FreezeTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountOwner
+      >,
+      TReturn
+    >,
+  input: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<TReturn>;
+export async function freezeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    FreezeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner
+    >
+  >
+>;
+export async function freezeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+>(
+  input: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    FreezeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner
+    >
+  >
+>;
+export async function freezeToken<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          FreezeTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountMint,
+            TAccountOwner
+          >,
+          TReturn
+        >)
+    | FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>,
+  input?: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      FreezeTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountOwner
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

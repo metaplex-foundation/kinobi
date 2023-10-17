@@ -30,7 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type WithdrawInstruction<
@@ -119,12 +125,66 @@ export type WithdrawInput<
   authority?: Signer<TAccountAuthority>;
 };
 
-export function withdraw<
+export async function withdraw<
+  TReturn,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
->(): WrappedInstruction<
-  WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>,
+      TReturn
+    >,
+  input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<TReturn>;
+export async function withdraw<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+  >
+>;
+export async function withdraw<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+  >
+>;
+export async function withdraw<
+  TReturn,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          WithdrawInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthority
+          >,
+          TReturn
+        >)
+    | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
+  input?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+    >
 > {
   throw new Error('Not implemented');
 }

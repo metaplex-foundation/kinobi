@@ -29,7 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
@@ -361,7 +367,8 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   reservationList?: Base58EncodedAddress<TAccountReservationList>;
 };
 
-export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountEdition extends string = string,
@@ -379,9 +386,31 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
   TAccountReservationList extends string = string
->(): WrappedInstruction<
-  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountEdition,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPrintingMint,
+        TAccountMasterTokenAccount,
+        TAccountEditionMarker,
+        TAccountBurnAuthority,
+        TAccountPayer,
+        TAccountMasterUpdateAuthority,
+        TAccountMasterMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountReservationList
+      >,
+      TReturn
+    >,
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
     TAccountMetadata,
     TAccountEdition,
     TAccountMasterEdition,
@@ -399,6 +428,232 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountRent,
     TAccountReservationList
   >
+): Promise<TReturn>;
+export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountMasterTokenAccount extends string = string,
+  TAccountEditionMarker extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMasterUpdateAuthority extends string = string,
+  TAccountMasterMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<
+  WrappedInstruction<
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountEdition,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPrintingMint,
+      TAccountMasterTokenAccount,
+      TAccountEditionMarker,
+      TAccountBurnAuthority,
+      TAccountPayer,
+      TAccountMasterUpdateAuthority,
+      TAccountMasterMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountReservationList
+    >
+  >
+>;
+export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountMasterTokenAccount extends string = string,
+  TAccountEditionMarker extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMasterUpdateAuthority extends string = string,
+  TAccountMasterMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string = string
+>(
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<
+  WrappedInstruction<
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountEdition,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPrintingMint,
+      TAccountMasterTokenAccount,
+      TAccountEditionMarker,
+      TAccountBurnAuthority,
+      TAccountPayer,
+      TAccountMasterUpdateAuthority,
+      TAccountMasterMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountReservationList
+    >
+  >
+>;
+export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountMasterTokenAccount extends string = string,
+  TAccountEditionMarker extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMasterUpdateAuthority extends string = string,
+  TAccountMasterMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountEdition,
+            TAccountMasterEdition,
+            TAccountMint,
+            TAccountMintAuthority,
+            TAccountPrintingMint,
+            TAccountMasterTokenAccount,
+            TAccountEditionMarker,
+            TAccountBurnAuthority,
+            TAccountPayer,
+            TAccountMasterUpdateAuthority,
+            TAccountMasterMetadata,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountRent,
+            TAccountReservationList
+          >,
+          TReturn
+        >)
+    | DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+        TAccountMetadata,
+        TAccountEdition,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPrintingMint,
+        TAccountMasterTokenAccount,
+        TAccountEditionMarker,
+        TAccountBurnAuthority,
+        TAccountPayer,
+        TAccountMasterUpdateAuthority,
+        TAccountMasterMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountReservationList
+      >,
+  input?: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountEdition,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPrintingMint,
+        TAccountMasterTokenAccount,
+        TAccountEditionMarker,
+        TAccountBurnAuthority,
+        TAccountPayer,
+        TAccountMasterUpdateAuthority,
+        TAccountMasterMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountReservationList
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

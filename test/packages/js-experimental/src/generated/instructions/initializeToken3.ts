@@ -32,7 +32,12 @@ import {
   ReadonlyAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type InitializeToken3Instruction<
@@ -129,12 +134,62 @@ export type InitializeToken3Input<
   owner: InitializeToken3InstructionDataArgs['owner'];
 };
 
-export function initializeToken3<
+export async function initializeToken3<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string,
   TAccountMint extends string = string
->(): WrappedInstruction<
-  InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>,
+      TReturn
+    >,
+  input: InitializeToken3Input<TAccountAccount, TAccountMint>
+): Promise<TReturn>;
+export async function initializeToken3<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeToken3Input<TAccountAccount, TAccountMint>
+): Promise<
+  WrappedInstruction<
+    InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>
+  >
+>;
+export async function initializeToken3<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string
+>(
+  input: InitializeToken3Input<TAccountAccount, TAccountMint>
+): Promise<
+  WrappedInstruction<
+    InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>
+  >
+>;
+export async function initializeToken3<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>,
+          TReturn
+        >)
+    | InitializeToken3Input<TAccountAccount, TAccountMint>,
+  input?: InitializeToken3Input<TAccountAccount, TAccountMint>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>
+    >
 > {
   throw new Error('Not implemented');
 }

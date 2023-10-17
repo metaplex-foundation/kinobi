@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type VerifyCollectionInstruction<
@@ -183,7 +189,8 @@ export type VerifyCollectionInput<
   collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
 };
 
-export function verifyCollection<
+export async function verifyCollection<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountCollectionAuthority extends string = string,
@@ -191,9 +198,21 @@ export function verifyCollection<
   TAccountCollectionMint extends string = string,
   TAccountCollection extends string = string,
   TAccountCollectionMasterEditionAccount extends string = string
->(): WrappedInstruction<
-  VerifyCollectionInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      VerifyCollectionInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountCollectionAuthority,
+        TAccountPayer,
+        TAccountCollectionMint,
+        TAccountCollection,
+        TAccountCollectionMasterEditionAccount
+      >,
+      TReturn
+    >,
+  input: VerifyCollectionInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -201,6 +220,122 @@ export function verifyCollection<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount
   >
+): Promise<TReturn>;
+export async function verifyCollection<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: VerifyCollectionInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount
+  >
+): Promise<
+  WrappedInstruction<
+    VerifyCollectionInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount
+    >
+  >
+>;
+export async function verifyCollection<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string
+>(
+  input: VerifyCollectionInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount
+  >
+): Promise<
+  WrappedInstruction<
+    VerifyCollectionInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount
+    >
+  >
+>;
+export async function verifyCollection<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          VerifyCollectionInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountCollectionAuthority,
+            TAccountPayer,
+            TAccountCollectionMint,
+            TAccountCollection,
+            TAccountCollectionMasterEditionAccount
+          >,
+          TReturn
+        >)
+    | VerifyCollectionInput<
+        TAccountMetadata,
+        TAccountCollectionAuthority,
+        TAccountPayer,
+        TAccountCollectionMint,
+        TAccountCollection,
+        TAccountCollectionMasterEditionAccount
+      >,
+  input?: VerifyCollectionInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      VerifyCollectionInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountCollectionAuthority,
+        TAccountPayer,
+        TAccountCollectionMint,
+        TAccountCollection,
+        TAccountCollectionMasterEditionAccount
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

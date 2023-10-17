@@ -29,7 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type UpdatePrimarySaleHappenedViaTokenInstruction<
@@ -141,18 +147,111 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   token: Base58EncodedAddress<TAccountToken>;
 };
 
-export function updatePrimarySaleHappenedViaToken<
+export async function updatePrimarySaleHappenedViaToken<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountOwner extends string = string,
   TAccountToken extends string = string
->(): WrappedInstruction<
-  UpdatePrimarySaleHappenedViaTokenInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      UpdatePrimarySaleHappenedViaTokenInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountToken
+      >,
+      TReturn
+    >,
+  input: UpdatePrimarySaleHappenedViaTokenInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountToken
   >
+): Promise<TReturn>;
+export async function updatePrimarySaleHappenedViaToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountToken extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  WrappedInstruction<
+    UpdatePrimarySaleHappenedViaTokenInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountToken
+    >
+  >
+>;
+export async function updatePrimarySaleHappenedViaToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountToken extends string = string
+>(
+  input: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  WrappedInstruction<
+    UpdatePrimarySaleHappenedViaTokenInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountToken
+    >
+  >
+>;
+export async function updatePrimarySaleHappenedViaToken<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountToken extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UpdatePrimarySaleHappenedViaTokenInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountOwner,
+            TAccountToken
+          >,
+          TReturn
+        >)
+    | UpdatePrimarySaleHappenedViaTokenInput<
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountToken
+      >,
+  input?: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      UpdatePrimarySaleHappenedViaTokenInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountToken
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

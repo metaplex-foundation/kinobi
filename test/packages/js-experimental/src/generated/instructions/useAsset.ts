@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   UseAssetArgs,
   UseAssetArgsArgs,
@@ -315,7 +321,8 @@ export type UseAssetInput<
   useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
 };
 
-export function useAsset<
+export async function useAsset<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountTokenAccount extends string = string,
@@ -328,9 +335,26 @@ export function useAsset<
   TAccountUseAuthorityRecord extends string = string,
   TAccountAuthorizationRules extends string = string,
   TAccountAuthorizationRulesProgram extends string = string
->(): WrappedInstruction<
-  UseAssetInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      UseAssetInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountTokenAccount,
+        TAccountMint,
+        TAccountUseAuthority,
+        TAccountOwner,
+        TAccountSplTokenProgram,
+        TAccountAtaProgram,
+        TAccountSystemProgram,
+        TAccountUseAuthorityRecord,
+        TAccountAuthorizationRules,
+        TAccountAuthorizationRulesProgram
+      >,
+      TReturn
+    >,
+  input: UseAssetInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -343,6 +367,177 @@ export function useAsset<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
+): Promise<TReturn>;
+export async function useAsset<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUseAuthority extends string = string,
+  TAccountOwner extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UseAssetInput<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  WrappedInstruction<
+    UseAssetInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUseAuthority,
+      TAccountOwner,
+      TAccountSplTokenProgram,
+      TAccountAtaProgram,
+      TAccountSystemProgram,
+      TAccountUseAuthorityRecord,
+      TAccountAuthorizationRules,
+      TAccountAuthorizationRulesProgram
+    >
+  >
+>;
+export async function useAsset<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUseAuthority extends string = string,
+  TAccountOwner extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  input: UseAssetInput<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  WrappedInstruction<
+    UseAssetInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUseAuthority,
+      TAccountOwner,
+      TAccountSplTokenProgram,
+      TAccountAtaProgram,
+      TAccountSystemProgram,
+      TAccountUseAuthorityRecord,
+      TAccountAuthorizationRules,
+      TAccountAuthorizationRulesProgram
+    >
+  >
+>;
+export async function useAsset<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUseAuthority extends string = string,
+  TAccountOwner extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UseAssetInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountTokenAccount,
+            TAccountMint,
+            TAccountUseAuthority,
+            TAccountOwner,
+            TAccountSplTokenProgram,
+            TAccountAtaProgram,
+            TAccountSystemProgram,
+            TAccountUseAuthorityRecord,
+            TAccountAuthorizationRules,
+            TAccountAuthorizationRulesProgram
+          >,
+          TReturn
+        >)
+    | UseAssetInput<
+        TAccountMetadata,
+        TAccountTokenAccount,
+        TAccountMint,
+        TAccountUseAuthority,
+        TAccountOwner,
+        TAccountSplTokenProgram,
+        TAccountAtaProgram,
+        TAccountSystemProgram,
+        TAccountUseAuthorityRecord,
+        TAccountAuthorizationRules,
+        TAccountAuthorizationRulesProgram
+      >,
+  input?: UseAssetInput<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      UseAssetInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountTokenAccount,
+        TAccountMint,
+        TAccountUseAuthority,
+        TAccountOwner,
+        TAccountSplTokenProgram,
+        TAccountAtaProgram,
+        TAccountSystemProgram,
+        TAccountUseAuthorityRecord,
+        TAccountAuthorizationRules,
+        TAccountAuthorizationRulesProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

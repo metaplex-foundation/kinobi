@@ -25,7 +25,11 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
-import { WrappedInstruction } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+} from '../shared';
 
 // Output.
 export type SetComputeUnitPriceInstruction<
@@ -94,8 +98,43 @@ export type SetComputeUnitPriceInput = {
   microLamports: SetComputeUnitPriceInstructionDataArgs['microLamports'];
 };
 
-export function setComputeUnitPrice<
+export async function setComputeUnitPrice<
+  TReturn,
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
->(): WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SetComputeUnitPriceInstruction<TProgram>,
+      TReturn
+    >,
+  input: SetComputeUnitPriceInput<>
+): Promise<TReturn>;
+export async function setComputeUnitPrice<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetComputeUnitPriceInput<>
+): Promise<WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>>;
+export async function setComputeUnitPrice<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  input: SetComputeUnitPriceInput<>
+): Promise<WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>>;
+export async function setComputeUnitPrice<
+  TReturn,
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetComputeUnitPriceInstruction<TProgram>,
+          TReturn
+        >)
+    | SetComputeUnitPriceInput<>,
+  input?: SetComputeUnitPriceInput<>
+): Promise<
+  TReturn | WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>
+> {
   throw new Error('Not implemented');
 }

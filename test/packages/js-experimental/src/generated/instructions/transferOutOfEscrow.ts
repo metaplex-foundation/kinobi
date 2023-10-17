@@ -35,7 +35,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type TransferOutOfEscrowInstruction<
@@ -331,7 +337,8 @@ export type TransferOutOfEscrowInput<
   amount: TransferOutOfEscrowInstructionDataArgs['amount'];
 };
 
-export function transferOutOfEscrow<
+export async function transferOutOfEscrow<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string = string,
   TAccountMetadata extends string = string,
@@ -346,9 +353,28 @@ export function transferOutOfEscrow<
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthority extends string = string
->(): WrappedInstruction<
-  TransferOutOfEscrowInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      TransferOutOfEscrowInstruction<
+        TProgram,
+        TAccountEscrow,
+        TAccountMetadata,
+        TAccountPayer,
+        TAccountAttributeMint,
+        TAccountAttributeSrc,
+        TAccountAttributeDst,
+        TAccountEscrowMint,
+        TAccountEscrowAccount,
+        TAccountSystemProgram,
+        TAccountAtaProgram,
+        TAccountTokenProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthority
+      >,
+      TReturn
+    >,
+  input: TransferOutOfEscrowInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountPayer,
@@ -363,6 +389,199 @@ export function transferOutOfEscrow<
     TAccountSysvarInstructions,
     TAccountAuthority
   >
+): Promise<TReturn>;
+export async function transferOutOfEscrow<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAttributeMint extends string = string,
+  TAccountAttributeSrc extends string = string,
+  TAccountAttributeDst extends string = string,
+  TAccountEscrowMint extends string = string,
+  TAccountEscrowAccount extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: TransferOutOfEscrowInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    TransferOutOfEscrowInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountPayer,
+      TAccountAttributeMint,
+      TAccountAttributeSrc,
+      TAccountAttributeDst,
+      TAccountEscrowMint,
+      TAccountEscrowAccount,
+      TAccountSystemProgram,
+      TAccountAtaProgram,
+      TAccountTokenProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthority
+    >
+  >
+>;
+export async function transferOutOfEscrow<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAttributeMint extends string = string,
+  TAccountAttributeSrc extends string = string,
+  TAccountAttributeDst extends string = string,
+  TAccountEscrowMint extends string = string,
+  TAccountEscrowAccount extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string = string
+>(
+  input: TransferOutOfEscrowInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    TransferOutOfEscrowInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountPayer,
+      TAccountAttributeMint,
+      TAccountAttributeSrc,
+      TAccountAttributeDst,
+      TAccountEscrowMint,
+      TAccountEscrowAccount,
+      TAccountSystemProgram,
+      TAccountAtaProgram,
+      TAccountTokenProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthority
+    >
+  >
+>;
+export async function transferOutOfEscrow<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAttributeMint extends string = string,
+  TAccountAttributeSrc extends string = string,
+  TAccountAttributeDst extends string = string,
+  TAccountEscrowMint extends string = string,
+  TAccountEscrowAccount extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          TransferOutOfEscrowInstruction<
+            TProgram,
+            TAccountEscrow,
+            TAccountMetadata,
+            TAccountPayer,
+            TAccountAttributeMint,
+            TAccountAttributeSrc,
+            TAccountAttributeDst,
+            TAccountEscrowMint,
+            TAccountEscrowAccount,
+            TAccountSystemProgram,
+            TAccountAtaProgram,
+            TAccountTokenProgram,
+            TAccountSysvarInstructions,
+            TAccountAuthority
+          >,
+          TReturn
+        >)
+    | TransferOutOfEscrowInput<
+        TAccountEscrow,
+        TAccountMetadata,
+        TAccountPayer,
+        TAccountAttributeMint,
+        TAccountAttributeSrc,
+        TAccountAttributeDst,
+        TAccountEscrowMint,
+        TAccountEscrowAccount,
+        TAccountSystemProgram,
+        TAccountAtaProgram,
+        TAccountTokenProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthority
+      >,
+  input?: TransferOutOfEscrowInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      TransferOutOfEscrowInstruction<
+        TProgram,
+        TAccountEscrow,
+        TAccountMetadata,
+        TAccountPayer,
+        TAccountAttributeMint,
+        TAccountAttributeSrc,
+        TAccountAttributeDst,
+        TAccountEscrowMint,
+        TAccountEscrowAccount,
+        TAccountSystemProgram,
+        TAccountAtaProgram,
+        TAccountTokenProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

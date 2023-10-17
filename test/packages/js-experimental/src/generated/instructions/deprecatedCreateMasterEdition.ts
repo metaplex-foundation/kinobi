@@ -29,7 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   CreateMasterEditionArgs,
   CreateMasterEditionArgsArgs,
@@ -338,7 +344,8 @@ export type DeprecatedCreateMasterEditionInput<
   createMasterEditionArgs: DeprecatedCreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
-export function deprecatedCreateMasterEdition<
+export async function deprecatedCreateMasterEdition<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string = string,
   TAccountMint extends string = string,
@@ -353,9 +360,28 @@ export function deprecatedCreateMasterEdition<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
   TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
->(): WrappedInstruction<
-  DeprecatedCreateMasterEditionInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      DeprecatedCreateMasterEditionInstruction<
+        TProgram,
+        TAccountEdition,
+        TAccountMint,
+        TAccountPrintingMint,
+        TAccountOneTimePrintingAuthorizationMint,
+        TAccountUpdateAuthority,
+        TAccountPrintingMintAuthority,
+        TAccountMintAuthority,
+        TAccountMetadata,
+        TAccountPayer,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountOneTimePrintingAuthorizationMintAuthority
+      >,
+      TReturn
+    >,
+  input: DeprecatedCreateMasterEditionInput<
     TAccountEdition,
     TAccountMint,
     TAccountPrintingMint,
@@ -370,6 +396,199 @@ export function deprecatedCreateMasterEdition<
     TAccountRent,
     TAccountOneTimePrintingAuthorizationMintAuthority
   >
+): Promise<TReturn>;
+export async function deprecatedCreateMasterEdition<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPrintingMintAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DeprecatedCreateMasterEditionInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    DeprecatedCreateMasterEditionInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountPrintingMint,
+      TAccountOneTimePrintingAuthorizationMint,
+      TAccountUpdateAuthority,
+      TAccountPrintingMintAuthority,
+      TAccountMintAuthority,
+      TAccountMetadata,
+      TAccountPayer,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountOneTimePrintingAuthorizationMintAuthority
+    >
+  >
+>;
+export async function deprecatedCreateMasterEdition<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPrintingMintAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+>(
+  input: DeprecatedCreateMasterEditionInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    DeprecatedCreateMasterEditionInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountPrintingMint,
+      TAccountOneTimePrintingAuthorizationMint,
+      TAccountUpdateAuthority,
+      TAccountPrintingMintAuthority,
+      TAccountMintAuthority,
+      TAccountMetadata,
+      TAccountPayer,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountOneTimePrintingAuthorizationMintAuthority
+    >
+  >
+>;
+export async function deprecatedCreateMasterEdition<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPrintingMintAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DeprecatedCreateMasterEditionInstruction<
+            TProgram,
+            TAccountEdition,
+            TAccountMint,
+            TAccountPrintingMint,
+            TAccountOneTimePrintingAuthorizationMint,
+            TAccountUpdateAuthority,
+            TAccountPrintingMintAuthority,
+            TAccountMintAuthority,
+            TAccountMetadata,
+            TAccountPayer,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountRent,
+            TAccountOneTimePrintingAuthorizationMintAuthority
+          >,
+          TReturn
+        >)
+    | DeprecatedCreateMasterEditionInput<
+        TAccountEdition,
+        TAccountMint,
+        TAccountPrintingMint,
+        TAccountOneTimePrintingAuthorizationMint,
+        TAccountUpdateAuthority,
+        TAccountPrintingMintAuthority,
+        TAccountMintAuthority,
+        TAccountMetadata,
+        TAccountPayer,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountOneTimePrintingAuthorizationMintAuthority
+      >,
+  input?: DeprecatedCreateMasterEditionInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      DeprecatedCreateMasterEditionInstruction<
+        TProgram,
+        TAccountEdition,
+        TAccountMint,
+        TAccountPrintingMint,
+        TAccountOneTimePrintingAuthorizationMint,
+        TAccountUpdateAuthority,
+        TAccountPrintingMintAuthority,
+        TAccountMintAuthority,
+        TAccountMetadata,
+        TAccountPayer,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountOneTimePrintingAuthorizationMintAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

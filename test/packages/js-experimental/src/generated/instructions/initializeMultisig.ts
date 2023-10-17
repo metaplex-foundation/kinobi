@@ -28,7 +28,12 @@ import {
   ReadonlyAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type InitializeMultisigInstruction<
@@ -130,12 +135,66 @@ export type InitializeMultisigInput<
   m: InitializeMultisigInstructionDataArgs['m'];
 };
 
-export function initializeMultisig<
+export async function initializeMultisig<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMultisig extends string = string,
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->(): WrappedInstruction<
-  InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>,
+      TReturn
+    >,
+  input: InitializeMultisigInput<TAccountMultisig, TAccountRent>
+): Promise<TReturn>;
+export async function initializeMultisig<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeMultisigInput<TAccountMultisig, TAccountRent>
+): Promise<
+  WrappedInstruction<
+    InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>
+  >
+>;
+export async function initializeMultisig<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  input: InitializeMultisigInput<TAccountMultisig, TAccountRent>
+): Promise<
+  WrappedInstruction<
+    InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>
+  >
+>;
+export async function initializeMultisig<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeMultisigInstruction<
+            TProgram,
+            TAccountMultisig,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | InitializeMultisigInput<TAccountMultisig, TAccountRent>,
+  input?: InitializeMultisigInput<TAccountMultisig, TAccountRent>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>
+    >
 > {
   throw new Error('Not implemented');
 }

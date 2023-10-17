@@ -29,7 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type ThawTokenInstruction<
@@ -130,13 +136,81 @@ export type ThawTokenInput<
   owner: Signer<TAccountOwner>;
 };
 
-export function thawToken<
+export async function thawToken<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string,
   TAccountMint extends string = string,
   TAccountOwner extends string = string
->(): WrappedInstruction<
-  ThawTokenInstruction<TProgram, TAccountAccount, TAccountMint, TAccountOwner>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      ThawTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountOwner
+      >,
+      TReturn
+    >,
+  input: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<TReturn>;
+export async function thawToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    ThawTokenInstruction<TProgram, TAccountAccount, TAccountMint, TAccountOwner>
+  >
+>;
+export async function thawToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+>(
+  input: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    ThawTokenInstruction<TProgram, TAccountAccount, TAccountMint, TAccountOwner>
+  >
+>;
+export async function thawToken<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountOwner extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          ThawTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountMint,
+            TAccountOwner
+          >,
+          TReturn
+        >)
+    | ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>,
+  input?: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      ThawTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountOwner
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

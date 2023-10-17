@@ -30,7 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   RevokeArgs,
   RevokeArgsArgs,
@@ -339,7 +345,8 @@ export type RevokeInput<
   revokeArgs: RevokeInstructionDataArgs['revokeArgs'];
 };
 
-export function revoke<
+export async function revoke<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string = string,
   TAccountDelegate extends string = string,
@@ -354,9 +361,28 @@ export function revoke<
   TAccountSplTokenProgram extends string = string,
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
->(): WrappedInstruction<
-  RevokeInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      RevokeInstruction<
+        TProgram,
+        TAccountDelegateRecord,
+        TAccountDelegate,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountToken,
+        TAccountAuthority,
+        TAccountPayer,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountSplTokenProgram,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >,
+      TReturn
+    >,
+  input: RevokeInput<
     TAccountDelegateRecord,
     TAccountDelegate,
     TAccountMetadata,
@@ -371,6 +397,199 @@ export function revoke<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
+): Promise<TReturn>;
+export async function revoke<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegateRecord extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RevokeInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    RevokeInstruction<
+      TProgram,
+      TAccountDelegateRecord,
+      TAccountDelegate,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountToken,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function revoke<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegateRecord extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  input: RevokeInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    RevokeInstruction<
+      TProgram,
+      TAccountDelegateRecord,
+      TAccountDelegate,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountToken,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function revoke<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegateRecord extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RevokeInstruction<
+            TProgram,
+            TAccountDelegateRecord,
+            TAccountDelegate,
+            TAccountMetadata,
+            TAccountMasterEdition,
+            TAccountMint,
+            TAccountToken,
+            TAccountAuthority,
+            TAccountPayer,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions,
+            TAccountSplTokenProgram,
+            TAccountAuthorizationRulesProgram,
+            TAccountAuthorizationRules
+          >,
+          TReturn
+        >)
+    | RevokeInput<
+        TAccountDelegateRecord,
+        TAccountDelegate,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountToken,
+        TAccountAuthority,
+        TAccountPayer,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountSplTokenProgram,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >,
+  input?: RevokeInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      RevokeInstruction<
+        TProgram,
+        TAccountDelegateRecord,
+        TAccountDelegate,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountToken,
+        TAccountAuthority,
+        TAccountPayer,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountSplTokenProgram,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

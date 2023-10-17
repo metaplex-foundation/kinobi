@@ -14,7 +14,11 @@ import {
 } from '@solana/codecs-data-structures';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
-import { WrappedInstruction } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+} from '../shared';
 
 // Output.
 export type AddMemoInstruction<
@@ -66,8 +70,35 @@ export type AddMemoInput = {
   memo: AddMemoInstructionDataArgs['memo'];
 };
 
-export function addMemo<
+export async function addMemo<
+  TReturn,
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
->(): WrappedInstruction<AddMemoInstruction<TProgram>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>,
+  input: AddMemoInput<>
+): Promise<TReturn>;
+export async function addMemo<
+  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: AddMemoInput<>
+): Promise<WrappedInstruction<AddMemoInstruction<TProgram>>>;
+export async function addMemo<
+  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
+>(
+  input: AddMemoInput<>
+): Promise<WrappedInstruction<AddMemoInstruction<TProgram>>>;
+export async function addMemo<
+  TReturn,
+  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>)
+    | AddMemoInput<>,
+  input?: AddMemoInput<>
+): Promise<TReturn | WrappedInstruction<AddMemoInstruction<TProgram>>> {
   throw new Error('Not implemented');
 }

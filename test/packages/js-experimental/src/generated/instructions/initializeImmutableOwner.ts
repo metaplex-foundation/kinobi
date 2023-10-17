@@ -27,7 +27,12 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type InitializeImmutableOwnerInstruction<
@@ -101,11 +106,58 @@ export type InitializeImmutableOwnerInput<TAccountAccount extends string> = {
   account: Base58EncodedAddress<TAccountAccount>;
 };
 
-export function initializeImmutableOwner<
+export async function initializeImmutableOwner<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string
->(): WrappedInstruction<
-  InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>,
+      TReturn
+    >,
+  input: InitializeImmutableOwnerInput<TAccountAccount>
+): Promise<TReturn>;
+export async function initializeImmutableOwner<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeImmutableOwnerInput<TAccountAccount>
+): Promise<
+  WrappedInstruction<
+    InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>
+  >
+>;
+export async function initializeImmutableOwner<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>(
+  input: InitializeImmutableOwnerInput<TAccountAccount>
+): Promise<
+  WrappedInstruction<
+    InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>
+  >
+>;
+export async function initializeImmutableOwner<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>,
+          TReturn
+        >)
+    | InitializeImmutableOwnerInput<TAccountAccount>,
+  input?: InitializeImmutableOwnerInput<TAccountAccount>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>
+    >
 > {
   throw new Error('Not implemented');
 }

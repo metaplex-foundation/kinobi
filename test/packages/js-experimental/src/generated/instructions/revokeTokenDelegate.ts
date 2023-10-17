@@ -28,7 +28,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type RevokeTokenDelegateInstruction<
@@ -114,12 +120,66 @@ export type RevokeTokenDelegateInput<
   owner: Signer<TAccountOwner>;
 };
 
-export function revokeTokenDelegate<
+export async function revokeTokenDelegate<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string = string,
   TAccountOwner extends string = string
->(): WrappedInstruction<
-  RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>,
+      TReturn
+    >,
+  input: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
+): Promise<TReturn>;
+export async function revokeTokenDelegate<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountOwner extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>
+  >
+>;
+export async function revokeTokenDelegate<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountOwner extends string = string
+>(
+  input: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>
+  >
+>;
+export async function revokeTokenDelegate<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountOwner extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RevokeTokenDelegateInstruction<
+            TProgram,
+            TAccountSource,
+            TAccountOwner
+          >,
+          TReturn
+        >)
+    | RevokeTokenDelegateInput<TAccountSource, TAccountOwner>,
+  input?: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>
+    >
 > {
   throw new Error('Not implemented');
 }

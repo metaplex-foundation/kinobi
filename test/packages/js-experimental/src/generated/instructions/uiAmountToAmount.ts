@@ -32,7 +32,12 @@ import {
   IInstructionWithData,
   ReadonlyAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type UiAmountToAmountInstruction<
@@ -110,9 +115,52 @@ export type UiAmountToAmountInput<TAccountMint extends string> = {
   uiAmount: UiAmountToAmountInstructionDataArgs['uiAmount'];
 };
 
-export function uiAmountToAmount<
+export async function uiAmountToAmount<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string
->(): WrappedInstruction<UiAmountToAmountInstruction<TProgram, TAccountMint>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      UiAmountToAmountInstruction<TProgram, TAccountMint>,
+      TReturn
+    >,
+  input: UiAmountToAmountInput<TAccountMint>
+): Promise<TReturn>;
+export async function uiAmountToAmount<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UiAmountToAmountInput<TAccountMint>
+): Promise<
+  WrappedInstruction<UiAmountToAmountInstruction<TProgram, TAccountMint>>
+>;
+export async function uiAmountToAmount<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  input: UiAmountToAmountInput<TAccountMint>
+): Promise<
+  WrappedInstruction<UiAmountToAmountInstruction<TProgram, TAccountMint>>
+>;
+export async function uiAmountToAmount<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UiAmountToAmountInstruction<TProgram, TAccountMint>,
+          TReturn
+        >)
+    | UiAmountToAmountInput<TAccountMint>,
+  input?: UiAmountToAmountInput<TAccountMint>
+): Promise<
+  | TReturn
+  | WrappedInstruction<UiAmountToAmountInstruction<TProgram, TAccountMint>>
+> {
   throw new Error('Not implemented');
 }

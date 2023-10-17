@@ -28,7 +28,12 @@ import {
   ReadonlyAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type InitializeMultisig2Instruction<
@@ -129,12 +134,70 @@ export type InitializeMultisig2Input<
   m: InitializeMultisig2InstructionDataArgs['m'];
 };
 
-export function initializeMultisig2<
+export async function initializeMultisig2<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMultisig extends string = string,
   TAccountSigner extends string = string
->(): WrappedInstruction<
-  InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeMultisig2Instruction<
+        TProgram,
+        TAccountMultisig,
+        TAccountSigner
+      >,
+      TReturn
+    >,
+  input: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
+): Promise<TReturn>;
+export async function initializeMultisig2<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountSigner extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
+): Promise<
+  WrappedInstruction<
+    InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner>
+  >
+>;
+export async function initializeMultisig2<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountSigner extends string = string
+>(
+  input: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
+): Promise<
+  WrappedInstruction<
+    InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner>
+  >
+>;
+export async function initializeMultisig2<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMultisig extends string = string,
+  TAccountSigner extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeMultisig2Instruction<
+            TProgram,
+            TAccountMultisig,
+            TAccountSigner
+          >,
+          TReturn
+        >)
+    | InitializeMultisig2Input<TAccountMultisig, TAccountSigner>,
+  input?: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner>
+    >
 > {
   throw new Error('Not implemented');
 }

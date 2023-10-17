@@ -27,7 +27,12 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type PuffMetadataInstruction<
@@ -98,9 +103,52 @@ export type PuffMetadataInput<TAccountMetadata extends string> = {
   metadata: Base58EncodedAddress<TAccountMetadata>;
 };
 
-export function puffMetadata<
+export async function puffMetadata<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string
->(): WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      PuffMetadataInstruction<TProgram, TAccountMetadata>,
+      TReturn
+    >,
+  input: PuffMetadataInput<TAccountMetadata>
+): Promise<TReturn>;
+export async function puffMetadata<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: PuffMetadataInput<TAccountMetadata>
+): Promise<
+  WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
+>;
+export async function puffMetadata<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string
+>(
+  input: PuffMetadataInput<TAccountMetadata>
+): Promise<
+  WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
+>;
+export async function puffMetadata<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          PuffMetadataInstruction<TProgram, TAccountMetadata>,
+          TReturn
+        >)
+    | PuffMetadataInput<TAccountMetadata>,
+  input?: PuffMetadataInput<TAccountMetadata>
+): Promise<
+  | TReturn
+  | WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
+> {
   throw new Error('Not implemented');
 }

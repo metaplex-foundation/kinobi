@@ -38,7 +38,12 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type InitializeMintInstruction<
@@ -151,12 +156,62 @@ export type InitializeMintInput<
   freezeAuthority: InitializeMintInstructionDataArgs['freezeAuthority'];
 };
 
-export function initializeMint<
+export async function initializeMint<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string,
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->(): WrappedInstruction<
-  InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>,
+      TReturn
+    >,
+  input: InitializeMintInput<TAccountMint, TAccountRent>
+): Promise<TReturn>;
+export async function initializeMint<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeMintInput<TAccountMint, TAccountRent>
+): Promise<
+  WrappedInstruction<
+    InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>
+  >
+>;
+export async function initializeMint<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  input: InitializeMintInput<TAccountMint, TAccountRent>
+): Promise<
+  WrappedInstruction<
+    InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>
+  >
+>;
+export async function initializeMint<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>,
+          TReturn
+        >)
+    | InitializeMintInput<TAccountMint, TAccountRent>,
+  input?: InitializeMintInput<TAccountMint, TAccountRent>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>
+    >
 > {
   throw new Error('Not implemented');
 }

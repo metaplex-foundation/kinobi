@@ -28,7 +28,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type RemoveCreatorVerificationInstruction<
@@ -125,16 +131,82 @@ export type RemoveCreatorVerificationInput<
   creator: Signer<TAccountCreator>;
 };
 
-export function removeCreatorVerification<
+export async function removeCreatorVerification<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountCreator extends string = string
->(): WrappedInstruction<
-  RemoveCreatorVerificationInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCreator
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      RemoveCreatorVerificationInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountCreator
+      >,
+      TReturn
+    >,
+  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+): Promise<TReturn>;
+export async function removeCreatorVerification<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  WrappedInstruction<
+    RemoveCreatorVerificationInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCreator
+    >
   >
+>;
+export async function removeCreatorVerification<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+>(
+  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  WrappedInstruction<
+    RemoveCreatorVerificationInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCreator
+    >
+  >
+>;
+export async function removeCreatorVerification<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RemoveCreatorVerificationInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountCreator
+          >,
+          TReturn
+        >)
+    | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
+  input?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      RemoveCreatorVerificationInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountCreator
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

@@ -34,7 +34,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type TransferTokensCheckedInstruction<
@@ -166,20 +172,125 @@ export type TransferTokensCheckedInput<
   decimals: TransferTokensCheckedInstructionDataArgs['decimals'];
 };
 
-export function transferTokensChecked<
+export async function transferTokensChecked<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string = string,
   TAccountMint extends string = string,
   TAccountDestination extends string = string,
   TAccountAuthority extends string = string
->(): WrappedInstruction<
-  TransferTokensCheckedInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      TransferTokensCheckedInstruction<
+        TProgram,
+        TAccountSource,
+        TAccountMint,
+        TAccountDestination,
+        TAccountAuthority
+      >,
+      TReturn
+    >,
+  input: TransferTokensCheckedInput<
     TAccountSource,
     TAccountMint,
     TAccountDestination,
     TAccountAuthority
   >
+): Promise<TReturn>;
+export async function transferTokensChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDestination extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: TransferTokensCheckedInput<
+    TAccountSource,
+    TAccountMint,
+    TAccountDestination,
+    TAccountAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    TransferTokensCheckedInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountMint,
+      TAccountDestination,
+      TAccountAuthority
+    >
+  >
+>;
+export async function transferTokensChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDestination extends string = string,
+  TAccountAuthority extends string = string
+>(
+  input: TransferTokensCheckedInput<
+    TAccountSource,
+    TAccountMint,
+    TAccountDestination,
+    TAccountAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    TransferTokensCheckedInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountMint,
+      TAccountDestination,
+      TAccountAuthority
+    >
+  >
+>;
+export async function transferTokensChecked<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDestination extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          TransferTokensCheckedInstruction<
+            TProgram,
+            TAccountSource,
+            TAccountMint,
+            TAccountDestination,
+            TAccountAuthority
+          >,
+          TReturn
+        >)
+    | TransferTokensCheckedInput<
+        TAccountSource,
+        TAccountMint,
+        TAccountDestination,
+        TAccountAuthority
+      >,
+  input?: TransferTokensCheckedInput<
+    TAccountSource,
+    TAccountMint,
+    TAccountDestination,
+    TAccountAuthority
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      TransferTokensCheckedInstruction<
+        TProgram,
+        TAccountSource,
+        TAccountMint,
+        TAccountDestination,
+        TAccountAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

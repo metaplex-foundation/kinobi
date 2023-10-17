@@ -30,7 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   CreateMasterEditionArgs,
   CreateMasterEditionArgsArgs,
@@ -265,7 +271,8 @@ export type CreateMasterEditionInput<
   createMasterEditionArgs: CreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
-export function createMasterEdition<
+export async function createMasterEdition<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string = string,
   TAccountMint extends string = string,
@@ -276,9 +283,24 @@ export function createMasterEdition<
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->(): WrappedInstruction<
-  CreateMasterEditionInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CreateMasterEditionInstruction<
+        TProgram,
+        TAccountEdition,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+      TReturn
+    >,
+  input: CreateMasterEditionInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -289,6 +311,155 @@ export function createMasterEdition<
     TAccountSystemProgram,
     TAccountRent
   >
+): Promise<TReturn>;
+export async function createMasterEdition<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateMasterEditionInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    CreateMasterEditionInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function createMasterEdition<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  input: CreateMasterEditionInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    CreateMasterEditionInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function createMasterEdition<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateMasterEditionInstruction<
+            TProgram,
+            TAccountEdition,
+            TAccountMint,
+            TAccountUpdateAuthority,
+            TAccountMintAuthority,
+            TAccountPayer,
+            TAccountMetadata,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | CreateMasterEditionInput<
+        TAccountEdition,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+  input?: CreateMasterEditionInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CreateMasterEditionInstruction<
+        TProgram,
+        TAccountEdition,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

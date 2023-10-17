@@ -34,7 +34,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type ApproveTokenDelegateInstruction<
@@ -149,18 +155,111 @@ export type ApproveTokenDelegateInput<
   amount: ApproveTokenDelegateInstructionDataArgs['amount'];
 };
 
-export function approveTokenDelegate<
+export async function approveTokenDelegate<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string = string,
   TAccountDelegate extends string = string,
   TAccountOwner extends string = string
->(): WrappedInstruction<
-  ApproveTokenDelegateInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      ApproveTokenDelegateInstruction<
+        TProgram,
+        TAccountSource,
+        TAccountDelegate,
+        TAccountOwner
+      >,
+      TReturn
+    >,
+  input: ApproveTokenDelegateInput<
     TAccountSource,
     TAccountDelegate,
     TAccountOwner
   >
+): Promise<TReturn>;
+export async function approveTokenDelegate<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ApproveTokenDelegateInput<
+    TAccountSource,
+    TAccountDelegate,
+    TAccountOwner
+  >
+): Promise<
+  WrappedInstruction<
+    ApproveTokenDelegateInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountDelegate,
+      TAccountOwner
+    >
+  >
+>;
+export async function approveTokenDelegate<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>(
+  input: ApproveTokenDelegateInput<
+    TAccountSource,
+    TAccountDelegate,
+    TAccountOwner
+  >
+): Promise<
+  WrappedInstruction<
+    ApproveTokenDelegateInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountDelegate,
+      TAccountOwner
+    >
+  >
+>;
+export async function approveTokenDelegate<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          ApproveTokenDelegateInstruction<
+            TProgram,
+            TAccountSource,
+            TAccountDelegate,
+            TAccountOwner
+          >,
+          TReturn
+        >)
+    | ApproveTokenDelegateInput<
+        TAccountSource,
+        TAccountDelegate,
+        TAccountOwner
+      >,
+  input?: ApproveTokenDelegateInput<
+    TAccountSource,
+    TAccountDelegate,
+    TAccountOwner
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      ApproveTokenDelegateInstruction<
+        TProgram,
+        TAccountSource,
+        TAccountDelegate,
+        TAccountOwner
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

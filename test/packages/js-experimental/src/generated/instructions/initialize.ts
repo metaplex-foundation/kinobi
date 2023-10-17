@@ -32,7 +32,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -293,7 +299,8 @@ export type InitializeInput<
   data: InitializeInstructionDataArgs['data'];
 };
 
-export function initialize<
+export async function initialize<
+  TReturn,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthorityPda extends string = string,
@@ -306,9 +313,26 @@ export function initialize<
   TAccountCollectionAuthorityRecord extends string = string,
   TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
->(): WrappedInstruction<
-  InitializeInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthorityPda,
+        TAccountAuthority,
+        TAccountPayer,
+        TAccountCollectionMetadata,
+        TAccountCollectionMint,
+        TAccountCollectionMasterEdition,
+        TAccountCollectionUpdateAuthority,
+        TAccountCollectionAuthorityRecord,
+        TAccountTokenMetadataProgram,
+        TAccountSystemProgram
+      >,
+      TReturn
+    >,
+  input: InitializeInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountAuthority,
@@ -321,6 +345,177 @@ export function initialize<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
+): Promise<TReturn>;
+export async function initialize<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMasterEdition extends string = string,
+  TAccountCollectionUpdateAuthority extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeInput<
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
+): Promise<
+  WrappedInstruction<
+    InitializeInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthorityPda,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountCollectionMetadata,
+      TAccountCollectionMint,
+      TAccountCollectionMasterEdition,
+      TAccountCollectionUpdateAuthority,
+      TAccountCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram,
+      TAccountSystemProgram
+    >
+  >
+>;
+export async function initialize<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMasterEdition extends string = string,
+  TAccountCollectionUpdateAuthority extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  input: InitializeInput<
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
+): Promise<
+  WrappedInstruction<
+    InitializeInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthorityPda,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountCollectionMetadata,
+      TAccountCollectionMint,
+      TAccountCollectionMasterEdition,
+      TAccountCollectionUpdateAuthority,
+      TAccountCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram,
+      TAccountSystemProgram
+    >
+  >
+>;
+export async function initialize<
+  TReturn,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMasterEdition extends string = string,
+  TAccountCollectionUpdateAuthority extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthorityPda,
+            TAccountAuthority,
+            TAccountPayer,
+            TAccountCollectionMetadata,
+            TAccountCollectionMint,
+            TAccountCollectionMasterEdition,
+            TAccountCollectionUpdateAuthority,
+            TAccountCollectionAuthorityRecord,
+            TAccountTokenMetadataProgram,
+            TAccountSystemProgram
+          >,
+          TReturn
+        >)
+    | InitializeInput<
+        TAccountCandyMachine,
+        TAccountAuthorityPda,
+        TAccountAuthority,
+        TAccountPayer,
+        TAccountCollectionMetadata,
+        TAccountCollectionMint,
+        TAccountCollectionMasterEdition,
+        TAccountCollectionUpdateAuthority,
+        TAccountCollectionAuthorityRecord,
+        TAccountTokenMetadataProgram,
+        TAccountSystemProgram
+      >,
+  input?: InitializeInput<
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      InitializeInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthorityPda,
+        TAccountAuthority,
+        TAccountPayer,
+        TAccountCollectionMetadata,
+        TAccountCollectionMint,
+        TAccountCollectionMasterEdition,
+        TAccountCollectionUpdateAuthority,
+        TAccountCollectionAuthorityRecord,
+        TAccountTokenMetadataProgram,
+        TAccountSystemProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

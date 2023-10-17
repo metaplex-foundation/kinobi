@@ -30,7 +30,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -142,16 +148,82 @@ export type UpdateCandyMachineInput<
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
-export function updateCandyMachine<
+export async function updateCandyMachine<
+  TReturn,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
->(): WrappedInstruction<
-  UpdateCandyMachineInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthority
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      UpdateCandyMachineInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthority
+      >,
+      TReturn
+    >,
+  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<TReturn>;
+export async function updateCandyMachine<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    UpdateCandyMachineInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
   >
+>;
+export async function updateCandyMachine<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    UpdateCandyMachineInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >
+>;
+export async function updateCandyMachine<
+  TReturn,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UpdateCandyMachineInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthority
+          >,
+          TReturn
+        >)
+    | UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>,
+  input?: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      UpdateCandyMachineInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

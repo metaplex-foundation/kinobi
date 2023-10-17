@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   TaCreateArgs,
   TaCreateArgsArgs,
@@ -168,18 +174,111 @@ export type CreateRuleSetInput<
   ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };
 
-export function createRuleSet<
+export async function createRuleSet<
+  TReturn,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string = string,
   TAccountRuleSetPda extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
->(): WrappedInstruction<
-  CreateRuleSetInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CreateRuleSetInstruction<
+        TProgram,
+        TAccountPayer,
+        TAccountRuleSetPda,
+        TAccountSystemProgram
+      >,
+      TReturn
+    >,
+  input: CreateRuleSetInput<
     TAccountPayer,
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
+): Promise<TReturn>;
+export async function createRuleSet<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSetPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateRuleSetInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  WrappedInstruction<
+    CreateRuleSetInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountRuleSetPda,
+      TAccountSystemProgram
+    >
+  >
+>;
+export async function createRuleSet<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSetPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  input: CreateRuleSetInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  WrappedInstruction<
+    CreateRuleSetInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountRuleSetPda,
+      TAccountSystemProgram
+    >
+  >
+>;
+export async function createRuleSet<
+  TReturn,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountRuleSetPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateRuleSetInstruction<
+            TProgram,
+            TAccountPayer,
+            TAccountRuleSetPda,
+            TAccountSystemProgram
+          >,
+          TReturn
+        >)
+    | CreateRuleSetInput<
+        TAccountPayer,
+        TAccountRuleSetPda,
+        TAccountSystemProgram
+      >,
+  input?: CreateRuleSetInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CreateRuleSetInstruction<
+        TProgram,
+        TAccountPayer,
+        TAccountRuleSetPda,
+        TAccountSystemProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

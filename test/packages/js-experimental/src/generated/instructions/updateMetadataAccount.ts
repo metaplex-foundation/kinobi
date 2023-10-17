@@ -48,7 +48,13 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   Creator,
   CreatorArgs,
@@ -212,16 +218,82 @@ export type UpdateMetadataAccountInput<
   primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
 };
 
-export function updateMetadataAccount<
+export async function updateMetadataAccount<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountUpdateAuthority extends string = string
->(): WrappedInstruction<
-  UpdateMetadataAccountInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountUpdateAuthority
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      UpdateMetadataAccountInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountUpdateAuthority
+      >,
+      TReturn
+    >,
+  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
+): Promise<TReturn>;
+export async function updateMetadataAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
+): Promise<
+  WrappedInstruction<
+    UpdateMetadataAccountInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority
+    >
   >
+>;
+export async function updateMetadataAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string
+>(
+  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
+): Promise<
+  WrappedInstruction<
+    UpdateMetadataAccountInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority
+    >
+  >
+>;
+export async function updateMetadataAccount<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UpdateMetadataAccountInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountUpdateAuthority
+          >,
+          TReturn
+        >)
+    | UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>,
+  input?: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      UpdateMetadataAccountInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountUpdateAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

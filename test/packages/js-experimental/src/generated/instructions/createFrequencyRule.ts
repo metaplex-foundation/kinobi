@@ -35,7 +35,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type CreateFrequencyRuleInstruction<
@@ -179,18 +185,111 @@ export type CreateFrequencyRuleInput<
   period: CreateFrequencyRuleInstructionDataArgs['period'];
 };
 
-export function createFrequencyRule<
+export async function createFrequencyRule<
+  TReturn,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string = string,
   TAccountFrequencyPda extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
->(): WrappedInstruction<
-  CreateFrequencyRuleInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CreateFrequencyRuleInstruction<
+        TProgram,
+        TAccountPayer,
+        TAccountFrequencyPda,
+        TAccountSystemProgram
+      >,
+      TReturn
+    >,
+  input: CreateFrequencyRuleInput<
     TAccountPayer,
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
+): Promise<TReturn>;
+export async function createFrequencyRule<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountFrequencyPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  WrappedInstruction<
+    CreateFrequencyRuleInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountFrequencyPda,
+      TAccountSystemProgram
+    >
+  >
+>;
+export async function createFrequencyRule<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountFrequencyPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  input: CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  WrappedInstruction<
+    CreateFrequencyRuleInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountFrequencyPda,
+      TAccountSystemProgram
+    >
+  >
+>;
+export async function createFrequencyRule<
+  TReturn,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string = string,
+  TAccountFrequencyPda extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateFrequencyRuleInstruction<
+            TProgram,
+            TAccountPayer,
+            TAccountFrequencyPda,
+            TAccountSystemProgram
+          >,
+          TReturn
+        >)
+    | CreateFrequencyRuleInput<
+        TAccountPayer,
+        TAccountFrequencyPda,
+        TAccountSystemProgram
+      >,
+  input?: CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CreateFrequencyRuleInstruction<
+        TProgram,
+        TAccountPayer,
+        TAccountFrequencyPda,
+        TAccountSystemProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

@@ -33,7 +33,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type MintTokensToInstruction<
@@ -148,18 +154,91 @@ export type MintTokensToInput<
   amount: MintTokensToInstructionDataArgs['amount'];
 };
 
-export function mintTokensTo<
+export async function mintTokensTo<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string,
   TAccountToken extends string = string,
   TAccountMintAuthority extends string = string
->(): WrappedInstruction<
-  MintTokensToInstruction<
-    TProgram,
-    TAccountMint,
-    TAccountToken,
-    TAccountMintAuthority
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      MintTokensToInstruction<
+        TProgram,
+        TAccountMint,
+        TAccountToken,
+        TAccountMintAuthority
+      >,
+      TReturn
+    >,
+  input: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
+): Promise<TReturn>;
+export async function mintTokensTo<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountMintAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
+): Promise<
+  WrappedInstruction<
+    MintTokensToInstruction<
+      TProgram,
+      TAccountMint,
+      TAccountToken,
+      TAccountMintAuthority
+    >
   >
+>;
+export async function mintTokensTo<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountMintAuthority extends string = string
+>(
+  input: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
+): Promise<
+  WrappedInstruction<
+    MintTokensToInstruction<
+      TProgram,
+      TAccountMint,
+      TAccountToken,
+      TAccountMintAuthority
+    >
+  >
+>;
+export async function mintTokensTo<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string,
+  TAccountToken extends string = string,
+  TAccountMintAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          MintTokensToInstruction<
+            TProgram,
+            TAccountMint,
+            TAccountToken,
+            TAccountMintAuthority
+          >,
+          TReturn
+        >)
+    | MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>,
+  input?: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      MintTokensToInstruction<
+        TProgram,
+        TAccountMint,
+        TAccountToken,
+        TAccountMintAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

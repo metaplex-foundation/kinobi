@@ -28,7 +28,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type SignMetadataInstruction<
@@ -115,12 +121,62 @@ export type SignMetadataInput<
   creator: Signer<TAccountCreator>;
 };
 
-export function signMetadata<
+export async function signMetadata<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountCreator extends string = string
->(): WrappedInstruction<
-  SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>,
+      TReturn
+    >,
+  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
+): Promise<TReturn>;
+export async function signMetadata<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  WrappedInstruction<
+    SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
+  >
+>;
+export async function signMetadata<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+>(
+  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  WrappedInstruction<
+    SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
+  >
+>;
+export async function signMetadata<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>,
+          TReturn
+        >)
+    | SignMetadataInput<TAccountMetadata, TAccountCreator>,
+  input?: SignMetadataInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
+    >
 > {
   throw new Error('Not implemented');
 }

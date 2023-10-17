@@ -13,20 +13,37 @@ export function getInstructionFunctionHighLevelFragment(
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
+  const functionName = camelCase(instructionNode.name);
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(instructionNode);
+  const inputTypeFragment = getInputType(instructionNode);
+  const context = `Pick<Context, 'getProgramAddress'>`; // TODO: use context map.
+  const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
 
   const functionFragment = fragmentFromTemplate(
     'instructionFunctionHighLevel.njk',
     {
       instruction: instructionNode,
       program: programNode,
+      functionName,
       typeParams: typeParamsFragment.render,
       instructionType: instructionTypeFragment.render,
+      inputType: inputTypeFragment.render,
+      context,
+      customGeneratedInstruction,
     }
   )
-    .mergeImportsWith(typeParamsFragment, instructionTypeFragment)
-    .addImports('shared', ['WrappedInstruction']);
+    .mergeImportsWith(
+      typeParamsFragment,
+      instructionTypeFragment,
+      inputTypeFragment
+    )
+    .addImports('shared', ['WrappedInstruction', 'CustomGeneratedInstruction']);
+
+  if (context) {
+    // TODO: use context map.
+    functionFragment.addImports('shared', ['Context']);
+  }
 
   if (hasAccounts) {
     //
@@ -77,4 +94,13 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
     [fragment('TProgram'), ...accountTypeParamsFragments],
     (renders) => renders.join(', ')
   ).mapRender((r) => `${instructionTypeName}<${r}>`);
+}
+
+function getInputType(instructionNode: nodes.InstructionNode): Fragment {
+  const inputTypeName = pascalCase(`${instructionNode.name}Input`);
+  const accountTypeParams = instructionNode.accounts
+    .map((account) => `TAccount${pascalCase(account.name)}`)
+    .join(', ');
+
+  return fragment(`${inputTypeName}<${accountTypeParams}>`);
 }

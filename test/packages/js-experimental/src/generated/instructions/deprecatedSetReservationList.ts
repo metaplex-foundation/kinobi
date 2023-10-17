@@ -41,7 +41,13 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -183,18 +189,111 @@ export type DeprecatedSetReservationListInput<
   totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
 };
 
-export function deprecatedSetReservationList<
+export async function deprecatedSetReservationList<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string = string,
   TAccountReservationList extends string = string,
   TAccountResource extends string = string
->(): WrappedInstruction<
-  DeprecatedSetReservationListInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      DeprecatedSetReservationListInstruction<
+        TProgram,
+        TAccountMasterEdition,
+        TAccountReservationList,
+        TAccountResource
+      >,
+      TReturn
+    >,
+  input: DeprecatedSetReservationListInput<
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
   >
+): Promise<TReturn>;
+export async function deprecatedSetReservationList<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountReservationList extends string = string,
+  TAccountResource extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DeprecatedSetReservationListInput<
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >
+): Promise<
+  WrappedInstruction<
+    DeprecatedSetReservationListInstruction<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountReservationList,
+      TAccountResource
+    >
+  >
+>;
+export async function deprecatedSetReservationList<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountReservationList extends string = string,
+  TAccountResource extends string = string
+>(
+  input: DeprecatedSetReservationListInput<
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >
+): Promise<
+  WrappedInstruction<
+    DeprecatedSetReservationListInstruction<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountReservationList,
+      TAccountResource
+    >
+  >
+>;
+export async function deprecatedSetReservationList<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountReservationList extends string = string,
+  TAccountResource extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DeprecatedSetReservationListInstruction<
+            TProgram,
+            TAccountMasterEdition,
+            TAccountReservationList,
+            TAccountResource
+          >,
+          TReturn
+        >)
+    | DeprecatedSetReservationListInput<
+        TAccountMasterEdition,
+        TAccountReservationList,
+        TAccountResource
+      >,
+  input?: DeprecatedSetReservationListInput<
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      DeprecatedSetReservationListInstruction<
+        TProgram,
+        TAccountMasterEdition,
+        TAccountReservationList,
+        TAccountResource
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

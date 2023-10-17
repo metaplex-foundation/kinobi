@@ -34,7 +34,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type SetAuthorityInstruction<
@@ -140,12 +146,70 @@ export type SetAuthorityInput<
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };
 
-export function setAuthority<
+export async function setAuthority<
+  TReturn,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
->(): WrappedInstruction<
-  SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SetAuthorityInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthority
+      >,
+      TReturn
+    >,
+  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<TReturn>;
+export async function setAuthority<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+  >
+>;
+export async function setAuthority<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+  >
+>;
+export async function setAuthority<
+  TReturn,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetAuthorityInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthority
+          >,
+          TReturn
+        >)
+    | SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>,
+  input?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+    >
 > {
   throw new Error('Not implemented');
 }

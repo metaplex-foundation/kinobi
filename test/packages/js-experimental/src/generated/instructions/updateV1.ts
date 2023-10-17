@@ -50,7 +50,13 @@ import {
   getOptionEncoder,
   some,
 } from '@solana/options';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   AuthorityType,
   AuthorityTypeArgs,
@@ -461,7 +467,8 @@ export type UpdateV1Input<
   authorityType: UpdateV1InstructionDataArgs['authorityType'];
 };
 
-export function updateV1<
+export async function updateV1<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string = string,
   TAccountMetadata extends string = string,
@@ -473,9 +480,25 @@ export function updateV1<
   TAccountDelegateRecord extends string = string,
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
->(): WrappedInstruction<
-  UpdateV1Instruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      UpdateV1Instruction<
+        TProgram,
+        TAccountAuthority,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountToken,
+        TAccountDelegateRecord,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >,
+      TReturn
+    >,
+  input: UpdateV1Input<
     TAccountAuthority,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -487,6 +510,166 @@ export function updateV1<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
+): Promise<TReturn>;
+export async function updateV1<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountToken extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateV1Input<
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    UpdateV1Instruction<
+      TProgram,
+      TAccountAuthority,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountToken,
+      TAccountDelegateRecord,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function updateV1<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountToken extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  input: UpdateV1Input<
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    UpdateV1Instruction<
+      TProgram,
+      TAccountAuthority,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountToken,
+      TAccountDelegateRecord,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function updateV1<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountToken extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string,
+  TAccountAuthorizationRules extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          UpdateV1Instruction<
+            TProgram,
+            TAccountAuthority,
+            TAccountMetadata,
+            TAccountMasterEdition,
+            TAccountMint,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions,
+            TAccountToken,
+            TAccountDelegateRecord,
+            TAccountAuthorizationRulesProgram,
+            TAccountAuthorizationRules
+          >,
+          TReturn
+        >)
+    | UpdateV1Input<
+        TAccountAuthority,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountToken,
+        TAccountDelegateRecord,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >,
+  input?: UpdateV1Input<
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      UpdateV1Instruction<
+        TProgram,
+        TAccountAuthority,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountToken,
+        TAccountDelegateRecord,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

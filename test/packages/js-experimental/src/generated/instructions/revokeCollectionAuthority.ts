@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type RevokeCollectionAuthorityInstruction<
@@ -173,22 +179,139 @@ export type RevokeCollectionAuthorityInput<
   mint: Base58EncodedAddress<TAccountMint>;
 };
 
-export function revokeCollectionAuthority<
+export async function revokeCollectionAuthority<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends string = string,
   TAccountDelegateAuthority extends string = string,
   TAccountRevokeAuthority extends string = string,
   TAccountMetadata extends string = string,
   TAccountMint extends string = string
->(): WrappedInstruction<
-  RevokeCollectionAuthorityInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      RevokeCollectionAuthorityInstruction<
+        TProgram,
+        TAccountCollectionAuthorityRecord,
+        TAccountDelegateAuthority,
+        TAccountRevokeAuthority,
+        TAccountMetadata,
+        TAccountMint
+      >,
+      TReturn
+    >,
+  input: RevokeCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
     TAccountDelegateAuthority,
     TAccountRevokeAuthority,
     TAccountMetadata,
     TAccountMint
   >
+): Promise<TReturn>;
+export async function revokeCollectionAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountDelegateAuthority extends string = string,
+  TAccountRevokeAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RevokeCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  >
+): Promise<
+  WrappedInstruction<
+    RevokeCollectionAuthorityInstruction<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountDelegateAuthority,
+      TAccountRevokeAuthority,
+      TAccountMetadata,
+      TAccountMint
+    >
+  >
+>;
+export async function revokeCollectionAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountDelegateAuthority extends string = string,
+  TAccountRevokeAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string
+>(
+  input: RevokeCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  >
+): Promise<
+  WrappedInstruction<
+    RevokeCollectionAuthorityInstruction<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountDelegateAuthority,
+      TAccountRevokeAuthority,
+      TAccountMetadata,
+      TAccountMint
+    >
+  >
+>;
+export async function revokeCollectionAuthority<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountDelegateAuthority extends string = string,
+  TAccountRevokeAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RevokeCollectionAuthorityInstruction<
+            TProgram,
+            TAccountCollectionAuthorityRecord,
+            TAccountDelegateAuthority,
+            TAccountRevokeAuthority,
+            TAccountMetadata,
+            TAccountMint
+          >,
+          TReturn
+        >)
+    | RevokeCollectionAuthorityInput<
+        TAccountCollectionAuthorityRecord,
+        TAccountDelegateAuthority,
+        TAccountRevokeAuthority,
+        TAccountMetadata,
+        TAccountMint
+      >,
+  input?: RevokeCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      RevokeCollectionAuthorityInstruction<
+        TProgram,
+        TAccountCollectionAuthorityRecord,
+        TAccountDelegateAuthority,
+        TAccountRevokeAuthority,
+        TAccountMetadata,
+        TAccountMint
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

@@ -32,7 +32,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type DummyInstruction<
@@ -264,7 +270,8 @@ export type DummyInput<
   proof?: DummyInstructionExtraArgs['proof'];
 };
 
-export function dummy<
+export async function dummy<
+  TReturn,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountEdition extends string = string,
   TAccountMint extends string = string,
@@ -276,9 +283,25 @@ export function dummy<
   TAccountDelegate extends string = string,
   TAccountDelegateRecord extends string = string,
   TAccountTokenOrAtaProgram extends string = string
->(): WrappedInstruction<
-  DummyInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      DummyInstruction<
+        TProgram,
+        TAccountEdition,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountFoo,
+        TAccountBar,
+        TAccountDelegate,
+        TAccountDelegateRecord,
+        TAccountTokenOrAtaProgram
+      >,
+      TReturn
+    >,
+  input: DummyInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -290,6 +313,166 @@ export function dummy<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   >
+): Promise<TReturn>;
+export async function dummy<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountFoo extends string = string,
+  TAccountBar extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountDelegate extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountTokenOrAtaProgram extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  WrappedInstruction<
+    DummyInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountFoo,
+      TAccountBar,
+      TAccountDelegate,
+      TAccountDelegateRecord,
+      TAccountTokenOrAtaProgram
+    >
+  >
+>;
+export async function dummy<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountFoo extends string = string,
+  TAccountBar extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountDelegate extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountTokenOrAtaProgram extends string = string
+>(
+  input: DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  WrappedInstruction<
+    DummyInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountFoo,
+      TAccountBar,
+      TAccountDelegate,
+      TAccountDelegateRecord,
+      TAccountTokenOrAtaProgram
+    >
+  >
+>;
+export async function dummy<
+  TReturn,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountFoo extends string = string,
+  TAccountBar extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountDelegate extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountTokenOrAtaProgram extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          DummyInstruction<
+            TProgram,
+            TAccountEdition,
+            TAccountMint,
+            TAccountUpdateAuthority,
+            TAccountMintAuthority,
+            TAccountPayer,
+            TAccountFoo,
+            TAccountBar,
+            TAccountDelegate,
+            TAccountDelegateRecord,
+            TAccountTokenOrAtaProgram
+          >,
+          TReturn
+        >)
+    | DummyInput<
+        TAccountEdition,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountFoo,
+        TAccountBar,
+        TAccountDelegate,
+        TAccountDelegateRecord,
+        TAccountTokenOrAtaProgram
+      >,
+  input?: DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      DummyInstruction<
+        TProgram,
+        TAccountEdition,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountFoo,
+        TAccountBar,
+        TAccountDelegate,
+        TAccountDelegateRecord,
+        TAccountTokenOrAtaProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

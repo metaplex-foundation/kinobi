@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type SetAndVerifyCollectionInstruction<
@@ -220,7 +226,8 @@ export type SetAndVerifyCollectionInput<
   collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
 };
 
-export function setAndVerifyCollection<
+export async function setAndVerifyCollection<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountCollectionAuthority extends string = string,
@@ -230,9 +237,23 @@ export function setAndVerifyCollection<
   TAccountCollection extends string = string,
   TAccountCollectionMasterEditionAccount extends string = string,
   TAccountCollectionAuthorityRecord extends string = string
->(): WrappedInstruction<
-  SetAndVerifyCollectionInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SetAndVerifyCollectionInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountCollectionAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountCollectionMint,
+        TAccountCollection,
+        TAccountCollectionMasterEditionAccount,
+        TAccountCollectionAuthorityRecord
+      >,
+      TReturn
+    >,
+  input: SetAndVerifyCollectionInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -242,6 +263,144 @@ export function setAndVerifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
+): Promise<TReturn>;
+export async function setAndVerifyCollection<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetAndVerifyCollectionInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  WrappedInstruction<
+    SetAndVerifyCollectionInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord
+    >
+  >
+>;
+export async function setAndVerifyCollection<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  input: SetAndVerifyCollectionInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  WrappedInstruction<
+    SetAndVerifyCollectionInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord
+    >
+  >
+>;
+export async function setAndVerifyCollection<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollection extends string = string,
+  TAccountCollectionMasterEditionAccount extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetAndVerifyCollectionInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountCollectionAuthority,
+            TAccountPayer,
+            TAccountUpdateAuthority,
+            TAccountCollectionMint,
+            TAccountCollection,
+            TAccountCollectionMasterEditionAccount,
+            TAccountCollectionAuthorityRecord
+          >,
+          TReturn
+        >)
+    | SetAndVerifyCollectionInput<
+        TAccountMetadata,
+        TAccountCollectionAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountCollectionMint,
+        TAccountCollection,
+        TAccountCollectionMasterEditionAccount,
+        TAccountCollectionAuthorityRecord
+      >,
+  input?: SetAndVerifyCollectionInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      SetAndVerifyCollectionInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountCollectionAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountCollectionMint,
+        TAccountCollection,
+        TAccountCollectionMasterEditionAccount,
+        TAccountCollectionAuthorityRecord
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

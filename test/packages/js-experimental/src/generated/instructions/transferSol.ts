@@ -33,7 +33,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type TransferSolInstruction<
@@ -129,12 +135,62 @@ export type TransferSolInput<
   amount: TransferSolInstructionDataArgs['amount'];
 };
 
-export function transferSol<
+export async function transferSol<
+  TReturn,
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string = string,
   TAccountDestination extends string = string
->(): WrappedInstruction<
-  TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
+      TReturn
+    >,
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<TReturn>;
+export async function transferSol<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  WrappedInstruction<
+    TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
+  >
+>;
+export async function transferSol<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  WrappedInstruction<
+    TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
+  >
+>;
+export async function transferSol<
+  TReturn,
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
+          TReturn
+        >)
+    | TransferSolInput<TAccountSource, TAccountDestination>,
+  input?: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
+    >
 > {
   throw new Error('Not implemented');
 }

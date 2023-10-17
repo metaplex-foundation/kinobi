@@ -25,7 +25,11 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
-import { WrappedInstruction } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+} from '../shared';
 
 // Output.
 export type SetComputeUnitLimitInstruction<
@@ -94,8 +98,43 @@ export type SetComputeUnitLimitInput = {
   units: SetComputeUnitLimitInstructionDataArgs['units'];
 };
 
-export function setComputeUnitLimit<
+export async function setComputeUnitLimit<
+  TReturn,
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
->(): WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SetComputeUnitLimitInstruction<TProgram>,
+      TReturn
+    >,
+  input: SetComputeUnitLimitInput<>
+): Promise<TReturn>;
+export async function setComputeUnitLimit<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetComputeUnitLimitInput<>
+): Promise<WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>>;
+export async function setComputeUnitLimit<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  input: SetComputeUnitLimitInput<>
+): Promise<WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>>;
+export async function setComputeUnitLimit<
+  TReturn,
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetComputeUnitLimitInstruction<TProgram>,
+          TReturn
+        >)
+    | SetComputeUnitLimitInput<>,
+  input?: SetComputeUnitLimitInput<>
+): Promise<
+  TReturn | WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>
+> {
   throw new Error('Not implemented');
 }

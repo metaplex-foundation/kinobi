@@ -190,14 +190,7 @@ export async function transferSol<
 ): Promise<
   | TReturn
   | WrappedInstruction<
-      TransferSolInstruction<
-        TProgram,
-        TAccountSource,
-        // typeof input['source'] extends Signer<TAccountSource>
-        //   ? WritableSignerAccount<TAccountSource>
-        //   : TAccountSource,
-        TAccountDestination
-      >
+      TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
     >
 > {
   const realContext = (input === undefined ? {} : input) as

@@ -1,3 +1,6 @@
-export function {{ instruction.name | camelCase }}<{{ typeParams }}>(): WrappedInstruction<{{ instructionType }}> {
+export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} & {{ customGeneratedInstruction }}, input: {{ inputType }}): Promise<TReturn>;
+export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
+export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
+export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} | {{ context }} & {{ customGeneratedInstruction }} | {{ inputType }}, input?: {{ inputType }}): Promise<TReturn | WrappedInstruction<{{ instructionType }}>> {
   throw new Error('Not implemented');
 }

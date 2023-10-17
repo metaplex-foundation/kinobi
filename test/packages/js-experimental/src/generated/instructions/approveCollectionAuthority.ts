@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type ApproveCollectionAuthorityInstruction<
@@ -233,7 +239,8 @@ export type ApproveCollectionAuthorityInput<
   rent?: Base58EncodedAddress<TAccountRent>;
 };
 
-export function approveCollectionAuthority<
+export async function approveCollectionAuthority<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends string = string,
   TAccountNewCollectionAuthority extends string = string,
@@ -243,9 +250,23 @@ export function approveCollectionAuthority<
   TAccountMint extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
->(): WrappedInstruction<
-  ApproveCollectionAuthorityInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      ApproveCollectionAuthorityInstruction<
+        TProgram,
+        TAccountCollectionAuthorityRecord,
+        TAccountNewCollectionAuthority,
+        TAccountUpdateAuthority,
+        TAccountPayer,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+      TReturn
+    >,
+  input: ApproveCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
     TAccountUpdateAuthority,
@@ -255,6 +276,144 @@ export function approveCollectionAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
+): Promise<TReturn>;
+export async function approveCollectionAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionAuthority extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ApproveCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    ApproveCollectionAuthorityInstruction<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionAuthority,
+      TAccountUpdateAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function approveCollectionAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionAuthority extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  input: ApproveCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    ApproveCollectionAuthorityInstruction<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionAuthority,
+      TAccountUpdateAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function approveCollectionAuthority<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionAuthority extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          ApproveCollectionAuthorityInstruction<
+            TProgram,
+            TAccountCollectionAuthorityRecord,
+            TAccountNewCollectionAuthority,
+            TAccountUpdateAuthority,
+            TAccountPayer,
+            TAccountMetadata,
+            TAccountMint,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | ApproveCollectionAuthorityInput<
+        TAccountCollectionAuthorityRecord,
+        TAccountNewCollectionAuthority,
+        TAccountUpdateAuthority,
+        TAccountPayer,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+  input?: ApproveCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      ApproveCollectionAuthorityInstruction<
+        TProgram,
+        TAccountCollectionAuthorityRecord,
+        TAccountNewCollectionAuthority,
+        TAccountUpdateAuthority,
+        TAccountPayer,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountSystemProgram,
+        TAccountRent
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

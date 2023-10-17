@@ -38,7 +38,13 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   CollectionDetails,
   CollectionDetailsArgs,
@@ -250,7 +256,8 @@ export type CreateMetadataAccountV3Input<
   collectionDetails: CreateMetadataAccountV3InstructionDataArgs['collectionDetails'];
 };
 
-export function createMetadataAccountV3<
+export async function createMetadataAccountV3<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountMint extends string = string,
@@ -259,9 +266,22 @@ export function createMetadataAccountV3<
   TAccountUpdateAuthority extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
->(): WrappedInstruction<
-  CreateMetadataAccountV3Instruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CreateMetadataAccountV3Instruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+      TReturn
+    >,
+  input: CreateMetadataAccountV3Input<
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -270,6 +290,133 @@ export function createMetadataAccountV3<
     TAccountSystemProgram,
     TAccountRent
   >
+): Promise<TReturn>;
+export async function createMetadataAccountV3<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateMetadataAccountV3Input<
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    CreateMetadataAccountV3Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function createMetadataAccountV3<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  input: CreateMetadataAccountV3Input<
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    CreateMetadataAccountV3Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function createMetadataAccountV3<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateMetadataAccountV3Instruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountMint,
+            TAccountMintAuthority,
+            TAccountPayer,
+            TAccountUpdateAuthority,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | CreateMetadataAccountV3Input<
+        TAccountMetadata,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+  input?: CreateMetadataAccountV3Input<
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CreateMetadataAccountV3Instruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountSystemProgram,
+        TAccountRent
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

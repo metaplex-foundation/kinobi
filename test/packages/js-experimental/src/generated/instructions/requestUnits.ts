@@ -25,7 +25,11 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
-import { WrappedInstruction } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+} from '../shared';
 
 // Output.
 export type RequestUnitsInstruction<
@@ -100,8 +104,35 @@ export type RequestUnitsInput = {
   additionalFee: RequestUnitsInstructionDataArgs['additionalFee'];
 };
 
-export function requestUnits<
+export async function requestUnits<
+  TReturn,
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
->(): WrappedInstruction<RequestUnitsInstruction<TProgram>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<RequestUnitsInstruction<TProgram>, TReturn>,
+  input: RequestUnitsInput<>
+): Promise<TReturn>;
+export async function requestUnits<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RequestUnitsInput<>
+): Promise<WrappedInstruction<RequestUnitsInstruction<TProgram>>>;
+export async function requestUnits<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  input: RequestUnitsInput<>
+): Promise<WrappedInstruction<RequestUnitsInstruction<TProgram>>>;
+export async function requestUnits<
+  TReturn,
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<RequestUnitsInstruction<TProgram>, TReturn>)
+    | RequestUnitsInput<>,
+  input?: RequestUnitsInput<>
+): Promise<TReturn | WrappedInstruction<RequestUnitsInstruction<TProgram>>> {
   throw new Error('Not implemented');
 }

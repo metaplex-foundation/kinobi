@@ -37,7 +37,12 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type InitializeMint2Instruction<
@@ -127,9 +132,52 @@ export type InitializeMint2Input<TAccountMint extends string> = {
   freezeAuthority: InitializeMint2InstructionDataArgs['freezeAuthority'];
 };
 
-export function initializeMint2<
+export async function initializeMint2<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string
->(): WrappedInstruction<InitializeMint2Instruction<TProgram, TAccountMint>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      InitializeMint2Instruction<TProgram, TAccountMint>,
+      TReturn
+    >,
+  input: InitializeMint2Input<TAccountMint>
+): Promise<TReturn>;
+export async function initializeMint2<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: InitializeMint2Input<TAccountMint>
+): Promise<
+  WrappedInstruction<InitializeMint2Instruction<TProgram, TAccountMint>>
+>;
+export async function initializeMint2<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  input: InitializeMint2Input<TAccountMint>
+): Promise<
+  WrappedInstruction<InitializeMint2Instruction<TProgram, TAccountMint>>
+>;
+export async function initializeMint2<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          InitializeMint2Instruction<TProgram, TAccountMint>,
+          TReturn
+        >)
+    | InitializeMint2Input<TAccountMint>,
+  input?: InitializeMint2Input<TAccountMint>
+): Promise<
+  | TReturn
+  | WrappedInstruction<InitializeMint2Instruction<TProgram, TAccountMint>>
+> {
   throw new Error('Not implemented');
 }

@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type RevokeUseAuthorityInstruction<
@@ -239,7 +245,8 @@ export type RevokeUseAuthorityInput<
   rent?: Base58EncodedAddress<TAccountRent>;
 };
 
-export function revokeUseAuthority<
+export async function revokeUseAuthority<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountUseAuthorityRecord extends string = string,
   TAccountOwner extends string = string,
@@ -250,9 +257,24 @@ export function revokeUseAuthority<
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
->(): WrappedInstruction<
-  RevokeUseAuthorityInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      RevokeUseAuthorityInstruction<
+        TProgram,
+        TAccountUseAuthorityRecord,
+        TAccountOwner,
+        TAccountUser,
+        TAccountOwnerTokenAccount,
+        TAccountMint,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+      TReturn
+    >,
+  input: RevokeUseAuthorityInput<
     TAccountUseAuthorityRecord,
     TAccountOwner,
     TAccountUser,
@@ -263,6 +285,155 @@ export function revokeUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
+): Promise<TReturn>;
+export async function revokeUseAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountOwner extends string = string,
+  TAccountUser extends string = string,
+  TAccountOwnerTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RevokeUseAuthorityInput<
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    RevokeUseAuthorityInstruction<
+      TProgram,
+      TAccountUseAuthorityRecord,
+      TAccountOwner,
+      TAccountUser,
+      TAccountOwnerTokenAccount,
+      TAccountMint,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function revokeUseAuthority<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountOwner extends string = string,
+  TAccountUser extends string = string,
+  TAccountOwnerTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  input: RevokeUseAuthorityInput<
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    RevokeUseAuthorityInstruction<
+      TProgram,
+      TAccountUseAuthorityRecord,
+      TAccountOwner,
+      TAccountUser,
+      TAccountOwnerTokenAccount,
+      TAccountMint,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function revokeUseAuthority<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string = string,
+  TAccountOwner extends string = string,
+  TAccountUser extends string = string,
+  TAccountOwnerTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RevokeUseAuthorityInstruction<
+            TProgram,
+            TAccountUseAuthorityRecord,
+            TAccountOwner,
+            TAccountUser,
+            TAccountOwnerTokenAccount,
+            TAccountMint,
+            TAccountMetadata,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | RevokeUseAuthorityInput<
+        TAccountUseAuthorityRecord,
+        TAccountOwner,
+        TAccountUser,
+        TAccountOwnerTokenAccount,
+        TAccountMint,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+  input?: RevokeUseAuthorityInput<
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      RevokeUseAuthorityInstruction<
+        TProgram,
+        TAccountUseAuthorityRecord,
+        TAccountOwner,
+        TAccountUser,
+        TAccountOwnerTokenAccount,
+        TAccountMint,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

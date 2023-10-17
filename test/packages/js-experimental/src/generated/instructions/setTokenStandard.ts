@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type SetTokenStandardInstruction<
@@ -157,20 +163,125 @@ export type SetTokenStandardInput<
   edition?: Base58EncodedAddress<TAccountEdition>;
 };
 
-export function setTokenStandard<
+export async function setTokenStandard<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountUpdateAuthority extends string = string,
   TAccountMint extends string = string,
   TAccountEdition extends string = string
->(): WrappedInstruction<
-  SetTokenStandardInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SetTokenStandardInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountUpdateAuthority,
+        TAccountMint,
+        TAccountEdition
+      >,
+      TReturn
+    >,
+  input: SetTokenStandardInput<
     TAccountMetadata,
     TAccountUpdateAuthority,
     TAccountMint,
     TAccountEdition
   >
+): Promise<TReturn>;
+export async function setTokenStandard<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMint extends string = string,
+  TAccountEdition extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetTokenStandardInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  WrappedInstruction<
+    SetTokenStandardInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority,
+      TAccountMint,
+      TAccountEdition
+    >
+  >
+>;
+export async function setTokenStandard<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMint extends string = string,
+  TAccountEdition extends string = string
+>(
+  input: SetTokenStandardInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  WrappedInstruction<
+    SetTokenStandardInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority,
+      TAccountMint,
+      TAccountEdition
+    >
+  >
+>;
+export async function setTokenStandard<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMint extends string = string,
+  TAccountEdition extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetTokenStandardInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountUpdateAuthority,
+            TAccountMint,
+            TAccountEdition
+          >,
+          TReturn
+        >)
+    | SetTokenStandardInput<
+        TAccountMetadata,
+        TAccountUpdateAuthority,
+        TAccountMint,
+        TAccountEdition
+      >,
+  input?: SetTokenStandardInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      SetTokenStandardInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountUpdateAuthority,
+        TAccountMint,
+        TAccountEdition
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

@@ -41,7 +41,13 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   AssetData,
   AssetDataArgs,
@@ -300,7 +306,8 @@ export type CreateV1Input<
   maxSupply: CreateV1InstructionDataArgs['maxSupply'];
 };
 
-export function createV1<
+export async function createV1<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountMasterEdition extends string = string,
@@ -311,14 +318,29 @@ export function createV1<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
   TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
->(): WrappedInstruction<
-  CreateV1Instruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CreateV1Instruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        typeof input['mint'] extends Signer<TAccountMint>
+          ? WritableSignerAccount<TAccountMint>
+          : TAccountMint,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountSplTokenProgram
+      >,
+      TReturn
+    >,
+  input: CreateV1Input<
     TAccountMetadata,
     TAccountMasterEdition,
-    typeof input['mint'] extends Signer<TAccountMint>
-      ? WritableSignerAccount<TAccountMint>
-      : TAccountMint,
+    TAccountMint,
     TAccountMintAuthority,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -326,6 +348,163 @@ export function createV1<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
+): Promise<TReturn>;
+export async function createV1<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateV1Input<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram
+  >
+): Promise<
+  WrappedInstruction<
+    CreateV1Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      typeof input['mint'] extends Signer<TAccountMint>
+        ? WritableSignerAccount<TAccountMint>
+        : TAccountMint,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram
+    >
+  >
+>;
+export async function createV1<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  input: CreateV1Input<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram
+  >
+): Promise<
+  WrappedInstruction<
+    CreateV1Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      typeof input['mint'] extends Signer<TAccountMint>
+        ? WritableSignerAccount<TAccountMint>
+        : TAccountMint,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram
+    >
+  >
+>;
+export async function createV1<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateV1Instruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountMasterEdition,
+            typeof input['mint'] extends Signer<TAccountMint>
+              ? WritableSignerAccount<TAccountMint>
+              : TAccountMint,
+            TAccountMintAuthority,
+            TAccountPayer,
+            TAccountUpdateAuthority,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions,
+            TAccountSplTokenProgram
+          >,
+          TReturn
+        >)
+    | CreateV1Input<
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountSplTokenProgram
+      >,
+  input?: CreateV1Input<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CreateV1Instruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        typeof input['mint'] extends Signer<TAccountMint>
+          ? WritableSignerAccount<TAccountMint>
+          : TAccountMint,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountSplTokenProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

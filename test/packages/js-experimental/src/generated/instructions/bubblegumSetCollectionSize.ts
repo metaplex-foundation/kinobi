@@ -30,7 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -200,22 +206,139 @@ export type BubblegumSetCollectionSizeInput<
   setCollectionSizeArgs: BubblegumSetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-export function bubblegumSetCollectionSize<
+export async function bubblegumSetCollectionSize<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string = string,
   TAccountCollectionAuthority extends string = string,
   TAccountCollectionMint extends string = string,
   TAccountBubblegumSigner extends string = string,
   TAccountCollectionAuthorityRecord extends string = string
->(): WrappedInstruction<
-  BubblegumSetCollectionSizeInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      BubblegumSetCollectionSizeInstruction<
+        TProgram,
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountBubblegumSigner,
+        TAccountCollectionAuthorityRecord
+      >,
+      TReturn
+    >,
+  input: BubblegumSetCollectionSizeInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
     TAccountBubblegumSigner,
     TAccountCollectionAuthorityRecord
   >
+): Promise<TReturn>;
+export async function bubblegumSetCollectionSize<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountBubblegumSigner extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  WrappedInstruction<
+    BubblegumSetCollectionSizeInstruction<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountBubblegumSigner,
+      TAccountCollectionAuthorityRecord
+    >
+  >
+>;
+export async function bubblegumSetCollectionSize<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountBubblegumSigner extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  input: BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  WrappedInstruction<
+    BubblegumSetCollectionSizeInstruction<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountBubblegumSigner,
+      TAccountCollectionAuthorityRecord
+    >
+  >
+>;
+export async function bubblegumSetCollectionSize<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountBubblegumSigner extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          BubblegumSetCollectionSizeInstruction<
+            TProgram,
+            TAccountCollectionMetadata,
+            TAccountCollectionAuthority,
+            TAccountCollectionMint,
+            TAccountBubblegumSigner,
+            TAccountCollectionAuthorityRecord
+          >,
+          TReturn
+        >)
+    | BubblegumSetCollectionSizeInput<
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountBubblegumSigner,
+        TAccountCollectionAuthorityRecord
+      >,
+  input?: BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      BubblegumSetCollectionSizeInstruction<
+        TProgram,
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountBubblegumSigner,
+        TAccountCollectionAuthorityRecord
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

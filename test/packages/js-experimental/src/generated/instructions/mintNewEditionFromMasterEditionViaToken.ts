@@ -30,7 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
   MintNewEditionFromMasterEditionViaTokenArgsArgs,
@@ -348,7 +354,8 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
-export function mintNewEditionFromMasterEditionViaToken<
+export async function mintNewEditionFromMasterEditionViaToken<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountNewMetadata extends string = string,
   TAccountNewEdition extends string = string,
@@ -364,9 +371,29 @@ export function mintNewEditionFromMasterEditionViaToken<
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
->(): WrappedInstruction<
-  MintNewEditionFromMasterEditionViaTokenInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      MintNewEditionFromMasterEditionViaTokenInstruction<
+        TProgram,
+        TAccountNewMetadata,
+        TAccountNewEdition,
+        TAccountMasterEdition,
+        TAccountNewMint,
+        TAccountEditionMarkPda,
+        TAccountNewMintAuthority,
+        TAccountPayer,
+        TAccountTokenAccountOwner,
+        TAccountTokenAccount,
+        TAccountNewMetadataUpdateAuthority,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+      TReturn
+    >,
+  input: MintNewEditionFromMasterEditionViaTokenInput<
     TAccountNewMetadata,
     TAccountNewEdition,
     TAccountMasterEdition,
@@ -382,6 +409,210 @@ export function mintNewEditionFromMasterEditionViaToken<
     TAccountSystemProgram,
     TAccountRent
   >
+): Promise<TReturn>;
+export async function mintNewEditionFromMasterEditionViaToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenAccountOwner extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MintNewEditionFromMasterEditionViaTokenInput<
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountTokenAccountOwner,
+    TAccountTokenAccount,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    MintNewEditionFromMasterEditionViaTokenInstruction<
+      TProgram,
+      TAccountNewMetadata,
+      TAccountNewEdition,
+      TAccountMasterEdition,
+      TAccountNewMint,
+      TAccountEditionMarkPda,
+      TAccountNewMintAuthority,
+      TAccountPayer,
+      TAccountTokenAccountOwner,
+      TAccountTokenAccount,
+      TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function mintNewEditionFromMasterEditionViaToken<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenAccountOwner extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  input: MintNewEditionFromMasterEditionViaTokenInput<
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountTokenAccountOwner,
+    TAccountTokenAccount,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    MintNewEditionFromMasterEditionViaTokenInstruction<
+      TProgram,
+      TAccountNewMetadata,
+      TAccountNewEdition,
+      TAccountMasterEdition,
+      TAccountNewMint,
+      TAccountEditionMarkPda,
+      TAccountNewMintAuthority,
+      TAccountPayer,
+      TAccountTokenAccountOwner,
+      TAccountTokenAccount,
+      TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function mintNewEditionFromMasterEditionViaToken<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenAccountOwner extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          MintNewEditionFromMasterEditionViaTokenInstruction<
+            TProgram,
+            TAccountNewMetadata,
+            TAccountNewEdition,
+            TAccountMasterEdition,
+            TAccountNewMint,
+            TAccountEditionMarkPda,
+            TAccountNewMintAuthority,
+            TAccountPayer,
+            TAccountTokenAccountOwner,
+            TAccountTokenAccount,
+            TAccountNewMetadataUpdateAuthority,
+            TAccountMetadata,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | MintNewEditionFromMasterEditionViaTokenInput<
+        TAccountNewMetadata,
+        TAccountNewEdition,
+        TAccountMasterEdition,
+        TAccountNewMint,
+        TAccountEditionMarkPda,
+        TAccountNewMintAuthority,
+        TAccountPayer,
+        TAccountTokenAccountOwner,
+        TAccountTokenAccount,
+        TAccountNewMetadataUpdateAuthority,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+  input?: MintNewEditionFromMasterEditionViaTokenInput<
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountTokenAccountOwner,
+    TAccountTokenAccount,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      MintNewEditionFromMasterEditionViaTokenInstruction<
+        TProgram,
+        TAccountNewMetadata,
+        TAccountNewEdition,
+        TAccountMasterEdition,
+        TAccountNewMint,
+        TAccountEditionMarkPda,
+        TAccountNewMintAuthority,
+        TAccountPayer,
+        TAccountTokenAccountOwner,
+        TAccountTokenAccount,
+        TAccountNewMetadataUpdateAuthority,
+        TAccountMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

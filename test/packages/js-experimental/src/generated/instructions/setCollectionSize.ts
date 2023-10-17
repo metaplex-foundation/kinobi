@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -180,20 +186,125 @@ export type SetCollectionSizeInput<
   setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-export function setCollectionSize<
+export async function setCollectionSize<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string = string,
   TAccountCollectionAuthority extends string = string,
   TAccountCollectionMint extends string = string,
   TAccountCollectionAuthorityRecord extends string = string
->(): WrappedInstruction<
-  SetCollectionSizeInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SetCollectionSizeInstruction<
+        TProgram,
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountCollectionAuthorityRecord
+      >,
+      TReturn
+    >,
+  input: SetCollectionSizeInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
+): Promise<TReturn>;
+export async function setCollectionSize<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  WrappedInstruction<
+    SetCollectionSizeInstruction<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountCollectionAuthorityRecord
+    >
+  >
+>;
+export async function setCollectionSize<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  input: SetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  WrappedInstruction<
+    SetCollectionSizeInstruction<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountCollectionAuthorityRecord
+    >
+  >
+>;
+export async function setCollectionSize<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetCollectionSizeInstruction<
+            TProgram,
+            TAccountCollectionMetadata,
+            TAccountCollectionAuthority,
+            TAccountCollectionMint,
+            TAccountCollectionAuthorityRecord
+          >,
+          TReturn
+        >)
+    | SetCollectionSizeInput<
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountCollectionAuthorityRecord
+      >,
+  input?: SetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      SetCollectionSizeInstruction<
+        TProgram,
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountCollectionAuthorityRecord
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

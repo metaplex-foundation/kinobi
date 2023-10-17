@@ -34,7 +34,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type ApproveTokenDelegateCheckedInstruction<
@@ -169,20 +175,125 @@ export type ApproveTokenDelegateCheckedInput<
   decimals: ApproveTokenDelegateCheckedInstructionDataArgs['decimals'];
 };
 
-export function approveTokenDelegateChecked<
+export async function approveTokenDelegateChecked<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string = string,
   TAccountMint extends string = string,
   TAccountDelegate extends string = string,
   TAccountOwner extends string = string
->(): WrappedInstruction<
-  ApproveTokenDelegateCheckedInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      ApproveTokenDelegateCheckedInstruction<
+        TProgram,
+        TAccountSource,
+        TAccountMint,
+        TAccountDelegate,
+        TAccountOwner
+      >,
+      TReturn
+    >,
+  input: ApproveTokenDelegateCheckedInput<
     TAccountSource,
     TAccountMint,
     TAccountDelegate,
     TAccountOwner
   >
+): Promise<TReturn>;
+export async function approveTokenDelegateChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ApproveTokenDelegateCheckedInput<
+    TAccountSource,
+    TAccountMint,
+    TAccountDelegate,
+    TAccountOwner
+  >
+): Promise<
+  WrappedInstruction<
+    ApproveTokenDelegateCheckedInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountMint,
+      TAccountDelegate,
+      TAccountOwner
+    >
+  >
+>;
+export async function approveTokenDelegateChecked<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>(
+  input: ApproveTokenDelegateCheckedInput<
+    TAccountSource,
+    TAccountMint,
+    TAccountDelegate,
+    TAccountOwner
+  >
+): Promise<
+  WrappedInstruction<
+    ApproveTokenDelegateCheckedInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountMint,
+      TAccountDelegate,
+      TAccountOwner
+    >
+  >
+>;
+export async function approveTokenDelegateChecked<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSource extends string = string,
+  TAccountMint extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountOwner extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          ApproveTokenDelegateCheckedInstruction<
+            TProgram,
+            TAccountSource,
+            TAccountMint,
+            TAccountDelegate,
+            TAccountOwner
+          >,
+          TReturn
+        >)
+    | ApproveTokenDelegateCheckedInput<
+        TAccountSource,
+        TAccountMint,
+        TAccountDelegate,
+        TAccountOwner
+      >,
+  input?: ApproveTokenDelegateCheckedInput<
+    TAccountSource,
+    TAccountMint,
+    TAccountDelegate,
+    TAccountOwner
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      ApproveTokenDelegateCheckedInstruction<
+        TProgram,
+        TAccountSource,
+        TAccountMint,
+        TAccountDelegate,
+        TAccountOwner
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

@@ -27,7 +27,12 @@ import {
   IInstructionWithData,
   ReadonlyAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type GetTokenDataSizeInstruction<
@@ -94,9 +99,52 @@ export type GetTokenDataSizeInput<TAccountMint extends string> = {
   mint: Base58EncodedAddress<TAccountMint>;
 };
 
-export function getTokenDataSize<
+export async function getTokenDataSize<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string
->(): WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      GetTokenDataSizeInstruction<TProgram, TAccountMint>,
+      TReturn
+    >,
+  input: GetTokenDataSizeInput<TAccountMint>
+): Promise<TReturn>;
+export async function getTokenDataSize<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: GetTokenDataSizeInput<TAccountMint>
+): Promise<
+  WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>>
+>;
+export async function getTokenDataSize<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  input: GetTokenDataSizeInput<TAccountMint>
+): Promise<
+  WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>>
+>;
+export async function getTokenDataSize<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountMint extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          GetTokenDataSizeInstruction<TProgram, TAccountMint>,
+          TReturn
+        >)
+    | GetTokenDataSizeInput<TAccountMint>,
+  input?: GetTokenDataSizeInput<TAccountMint>
+): Promise<
+  | TReturn
+  | WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>>
+> {
   throw new Error('Not implemented');
 }

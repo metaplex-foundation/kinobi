@@ -35,7 +35,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   ConfigLine,
   ConfigLineArgs,
@@ -152,12 +158,74 @@ export type AddConfigLinesInput<
   configLines: AddConfigLinesInstructionDataArgs['configLines'];
 };
 
-export function addConfigLines<
+export async function addConfigLines<
+  TReturn,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
->(): WrappedInstruction<
-  AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      AddConfigLinesInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthority
+      >,
+      TReturn
+    >,
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<TReturn>;
+export async function addConfigLines<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+  >
+>;
+export async function addConfigLines<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+  >
+>;
+export async function addConfigLines<
+  TReturn,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          AddConfigLinesInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthority
+          >,
+          TReturn
+        >)
+    | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
+  input?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      AddConfigLinesInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

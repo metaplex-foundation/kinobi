@@ -27,7 +27,12 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type ConvertMasterEditionV1ToV2Instruction<
@@ -137,18 +142,111 @@ export type ConvertMasterEditionV1ToV2Input<
   printingMint: Base58EncodedAddress<TAccountPrintingMint>;
 };
 
-export function convertMasterEditionV1ToV2<
+export async function convertMasterEditionV1ToV2<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string = string,
   TAccountOneTimeAuth extends string = string,
   TAccountPrintingMint extends string = string
->(): WrappedInstruction<
-  ConvertMasterEditionV1ToV2Instruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      ConvertMasterEditionV1ToV2Instruction<
+        TProgram,
+        TAccountMasterEdition,
+        TAccountOneTimeAuth,
+        TAccountPrintingMint
+      >,
+      TReturn
+    >,
+  input: ConvertMasterEditionV1ToV2Input<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
+): Promise<TReturn>;
+export async function convertMasterEditionV1ToV2<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountOneTimeAuth extends string = string,
+  TAccountPrintingMint extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ConvertMasterEditionV1ToV2Input<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  WrappedInstruction<
+    ConvertMasterEditionV1ToV2Instruction<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountOneTimeAuth,
+      TAccountPrintingMint
+    >
+  >
+>;
+export async function convertMasterEditionV1ToV2<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountOneTimeAuth extends string = string,
+  TAccountPrintingMint extends string = string
+>(
+  input: ConvertMasterEditionV1ToV2Input<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  WrappedInstruction<
+    ConvertMasterEditionV1ToV2Instruction<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountOneTimeAuth,
+      TAccountPrintingMint
+    >
+  >
+>;
+export async function convertMasterEditionV1ToV2<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string = string,
+  TAccountOneTimeAuth extends string = string,
+  TAccountPrintingMint extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          ConvertMasterEditionV1ToV2Instruction<
+            TProgram,
+            TAccountMasterEdition,
+            TAccountOneTimeAuth,
+            TAccountPrintingMint
+          >,
+          TReturn
+        >)
+    | ConvertMasterEditionV1ToV2Input<
+        TAccountMasterEdition,
+        TAccountOneTimeAuth,
+        TAccountPrintingMint
+      >,
+  input?: ConvertMasterEditionV1ToV2Input<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      ConvertMasterEditionV1ToV2Instruction<
+        TProgram,
+        TAccountMasterEdition,
+        TAccountOneTimeAuth,
+        TAccountPrintingMint
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

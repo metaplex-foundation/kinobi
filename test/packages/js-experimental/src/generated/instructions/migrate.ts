@@ -29,7 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   MigrateArgs,
   MigrateArgsArgs,
@@ -281,7 +287,8 @@ export type MigrateInput<
   migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
 };
 
-export function migrate<
+export async function migrate<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountMasterEdition extends string = string,
@@ -293,9 +300,25 @@ export function migrate<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthorizationRules extends string = string
->(): WrappedInstruction<
-  MigrateInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      MigrateInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountTokenAccount,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountCollectionMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthorizationRules
+      >,
+      TReturn
+    >,
+  input: MigrateInput<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenAccount,
@@ -307,6 +330,166 @@ export function migrate<
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
   >
+): Promise<TReturn>;
+export async function migrate<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRules extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MigrateInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    MigrateInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountCollectionMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function migrate<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRules extends string = string
+>(
+  input: MigrateInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  WrappedInstruction<
+    MigrateInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountCollectionMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRules
+    >
+  >
+>;
+export async function migrate<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRules extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          MigrateInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountMasterEdition,
+            TAccountTokenAccount,
+            TAccountMint,
+            TAccountUpdateAuthority,
+            TAccountCollectionMetadata,
+            TAccountTokenProgram,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions,
+            TAccountAuthorizationRules
+          >,
+          TReturn
+        >)
+    | MigrateInput<
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountTokenAccount,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountCollectionMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthorizationRules
+      >,
+  input?: MigrateInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      MigrateInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountTokenAccount,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountCollectionMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthorizationRules
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

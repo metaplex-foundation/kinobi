@@ -18,7 +18,13 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { CreateReservationListInstructionDataArgs } from '../../hooked';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type CreateReservationListInstruction<
@@ -176,7 +182,8 @@ export type CreateReservationListInput<
   rent?: Base58EncodedAddress<TAccountRent>;
 };
 
-export function createReservationList<
+export async function createReservationList<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountReservationList extends string = string,
   TAccountPayer extends string = string,
@@ -186,9 +193,23 @@ export function createReservationList<
   TAccountMetadata extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->(): WrappedInstruction<
-  CreateReservationListInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CreateReservationListInstruction<
+        TProgram,
+        TAccountReservationList,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountMasterEdition,
+        TAccountResource,
+        TAccountMetadata,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+      TReturn
+    >,
+  input: CreateReservationListInput<
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -198,6 +219,144 @@ export function createReservationList<
     TAccountSystemProgram,
     TAccountRent
   >
+): Promise<TReturn>;
+export async function createReservationList<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountReservationList extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountResource extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateReservationListInput<
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    CreateReservationListInstruction<
+      TProgram,
+      TAccountReservationList,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountMasterEdition,
+      TAccountResource,
+      TAccountMetadata,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function createReservationList<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountReservationList extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountResource extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  input: CreateReservationListInput<
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  WrappedInstruction<
+    CreateReservationListInstruction<
+      TProgram,
+      TAccountReservationList,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountMasterEdition,
+      TAccountResource,
+      TAccountMetadata,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >
+>;
+export async function createReservationList<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountReservationList extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountResource extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CreateReservationListInstruction<
+            TProgram,
+            TAccountReservationList,
+            TAccountPayer,
+            TAccountUpdateAuthority,
+            TAccountMasterEdition,
+            TAccountResource,
+            TAccountMetadata,
+            TAccountSystemProgram,
+            TAccountRent
+          >,
+          TReturn
+        >)
+    | CreateReservationListInput<
+        TAccountReservationList,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountMasterEdition,
+        TAccountResource,
+        TAccountMetadata,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+  input?: CreateReservationListInput<
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CreateReservationListInstruction<
+        TProgram,
+        TAccountReservationList,
+        TAccountPayer,
+        TAccountUpdateAuthority,
+        TAccountMasterEdition,
+        TAccountResource,
+        TAccountMetadata,
+        TAccountSystemProgram,
+        TAccountRent
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

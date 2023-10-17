@@ -33,7 +33,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type BurnTokenInstruction<
@@ -145,18 +151,91 @@ export type BurnTokenInput<
   amount: BurnTokenInstructionDataArgs['amount'];
 };
 
-export function burnToken<
+export async function burnToken<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string,
   TAccountMint extends string = string,
   TAccountAuthority extends string = string
->(): WrappedInstruction<
-  BurnTokenInstruction<
-    TProgram,
-    TAccountAccount,
-    TAccountMint,
-    TAccountAuthority
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      BurnTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountAuthority
+      >,
+      TReturn
+    >,
+  input: BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>
+): Promise<TReturn>;
+export async function burnToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    BurnTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountAuthority
+    >
   >
+>;
+export async function burnToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountAuthority extends string = string
+>(
+  input: BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>
+): Promise<
+  WrappedInstruction<
+    BurnTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountAuthority
+    >
+  >
+>;
+export async function burnToken<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountMint extends string = string,
+  TAccountAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          BurnTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountMint,
+            TAccountAuthority
+          >,
+          TReturn
+        >)
+    | BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>,
+  input?: BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      BurnTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountMint,
+        TAccountAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

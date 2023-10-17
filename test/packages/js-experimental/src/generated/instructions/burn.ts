@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 import {
   BurnArgs,
   BurnArgsArgs,
@@ -264,7 +270,8 @@ export type BurnInput<
   burnArgs: BurnInstructionDataArgs['burnArgs'];
 };
 
-export function burn<
+export async function burn<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountOwner extends string = string,
@@ -275,9 +282,24 @@ export function burn<
   TAccountCollectionMetadata extends string = string,
   TAccountAuthorizationRules extends string = string,
   TAccountAuthorizationRulesProgram extends string = string
->(): WrappedInstruction<
-  BurnInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      BurnInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountMasterEditionAccount,
+        TAccountSplTokenProgram,
+        TAccountCollectionMetadata,
+        TAccountAuthorizationRules,
+        TAccountAuthorizationRulesProgram
+      >,
+      TReturn
+    >,
+  input: BurnInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountMint,
@@ -288,6 +310,155 @@ export function burn<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
+): Promise<TReturn>;
+export async function burn<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BurnInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  WrappedInstruction<
+    BurnInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountSplTokenProgram,
+      TAccountCollectionMetadata,
+      TAccountAuthorizationRules,
+      TAccountAuthorizationRulesProgram
+    >
+  >
+>;
+export async function burn<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  input: BurnInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  WrappedInstruction<
+    BurnInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountSplTokenProgram,
+      TAccountCollectionMetadata,
+      TAccountAuthorizationRules,
+      TAccountAuthorizationRulesProgram
+    >
+  >
+>;
+export async function burn<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string,
+  TAccountAuthorizationRules extends string = string,
+  TAccountAuthorizationRulesProgram extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          BurnInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountOwner,
+            TAccountMint,
+            TAccountTokenAccount,
+            TAccountMasterEditionAccount,
+            TAccountSplTokenProgram,
+            TAccountCollectionMetadata,
+            TAccountAuthorizationRules,
+            TAccountAuthorizationRulesProgram
+          >,
+          TReturn
+        >)
+    | BurnInput<
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountMasterEditionAccount,
+        TAccountSplTokenProgram,
+        TAccountCollectionMetadata,
+        TAccountAuthorizationRules,
+        TAccountAuthorizationRulesProgram
+      >,
+  input?: BurnInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      BurnInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountMasterEditionAccount,
+        TAccountSplTokenProgram,
+        TAccountCollectionMetadata,
+        TAccountAuthorizationRules,
+        TAccountAuthorizationRulesProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

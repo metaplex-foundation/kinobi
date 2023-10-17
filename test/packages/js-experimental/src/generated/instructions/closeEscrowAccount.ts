@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type CloseEscrowAccountInstruction<
@@ -218,7 +224,8 @@ export type CloseEscrowAccountInput<
   sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
 };
 
-export function closeEscrowAccount<
+export async function closeEscrowAccount<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string = string,
   TAccountMetadata extends string = string,
@@ -228,9 +235,23 @@ export function closeEscrowAccount<
   TAccountPayer extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
->(): WrappedInstruction<
-  CloseEscrowAccountInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CloseEscrowAccountInstruction<
+        TProgram,
+        TAccountEscrow,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountEdition,
+        TAccountPayer,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions
+      >,
+      TReturn
+    >,
+  input: CloseEscrowAccountInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -240,6 +261,144 @@ export function closeEscrowAccount<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
+): Promise<TReturn>;
+export async function closeEscrowAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CloseEscrowAccountInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >
+): Promise<
+  WrappedInstruction<
+    CloseEscrowAccountInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions
+    >
+  >
+>;
+export async function closeEscrowAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
+>(
+  input: CloseEscrowAccountInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >
+): Promise<
+  WrappedInstruction<
+    CloseEscrowAccountInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions
+    >
+  >
+>;
+export async function closeEscrowAccount<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountPayer extends string = string,
+  TAccountSystemProgram extends string = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CloseEscrowAccountInstruction<
+            TProgram,
+            TAccountEscrow,
+            TAccountMetadata,
+            TAccountMint,
+            TAccountTokenAccount,
+            TAccountEdition,
+            TAccountPayer,
+            TAccountSystemProgram,
+            TAccountSysvarInstructions
+          >,
+          TReturn
+        >)
+    | CloseEscrowAccountInput<
+        TAccountEscrow,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountEdition,
+        TAccountPayer,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions
+      >,
+  input?: CloseEscrowAccountInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CloseEscrowAccountInstruction<
+        TProgram,
+        TAccountEscrow,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountEdition,
+        TAccountPayer,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

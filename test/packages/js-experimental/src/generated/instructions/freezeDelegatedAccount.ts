@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type FreezeDelegatedAccountInstruction<
@@ -171,22 +177,139 @@ export type FreezeDelegatedAccountInput<
   tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
 };
 
-export function freezeDelegatedAccount<
+export async function freezeDelegatedAccount<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegate extends string = string,
   TAccountTokenAccount extends string = string,
   TAccountEdition extends string = string,
   TAccountMint extends string = string,
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
->(): WrappedInstruction<
-  FreezeDelegatedAccountInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      FreezeDelegatedAccountInstruction<
+        TProgram,
+        TAccountDelegate,
+        TAccountTokenAccount,
+        TAccountEdition,
+        TAccountMint,
+        TAccountTokenProgram
+      >,
+      TReturn
+    >,
+  input: FreezeDelegatedAccountInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
   >
+): Promise<TReturn>;
+export async function freezeDelegatedAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegate extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: FreezeDelegatedAccountInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  WrappedInstruction<
+    FreezeDelegatedAccountInstruction<
+      TProgram,
+      TAccountDelegate,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountMint,
+      TAccountTokenProgram
+    >
+  >
+>;
+export async function freezeDelegatedAccount<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegate extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  input: FreezeDelegatedAccountInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  WrappedInstruction<
+    FreezeDelegatedAccountInstruction<
+      TProgram,
+      TAccountDelegate,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountMint,
+      TAccountTokenProgram
+    >
+  >
+>;
+export async function freezeDelegatedAccount<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegate extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          FreezeDelegatedAccountInstruction<
+            TProgram,
+            TAccountDelegate,
+            TAccountTokenAccount,
+            TAccountEdition,
+            TAccountMint,
+            TAccountTokenProgram
+          >,
+          TReturn
+        >)
+    | FreezeDelegatedAccountInput<
+        TAccountDelegate,
+        TAccountTokenAccount,
+        TAccountEdition,
+        TAccountMint,
+        TAccountTokenProgram
+      >,
+  input?: FreezeDelegatedAccountInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      FreezeDelegatedAccountInstruction<
+        TProgram,
+        TAccountDelegate,
+        TAccountTokenAccount,
+        TAccountEdition,
+        TAccountMint,
+        TAccountTokenProgram
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

@@ -29,7 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type BurnNftInstruction<
@@ -206,7 +212,8 @@ export type BurnNftInput<
   collectionMetadata?: Base58EncodedAddress<TAccountCollectionMetadata>;
 };
 
-export function burnNft<
+export async function burnNft<
+  TReturn,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountOwner extends string = string,
@@ -215,9 +222,22 @@ export function burnNft<
   TAccountMasterEditionAccount extends string = string,
   TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountCollectionMetadata extends string = string
->(): WrappedInstruction<
-  BurnNftInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      BurnNftInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountMasterEditionAccount,
+        TAccountSplTokenProgram,
+        TAccountCollectionMetadata
+      >,
+      TReturn
+    >,
+  input: BurnNftInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountMint,
@@ -226,6 +246,133 @@ export function burnNft<
     TAccountSplTokenProgram,
     TAccountCollectionMetadata
   >
+): Promise<TReturn>;
+export async function burnNft<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BurnNftInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<
+  WrappedInstruction<
+    BurnNftInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountSplTokenProgram,
+      TAccountCollectionMetadata
+    >
+  >
+>;
+export async function burnNft<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string
+>(
+  input: BurnNftInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<
+  WrappedInstruction<
+    BurnNftInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountSplTokenProgram,
+      TAccountCollectionMetadata
+    >
+  >
+>;
+export async function burnNft<
+  TReturn,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountCollectionMetadata extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          BurnNftInstruction<
+            TProgram,
+            TAccountMetadata,
+            TAccountOwner,
+            TAccountMint,
+            TAccountTokenAccount,
+            TAccountMasterEditionAccount,
+            TAccountSplTokenProgram,
+            TAccountCollectionMetadata
+          >,
+          TReturn
+        >)
+    | BurnNftInput<
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountMasterEditionAccount,
+        TAccountSplTokenProgram,
+        TAccountCollectionMetadata
+      >,
+  input?: BurnNftInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      BurnNftInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountMasterEditionAccount,
+        TAccountSplTokenProgram,
+        TAccountCollectionMetadata
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

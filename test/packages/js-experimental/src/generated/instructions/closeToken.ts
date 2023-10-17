@@ -28,7 +28,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type CloseTokenInstruction<
@@ -129,18 +135,91 @@ export type CloseTokenInput<
   owner: Signer<TAccountOwner>;
 };
 
-export function closeToken<
+export async function closeToken<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string,
   TAccountDestination extends string = string,
   TAccountOwner extends string = string
->(): WrappedInstruction<
-  CloseTokenInstruction<
-    TProgram,
-    TAccountAccount,
-    TAccountDestination,
-    TAccountOwner
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      CloseTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountDestination,
+        TAccountOwner
+      >,
+      TReturn
+    >,
+  input: CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>
+): Promise<TReturn>;
+export async function closeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountDestination extends string = string,
+  TAccountOwner extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    CloseTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountDestination,
+      TAccountOwner
+    >
   >
+>;
+export async function closeToken<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountDestination extends string = string,
+  TAccountOwner extends string = string
+>(
+  input: CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>
+): Promise<
+  WrappedInstruction<
+    CloseTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountDestination,
+      TAccountOwner
+    >
+  >
+>;
+export async function closeToken<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string,
+  TAccountDestination extends string = string,
+  TAccountOwner extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          CloseTokenInstruction<
+            TProgram,
+            TAccountAccount,
+            TAccountDestination,
+            TAccountOwner
+          >,
+          TReturn
+        >)
+    | CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>,
+  input?: CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      CloseTokenInstruction<
+        TProgram,
+        TAccountAccount,
+        TAccountDestination,
+        TAccountOwner
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

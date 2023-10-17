@@ -27,7 +27,12 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type SyncNativeInstruction<
@@ -97,9 +102,51 @@ export type SyncNativeInput<TAccountAccount extends string> = {
   account: Base58EncodedAddress<TAccountAccount>;
 };
 
-export function syncNative<
+export async function syncNative<
+  TReturn,
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string
->(): WrappedInstruction<SyncNativeInstruction<TProgram, TAccountAccount>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SyncNativeInstruction<TProgram, TAccountAccount>,
+      TReturn
+    >,
+  input: SyncNativeInput<TAccountAccount>
+): Promise<TReturn>;
+export async function syncNative<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SyncNativeInput<TAccountAccount>
+): Promise<
+  WrappedInstruction<SyncNativeInstruction<TProgram, TAccountAccount>>
+>;
+export async function syncNative<
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>(
+  input: SyncNativeInput<TAccountAccount>
+): Promise<
+  WrappedInstruction<SyncNativeInstruction<TProgram, TAccountAccount>>
+>;
+export async function syncNative<
+  TReturn,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountAccount extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SyncNativeInstruction<TProgram, TAccountAccount>,
+          TReturn
+        >)
+    | SyncNativeInput<TAccountAccount>,
+  input?: SyncNativeInput<TAccountAccount>
+): Promise<
+  TReturn | WrappedInstruction<SyncNativeInstruction<TProgram, TAccountAccount>>
+> {
   throw new Error('Not implemented');
 }

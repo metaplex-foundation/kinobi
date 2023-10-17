@@ -30,7 +30,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from '../shared';
 
 // Output.
 export type SetMintAuthorityInstruction<
@@ -138,18 +144,111 @@ export type SetMintAuthorityInput<
   mintAuthority: Signer<TAccountMintAuthority>;
 };
 
-export function setMintAuthority<
+export async function setMintAuthority<
+  TReturn,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string,
   TAccountMintAuthority extends string = string
->(): WrappedInstruction<
-  SetMintAuthorityInstruction<
-    TProgram,
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<
+      SetMintAuthorityInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthority,
+        TAccountMintAuthority
+      >,
+      TReturn
+    >,
+  input: SetMintAuthorityInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountMintAuthority
   >
+): Promise<TReturn>;
+export async function setMintAuthority<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountMintAuthority extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetMintAuthorityInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    SetMintAuthorityInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority,
+      TAccountMintAuthority
+    >
+  >
+>;
+export async function setMintAuthority<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountMintAuthority extends string = string
+>(
+  input: SetMintAuthorityInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  WrappedInstruction<
+    SetMintAuthorityInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority,
+      TAccountMintAuthority
+    >
+  >
+>;
+export async function setMintAuthority<
+  TReturn,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountMintAuthority extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          SetMintAuthorityInstruction<
+            TProgram,
+            TAccountCandyMachine,
+            TAccountAuthority,
+            TAccountMintAuthority
+          >,
+          TReturn
+        >)
+    | SetMintAuthorityInput<
+        TAccountCandyMachine,
+        TAccountAuthority,
+        TAccountMintAuthority
+      >,
+  input?: SetMintAuthorityInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      SetMintAuthorityInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        TAccountAuthority,
+        TAccountMintAuthority
+      >
+    >
 > {
   throw new Error('Not implemented');
 }

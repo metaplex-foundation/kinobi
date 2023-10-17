@@ -25,7 +25,11 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
-import { WrappedInstruction } from '../shared';
+import {
+  Context,
+  CustomGeneratedInstruction,
+  WrappedInstruction,
+} from '../shared';
 
 // Output.
 export type RequestHeapFrameInstruction<
@@ -100,8 +104,40 @@ export type RequestHeapFrameInput = {
   bytes: RequestHeapFrameInstructionDataArgs['bytes'];
 };
 
-export function requestHeapFrame<
+export async function requestHeapFrame<
+  TReturn,
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
->(): WrappedInstruction<RequestHeapFrameInstruction<TProgram>> {
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomGeneratedInstruction<RequestHeapFrameInstruction<TProgram>, TReturn>,
+  input: RequestHeapFrameInput<>
+): Promise<TReturn>;
+export async function requestHeapFrame<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RequestHeapFrameInput<>
+): Promise<WrappedInstruction<RequestHeapFrameInstruction<TProgram>>>;
+export async function requestHeapFrame<
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  input: RequestHeapFrameInput<>
+): Promise<WrappedInstruction<RequestHeapFrameInstruction<TProgram>>>;
+export async function requestHeapFrame<
+  TReturn,
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomGeneratedInstruction<
+          RequestHeapFrameInstruction<TProgram>,
+          TReturn
+        >)
+    | RequestHeapFrameInput<>,
+  input?: RequestHeapFrameInput<>
+): Promise<
+  TReturn | WrappedInstruction<RequestHeapFrameInstruction<TProgram>>
+> {
   throw new Error('Not implemented');
 }
