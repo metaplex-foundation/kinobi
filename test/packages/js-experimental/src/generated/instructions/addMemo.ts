@@ -14,7 +14,6 @@ import {
 } from '@solana/codecs-data-structures';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
 
 // Output.
 export type AddMemoInstruction<

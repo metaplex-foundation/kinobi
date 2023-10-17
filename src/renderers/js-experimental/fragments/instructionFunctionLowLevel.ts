@@ -54,7 +54,7 @@ export function getInstructionFunctionLowLevelFragment(
     };
   });
 
-  return fragmentFromTemplate('instructionFunctionLowLevel.njk', {
+  const fragment = fragmentFromTemplate('instructionFunctionLowLevel.njk', {
     instruction: instructionNode,
     program: programNode,
     hasAccounts,
@@ -67,11 +67,15 @@ export function getInstructionFunctionLowLevelFragment(
     accountTypeParams: accountTypeParamsFragment.render,
   })
     .mergeImportsWith(accountTypeParamsFragment)
-    .addImports('shared', ['accountMetaWithDefault'])
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('solanaInstructions', [
-      ...(hasAccounts ? ['AccountRole'] : []),
-    ]);
+    .addImports('solanaAddresses', ['Base58EncodedAddress']);
+
+  if (hasAccounts) {
+    fragment
+      .addImports('shared', ['accountMetaWithDefault'])
+      .addImports('solanaInstructions', ['AccountRole']);
+  }
+
+  return fragment;
 }
 
 function getDefaultRole(account: nodes.InstructionAccountNode): string {

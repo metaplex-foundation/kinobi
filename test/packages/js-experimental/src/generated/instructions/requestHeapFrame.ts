@@ -25,7 +25,6 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RequestHeapFrameInstruction<
