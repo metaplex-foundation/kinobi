@@ -38,4 +38,20 @@ export type TransactionSenderSigner<TAddress extends string = string> = {
   address: Base58EncodedAddress<TAddress>;
   signAndSendTransaction: (transactions: Transaction[]) => Promise<Ed25519Signature[]>;
 }
+
+export type CustomGeneratedInstruction<
+  TInstruction extends IInstruction,
+  TReturn
+> = {
+  getGeneratedInstruction: (
+    wrappedInstruction: WrappedInstruction<TInstruction>
+  ) => Promise<TReturn>;
+};
+
+export type Context = {
+  getProgramAddress?: (program: {
+    name: string;
+    address: Base58EncodedAddress;
+  }) => Promise<Base58EncodedAddress>;
+};
 {% endblock %}

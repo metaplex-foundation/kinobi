@@ -34,6 +34,8 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import {
+  Context,
+  CustomGeneratedInstruction,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
@@ -136,22 +138,6 @@ export type TransferSolInput<
 // ====================================================================================
 // ====================================   MANUAL   ====================================
 // ====================================================================================
-
-export type CustomGeneratedInstruction<
-  TInstruction extends IInstruction,
-  TReturn
-> = {
-  getGeneratedInstruction: (
-    wrappedInstruction: WrappedInstruction<TInstruction>
-  ) => Promise<TReturn>;
-};
-
-export type Context = {
-  getProgramAddress?: (program: {
-    name: string;
-    address: Base58EncodedAddress;
-  }) => Promise<Base58EncodedAddress>;
-};
 
 export async function transferSol<
   TReturn,
