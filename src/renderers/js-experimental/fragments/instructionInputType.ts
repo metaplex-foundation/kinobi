@@ -21,10 +21,11 @@ export function getInstructionInputTypeFragment(
   const accountImports = new ImportMap();
   const accounts = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
-    const optionalSign = !!account.defaultsTo || account.isOptional ? '?' : '';
     const resolvedAccount = resolvedInputs.find(
       (input) => input.kind === 'account' && input.name === account.name
     ) as ResolvedInstructionAccount;
+    const optionalSign =
+      !!resolvedAccount.defaultsTo || resolvedAccount.isOptional ? '?' : '';
     const type = getAccountType(resolvedAccount);
     accountImports.mergeWith(type);
     return {
