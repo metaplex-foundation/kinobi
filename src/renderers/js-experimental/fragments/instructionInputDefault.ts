@@ -9,7 +9,7 @@ import { ResolvedInstructionInput } from '../../../visitors';
 import { Fragment, fragment } from './common';
 import { getValueNodeFragment } from './valueNode';
 
-export function getInstructionDefaultFragment(
+export function getInstructionInputDefaultFragment(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
   argObject: string
@@ -226,14 +226,14 @@ function renderNestedInstructionDefault(
   if (!defaultsTo) return undefined;
 
   if (input.kind === 'account') {
-    return getInstructionDefaultFragment(
+    return getInstructionInputDefaultFragment(
       { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
       optionalAccountStrategy,
       argObject
     );
   }
 
-  return getInstructionDefaultFragment(
+  return getInstructionInputDefaultFragment(
     { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
     optionalAccountStrategy,
     argObject

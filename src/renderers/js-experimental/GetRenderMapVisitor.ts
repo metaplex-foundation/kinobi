@@ -22,8 +22,8 @@ import {
   getAccountSizeHelpersFragment,
   getAccountTypeFragment,
   getInstructionDataFragment,
-  getInstructionDefaultFragment,
   getInstructionFunctionLowLevelFragment,
+  getInstructionInputDefaultFragment,
   getInstructionTypeFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
@@ -320,7 +320,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       this.resolvedInstructionInputVisitor
     ).map((input: ResolvedInstructionInput) => {
-      const renderedInput = getInstructionDefaultFragment(
+      const renderedInput = getInstructionInputDefaultFragment(
         input,
         instruction.optionalAccountStrategy,
         argObject
