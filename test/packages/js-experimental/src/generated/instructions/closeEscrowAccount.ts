@@ -200,12 +200,20 @@ export type CloseEscrowAccountInput<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string
 > = {
+  /** Escrow account */
   escrow: Base58EncodedAddress<TAccountEscrow>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Mint account */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Token account */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** Edition account */
   edition: Base58EncodedAddress<TAccountEdition>;
+  /** Wallet paying for the transaction and new account */
   payer: Signer<TAccountPayer>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Instructions sysvar account */
   sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
 };

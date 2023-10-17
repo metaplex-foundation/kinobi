@@ -202,12 +202,20 @@ export type SetAndVerifyCollectionInput<
   TAccountCollectionMasterEditionAccount extends string,
   TAccountCollectionAuthorityRecord extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Collection Update authority */
   collectionAuthority: Signer<TAccountCollectionAuthority>;
+  /** Payer */
   payer: Signer<TAccountPayer>;
+  /** Update Authority of Collection NFT and NFT */
   updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  /** Mint of the Collection */
   collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
   collection: Base58EncodedAddress<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
   collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
+  /** Collection Authority Record PDA */
   collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
 };

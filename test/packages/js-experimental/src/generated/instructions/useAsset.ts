@@ -290,15 +290,26 @@ export type UseAssetInput<
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Token Account Of NFT */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** Mint of the Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Use authority or current owner of the asset */
   useAuthority: Signer<TAccountUseAuthority>;
+  /** Owner */
   owner: Base58EncodedAddress<TAccountOwner>;
+  /** SPL Token program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  /** Associated Token program */
   ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
   useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  /** Token Authorization Rules account */
   authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
   authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
 };

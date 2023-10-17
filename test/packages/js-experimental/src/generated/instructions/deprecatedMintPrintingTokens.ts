@@ -216,11 +216,18 @@ export type DeprecatedMintPrintingTokensInput<
   TAccountTokenProgram extends string,
   TAccountRent extends string
 > = {
+  /** Destination account */
   destination: Base58EncodedAddress<TAccountDestination>;
+  /** Printing mint */
   printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  /** Update authority */
   updateAuthority: Signer<TAccountUpdateAuthority>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** Rent */
   rent: Base58EncodedAddress<TAccountRent>;
 };

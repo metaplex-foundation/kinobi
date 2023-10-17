@@ -171,7 +171,10 @@ export type DeprecatedSetReservationListInput<
   TAccountReservationList extends string,
   TAccountResource extends string
 > = {
+  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Base58EncodedAddress<TAccountReservationList>;
+  /** The resource you tied the reservation list too */
   resource: Signer<TAccountResource>;
 };

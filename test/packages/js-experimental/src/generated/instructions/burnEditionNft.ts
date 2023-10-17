@@ -237,14 +237,24 @@ export type BurnEditionNftInput<
   TAccountEditionMarkerAccount extends string,
   TAccountSplTokenProgram extends string
 > = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** NFT owner */
   owner: Signer<TAccountOwner>;
+  /** Mint of the print edition NFT */
   printEditionMint: Base58EncodedAddress<TAccountPrintEditionMint>;
+  /** Mint of the original/master NFT */
   masterEditionMint: Base58EncodedAddress<TAccountMasterEditionMint>;
+  /** Token account the print edition NFT is in */
   printEditionTokenAccount: Base58EncodedAddress<TAccountPrintEditionTokenAccount>;
+  /** Token account the Master Edition NFT is in */
   masterEditionTokenAccount: Base58EncodedAddress<TAccountMasterEditionTokenAccount>;
+  /** MasterEdition2 of the original NFT */
   masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+  /** Print Edition account of the NFT */
   printEditionAccount: Base58EncodedAddress<TAccountPrintEditionAccount>;
+  /** Edition Marker PDA of the NFT */
   editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
+  /** SPL Token Program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
 };

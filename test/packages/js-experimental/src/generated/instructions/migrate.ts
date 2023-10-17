@@ -258,14 +258,24 @@ export type MigrateInput<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRules extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Master edition account */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** Token account */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** Mint account */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Update authority */
   updateAuthority: Signer<TAccountUpdateAuthority>;
+  /** Collection metadata account */
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  /** Token Program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Instruction sysvar account */
   sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  /** Token Authorization Rules account */
   authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
 };

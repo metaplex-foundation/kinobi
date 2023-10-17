@@ -169,10 +169,16 @@ export type VerifyCollectionInput<
   TAccountCollection extends string,
   TAccountCollectionMasterEditionAccount extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Collection Update authority */
   collectionAuthority: Signer<TAccountCollectionAuthority>;
+  /** payer */
   payer: Signer<TAccountPayer>;
+  /** Mint of the Collection */
   collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
   collection: Base58EncodedAddress<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
   collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
 };

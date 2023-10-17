@@ -129,7 +129,10 @@ export type ConvertMasterEditionV1ToV2Input<
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string
 > = {
+  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** One time authorization mint */
   oneTimeAuth: Base58EncodedAddress<TAccountOneTimeAuth>;
+  /** Printing mint */
   printingMint: Base58EncodedAddress<TAccountPrintingMint>;
 };

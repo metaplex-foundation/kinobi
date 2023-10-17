@@ -190,11 +190,18 @@ export type BurnNftInput<
   TAccountSplTokenProgram extends string,
   TAccountCollectionMetadata extends string
 > = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** NFT owner */
   owner: Signer<TAccountOwner>;
+  /** Mint of the NFT */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Token account to close */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** MasterEdition2 of the NFT */
   masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+  /** SPL Token Program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  /** Metadata of the Collection */
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
 };

@@ -147,8 +147,12 @@ export type SetTokenStandardInput<
   TAccountMint extends string,
   TAccountEdition extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Metadata update authority */
   updateAuthority: Signer<TAccountUpdateAuthority>;
+  /** Mint account */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Edition account */
   edition: Base58EncodedAddress<TAccountEdition>;
 };

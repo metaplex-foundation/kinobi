@@ -243,13 +243,22 @@ export type BurnInput<
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string
 > = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Asset owner */
   owner: Signer<TAccountOwner>;
+  /** Mint of token asset */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Token account to close */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** MasterEdition of the asset */
   masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+  /** SPL Token Program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  /** Metadata of the Collection */
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  /** Token Authorization Rules account */
   authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
   authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
 };

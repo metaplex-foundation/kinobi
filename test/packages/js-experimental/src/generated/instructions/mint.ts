@@ -304,16 +304,28 @@ export type MintInput<
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string
 > = {
+  /** Token account */
   token: Base58EncodedAddress<TAccountToken>;
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Master Edition account */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** Mint of token asset */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Payer */
   payer: Signer<TAccountPayer>;
+  /** (Mint or Update) authority */
   authority: Signer<TAccountAuthority>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Instructions sysvar account */
   sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  /** SPL Token program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  /** SPL Associated Token Account program */
   splAtaProgram: Base58EncodedAddress<TAccountSplAtaProgram>;
+  /** Token Authorization Rules program */
   authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
   authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
 };

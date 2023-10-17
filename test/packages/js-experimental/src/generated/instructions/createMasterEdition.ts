@@ -244,13 +244,22 @@ export type CreateMasterEditionInput<
   TAccountSystemProgram extends string,
   TAccountRent extends string
 > = {
+  /** Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition'] */
   edition: Base58EncodedAddress<TAccountEdition>;
+  /** Metadata mint */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Update authority */
   updateAuthority: Signer<TAccountUpdateAuthority>;
+  /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: Signer<TAccountMintAuthority>;
+  /** payer */
   payer: Signer<TAccountPayer>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
 };

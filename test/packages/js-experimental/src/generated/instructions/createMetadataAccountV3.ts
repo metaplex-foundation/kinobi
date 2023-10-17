@@ -231,11 +231,18 @@ export type CreateMetadataAccountV3Input<
   TAccountSystemProgram extends string,
   TAccountRent extends string
 > = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Mint of token asset */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Mint authority */
   mintAuthority: Signer<TAccountMintAuthority>;
+  /** payer */
   payer: Signer<TAccountPayer>;
+  /** update authority info */
   updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
 };

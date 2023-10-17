@@ -356,21 +356,38 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   TAccountSystemProgram extends string,
   TAccountRent extends string
 > = {
+  /** New Metadata key (pda of ['metadata', program id, mint id]) */
   newMetadata: Base58EncodedAddress<TAccountNewMetadata>;
+  /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
   newEdition: Base58EncodedAddress<TAccountNewEdition>;
+  /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'] */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   newMint: Base58EncodedAddress<TAccountNewMint>;
+  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
   editionMarkPda: Base58EncodedAddress<TAccountEditionMarkPda>;
+  /** Mint authority of new mint */
   newMintAuthority: Signer<TAccountNewMintAuthority>;
+  /** payer */
   payer: Signer<TAccountPayer>;
+  /** Vault authority */
   vaultAuthority: Signer<TAccountVaultAuthority>;
+  /** Safety deposit token store account */
   safetyDepositStore: Base58EncodedAddress<TAccountSafetyDepositStore>;
+  /** Safety deposit box */
   safetyDepositBox: Base58EncodedAddress<TAccountSafetyDepositBox>;
+  /** Vault */
   vault: Base58EncodedAddress<TAccountVault>;
+  /** Update authority info for new metadata */
   newMetadataUpdateAuthority: Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>;
+  /** Master record metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** Token vault program */
   tokenVaultProgram: Base58EncodedAddress<TAccountTokenVaultProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
 };

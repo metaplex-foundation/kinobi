@@ -169,8 +169,12 @@ export type SetCollectionSizeInput<
   TAccountCollectionMint extends string,
   TAccountCollectionAuthorityRecord extends string
 > = {
+  /** Collection Metadata account */
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  /** Collection Update authority */
   collectionAuthority: Signer<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
   collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  /** Collection Authority Record PDA */
   collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
 };

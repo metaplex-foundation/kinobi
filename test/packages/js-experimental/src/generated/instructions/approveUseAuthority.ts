@@ -258,15 +258,26 @@ export type ApproveUseAuthorityInput<
   TAccountSystemProgram extends string,
   TAccountRent extends string
 > = {
+  /** Use Authority Record PDA */
   useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  /** Owner */
   owner: Signer<TAccountOwner>;
+  /** Payer */
   payer: Signer<TAccountPayer>;
+  /** A Use Authority */
   user: Base58EncodedAddress<TAccountUser>;
+  /** Owned Token Account Of Mint */
   ownerTokenAccount: Base58EncodedAddress<TAccountOwnerTokenAccount>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Mint of Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Program As Signer (Burner) */
   burner: Base58EncodedAddress<TAccountBurner>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
 };

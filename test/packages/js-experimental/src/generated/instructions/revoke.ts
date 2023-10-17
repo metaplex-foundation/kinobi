@@ -310,17 +310,30 @@ export type RevokeInput<
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string
 > = {
+  /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
   delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  /** Owner of the delegated account */
   delegate: Base58EncodedAddress<TAccountDelegate>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Master Edition account */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** Mint of metadata */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Owned Token Account of mint */
   token: Base58EncodedAddress<TAccountToken>;
+  /** Authority to approve the delegation */
   authority: Signer<TAccountAuthority>;
+  /** Payer */
   payer: Signer<TAccountPayer>;
+  /** System Program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Instructions sysvar account */
   sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  /** SPL Token Program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  /** Token Authorization Rules Program */
   authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
   authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
 };

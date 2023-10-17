@@ -219,13 +219,22 @@ export type RevokeUseAuthorityInput<
   TAccountSystemProgram extends string,
   TAccountRent extends string
 > = {
+  /** Use Authority Record PDA */
   useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  /** Owner */
   owner: Signer<TAccountOwner>;
+  /** A Use Authority */
   user: Base58EncodedAddress<TAccountUser>;
+  /** Owned Token Account Of Mint */
   ownerTokenAccount: Base58EncodedAddress<TAccountOwnerTokenAccount>;
+  /** Mint of Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
 };

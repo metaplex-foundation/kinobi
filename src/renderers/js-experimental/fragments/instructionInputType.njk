@@ -11,6 +11,9 @@ export type {{ instruction.name | pascalCase }}Input
 {% endif %}
 = {
   {% for account in accounts %}
+    {% if account.docs.length > 0 %}
+      {{ macros.docblock(account.docs) }}
+    {% endif %}
     {{ account.name | camelCase }}{{ optionalSign }}: {{ account.type }},
   {% endfor %}
 }

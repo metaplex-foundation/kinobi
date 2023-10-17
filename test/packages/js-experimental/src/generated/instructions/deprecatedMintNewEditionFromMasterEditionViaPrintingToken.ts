@@ -327,20 +327,36 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   TAccountRent extends string,
   TAccountReservationList extends string
 > = {
+  /** New Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
   edition: Base58EncodedAddress<TAccountEdition>;
+  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Mint authority of new mint */
   mintAuthority: Signer<TAccountMintAuthority>;
+  /** Printing Mint of master record edition */
   printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  /** Token account containing Printing mint token to be transferred */
   masterTokenAccount: Base58EncodedAddress<TAccountMasterTokenAccount>;
+  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
   editionMarker: Base58EncodedAddress<TAccountEditionMarker>;
+  /** Burn authority for this token */
   burnAuthority: Signer<TAccountBurnAuthority>;
+  /** payer */
   payer: Signer<TAccountPayer>;
+  /** update authority info for new metadata account */
   masterUpdateAuthority: Base58EncodedAddress<TAccountMasterUpdateAuthority>;
+  /** Master record metadata account */
   masterMetadata: Base58EncodedAddress<TAccountMasterMetadata>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
+  /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
   reservationList: Base58EncodedAddress<TAccountReservationList>;
 };

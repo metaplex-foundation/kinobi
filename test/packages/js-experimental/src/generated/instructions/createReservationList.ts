@@ -157,12 +157,20 @@ export type CreateReservationListInput<
   TAccountSystemProgram extends string,
   TAccountRent extends string
 > = {
+  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Base58EncodedAddress<TAccountReservationList>;
+  /** Payer */
   payer: Signer<TAccountPayer>;
+  /** Update authority */
   updateAuthority: Signer<TAccountUpdateAuthority>;
+  /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
   resource: Base58EncodedAddress<TAccountResource>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
 };

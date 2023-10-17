@@ -273,13 +273,22 @@ export type CreateV2Input<
   TAccountSysvarInstructions extends string,
   TAccountSplTokenProgram extends string
 > = {
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** Mint of token asset */
   mint: Base58EncodedAddress<TAccountMint> | Signer<TAccountMint>;
+  /** Mint authority */
   mintAuthority: Signer<TAccountMintAuthority>;
+  /** Payer */
   payer: Signer<TAccountPayer>;
+  /** update authority info */
   updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Instructions sysvar account */
   sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  /** SPL Token program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
 };

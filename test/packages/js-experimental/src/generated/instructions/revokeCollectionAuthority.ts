@@ -161,9 +161,14 @@ export type RevokeCollectionAuthorityInput<
   TAccountMetadata extends string,
   TAccountMint extends string
 > = {
+  /** Collection Authority Record PDA */
   collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  /** Delegated Collection Authority */
   delegateAuthority: Base58EncodedAddress<TAccountDelegateAuthority>;
+  /** Update Authority, or Delegated Authority, of Collection NFT */
   revokeAuthority: Signer<TAccountRevokeAuthority>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Mint of Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
 };

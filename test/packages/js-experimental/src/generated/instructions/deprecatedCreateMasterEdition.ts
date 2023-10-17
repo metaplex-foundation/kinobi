@@ -309,17 +309,30 @@ export type DeprecatedCreateMasterEditionInput<
   TAccountRent extends string,
   TAccountOneTimePrintingAuthorizationMintAuthority extends string
 > = {
+  /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
   edition: Base58EncodedAddress<TAccountEdition>;
+  /** Metadata mint */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Printing mint - A mint you control that can mint tokens that can be exchanged for limited editions of your master edition via the MintNewEditionFromMasterEditionViaToken endpoint */
   printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  /** One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token. */
   oneTimePrintingAuthorizationMint: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>;
+  /** Current Update authority key */
   updateAuthority: Signer<TAccountUpdateAuthority>;
+  /** Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
   printingMintAuthority: Signer<TAccountPrintingMintAuthority>;
+  /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: Signer<TAccountMintAuthority>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** payer */
   payer: Signer<TAccountPayer>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
+  /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
   oneTimePrintingAuthorizationMintAuthority: Signer<TAccountOneTimePrintingAuthorizationMintAuthority>;
 };

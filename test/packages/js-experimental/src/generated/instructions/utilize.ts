@@ -285,15 +285,26 @@ export type UtilizeInput<
   TAccountUseAuthorityRecord extends string,
   TAccountBurner extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Token Account Of NFT */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** Mint of the Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** A Use Authority / Can be the current Owner of the NFT */
   useAuthority: Signer<TAccountUseAuthority>;
+  /** Owner */
   owner: Base58EncodedAddress<TAccountOwner>;
+  /** Token program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  /** Associated Token program */
   ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Rent info */
   rent: Base58EncodedAddress<TAccountRent>;
+  /** Use Authority Record PDA If present the program Assumes a delegated use authority */
   useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  /** Program As Signer (Burner) */
   burner: Base58EncodedAddress<TAccountBurner>;
 };

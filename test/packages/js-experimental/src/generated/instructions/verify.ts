@@ -184,9 +184,14 @@ export type VerifyInput<
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Collection Update authority */
   collectionAuthority: Signer<TAccountCollectionAuthority>;
+  /** payer */
   payer: Signer<TAccountPayer>;
+  /** Token Authorization Rules account */
   authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
   authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
 };

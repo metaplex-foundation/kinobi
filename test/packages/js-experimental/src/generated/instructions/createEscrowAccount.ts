@@ -219,13 +219,22 @@ export type CreateEscrowAccountInput<
   TAccountSysvarInstructions extends string,
   TAccountAuthority extends string
 > = {
+  /** Escrow account */
   escrow: Base58EncodedAddress<TAccountEscrow>;
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Mint account */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Token account of the token */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** Edition account */
   edition: Base58EncodedAddress<TAccountEdition>;
+  /** Wallet paying for the transaction and new account */
   payer: Signer<TAccountPayer>;
+  /** System program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Instructions sysvar account */
   sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  /** Authority/creator of the escrow account */
   authority: Signer<TAccountAuthority>;
 };

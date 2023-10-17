@@ -346,19 +346,34 @@ export type TransferInput<
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string
 > = {
+  /** Transfer authority (token or delegate owner) */
   authority: Signer<TAccountAuthority>;
+  /** Delegate record PDA */
   delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  /** Token account */
   token: Base58EncodedAddress<TAccountToken>;
+  /** Token account owner */
   tokenOwner: Base58EncodedAddress<TAccountTokenOwner>;
+  /** Destination token account */
   destination: Base58EncodedAddress<TAccountDestination>;
+  /** Destination token account owner */
   destinationOwner: Base58EncodedAddress<TAccountDestinationOwner>;
+  /** Mint of token asset */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Master Edition of token asset */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  /** SPL Token Program */
   splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  /** SPL Associated Token Account program */
   splAtaProgram: Base58EncodedAddress<TAccountSplAtaProgram>;
+  /** System Program */
   systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  /** Instructions sysvar account */
   sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  /** Token Authorization Rules Program */
   authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
   authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
 };

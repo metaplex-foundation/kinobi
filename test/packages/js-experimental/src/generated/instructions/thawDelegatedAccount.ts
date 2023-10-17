@@ -159,9 +159,14 @@ export type ThawDelegatedAccountInput<
   TAccountMint extends string,
   TAccountTokenProgram extends string
 > = {
+  /** Delegate */
   delegate: Signer<TAccountDelegate>;
+  /** Token account to thaw */
   tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  /** Edition */
   edition: Base58EncodedAddress<TAccountEdition>;
+  /** Token mint */
   mint: Base58EncodedAddress<TAccountMint>;
+  /** Token Program */
   tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
 };

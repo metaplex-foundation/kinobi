@@ -119,6 +119,8 @@ export type RemoveCreatorVerificationInput<
   TAccountMetadata extends string,
   TAccountCreator extends string
 > = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Creator */
   creator: Signer<TAccountCreator>;
 };

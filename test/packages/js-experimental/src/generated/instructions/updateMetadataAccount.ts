@@ -203,6 +203,8 @@ export type UpdateMetadataAccountInput<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string
 > = {
+  /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Update authority key */
   updateAuthority: Signer<TAccountUpdateAuthority>;
 };

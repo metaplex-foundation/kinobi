@@ -133,7 +133,10 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   TAccountOwner extends string,
   TAccountToken extends string
 > = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  /** Owner on the token account */
   owner: Signer<TAccountOwner>;
+  /** Account containing tokens from the metadata's mint */
   token: Base58EncodedAddress<TAccountToken>;
 };
