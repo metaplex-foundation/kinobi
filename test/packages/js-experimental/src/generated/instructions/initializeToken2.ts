@@ -148,5 +148,7 @@ export type InitializeToken2Input<
 > = {
   account: Base58EncodedAddress<TAccountAccount>;
   mint: Base58EncodedAddress<TAccountMint>;
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
+  discriminator: TODO;
+  owner: TODO;
 };

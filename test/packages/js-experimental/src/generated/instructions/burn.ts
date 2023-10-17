@@ -254,11 +254,13 @@ export type BurnInput<
   /** MasterEdition of the asset */
   masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
   /** SPL Token Program */
-  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
   /** Metadata of the Collection */
-  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionMetadata?: Base58EncodedAddress<TAccountCollectionMetadata>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  discriminator: TODO;
+  burnArgs: TODO;
 };

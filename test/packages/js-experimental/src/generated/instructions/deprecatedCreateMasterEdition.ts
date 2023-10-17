@@ -326,13 +326,15 @@ export type DeprecatedCreateMasterEditionInput<
   /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** Token program */
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
   /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
   oneTimePrintingAuthorizationMintAuthority: Signer<TAccountOneTimePrintingAuthorizationMintAuthority>;
+  discriminator: TODO;
+  createMasterEditionArgs: TODO;
 };

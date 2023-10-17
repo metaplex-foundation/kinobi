@@ -141,5 +141,7 @@ export type BurnTokenInput<
 > = {
   account: Base58EncodedAddress<TAccountAccount>;
   mint: Base58EncodedAddress<TAccountMint>;
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
+  discriminator: TODO;
+  amount: TODO;
 };

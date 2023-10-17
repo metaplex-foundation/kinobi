@@ -1,12 +1,11 @@
 import * as nodes from '../../../nodes';
-import { Visitor, visit } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
 import { Fragment, fragment } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getInstructionDataFragment(
   instructionNode: nodes.InstructionNode,
-  typeManifestVisitor: Visitor<TypeManifest>
+  dataArgsManifest: TypeManifest
 ): Fragment {
   if (
     instructionNode.dataArgs.struct.fields.length === 0 ||
@@ -15,6 +14,8 @@ export function getInstructionDataFragment(
     return fragment('');
   }
 
-  const manifest = visit(instructionNode.dataArgs, typeManifestVisitor);
-  return getTypeWithCodecFragment(instructionNode.dataArgs.name, manifest);
+  return getTypeWithCodecFragment(
+    instructionNode.dataArgs.name,
+    dataArgsManifest
+  );
 }

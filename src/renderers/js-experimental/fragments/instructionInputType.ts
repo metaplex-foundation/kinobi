@@ -6,12 +6,15 @@ import {
   ResolvedInstructionInput,
 } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
+import { TypeManifest } from '../TypeManifest';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionInputTypeFragment(
   instructionNode: nodes.InstructionNode,
   resolvedInputs: ResolvedInstructionInput[],
   renamedArgs: Map<string, string>,
+  dataArgsManifest: TypeManifest,
+  extraArgsManifest: TypeManifest,
   programNode: nodes.ProgramNode
 ): Fragment {
   // Accounts.
@@ -42,10 +45,14 @@ export function getInstructionInputTypeFragment(
       : instructionNode.extraArgs.struct.fields),
   ];
   const args = rawArgs.map((arg) => {
+    const renamedName = renamedArgs.get(arg.name) ?? arg.name;
     const resolvedArg = resolvedInputs.find(
       (input) => input.kind === 'arg' && input.name === arg.name
     ) as ResolvedInstructionArg;
-    return { ...resolvedArg };
+    return {
+      ...resolvedArg,
+      renamedName,
+    };
   });
 
   return fragmentFromTemplate('instructionInputType.njk', {

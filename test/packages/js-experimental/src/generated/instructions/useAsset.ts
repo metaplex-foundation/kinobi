@@ -301,15 +301,17 @@ export type UseAssetInput<
   /** Owner */
   owner: Base58EncodedAddress<TAccountOwner>;
   /** SPL Token program */
-  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
   /** Associated Token program */
-  ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+  ataProgram?: Base58EncodedAddress<TAccountAtaProgram>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
-  useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  useAuthorityRecord?: Base58EncodedAddress<TAccountUseAuthorityRecord>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  discriminator: TODO;
+  useAssetArgs: TODO;
 };

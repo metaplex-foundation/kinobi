@@ -346,17 +346,18 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   /** Burn authority for this token */
   burnAuthority: Signer<TAccountBurnAuthority>;
   /** payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** update authority info for new metadata account */
   masterUpdateAuthority: Base58EncodedAddress<TAccountMasterUpdateAuthority>;
   /** Master record metadata account */
   masterMetadata: Base58EncodedAddress<TAccountMasterMetadata>;
   /** Token program */
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
   /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
-  reservationList: Base58EncodedAddress<TAccountReservationList>;
+  reservationList?: Base58EncodedAddress<TAccountReservationList>;
+  discriminator: TODO;
 };

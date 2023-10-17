@@ -119,6 +119,11 @@ export function getDummyInstructionDataCodec(): Codec<
   );
 }
 
+export type DummyInstructionExtraArgs = {
+  identityArg: Base58EncodedAddress;
+  proof: Array<Base58EncodedAddress>;
+};
+
 export function dummyInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountEdition extends string | IAccountMeta<string> = string,
@@ -245,14 +250,17 @@ export type DummyInput<
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string
 > = {
-  edition: Signer<TAccountEdition>;
-  mint: Base58EncodedAddress<TAccountMint>;
+  edition?: Signer<TAccountEdition>;
+  mint?: Base58EncodedAddress<TAccountMint>;
   updateAuthority: Signer<TAccountUpdateAuthority>;
-  mintAuthority: Signer<TAccountMintAuthority>;
-  payer: Signer<TAccountPayer>;
-  foo: Base58EncodedAddress<TAccountFoo>;
-  bar: Signer<TAccountBar>;
-  delegate: Signer<TAccountDelegate>;
-  delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
-  tokenOrAtaProgram: Base58EncodedAddress<TAccountTokenOrAtaProgram>;
+  mintAuthority?: Signer<TAccountMintAuthority>;
+  payer?: Signer<TAccountPayer>;
+  foo?: Base58EncodedAddress<TAccountFoo>;
+  bar?: Signer<TAccountBar>;
+  delegate?: Signer<TAccountDelegate>;
+  delegateRecord?: Base58EncodedAddress<TAccountDelegateRecord>;
+  tokenOrAtaProgram?: Base58EncodedAddress<TAccountTokenOrAtaProgram>;
+  discriminator: TODO;
+  identityArg: TODO;
+  proof: TODO;
 };

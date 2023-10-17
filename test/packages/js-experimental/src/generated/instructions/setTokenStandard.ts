@@ -154,5 +154,6 @@ export type SetTokenStandardInput<
   /** Mint account */
   mint: Base58EncodedAddress<TAccountMint>;
   /** Edition account */
-  edition: Base58EncodedAddress<TAccountEdition>;
+  edition?: Base58EncodedAddress<TAccountEdition>;
+  discriminator: TODO;
 };

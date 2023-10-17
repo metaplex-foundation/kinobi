@@ -309,23 +309,25 @@ export type MintInput<
   /** Metadata account key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Master Edition account */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition?: Base58EncodedAddress<TAccountMasterEdition>;
   /** Mint of token asset */
   mint: Base58EncodedAddress<TAccountMint>;
   /** Payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** (Mint or Update) authority */
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** SPL Token program */
-  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
   /** SPL Associated Token Account program */
-  splAtaProgram: Base58EncodedAddress<TAccountSplAtaProgram>;
+  splAtaProgram?: Base58EncodedAddress<TAccountSplAtaProgram>;
   /** Token Authorization Rules program */
-  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  discriminator: TODO;
+  mintArgs: TODO;
 };

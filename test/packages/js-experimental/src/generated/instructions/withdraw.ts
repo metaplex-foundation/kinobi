@@ -116,5 +116,6 @@ export type WithdrawInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
+  discriminator: TODO;
 };

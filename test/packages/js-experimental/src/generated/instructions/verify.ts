@@ -189,9 +189,11 @@ export type VerifyInput<
   /** Collection Update authority */
   collectionAuthority: Signer<TAccountCollectionAuthority>;
   /** payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  discriminator: TODO;
+  verifyArgs: TODO;
 };

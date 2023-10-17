@@ -99,4 +99,5 @@ export function initializeImmutableOwnerInstruction<
 // Input.
 export type InitializeImmutableOwnerInput<TAccountAccount extends string> = {
   account: Base58EncodedAddress<TAccountAccount>;
+  discriminator: TODO;
 };

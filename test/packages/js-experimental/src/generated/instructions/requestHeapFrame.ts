@@ -95,4 +95,7 @@ export function requestHeapFrameInstruction<
 }
 
 // Input.
-export type RequestHeapFrameInput = {};
+export type RequestHeapFrameInput = {
+  discriminator: TODO;
+  bytes: TODO;
+};

@@ -428,23 +428,37 @@ export type UpdateV1Input<
   TAccountAuthorizationRules extends string
 > = {
   /** Update authority or delegate */
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
   /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Master Edition account */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition?: Base58EncodedAddress<TAccountMasterEdition>;
   /** Mint account */
   mint: Base58EncodedAddress<TAccountMint>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** System program */
-  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** Token account */
-  token: Base58EncodedAddress<TAccountToken>;
+  token?: Base58EncodedAddress<TAccountToken>;
   /** Delegate record PDA */
-  delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  delegateRecord?: Base58EncodedAddress<TAccountDelegateRecord>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  discriminator: TODO;
+  updateV1Discriminator: TODO;
+  authorizationData: TODO;
+  newUpdateAuthority: TODO;
+  data: TODO;
+  primarySaleHappened: TODO;
+  isMutable: TODO;
+  tokenStandard: TODO;
+  collection: TODO;
+  uses: TODO;
+  collectionDetails: TODO;
+  programmableConfig: TODO;
+  delegateState: TODO;
+  authorityType: TODO;
 };

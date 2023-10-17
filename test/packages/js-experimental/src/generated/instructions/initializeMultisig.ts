@@ -126,5 +126,7 @@ export type InitializeMultisigInput<
   TAccountRent extends string
 > = {
   multisig: Base58EncodedAddress<TAccountMultisig>;
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
+  discriminator: TODO;
+  m: TODO;
 };

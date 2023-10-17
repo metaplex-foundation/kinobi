@@ -227,7 +227,9 @@ export type DeprecatedMintPrintingTokensInput<
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
   /** Token program */
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** Rent */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
+  discriminator: TODO;
+  mintPrintingTokensViaTokenArgs: TODO;
 };

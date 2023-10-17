@@ -271,11 +271,13 @@ export type MigrateInput<
   /** Collection metadata account */
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
   /** Token Program */
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Instruction sysvar account */
-  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  discriminator: TODO;
+  migrateArgs: TODO;
 };

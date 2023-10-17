@@ -126,4 +126,6 @@ export type TransferSolInput<
 > = {
   source: Signer<TAccountSource>;
   destination: Base58EncodedAddress<TAccountDestination>;
+  discriminator: TODO;
+  amount: TODO;
 };

@@ -281,13 +281,15 @@ export type InitializeInput<
 > = {
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
   authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
-  authority: Base58EncodedAddress<TAccountAuthority>;
-  payer: Signer<TAccountPayer>;
+  authority?: Base58EncodedAddress<TAccountAuthority>;
+  payer?: Signer<TAccountPayer>;
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
   collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
   collectionMasterEdition: Base58EncodedAddress<TAccountCollectionMasterEdition>;
   collectionUpdateAuthority: Signer<TAccountCollectionUpdateAuthority>;
   collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
-  tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  discriminator: TODO;
+  data: TODO;
 };

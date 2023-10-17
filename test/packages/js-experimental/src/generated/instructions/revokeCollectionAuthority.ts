@@ -171,4 +171,5 @@ export type RevokeCollectionAuthorityInput<
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Mint of Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
+  discriminator: TODO;
 };

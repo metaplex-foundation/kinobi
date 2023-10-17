@@ -224,11 +224,14 @@ export type CreateMetadataAccountV2Input<
   /** Mint authority */
   mintAuthority: Signer<TAccountMintAuthority>;
   /** payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** update authority info */
   updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
+  discriminator: TODO;
+  data: TODO;
+  isMutable: TODO;
 };

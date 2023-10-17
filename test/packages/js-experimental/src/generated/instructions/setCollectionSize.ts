@@ -176,5 +176,7 @@ export type SetCollectionSizeInput<
   /** Mint of the Collection */
   collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  discriminator: TODO;
+  setCollectionSizeArgs: TODO;
 };

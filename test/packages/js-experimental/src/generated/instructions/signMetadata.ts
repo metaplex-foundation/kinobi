@@ -113,4 +113,5 @@ export type SignMetadataInput<
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Creator */
   creator: Signer<TAccountCreator>;
+  discriminator: TODO;
 };

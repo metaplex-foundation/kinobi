@@ -307,9 +307,9 @@ export type SetCollectionInput<
   TAccountSystemProgram extends string
 > = {
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
   authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
   collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
@@ -318,6 +318,7 @@ export type SetCollectionInput<
   newCollectionMint: Base58EncodedAddress<TAccountNewCollectionMint>;
   newCollectionMasterEdition: Base58EncodedAddress<TAccountNewCollectionMasterEdition>;
   newCollectionAuthorityRecord: Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>;
-  tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  discriminator: TODO;
 };

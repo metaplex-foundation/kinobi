@@ -139,4 +139,5 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   owner: Signer<TAccountOwner>;
   /** Account containing tokens from the metadata's mint */
   token: Base58EncodedAddress<TAccountToken>;
+  discriminator: TODO;
 };

@@ -222,13 +222,14 @@ export type ApproveCollectionAuthorityInput<
   /** Update Authority of Collection NFT */
   updateAuthority: Signer<TAccountUpdateAuthority>;
   /** Payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** Collection Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Mint of Collection Metadata */
   mint: Base58EncodedAddress<TAccountMint>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
+  discriminator: TODO;
 };

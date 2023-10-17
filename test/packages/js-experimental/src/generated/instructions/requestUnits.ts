@@ -94,4 +94,8 @@ export function requestUnitsInstruction<
 }
 
 // Input.
-export type RequestUnitsInput = {};
+export type RequestUnitsInput = {
+  discriminator: TODO;
+  units: TODO;
+  additionalFee: TODO;
+};

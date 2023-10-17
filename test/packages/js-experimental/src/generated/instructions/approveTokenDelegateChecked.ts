@@ -165,4 +165,7 @@ export type ApproveTokenDelegateCheckedInput<
   mint: Base58EncodedAddress<TAccountMint>;
   delegate: Base58EncodedAddress<TAccountDelegate>;
   owner: Signer<TAccountOwner>;
+  discriminator: TODO;
+  amount: TODO;
+  decimals: TODO;
 };

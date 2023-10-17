@@ -213,7 +213,7 @@ export type SetAndVerifySizedCollectionItemInput<
   /** Collection Update authority */
   collectionAuthority: Signer<TAccountCollectionAuthority>;
   /** payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** Update Authority of Collection NFT and NFT */
   updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
   /** Mint of the Collection */
@@ -223,5 +223,6 @@ export type SetAndVerifySizedCollectionItemInput<
   /** MasterEdition2 Account of the Collection Token */
   collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  discriminator: TODO;
 };

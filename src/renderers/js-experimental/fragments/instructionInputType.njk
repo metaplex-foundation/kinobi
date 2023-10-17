@@ -14,6 +14,9 @@ export type {{ instruction.name | pascalCase }}Input
     {% if account.docs.length > 0 %}
       {{ macros.docblock(account.docs) }}
     {% endif %}
-    {{ account.name | camelCase }}{{ optionalSign }}: {{ account.type }},
+    {{ account.name | camelCase }}{{ account.optionalSign }}: {{ account.type }},
+  {% endfor %}
+  {% for arg in args %}
+    {{ arg.renamedName | camelCase }}{{ arg.optionalSign }}: TODO,
   {% endfor %}
 }

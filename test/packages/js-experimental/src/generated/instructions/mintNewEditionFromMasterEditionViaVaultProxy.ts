@@ -369,7 +369,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   /** Mint authority of new mint */
   newMintAuthority: Signer<TAccountNewMintAuthority>;
   /** payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** Vault authority */
   vaultAuthority: Signer<TAccountVaultAuthority>;
   /** Safety deposit token store account */
@@ -383,11 +383,13 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   /** Master record metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Token program */
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** Token vault program */
   tokenVaultProgram: Base58EncodedAddress<TAccountTokenVaultProgram>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
+  discriminator: TODO;
+  mintNewEditionFromMasterEditionViaTokenArgs: TODO;
 };

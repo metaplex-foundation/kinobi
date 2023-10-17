@@ -128,4 +128,5 @@ export type FreezeTokenInput<
   account: Base58EncodedAddress<TAccountAccount>;
   mint: Base58EncodedAddress<TAccountMint>;
   owner: Signer<TAccountOwner>;
+  discriminator: TODO;
 };

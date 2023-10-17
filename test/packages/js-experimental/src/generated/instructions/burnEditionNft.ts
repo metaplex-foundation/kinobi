@@ -256,5 +256,6 @@ export type BurnEditionNftInput<
   /** Edition Marker PDA of the NFT */
   editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
   /** SPL Token Program */
-  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
+  discriminator: TODO;
 };

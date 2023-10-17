@@ -391,30 +391,34 @@ export type ValidateInput<
   TAccountOptRuleNonsigner5 extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSet: Base58EncodedAddress<TAccountRuleSet>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
-  optRuleSigner1:
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  optRuleSigner1?:
     | Base58EncodedAddress<TAccountOptRuleSigner1>
     | Signer<TAccountOptRuleSigner1>;
   /** Optional rule validation signer 2 */
-  optRuleSigner2: Signer<TAccountOptRuleSigner2>;
+  optRuleSigner2?: Signer<TAccountOptRuleSigner2>;
   /** Optional rule validation signer 3 */
-  optRuleSigner3: Signer<TAccountOptRuleSigner3>;
+  optRuleSigner3?: Signer<TAccountOptRuleSigner3>;
   /** Optional rule validation signer 4 */
-  optRuleSigner4: Signer<TAccountOptRuleSigner4>;
+  optRuleSigner4?: Signer<TAccountOptRuleSigner4>;
   /** Optional rule validation signer 5 */
-  optRuleSigner5: Signer<TAccountOptRuleSigner5>;
+  optRuleSigner5?: Signer<TAccountOptRuleSigner5>;
   /** Optional rule validation non-signer 1 */
-  optRuleNonsigner1: Base58EncodedAddress<TAccountOptRuleNonsigner1>;
+  optRuleNonsigner1?: Base58EncodedAddress<TAccountOptRuleNonsigner1>;
   /** Optional rule validation non-signer 2 */
-  optRuleNonsigner2: Base58EncodedAddress<TAccountOptRuleNonsigner2>;
+  optRuleNonsigner2?: Base58EncodedAddress<TAccountOptRuleNonsigner2>;
   /** Optional rule validation non-signer 3 */
-  optRuleNonsigner3: Base58EncodedAddress<TAccountOptRuleNonsigner3>;
+  optRuleNonsigner3?: Base58EncodedAddress<TAccountOptRuleNonsigner3>;
   /** Optional rule validation non-signer 4 */
-  optRuleNonsigner4: Base58EncodedAddress<TAccountOptRuleNonsigner4>;
+  optRuleNonsigner4?: Base58EncodedAddress<TAccountOptRuleNonsigner4>;
   /** Optional rule validation non-signer 5 */
-  optRuleNonsigner5: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
+  optRuleNonsigner5?: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
+  discriminator: TODO;
+  ruleSetName: TODO;
+  operation: TODO;
+  payload: TODO;
 };

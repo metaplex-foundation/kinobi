@@ -201,7 +201,8 @@ export type BurnNftInput<
   /** MasterEdition2 of the NFT */
   masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
   /** SPL Token Program */
-  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
   /** Metadata of the Collection */
-  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionMetadata?: Base58EncodedAddress<TAccountCollectionMetadata>;
+  discriminator: TODO;
 };

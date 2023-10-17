@@ -351,9 +351,9 @@ export type MintFromCandyMachineInput<
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
   authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
   mintAuthority: Signer<TAccountMintAuthority>;
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   nftMint: Base58EncodedAddress<TAccountNftMint>;
-  nftMintAuthority: Signer<TAccountNftMintAuthority>;
+  nftMintAuthority?: Signer<TAccountNftMintAuthority>;
   nftMetadata: Base58EncodedAddress<TAccountNftMetadata>;
   nftMasterEdition: Base58EncodedAddress<TAccountNftMasterEdition>;
   collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
@@ -361,8 +361,9 @@ export type MintFromCandyMachineInput<
   collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
   collectionMasterEdition: Base58EncodedAddress<TAccountCollectionMasterEdition>;
   collectionUpdateAuthority: Base58EncodedAddress<TAccountCollectionUpdateAuthority>;
-  tokenMetadataProgram: Base58EncodedAddress<TAccountTokenMetadataProgram>;
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   recentSlothashes: Base58EncodedAddress<TAccountRecentSlothashes>;
+  discriminator: TODO;
 };

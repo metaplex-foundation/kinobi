@@ -307,7 +307,7 @@ export type TransferOutOfEscrowInput<
   /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Wallet paying for the transaction and new account */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** Mint account for the new attribute */
   attributeMint: Base58EncodedAddress<TAccountAttributeMint>;
   /** Token account source for the new attribute */
@@ -319,13 +319,15 @@ export type TransferOutOfEscrowInput<
   /** Token account that holds the token the escrow is attached to */
   escrowAccount: Base58EncodedAddress<TAccountEscrowAccount>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Associated Token program */
-  ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+  ataProgram?: Base58EncodedAddress<TAccountAtaProgram>;
   /** Token program */
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** Authority/creator of the escrow account */
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
+  discriminator: TODO;
+  amount: TODO;
 };

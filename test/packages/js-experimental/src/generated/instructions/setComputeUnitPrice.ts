@@ -89,4 +89,7 @@ export function setComputeUnitPriceInstruction<
 }
 
 // Input.
-export type SetComputeUnitPriceInput = {};
+export type SetComputeUnitPriceInput = {
+  discriminator: TODO;
+  microLamports: TODO;
+};

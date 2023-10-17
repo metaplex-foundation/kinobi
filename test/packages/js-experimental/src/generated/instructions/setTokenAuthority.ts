@@ -144,4 +144,7 @@ export type SetTokenAuthorityInput<
 > = {
   owned: Base58EncodedAddress<TAccountOwned>;
   owner: Base58EncodedAddress<TAccountOwner> | Signer<TAccountOwner>;
+  discriminator: TODO;
+  authorityType: TODO;
+  newAuthority: TODO;
 };

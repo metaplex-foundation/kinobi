@@ -191,5 +191,6 @@ export type UnverifyCollectionInput<
   /** MasterEdition2 Account of the Collection Token */
   collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  discriminator: TODO;
 };

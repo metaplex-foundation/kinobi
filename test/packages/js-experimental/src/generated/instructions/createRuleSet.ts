@@ -159,9 +159,12 @@ export type CreateRuleSetInput<
   TAccountSystemProgram extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  discriminator: TODO;
+  createArgs: TODO;
+  ruleSetBump: TODO;
 };

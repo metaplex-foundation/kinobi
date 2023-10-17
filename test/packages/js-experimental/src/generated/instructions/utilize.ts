@@ -296,15 +296,17 @@ export type UtilizeInput<
   /** Owner */
   owner: Base58EncodedAddress<TAccountOwner>;
   /** Token program */
-  tokenProgram: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** Associated Token program */
-  ataProgram: Base58EncodedAddress<TAccountAtaProgram>;
+  ataProgram?: Base58EncodedAddress<TAccountAtaProgram>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
   /** Use Authority Record PDA If present the program Assumes a delegated use authority */
-  useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  useAuthorityRecord?: Base58EncodedAddress<TAccountUseAuthorityRecord>;
   /** Program As Signer (Burner) */
-  burner: Base58EncodedAddress<TAccountBurner>;
+  burner?: Base58EncodedAddress<TAccountBurner>;
+  discriminator: TODO;
+  numberOfUses: TODO;
 };

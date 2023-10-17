@@ -160,7 +160,7 @@ export type CreateReservationListInput<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Base58EncodedAddress<TAccountReservationList>;
   /** Payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** Update authority */
   updateAuthority: Signer<TAccountUpdateAuthority>;
   /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
@@ -170,7 +170,7 @@ export type CreateReservationListInput<
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
 };

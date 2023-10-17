@@ -317,23 +317,25 @@ export type DelegateInput<
   /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Master Edition account */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition?: Base58EncodedAddress<TAccountMasterEdition>;
   /** Mint of metadata */
   mint: Base58EncodedAddress<TAccountMint>;
   /** Owned Token Account of mint */
-  token: Base58EncodedAddress<TAccountToken>;
+  token?: Base58EncodedAddress<TAccountToken>;
   /** Authority to approve the delegation */
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
   /** Payer */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** System Program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** SPL Token Program */
-  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  discriminator: TODO;
+  delegateArgs: TODO;
 };

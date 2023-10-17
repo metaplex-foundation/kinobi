@@ -145,5 +145,9 @@ export type InitializeMintInput<
   TAccountRent extends string
 > = {
   mint: Base58EncodedAddress<TAccountMint>;
-  rent: Base58EncodedAddress<TAccountRent>;
+  rent?: Base58EncodedAddress<TAccountRent>;
+  discriminator: TODO;
+  decimals: TODO;
+  mintAuthority: TODO;
+  freezeAuthority: TODO;
 };

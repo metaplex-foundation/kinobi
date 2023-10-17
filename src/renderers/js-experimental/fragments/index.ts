@@ -7,6 +7,7 @@ export * from './common';
 export * from './instructionAccountMeta';
 export * from './instructionAccountTypeParam';
 export * from './instructionData';
+export * from './instructionExtraArgs';
 export * from './instructionFunctionLowLevel';
 export * from './instructionInputDefault';
 export * from './instructionInputType';

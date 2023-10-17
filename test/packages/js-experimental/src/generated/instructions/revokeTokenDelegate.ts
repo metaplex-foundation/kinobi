@@ -112,4 +112,5 @@ export type RevokeTokenDelegateInput<
 > = {
   source: Base58EncodedAddress<TAccountSource>;
   owner: Signer<TAccountOwner>;
+  discriminator: TODO;
 };

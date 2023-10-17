@@ -89,4 +89,7 @@ export function setComputeUnitLimitInstruction<
 }
 
 // Input.
-export type SetComputeUnitLimitInput = {};
+export type SetComputeUnitLimitInput = {
+  discriminator: TODO;
+  units: TODO;
+};

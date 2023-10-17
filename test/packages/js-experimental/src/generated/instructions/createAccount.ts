@@ -137,6 +137,10 @@ export type CreateAccountInput<
   TAccountPayer extends string,
   TAccountNewAccount extends string
 > = {
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   newAccount: Signer<TAccountNewAccount>;
+  discriminator: TODO;
+  lamports: TODO;
+  space: TODO;
+  programId: TODO;
 };

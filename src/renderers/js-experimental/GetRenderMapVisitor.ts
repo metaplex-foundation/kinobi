@@ -22,6 +22,7 @@ import {
   getAccountSizeHelpersFragment,
   getAccountTypeFragment,
   getInstructionDataFragment,
+  getInstructionExtraArgsFragment,
   getInstructionFunctionLowLevelFragment,
   getInstructionInputDefaultFragment,
   getInstructionInputTypeFragment,
@@ -233,9 +234,18 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       throw new Error('Instruction must be visited inside a program.');
     }
 
+    // Data for fragments.
     const resolvedInputs = visit(
       instruction,
       this.resolvedInstructionInputVisitor
+    );
+    const dataArgsManifest = visit(
+      instruction.dataArgs,
+      this.typeManifestVisitor
+    );
+    const extraArgsManifest = visit(
+      instruction.extraArgs,
+      this.typeManifestVisitor
     );
     const renamedArgs = this.getRenamedArgsMap(instruction);
 
@@ -246,7 +256,11 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     );
     const instructionDataFragment = getInstructionDataFragment(
       instruction,
-      this.typeManifestVisitor
+      dataArgsManifest
+    );
+    const instructionExtraArgsFragment = getInstructionExtraArgsFragment(
+      instruction,
+      extraArgsManifest
     );
     const instructionFunctionLowLevelFragment =
       getInstructionFunctionLowLevelFragment(instruction, this.program);
@@ -254,6 +268,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       resolvedInputs,
       renamedArgs,
+      dataArgsManifest,
+      extraArgsManifest,
       this.program
     );
 
@@ -261,6 +277,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const imports = new ImportMap().mergeWith(
       instructionTypeFragment,
       instructionDataFragment,
+      instructionExtraArgsFragment,
       instructionFunctionLowLevelFragment,
       instructionInputTypeFragment
     );
@@ -438,6 +455,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         instructionTypeFragment,
         instructionDataFragment,
+        instructionExtraArgsFragment,
         instructionFunctionLowLevelFragment,
         instructionInputTypeFragment,
 

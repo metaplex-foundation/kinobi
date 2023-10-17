@@ -126,4 +126,6 @@ export type InitializeToken3Input<
 > = {
   account: Base58EncodedAddress<TAccountAccount>;
   mint: Base58EncodedAddress<TAccountMint>;
+  discriminator: TODO;
+  owner: TODO;
 };

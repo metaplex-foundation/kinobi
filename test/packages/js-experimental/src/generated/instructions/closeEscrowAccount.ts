@@ -211,9 +211,10 @@ export type CloseEscrowAccountInput<
   /** Edition account */
   edition: Base58EncodedAddress<TAccountEdition>;
   /** Wallet paying for the transaction and new account */
-  payer: Signer<TAccountPayer>;
+  payer?: Signer<TAccountPayer>;
   /** System program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
+  discriminator: TODO;
 };

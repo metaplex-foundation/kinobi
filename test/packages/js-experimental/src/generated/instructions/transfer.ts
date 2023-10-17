@@ -31,6 +31,7 @@ import {
 } from '@solana/instructions';
 import { Signer, accountMetaWithDefault } from '../shared';
 import {
+  TokenStandardArgs,
   TransferArgs,
   TransferArgsArgs,
   getTransferArgsDecoder,
@@ -156,6 +157,8 @@ export function getTransferInstructionDataCodec(): Codec<
     getTransferInstructionDataDecoder()
   );
 }
+
+export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
 
 export function transferInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -347,9 +350,9 @@ export type TransferInput<
   TAccountAuthorizationRules extends string
 > = {
   /** Transfer authority (token or delegate owner) */
-  authority: Signer<TAccountAuthority>;
+  authority?: Signer<TAccountAuthority>;
   /** Delegate record PDA */
-  delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  delegateRecord?: Base58EncodedAddress<TAccountDelegateRecord>;
   /** Token account */
   token: Base58EncodedAddress<TAccountToken>;
   /** Token account owner */
@@ -363,17 +366,20 @@ export type TransferInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Master Edition of token asset */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition?: Base58EncodedAddress<TAccountMasterEdition>;
   /** SPL Token Program */
-  splTokenProgram: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
   /** SPL Associated Token Account program */
-  splAtaProgram: Base58EncodedAddress<TAccountSplAtaProgram>;
+  splAtaProgram?: Base58EncodedAddress<TAccountSplAtaProgram>;
   /** System Program */
-  systemProgram: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
-  authorizationRules: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  discriminator: TODO;
+  transferArgs: TODO;
+  tokenStandard: TODO;
 };

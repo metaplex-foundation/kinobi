@@ -107,4 +107,6 @@ export function uiAmountToAmountInstruction<
 // Input.
 export type UiAmountToAmountInput<TAccountMint extends string> = {
   mint: Base58EncodedAddress<TAccountMint>;
+  discriminator: TODO;
+  uiAmount: TODO;
 };

@@ -96,4 +96,5 @@ export function puffMetadataInstruction<
 export type PuffMetadataInput<TAccountMetadata extends string> = {
   /** Metadata account */
   metadata: Base58EncodedAddress<TAccountMetadata>;
+  discriminator: TODO;
 };
