@@ -32,7 +32,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -306,6 +306,21 @@ export function initialize<
   TAccountCollectionAuthorityRecord extends string = string,
   TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
->() {
+>(): WrappedInstruction<
+  InitializeInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
+> {
   throw new Error('Not implemented');
 }

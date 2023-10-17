@@ -28,7 +28,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CloseTokenInstruction<
@@ -134,6 +134,13 @@ export function closeToken<
   TAccountAccount extends string = string,
   TAccountDestination extends string = string,
   TAccountOwner extends string = string
->() {
+>(): WrappedInstruction<
+  CloseTokenInstruction<
+    TProgram,
+    TAccountAccount,
+    TAccountDestination,
+    TAccountOwner
+  >
+> {
   throw new Error('Not implemented');
 }

@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   DelegateArgs,
   DelegateArgsArgs,
@@ -354,6 +354,23 @@ export function delegate<
   TAccountSplTokenProgram extends string = string,
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
->() {
+>(): WrappedInstruction<
+  DelegateInstruction<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+> {
   throw new Error('Not implemented');
 }

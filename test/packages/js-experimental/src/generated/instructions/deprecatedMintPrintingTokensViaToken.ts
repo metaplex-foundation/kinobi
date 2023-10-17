@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -279,6 +279,19 @@ export function deprecatedMintPrintingTokensViaToken<
   TAccountMasterEdition extends string = string,
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->() {
+>(): WrappedInstruction<
+  DeprecatedMintPrintingTokensViaTokenInstruction<
+    TProgram,
+    TAccountDestination,
+    TAccountToken,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountPrintingMint,
+    TAccountBurnAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  >
+> {
   throw new Error('Not implemented');
 }

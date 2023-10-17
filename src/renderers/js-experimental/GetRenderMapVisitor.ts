@@ -597,7 +597,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     );
 
     return new Map(
-      duplicates.map((name) => [mainCase(name), mainCase(`${name} Arg`)])
+      duplicates.map((name) => [mainCase(name), mainCase(`${name}Arg`)])
     );
   }
 

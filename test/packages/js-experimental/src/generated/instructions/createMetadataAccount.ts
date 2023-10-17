@@ -46,7 +46,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   Creator,
   CreatorArgs,
@@ -293,6 +293,17 @@ export function createMetadataAccount<
   TAccountUpdateAuthority extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->() {
+>(): WrappedInstruction<
+  CreateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+> {
   throw new Error('Not implemented');
 }

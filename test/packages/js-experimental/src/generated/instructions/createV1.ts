@@ -41,7 +41,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   AssetData,
   AssetDataArgs,
@@ -311,6 +311,21 @@ export function createV1<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
   TAccountSplTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
->() {
+>(): WrappedInstruction<
+  CreateV1Instruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    typeof input['mint'] extends Signer<TAccountMint>
+      ? WritableSignerAccount<TAccountMint>
+      : TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram
+  >
+> {
   throw new Error('Not implemented');
 }

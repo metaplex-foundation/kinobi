@@ -25,6 +25,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import { WrappedInstruction } from '../shared';
 
 // Output.
 export type RequestHeapFrameInstruction<
@@ -101,6 +102,6 @@ export type RequestHeapFrameInput = {
 
 export function requestHeapFrame<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
->() {
+>(): WrappedInstruction<RequestHeapFrameInstruction<TProgram>> {
   throw new Error('Not implemented');
 }

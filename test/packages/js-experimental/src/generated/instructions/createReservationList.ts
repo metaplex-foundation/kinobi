@@ -18,7 +18,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { CreateReservationListInstructionDataArgs } from '../../hooked';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateReservationListInstruction<
@@ -186,6 +186,18 @@ export function createReservationList<
   TAccountMetadata extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->() {
+>(): WrappedInstruction<
+  CreateReservationListInstruction<
+    TProgram,
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+> {
   throw new Error('Not implemented');
 }

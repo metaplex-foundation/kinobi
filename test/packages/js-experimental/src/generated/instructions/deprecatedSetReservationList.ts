@@ -41,7 +41,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -188,6 +188,13 @@ export function deprecatedSetReservationList<
   TAccountMasterEdition extends string = string,
   TAccountReservationList extends string = string,
   TAccountResource extends string = string
->() {
+>(): WrappedInstruction<
+  DeprecatedSetReservationListInstruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >
+> {
   throw new Error('Not implemented');
 }

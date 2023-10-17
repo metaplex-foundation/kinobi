@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type VerifyCollectionInstruction<
@@ -191,6 +191,16 @@ export function verifyCollection<
   TAccountCollectionMint extends string = string,
   TAccountCollection extends string = string,
   TAccountCollectionMasterEditionAccount extends string = string
->() {
+>(): WrappedInstruction<
+  VerifyCollectionInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount
+  >
+> {
   throw new Error('Not implemented');
 }

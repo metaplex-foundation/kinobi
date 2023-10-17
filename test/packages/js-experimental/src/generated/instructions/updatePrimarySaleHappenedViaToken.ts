@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type UpdatePrimarySaleHappenedViaTokenInstruction<
@@ -146,6 +146,13 @@ export function updatePrimarySaleHappenedViaToken<
   TAccountMetadata extends string = string,
   TAccountOwner extends string = string,
   TAccountToken extends string = string
->() {
+>(): WrappedInstruction<
+  UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+> {
   throw new Error('Not implemented');
 }

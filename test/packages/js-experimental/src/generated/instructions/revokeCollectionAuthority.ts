@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RevokeCollectionAuthorityInstruction<
@@ -180,6 +180,15 @@ export function revokeCollectionAuthority<
   TAccountRevokeAuthority extends string = string,
   TAccountMetadata extends string = string,
   TAccountMint extends string = string
->() {
+>(): WrappedInstruction<
+  RevokeCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  >
+> {
   throw new Error('Not implemented');
 }

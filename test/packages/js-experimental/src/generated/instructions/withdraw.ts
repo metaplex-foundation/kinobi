@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type WithdrawInstruction<
@@ -123,6 +123,8 @@ export function withdraw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
->() {
+>(): WrappedInstruction<
+  WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+> {
   throw new Error('Not implemented');
 }

@@ -34,7 +34,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type UtilizeInstruction<
@@ -323,6 +323,21 @@ export function utilize<
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
   TAccountUseAuthorityRecord extends string = string,
   TAccountBurner extends string = string
->() {
+>(): WrappedInstruction<
+  UtilizeInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  >
+> {
   throw new Error('Not implemented');
 }

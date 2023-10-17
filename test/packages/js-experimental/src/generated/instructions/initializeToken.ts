@@ -28,7 +28,7 @@ import {
   ReadonlyAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type InitializeTokenInstruction<
@@ -153,6 +153,14 @@ export function initializeToken<
   TAccountMint extends string = string,
   TAccountOwner extends string = string,
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
->() {
+>(): WrappedInstruction<
+  InitializeTokenInstruction<
+    TProgram,
+    TAccountAccount,
+    TAccountMint,
+    TAccountOwner,
+    TAccountRent
+  >
+> {
   throw new Error('Not implemented');
 }

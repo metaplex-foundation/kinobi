@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
@@ -379,6 +379,26 @@ export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
   TAccountReservationList extends string = string
->() {
+>(): WrappedInstruction<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+> {
   throw new Error('Not implemented');
 }

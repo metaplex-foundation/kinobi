@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   MintArgs,
   MintArgsArgs,
@@ -345,6 +345,22 @@ export function mint<
   TAccountSplAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
->() {
+>(): WrappedInstruction<
+  MintInstruction<
+    TProgram,
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountPayer,
+    TAccountAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+> {
   throw new Error('Not implemented');
 }

@@ -36,7 +36,7 @@ import {
   IInstructionWithData,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateAccountInstruction<
@@ -148,6 +148,8 @@ export function createAccount<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string = string,
   TAccountNewAccount extends string = string
->() {
+>(): WrappedInstruction<
+  CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>
+> {
   throw new Error('Not implemented');
 }

@@ -37,7 +37,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type InitializeMint2Instruction<
@@ -130,6 +130,6 @@ export type InitializeMint2Input<TAccountMint extends string> = {
 export function initializeMint2<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string
->() {
+>(): WrappedInstruction<InitializeMint2Instruction<TProgram, TAccountMint>> {
   throw new Error('Not implemented');
 }

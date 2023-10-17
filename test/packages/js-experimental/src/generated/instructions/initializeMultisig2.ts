@@ -28,7 +28,7 @@ import {
   ReadonlyAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type InitializeMultisig2Instruction<
@@ -133,6 +133,8 @@ export function initializeMultisig2<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMultisig extends string = string,
   TAccountSigner extends string = string
->() {
+>(): WrappedInstruction<
+  InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner>
+> {
   throw new Error('Not implemented');
 }

@@ -28,7 +28,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RemoveCreatorVerificationInstruction<
@@ -129,6 +129,12 @@ export function removeCreatorVerification<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountCreator extends string = string
->() {
+>(): WrappedInstruction<
+  RemoveCreatorVerificationInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCreator
+  >
+> {
   throw new Error('Not implemented');
 }

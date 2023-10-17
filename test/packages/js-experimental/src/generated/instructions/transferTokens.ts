@@ -33,7 +33,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type TransferTokensInstruction<
@@ -150,6 +150,13 @@ export function transferTokens<
   TAccountSource extends string = string,
   TAccountDestination extends string = string,
   TAccountAuthority extends string = string
->() {
+>(): WrappedInstruction<
+  TransferTokensInstruction<
+    TProgram,
+    TAccountSource,
+    TAccountDestination,
+    TAccountAuthority
+  >
+> {
   throw new Error('Not implemented');
 }

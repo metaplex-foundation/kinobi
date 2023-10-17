@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type SetTokenStandardInstruction<
@@ -163,6 +163,14 @@ export function setTokenStandard<
   TAccountUpdateAuthority extends string = string,
   TAccountMint extends string = string,
   TAccountEdition extends string = string
->() {
+>(): WrappedInstruction<
+  SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+> {
   throw new Error('Not implemented');
 }

@@ -31,7 +31,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   Operation,
   OperationArgs,
@@ -437,6 +437,25 @@ export function validate<
   TAccountOptRuleNonsigner3 extends string | undefined = undefined,
   TAccountOptRuleNonsigner4 extends string | undefined = undefined,
   TAccountOptRuleNonsigner5 extends string | undefined = undefined
->() {
+>(): WrappedInstruction<
+  ValidateInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSet,
+    TAccountSystemProgram,
+    typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+      ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      : TAccountOptRuleSigner1,
+    TAccountOptRuleSigner2,
+    TAccountOptRuleSigner3,
+    TAccountOptRuleSigner4,
+    TAccountOptRuleSigner5,
+    TAccountOptRuleNonsigner1,
+    TAccountOptRuleNonsigner2,
+    TAccountOptRuleNonsigner3,
+    TAccountOptRuleNonsigner4,
+    TAccountOptRuleNonsigner5
+  >
+> {
   throw new Error('Not implemented');
 }

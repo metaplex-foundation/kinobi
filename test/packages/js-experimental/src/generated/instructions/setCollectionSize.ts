@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -186,6 +186,14 @@ export function setCollectionSize<
   TAccountCollectionAuthority extends string = string,
   TAccountCollectionMint extends string = string,
   TAccountCollectionAuthorityRecord extends string = string
->() {
+>(): WrappedInstruction<
+  SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+> {
   throw new Error('Not implemented');
 }

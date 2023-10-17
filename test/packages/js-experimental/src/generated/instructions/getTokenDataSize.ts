@@ -27,7 +27,7 @@ import {
   IInstructionWithData,
   ReadonlyAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type GetTokenDataSizeInstruction<
@@ -97,6 +97,6 @@ export type GetTokenDataSizeInput<TAccountMint extends string> = {
 export function getTokenDataSize<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string
->() {
+>(): WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>> {
   throw new Error('Not implemented');
 }

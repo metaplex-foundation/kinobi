@@ -27,7 +27,7 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type PuffMetadataInstruction<
@@ -101,6 +101,6 @@ export type PuffMetadataInput<TAccountMetadata extends string> = {
 export function puffMetadata<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string
->() {
+>(): WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>> {
   throw new Error('Not implemented');
 }

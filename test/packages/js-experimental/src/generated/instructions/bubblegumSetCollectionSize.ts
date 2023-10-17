@@ -30,7 +30,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -207,6 +207,15 @@ export function bubblegumSetCollectionSize<
   TAccountCollectionMint extends string = string,
   TAccountBubblegumSigner extends string = string,
   TAccountCollectionAuthorityRecord extends string = string
->() {
+>(): WrappedInstruction<
+  BubblegumSetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+> {
   throw new Error('Not implemented');
 }

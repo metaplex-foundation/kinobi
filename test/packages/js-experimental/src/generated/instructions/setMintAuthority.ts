@@ -30,7 +30,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type SetMintAuthorityInstruction<
@@ -143,6 +143,13 @@ export function setMintAuthority<
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string,
   TAccountMintAuthority extends string = string
->() {
+>(): WrappedInstruction<
+  SetMintAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+> {
   throw new Error('Not implemented');
 }

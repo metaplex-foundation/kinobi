@@ -30,7 +30,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -146,6 +146,12 @@ export function updateCandyMachine<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
->() {
+>(): WrappedInstruction<
+  UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
+> {
   throw new Error('Not implemented');
 }

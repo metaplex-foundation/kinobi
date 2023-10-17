@@ -27,7 +27,7 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type SyncNativeInstruction<
@@ -100,6 +100,6 @@ export type SyncNativeInput<TAccountAccount extends string> = {
 export function syncNative<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string
->() {
+>(): WrappedInstruction<SyncNativeInstruction<TProgram, TAccountAccount>> {
   throw new Error('Not implemented');
 }

@@ -40,7 +40,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   DataV2,
   DataV2Args,
@@ -176,6 +176,12 @@ export function updateMetadataAccountV2<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string = string,
   TAccountUpdateAuthority extends string = string
->() {
+>(): WrappedInstruction<
+  UpdateMetadataAccountV2Instruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >
+> {
   throw new Error('Not implemented');
 }

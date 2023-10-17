@@ -30,6 +30,7 @@ import {
   IInstructionWithAccounts,
   IInstructionWithData,
   ReadonlyAccount,
+  ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
 import {
@@ -38,7 +39,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   TokenAuthorityType,
   TokenAuthorityTypeArgs,
@@ -152,6 +153,14 @@ export function setTokenAuthority<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountOwned extends string = string,
   TAccountOwner extends string = string
->() {
+>(): WrappedInstruction<
+  SetTokenAuthorityInstruction<
+    TProgram,
+    TAccountOwned,
+    typeof input['owner'] extends Signer<TAccountOwner>
+      ? ReadonlySignerAccount<TAccountOwner>
+      : TAccountOwner
+  >
+> {
   throw new Error('Not implemented');
 }

@@ -27,7 +27,7 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type InitializeImmutableOwnerInstruction<
@@ -104,6 +104,8 @@ export type InitializeImmutableOwnerInput<TAccountAccount extends string> = {
 export function initializeImmutableOwner<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string = string
->() {
+>(): WrappedInstruction<
+  InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>
+> {
   throw new Error('Not implemented');
 }

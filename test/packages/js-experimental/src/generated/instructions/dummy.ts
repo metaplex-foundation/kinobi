@@ -32,7 +32,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type DummyInstruction<
@@ -276,6 +276,20 @@ export function dummy<
   TAccountDelegate extends string = string,
   TAccountDelegateRecord extends string = string,
   TAccountTokenOrAtaProgram extends string = string
->() {
+>(): WrappedInstruction<
+  DummyInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+> {
   throw new Error('Not implemented');
 }

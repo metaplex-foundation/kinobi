@@ -50,7 +50,7 @@ import {
   getOptionEncoder,
   some,
 } from '@solana/options';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   AuthorityType,
   AuthorityTypeArgs,
@@ -473,6 +473,20 @@ export function updateV1<
   TAccountDelegateRecord extends string = string,
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
->() {
+>(): WrappedInstruction<
+  UpdateV1Instruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+> {
   throw new Error('Not implemented');
 }

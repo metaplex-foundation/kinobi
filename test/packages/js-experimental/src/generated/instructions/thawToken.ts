@@ -29,7 +29,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type ThawTokenInstruction<
@@ -135,6 +135,8 @@ export function thawToken<
   TAccountAccount extends string = string,
   TAccountMint extends string = string,
   TAccountOwner extends string = string
->() {
+>(): WrappedInstruction<
+  ThawTokenInstruction<TProgram, TAccountAccount, TAccountMint, TAccountOwner>
+> {
   throw new Error('Not implemented');
 }

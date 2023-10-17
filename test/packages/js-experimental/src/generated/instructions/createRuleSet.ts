@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   TaCreateArgs,
   TaCreateArgsArgs,
@@ -173,6 +173,13 @@ export function createRuleSet<
   TAccountPayer extends string = string,
   TAccountRuleSetPda extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
->() {
+>(): WrappedInstruction<
+  CreateRuleSetInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+> {
   throw new Error('Not implemented');
 }

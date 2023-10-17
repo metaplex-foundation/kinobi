@@ -28,7 +28,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type RevokeTokenDelegateInstruction<
@@ -118,6 +118,8 @@ export function revokeTokenDelegate<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string = string,
   TAccountOwner extends string = string
->() {
+>(): WrappedInstruction<
+  RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>
+> {
   throw new Error('Not implemented');
 }

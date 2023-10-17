@@ -14,6 +14,7 @@ import {
 } from '@solana/codecs-data-structures';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import { WrappedInstruction } from '../shared';
 
 // Output.
 export type AddMemoInstruction<
@@ -67,6 +68,6 @@ export type AddMemoInput = {
 
 export function addMemo<
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
->() {
+>(): WrappedInstruction<AddMemoInstruction<TProgram>> {
   throw new Error('Not implemented');
 }

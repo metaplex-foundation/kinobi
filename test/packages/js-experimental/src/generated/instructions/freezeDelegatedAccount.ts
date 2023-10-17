@@ -29,7 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type FreezeDelegatedAccountInstruction<
@@ -178,6 +178,15 @@ export function freezeDelegatedAccount<
   TAccountEdition extends string = string,
   TAccountMint extends string = string,
   TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
->() {
+>(): WrappedInstruction<
+  FreezeDelegatedAccountInstruction<
+    TProgram,
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+> {
   throw new Error('Not implemented');
 }

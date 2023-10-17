@@ -27,7 +27,7 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type ConvertMasterEditionV1ToV2Instruction<
@@ -142,6 +142,13 @@ export function convertMasterEditionV1ToV2<
   TAccountMasterEdition extends string = string,
   TAccountOneTimeAuth extends string = string,
   TAccountPrintingMint extends string = string
->() {
+>(): WrappedInstruction<
+  ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+> {
   throw new Error('Not implemented');
 }

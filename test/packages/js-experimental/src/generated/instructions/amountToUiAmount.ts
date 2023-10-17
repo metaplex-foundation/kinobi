@@ -32,7 +32,7 @@ import {
   IInstructionWithData,
   ReadonlyAccount,
 } from '@solana/instructions';
-import { accountMetaWithDefault } from '../shared';
+import { WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type AmountToUiAmountInstruction<
@@ -113,6 +113,6 @@ export type AmountToUiAmountInput<TAccountMint extends string> = {
 export function amountToUiAmount<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string = string
->() {
+>(): WrappedInstruction<AmountToUiAmountInstruction<TProgram, TAccountMint>> {
   throw new Error('Not implemented');
 }

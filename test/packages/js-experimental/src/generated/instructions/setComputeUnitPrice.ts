@@ -25,6 +25,7 @@ import {
   getU8Encoder,
 } from '@solana/codecs-numbers';
 import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import { WrappedInstruction } from '../shared';
 
 // Output.
 export type SetComputeUnitPriceInstruction<
@@ -95,6 +96,6 @@ export type SetComputeUnitPriceInput = {
 
 export function setComputeUnitPrice<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
->() {
+>(): WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>> {
   throw new Error('Not implemented');
 }

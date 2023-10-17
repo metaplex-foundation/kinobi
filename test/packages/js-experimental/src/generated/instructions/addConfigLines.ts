@@ -35,7 +35,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 import {
   ConfigLine,
   ConfigLineArgs,
@@ -156,6 +156,8 @@ export function addConfigLines<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string = string,
   TAccountAuthority extends string = string
->() {
+>(): WrappedInstruction<
+  AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+> {
   throw new Error('Not implemented');
 }

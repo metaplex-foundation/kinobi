@@ -35,7 +35,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateFrequencyRuleInstruction<
@@ -184,6 +184,13 @@ export function createFrequencyRule<
   TAccountPayer extends string = string,
   TAccountFrequencyPda extends string = string,
   TAccountSystemProgram extends string = '11111111111111111111111111111111'
->() {
+>(): WrappedInstruction<
+  CreateFrequencyRuleInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+> {
   throw new Error('Not implemented');
 }

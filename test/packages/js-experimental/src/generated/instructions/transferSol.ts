@@ -33,7 +33,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { Signer, accountMetaWithDefault } from '../shared';
+import { Signer, WrappedInstruction, accountMetaWithDefault } from '../shared';
 
 // Output.
 export type TransferSolInstruction<
@@ -133,6 +133,8 @@ export function transferSol<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string = string,
   TAccountDestination extends string = string
->() {
+>(): WrappedInstruction<
+  TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
+> {
   throw new Error('Not implemented');
 }
