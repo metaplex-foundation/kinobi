@@ -30,32 +30,30 @@ import {
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
-  ReadonlySignerAccount,
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import {
+  Signer,
+  WrappedInstruction,
+  accountMetaWithDefault,
+} from './generated/shared';
 
 // Output.
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
+  TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string
-  // TRemainingAccounts extends IAccountMeta<string>[] = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      ...(TAccountSource extends undefined
-        ? []
-        : [
-            TAccountSource extends string
-              ? WritableSignerAccount<TAccountSource>
-              : TAccountSource
-          ]),
+      TAccountSource extends string
+        ? WritableSignerAccount<TAccountSource>
+        : TAccountSource,
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
         : TAccountDestination
-      // ...TRemainingAccounts
     ]
   >;
 
@@ -99,23 +97,13 @@ export function getTransferSolInstructionDataCodec(): Codec<
   );
 }
 
-function helper<T extends string | IAccountMeta<string>, U extends AccountRole>(
-  account: T | undefined,
-  role: U
-) {
-  if (account === undefined) return undefined;
-  return (
-    typeof account === 'string' ? { address: account, role } : account
-  ) as T extends string ? { address: Base58EncodedAddress<T>; role: U } : T;
-}
-
 export function transferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> | undefined = undefined,
+  TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string
 >(
   accounts: {
-    source?: TAccountSource extends string
+    source: TAccountSource extends string
       ? Base58EncodedAddress<TAccountSource>
       : TAccountSource;
     destination: TAccountDestination extends string
@@ -127,27 +115,72 @@ export function transferSolInstruction<
 ) {
   return {
     accounts: [
-      helper(accounts.source, AccountRole.WRITABLE_SIGNER),
-      helper(accounts.destination, AccountRole.WRITABLE),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+      accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
+    ],
     data: getTransferSolInstructionDataEncoder().encode(args),
     programAddress,
   } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 }
 
+// Input.
+export type TransferSolInput<
+  TAccountSource extends string,
+  TAccountDestination extends string
+> = {
+  source: Signer<TAccountSource>;
+  destination: Base58EncodedAddress<TAccountDestination>;
+  amount: TransferSolInstructionDataArgs['amount'];
+};
+
+// MANUAL
+
+export async function transferSol<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  WrappedInstruction<
+    TransferSolInstruction<
+      TProgram,
+      TAccountSource,
+      // typeof input['source'] extends Signer<TAccountSource>
+      //   ? WritableSignerAccount<TAccountSource>
+      //   : TAccountSource,
+      TAccountDestination
+    >
+  >
+> {
+  return {
+    instruction: transferSolInstruction(input as any, input),
+    signers: [],
+    bytesCreatedOnChain: 0,
+  };
+}
+
+const sourceAddress = 'source' as Base58EncodedAddress<'source'>;
+const destinationAddress = 'destination' as Base58EncodedAddress<'destination'>;
+const sourceSigner = {
+  address: sourceAddress,
+  signTransaction: async () => [],
+};
+
 export const foo = transferSolInstruction(
   {
-    source: {
-      address: 'source' as Base58EncodedAddress<'source'>,
-      role: AccountRole.READONLY_SIGNER,
-    } as ReadonlySignerAccount<'source'>,
-    // source: 'source',
-    // destination: 'destination',
-    // source: 'source' as Base58EncodedAddress<'source'>,
-    destination: 'destination' as Base58EncodedAddress<'destination'>,
+    source: sourceAddress,
+    destination: destinationAddress,
   },
   { amount: 100 }
 );
 
-export type T1 = typeof foo;
-export type T2 = TransferSolInstruction;
+export const bar = transferSol({
+  source: sourceSigner,
+  destination: destinationAddress,
+  amount: 100,
+});
+
+export type T1 = TransferSolInstruction;
+export type T2 = typeof foo;
+export type T3 = typeof bar;
