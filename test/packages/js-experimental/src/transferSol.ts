@@ -137,11 +137,11 @@ export type TransferSolInput<
 // ====================================   MANUAL   ====================================
 // ====================================================================================
 
-export type CustomInstructionReturn<
+export type CustomGeneratedInstruction<
   TInstruction extends IInstruction,
   TReturn
 > = {
-  wrapInstruction: (
+  getGeneratedInstruction: (
     wrappedInstruction: WrappedInstruction<TInstruction>
   ) => Promise<TReturn>;
 };
@@ -160,7 +160,7 @@ export async function transferSol<
   TAccountDestination extends string = string
 >(
   context: Pick<Context, 'getProgramAddress'> &
-    CustomInstructionReturn<
+    CustomGeneratedInstruction<
       TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
       TReturn
     >,
@@ -198,7 +198,7 @@ export async function transferSol<
   context:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomInstructionReturn<IInstruction, TReturn>)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferSolInput<TAccountSource, TAccountDestination>,
   input?: TransferSolInput<TAccountSource, TAccountDestination>
 ): Promise<
@@ -217,7 +217,7 @@ export async function transferSol<
   const realContext = (input === undefined ? {} : input) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomInstructionReturn<IInstruction, TReturn>);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const realInput = (input === undefined ? context : input) as TransferSolInput<
     TAccountSource,
     TAccountDestination
@@ -259,19 +259,22 @@ export const foo = transferSolInstruction(
   { amount: 100 }
 );
 
-export const wrapInstruction = async <T extends IInstruction>(
+export const getGeneratedInstruction = async <T extends IInstruction>(
   ix: WrappedInstruction<T>
 ): Promise<{ potato: T; banana: number }> => ({
   potato: ix.instruction,
   banana: ix.bytesCreatedOnChain,
 });
-export const barContext = { wrapInstruction };
+export const barContext = { getGeneratedInstruction };
 
-export const bar = transferSol(barContext, {
-  source: sourceSigner,
-  destination: destinationAddress,
-  amount: 100,
-});
+export const bar = transferSol(
+  { getGeneratedInstruction },
+  {
+    source: sourceSigner,
+    destination: destinationAddress,
+    amount: 100,
+  }
+);
 
 export const baz = transferSol({
   source: sourceSigner,
