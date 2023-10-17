@@ -133,7 +133,9 @@ export type TransferSolInput<
   amount: TransferSolInstructionDataArgs['amount'];
 };
 
-// MANUAL
+// ====================================================================================
+// ====================================   MANUAL   ====================================
+// ====================================================================================
 
 export type CustomInstructionReturn<
   TInstruction extends IInstruction,
@@ -177,6 +179,17 @@ export async function transferSol<
   >
 >;
 export async function transferSol<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  WrappedInstruction<
+    TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
+  >
+>;
+export async function transferSol<
   TReturn,
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string = string,
@@ -185,8 +198,9 @@ export async function transferSol<
   context:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomInstructionReturn<IInstruction, TReturn>),
-  input: TransferSolInput<TAccountSource, TAccountDestination>
+        CustomInstructionReturn<IInstruction, TReturn>)
+    | TransferSolInput<TAccountSource, TAccountDestination>,
+  input?: TransferSolInput<TAccountSource, TAccountDestination>
 ): Promise<
   | TReturn
   | WrappedInstruction<
@@ -200,11 +214,19 @@ export async function transferSol<
       >
     >
 > {
+  const realContext = (input === undefined ? {} : input) as
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomInstructionReturn<IInstruction, TReturn>);
+  const realInput = (input === undefined ? context : input) as TransferSolInput<
+    TAccountSource,
+    TAccountDestination
+  >;
   const defaultProgramAddress =
     '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>;
   const programAddress = (
-    context.getProgramAddress
-      ? await context.getProgramAddress({
+    realContext.getProgramAddress
+      ? await realContext.getProgramAddress({
           name: 'splSystem',
           address: defaultProgramAddress,
         })
@@ -212,7 +234,11 @@ export async function transferSol<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
+    instruction: transferSolInstruction(
+      realInput as any,
+      realInput,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };
@@ -247,15 +273,13 @@ export const bar = transferSol(barContext, {
   amount: 100,
 });
 
-export const baz = transferSol(
-  {},
-  {
-    source: sourceSigner,
-    destination: destinationAddress,
-    amount: 100,
-  }
-);
+export const baz = transferSol({
+  source: sourceSigner,
+  destination: destinationAddress,
+  amount: 100,
+});
 
 export type T1 = TransferSolInstruction;
 export type T2 = typeof foo;
 export type T3 = typeof bar;
+export type T4 = typeof baz;
