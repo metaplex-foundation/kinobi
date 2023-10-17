@@ -233,30 +233,19 @@ export const foo = transferSolInstruction(
   { amount: 100 }
 );
 
-export const barContext = {
-  wrapInstruction: async <T extends IInstruction>(
-    ix: WrappedInstruction<T>
-  ): Promise<{ potato: T; banana: number }> => ({
-    potato: ix.instruction,
-    banana: ix.bytesCreatedOnChain,
-  }),
-};
+export const wrapInstruction = async <T extends IInstruction>(
+  ix: WrappedInstruction<T>
+): Promise<{ potato: T; banana: number }> => ({
+  potato: ix.instruction,
+  banana: ix.bytesCreatedOnChain,
+});
+export const barContext = { wrapInstruction };
 
-export const bar = transferSol(
-  {
-    wrapInstruction: async <T extends IInstruction>(
-      ix: WrappedInstruction<T>
-    ): Promise<{ potato: T; banana: number }> => ({
-      potato: ix.instruction,
-      banana: ix.bytesCreatedOnChain,
-    }),
-  },
-  {
-    source: sourceSigner,
-    destination: destinationAddress,
-    amount: 100,
-  }
-);
+export const bar = transferSol(barContext, {
+  source: sourceSigner,
+  destination: destinationAddress,
+  amount: 100,
+});
 
 export const baz = transferSol(
   {},
