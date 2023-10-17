@@ -135,26 +135,84 @@ export type TransferSolInput<
 
 // MANUAL
 
+export type CustomInstructionReturn<
+  TInstruction extends IInstruction,
+  TReturn
+> = {
+  wrapInstruction: (
+    wrappedInstruction: WrappedInstruction<TInstruction>
+  ) => Promise<TReturn>;
+};
+
+export type Context = {
+  getProgramAddress?: (program: {
+    name: string;
+    address: Base58EncodedAddress;
+  }) => Promise<Base58EncodedAddress>;
+};
+
+export async function transferSol<
+  TReturn,
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  context: Pick<Context, 'getProgramAddress'> &
+    CustomInstructionReturn<
+      TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
+      TReturn
+    >,
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<TReturn>;
 export async function transferSol<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string = string,
   TAccountDestination extends string = string
 >(
+  context: Pick<Context, 'getProgramAddress'>,
   input: TransferSolInput<TAccountSource, TAccountDestination>
 ): Promise<
   WrappedInstruction<
-    TransferSolInstruction<
-      TProgram,
-      TAccountSource,
-      // typeof input['source'] extends Signer<TAccountSource>
-      //   ? WritableSignerAccount<TAccountSource>
-      //   : TAccountSource,
-      TAccountDestination
-    >
+    TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
   >
+>;
+export async function transferSol<
+  TReturn,
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string
+>(
+  context:
+    | Pick<Context, 'getProgramAddress'>
+    | (Pick<Context, 'getProgramAddress'> &
+        CustomInstructionReturn<IInstruction, TReturn>),
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  | TReturn
+  | WrappedInstruction<
+      TransferSolInstruction<
+        TProgram,
+        TAccountSource,
+        // typeof input['source'] extends Signer<TAccountSource>
+        //   ? WritableSignerAccount<TAccountSource>
+        //   : TAccountSource,
+        TAccountDestination
+      >
+    >
 > {
+  const defaultProgramAddress =
+    '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splSystem',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
   return {
-    instruction: transferSolInstruction(input as any, input),
+    instruction: transferSolInstruction(input as any, input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };
@@ -175,11 +233,39 @@ export const foo = transferSolInstruction(
   { amount: 100 }
 );
 
-export const bar = transferSol({
-  source: sourceSigner,
-  destination: destinationAddress,
-  amount: 100,
-});
+export const barContext = {
+  wrapInstruction: async <T extends IInstruction>(
+    ix: WrappedInstruction<T>
+  ): Promise<{ potato: T; banana: number }> => ({
+    potato: ix.instruction,
+    banana: ix.bytesCreatedOnChain,
+  }),
+};
+
+export const bar = transferSol(
+  {
+    wrapInstruction: async <T extends IInstruction>(
+      ix: WrappedInstruction<T>
+    ): Promise<{ potato: T; banana: number }> => ({
+      potato: ix.instruction,
+      banana: ix.bytesCreatedOnChain,
+    }),
+  },
+  {
+    source: sourceSigner,
+    destination: destinationAddress,
+    amount: 100,
+  }
+);
+
+export const baz = transferSol(
+  {},
+  {
+    source: sourceSigner,
+    destination: destinationAddress,
+    amount: 100,
+  }
+);
 
 export type T1 = TransferSolInstruction;
 export type T2 = typeof foo;
