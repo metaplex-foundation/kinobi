@@ -1,7 +1,7 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import { camelCase, ImportFrom, pascalCase } from '../../shared';
+import { camelCase, ImportFrom, mainCase, pascalCase } from '../../shared';
 import { logWarn } from '../../shared/logs';
 import {
   BaseThrowVisitor,
@@ -237,6 +237,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction,
       this.resolvedInstructionInputVisitor
     );
+    const renamedArgs = this.getRenamedArgsMap(instruction);
 
     // Fragments.
     const instructionTypeFragment = getInstructionTypeFragment(
@@ -252,6 +253,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const instructionInputTypeFragment = getInstructionInputTypeFragment(
       instruction,
       resolvedInputs,
+      renamedArgs,
       this.program
     );
 
@@ -540,6 +542,40 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     ];
     const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
     return [...new Set(duplicates)];
+  }
+
+  protected getRenamedArgsMap(
+    instruction: nodes.InstructionNode
+  ): Map<string, string> {
+    const argNames = [
+      ...instruction.dataArgs.struct.fields.map((field) => field.name),
+      ...instruction.extraArgs.struct.fields.map((field) => field.name),
+    ];
+    const duplicateArgs = argNames.filter((e, i, a) => a.indexOf(e) !== i);
+    if (duplicateArgs.length > 0) {
+      throw new Error(
+        `Duplicate args found: [${duplicateArgs.join(', ')}] in instruction [${
+          instruction.name
+        }].`
+      );
+    }
+
+    const allNames = [
+      ...instruction.accounts.map((account) => account.name),
+      ...argNames,
+    ];
+    const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
+    if (duplicates.length === 0) return new Map();
+
+    logWarn(
+      `[JavaScriptExperimental] Accounts and args of instruction [${instruction.name}] have the following ` +
+        `conflicting attributes [${duplicates.join(', ')}]. ` +
+        `Thus, the arguments have been renamed to avoid conflicts in the input type.`
+    );
+
+    return new Map(
+      duplicates.map((name) => [mainCase(name), mainCase(`${name} Arg`)])
+    );
   }
 
   protected render(

@@ -2,6 +2,7 @@ import * as nodes from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import {
   ResolvedInstructionAccount,
+  ResolvedInstructionArg,
   ResolvedInstructionInput,
 } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
@@ -10,13 +11,10 @@ import { Fragment, fragment, fragmentFromTemplate } from './common';
 export function getInstructionInputTypeFragment(
   instructionNode: nodes.InstructionNode,
   resolvedInputs: ResolvedInstructionInput[],
+  renamedArgs: Map<string, string>,
   programNode: nodes.ProgramNode
 ): Fragment {
-  const hasAccounts = instructionNode.accounts.length > 0;
-  const hasData =
-    !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.length > 0;
-
+  // Accounts.
   const accountImports = new ImportMap();
   const accounts = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
@@ -26,7 +24,6 @@ export function getInstructionInputTypeFragment(
     ) as ResolvedInstructionAccount;
     const type = getAccountType(resolvedAccount);
     accountImports.mergeWith(type);
-
     return {
       ...resolvedAccount,
       typeParam,
@@ -35,12 +32,27 @@ export function getInstructionInputTypeFragment(
     };
   });
 
+  // Arguments.
+  const rawArgs = [
+    ...(instructionNode.dataArgs.link
+      ? []
+      : instructionNode.dataArgs.struct.fields),
+    ...(instructionNode.extraArgs.link
+      ? []
+      : instructionNode.extraArgs.struct.fields),
+  ];
+  const args = rawArgs.map((arg) => {
+    const resolvedArg = resolvedInputs.find(
+      (input) => input.kind === 'arg' && input.name === arg.name
+    ) as ResolvedInstructionArg;
+    return { ...resolvedArg };
+  });
+
   return fragmentFromTemplate('instructionInputType.njk', {
     instruction: instructionNode,
     program: programNode,
-    hasAccounts,
     accounts,
-    hasData,
+    args,
   })
     .mergeImportsWith(accountImports)
     .addImports('solanaAddresses', ['Base58EncodedAddress']);

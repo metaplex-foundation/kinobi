@@ -2,7 +2,7 @@
 
 // Input.
 export type {{ instruction.name | pascalCase }}Input
-{%- if hasAccounts -%}
+{%- if accounts.length > 0 -%}
 <
   {%- for account in accounts -%}
     {{ account.typeParam }} extends string,
