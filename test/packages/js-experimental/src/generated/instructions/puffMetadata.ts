@@ -27,20 +27,7 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  Context,
-  Pda,
-  PublicKey,
-  TransactionBuilder,
-  transactionBuilder,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import {
-  ResolvedAccount,
-  ResolvedAccountsWithIndices,
-  accountMetaWithDefault,
-  getAccountMetasAndSigners,
-} from '../shared';
+import { accountMetaWithDefault } from '../shared';
 
 // Output.
 export type PuffMetadataInstruction<

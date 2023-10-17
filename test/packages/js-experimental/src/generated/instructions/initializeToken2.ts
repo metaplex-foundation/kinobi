@@ -8,7 +8,6 @@
 
 import {
   Base58EncodedAddress,
-  address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -33,20 +32,7 @@ import {
   ReadonlyAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  Context,
-  Pda,
-  PublicKey,
-  TransactionBuilder,
-  transactionBuilder,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import {
-  ResolvedAccount,
-  ResolvedAccountsWithIndices,
-  accountMetaWithDefault,
-  getAccountMetasAndSigners,
-} from '../shared';
+import { accountMetaWithDefault } from '../shared';
 
 // Output.
 export type InitializeToken2Instruction<

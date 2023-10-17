@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress, address } from '@solana/addresses';
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   AccountRole,
   IAccountMeta,
@@ -17,25 +17,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  Context,
-  Pda,
-  PublicKey,
-  Signer,
-  TransactionBuilder,
-  transactionBuilder,
-} from 'umi';
-import {
-  CreateReservationListInstructionDataArgs,
-  getCreateReservationListInstructionDataDecoder,
-  getCreateReservationListInstructionDataEncoder,
-} from '../../hooked';
-import {
-  ResolvedAccount,
-  ResolvedAccountsWithIndices,
-  accountMetaWithDefault,
-  getAccountMetasAndSigners,
-} from '../shared';
+import { accountMetaWithDefault } from '../shared';
 
 // Output.
 export type CreateReservationListInstruction<

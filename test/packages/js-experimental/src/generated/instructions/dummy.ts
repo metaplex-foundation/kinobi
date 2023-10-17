@@ -32,25 +32,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  Context,
-  Pda,
-  PublicKey,
-  Signer,
-  TransactionBuilder,
-  transactionBuilder,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import { resolveTokenOrAta } from '../../hooked';
-import { findDelegateRecordPda } from '../accounts';
-import {
-  PickPartial,
-  ResolvedAccount,
-  ResolvedAccountsWithIndices,
-  accountMetaWithDefault,
-  expectSome,
-  getAccountMetasAndSigners,
-} from '../shared';
+import { accountMetaWithDefault } from '../shared';
 
 // Output.
 export type DummyInstruction<

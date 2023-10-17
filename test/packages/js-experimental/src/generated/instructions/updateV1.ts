@@ -8,7 +8,6 @@
 
 import {
   Base58EncodedAddress,
-  address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -51,21 +50,7 @@ import {
   getOptionEncoder,
   some,
 } from '@solana/options';
-import {
-  Context,
-  Pda,
-  PublicKey,
-  Signer,
-  TransactionBuilder,
-  transactionBuilder,
-} from 'umi';
-import { Serializer } from 'umiSerializers';
-import {
-  ResolvedAccount,
-  ResolvedAccountsWithIndices,
-  accountMetaWithDefault,
-  getAccountMetasAndSigners,
-} from '../shared';
+import { accountMetaWithDefault } from '../shared';
 import {
   AuthorityType,
   AuthorityTypeArgs,

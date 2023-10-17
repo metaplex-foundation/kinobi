@@ -241,13 +241,14 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       getInstructionFunctionLowLevelFragment(instruction, this.program!);
 
     // Imports and interfaces.
-    const imports = new ImportMap()
-      .mergeWith(
-        instructionTypeFragment,
-        instructionDataFragment,
-        instructionFunctionLowLevelFragment
-      )
-      // TODO: Remove once these are imported in the fragments.
+    const imports = new ImportMap().mergeWith(
+      instructionTypeFragment,
+      instructionDataFragment,
+      instructionFunctionLowLevelFragment
+    );
+
+    // TODO: Remove once these are imported in the fragments.
+    const oldImports = new ImportMap()
       .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
       .add('shared', [
         'ResolvedAccount',
@@ -325,7 +326,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instruction.optionalAccountStrategy,
         argObject
       );
-      imports.mergeWith(renderedInput.imports);
+      oldImports.mergeWith(renderedInput.imports);
       interfaces.mergeWith(renderedInput.interfaces);
       return { ...input, render: renderedInput.render };
     });
@@ -349,7 +350,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         hasDefaultValue,
       };
     });
-    imports.mergeWith(this.getInstructionAccountImports(accounts));
+    oldImports.mergeWith(this.getInstructionAccountImports(accounts));
 
     // Data Args.
     const dataArgManifest = visit(
@@ -357,17 +358,17 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.typeManifestVisitor
     );
     if (linkedDataArgs || hasData) {
-      imports.mergeWith(
+      oldImports.mergeWith(
         dataArgManifest.looseType,
         dataArgManifest.encoder,
         dataArgManifest.decoder
       );
     }
     if (!linkedDataArgs) {
-      imports.mergeWith(dataArgManifest.strictType);
+      oldImports.mergeWith(dataArgManifest.strictType);
     }
     if (!linkedDataArgs && hasData) {
-      imports.add('umiSerializers', ['Serializer']);
+      oldImports.add('umiSerializers', ['Serializer']);
     }
 
     // Extra args.
@@ -375,22 +376,22 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instruction.extraArgs,
       this.typeManifestVisitor
     );
-    imports.mergeWith(extraArgManifest.looseType);
+    oldImports.mergeWith(extraArgManifest.looseType);
 
     // Arg defaults.
     Object.values(instruction.argDefaults).forEach((argDefault) => {
       if (argDefault.kind === 'resolver') {
-        imports.add(argDefault.importFrom, camelCase(argDefault.name));
+        oldImports.add(argDefault.importFrom, camelCase(argDefault.name));
       }
     });
     if (argsWithDefaults.length > 0) {
-      imports.add('shared', ['PickPartial']);
+      oldImports.add('shared', ['PickPartial']);
     }
 
     // Bytes created on chain.
     const bytes = instruction.bytesCreatedOnChain;
     if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
-      imports.add('umi', 'ACCOUNT_HEADER_SIZE');
+      oldImports.add('umi', 'ACCOUNT_HEADER_SIZE');
     }
     if (bytes?.kind === 'account') {
       const accountName = pascalCase(bytes.name);
@@ -398,15 +399,15 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         bytes.importFrom === 'generated'
           ? 'generatedAccounts'
           : bytes.importFrom;
-      imports.add(importFrom, `get${accountName}Size`);
+      oldImports.add(importFrom, `get${accountName}Size`);
     } else if (bytes?.kind === 'resolver') {
-      imports.add(bytes.importFrom, camelCase(bytes.name));
+      oldImports.add(bytes.importFrom, camelCase(bytes.name));
     }
 
     // Remaining accounts.
     const { remainingAccounts } = instruction;
     if (remainingAccounts?.kind === 'resolver') {
-      imports.add(
+      oldImports.add(
         remainingAccounts.importFrom,
         camelCase(remainingAccounts.name)
       );
