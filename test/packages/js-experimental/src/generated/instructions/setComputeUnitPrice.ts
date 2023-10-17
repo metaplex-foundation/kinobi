@@ -107,18 +107,18 @@ export async function setComputeUnitPrice<
       SetComputeUnitPriceInstruction<TProgram>,
       TReturn
     >,
-  input: SetComputeUnitPriceInput<>
+  input: SetComputeUnitPriceInput
 ): Promise<TReturn>;
 export async function setComputeUnitPrice<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetComputeUnitPriceInput<>
+  input: SetComputeUnitPriceInput
 ): Promise<WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>>;
 export async function setComputeUnitPrice<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
-  input: SetComputeUnitPriceInput<>
+  input: SetComputeUnitPriceInput
 ): Promise<WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>>;
 export async function setComputeUnitPrice<
   TReturn,
@@ -131,8 +131,8 @@ export async function setComputeUnitPrice<
           SetComputeUnitPriceInstruction<TProgram>,
           TReturn
         >)
-    | SetComputeUnitPriceInput<>,
-  input?: SetComputeUnitPriceInput<>
+    | SetComputeUnitPriceInput,
+  input?: SetComputeUnitPriceInput
 ): Promise<
   TReturn | WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>
 > {

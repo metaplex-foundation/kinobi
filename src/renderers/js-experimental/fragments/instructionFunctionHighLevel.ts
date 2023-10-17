@@ -98,6 +98,7 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
 
 function getInputType(instructionNode: nodes.InstructionNode): Fragment {
   const inputTypeName = pascalCase(`${instructionNode.name}Input`);
+  if (instructionNode.accounts.length === 0) return fragment(inputTypeName);
   const accountTypeParams = instructionNode.accounts
     .map((account) => `TAccount${pascalCase(account.name)}`)
     .join(', ');

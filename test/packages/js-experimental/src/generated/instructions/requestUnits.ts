@@ -110,18 +110,18 @@ export async function requestUnits<
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<RequestUnitsInstruction<TProgram>, TReturn>,
-  input: RequestUnitsInput<>
+  input: RequestUnitsInput
 ): Promise<TReturn>;
 export async function requestUnits<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: RequestUnitsInput<>
+  input: RequestUnitsInput
 ): Promise<WrappedInstruction<RequestUnitsInstruction<TProgram>>>;
 export async function requestUnits<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
-  input: RequestUnitsInput<>
+  input: RequestUnitsInput
 ): Promise<WrappedInstruction<RequestUnitsInstruction<TProgram>>>;
 export async function requestUnits<
   TReturn,
@@ -131,8 +131,8 @@ export async function requestUnits<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<RequestUnitsInstruction<TProgram>, TReturn>)
-    | RequestUnitsInput<>,
-  input?: RequestUnitsInput<>
+    | RequestUnitsInput,
+  input?: RequestUnitsInput
 ): Promise<TReturn | WrappedInstruction<RequestUnitsInstruction<TProgram>>> {
   throw new Error('Not implemented');
 }

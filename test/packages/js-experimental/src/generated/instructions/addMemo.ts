@@ -76,18 +76,18 @@ export async function addMemo<
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>,
-  input: AddMemoInput<>
+  input: AddMemoInput
 ): Promise<TReturn>;
 export async function addMemo<
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: AddMemoInput<>
+  input: AddMemoInput
 ): Promise<WrappedInstruction<AddMemoInstruction<TProgram>>>;
 export async function addMemo<
   TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
 >(
-  input: AddMemoInput<>
+  input: AddMemoInput
 ): Promise<WrappedInstruction<AddMemoInstruction<TProgram>>>;
 export async function addMemo<
   TReturn,
@@ -97,8 +97,8 @@ export async function addMemo<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>)
-    | AddMemoInput<>,
-  input?: AddMemoInput<>
+    | AddMemoInput,
+  input?: AddMemoInput
 ): Promise<TReturn | WrappedInstruction<AddMemoInstruction<TProgram>>> {
   throw new Error('Not implemented');
 }

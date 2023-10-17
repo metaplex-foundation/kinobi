@@ -110,18 +110,18 @@ export async function requestHeapFrame<
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<RequestHeapFrameInstruction<TProgram>, TReturn>,
-  input: RequestHeapFrameInput<>
+  input: RequestHeapFrameInput
 ): Promise<TReturn>;
 export async function requestHeapFrame<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: RequestHeapFrameInput<>
+  input: RequestHeapFrameInput
 ): Promise<WrappedInstruction<RequestHeapFrameInstruction<TProgram>>>;
 export async function requestHeapFrame<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
-  input: RequestHeapFrameInput<>
+  input: RequestHeapFrameInput
 ): Promise<WrappedInstruction<RequestHeapFrameInstruction<TProgram>>>;
 export async function requestHeapFrame<
   TReturn,
@@ -134,8 +134,8 @@ export async function requestHeapFrame<
           RequestHeapFrameInstruction<TProgram>,
           TReturn
         >)
-    | RequestHeapFrameInput<>,
-  input?: RequestHeapFrameInput<>
+    | RequestHeapFrameInput,
+  input?: RequestHeapFrameInput
 ): Promise<
   TReturn | WrappedInstruction<RequestHeapFrameInstruction<TProgram>>
 > {

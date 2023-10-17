@@ -57,7 +57,7 @@ export type CustomGeneratedInstruction<
 > = {
   getGeneratedInstruction: (
     wrappedInstruction: WrappedInstruction<TInstruction>
-  ) => Promise<TReturn>;
+  ) => TReturn;
 };
 
 export type Context = {

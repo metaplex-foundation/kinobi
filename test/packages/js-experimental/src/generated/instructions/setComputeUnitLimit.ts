@@ -107,18 +107,18 @@ export async function setComputeUnitLimit<
       SetComputeUnitLimitInstruction<TProgram>,
       TReturn
     >,
-  input: SetComputeUnitLimitInput<>
+  input: SetComputeUnitLimitInput
 ): Promise<TReturn>;
 export async function setComputeUnitLimit<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetComputeUnitLimitInput<>
+  input: SetComputeUnitLimitInput
 ): Promise<WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>>;
 export async function setComputeUnitLimit<
   TProgram extends string = 'ComputeBudget111111111111111111111111111111'
 >(
-  input: SetComputeUnitLimitInput<>
+  input: SetComputeUnitLimitInput
 ): Promise<WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>>;
 export async function setComputeUnitLimit<
   TReturn,
@@ -131,8 +131,8 @@ export async function setComputeUnitLimit<
           SetComputeUnitLimitInstruction<TProgram>,
           TReturn
         >)
-    | SetComputeUnitLimitInput<>,
-  input?: SetComputeUnitLimitInput<>
+    | SetComputeUnitLimitInput,
+  input?: SetComputeUnitLimitInput
 ): Promise<
   TReturn | WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>
 > {
