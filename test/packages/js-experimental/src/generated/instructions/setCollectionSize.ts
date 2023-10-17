@@ -177,6 +177,5 @@ export type SetCollectionSizeInput<
   collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
   /** Collection Authority Record PDA */
   collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
-  discriminator: TODO;
-  setCollectionSizeArgs: TODO;
+  setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };

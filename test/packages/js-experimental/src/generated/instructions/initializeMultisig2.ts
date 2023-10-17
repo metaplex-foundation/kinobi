@@ -126,6 +126,5 @@ export type InitializeMultisig2Input<
 > = {
   multisig: Base58EncodedAddress<TAccountMultisig>;
   signer: Base58EncodedAddress<TAccountSigner>;
-  discriminator: TODO;
-  m: TODO;
+  m: InitializeMultisig2InstructionDataArgs['m'];
 };

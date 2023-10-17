@@ -137,6 +137,5 @@ export type SetAuthorityInput<
 > = {
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
-  newAuthority: TODO;
+  newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };

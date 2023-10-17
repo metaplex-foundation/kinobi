@@ -181,5 +181,4 @@ export type VerifyCollectionInput<
   collection: Base58EncodedAddress<TAccountCollection>;
   /** MasterEdition2 Account of the Collection Token */
   collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
-  discriminator: TODO;
 };

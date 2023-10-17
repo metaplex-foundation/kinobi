@@ -166,9 +166,8 @@ export type UpdateMetadataAccountV2Input<
   metadata: Base58EncodedAddress<TAccountMetadata>;
   /** Update authority key */
   updateAuthority: Signer<TAccountUpdateAuthority>;
-  discriminator: TODO;
-  data: TODO;
-  updateAuthorityArg: TODO;
-  primarySaleHappened: TODO;
-  isMutable: TODO;
+  data: UpdateMetadataAccountV2InstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountV2InstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountV2InstructionDataArgs['primarySaleHappened'];
+  isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
 };

@@ -261,6 +261,5 @@ export type BurnInput<
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
-  discriminator: TODO;
-  burnArgs: TODO;
+  burnArgs: BurnInstructionDataArgs['burnArgs'];
 };

@@ -365,5 +365,4 @@ export type MintFromCandyMachineInput<
   tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   recentSlothashes: Base58EncodedAddress<TAccountRecentSlothashes>;
-  discriminator: TODO;
 };

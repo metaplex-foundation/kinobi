@@ -95,5 +95,4 @@ export function syncNativeInstruction<
 // Input.
 export type SyncNativeInput<TAccountAccount extends string> = {
   account: Base58EncodedAddress<TAccountAccount>;
-  discriminator: TODO;
 };

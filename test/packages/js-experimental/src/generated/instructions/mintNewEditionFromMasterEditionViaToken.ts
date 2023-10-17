@@ -345,6 +345,5 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
-  mintNewEditionFromMasterEditionViaTokenArgs: TODO;
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };

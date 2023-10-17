@@ -257,5 +257,4 @@ export type BurnEditionNftInput<
   editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
   /** SPL Token Program */
   splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
-  discriminator: TODO;
 };

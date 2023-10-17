@@ -197,6 +197,5 @@ export type BubblegumSetCollectionSizeInput<
   bubblegumSigner: Signer<TAccountBubblegumSigner>;
   /** Collection Authority Record PDA */
   collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
-  discriminator: TODO;
-  setCollectionSizeArgs: TODO;
+  setCollectionSizeArgs: BubblegumSetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };

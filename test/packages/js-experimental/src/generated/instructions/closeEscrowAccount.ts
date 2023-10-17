@@ -216,5 +216,4 @@ export type CloseEscrowAccountInput<
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Instructions sysvar account */
   sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
-  discriminator: TODO;
 };

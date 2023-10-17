@@ -262,6 +262,5 @@ export type CreateMasterEditionV3Input<
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
-  createMasterEditionArgs: TODO;
+  createMasterEditionArgs: CreateMasterEditionV3InstructionDataArgs['createMasterEditionArgs'];
 };

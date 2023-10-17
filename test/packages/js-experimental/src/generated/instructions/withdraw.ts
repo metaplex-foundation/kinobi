@@ -117,5 +117,4 @@ export type WithdrawInput<
 > = {
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
 };

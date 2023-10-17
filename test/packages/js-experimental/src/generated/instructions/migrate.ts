@@ -278,6 +278,5 @@ export type MigrateInput<
   sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** Token Authorization Rules account */
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
-  discriminator: TODO;
-  migrateArgs: TODO;
+  migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
 };

@@ -291,8 +291,6 @@ export type CreateV2Input<
   sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** SPL Token program */
   splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
-  discriminator: TODO;
-  createV2Discriminator: TODO;
-  assetData: TODO;
-  maxSupply: TODO;
+  assetData: CreateV2InstructionDataArgs['assetData'];
+  maxSupply: CreateV2InstructionDataArgs['maxSupply'];
 };

@@ -17,6 +17,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { CreateReservationListInstructionDataArgs } from '../../hooked';
 import { Signer, accountMetaWithDefault } from '../shared';
 
 // Output.

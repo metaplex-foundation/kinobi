@@ -90,6 +90,5 @@ export function setComputeUnitPriceInstruction<
 
 // Input.
 export type SetComputeUnitPriceInput = {
-  discriminator: TODO;
-  microLamports: TODO;
+  microLamports: SetComputeUnitPriceInstructionDataArgs['microLamports'];
 };

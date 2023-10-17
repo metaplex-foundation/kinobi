@@ -164,7 +164,6 @@ export type CreateRuleSetInput<
   ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
   /** System program */
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
-  discriminator: TODO;
-  createArgs: TODO;
-  ruleSetBump: TODO;
+  createArgs: CreateRuleSetInstructionDataArgs['createArgs'];
+  ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };

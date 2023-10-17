@@ -194,6 +194,5 @@ export type VerifyInput<
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
-  discriminator: TODO;
-  verifyArgs: TODO;
+  verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
 };

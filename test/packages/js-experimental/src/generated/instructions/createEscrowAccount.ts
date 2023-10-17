@@ -237,5 +237,4 @@ export type CreateEscrowAccountInput<
   sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** Authority/creator of the escrow account */
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
 };

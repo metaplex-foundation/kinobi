@@ -122,8 +122,7 @@ export function initializeMint2Instruction<
 // Input.
 export type InitializeMint2Input<TAccountMint extends string> = {
   mint: Base58EncodedAddress<TAccountMint>;
-  discriminator: TODO;
-  decimals: TODO;
-  mintAuthority: TODO;
-  freezeAuthority: TODO;
+  decimals: InitializeMint2InstructionDataArgs['decimals'];
+  mintAuthority: InitializeMint2InstructionDataArgs['mintAuthority'];
+  freezeAuthority: InitializeMint2InstructionDataArgs['freezeAuthority'];
 };

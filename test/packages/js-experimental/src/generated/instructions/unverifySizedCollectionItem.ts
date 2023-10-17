@@ -211,5 +211,4 @@ export type UnverifySizedCollectionItemInput<
   collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
   /** Collection Authority Record PDA */
   collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
-  discriminator: TODO;
 };

@@ -95,7 +95,6 @@ export function requestUnitsInstruction<
 
 // Input.
 export type RequestUnitsInput = {
-  discriminator: TODO;
-  units: TODO;
-  additionalFee: TODO;
+  units: RequestUnitsInstructionDataArgs['units'];
+  additionalFee: RequestUnitsInstructionDataArgs['additionalFee'];
 };

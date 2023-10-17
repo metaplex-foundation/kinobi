@@ -204,5 +204,4 @@ export type BurnNftInput<
   splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
   /** Metadata of the Collection */
   collectionMetadata?: Base58EncodedAddress<TAccountCollectionMetadata>;
-  discriminator: TODO;
 };

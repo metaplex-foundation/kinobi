@@ -145,6 +145,5 @@ export type MintTokensToInput<
   mint: Base58EncodedAddress<TAccountMint>;
   token: Base58EncodedAddress<TAccountToken>;
   mintAuthority: Signer<TAccountMintAuthority>;
-  discriminator: TODO;
-  amount: TODO;
+  amount: MintTokensToInstructionDataArgs['amount'];
 };

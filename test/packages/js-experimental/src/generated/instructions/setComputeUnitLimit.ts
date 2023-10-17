@@ -90,6 +90,5 @@ export function setComputeUnitLimitInstruction<
 
 // Input.
 export type SetComputeUnitLimitInput = {
-  discriminator: TODO;
-  units: TODO;
+  units: SetComputeUnitLimitInstructionDataArgs['units'];
 };

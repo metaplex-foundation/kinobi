@@ -312,6 +312,5 @@ export type UseAssetInput<
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
-  discriminator: TODO;
-  useAssetArgs: TODO;
+  useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
 };

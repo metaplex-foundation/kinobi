@@ -162,7 +162,6 @@ export type TransferTokensCheckedInput<
   mint: Base58EncodedAddress<TAccountMint>;
   destination: Base58EncodedAddress<TAccountDestination>;
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
-  amount: TODO;
-  decimals: TODO;
+  amount: TransferTokensCheckedInstructionDataArgs['amount'];
+  decimals: TransferTokensCheckedInstructionDataArgs['decimals'];
 };

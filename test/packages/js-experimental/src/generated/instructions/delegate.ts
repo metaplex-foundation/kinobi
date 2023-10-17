@@ -336,6 +336,5 @@ export type DelegateInput<
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
-  discriminator: TODO;
-  delegateArgs: TODO;
+  delegateArgs: DelegateInstructionDataArgs['delegateArgs'];
 };

@@ -127,5 +127,4 @@ export type CloseTokenInput<
   account: Base58EncodedAddress<TAccountAccount>;
   destination: Base58EncodedAddress<TAccountDestination>;
   owner: Signer<TAccountOwner>;
-  discriminator: TODO;
 };

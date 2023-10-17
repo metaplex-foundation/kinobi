@@ -136,5 +136,4 @@ export type SetMintAuthorityInput<
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
   authority?: Signer<TAccountAuthority>;
   mintAuthority: Signer<TAccountMintAuthority>;
-  discriminator: TODO;
 };

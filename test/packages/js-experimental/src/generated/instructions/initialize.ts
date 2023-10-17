@@ -290,6 +290,5 @@ export type InitializeInput<
   collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
   tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
-  discriminator: TODO;
-  data: TODO;
+  data: InitializeInstructionDataArgs['data'];
 };

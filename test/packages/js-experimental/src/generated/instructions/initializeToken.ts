@@ -145,5 +145,4 @@ export type InitializeTokenInput<
   mint: Base58EncodedAddress<TAccountMint>;
   owner: Base58EncodedAddress<TAccountOwner>;
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
 };

@@ -142,6 +142,5 @@ export type TransferTokensInput<
   source: Base58EncodedAddress<TAccountSource>;
   destination: Base58EncodedAddress<TAccountDestination>;
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
-  amount: TODO;
+  amount: TransferTokensInstructionDataArgs['amount'];
 };

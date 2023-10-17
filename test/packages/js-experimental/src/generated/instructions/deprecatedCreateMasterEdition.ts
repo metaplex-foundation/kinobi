@@ -335,6 +335,5 @@ export type DeprecatedCreateMasterEditionInput<
   rent?: Base58EncodedAddress<TAccountRent>;
   /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
   oneTimePrintingAuthorizationMintAuthority: Signer<TAccountOneTimePrintingAuthorizationMintAuthority>;
-  discriminator: TODO;
-  createMasterEditionArgs: TODO;
+  createMasterEditionArgs: DeprecatedCreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };

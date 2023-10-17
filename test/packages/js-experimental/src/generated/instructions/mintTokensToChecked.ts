@@ -152,7 +152,6 @@ export type MintTokensToCheckedInput<
   mint: Base58EncodedAddress<TAccountMint>;
   token: Base58EncodedAddress<TAccountToken>;
   mintAuthority: Signer<TAccountMintAuthority>;
-  discriminator: TODO;
-  amount: TODO;
-  decimals: TODO;
+  amount: MintTokensToCheckedInstructionDataArgs['amount'];
+  decimals: MintTokensToCheckedInstructionDataArgs['decimals'];
 };

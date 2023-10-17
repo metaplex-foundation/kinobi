@@ -231,7 +231,6 @@ export type CreateMetadataAccountV2Input<
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
-  data: TODO;
-  isMutable: TODO;
+  data: CreateMetadataAccountV2InstructionDataArgs['data'];
+  isMutable: CreateMetadataAccountV2InstructionDataArgs['isMutable'];
 };

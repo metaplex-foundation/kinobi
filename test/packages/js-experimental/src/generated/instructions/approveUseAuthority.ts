@@ -280,6 +280,5 @@ export type ApproveUseAuthorityInput<
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
-  numberOfUses: TODO;
+  numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
 };

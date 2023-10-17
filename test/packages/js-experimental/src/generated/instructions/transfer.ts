@@ -379,7 +379,6 @@ export type TransferInput<
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
-  discriminator: TODO;
-  transferArgs: TODO;
-  tokenStandard: TODO;
+  transferArgs: TransferInstructionDataArgs['transferArgs'];
+  tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };

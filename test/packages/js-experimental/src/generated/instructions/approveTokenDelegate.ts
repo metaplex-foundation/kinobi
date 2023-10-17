@@ -146,6 +146,5 @@ export type ApproveTokenDelegateInput<
   source: Base58EncodedAddress<TAccountSource>;
   delegate: Base58EncodedAddress<TAccountDelegate>;
   owner: Signer<TAccountOwner>;
-  discriminator: TODO;
-  amount: TODO;
+  amount: ApproveTokenDelegateInstructionDataArgs['amount'];
 };

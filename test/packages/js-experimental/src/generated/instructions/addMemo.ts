@@ -62,5 +62,5 @@ export function addMemoInstruction<
 
 // Input.
 export type AddMemoInput = {
-  memo: TODO;
+  memo: AddMemoInstructionDataArgs['memo'];
 };

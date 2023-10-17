@@ -177,9 +177,8 @@ export type DeprecatedSetReservationListInput<
   reservationList: Base58EncodedAddress<TAccountReservationList>;
   /** The resource you tied the reservation list too */
   resource: Signer<TAccountResource>;
-  discriminator: TODO;
-  reservations: TODO;
-  totalReservationSpots: TODO;
-  offset: TODO;
-  totalSpotOffset: TODO;
+  reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
+  totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];
+  offset: DeprecatedSetReservationListInstructionDataArgs['offset'];
+  totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
 };

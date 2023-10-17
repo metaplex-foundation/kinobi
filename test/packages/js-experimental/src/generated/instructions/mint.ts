@@ -328,6 +328,5 @@ export type MintInput<
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
-  discriminator: TODO;
-  mintArgs: TODO;
+  mintArgs: MintInstructionDataArgs['mintArgs'];
 };

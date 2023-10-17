@@ -320,5 +320,4 @@ export type SetCollectionInput<
   newCollectionAuthorityRecord: Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>;
   tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
-  discriminator: TODO;
 };

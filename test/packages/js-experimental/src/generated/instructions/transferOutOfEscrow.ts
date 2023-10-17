@@ -328,6 +328,5 @@ export type TransferOutOfEscrowInput<
   sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
   /** Authority/creator of the escrow account */
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
-  amount: TODO;
+  amount: TransferOutOfEscrowInstructionDataArgs['amount'];
 };

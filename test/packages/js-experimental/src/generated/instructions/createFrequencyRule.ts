@@ -173,9 +173,8 @@ export type CreateFrequencyRuleInput<
   frequencyPda: Base58EncodedAddress<TAccountFrequencyPda>;
   /** System program */
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
-  discriminator: TODO;
-  ruleSetName: TODO;
-  freqRuleName: TODO;
-  lastUpdate: TODO;
-  period: TODO;
+  ruleSetName: CreateFrequencyRuleInstructionDataArgs['ruleSetName'];
+  freqRuleName: CreateFrequencyRuleInstructionDataArgs['freqRuleName'];
+  lastUpdate: CreateFrequencyRuleInstructionDataArgs['lastUpdate'];
+  period: CreateFrequencyRuleInstructionDataArgs['period'];
 };

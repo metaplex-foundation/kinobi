@@ -265,6 +265,5 @@ export type DeprecatedMintPrintingTokensViaTokenInput<
   tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
   /** Rent */
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
-  mintPrintingTokensViaTokenArgs: TODO;
+  mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };

@@ -139,8 +139,7 @@ export type CreateAccountInput<
 > = {
   payer?: Signer<TAccountPayer>;
   newAccount: Signer<TAccountNewAccount>;
-  discriminator: TODO;
-  lamports: TODO;
-  space: TODO;
-  programId: TODO;
+  lamports: CreateAccountInstructionDataArgs['lamports'];
+  space: CreateAccountInstructionDataArgs['space'];
+  programId: CreateAccountInstructionDataArgs['programId'];
 };

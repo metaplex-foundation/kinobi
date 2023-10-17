@@ -169,5 +169,4 @@ export type FreezeDelegatedAccountInput<
   mint: Base58EncodedAddress<TAccountMint>;
   /** Token Program */
   tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
-  discriminator: TODO;
 };

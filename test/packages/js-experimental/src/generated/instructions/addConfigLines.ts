@@ -148,7 +148,6 @@ export type AddConfigLinesInput<
 > = {
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
-  index: TODO;
-  configLines: TODO;
+  index: AddConfigLinesInstructionDataArgs['index'];
+  configLines: AddConfigLinesInstructionDataArgs['configLines'];
 };

@@ -35,33 +35,55 @@ export function getInstructionInputTypeFragment(
     };
   });
 
+  // Arg link imports.
+  const argLinkImports = new ImportMap();
+  if (instructionNode.dataArgs.link) {
+    argLinkImports.mergeWith(dataArgsManifest.looseType);
+  }
+  if (instructionNode.extraArgs.link) {
+    argLinkImports.mergeWith(extraArgsManifest.looseType);
+  }
+
   // Arguments.
-  const rawArgs = [
-    ...(instructionNode.dataArgs.link
-      ? []
-      : instructionNode.dataArgs.struct.fields),
-    ...(instructionNode.extraArgs.link
-      ? []
-      : instructionNode.extraArgs.struct.fields),
-  ];
-  const args = rawArgs.map((arg) => {
-    const renamedName = renamedArgs.get(arg.name) ?? arg.name;
+  const resolveArg = (arg: nodes.StructFieldTypeNode) => {
     const resolvedArg = resolvedInputs.find(
       (input) => input.kind === 'arg' && input.name === arg.name
-    ) as ResolvedInstructionArg;
-    return {
-      ...resolvedArg,
-      renamedName,
-    };
-  });
+    ) as ResolvedInstructionArg | undefined;
+    if (arg.defaultsTo?.strategy === 'omitted') return [];
+    const renamedName = renamedArgs.get(arg.name) ?? arg.name;
+    const optionalSign = arg.defaultsTo || resolvedArg ? '?' : '';
+    return [
+      {
+        ...arg,
+        ...resolvedArg,
+        renamedName,
+        optionalSign,
+      },
+    ];
+  };
+  const dataArgsType = instructionNode.dataArgs.link
+    ? `${pascalCase(instructionNode.dataArgs.link.name)}Args`
+    : `${pascalCase(instructionNode.dataArgs.name)}Args`;
+  const dataArgs = instructionNode.dataArgs.link
+    ? []
+    : instructionNode.dataArgs.struct.fields.flatMap(resolveArg);
+  const extraArgsType = instructionNode.extraArgs.link
+    ? `${pascalCase(instructionNode.extraArgs.link.name)}Args`
+    : `${pascalCase(instructionNode.extraArgs.name)}Args`;
+  const extraArgs = instructionNode.extraArgs.link
+    ? []
+    : instructionNode.extraArgs.struct.fields.flatMap(resolveArg);
 
   return fragmentFromTemplate('instructionInputType.njk', {
     instruction: instructionNode,
     program: programNode,
     accounts,
-    args,
+    dataArgs,
+    dataArgsType,
+    extraArgs,
+    extraArgsType,
   })
-    .mergeImportsWith(accountImports)
+    .mergeImportsWith(accountImports, argLinkImports)
     .addImports('solanaAddresses', ['Base58EncodedAddress']);
 }
 

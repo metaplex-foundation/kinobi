@@ -231,5 +231,4 @@ export type ApproveCollectionAuthorityInput<
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
 };

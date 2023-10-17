@@ -16,7 +16,10 @@ export type {{ instruction.name | pascalCase }}Input
     {% endif %}
     {{ account.name | camelCase }}{{ account.optionalSign }}: {{ account.type }},
   {% endfor %}
-  {% for arg in args %}
-    {{ arg.renamedName | camelCase }}{{ arg.optionalSign }}: TODO,
+  {% for dataArg in dataArgs %}
+    {{ dataArg.renamedName | camelCase }}{{ dataArg.optionalSign }}: {{ dataArgsType }}["{{ dataArg.name | camelCase }}"],
+  {% endfor %}
+  {% for extraArg in extraArgs %}
+    {{ extraArg.renamedName | camelCase }}{{ extraArg.optionalSign }}: {{ extraArgsType }}["{{ extraArg.name | camelCase }}"],
   {% endfor %}
 }

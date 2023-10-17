@@ -336,6 +336,5 @@ export type RevokeInput<
   authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
   authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
-  discriminator: TODO;
-  revokeArgs: TODO;
+  revokeArgs: RevokeInstructionDataArgs['revokeArgs'];
 };

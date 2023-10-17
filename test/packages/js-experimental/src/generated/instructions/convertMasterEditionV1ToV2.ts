@@ -135,5 +135,4 @@ export type ConvertMasterEditionV1ToV2Input<
   oneTimeAuth: Base58EncodedAddress<TAccountOneTimeAuth>;
   /** Printing mint */
   printingMint: Base58EncodedAddress<TAccountPrintingMint>;
-  discriminator: TODO;
 };

@@ -92,5 +92,4 @@ export function getTokenDataSizeInstruction<
 // Input.
 export type GetTokenDataSizeInput<TAccountMint extends string> = {
   mint: Base58EncodedAddress<TAccountMint>;
-  discriminator: TODO;
 };

@@ -390,6 +390,5 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
   /** Rent info */
   rent?: Base58EncodedAddress<TAccountRent>;
-  discriminator: TODO;
-  mintNewEditionFromMasterEditionViaTokenArgs: TODO;
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };

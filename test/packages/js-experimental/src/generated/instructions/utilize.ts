@@ -307,6 +307,5 @@ export type UtilizeInput<
   useAuthorityRecord?: Base58EncodedAddress<TAccountUseAuthorityRecord>;
   /** Program As Signer (Burner) */
   burner?: Base58EncodedAddress<TAccountBurner>;
-  discriminator: TODO;
-  numberOfUses: TODO;
+  numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
 };

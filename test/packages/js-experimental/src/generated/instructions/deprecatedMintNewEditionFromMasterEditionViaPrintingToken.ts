@@ -359,5 +359,4 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   rent?: Base58EncodedAddress<TAccountRent>;
   /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
   reservationList?: Base58EncodedAddress<TAccountReservationList>;
-  discriminator: TODO;
 };

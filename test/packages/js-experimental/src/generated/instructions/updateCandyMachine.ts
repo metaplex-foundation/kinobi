@@ -139,6 +139,5 @@ export type UpdateCandyMachineInput<
 > = {
   candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
-  data: TODO;
+  data: UpdateCandyMachineInstructionDataArgs['data'];
 };

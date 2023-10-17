@@ -417,8 +417,7 @@ export type ValidateInput<
   optRuleNonsigner4?: Base58EncodedAddress<TAccountOptRuleNonsigner4>;
   /** Optional rule validation non-signer 5 */
   optRuleNonsigner5?: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
-  discriminator: TODO;
-  ruleSetName: TODO;
-  operation: TODO;
-  payload: TODO;
+  ruleSetName: ValidateInstructionDataArgs['ruleSetName'];
+  operation: ValidateInstructionDataArgs['operation'];
+  payload: ValidateInstructionDataArgs['payload'];
 };

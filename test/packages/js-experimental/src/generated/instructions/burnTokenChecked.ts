@@ -149,7 +149,6 @@ export type BurnTokenCheckedInput<
   account: Base58EncodedAddress<TAccountAccount>;
   mint: Base58EncodedAddress<TAccountMint>;
   authority?: Signer<TAccountAuthority>;
-  discriminator: TODO;
-  amount: TODO;
-  decimals: TODO;
+  amount: BurnTokenCheckedInstructionDataArgs['amount'];
+  decimals: BurnTokenCheckedInstructionDataArgs['decimals'];
 };

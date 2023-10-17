@@ -260,7 +260,6 @@ export type DummyInput<
   delegate?: Signer<TAccountDelegate>;
   delegateRecord?: Base58EncodedAddress<TAccountDelegateRecord>;
   tokenOrAtaProgram?: Base58EncodedAddress<TAccountTokenOrAtaProgram>;
-  discriminator: TODO;
-  identityArg: TODO;
-  proof: TODO;
+  identityArg?: DummyInstructionExtraArgs['identityArg'];
+  proof?: DummyInstructionExtraArgs['proof'];
 };
