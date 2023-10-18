@@ -11,15 +11,23 @@ import { getInstructionAccountTypeParamFragment } from './instructionAccountType
 
 export function getInstructionFunctionHighLevelFragment(
   instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode
+  programNode: nodes.ProgramNode,
+  renamedArgs: Map<string, string>
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
-  const hasArgs =
+  const hasDataArgs =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.filter(
       (field) => field.defaultsTo?.strategy !== 'omitted'
     ).length > 0;
+  const hasExtraArgs =
+    !!instructionNode.extraArgs.link ||
+    instructionNode.extraArgs.struct.fields.filter(
+      (field) => field.defaultsTo?.strategy !== 'omitted'
+    ).length > 0;
+  const hasAnyArgs = hasDataArgs || hasExtraArgs;
   const functionName = camelCase(instructionNode.name);
+  const lowLevelFunctionName = `${functionName}Instruction`;
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(instructionNode);
   const inputTypeFragment = getInputType(instructionNode);
@@ -33,8 +41,11 @@ export function getInstructionFunctionHighLevelFragment(
       instruction: instructionNode,
       program: programNode,
       hasAccounts,
-      hasArgs,
+      hasDataArgs,
+      hasExtraArgs,
+      hasAnyArgs,
       functionName,
+      lowLevelFunctionName,
       typeParams: typeParamsFragment.render,
       instructionType: instructionTypeFragment.render,
       inputType: inputTypeFragment.render,
@@ -49,7 +60,12 @@ export function getInstructionFunctionHighLevelFragment(
       contextFragment
     )
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('shared', ['WrappedInstruction', 'CustomGeneratedInstruction']);
+    .addImports('shared', [
+      'CustomGeneratedInstruction',
+      'getAccountMetasAndSigners',
+      'ResolvedAccount',
+      'WrappedInstruction',
+    ]);
 
   if (hasAccounts) {
     //

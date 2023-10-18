@@ -2,9 +2,11 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ 
 export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
 export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
 export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & {{ customGeneratedInstruction }} | {{ inputType }}, rawInput?: {{ inputType }}): Promise<TReturn | WrappedInstruction<{{ instructionType }}>> {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as {{ context }} | {{ context }} & {{ customGeneratedInstruction }};
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
 
+  // Program address.
   const defaultProgramAddress = "{{ program.publicKey }}" as Base58EncodedAddress<"{{ program.publicKey }}">;
   const programAddress = (
     context.getProgramAddress
@@ -12,16 +14,51 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  {% if hasAccounts %}
+    // Original accounts.
+    type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}>[0];
+    const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+      {% for account in instruction.accounts %}
+        {{ account.name | camelcase }}: { value: input.{{ account.name | camelcase }} ?? null, isWritable: {{ "true" if account.isWritable else "false" }} },
+      {% endfor %}
+    };
+  {% endif %}
+
+  {% if hasAnyArgs %}
+    // Original args.
+    const args: TransferTokensInstructionDataArgs = {
+      amount: input.amount,
+    };
+  {% endif %}
+
+  // Resolve default values.
+  // TODO
+
+  {% if hasAccounts %}
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+  {% endif %}
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: {{ functionName }}Instruction(
+    instruction: {{ lowLevelFunctionName }}(
       {%- if hasAccounts -%}
-        input as any, 
+        accountMetas as AccountMetas,
       {% endif %}
-      {%- if hasArgs -%}
-        input, 
+      {%- if hasDataArgs -%}
+        args, 
       {% endif %}
-      programAddress),
-    signers: [],
+      programAddress) as {{ instructionType }},
+    {{ 'signers' if hasAccounts else 'signers: []'}},
     bytesCreatedOnChain: 0,
   };
 }

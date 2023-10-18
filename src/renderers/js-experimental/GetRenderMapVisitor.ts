@@ -274,7 +274,11 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       this.program
     );
     const instructionFunctionHighLevelFragment =
-      getInstructionFunctionHighLevelFragment(instruction, this.program);
+      getInstructionFunctionHighLevelFragment(
+        instruction,
+        this.program,
+        renamedArgs
+      );
 
     // Imports and interfaces.
     const imports = new ImportMap().mergeWith(
