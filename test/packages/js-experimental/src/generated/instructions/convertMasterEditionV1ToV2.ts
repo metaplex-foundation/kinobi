@@ -293,8 +293,6 @@ export async function convertMasterEditionV1ToV2<
     printingMint: { value: input.printingMint ?? null, isWritable: true },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

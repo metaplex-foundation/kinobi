@@ -163,8 +163,6 @@ export async function setComputeUnitPrice<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-
   // Remaining accounts.
   // TODO
 

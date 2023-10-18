@@ -346,8 +346,6 @@ export async function approveTokenDelegateChecked<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

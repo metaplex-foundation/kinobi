@@ -370,8 +370,6 @@ export async function revokeCollectionAuthority<
     mint: { value: input.mint ?? null, isWritable: false },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

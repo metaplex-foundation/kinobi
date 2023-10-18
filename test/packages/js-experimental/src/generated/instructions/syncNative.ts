@@ -180,8 +180,6 @@ export async function syncNative<
     account: { value: input.account ?? null, isWritable: true },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

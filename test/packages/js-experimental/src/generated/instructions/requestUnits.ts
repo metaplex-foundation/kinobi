@@ -158,8 +158,6 @@ export async function requestUnits<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-
   // Remaining accounts.
   // TODO
 

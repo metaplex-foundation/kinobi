@@ -182,8 +182,6 @@ export async function puffMetadata<
     metadata: { value: input.metadata ?? null, isWritable: true },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

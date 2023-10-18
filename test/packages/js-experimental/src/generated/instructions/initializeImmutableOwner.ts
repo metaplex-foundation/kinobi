@@ -191,8 +191,6 @@ export async function initializeImmutableOwner<
     account: { value: input.account ?? null, isWritable: true },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

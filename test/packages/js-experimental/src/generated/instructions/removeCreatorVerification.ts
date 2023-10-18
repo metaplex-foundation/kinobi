@@ -247,8 +247,6 @@ export async function removeCreatorVerification<
     creator: { value: input.creator ?? null, isWritable: false },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

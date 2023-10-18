@@ -41,6 +41,7 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectSigner,
   expectSome,
   getAccountMetasAndSigners,
 } from '../shared';
@@ -557,7 +558,7 @@ export async function dummy<
     accounts.mintAuthority.value = expectSome(accounts.updateAuthority.value);
   }
   if (!accounts.foo.value) {
-    accounts.foo.value = expectSome(accounts.bar.value).publicKey;
+    accounts.foo.value = expectSigner(accounts.bar.value).publicKey;
   }
   if (!accounts.delegateRecord.value) {
     if (accounts.delegate.value) {

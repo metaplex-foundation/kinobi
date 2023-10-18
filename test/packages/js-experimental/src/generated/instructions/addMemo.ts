@@ -124,8 +124,6 @@ export async function addMemo<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-
   // Remaining accounts.
   // TODO
 

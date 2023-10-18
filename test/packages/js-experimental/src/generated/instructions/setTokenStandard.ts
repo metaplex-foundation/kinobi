@@ -329,8 +329,6 @@ export async function setTokenStandard<
     edition: { value: input.edition ?? null, isWritable: false },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

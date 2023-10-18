@@ -58,8 +58,8 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectAddress,
   expectProgramDerivedAddress,
-  expectPublicKey,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -523,7 +523,7 @@ export async function createMetadataAccount<
   // Resolve default values.
   if (!accounts.metadata.value) {
     accounts.metadata.value = findMetadataPda(context, {
-      mint: expectPublicKey(accounts.mint.value),
+      mint: expectAddress(accounts.mint.value),
     });
   }
   if (!accounts.systemProgram.value) {

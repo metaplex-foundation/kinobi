@@ -298,8 +298,6 @@ export async function updatePrimarySaleHappenedViaToken<
     token: { value: input.token ?? null, isWritable: false },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

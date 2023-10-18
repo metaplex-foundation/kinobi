@@ -29,8 +29,10 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
     const args = { ...input, {{ renamedArgs }} };
   {% endif %}
 
-  // Resolve default values.
-  {{ resolvedInputs }}
+  {% if resolvedInputs %}
+    // Resolve default values.
+    {{ resolvedInputs }}
+  {% endif %}
 
   {% if hasAccounts %}
     // Get account metas and signers.

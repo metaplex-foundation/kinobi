@@ -163,8 +163,6 @@ export async function setComputeUnitLimit<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-
   // Remaining accounts.
   // TODO
 

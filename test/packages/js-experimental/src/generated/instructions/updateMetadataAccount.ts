@@ -341,8 +341,6 @@ export async function updateMetadataAccount<
   // Original args.
   const args = { ...input, updateAuthority: input.updateAuthorityArg };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

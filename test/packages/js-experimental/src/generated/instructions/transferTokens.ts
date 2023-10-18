@@ -40,7 +40,7 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
-  expectSome,
+  expectSigner,
   getAccountMetasAndSigners,
 } from '../shared';
 
@@ -306,7 +306,7 @@ export async function transferTokens<
 
   // Resolve default values.
   if (!accounts.source.value) {
-    accounts.source.value = expectSome(accounts.authority.value).publicKey;
+    accounts.source.value = expectSigner(accounts.authority.value).publicKey;
   }
 
   // Get account metas and signers.

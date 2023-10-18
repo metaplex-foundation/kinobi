@@ -57,16 +57,23 @@ export function getInstructionInputDefaultFragment(
   switch (defaultsTo.kind) {
     case 'account':
       const name = camelCase(defaultsTo.name);
+      if (
+        input.kind === 'account' &&
+        input.resolvedIsSigner &&
+        !input.isSigner
+      ) {
+        return defaultFragment(
+          `expectSigner(${accountObject}.${name}.value).publicKey`
+        ).addImports('shared', 'expectSigner');
+      }
       if (input.kind === 'account') {
         return defaultFragment(
-          input.resolvedIsSigner && !input.isSigner
-            ? `expectSome(${accountObject}.${name}.value).publicKey`
-            : `expectSome(${accountObject}.${name}.value)`
+          `expectSome(${accountObject}.${name}.value)`
         ).addImports('shared', 'expectSome');
       }
       return defaultFragment(
-        `expectPublicKey(${accountObject}.${name}.value)`
-      ).addImports('shared', 'expectPublicKey');
+        `expectAddress(${accountObject}.${name}.value)`
+      ).addImports('shared', 'expectAddress');
 
     case 'pda':
       const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
@@ -80,10 +87,10 @@ export function getInstructionInputDefaultFragment(
           const seedValue = defaultsTo.seeds[seed];
           if (seedValue.kind === 'account') {
             return fragment(
-              `${seed}: expectPublicKey(${accountObject}.${camelCase(
+              `${seed}: expectAddress(${accountObject}.${camelCase(
                 seedValue.name
               )}.value)`
-            ).addImports('shared', 'expectPublicKey');
+            ).addImports('shared', 'expectAddress');
           }
           if (seedValue.kind === 'arg') {
             return fragment(

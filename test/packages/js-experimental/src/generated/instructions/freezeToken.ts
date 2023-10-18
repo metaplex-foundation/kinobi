@@ -261,8 +261,6 @@ export async function freezeToken<
     owner: { value: input.owner ?? null, isWritable: false },
   };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,

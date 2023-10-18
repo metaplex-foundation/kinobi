@@ -396,8 +396,6 @@ export async function verify<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
     accounts,
