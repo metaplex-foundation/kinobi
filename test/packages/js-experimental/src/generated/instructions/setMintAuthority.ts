@@ -33,9 +33,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -250,6 +252,7 @@ export async function setMintAuthority<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -270,6 +273,7 @@ export async function setMintAuthority<
     TAccountMintAuthority
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
@@ -281,9 +285,41 @@ export async function setMintAuthority<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof setMintAuthorityInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: setMintAuthorityInstruction(input as any, programAddress),
-    signers: [],
+    instruction: setMintAuthorityInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as SetMintAuthorityInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority,
+      TAccountMintAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

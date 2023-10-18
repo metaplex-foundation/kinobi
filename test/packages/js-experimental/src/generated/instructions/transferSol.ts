@@ -36,9 +36,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -192,6 +194,7 @@ export async function transferSol<
       TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -203,6 +206,7 @@ export async function transferSol<
     rawInput === undefined ? rawContext : rawInput
   ) as TransferSolInput<TAccountSource, TAccountDestination>;
 
+  // Program address.
   const defaultProgramAddress =
     '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>;
   const programAddress = (
@@ -214,9 +218,41 @@ export async function transferSol<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof transferSolInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    source: { value: input.source ?? null, isWritable: true },
+    destination: { value: input.destination ?? null, isWritable: true },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: transferSolInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: transferSolInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

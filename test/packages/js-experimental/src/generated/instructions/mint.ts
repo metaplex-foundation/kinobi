@@ -33,9 +33,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   MintArgs,
@@ -569,6 +571,7 @@ export async function mint<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -605,6 +608,7 @@ export async function mint<
     TAccountAuthorizationRules
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -616,9 +620,77 @@ export async function mint<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof mintInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    token: { value: input.token ?? null, isWritable: true },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: false },
+    mint: { value: input.mint ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    sysvarInstructions: {
+      value: input.sysvarInstructions ?? null,
+      isWritable: false,
+    },
+    splTokenProgram: {
+      value: input.splTokenProgram ?? null,
+      isWritable: false,
+    },
+    splAtaProgram: { value: input.splAtaProgram ?? null, isWritable: false },
+    authorizationRulesProgram: {
+      value: input.authorizationRulesProgram ?? null,
+      isWritable: false,
+    },
+    authorizationRules: {
+      value: input.authorizationRules ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: mintInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: mintInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as MintInstruction<
+      TProgram,
+      TAccountToken,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountPayer,
+      TAccountAuthority,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram,
+      TAccountSplAtaProgram,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

@@ -31,9 +31,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -178,6 +180,7 @@ export async function signMetadata<
       SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -189,6 +192,7 @@ export async function signMetadata<
     rawInput === undefined ? rawContext : rawInput
   ) as SignMetadataInput<TAccountMetadata, TAccountCreator>;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -200,9 +204,35 @@ export async function signMetadata<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof signMetadataInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    creator: { value: input.creator ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: signMetadataInstruction(input as any, programAddress),
-    signers: [],
+    instruction: signMetadataInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

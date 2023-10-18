@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -655,6 +657,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -701,6 +704,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountReservationList
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -712,13 +716,76 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    edition: { value: input.edition ?? null, isWritable: true },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: true },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
+    printingMint: { value: input.printingMint ?? null, isWritable: true },
+    masterTokenAccount: {
+      value: input.masterTokenAccount ?? null,
+      isWritable: true,
+    },
+    editionMarker: { value: input.editionMarker ?? null, isWritable: true },
+    burnAuthority: { value: input.burnAuthority ?? null, isWritable: false },
+    payer: { value: input.payer ?? null, isWritable: false },
+    masterUpdateAuthority: {
+      value: input.masterUpdateAuthority ?? null,
+      isWritable: false,
+    },
+    masterMetadata: { value: input.masterMetadata ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+    reservationList: { value: input.reservationList ?? null, isWritable: true },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction:
       deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction(
-        input as any,
+        accountMetas as AccountMetas,
         programAddress
-      ),
-    signers: [],
+      ) as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+        TProgram,
+        TAccountMetadata,
+        TAccountEdition,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPrintingMint,
+        TAccountMasterTokenAccount,
+        TAccountEditionMarker,
+        TAccountBurnAuthority,
+        TAccountPayer,
+        TAccountMasterUpdateAuthority,
+        TAccountMasterMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountReservationList
+      >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

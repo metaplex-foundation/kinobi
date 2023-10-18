@@ -28,7 +28,9 @@ import { IInstruction, IInstructionWithData } from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -139,6 +141,7 @@ export async function requestHeapFrame<
 ): Promise<
   TReturn | WrappedInstruction<RequestHeapFrameInstruction<TProgram>>
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -150,6 +153,7 @@ export async function requestHeapFrame<
     rawInput === undefined ? rawContext : rawInput
   ) as RequestHeapFrameInput;
 
+  // Program address.
   const defaultProgramAddress =
     'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<'ComputeBudget111111111111111111111111111111'>;
   const programAddress = (
@@ -161,8 +165,25 @@ export async function requestHeapFrame<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: requestHeapFrameInstruction(input, programAddress),
+    instruction: requestHeapFrameInstruction(
+      args,
+      programAddress
+    ) as RequestHeapFrameInstruction<TProgram>,
     signers: [],
     bytesCreatedOnChain: 0,
   };

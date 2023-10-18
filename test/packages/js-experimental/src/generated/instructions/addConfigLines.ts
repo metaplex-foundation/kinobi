@@ -38,9 +38,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   ConfigLine,
@@ -227,6 +229,7 @@ export async function addConfigLines<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -242,6 +245,7 @@ export async function addConfigLines<
     rawInput === undefined ? rawContext : rawInput
   ) as AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>;
 
+  // Program address.
   const defaultProgramAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
@@ -253,9 +257,45 @@ export async function addConfigLines<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof addConfigLinesInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: addConfigLinesInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: addConfigLinesInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as AddConfigLinesInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

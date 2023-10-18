@@ -19,14 +19,14 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
     type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}>[0];
     const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
       {% for account in instruction.accounts %}
-        {{ account.name | camelcase }}: { value: input.{{ account.name | camelcase }} ?? null, isWritable: {{ "true" if account.isWritable else "false" }} },
+        {{ account.name | camelCase }}: { value: input.{{ account.name | camelCase }} ?? null, isWritable: {{ "true" if account.isWritable else "false" }} },
       {% endfor %}
     };
   {% endif %}
 
   {% if hasAnyArgs %}
     // Original args.
-    const args: TransferTokensInstructionDataArgs = {
+    const args = {
       amount: input.amount,
     };
   {% endif %}

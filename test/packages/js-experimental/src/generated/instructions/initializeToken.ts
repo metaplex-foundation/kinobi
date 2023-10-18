@@ -31,8 +31,10 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -272,6 +274,7 @@ export async function initializeToken<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -294,6 +297,7 @@ export async function initializeToken<
     TAccountRent
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -305,9 +309,43 @@ export async function initializeToken<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof initializeTokenInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    account: { value: input.account ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: false },
+    owner: { value: input.owner ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: initializeTokenInstruction(input as any, programAddress),
-    signers: [],
+    instruction: initializeTokenInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as InitializeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner,
+      TAccountRent
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

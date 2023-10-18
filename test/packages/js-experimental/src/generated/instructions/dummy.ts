@@ -35,9 +35,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -474,6 +476,7 @@ export async function dummy<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -506,6 +509,7 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
@@ -517,9 +521,66 @@ export async function dummy<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof dummyInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    edition: { value: input.edition ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: true },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: true },
+    foo: { value: input.foo ?? null, isWritable: true },
+    bar: { value: input.bar ?? null, isWritable: false },
+    delegate: { value: input.delegate ?? null, isWritable: false },
+    delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
+    tokenOrAtaProgram: {
+      value: input.tokenOrAtaProgram ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: dummyInstruction(input as any, programAddress),
-    signers: [],
+    instruction: dummyInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as DummyInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountFoo,
+      TAccountBar,
+      TAccountDelegate,
+      TAccountDelegateRecord,
+      TAccountTokenOrAtaProgram
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

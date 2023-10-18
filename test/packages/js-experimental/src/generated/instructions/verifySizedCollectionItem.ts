@@ -33,9 +33,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -381,6 +383,7 @@ export async function verifySizedCollectionItem<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -409,6 +412,7 @@ export async function verifySizedCollectionItem<
     TAccountCollectionAuthorityRecord
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -420,12 +424,60 @@ export async function verifySizedCollectionItem<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof verifySizedCollectionItemInstruction
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    collectionAuthority: {
+      value: input.collectionAuthority ?? null,
+      isWritable: false,
+    },
+    payer: { value: input.payer ?? null, isWritable: true },
+    collectionMint: { value: input.collectionMint ?? null, isWritable: false },
+    collection: { value: input.collection ?? null, isWritable: true },
+    collectionMasterEditionAccount: {
+      value: input.collectionMasterEditionAccount ?? null,
+      isWritable: false,
+    },
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: verifySizedCollectionItemInstruction(
-      input as any,
+      accountMetas as AccountMetas,
       programAddress
-    ),
-    signers: [],
+    ) as VerifySizedCollectionItemInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

@@ -43,9 +43,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   DataV2,
@@ -258,6 +260,7 @@ export async function updateMetadataAccountV2<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -273,6 +276,7 @@ export async function updateMetadataAccountV2<
     rawInput === undefined ? rawContext : rawInput
   ) as UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -284,13 +288,48 @@ export async function updateMetadataAccountV2<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof updateMetadataAccountV2Instruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: updateMetadataAccountV2Instruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as UpdateMetadataAccountV2Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

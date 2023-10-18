@@ -14,6 +14,8 @@ export function getInstructionFunctionHighLevelFragment(
   programNode: nodes.ProgramNode,
   renamedArgs: Map<string, string>
 ): Fragment {
+  console.log({ renamedArgs });
+
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
     !!instructionNode.dataArgs.link ||
@@ -33,6 +35,20 @@ export function getInstructionFunctionHighLevelFragment(
   const inputTypeFragment = getInputType(instructionNode);
   const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
   const context = new ContextMap().add('getProgramAddress');
+
+  // const oldResolvedInputs = visit(
+  //   instruction,
+  //   this.resolvedInstructionInputVisitor
+  // ).map((input: ResolvedInstructionInput) => {
+  //   const renderedInput = getInstructionInputDefaultFragment(
+  //     input,
+  //     instruction.optionalAccountStrategy,
+  //     argObject
+  //   );
+  //   oldImports.mergeWith(renderedInput.imports);
+  //   interfaces.mergeWith(renderedInput.interfaces);
+  //   return { ...input, render: renderedInput.render };
+  // });
 
   const contextFragment = context.toFragment();
   const functionFragment = fragmentFromTemplate(

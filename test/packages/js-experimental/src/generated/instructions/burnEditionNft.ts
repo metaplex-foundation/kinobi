@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -469,6 +471,7 @@ export async function burnEditionNft<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -503,6 +506,7 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -514,9 +518,79 @@ export async function burnEditionNft<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof burnEditionNftInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    owner: { value: input.owner ?? null, isWritable: true },
+    printEditionMint: {
+      value: input.printEditionMint ?? null,
+      isWritable: true,
+    },
+    masterEditionMint: {
+      value: input.masterEditionMint ?? null,
+      isWritable: false,
+    },
+    printEditionTokenAccount: {
+      value: input.printEditionTokenAccount ?? null,
+      isWritable: true,
+    },
+    masterEditionTokenAccount: {
+      value: input.masterEditionTokenAccount ?? null,
+      isWritable: false,
+    },
+    masterEditionAccount: {
+      value: input.masterEditionAccount ?? null,
+      isWritable: true,
+    },
+    printEditionAccount: {
+      value: input.printEditionAccount ?? null,
+      isWritable: true,
+    },
+    editionMarkerAccount: {
+      value: input.editionMarkerAccount ?? null,
+      isWritable: true,
+    },
+    splTokenProgram: {
+      value: input.splTokenProgram ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: burnEditionNftInstruction(input as any, programAddress),
-    signers: [],
+    instruction: burnEditionNftInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as BurnEditionNftInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountPrintEditionMint,
+      TAccountMasterEditionMint,
+      TAccountPrintEditionTokenAccount,
+      TAccountMasterEditionTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountPrintEditionAccount,
+      TAccountEditionMarkerAccount,
+      TAccountSplTokenProgram
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

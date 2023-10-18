@@ -33,9 +33,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -435,6 +437,7 @@ export async function createEscrowAccount<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -467,6 +470,7 @@ export async function createEscrowAccount<
     TAccountAuthority
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -478,9 +482,56 @@ export async function createEscrowAccount<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof createEscrowAccountInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    escrow: { value: input.escrow ?? null, isWritable: true },
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: false },
+    tokenAccount: { value: input.tokenAccount ?? null, isWritable: false },
+    edition: { value: input.edition ?? null, isWritable: false },
+    payer: { value: input.payer ?? null, isWritable: true },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    sysvarInstructions: {
+      value: input.sysvarInstructions ?? null,
+      isWritable: false,
+    },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: createEscrowAccountInstruction(input as any, programAddress),
-    signers: [],
+    instruction: createEscrowAccountInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as CreateEscrowAccountInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

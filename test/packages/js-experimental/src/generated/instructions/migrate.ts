@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   MigrateArgs,
@@ -491,6 +493,7 @@ export async function migrate<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -525,6 +528,7 @@ export async function migrate<
     TAccountAuthorizationRules
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -536,9 +540,73 @@ export async function migrate<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof migrateInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: false },
+    tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: false },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: false,
+    },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    sysvarInstructions: {
+      value: input.sysvarInstructions ?? null,
+      isWritable: false,
+    },
+    authorizationRules: {
+      value: input.authorizationRules ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: migrateInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: migrateInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as MigrateInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountCollectionMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRules
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

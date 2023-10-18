@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -415,6 +417,7 @@ export async function approveCollectionAuthority<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -445,6 +448,7 @@ export async function approveCollectionAuthority<
     TAccountRent
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -456,12 +460,59 @@ export async function approveCollectionAuthority<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof approveCollectionAuthorityInstruction
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: true,
+    },
+    newCollectionAuthority: {
+      value: input.newCollectionAuthority ?? null,
+      isWritable: false,
+    },
+    updateAuthority: { value: input.updateAuthority ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: true },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    mint: { value: input.mint ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: approveCollectionAuthorityInstruction(
-      input as any,
+      accountMetas as AccountMetas,
       programAddress
-    ),
-    signers: [],
+    ) as ApproveCollectionAuthorityInstruction<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionAuthority,
+      TAccountUpdateAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountRent
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

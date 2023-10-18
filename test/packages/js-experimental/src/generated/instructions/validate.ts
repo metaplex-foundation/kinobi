@@ -34,9 +34,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   Operation,
@@ -684,6 +686,7 @@ export async function validate<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -726,6 +729,7 @@ export async function validate<
     TAccountOptRuleNonsigner5
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
   const programAddress = (
@@ -737,9 +741,84 @@ export async function validate<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof validateInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    payer: { value: input.payer ?? null, isWritable: true },
+    ruleSet: { value: input.ruleSet ?? null, isWritable: true },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    optRuleSigner1: { value: input.optRuleSigner1 ?? null, isWritable: false },
+    optRuleSigner2: { value: input.optRuleSigner2 ?? null, isWritable: false },
+    optRuleSigner3: { value: input.optRuleSigner3 ?? null, isWritable: false },
+    optRuleSigner4: { value: input.optRuleSigner4 ?? null, isWritable: false },
+    optRuleSigner5: { value: input.optRuleSigner5 ?? null, isWritable: false },
+    optRuleNonsigner1: {
+      value: input.optRuleNonsigner1 ?? null,
+      isWritable: false,
+    },
+    optRuleNonsigner2: {
+      value: input.optRuleNonsigner2 ?? null,
+      isWritable: false,
+    },
+    optRuleNonsigner3: {
+      value: input.optRuleNonsigner3 ?? null,
+      isWritable: false,
+    },
+    optRuleNonsigner4: {
+      value: input.optRuleNonsigner4 ?? null,
+      isWritable: false,
+    },
+    optRuleNonsigner5: {
+      value: input.optRuleNonsigner5 ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: validateInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: validateInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as ValidateInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountRuleSet,
+      TAccountSystemProgram,
+      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+        : TAccountOptRuleSigner1,
+      TAccountOptRuleSigner2,
+      TAccountOptRuleSigner3,
+      TAccountOptRuleSigner4,
+      TAccountOptRuleSigner5,
+      TAccountOptRuleNonsigner1,
+      TAccountOptRuleNonsigner2,
+      TAccountOptRuleNonsigner3,
+      TAccountOptRuleNonsigner4,
+      TAccountOptRuleNonsigner5
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

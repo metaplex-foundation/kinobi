@@ -30,8 +30,10 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -159,6 +161,7 @@ export async function initializeImmutableOwner<
       InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -170,6 +173,7 @@ export async function initializeImmutableOwner<
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeImmutableOwnerInput<TAccountAccount>;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -181,12 +185,34 @@ export async function initializeImmutableOwner<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof initializeImmutableOwnerInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    account: { value: input.account ?? null, isWritable: true },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: initializeImmutableOwnerInstruction(
-      input as any,
+      accountMetas as AccountMetas,
       programAddress
-    ),
-    signers: [],
+    ) as InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

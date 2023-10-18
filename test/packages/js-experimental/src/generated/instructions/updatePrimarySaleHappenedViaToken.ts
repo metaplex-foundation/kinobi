@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -253,6 +255,7 @@ export async function updatePrimarySaleHappenedViaToken<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -273,6 +276,7 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountToken
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -284,12 +288,43 @@ export async function updatePrimarySaleHappenedViaToken<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof updatePrimarySaleHappenedViaTokenInstruction
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    owner: { value: input.owner ?? null, isWritable: false },
+    token: { value: input.token ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: updatePrimarySaleHappenedViaTokenInstruction(
-      input as any,
+      accountMetas as AccountMetas,
       programAddress
-    ),
-    signers: [],
+    ) as UpdatePrimarySaleHappenedViaTokenInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountToken
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

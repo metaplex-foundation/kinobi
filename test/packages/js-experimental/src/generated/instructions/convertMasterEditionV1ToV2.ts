@@ -30,8 +30,10 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -248,6 +250,7 @@ export async function convertMasterEditionV1ToV2<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -268,6 +271,7 @@ export async function convertMasterEditionV1ToV2<
     TAccountPrintingMint
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -279,12 +283,43 @@ export async function convertMasterEditionV1ToV2<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof convertMasterEditionV1ToV2Instruction
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    masterEdition: { value: input.masterEdition ?? null, isWritable: true },
+    oneTimeAuth: { value: input.oneTimeAuth ?? null, isWritable: true },
+    printingMint: { value: input.printingMint ?? null, isWritable: true },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: convertMasterEditionV1ToV2Instruction(
-      input as any,
+      accountMetas as AccountMetas,
       programAddress
-    ),
-    signers: [],
+    ) as ConvertMasterEditionV1ToV2Instruction<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountOneTimeAuth,
+      TAccountPrintingMint
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

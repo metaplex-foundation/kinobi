@@ -35,9 +35,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   CandyMachineData,
@@ -517,6 +519,7 @@ export async function initialize<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -553,6 +556,7 @@ export async function initialize<
     TAccountSystemProgram
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
@@ -564,9 +568,78 @@ export async function initialize<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof initializeInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authorityPda: { value: input.authorityPda ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+    payer: { value: input.payer ?? null, isWritable: false },
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: false,
+    },
+    collectionMint: { value: input.collectionMint ?? null, isWritable: false },
+    collectionMasterEdition: {
+      value: input.collectionMasterEdition ?? null,
+      isWritable: false,
+    },
+    collectionUpdateAuthority: {
+      value: input.collectionUpdateAuthority ?? null,
+      isWritable: true,
+    },
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: true,
+    },
+    tokenMetadataProgram: {
+      value: input.tokenMetadataProgram ?? null,
+      isWritable: false,
+    },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: initializeInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: initializeInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as InitializeInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthorityPda,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountCollectionMetadata,
+      TAccountCollectionMint,
+      TAccountCollectionMasterEdition,
+      TAccountCollectionUpdateAuthority,
+      TAccountCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram,
+      TAccountSystemProgram
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

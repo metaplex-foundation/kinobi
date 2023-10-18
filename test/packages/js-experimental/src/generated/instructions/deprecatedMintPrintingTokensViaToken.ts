@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
@@ -464,6 +466,7 @@ export async function deprecatedMintPrintingTokensViaToken<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -496,6 +499,7 @@ export async function deprecatedMintPrintingTokensViaToken<
     TAccountRent
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -507,13 +511,64 @@ export async function deprecatedMintPrintingTokensViaToken<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof deprecatedMintPrintingTokensViaTokenInstruction
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    destination: { value: input.destination ?? null, isWritable: true },
+    token: { value: input.token ?? null, isWritable: true },
+    oneTimePrintingAuthorizationMint: {
+      value: input.oneTimePrintingAuthorizationMint ?? null,
+      isWritable: true,
+    },
+    printingMint: { value: input.printingMint ?? null, isWritable: true },
+    burnAuthority: { value: input.burnAuthority ?? null, isWritable: false },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: deprecatedMintPrintingTokensViaTokenInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as DeprecatedMintPrintingTokensViaTokenInstruction<
+      TProgram,
+      TAccountDestination,
+      TAccountToken,
+      TAccountOneTimePrintingAuthorizationMint,
+      TAccountPrintingMint,
+      TAccountBurnAuthority,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountTokenProgram,
+      TAccountRent
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

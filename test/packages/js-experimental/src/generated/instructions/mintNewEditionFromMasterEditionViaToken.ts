@@ -33,9 +33,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
@@ -614,6 +616,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -656,6 +659,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountRent
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -667,13 +671,80 @@ export async function mintNewEditionFromMasterEditionViaToken<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof mintNewEditionFromMasterEditionViaTokenInstruction
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    newMetadata: { value: input.newMetadata ?? null, isWritable: true },
+    newEdition: { value: input.newEdition ?? null, isWritable: true },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: true },
+    newMint: { value: input.newMint ?? null, isWritable: true },
+    editionMarkPda: { value: input.editionMarkPda ?? null, isWritable: true },
+    newMintAuthority: {
+      value: input.newMintAuthority ?? null,
+      isWritable: false,
+    },
+    payer: { value: input.payer ?? null, isWritable: true },
+    tokenAccountOwner: {
+      value: input.tokenAccountOwner ?? null,
+      isWritable: false,
+    },
+    tokenAccount: { value: input.tokenAccount ?? null, isWritable: false },
+    newMetadataUpdateAuthority: {
+      value: input.newMetadataUpdateAuthority ?? null,
+      isWritable: false,
+    },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: mintNewEditionFromMasterEditionViaTokenInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as MintNewEditionFromMasterEditionViaTokenInstruction<
+      TProgram,
+      TAccountNewMetadata,
+      TAccountNewEdition,
+      TAccountMasterEdition,
+      TAccountNewMint,
+      TAccountEditionMarkPda,
+      TAccountNewMintAuthority,
+      TAccountPayer,
+      TAccountTokenAccountOwner,
+      TAccountTokenAccount,
+      TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

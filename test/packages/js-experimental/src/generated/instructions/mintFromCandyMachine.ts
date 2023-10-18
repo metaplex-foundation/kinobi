@@ -35,9 +35,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -675,6 +677,7 @@ export async function mintFromCandyMachine<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -723,6 +726,7 @@ export async function mintFromCandyMachine<
     TAccountRecentSlothashes
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
@@ -734,9 +738,93 @@ export async function mintFromCandyMachine<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof mintFromCandyMachineInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authorityPda: { value: input.authorityPda ?? null, isWritable: true },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
+    payer: { value: input.payer ?? null, isWritable: true },
+    nftMint: { value: input.nftMint ?? null, isWritable: true },
+    nftMintAuthority: {
+      value: input.nftMintAuthority ?? null,
+      isWritable: false,
+    },
+    nftMetadata: { value: input.nftMetadata ?? null, isWritable: true },
+    nftMasterEdition: {
+      value: input.nftMasterEdition ?? null,
+      isWritable: true,
+    },
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: false,
+    },
+    collectionMint: { value: input.collectionMint ?? null, isWritable: false },
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: true,
+    },
+    collectionMasterEdition: {
+      value: input.collectionMasterEdition ?? null,
+      isWritable: false,
+    },
+    collectionUpdateAuthority: {
+      value: input.collectionUpdateAuthority ?? null,
+      isWritable: false,
+    },
+    tokenMetadataProgram: {
+      value: input.tokenMetadataProgram ?? null,
+      isWritable: false,
+    },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    recentSlothashes: {
+      value: input.recentSlothashes ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: mintFromCandyMachineInstruction(input as any, programAddress),
-    signers: [],
+    instruction: mintFromCandyMachineInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as MintFromCandyMachineInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthorityPda,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountNftMint,
+      TAccountNftMintAuthority,
+      TAccountNftMetadata,
+      TAccountNftMasterEdition,
+      TAccountCollectionAuthorityRecord,
+      TAccountCollectionMint,
+      TAccountCollectionMetadata,
+      TAccountCollectionMasterEdition,
+      TAccountCollectionUpdateAuthority,
+      TAccountTokenMetadataProgram,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRecentSlothashes
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

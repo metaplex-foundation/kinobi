@@ -37,9 +37,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -507,6 +509,7 @@ export async function approveUseAuthority<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -543,6 +546,7 @@ export async function approveUseAuthority<
     TAccountRent
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -554,13 +558,69 @@ export async function approveUseAuthority<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof approveUseAuthorityInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    useAuthorityRecord: {
+      value: input.useAuthorityRecord ?? null,
+      isWritable: true,
+    },
+    owner: { value: input.owner ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: true },
+    user: { value: input.user ?? null, isWritable: false },
+    ownerTokenAccount: {
+      value: input.ownerTokenAccount ?? null,
+      isWritable: true,
+    },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    mint: { value: input.mint ?? null, isWritable: false },
+    burner: { value: input.burner ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: approveUseAuthorityInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as ApproveUseAuthorityInstruction<
+      TProgram,
+      TAccountUseAuthorityRecord,
+      TAccountOwner,
+      TAccountPayer,
+      TAccountUser,
+      TAccountOwnerTokenAccount,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountBurner,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

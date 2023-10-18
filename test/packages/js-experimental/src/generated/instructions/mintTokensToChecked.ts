@@ -36,9 +36,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -268,6 +270,7 @@ export async function mintTokensToChecked<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -288,6 +291,7 @@ export async function mintTokensToChecked<
     TAccountMintAuthority
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -299,13 +303,47 @@ export async function mintTokensToChecked<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof mintTokensToCheckedInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    mint: { value: input.mint ?? null, isWritable: true },
+    token: { value: input.token ?? null, isWritable: true },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: mintTokensToCheckedInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as MintTokensToCheckedInstruction<
+      TProgram,
+      TAccountMint,
+      TAccountToken,
+      TAccountMintAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

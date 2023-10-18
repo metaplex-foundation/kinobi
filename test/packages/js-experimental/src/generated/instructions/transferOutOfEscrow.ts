@@ -38,9 +38,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -583,6 +585,7 @@ export async function transferOutOfEscrow<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -623,6 +626,7 @@ export async function transferOutOfEscrow<
     TAccountAuthority
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -634,13 +638,70 @@ export async function transferOutOfEscrow<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof transferOutOfEscrowInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    escrow: { value: input.escrow ?? null, isWritable: false },
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: true },
+    attributeMint: { value: input.attributeMint ?? null, isWritable: false },
+    attributeSrc: { value: input.attributeSrc ?? null, isWritable: true },
+    attributeDst: { value: input.attributeDst ?? null, isWritable: true },
+    escrowMint: { value: input.escrowMint ?? null, isWritable: false },
+    escrowAccount: { value: input.escrowAccount ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    ataProgram: { value: input.ataProgram ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    sysvarInstructions: {
+      value: input.sysvarInstructions ?? null,
+      isWritable: false,
+    },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: transferOutOfEscrowInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as TransferOutOfEscrowInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountPayer,
+      TAccountAttributeMint,
+      TAccountAttributeSrc,
+      TAccountAttributeDst,
+      TAccountEscrowMint,
+      TAccountEscrowAccount,
+      TAccountSystemProgram,
+      TAccountAtaProgram,
+      TAccountTokenProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

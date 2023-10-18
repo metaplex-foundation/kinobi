@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -435,6 +437,7 @@ export async function revokeUseAuthority<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -467,6 +470,7 @@ export async function revokeUseAuthority<
     TAccountRent
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -478,9 +482,59 @@ export async function revokeUseAuthority<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof revokeUseAuthorityInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    useAuthorityRecord: {
+      value: input.useAuthorityRecord ?? null,
+      isWritable: true,
+    },
+    owner: { value: input.owner ?? null, isWritable: true },
+    user: { value: input.user ?? null, isWritable: false },
+    ownerTokenAccount: {
+      value: input.ownerTokenAccount ?? null,
+      isWritable: true,
+    },
+    mint: { value: input.mint ?? null, isWritable: false },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: revokeUseAuthorityInstruction(input as any, programAddress),
-    signers: [],
+    instruction: revokeUseAuthorityInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as RevokeUseAuthorityInstruction<
+      TProgram,
+      TAccountUseAuthorityRecord,
+      TAccountOwner,
+      TAccountUser,
+      TAccountOwnerTokenAccount,
+      TAccountMint,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

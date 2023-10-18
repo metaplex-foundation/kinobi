@@ -30,8 +30,10 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -150,6 +152,7 @@ export async function puffMetadata<
   | TReturn
   | WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -161,6 +164,7 @@ export async function puffMetadata<
     rawInput === undefined ? rawContext : rawInput
   ) as PuffMetadataInput<TAccountMetadata>;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -172,9 +176,34 @@ export async function puffMetadata<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof puffMetadataInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: puffMetadataInstruction(input as any, programAddress),
-    signers: [],
+    instruction: puffMetadataInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as PuffMetadataInstruction<TProgram, TAccountMetadata>,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

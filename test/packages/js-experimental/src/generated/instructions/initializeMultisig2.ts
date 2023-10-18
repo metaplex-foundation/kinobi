@@ -31,8 +31,10 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -199,6 +201,7 @@ export async function initializeMultisig2<
       InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner>
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -214,6 +217,7 @@ export async function initializeMultisig2<
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeMultisig2Input<TAccountMultisig, TAccountSigner>;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -225,13 +229,45 @@ export async function initializeMultisig2<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof initializeMultisig2Instruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    multisig: { value: input.multisig ?? null, isWritable: true },
+    signer: { value: input.signer ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: initializeMultisig2Instruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as InitializeMultisig2Instruction<
+      TProgram,
+      TAccountMultisig,
+      TAccountSigner
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

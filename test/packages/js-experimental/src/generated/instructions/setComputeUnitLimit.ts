@@ -28,7 +28,9 @@ import { IInstruction, IInstructionWithData } from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -136,6 +138,7 @@ export async function setComputeUnitLimit<
 ): Promise<
   TReturn | WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -147,6 +150,7 @@ export async function setComputeUnitLimit<
     rawInput === undefined ? rawContext : rawInput
   ) as SetComputeUnitLimitInput;
 
+  // Program address.
   const defaultProgramAddress =
     'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<'ComputeBudget111111111111111111111111111111'>;
   const programAddress = (
@@ -158,8 +162,25 @@ export async function setComputeUnitLimit<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: setComputeUnitLimitInstruction(input, programAddress),
+    instruction: setComputeUnitLimitInstruction(
+      args,
+      programAddress
+    ) as SetComputeUnitLimitInstruction<TProgram>,
     signers: [],
     bytesCreatedOnChain: 0,
   };

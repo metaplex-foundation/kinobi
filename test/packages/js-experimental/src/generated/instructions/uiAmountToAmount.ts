@@ -35,8 +35,10 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -162,6 +164,7 @@ export async function uiAmountToAmount<
   | TReturn
   | WrappedInstruction<UiAmountToAmountInstruction<TProgram, TAccountMint>>
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -173,6 +176,7 @@ export async function uiAmountToAmount<
     rawInput === undefined ? rawContext : rawInput
   ) as UiAmountToAmountInput<TAccountMint>;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -184,13 +188,40 @@ export async function uiAmountToAmount<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof uiAmountToAmountInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    mint: { value: input.mint ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: uiAmountToAmountInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as UiAmountToAmountInstruction<TProgram, TAccountMint>,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

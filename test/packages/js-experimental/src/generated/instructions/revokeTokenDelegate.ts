@@ -31,9 +31,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -181,6 +183,7 @@ export async function revokeTokenDelegate<
       RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -196,6 +199,7 @@ export async function revokeTokenDelegate<
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeTokenDelegateInput<TAccountSource, TAccountOwner>;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -207,9 +211,39 @@ export async function revokeTokenDelegate<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof revokeTokenDelegateInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    source: { value: input.source ?? null, isWritable: true },
+    owner: { value: input.owner ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: revokeTokenDelegateInstruction(input as any, programAddress),
-    signers: [],
+    instruction: revokeTokenDelegateInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as RevokeTokenDelegateInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountOwner
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

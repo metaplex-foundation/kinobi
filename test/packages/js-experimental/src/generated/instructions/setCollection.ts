@@ -35,9 +35,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -588,6 +590,7 @@ export async function setCollection<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -630,6 +633,7 @@ export async function setCollection<
     TAccountSystemProgram
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
@@ -641,9 +645,87 @@ export async function setCollection<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof setCollectionInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+    authorityPda: { value: input.authorityPda ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: false },
+    collectionMint: { value: input.collectionMint ?? null, isWritable: false },
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: false,
+    },
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: true,
+    },
+    newCollectionUpdateAuthority: {
+      value: input.newCollectionUpdateAuthority ?? null,
+      isWritable: true,
+    },
+    newCollectionMetadata: {
+      value: input.newCollectionMetadata ?? null,
+      isWritable: false,
+    },
+    newCollectionMint: {
+      value: input.newCollectionMint ?? null,
+      isWritable: false,
+    },
+    newCollectionMasterEdition: {
+      value: input.newCollectionMasterEdition ?? null,
+      isWritable: false,
+    },
+    newCollectionAuthorityRecord: {
+      value: input.newCollectionAuthorityRecord ?? null,
+      isWritable: true,
+    },
+    tokenMetadataProgram: {
+      value: input.tokenMetadataProgram ?? null,
+      isWritable: false,
+    },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: setCollectionInstruction(input as any, programAddress),
-    signers: [],
+    instruction: setCollectionInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as SetCollectionInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority,
+      TAccountAuthorityPda,
+      TAccountPayer,
+      TAccountCollectionMint,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionUpdateAuthority,
+      TAccountNewCollectionMetadata,
+      TAccountNewCollectionMint,
+      TAccountNewCollectionMasterEdition,
+      TAccountNewCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram,
+      TAccountSystemProgram
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

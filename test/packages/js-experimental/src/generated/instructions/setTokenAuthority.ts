@@ -42,9 +42,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 import {
   TokenAuthorityType,
@@ -242,6 +244,7 @@ export async function setTokenAuthority<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -259,6 +262,7 @@ export async function setTokenAuthority<
     rawInput === undefined ? rawContext : rawInput
   ) as SetTokenAuthorityInput<TAccountOwned, TAccountOwner>;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -270,13 +274,47 @@ export async function setTokenAuthority<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof setTokenAuthorityInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    owned: { value: input.owned ?? null, isWritable: true },
+    owner: { value: input.owner ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: setTokenAuthorityInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as SetTokenAuthorityInstruction<
+      TProgram,
+      TAccountOwned,
+      typeof input['owner'] extends Signer<TAccountOwner>
+        ? ReadonlySignerAccount<TAccountOwner>
+        : TAccountOwner
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

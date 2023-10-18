@@ -28,7 +28,9 @@ import { IInstruction, IInstructionWithData } from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -134,6 +136,7 @@ export async function requestUnits<
     | RequestUnitsInput,
   rawInput?: RequestUnitsInput
 ): Promise<TReturn | WrappedInstruction<RequestUnitsInstruction<TProgram>>> {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -142,6 +145,7 @@ export async function requestUnits<
     rawInput === undefined ? rawContext : rawInput
   ) as RequestUnitsInput;
 
+  // Program address.
   const defaultProgramAddress =
     'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<'ComputeBudget111111111111111111111111111111'>;
   const programAddress = (
@@ -153,8 +157,25 @@ export async function requestUnits<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: requestUnitsInstruction(input, programAddress),
+    instruction: requestUnitsInstruction(
+      args,
+      programAddress
+    ) as RequestUnitsInstruction<TProgram>,
     signers: [],
     bytesCreatedOnChain: 0,
   };

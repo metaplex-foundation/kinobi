@@ -32,9 +32,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -222,6 +224,7 @@ export async function freezeToken<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -238,6 +241,7 @@ export async function freezeToken<
     rawInput === undefined ? rawContext : rawInput
   ) as FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -249,9 +253,41 @@ export async function freezeToken<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof freezeTokenInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    account: { value: input.account ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: false },
+    owner: { value: input.owner ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: freezeTokenInstruction(input as any, programAddress),
-    signers: [],
+    instruction: freezeTokenInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as FreezeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

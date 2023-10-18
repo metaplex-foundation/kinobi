@@ -33,9 +33,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -186,6 +188,7 @@ export async function withdraw<
       WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -201,6 +204,7 @@ export async function withdraw<
     rawInput === undefined ? rawContext : rawInput
   ) as WithdrawInput<TAccountCandyMachine, TAccountAuthority>;
 
+  // Program address.
   const defaultProgramAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
@@ -212,9 +216,35 @@ export async function withdraw<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof withdrawInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: true },
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: withdrawInstruction(input as any, programAddress),
-    signers: [],
+    instruction: withdrawInstruction(
+      accountMetas as AccountMetas,
+      programAddress
+    ) as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

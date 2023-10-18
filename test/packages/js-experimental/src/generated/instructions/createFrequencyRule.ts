@@ -38,9 +38,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -291,6 +293,7 @@ export async function createFrequencyRule<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -311,6 +314,7 @@ export async function createFrequencyRule<
     TAccountSystemProgram
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
   const programAddress = (
@@ -322,13 +326,47 @@ export async function createFrequencyRule<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof createFrequencyRuleInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    payer: { value: input.payer ?? null, isWritable: true },
+    frequencyPda: { value: input.frequencyPda ?? null, isWritable: true },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: createFrequencyRuleInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as CreateFrequencyRuleInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountFrequencyPda,
+      TAccountSystemProgram
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

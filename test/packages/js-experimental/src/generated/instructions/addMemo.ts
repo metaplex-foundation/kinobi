@@ -17,7 +17,9 @@ import { IInstruction, IInstructionWithData } from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   WrappedInstruction,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -100,6 +102,7 @@ export async function addMemo<
     | AddMemoInput,
   rawInput?: AddMemoInput
 ): Promise<TReturn | WrappedInstruction<AddMemoInstruction<TProgram>>> {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -108,6 +111,7 @@ export async function addMemo<
     rawInput === undefined ? rawContext : rawInput
   ) as AddMemoInput;
 
+  // Program address.
   const defaultProgramAddress =
     'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo' as Base58EncodedAddress<'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'>;
   const programAddress = (
@@ -119,8 +123,25 @@ export async function addMemo<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: addMemoInstruction(input, programAddress),
+    instruction: addMemoInstruction(
+      args,
+      programAddress
+    ) as AddMemoInstruction<TProgram>,
     signers: [],
     bytesCreatedOnChain: 0,
   };

@@ -36,9 +36,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -257,6 +259,7 @@ export async function transferTokens<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -277,6 +280,7 @@ export async function transferTokens<
     TAccountAuthority
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -288,9 +292,47 @@ export async function transferTokens<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof transferTokensInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    source: { value: input.source ?? null, isWritable: true },
+    destination: { value: input.destination ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: transferTokensInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: transferTokensInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as TransferTokensInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountDestination,
+      TAccountAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

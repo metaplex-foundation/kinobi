@@ -39,9 +39,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -207,6 +209,7 @@ export async function createAccount<
       CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -218,6 +221,7 @@ export async function createAccount<
     rawInput === undefined ? rawContext : rawInput
   ) as CreateAccountInput<TAccountPayer, TAccountNewAccount>;
 
+  // Program address.
   const defaultProgramAddress =
     '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>;
   const programAddress = (
@@ -229,9 +233,41 @@ export async function createAccount<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof createAccountInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    payer: { value: input.payer ?? null, isWritable: true },
+    newAccount: { value: input.newAccount ?? null, isWritable: true },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
-    instruction: createAccountInstruction(input as any, input, programAddress),
-    signers: [],
+    instruction: createAccountInstruction(
+      accountMetas as AccountMetas,
+      args,
+      programAddress
+    ) as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

@@ -21,9 +21,11 @@ import { CreateReservationListInstructionDataArgs } from '../../hooked';
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.
@@ -358,6 +360,7 @@ export async function createReservationList<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -388,6 +391,7 @@ export async function createReservationList<
     TAccountRent
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
@@ -399,13 +403,60 @@ export async function createReservationList<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  // Original accounts.
+  type AccountMetas = Parameters<typeof createReservationListInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    reservationList: { value: input.reservationList ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: false },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: false },
+    resource: { value: input.resource ?? null, isWritable: false },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = {
+    amount: input.amount,
+  };
+
+  // Resolve default values.
+  // TODO
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: createReservationListInstruction(
-      input as any,
-      input,
+      accountMetas as AccountMetas,
+      args,
       programAddress
-    ),
-    signers: [],
+    ) as CreateReservationListInstruction<
+      TProgram,
+      TAccountReservationList,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountMasterEdition,
+      TAccountResource,
+      TAccountMetadata,
+      TAccountSystemProgram,
+      TAccountRent
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }
