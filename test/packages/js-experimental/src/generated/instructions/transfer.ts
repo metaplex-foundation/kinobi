@@ -763,36 +763,47 @@ export async function transfer<
   const args = { ...input };
 
   // Resolve default values.
-
-  args.tokenStandard = TokenStandard.NonFungible;
-  resolvedAccounts.masterEdition = {
-    ...resolvedAccounts.masterEdition,
-    ...resolveMasterEditionFromTokenStandard(
-      context,
-      resolvedAccounts,
-      args,
-      programId,
-      false
-    ),
-  };
-  resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
-    'splToken',
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-  );
-  resolvedAccounts.splTokenProgram.isWritable = false;
-  resolvedAccounts.splAtaProgram.value = context.programs.getPublicKey(
-    'splAssociatedToken',
-    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-  );
-  resolvedAccounts.splAtaProgram.isWritable = false;
-  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-    'splSystem',
-    '11111111111111111111111111111111'
-  );
-  resolvedAccounts.systemProgram.isWritable = false;
-  resolvedAccounts.sysvarInstructions.value = address(
-    'Sysvar1nstructions1111111111111111111111111'
-  );
+  if (!args.tokenStandard) {
+    args.tokenStandard = TokenStandard.NonFungible;
+  }
+  if (!accounts.masterEdition.value) {
+    accounts.masterEdition = {
+      ...accounts.masterEdition,
+      ...resolveMasterEditionFromTokenStandard(
+        context,
+        accounts,
+        args,
+        programId,
+        false
+      ),
+    };
+  }
+  if (!accounts.splTokenProgram.value) {
+    accounts.splTokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.splTokenProgram.isWritable = false;
+  }
+  if (!accounts.splAtaProgram.value) {
+    accounts.splAtaProgram.value = context.programs.getPublicKey(
+      'splAssociatedToken',
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+    );
+    accounts.splAtaProgram.isWritable = false;
+  }
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!accounts.sysvarInstructions.value) {
+    accounts.sysvarInstructions.value = address(
+      'Sysvar1nstructions1111111111111111111111111'
+    );
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

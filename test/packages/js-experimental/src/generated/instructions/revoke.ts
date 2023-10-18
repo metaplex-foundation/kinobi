@@ -678,15 +678,18 @@ export async function revoke<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-    'splSystem',
-    '11111111111111111111111111111111'
-  );
-  resolvedAccounts.systemProgram.isWritable = false;
-  resolvedAccounts.sysvarInstructions.value = address(
-    'Sysvar1nstructions1111111111111111111111111'
-  );
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!accounts.sysvarInstructions.value) {
+    accounts.sysvarInstructions.value = address(
+      'Sysvar1nstructions1111111111111111111111111'
+    );
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

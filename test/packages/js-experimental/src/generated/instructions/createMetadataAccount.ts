@@ -521,22 +521,26 @@ export async function createMetadataAccount<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.metadata.value = findMetadataPda(context, {
-    mint: expectPublicKey(resolvedAccounts.mint.value),
-  });
-
-  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-    'splSystem',
-    '11111111111111111111111111111111'
-  );
-  resolvedAccounts.systemProgram.isWritable = false;
-  resolvedAccounts.rent.value = address(
-    'SysvarRent111111111111111111111111111111111'
-  );
-  args.metadataBump = expectProgramDerivedAddress(
-    resolvedAccounts.metadata.value
-  )[1];
+  if (!accounts.metadata.value) {
+    accounts.metadata.value = findMetadataPda(context, {
+      mint: expectPublicKey(accounts.mint.value),
+    });
+  }
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!accounts.rent.value) {
+    accounts.rent.value = address(
+      'SysvarRent111111111111111111111111111111111'
+    );
+  }
+  if (!args.metadataBump) {
+    args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

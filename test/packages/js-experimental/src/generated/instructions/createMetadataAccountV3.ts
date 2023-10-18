@@ -482,16 +482,18 @@ export async function createMetadataAccountV3<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.metadata.value = findMetadataPda(context, {
-    mint: expectPublicKey(resolvedAccounts.mint.value),
-  });
-
-  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-    'splSystem',
-    '11111111111111111111111111111111'
-  );
-  resolvedAccounts.systemProgram.isWritable = false;
+  if (!accounts.metadata.value) {
+    accounts.metadata.value = findMetadataPda(context, {
+      mint: expectPublicKey(accounts.mint.value),
+    });
+  }
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

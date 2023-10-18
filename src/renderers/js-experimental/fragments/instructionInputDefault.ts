@@ -18,7 +18,8 @@ import { getValueNodeFragment } from './valueNode';
 export function getInstructionInputDefaultFragment(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
-  argObject: string
+  accountObject: string = 'accounts',
+  argObject: string = 'args'
 ): Fragment & { interfaces: ContextMap } {
   if (!input.defaultsTo) {
     return fragmentWithContextMap('');
@@ -32,18 +33,18 @@ export function getInstructionInputDefaultFragment(
     const inputName = camelCase(input.name);
     if (input.kind === 'account' && defaultsTo.kind === 'resolver') {
       return fragmentWithContextMap(
-        `resolvedAccounts.${inputName} = { ...resolvedAccounts.${inputName}, ...${defaultValue} };`
+        `${accountObject}.${inputName} = { ...${accountObject}.${inputName}, ...${defaultValue} };`
       );
     }
     if (input.kind === 'account' && isWritable === undefined) {
       return fragmentWithContextMap(
-        `resolvedAccounts.${inputName}.value = ${defaultValue};`
+        `${accountObject}.${inputName}.value = ${defaultValue};`
       );
     }
     if (input.kind === 'account') {
       return fragmentWithContextMap(
-        `resolvedAccounts.${inputName}.value = ${defaultValue};\n` +
-          `resolvedAccounts.${inputName}.isWritable = ${
+        `${accountObject}.${inputName}.value = ${defaultValue};\n` +
+          `${accountObject}.${inputName}.isWritable = ${
             isWritable ? 'true' : 'false'
           }`
       );
@@ -59,12 +60,12 @@ export function getInstructionInputDefaultFragment(
       if (input.kind === 'account') {
         return defaultFragment(
           input.resolvedIsSigner && !input.isSigner
-            ? `expectSome(resolvedAccounts.${name}.value).publicKey`
-            : `expectSome(resolvedAccounts.${name}.value)`
+            ? `expectSome(${accountObject}.${name}.value).publicKey`
+            : `expectSome(${accountObject}.${name}.value)`
         ).addImports('shared', 'expectSome');
       }
       return defaultFragment(
-        `expectPublicKey(resolvedAccounts.${name}.value)`
+        `expectPublicKey(${accountObject}.${name}.value)`
       ).addImports('shared', 'expectPublicKey');
 
     case 'pda':
@@ -79,7 +80,7 @@ export function getInstructionInputDefaultFragment(
           const seedValue = defaultsTo.seeds[seed];
           if (seedValue.kind === 'account') {
             return fragment(
-              `${seed}: expectPublicKey(resolvedAccounts.${camelCase(
+              `${seed}: expectPublicKey(${accountObject}.${camelCase(
                 seedValue.name
               )}.value)`
             ).addImports('shared', 'expectPublicKey');
@@ -131,7 +132,7 @@ export function getInstructionInputDefaultFragment(
       return fragmentWithContextMap('');
     case 'accountBump':
       return defaultFragment(
-        `expectProgramDerivedAddress(resolvedAccounts.${camelCase(
+        `expectProgramDerivedAddress(${accountObject}.${camelCase(
           defaultsTo.name
         )}.value)[1]`
       ).addImports('shared', 'expectProgramDerivedAddress');
@@ -149,7 +150,7 @@ export function getInstructionInputDefaultFragment(
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
       const resolverFragment = defaultFragment(
-        `${resolverName}(context, resolvedAccounts, ${argObject}, programId, ${isWritable})`
+        `${resolverName}(context, accounts, ${argObject}, programId, ${isWritable})`
       ).addImports(defaultsTo.importFrom, resolverName);
       resolverFragment.interfaces.add([
         'getProgramAddress',
@@ -162,12 +163,14 @@ export function getInstructionInputDefaultFragment(
         input,
         optionalAccountStrategy,
         defaultsTo.ifTrue,
+        accountObject,
         argObject
       );
       const ifFalseRenderer = renderNestedInstructionDefault(
         input,
         optionalAccountStrategy,
         defaultsTo.ifFalse,
+        accountObject,
         argObject
       );
       if (!ifTrueRenderer && !ifFalseRenderer) {
@@ -188,7 +191,7 @@ export function getInstructionInputDefaultFragment(
       if (defaultsTo.kind === 'conditional') {
         const comparedInputName =
           defaultsTo.input.kind === 'account'
-            ? `resolvedAccounts.${camelCase(defaultsTo.input.name)}.value`
+            ? `${accountObject}.${camelCase(defaultsTo.input.name)}.value`
             : `${argObject}.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
           const comparedValue = getValueNodeFragment(defaultsTo.value);
@@ -212,7 +215,7 @@ export function getInstructionInputDefaultFragment(
           'getProgramAddress',
           'getProgramDerivedAddress',
         ]);
-        condition = `${conditionalResolverName}(context, resolvedAccounts, ${argObject}, programId, ${conditionalIsWritable})`;
+        condition = `${conditionalResolverName}(context, accounts, ${argObject}, programId, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 
@@ -237,6 +240,7 @@ function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
   defaultsTo: InstructionDefault | undefined,
+  accountObject: string,
   argObject: string
 ): (Fragment & { interfaces: ContextMap }) | undefined {
   if (!defaultsTo) return undefined;
@@ -245,6 +249,7 @@ function renderNestedInstructionDefault(
     return getInstructionInputDefaultFragment(
       { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
       optionalAccountStrategy,
+      accountObject,
       argObject
     );
   }
@@ -252,6 +257,7 @@ function renderNestedInstructionDefault(
   return getInstructionInputDefaultFragment(
     { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
     optionalAccountStrategy,
+    accountObject,
     argObject
   );
 }

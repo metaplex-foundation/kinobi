@@ -17,9 +17,7 @@ import { IInstruction, IInstructionWithData } from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
-  ResolvedAccount,
   WrappedInstruction,
-  getAccountMetasAndSigners,
 } from '../shared';
 
 // Output.

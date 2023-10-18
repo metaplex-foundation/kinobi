@@ -550,33 +550,39 @@ export async function dummy<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.edition.value = expectSome(resolvedAccounts.payer.value);
-
-  resolvedAccounts.mintAuthority.value = expectSome(
-    resolvedAccounts.updateAuthority.value
-  );
-
-  resolvedAccounts.foo.value = expectSome(resolvedAccounts.bar.value).publicKey;
-
-  if (resolvedAccounts.delegate.value) {
-    resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
-      role: DelegateRole.Collection,
-    });
+  if (!accounts.edition.value) {
+    accounts.edition.value = expectSome(accounts.payer.value);
   }
-  args.proof = [];
-  if (resolveTokenOrAta(context, resolvedAccounts, args, programId, false)) {
-    resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
-    resolvedAccounts.tokenOrAtaProgram.isWritable = false;
-  } else {
-    resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
-    resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+  if (!accounts.mintAuthority.value) {
+    accounts.mintAuthority.value = expectSome(accounts.updateAuthority.value);
+  }
+  if (!accounts.foo.value) {
+    accounts.foo.value = expectSome(accounts.bar.value).publicKey;
+  }
+  if (!accounts.delegateRecord.value) {
+    if (accounts.delegate.value) {
+      accounts.delegateRecord.value = findDelegateRecordPda(context, {
+        role: DelegateRole.Collection,
+      });
+    }
+  }
+  if (!args.proof) {
+    args.proof = [];
+  }
+  if (!accounts.tokenOrAtaProgram.value) {
+    if (resolveTokenOrAta(context, accounts, args, programId, false)) {
+      accounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splToken',
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      );
+      accounts.tokenOrAtaProgram.isWritable = false;
+    } else {
+      accounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+        'splAssociatedToken',
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+      );
+      accounts.tokenOrAtaProgram.isWritable = false;
+    }
   }
 
   // Get account metas and signers.

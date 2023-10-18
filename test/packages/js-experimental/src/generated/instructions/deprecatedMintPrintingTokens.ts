@@ -465,15 +465,18 @@ export async function deprecatedMintPrintingTokens<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-    'splToken',
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-  );
-  resolvedAccounts.tokenProgram.isWritable = false;
-  resolvedAccounts.rent.value = address(
-    'SysvarRent111111111111111111111111111111111'
-  );
+  if (!accounts.tokenProgram.value) {
+    accounts.tokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.tokenProgram.isWritable = false;
+  }
+  if (!accounts.rent.value) {
+    accounts.rent.value = address(
+      'SysvarRent111111111111111111111111111111111'
+    );
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

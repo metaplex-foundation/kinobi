@@ -251,10 +251,11 @@ export async function initializeMint<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.rent.value = address(
-    'SysvarRent111111111111111111111111111111111'
-  );
+  if (!accounts.rent.value) {
+    accounts.rent.value = address(
+      'SysvarRent111111111111111111111111111111111'
+    );
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

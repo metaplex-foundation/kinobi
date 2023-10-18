@@ -785,22 +785,27 @@ export async function mintFromCandyMachine<
   };
 
   // Resolve default values.
-
-  resolvedAccounts.tokenMetadataProgram.value = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  resolvedAccounts.tokenMetadataProgram.isWritable = false;
-  resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-    'splToken',
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-  );
-  resolvedAccounts.tokenProgram.isWritable = false;
-  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-    'splSystem',
-    '11111111111111111111111111111111'
-  );
-  resolvedAccounts.systemProgram.isWritable = false;
+  if (!accounts.tokenMetadataProgram.value) {
+    accounts.tokenMetadataProgram.value = context.programs.getPublicKey(
+      'mplTokenMetadata',
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    );
+    accounts.tokenMetadataProgram.isWritable = false;
+  }
+  if (!accounts.tokenProgram.value) {
+    accounts.tokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.tokenProgram.isWritable = false;
+  }
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

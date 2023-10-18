@@ -368,6 +368,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       const renderedInput = getInstructionInputDefaultFragment(
         input,
         instruction.optionalAccountStrategy,
+        'resolvedAccounts',
         argObject
       );
       oldImports.mergeWith(renderedInput.imports);

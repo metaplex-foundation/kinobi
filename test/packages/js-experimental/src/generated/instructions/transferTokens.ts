@@ -305,10 +305,9 @@ export async function transferTokens<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.source.value = expectSome(
-    resolvedAccounts.authority.value
-  ).publicKey;
+  if (!accounts.source.value) {
+    accounts.source.value = expectSome(accounts.authority.value).publicKey;
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

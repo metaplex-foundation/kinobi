@@ -43,14 +43,21 @@ export function getInstructionFunctionHighLevelFragment(
   const resolvedInputs = visit(
     instructionNode,
     resolvedInstructionInputVisitor
-  ).map((input: ResolvedInstructionInput): Fragment => {
-    const renderedInput = getInstructionInputDefaultFragment(
+  ).flatMap((input: ResolvedInstructionInput): Fragment[] => {
+    const inputFragment = getInstructionInputDefaultFragment(
       input,
-      instructionNode.optionalAccountStrategy,
-      'args'
+      instructionNode.optionalAccountStrategy
     );
-    context.mergeWith(renderedInput.interfaces);
-    return renderedInput;
+    if (!inputFragment.render) return [];
+    context.mergeWith(inputFragment.interfaces);
+    const camelName = camelCase(input.name);
+    return [
+      inputFragment.mapRender((r) =>
+        input.kind === 'arg'
+          ? `if (!args.${camelName}) {\n${r}\n}`
+          : `if (!accounts.${camelName}.value) {\n${r}\n}`
+      ),
+    ];
   });
   const resolvedInputsFragment = mergeFragments(resolvedInputs, (renders) =>
     renders.join('\n')
@@ -85,15 +92,13 @@ export function getInstructionFunctionHighLevelFragment(
       resolvedInputsFragment
     )
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('shared', [
-      'CustomGeneratedInstruction',
-      'getAccountMetasAndSigners',
-      'ResolvedAccount',
-      'WrappedInstruction',
-    ]);
+    .addImports('shared', ['CustomGeneratedInstruction', 'WrappedInstruction']);
 
   if (hasAccounts) {
-    //
+    functionFragment.addImports('shared', [
+      'getAccountMetasAndSigners',
+      'ResolvedAccount',
+    ]);
   }
 
   return functionFragment;

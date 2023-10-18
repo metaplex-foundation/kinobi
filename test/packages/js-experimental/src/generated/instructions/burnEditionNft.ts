@@ -558,12 +558,13 @@ export async function burnEditionNft<
   };
 
   // Resolve default values.
-
-  resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
-    'splToken',
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-  );
-  resolvedAccounts.splTokenProgram.isWritable = false;
+  if (!accounts.splTokenProgram.value) {
+    accounts.splTokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.splTokenProgram.isWritable = false;
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

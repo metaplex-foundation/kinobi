@@ -663,25 +663,32 @@ export async function transferOutOfEscrow<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-    'splSystem',
-    '11111111111111111111111111111111'
-  );
-  resolvedAccounts.systemProgram.isWritable = false;
-  resolvedAccounts.ataProgram.value = context.programs.getPublicKey(
-    'splAssociatedToken',
-    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-  );
-  resolvedAccounts.ataProgram.isWritable = false;
-  resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-    'splToken',
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-  );
-  resolvedAccounts.tokenProgram.isWritable = false;
-  resolvedAccounts.sysvarInstructions.value = address(
-    'Sysvar1nstructions1111111111111111111111111'
-  );
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!accounts.ataProgram.value) {
+    accounts.ataProgram.value = context.programs.getPublicKey(
+      'splAssociatedToken',
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+    );
+    accounts.ataProgram.isWritable = false;
+  }
+  if (!accounts.tokenProgram.value) {
+    accounts.tokenProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.tokenProgram.isWritable = false;
+  }
+  if (!accounts.sysvarInstructions.value) {
+    accounts.sysvarInstructions.value = address(
+      'Sysvar1nstructions1111111111111111111111111'
+    );
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

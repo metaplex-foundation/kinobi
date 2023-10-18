@@ -328,15 +328,18 @@ export async function createRuleSet<
   const args = { ...input };
 
   // Resolve default values.
-
-  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-    'splSystem',
-    '11111111111111111111111111111111'
-  );
-  resolvedAccounts.systemProgram.isWritable = false;
-  args.ruleSetBump = expectProgramDerivedAddress(
-    resolvedAccounts.ruleSetPda.value
-  )[1];
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!args.ruleSetBump) {
+    args.ruleSetBump = expectProgramDerivedAddress(
+      accounts.ruleSetPda.value
+    )[1];
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
