@@ -36,9 +36,12 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  ResolvedAccounts,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectSome,
+  getAccountMetasAndSigners,
 } from './generated/shared';
 
 // Output.
@@ -257,6 +260,7 @@ export async function transferTokens<
       >
     >
 > {
+  // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
@@ -277,6 +281,7 @@ export async function transferTokens<
     TAccountAuthority
   >;
 
+  // Program address.
   const defaultProgramAddress =
     'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   const programAddress = (
@@ -288,25 +293,49 @@ export async function transferTokens<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
-  const accounts: ResolvedAccount = {
-    //
-  };
+  // Original accounts.
+  const accounts = {
+    source: { value: input.source ?? null, isWritable: true },
+    destination: { value: input.destination ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+  } satisfies ResolvedAccounts;
 
+  // Original args.
   const args: TransferTokensInstructionDataArgs = {
     amount: input.amount,
   };
 
+  // Resolve default values.
+  if (!accounts.source.value) {
+    accounts.source.value = expectSome(accounts.authority.value)
+      .address as Base58EncodedAddress;
+  }
+
+  // Get account metas and signers.
+  const [accountMetas, signers] = getAccountMetasAndSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  // TODO
+
+  // Bytes created on chain.
+  // TODO
+
   return {
     instruction: transferTokensInstruction(
-      {
-        source: account.source,
-        destination: account.destination,
-        authority: account.authority,
-      },
+      accountMetas as Parameters<typeof transferTokensInstruction>[0],
       args,
       programAddress
-    ),
-    signers: [],
+    ) as TransferTokensInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountDestination,
+      TAccountAuthority
+    >,
+    signers,
     bytesCreatedOnChain: 0,
   };
 }

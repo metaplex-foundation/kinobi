@@ -11,7 +11,12 @@ import {
   isProgramDerivedAddress,
   ProgramDerivedAddress,
 } from '@solana/addresses';
-import { AccountRole, IAccountMeta, IInstruction } from '@solana/instructions';
+import {
+  AccountRole,
+  IAccountMeta,
+  IInstruction,
+  upgradeRoleToSigner,
+} from '@solana/instructions';
 import { Ed25519Signature } from '@solana/keys';
 import { Transaction } from '@solana/transactions';
 
@@ -110,6 +115,46 @@ export function accountMetaWithDefault<
     : TAccount;
 }
 
+/**
+ * Get account metas and signers from resolved accounts.
+ * @internal
+ */
+export function getAccountMetasAndSigners(
+  accounts: ResolvedAccounts,
+  optionalAccountStrategy: 'omitted' | 'programId',
+  programAddress: Base58EncodedAddress
+): [Record<string, IAccountMeta>, Signer[]] {
+  const accountMetas: Record<string, IAccountMeta> = {};
+  const signers: Signer[] = [];
+
+  Object.keys(accounts).forEach((key) => {
+    const account = accounts[key] as ResolvedAccount;
+    if (!account.value) {
+      if (optionalAccountStrategy === 'omitted') return;
+      accountMetas[key] = {
+        address: programAddress,
+        role: AccountRole.READONLY,
+      };
+      return;
+    }
+
+    if (isSigner(account.value)) {
+      signers.push(account.value);
+    }
+    const writableRole = account.isWritable
+      ? AccountRole.WRITABLE
+      : AccountRole.READONLY;
+    accountMetas[key] = {
+      address: expectAddress(account.value),
+      role: isSigner(account.value)
+        ? upgradeRoleToSigner(writableRole)
+        : writableRole,
+    };
+  });
+
+  return [accountMetas, signers];
+}
+
 export type WrappedInstruction<TInstruction extends IInstruction> = {
   instruction: TInstruction;
   signers: Signer[];
@@ -133,6 +178,21 @@ export type TransactionSenderSigner<TAddress extends string = string> = {
     transactions: Transaction[]
   ) => Promise<Ed25519Signature[]>;
 };
+
+export function isSigner<TAddress extends string = string>(
+  value:
+    | Base58EncodedAddress<TAddress>
+    | ProgramDerivedAddress<TAddress>
+    | Signer<TAddress>
+    | unknown
+): value is Signer<TAddress> {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    'address' in value &&
+    ('signTransaction' in value || 'signAndSendTransaction' in value)
+  );
+}
 
 export type CustomGeneratedInstruction<
   TInstruction extends IInstruction,
