@@ -1,5 +1,6 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
+import { ResolvedInstructionInput, Visitor, visit } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
 import {
   Fragment,
@@ -8,11 +9,13 @@ import {
   mergeFragments,
 } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
+import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
 export function getInstructionFunctionHighLevelFragment(
   instructionNode: nodes.InstructionNode,
   programNode: nodes.ProgramNode,
-  renamedArgs: Map<string, string>
+  renamedArgs: Map<string, string>,
+  resolvedInstructionInputVisitor: Visitor<ResolvedInstructionInput[]>
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
@@ -37,19 +40,21 @@ export function getInstructionFunctionHighLevelFragment(
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
 
-  // const oldResolvedInputs = visit(
-  //   instruction,
-  //   this.resolvedInstructionInputVisitor
-  // ).map((input: ResolvedInstructionInput) => {
-  //   const renderedInput = getInstructionInputDefaultFragment(
-  //     input,
-  //     instruction.optionalAccountStrategy,
-  //     argObject
-  //   );
-  //   oldImports.mergeWith(renderedInput.imports);
-  //   interfaces.mergeWith(renderedInput.interfaces);
-  //   return { ...input, render: renderedInput.render };
-  // });
+  const resolvedInputs = visit(
+    instructionNode,
+    resolvedInstructionInputVisitor
+  ).map((input: ResolvedInstructionInput): Fragment => {
+    const renderedInput = getInstructionInputDefaultFragment(
+      input,
+      instructionNode.optionalAccountStrategy,
+      'args'
+    );
+    context.mergeWith(renderedInput.interfaces);
+    return renderedInput;
+  });
+  const resolvedInputsFragment = mergeFragments(resolvedInputs, (renders) =>
+    renders.join('\n')
+  );
 
   const contextFragment = context.toFragment();
   const functionFragment = fragmentFromTemplate(
@@ -68,6 +73,7 @@ export function getInstructionFunctionHighLevelFragment(
       inputType: inputTypeFragment.render,
       context: contextFragment.render,
       renamedArgs: renamedArgsText,
+      resolvedInputs: resolvedInputsFragment.render,
       customGeneratedInstruction,
     }
   )
@@ -75,7 +81,8 @@ export function getInstructionFunctionHighLevelFragment(
       typeParamsFragment,
       instructionTypeFragment,
       inputTypeFragment,
-      contextFragment
+      contextFragment,
+      resolvedInputsFragment
     )
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
     .addImports('shared', [

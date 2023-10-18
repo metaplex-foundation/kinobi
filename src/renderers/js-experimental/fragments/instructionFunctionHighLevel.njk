@@ -30,15 +30,11 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   {% endif %}
 
   // Resolve default values.
-  // TODO
+  {{ resolvedInputs }}
 
   {% if hasAccounts %}
-  // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
+    // Get account metas and signers.
+    const [accountMetas, signers] = getAccountMetasAndSigners(accounts, 'programId', programAddress);
   {% endif %}
 
   // Remaining accounts.

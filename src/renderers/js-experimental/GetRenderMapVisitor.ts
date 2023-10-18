@@ -277,7 +277,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       getInstructionFunctionHighLevelFragment(
         instruction,
         this.program,
-        renamedArgs
+        renamedArgs,
+        this.resolvedInstructionInputVisitor
       );
 
     // Imports and interfaces.
