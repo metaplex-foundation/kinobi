@@ -89,7 +89,7 @@ export function getInstructionInputDefaultFragment(
       }
       return defaultFragment(`${pdaFunction}(${pdaArgs.join(', ')})`)
         .addImports(pdaImportFrom, pdaFunction)
-        .addInterfaces('eddsa');
+        .addInterfaces('getProgramDerivedAddress');
     case 'publicKey':
       return defaultFragment(`address('${defaultsTo.publicKey}')`).addImports(
         'solanaAddresses',
@@ -110,17 +110,8 @@ export function getInstructionInputDefaultFragment(
       }
       return defaultFragment('programId', false);
     case 'identity':
-      return defaultFragment(
-        input.kind === 'account' && input.isSigner !== false
-          ? 'context.identity'
-          : 'context.identity.publicKey'
-      ).addInterfaces('identity');
     case 'payer':
-      return defaultFragment(
-        input.kind === 'account' && input.isSigner !== false
-          ? 'context.payer'
-          : 'context.payer.publicKey'
-      ).addInterfaces('payer');
+      return fragment('');
     case 'accountBump':
       return defaultFragment(
         `expectPda(resolvedAccounts.${camelCase(defaultsTo.name)}.value)[1]`
@@ -142,7 +133,7 @@ export function getInstructionInputDefaultFragment(
         `${resolverName}(context, resolvedAccounts, ${argObject}, programId, ${isWritable})`
       )
         .addImports(defaultsTo.importFrom, resolverName)
-        .addInterfaces(['eddsa', 'identity', 'payer']);
+        .addInterfaces(['getProgramAddress', 'getProgramDerivedAddress']);
     case 'conditional':
     case 'conditionalResolver':
       const ifTrueRenderer = renderNestedInstructionDefault(
@@ -195,7 +186,10 @@ export function getInstructionInputDefaultFragment(
           defaultsTo.resolver.importFrom,
           conditionalResolverName
         );
-        conditionalFragment.addInterfaces(['eddsa', 'identity', 'payer']);
+        conditionalFragment.addInterfaces([
+          'getProgramAddress',
+          'getProgramDerivedAddress',
+        ]);
         condition = `${conditionalResolverName}(context, resolvedAccounts, ${argObject}, programId, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }

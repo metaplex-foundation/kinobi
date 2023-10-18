@@ -294,7 +294,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         'ResolvedAccountsWithIndices',
         'getAccountMetasAndSigners',
       ]);
-    const interfaces = new ContextMap().add('programs');
+    const interfaces = new ContextMap().add(['getProgramAddress']);
 
     // Instruction helpers.
     const hasAccounts = instruction.accounts.length > 0;
@@ -330,7 +330,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       hasRemainingAccountsResolver;
     const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
     if (hasResolvers) {
-      interfaces.add(['eddsa', 'identity', 'payer']);
+      interfaces.add(['getProgramAddress', 'getProgramDerivedAddress']);
     }
 
     // canMergeAccountsAndArgs

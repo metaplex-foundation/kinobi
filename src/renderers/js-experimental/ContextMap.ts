@@ -1,15 +1,6 @@
 import { Fragment } from './fragments';
 
-export type ContextInterface =
-  | 'downloader'
-  | 'eddsa'
-  | 'http'
-  | 'identity'
-  | 'payer'
-  | 'programs'
-  | 'rpc'
-  | 'transactions'
-  | 'uploader';
+export type ContextInterface = 'getProgramAddress' | 'getProgramDerivedAddress';
 
 export class ContextMap {
   protected readonly _interfaces: Set<ContextInterface> = new Set();
