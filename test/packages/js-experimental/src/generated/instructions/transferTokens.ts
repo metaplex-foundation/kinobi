@@ -145,9 +145,9 @@ export type TransferTokensInput<
   TAccountDestination extends string,
   TAccountAuthority extends string
 > = {
-  source: Base58EncodedAddress<TAccountSource>;
+  source?: Base58EncodedAddress<TAccountSource>;
   destination: Base58EncodedAddress<TAccountDestination>;
-  authority?: Signer<TAccountAuthority>;
+  authority: Signer<TAccountAuthority>;
   amount: TransferTokensInstructionDataArgs['amount'];
 };
 

@@ -73,6 +73,12 @@ kinobi.update(
 kinobi.update(
   new k.UpdateInstructionsVisitor({
     'splToken.setAuthority': { name: 'setTokenAuthority' },
+    'splToken.transferTokens': {
+      accounts: {
+        authority: { defaultsTo: null },
+        source: { defaultsTo: k.accountDefault('authority') },
+      },
+    },
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
       args: {

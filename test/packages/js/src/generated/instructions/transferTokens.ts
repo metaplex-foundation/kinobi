@@ -24,14 +24,15 @@ import {
 import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
+  expectSome,
   getAccountMetasAndSigners,
 } from '../shared';
 
 // Accounts.
 export type TransferTokensInstructionAccounts = {
-  source: PublicKey | Pda;
+  source?: PublicKey | Pda;
   destination: PublicKey | Pda;
-  authority?: Signer;
+  authority: Signer;
 };
 
 // Data.
@@ -70,7 +71,7 @@ export type TransferTokensInstructionArgs = TransferTokensInstructionDataArgs;
 
 // Instruction.
 export function transferTokens(
-  context: Pick<Context, 'identity' | 'programs'>,
+  context: Pick<Context, 'programs'>,
   input: TransferTokensInstructionAccounts & TransferTokensInstructionArgs
 ): TransactionBuilder {
   // Program ID.
@@ -94,8 +95,10 @@ export function transferTokens(
   const resolvedArgs: TransferTokensInstructionArgs = { ...input };
 
   // Default values.
-  if (!resolvedAccounts.authority.value) {
-    resolvedAccounts.authority.value = context.identity;
+  if (!resolvedAccounts.source.value) {
+    resolvedAccounts.source.value = expectSome(
+      resolvedAccounts.authority.value
+    ).publicKey;
   }
 
   // Accounts in order.
