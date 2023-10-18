@@ -1,5 +1,6 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
+import { ContextMap } from '../ContextMap';
 import {
   Fragment,
   fragment,
@@ -17,9 +18,10 @@ export function getInstructionFunctionHighLevelFragment(
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(instructionNode);
   const inputTypeFragment = getInputType(instructionNode);
-  const context = `Pick<Context, 'getProgramAddress'>`; // TODO: use context map.
   const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
+  const context = new ContextMap().add('getProgramAddress');
 
+  const contextFragment = context.toFragment();
   const functionFragment = fragmentFromTemplate(
     'instructionFunctionHighLevel.njk',
     {
@@ -29,21 +31,18 @@ export function getInstructionFunctionHighLevelFragment(
       typeParams: typeParamsFragment.render,
       instructionType: instructionTypeFragment.render,
       inputType: inputTypeFragment.render,
-      context,
+      context: contextFragment.render,
       customGeneratedInstruction,
     }
   )
     .mergeImportsWith(
       typeParamsFragment,
       instructionTypeFragment,
-      inputTypeFragment
+      inputTypeFragment,
+      contextFragment
     )
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('shared', [
-      'WrappedInstruction',
-      'CustomGeneratedInstruction',
-      'Context',
-    ]);
+    .addImports('shared', ['WrappedInstruction', 'CustomGeneratedInstruction']);
 
   if (hasAccounts) {
     //

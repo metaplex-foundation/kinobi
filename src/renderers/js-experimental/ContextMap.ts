@@ -1,3 +1,5 @@
+import { Fragment, fragment } from './fragments';
+
 export type ContextInterface = 'getProgramAddress' | 'getProgramDerivedAddress';
 
 export class ContextMap {
@@ -36,5 +38,9 @@ export class ContextMap {
       .map((i) => `"${i}"`)
       .join(' | ');
     return `Pick<Context, ${contextInterfaces}>`;
+  }
+
+  toFragment(): Fragment {
+    return fragment(this.toString()).addImports('shared', 'Context');
   }
 }
