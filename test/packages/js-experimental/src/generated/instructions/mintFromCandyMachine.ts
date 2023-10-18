@@ -786,24 +786,33 @@ export async function mintFromCandyMachine<
 
   // Resolve default values.
   if (!accounts.tokenMetadataProgram.value) {
-    accounts.tokenMetadataProgram.value = context.programs.getPublicKey(
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    );
+    accounts.tokenMetadataProgram.value = context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+        })
+      : ('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>);
     accounts.tokenMetadataProgram.isWritable = false;
   }
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value = context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'splToken',
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+        })
+      : ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>);
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value = context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'splSystem',
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+        })
+      : ('11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>);
     accounts.systemProgram.isWritable = false;
   }
 

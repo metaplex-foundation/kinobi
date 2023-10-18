@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress, address } from '@solana/addresses';
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -320,9 +320,8 @@ export async function initializeToken<
 
   // Resolve default values.
   if (!accounts.rent.value) {
-    accounts.rent.value = address(
-      'SysvarRent111111111111111111111111111111111'
-    );
+    accounts.rent.value =
+      'SysvarRent111111111111111111111111111111111' as Base58EncodedAddress<'SysvarRent111111111111111111111111111111111'>;
   }
 
   // Get account metas and signers.

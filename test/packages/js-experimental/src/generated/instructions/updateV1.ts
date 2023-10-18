@@ -8,7 +8,6 @@
 
 import {
   Base58EncodedAddress,
-  address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -750,16 +749,18 @@ export async function updateV1<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value = context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'splSystem',
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+        })
+      : ('11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>);
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {
-    accounts.sysvarInstructions.value = address(
-      'Sysvar1nstructions1111111111111111111111111'
-    );
+    accounts.sysvarInstructions.value =
+      'Sysvar1nstructions1111111111111111111111111' as Base58EncodedAddress<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
   // Get account metas and signers.

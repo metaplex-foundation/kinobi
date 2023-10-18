@@ -306,7 +306,7 @@ export async function transferTokens<
 
   // Resolve default values.
   if (!accounts.source.value) {
-    accounts.source.value = expectSigner(accounts.authority.value).publicKey;
+    accounts.source.value = expectSigner(accounts.authority.value).address;
   }
 
   // Get account metas and signers.

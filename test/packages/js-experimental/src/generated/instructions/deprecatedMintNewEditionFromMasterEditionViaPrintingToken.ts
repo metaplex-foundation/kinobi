@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress, address } from '@solana/addresses';
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -747,23 +747,28 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value = context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'splToken',
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+        })
+      : ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>);
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value = context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'splSystem',
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+        })
+      : ('11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>);
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.rent.value) {
-    accounts.rent.value = address(
-      'SysvarRent111111111111111111111111111111111'
-    );
+    accounts.rent.value =
+      'SysvarRent111111111111111111111111111111111' as Base58EncodedAddress<'SysvarRent111111111111111111111111111111111'>;
   }
 
   // Get account metas and signers.

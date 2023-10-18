@@ -558,7 +558,7 @@ export async function dummy<
     accounts.mintAuthority.value = expectSome(accounts.updateAuthority.value);
   }
   if (!accounts.foo.value) {
-    accounts.foo.value = expectSigner(accounts.bar.value).publicKey;
+    accounts.foo.value = expectSigner(accounts.bar.value).address;
   }
   if (!accounts.delegateRecord.value) {
     if (accounts.delegate.value) {
@@ -571,17 +571,23 @@ export async function dummy<
     args.proof = [];
   }
   if (!accounts.tokenOrAtaProgram.value) {
-    if (resolveTokenOrAta(context, accounts, args, programId, false)) {
-      accounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      );
+    if (resolveTokenOrAta(context, accounts, args, programAddress, false)) {
+      accounts.tokenOrAtaProgram.value = context.getProgramAddress
+        ? context.getProgramAddress({
+            name: 'splToken',
+            address:
+              'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          })
+        : ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>);
       accounts.tokenOrAtaProgram.isWritable = false;
     } else {
-      accounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
-        'splAssociatedToken',
-        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-      );
+      accounts.tokenOrAtaProgram.value = context.getProgramAddress
+        ? context.getProgramAddress({
+            name: 'splAssociatedToken',
+            address:
+              'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+          })
+        : ('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>);
       accounts.tokenOrAtaProgram.isWritable = false;
     }
   }

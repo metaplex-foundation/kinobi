@@ -6,11 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import {
-  Base58EncodedAddress,
-  ProgramDerivedAddress,
-  address,
-} from '@solana/addresses';
+import { Base58EncodedAddress, ProgramDerivedAddress } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -527,16 +523,18 @@ export async function createMetadataAccount<
     });
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value = context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'splSystem',
+          address:
+            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+        })
+      : ('11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>);
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.rent.value) {
-    accounts.rent.value = address(
-      'SysvarRent111111111111111111111111111111111'
-    );
+    accounts.rent.value =
+      'SysvarRent111111111111111111111111111111111' as Base58EncodedAddress<'SysvarRent111111111111111111111111111111111'>;
   }
   if (!args.metadataBump) {
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];

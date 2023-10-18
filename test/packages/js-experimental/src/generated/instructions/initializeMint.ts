@@ -8,7 +8,6 @@
 
 import {
   Base58EncodedAddress,
-  address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -252,9 +251,8 @@ export async function initializeMint<
 
   // Resolve default values.
   if (!accounts.rent.value) {
-    accounts.rent.value = address(
-      'SysvarRent111111111111111111111111111111111'
-    );
+    accounts.rent.value =
+      'SysvarRent111111111111111111111111111111111' as Base58EncodedAddress<'SysvarRent111111111111111111111111111111111'>;
   }
 
   // Get account metas and signers.

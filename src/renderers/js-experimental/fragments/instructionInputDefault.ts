@@ -63,7 +63,7 @@ export function getInstructionInputDefaultFragment(
         !input.isSigner
       ) {
         return defaultFragment(
-          `expectSigner(${accountObject}.${name}.value).publicKey`
+          `expectSigner(${accountObject}.${name}.value).address`
         ).addImports('shared', 'expectSigner');
       }
       if (input.kind === 'account') {
@@ -116,15 +116,18 @@ export function getInstructionInputDefaultFragment(
       pdaFragment.interfaces.add('getProgramDerivedAddress');
       return pdaFragment;
     case 'publicKey':
-      return defaultFragment(`address('${defaultsTo.publicKey}')`).addImports(
-        'solanaAddresses',
-        'address'
-      );
-    case 'program':
       return defaultFragment(
-        `context.programs.getPublicKey('${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
+        `'${defaultsTo.publicKey}' as Base58EncodedAddress<'${defaultsTo.publicKey}'>`
+      ).addImports('solanaAddresses', 'Base58EncodedAddress');
+    case 'program':
+      const programFragment = defaultFragment(
+        `context.getProgramAddress ` +
+          `? context.getProgramAddress({ name: '${defaultsTo.program.name}', address: '${defaultsTo.program.publicKey}' as Base58EncodedAddress<'${defaultsTo.program.publicKey}'> })` +
+          `: '${defaultsTo.program.publicKey}' as Base58EncodedAddress<'${defaultsTo.program.publicKey}'>`,
         false
-      );
+      ).addImports('solanaAddresses', ['Base58EncodedAddress']);
+      programFragment.interfaces.add('getProgramAddress');
+      return programFragment;
     case 'programId':
       if (
         optionalAccountStrategy === 'programId' &&
@@ -133,7 +136,7 @@ export function getInstructionInputDefaultFragment(
       ) {
         return fragmentWithContextMap('');
       }
-      return defaultFragment('programId', false);
+      return defaultFragment('programAddress', false);
     case 'identity':
     case 'payer':
       return fragmentWithContextMap('');
@@ -157,7 +160,7 @@ export function getInstructionInputDefaultFragment(
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
       const resolverFragment = defaultFragment(
-        `${resolverName}(context, accounts, ${argObject}, programId, ${isWritable})`
+        `${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
       ).addImports(defaultsTo.importFrom, resolverName);
       resolverFragment.interfaces.add([
         'getProgramAddress',
@@ -222,7 +225,7 @@ export function getInstructionInputDefaultFragment(
           'getProgramAddress',
           'getProgramDerivedAddress',
         ]);
-        condition = `${conditionalResolverName}(context, accounts, ${argObject}, programId, ${conditionalIsWritable})`;
+        condition = `${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 
