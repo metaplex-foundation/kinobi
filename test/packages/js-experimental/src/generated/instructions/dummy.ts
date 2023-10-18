@@ -32,6 +32,8 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { resolveTokenOrAta } from '../../hooked';
+import { findDelegateRecordPda } from '../accounts';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -39,8 +41,10 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectSome,
   getAccountMetasAndSigners,
 } from '../shared';
+import { DelegateRole } from '../types';
 
 // Output.
 export type DummyInstruction<
@@ -286,7 +290,7 @@ export async function dummy<
   TAccountDelegateRecord extends string = string,
   TAccountTokenOrAtaProgram extends string = string
 >(
-  context: Pick<Context, 'getProgramAddress'> &
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
     CustomGeneratedInstruction<
       DummyInstruction<
         TProgram,
@@ -329,7 +333,7 @@ export async function dummy<
   TAccountDelegateRecord extends string = string,
   TAccountTokenOrAtaProgram extends string = string
 >(
-  context: Pick<Context, 'getProgramAddress'>,
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   input: DummyInput<
     TAccountEdition,
     TAccountMint,
@@ -416,8 +420,8 @@ export async function dummy<
   TAccountTokenOrAtaProgram extends string = string
 >(
   rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           DummyInstruction<
             TProgram,
@@ -478,8 +482,8 @@ export async function dummy<
 > {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           DummyInstruction<
             TProgram,
@@ -546,7 +550,34 @@ export async function dummy<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.edition.value = expectSome(resolvedAccounts.payer.value);
+
+  resolvedAccounts.mintAuthority.value = expectSome(
+    resolvedAccounts.updateAuthority.value
+  );
+
+  resolvedAccounts.foo.value = expectSome(resolvedAccounts.bar.value).publicKey;
+
+  if (resolvedAccounts.delegate.value) {
+    resolvedAccounts.delegateRecord.value = findDelegateRecordPda(context, {
+      role: DelegateRole.Collection,
+    });
+  }
+  args.proof = [];
+  if (resolveTokenOrAta(context, resolvedAccounts, args, programId, false)) {
+    resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+  } else {
+    resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
+      'splAssociatedToken',
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+    );
+    resolvedAccounts.tokenOrAtaProgram.isWritable = false;
+  }
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

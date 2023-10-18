@@ -473,7 +473,6 @@ export async function setAndVerifyCollection<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

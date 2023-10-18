@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   AccountRole,
   IAccountMeta,
@@ -423,7 +423,15 @@ export async function createReservationList<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
+  resolvedAccounts.rent.value = address(
+    'SysvarRent111111111111111111111111111111111'
+  );
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

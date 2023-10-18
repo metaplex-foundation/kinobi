@@ -36,6 +36,7 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectProgramDerivedAddress,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -327,7 +328,15 @@ export async function createRuleSet<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
+  args.ruleSetBump = expectProgramDerivedAddress(
+    resolvedAccounts.ruleSetPda.value
+  )[1];
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

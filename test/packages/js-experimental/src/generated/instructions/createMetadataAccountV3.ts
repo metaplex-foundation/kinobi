@@ -38,6 +38,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { findMetadataPda } from '../accounts';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -45,6 +46,7 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectPublicKey,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -269,7 +271,7 @@ export async function createMetadataAccountV3<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
 >(
-  context: Pick<Context, 'getProgramAddress'> &
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
     CustomGeneratedInstruction<
       CreateMetadataAccountV3Instruction<
         TProgram,
@@ -303,7 +305,7 @@ export async function createMetadataAccountV3<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = string
 >(
-  context: Pick<Context, 'getProgramAddress'>,
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   input: CreateMetadataAccountV3Input<
     TAccountMetadata,
     TAccountMint,
@@ -372,8 +374,8 @@ export async function createMetadataAccountV3<
   TAccountRent extends string = string
 >(
   rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           CreateMetadataAccountV3Instruction<
             TProgram,
@@ -422,8 +424,8 @@ export async function createMetadataAccountV3<
 > {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           CreateMetadataAccountV3Instruction<
             TProgram,
@@ -480,7 +482,16 @@ export async function createMetadataAccountV3<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.metadata.value = findMetadataPda(context, {
+    mint: expectPublicKey(resolvedAccounts.mint.value),
+  });
+
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

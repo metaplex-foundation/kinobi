@@ -7,7 +7,12 @@ import {
 } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
-import { Fragment, fragment, fragmentWithContextMap } from './common';
+import {
+  Fragment,
+  fragment,
+  fragmentWithContextMap,
+  mergeFragments,
+} from './common';
 import { getValueNodeFragment } from './valueNode';
 
 export function getInstructionInputDefaultFragment(
@@ -89,12 +94,17 @@ export function getInstructionInputDefaultFragment(
           );
         }
       );
+      const pdaSeedsFragment = mergeFragments(pdaSeeds, (renders) =>
+        renders.join(', ')
+      ).mapRender((r) => `{ ${r} }`);
       if (pdaSeeds.length > 0) {
-        pdaArgs.push(`{ ${pdaSeeds.join(', ')} }`);
+        pdaArgs.push(pdaSeedsFragment.render);
       }
       const pdaFragment = defaultFragment(
         `${pdaFunction}(${pdaArgs.join(', ')})`
-      ).addImports(pdaImportFrom, pdaFunction);
+      )
+        .mergeImportsWith(pdaSeedsFragment)
+        .addImports(pdaImportFrom, pdaFunction);
       pdaFragment.interfaces.add('getProgramDerivedAddress');
       return pdaFragment;
     case 'publicKey':
@@ -121,8 +131,10 @@ export function getInstructionInputDefaultFragment(
       return fragmentWithContextMap('');
     case 'accountBump':
       return defaultFragment(
-        `expectPda(resolvedAccounts.${camelCase(defaultsTo.name)}.value)[1]`
-      ).addImports('shared', 'expectPda');
+        `expectProgramDerivedAddress(resolvedAccounts.${camelCase(
+          defaultsTo.name
+        )}.value)[1]`
+      ).addImports('shared', 'expectProgramDerivedAddress');
     case 'arg':
       return defaultFragment(
         `expectSome(${argObject}.${camelCase(defaultsTo.name)})`

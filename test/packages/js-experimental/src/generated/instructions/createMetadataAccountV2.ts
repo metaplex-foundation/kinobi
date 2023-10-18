@@ -465,7 +465,12 @@ export async function createMetadataAccountV2<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

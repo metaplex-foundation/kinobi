@@ -8,6 +8,7 @@
 
 import {
   Base58EncodedAddress,
+  address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -748,7 +749,15 @@ export async function updateV1<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
+  resolvedAccounts.sysvarInstructions.value = address(
+    'Sysvar1nstructions1111111111111111111111111'
+  );
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

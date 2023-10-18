@@ -439,7 +439,12 @@ export async function burnNft<
   };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
+    'splToken',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  );
+  resolvedAccounts.splTokenProgram.isWritable = false;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

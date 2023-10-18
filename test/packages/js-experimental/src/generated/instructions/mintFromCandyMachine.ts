@@ -785,7 +785,22 @@ export async function mintFromCandyMachine<
   };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.tokenMetadataProgram.value = context.programs.getPublicKey(
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  );
+  resolvedAccounts.tokenMetadataProgram.isWritable = false;
+  resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
+    'splToken',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  );
+  resolvedAccounts.tokenProgram.isWritable = false;
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

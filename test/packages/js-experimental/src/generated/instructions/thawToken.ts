@@ -252,7 +252,6 @@ export async function thawToken<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

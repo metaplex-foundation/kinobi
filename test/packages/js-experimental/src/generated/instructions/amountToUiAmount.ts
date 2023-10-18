@@ -198,7 +198,6 @@ export async function amountToUiAmount<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

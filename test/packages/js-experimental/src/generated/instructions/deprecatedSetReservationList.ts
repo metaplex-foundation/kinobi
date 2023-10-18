@@ -344,7 +344,6 @@ export async function deprecatedSetReservationList<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

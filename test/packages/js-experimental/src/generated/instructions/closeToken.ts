@@ -265,7 +265,6 @@ export async function closeToken<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

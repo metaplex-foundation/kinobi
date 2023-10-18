@@ -40,6 +40,7 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectSome,
   getAccountMetasAndSigners,
 } from '../shared';
 
@@ -304,7 +305,10 @@ export async function transferTokens<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.source.value = expectSome(
+    resolvedAccounts.authority.value
+  ).publicKey;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

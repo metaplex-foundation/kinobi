@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Base58EncodedAddress, address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,6 +29,7 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -39,6 +40,7 @@ import {
   getAccountMetasAndSigners,
 } from '../shared';
 import {
+  TokenStandard,
   TokenStandardArgs,
   TransferArgs,
   TransferArgsArgs,
@@ -410,7 +412,7 @@ export async function transfer<
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
 >(
-  context: Pick<Context, 'getProgramAddress'> &
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
     CustomGeneratedInstruction<
       TransferInstruction<
         TProgram,
@@ -468,7 +470,7 @@ export async function transfer<
   TAccountAuthorizationRulesProgram extends string = string,
   TAccountAuthorizationRules extends string = string
 >(
-  context: Pick<Context, 'getProgramAddress'>,
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   input: TransferInput<
     TAccountAuthority,
     TAccountDelegateRecord,
@@ -585,8 +587,8 @@ export async function transfer<
   TAccountAuthorizationRules extends string = string
 >(
   rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           TransferInstruction<
             TProgram,
@@ -667,8 +669,8 @@ export async function transfer<
 > {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           TransferInstruction<
             TProgram,
@@ -761,7 +763,36 @@ export async function transfer<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  args.tokenStandard = TokenStandard.NonFungible;
+  resolvedAccounts.masterEdition = {
+    ...resolvedAccounts.masterEdition,
+    ...resolveMasterEditionFromTokenStandard(
+      context,
+      resolvedAccounts,
+      args,
+      programId,
+      false
+    ),
+  };
+  resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
+    'splToken',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  );
+  resolvedAccounts.splTokenProgram.isWritable = false;
+  resolvedAccounts.splAtaProgram.value = context.programs.getPublicKey(
+    'splAssociatedToken',
+    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+  );
+  resolvedAccounts.splAtaProgram.isWritable = false;
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
+  resolvedAccounts.sysvarInstructions.value = address(
+    'Sysvar1nstructions1111111111111111111111111'
+  );
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

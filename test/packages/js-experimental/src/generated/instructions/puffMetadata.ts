@@ -183,7 +183,6 @@ export async function puffMetadata<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

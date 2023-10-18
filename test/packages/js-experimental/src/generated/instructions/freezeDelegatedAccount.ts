@@ -361,7 +361,12 @@ export async function freezeDelegatedAccount<
   };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
+    'splToken',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  );
+  resolvedAccounts.tokenProgram.isWritable = false;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

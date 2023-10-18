@@ -179,7 +179,6 @@ export async function getTokenDataSize<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

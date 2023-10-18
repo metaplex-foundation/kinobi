@@ -219,7 +219,6 @@ export async function revokeTokenDelegate<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

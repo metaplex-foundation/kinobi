@@ -622,7 +622,22 @@ export async function useAsset<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
+    'splToken',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  );
+  resolvedAccounts.splTokenProgram.isWritable = false;
+  resolvedAccounts.ataProgram.value = context.programs.getPublicKey(
+    'splAssociatedToken',
+    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+  );
+  resolvedAccounts.ataProgram.isWritable = false;
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

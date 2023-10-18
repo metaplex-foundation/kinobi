@@ -6,7 +6,11 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress, ProgramDerivedAddress } from '@solana/addresses';
+import {
+  Base58EncodedAddress,
+  ProgramDerivedAddress,
+  address,
+} from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -46,6 +50,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { findMetadataPda } from '../accounts';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -53,6 +58,8 @@ import {
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
+  expectProgramDerivedAddress,
+  expectPublicKey,
   getAccountMetasAndSigners,
 } from '../shared';
 import {
@@ -303,7 +310,7 @@ export async function createMetadataAccount<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
 >(
-  context: Pick<Context, 'getProgramAddress'> &
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
     CustomGeneratedInstruction<
       CreateMetadataAccountInstruction<
         TProgram,
@@ -337,7 +344,7 @@ export async function createMetadataAccount<
   TAccountSystemProgram extends string = '11111111111111111111111111111111',
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   input: CreateMetadataAccountInput<
     TAccountMetadata,
     TAccountMint,
@@ -406,8 +413,8 @@ export async function createMetadataAccount<
   TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
 >(
   rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           CreateMetadataAccountInstruction<
             TProgram,
@@ -456,8 +463,8 @@ export async function createMetadataAccount<
 > {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<
           CreateMetadataAccountInstruction<
             TProgram,
@@ -514,7 +521,22 @@ export async function createMetadataAccount<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.metadata.value = findMetadataPda(context, {
+    mint: expectPublicKey(resolvedAccounts.mint.value),
+  });
+
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
+  resolvedAccounts.rent.value = address(
+    'SysvarRent111111111111111111111111111111111'
+  );
+  args.metadataBump = expectProgramDerivedAddress(
+    resolvedAccounts.metadata.value
+  )[1];
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

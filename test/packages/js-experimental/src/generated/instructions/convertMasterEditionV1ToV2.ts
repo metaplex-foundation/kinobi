@@ -294,7 +294,6 @@ export async function convertMasterEditionV1ToV2<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

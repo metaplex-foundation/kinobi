@@ -8,6 +8,7 @@
 
 import {
   Base58EncodedAddress,
+  address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -286,7 +287,10 @@ export async function initializeToken2<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.rent.value = address(
+    'SysvarRent111111111111111111111111111111111'
+  );
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

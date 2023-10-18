@@ -705,7 +705,17 @@ export async function mintNewEditionFromMasterEditionViaToken<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
+
+  resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
+    'splToken',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+  );
+  resolvedAccounts.tokenProgram.isWritable = false;
+  resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+    'splSystem',
+    '11111111111111111111111111111111'
+  );
+  resolvedAccounts.systemProgram.isWritable = false;
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

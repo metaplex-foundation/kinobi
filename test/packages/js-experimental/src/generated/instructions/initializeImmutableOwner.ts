@@ -192,7 +192,6 @@ export async function initializeImmutableOwner<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

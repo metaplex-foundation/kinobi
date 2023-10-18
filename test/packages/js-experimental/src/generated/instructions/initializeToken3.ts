@@ -228,7 +228,6 @@ export async function initializeToken3<
   const args = { ...input };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(

@@ -448,7 +448,6 @@ export async function unverifySizedCollectionItem<
   };
 
   // Resolve default values.
-  // TODO
 
   // Get account metas and signers.
   const [accountMetas, signers] = getAccountMetasAndSigners(
