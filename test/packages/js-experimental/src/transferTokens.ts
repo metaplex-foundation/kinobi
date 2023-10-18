@@ -36,11 +36,11 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
-  ResolvedAccounts,
+  ResolvedAccount,
   Signer,
   WrappedInstruction,
   accountMetaWithDefault,
-  expectSome,
+  expectSigner,
   getAccountMetasAndSigners,
 } from './generated/shared';
 
@@ -294,11 +294,12 @@ export async function transferTokens<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  const accounts = {
+  type AccountMetas = Parameters<typeof transferTokensInstruction>[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
     destination: { value: input.destination ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
-  } satisfies ResolvedAccounts;
+  };
 
   // Original args.
   const args: TransferTokensInstructionDataArgs = {
@@ -307,8 +308,7 @@ export async function transferTokens<
 
   // Resolve default values.
   if (!accounts.source.value) {
-    accounts.source.value = expectSome(accounts.authority.value)
-      .address as Base58EncodedAddress;
+    accounts.source.value = expectSigner(accounts.authority.value).address;
   }
 
   // Get account metas and signers.
@@ -326,7 +326,7 @@ export async function transferTokens<
 
   return {
     instruction: transferTokensInstruction(
-      accountMetas as Parameters<typeof transferTokensInstruction>[0],
+      accountMetas as AccountMetas,
       args,
       programAddress
     ) as TransferTokensInstruction<

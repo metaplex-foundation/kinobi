@@ -74,6 +74,24 @@ export function expectProgramDerivedAddress<T extends string = string>(
 }
 
 /**
+ * Asserts that the given value is a Signer.
+ * @internal
+ */
+export function expectSigner<T extends string = string>(
+  value:
+    | Base58EncodedAddress<T>
+    | ProgramDerivedAddress<T>
+    | Signer<T>
+    | null
+    | undefined
+): Signer<T> {
+  if (!isSigner(value)) {
+    throw new Error('Expected a Signer.');
+  }
+  return value;
+}
+
+/**
  * Defines an instruction account to resolve.
  * @internal
  */
@@ -92,12 +110,6 @@ export type ResolvedAccount<
   isWritable: boolean;
   value: U;
 };
-
-/**
- * Defines a set of instruction account to resolve.
- * @internal
- */
-export type ResolvedAccounts = Record<string, ResolvedAccount>;
 
 /**
  * Add an account meta with a default role if only an address is provided.
@@ -120,7 +132,7 @@ export function accountMetaWithDefault<
  * @internal
  */
 export function getAccountMetasAndSigners(
-  accounts: ResolvedAccounts,
+  accounts: Record<string, ResolvedAccount>,
   optionalAccountStrategy: 'omitted' | 'programId',
   programAddress: Base58EncodedAddress
 ): [Record<string, IAccountMeta>, Signer[]] {
