@@ -2,10 +2,68 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Base58EncodedAddress, isProgramDerivedAddress, ProgramDerivedAddress } from '@solana/addresses';
 import { AccountRole, IAccountMeta, IInstruction } from '@solana/instructions';
 import { Ed25519Signature } from '@solana/keys';
 import { Transaction } from '@solana/transactions';
+
+/**
+ * Asserts that the given value is not null or undefined.
+ * @internal
+ */
+export function expectSome<T>(value: T | null | undefined): T {
+  if (value == null) {
+    throw new Error('Expected a value but received null or undefined.');
+  }
+  return value;
+}
+
+/**
+ * Asserts that the given value is a PublicKey.
+ * @internal
+ */
+export function expectAddress<T extends string = string>(
+  value: Base58EncodedAddress<T> | ProgramDerivedAddress<T> | Signer<T> | null | undefined
+): Base58EncodedAddress<T> {
+  if (!value) {
+    throw new Error('Expected a Base58EncodedAddress.');
+  }
+  if ("address" in value) {
+    return value.address;
+  }
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+  return value as Base58EncodedAddress<T>;
+}
+
+/**
+ * Asserts that the given value is a PDA.
+ * @internal
+ */
+export function expectProgramDerivedAddress<T extends string = string>(
+  value: Base58EncodedAddress<T> | ProgramDerivedAddress<T> | Signer<T> | null | undefined
+): ProgramDerivedAddress<T> {
+  if (!value || !Array.isArray(value) || !isProgramDerivedAddress(value)) {
+    throw new Error('Expected a ProgramDerivedAddress.');
+  }
+  return value;
+}
+
+/**
+ * Defines an instruction account to resolve.
+ * @internal
+ */
+export type ResolvedAccount<T extends string = string, U extends Base58EncodedAddress<T> | ProgramDerivedAddress<T> | Signer<T> | null = Base58EncodedAddress<T> | ProgramDerivedAddress<T> | Signer<T> | null> = {
+  isWritable: boolean;
+  value: U;
+};
+
+/**
+ * Defines a set of instruction account to resolve.
+ * @internal
+ */
+export type ResolvedAccounts = Record<string, ResolvedAccount>;
 
 /**
  * Add an account meta with a default role if only an address is provided.

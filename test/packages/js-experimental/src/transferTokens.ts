@@ -288,8 +288,24 @@ export async function transferTokens<
       : defaultProgramAddress
   ) as Base58EncodedAddress<TProgram>;
 
+  const accounts: ResolvedAccount = {
+    //
+  };
+
+  const args: TransferTokensInstructionDataArgs = {
+    amount: input.amount,
+  };
+
   return {
-    instruction: transferTokensInstruction(input as any, input, programAddress),
+    instruction: transferTokensInstruction(
+      {
+        source: account.source,
+        destination: account.destination,
+        authority: account.authority,
+      },
+      args,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };
