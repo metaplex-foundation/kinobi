@@ -477,9 +477,7 @@ export async function createMetadataAccountV3<
   };
 
   // Original args.
-  const args = {
-    amount: input.amount,
-  };
+  const args = { ...input };
 
   // Resolve default values.
   // TODO

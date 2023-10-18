@@ -166,9 +166,7 @@ export async function requestHeapFrame<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original args.
-  const args = {
-    amount: input.amount,
-  };
+  const args = { ...input };
 
   // Resolve default values.
   // TODO

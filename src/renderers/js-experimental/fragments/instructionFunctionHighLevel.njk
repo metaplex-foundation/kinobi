@@ -26,9 +26,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
 
   {% if hasAnyArgs %}
     // Original args.
-    const args = {
-      amount: input.amount,
-    };
+    const args = { ...input, {{ renamedArgs }} };
   {% endif %}
 
   // Resolve default values.

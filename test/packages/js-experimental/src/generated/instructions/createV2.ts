@@ -574,9 +574,7 @@ export async function createV2<
   };
 
   // Original args.
-  const args = {
-    amount: input.amount,
-  };
+  const args = { ...input };
 
   // Resolve default values.
   // TODO

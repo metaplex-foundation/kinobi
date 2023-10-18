@@ -299,9 +299,7 @@ export async function updateMetadataAccountV2<
   };
 
   // Original args.
-  const args = {
-    amount: input.amount,
-  };
+  const args = { ...input, updateAuthority: input.updateAuthorityArg };
 
   // Resolve default values.
   // TODO
