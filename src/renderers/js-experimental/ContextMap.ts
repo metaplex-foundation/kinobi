@@ -1,5 +1,3 @@
-import { Fragment } from './fragments';
-
 export type ContextInterface = 'getProgramAddress' | 'getProgramDerivedAddress';
 
 export class ContextMap {
@@ -23,12 +21,8 @@ export class ContextMap {
     return this;
   }
 
-  mergeWith(...others: (ContextMap | Fragment)[]): ContextMap {
-    others.forEach((other) =>
-      this.add([
-        ...('interfaces' in other ? other.interfaces : other)._interfaces,
-      ])
-    );
+  mergeWith(...others: ContextMap[]): ContextMap {
+    others.forEach((other) => this.add([...other._interfaces]));
     return this;
   }
 
