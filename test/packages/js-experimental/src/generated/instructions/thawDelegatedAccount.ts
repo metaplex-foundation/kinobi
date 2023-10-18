@@ -347,11 +347,7 @@ export async function thawDelegatedAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: thawDelegatedAccountInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: thawDelegatedAccountInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

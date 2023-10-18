@@ -282,7 +282,6 @@ export async function convertMasterEditionV1ToV2<
   return {
     instruction: convertMasterEditionV1ToV2Instruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

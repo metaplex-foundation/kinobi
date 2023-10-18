@@ -479,11 +479,7 @@ export async function createEscrowAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: createEscrowAccountInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: createEscrowAccountInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

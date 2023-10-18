@@ -452,7 +452,6 @@ export async function setAndVerifySizedCollectionItem<
   return {
     instruction: setAndVerifySizedCollectionItemInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

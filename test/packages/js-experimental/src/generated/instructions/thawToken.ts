@@ -240,7 +240,7 @@ export async function thawToken<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: thawTokenInstruction(input as any, input, programAddress),
+    instruction: thawTokenInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

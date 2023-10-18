@@ -13,7 +13,14 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: {{ functionName }}Instruction(input as any, input, programAddress),
+    instruction: {{ functionName }}Instruction(
+      {%- if hasAccounts -%}
+        input as any, 
+      {% endif %}
+      {%- if hasArgs -%}
+        input, 
+      {% endif %}
+      programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

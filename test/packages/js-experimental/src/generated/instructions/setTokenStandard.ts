@@ -317,11 +317,7 @@ export async function setTokenStandard<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: setTokenStandardInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: setTokenStandardInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

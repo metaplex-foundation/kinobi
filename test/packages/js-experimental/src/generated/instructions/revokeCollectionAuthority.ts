@@ -351,7 +351,6 @@ export async function revokeCollectionAuthority<
   return {
     instruction: revokeCollectionAuthorityInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

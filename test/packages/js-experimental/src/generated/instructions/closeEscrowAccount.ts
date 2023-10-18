@@ -442,11 +442,7 @@ export async function closeEscrowAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: closeEscrowAccountInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: closeEscrowAccountInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

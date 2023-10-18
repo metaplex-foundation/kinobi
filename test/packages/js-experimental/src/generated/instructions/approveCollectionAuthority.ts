@@ -459,7 +459,6 @@ export async function approveCollectionAuthority<
   return {
     instruction: approveCollectionAuthorityInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

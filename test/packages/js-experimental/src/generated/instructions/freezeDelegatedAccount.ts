@@ -349,7 +349,6 @@ export async function freezeDelegatedAccount<
   return {
     instruction: freezeDelegatedAccountInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

@@ -237,7 +237,6 @@ export async function removeCreatorVerification<
   return {
     instruction: removeCreatorVerificationInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

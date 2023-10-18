@@ -735,11 +735,7 @@ export async function mintFromCandyMachine<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: mintFromCandyMachineInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: mintFromCandyMachineInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

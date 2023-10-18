@@ -162,11 +162,7 @@ export async function requestHeapFrame<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: requestHeapFrameInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: requestHeapFrameInstruction(input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

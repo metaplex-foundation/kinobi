@@ -173,7 +173,7 @@ export async function puffMetadata<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: puffMetadataInstruction(input as any, input, programAddress),
+    instruction: puffMetadataInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

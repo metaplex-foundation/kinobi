@@ -287,7 +287,6 @@ export async function updatePrimarySaleHappenedViaToken<
   return {
     instruction: updatePrimarySaleHappenedViaTokenInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

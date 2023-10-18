@@ -386,11 +386,7 @@ export async function unverifyCollection<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: unverifyCollectionInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: unverifyCollectionInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

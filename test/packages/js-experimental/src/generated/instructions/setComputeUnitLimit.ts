@@ -159,11 +159,7 @@ export async function setComputeUnitLimit<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: setComputeUnitLimitInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: setComputeUnitLimitInstruction(input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

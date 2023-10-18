@@ -213,7 +213,7 @@ export async function withdraw<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: withdrawInstruction(input as any, input, programAddress),
+    instruction: withdrawInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

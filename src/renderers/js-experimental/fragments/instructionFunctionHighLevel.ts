@@ -14,6 +14,11 @@ export function getInstructionFunctionHighLevelFragment(
   programNode: nodes.ProgramNode
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
+  const hasArgs =
+    !!instructionNode.dataArgs.link ||
+    instructionNode.dataArgs.struct.fields.filter(
+      (field) => field.defaultsTo?.strategy !== 'omitted'
+    ).length > 0;
   const functionName = camelCase(instructionNode.name);
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(instructionNode);
@@ -27,6 +32,8 @@ export function getInstructionFunctionHighLevelFragment(
     {
       instruction: instructionNode,
       program: programNode,
+      hasAccounts,
+      hasArgs,
       functionName,
       typeParams: typeParamsFragment.render,
       instructionType: instructionTypeFragment.render,

@@ -716,7 +716,6 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     instruction:
       deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction(
         input as any,
-        input,
         programAddress
       ),
     signers: [],

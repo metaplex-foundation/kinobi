@@ -479,11 +479,7 @@ export async function revokeUseAuthority<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: revokeUseAuthorityInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: revokeUseAuthorityInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

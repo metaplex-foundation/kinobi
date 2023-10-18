@@ -120,7 +120,7 @@ export async function addMemo<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: addMemoInstruction(input as any, input, programAddress),
+    instruction: addMemoInstruction(input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

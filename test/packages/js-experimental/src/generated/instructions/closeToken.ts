@@ -253,7 +253,7 @@ export async function closeToken<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: closeTokenInstruction(input as any, input, programAddress),
+    instruction: closeTokenInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

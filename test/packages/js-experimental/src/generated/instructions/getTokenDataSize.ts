@@ -169,11 +169,7 @@ export async function getTokenDataSize<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: getTokenDataSizeInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: getTokenDataSizeInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

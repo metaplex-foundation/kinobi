@@ -154,7 +154,7 @@ export async function requestUnits<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: requestUnitsInstruction(input as any, input, programAddress),
+    instruction: requestUnitsInstruction(input, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

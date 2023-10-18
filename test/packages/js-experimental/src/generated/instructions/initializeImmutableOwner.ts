@@ -184,7 +184,6 @@ export async function initializeImmutableOwner<
   return {
     instruction: initializeImmutableOwnerInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

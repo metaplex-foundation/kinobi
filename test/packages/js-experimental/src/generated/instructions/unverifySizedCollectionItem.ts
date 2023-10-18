@@ -423,7 +423,6 @@ export async function unverifySizedCollectionItem<
   return {
     instruction: unverifySizedCollectionItemInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

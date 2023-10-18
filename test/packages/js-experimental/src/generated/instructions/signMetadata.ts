@@ -201,7 +201,7 @@ export async function signMetadata<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: signMetadataInstruction(input as any, input, programAddress),
+    instruction: signMetadataInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

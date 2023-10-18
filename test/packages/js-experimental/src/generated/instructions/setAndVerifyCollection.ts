@@ -446,7 +446,6 @@ export async function setAndVerifyCollection<
   return {
     instruction: setAndVerifyCollectionInstruction(
       input as any,
-      input,
       programAddress
     ),
     signers: [],

@@ -282,11 +282,7 @@ export async function setMintAuthority<
   ) as Base58EncodedAddress<TProgram>;
 
   return {
-    instruction: setMintAuthorityInstruction(
-      input as any,
-      input,
-      programAddress
-    ),
+    instruction: setMintAuthorityInstruction(input as any, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

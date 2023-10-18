@@ -41,7 +41,7 @@ export function getInstructionFunctionLowLevelFragment(
     const defaultValue = getDefaultValue(
       account,
       programNode,
-      hasLegacyOptionalAccounts
+      instructionNode.optionalAccountStrategy === 'omitted'
     );
     const isOptionalOrHasLowLevelDefaultValues =
       account.isOptional || defaultValue !== null;
