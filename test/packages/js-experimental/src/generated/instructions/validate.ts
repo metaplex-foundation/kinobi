@@ -455,8 +455,16 @@ export async function validate<
         TAccountPayer,
         TAccountRuleSet,
         TAccountSystemProgram,
-        typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-          ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+        typeof input['optRuleSigner1'] extends Signer<
+          TAccountOptRuleSigner1 extends undefined
+            ? never
+            : TAccountOptRuleSigner1
+        >
+          ? ReadonlySignerAccount<
+              TAccountOptRuleSigner1 extends undefined
+                ? never
+                : TAccountOptRuleSigner1
+            >
           : TAccountOptRuleSigner1,
         TAccountOptRuleSigner2,
         TAccountOptRuleSigner3,
@@ -525,8 +533,16 @@ export async function validate<
       TAccountPayer,
       TAccountRuleSet,
       TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      typeof input['optRuleSigner1'] extends Signer<
+        TAccountOptRuleSigner1 extends undefined
+          ? never
+          : TAccountOptRuleSigner1
+      >
+        ? ReadonlySignerAccount<
+            TAccountOptRuleSigner1 extends undefined
+              ? never
+              : TAccountOptRuleSigner1
+          >
         : TAccountOptRuleSigner1,
       TAccountOptRuleSigner2,
       TAccountOptRuleSigner3,
@@ -578,8 +594,16 @@ export async function validate<
       TAccountPayer,
       TAccountRuleSet,
       TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      typeof input['optRuleSigner1'] extends Signer<
+        TAccountOptRuleSigner1 extends undefined
+          ? never
+          : TAccountOptRuleSigner1
+      >
+        ? ReadonlySignerAccount<
+            TAccountOptRuleSigner1 extends undefined
+              ? never
+              : TAccountOptRuleSigner1
+          >
         : TAccountOptRuleSigner1,
       TAccountOptRuleSigner2,
       TAccountOptRuleSigner3,
@@ -619,8 +643,16 @@ export async function validate<
             TAccountPayer,
             TAccountRuleSet,
             TAccountSystemProgram,
-            typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-              ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+            typeof input['optRuleSigner1'] extends Signer<
+              TAccountOptRuleSigner1 extends undefined
+                ? never
+                : TAccountOptRuleSigner1
+            >
+              ? ReadonlySignerAccount<
+                  TAccountOptRuleSigner1 extends undefined
+                    ? never
+                    : TAccountOptRuleSigner1
+                >
               : TAccountOptRuleSigner1,
             TAccountOptRuleSigner2,
             TAccountOptRuleSigner3,
@@ -672,8 +704,16 @@ export async function validate<
         TAccountPayer,
         TAccountRuleSet,
         TAccountSystemProgram,
-        typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-          ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+        typeof input['optRuleSigner1'] extends Signer<
+          TAccountOptRuleSigner1 extends undefined
+            ? never
+            : TAccountOptRuleSigner1
+        >
+          ? ReadonlySignerAccount<
+              TAccountOptRuleSigner1 extends undefined
+                ? never
+                : TAccountOptRuleSigner1
+            >
           : TAccountOptRuleSigner1,
         TAccountOptRuleSigner2,
         TAccountOptRuleSigner3,
@@ -697,8 +737,16 @@ export async function validate<
             TAccountPayer,
             TAccountRuleSet,
             TAccountSystemProgram,
-            typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-              ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+            typeof input['optRuleSigner1'] extends Signer<
+              TAccountOptRuleSigner1 extends undefined
+                ? never
+                : TAccountOptRuleSigner1
+            >
+              ? ReadonlySignerAccount<
+                  TAccountOptRuleSigner1 extends undefined
+                    ? never
+                    : TAccountOptRuleSigner1
+                >
               : TAccountOptRuleSigner1,
             TAccountOptRuleSigner2,
             TAccountOptRuleSigner3,
@@ -811,8 +859,16 @@ export async function validate<
       TAccountPayer,
       TAccountRuleSet,
       TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      typeof input['optRuleSigner1'] extends Signer<
+        TAccountOptRuleSigner1 extends undefined
+          ? never
+          : TAccountOptRuleSigner1
+      >
+        ? ReadonlySignerAccount<
+            TAccountOptRuleSigner1 extends undefined
+              ? never
+              : TAccountOptRuleSigner1
+          >
         : TAccountOptRuleSigner1,
       TAccountOptRuleSigner2,
       TAccountOptRuleSigner3,

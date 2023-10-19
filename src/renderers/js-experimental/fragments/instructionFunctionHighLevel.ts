@@ -131,11 +131,17 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
     if (account.isSigner === 'either') {
+      const isLegacyOptional =
+        account.isOptional &&
+        instructionNode.optionalAccountStrategy === 'omitted';
       const role = account.isWritable
         ? 'WritableSignerAccount'
         : 'ReadonlySignerAccount';
+      const definedTypeParam = isLegacyOptional
+        ? `${typeParam} extends undefined ? never : ${typeParam}`
+        : typeParam;
       return fragment(
-        `typeof input["${camelName}"] extends Signer<${typeParam}> ? ${role}<${typeParam}> : ${typeParam}`
+        `typeof input["${camelName}"] extends Signer<${definedTypeParam}> ? ${role}<${definedTypeParam}> : ${typeParam}`
       ).addImports('solanaInstructions', [role]);
     }
 
