@@ -2,31 +2,31 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@solana/addresses':
-    specifier: ^2.0.0-experimental.c7ef49c
-    version: 2.0.0-experimental.f040ea3
+    specifier: 2.0.0-experimental.c7ef49c
+    version: 2.0.0-experimental.c7ef49c(fastestsmallesttextencoderdecoder@1.0.22)
   '@solana/codecs-core':
-    specifier: ^2.0.0-experimental.c7ef49c
+    specifier: 2.0.0-experimental.c7ef49c
     version: 2.0.0-experimental.c7ef49c
   '@solana/codecs-data-structures':
-    specifier: ^2.0.0-experimental.c7ef49c
+    specifier: 2.0.0-experimental.c7ef49c
     version: 2.0.0-experimental.c7ef49c
   '@solana/codecs-numbers':
-    specifier: ^2.0.0-experimental.c7ef49c
+    specifier: 2.0.0-experimental.c7ef49c
     version: 2.0.0-experimental.c7ef49c
   '@solana/codecs-strings':
-    specifier: ^2.0.0-experimental.c7ef49c
+    specifier: 2.0.0-experimental.c7ef49c
     version: 2.0.0-experimental.c7ef49c(fastestsmallesttextencoderdecoder@1.0.22)
   '@solana/instructions':
-    specifier: ^2.0.0-experimental.c7ef49c
-    version: 2.0.0-experimental.f4b7fd3
+    specifier: 2.0.0-experimental.c7ef49c
+    version: 2.0.0-experimental.c7ef49c
   '@solana/keys':
-    specifier: ^2.0.0-experimental.c7ef49c
+    specifier: 2.0.0-experimental.c7ef49c
     version: 2.0.0-experimental.c7ef49c
   '@solana/options':
-    specifier: ^2.0.0-experimental.c7ef49c
+    specifier: 2.0.0-experimental.c7ef49c
     version: 2.0.0-experimental.c7ef49c
   '@solana/transactions':
-    specifier: ^2.0.0-experimental.c7ef49c
+    specifier: 2.0.0-experimental.c7ef49c
     version: 2.0.0-experimental.c7ef49c(fastestsmallesttextencoderdecoder@1.0.22)
 
 devDependencies:
@@ -82,19 +82,8 @@ packages:
       - fastestsmallesttextencoderdecoder
     dev: false
 
-  /@solana/addresses@2.0.0-experimental.f040ea3:
-    resolution: {integrity: sha512-6f0k5X2+HaG85qF3t5cV51k6ysd5MVLi2e3/SBmrjbd+7pxm9M+ySH9ihVXEq6y8qU2hpRH8ouIsTGdJb5YbOA==}
-    dependencies:
-      '@metaplex-foundation/umi-serializers': 0.8.9
-      '@solana/assertions': 2.0.0-experimental.f040ea3
-    dev: false
-
   /@solana/assertions@2.0.0-experimental.c7ef49c:
     resolution: {integrity: sha512-dgXYLEl2nwZktRu2wBRKSFurrPvE/duh6ShfanGQ2G5ptr6e7O23S5URWznwGKn+MoD1UorpEX28uuh/+eUp/w==}
-    dev: false
-
-  /@solana/assertions@2.0.0-experimental.f040ea3:
-    resolution: {integrity: sha512-vXDToQtVdeHAiadkgZhMu77ig+c9lmt64WynVqaZ/qQCBQnGPtnHDZRM8/u3yQE5RNz2lYBYIxGVb/ldxC8ckQ==}
     dev: false
 
   /@solana/codecs-core@2.0.0-experimental.c7ef49c:
@@ -124,8 +113,8 @@ packages:
       fastestsmallesttextencoderdecoder: 1.0.22
     dev: false
 
-  /@solana/instructions@2.0.0-experimental.f4b7fd3:
-    resolution: {integrity: sha512-ix4HJifZCg7tV3y+ftjsfSv72GBE6pq2YH7InKw4OBK4YdSXLVbOM26zrgAT4txyuis0perrAIFJ1V7rLZF3ng==}
+  /@solana/instructions@2.0.0-experimental.c7ef49c:
+    resolution: {integrity: sha512-NY8JQXyF8N32Wzed+jFsr5Nix/Re67gd4xlsa8MAs8Ji/Tfw9Yyu1AmALjF6iDfbhfpD/mpl9KCCOoJp7AlH0w==}
     dev: false
 
   /@solana/keys@2.0.0-experimental.c7ef49c:
