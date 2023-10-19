@@ -529,7 +529,7 @@ export async function dummy<
   }
   if (!accounts.delegateRecord.value) {
     if (accounts.delegate.value) {
-      accounts.delegateRecord.value = findDelegateRecordPda(context, {
+      accounts.delegateRecord.value = await findDelegateRecordPda(context, {
         role: DelegateRole.Collection,
       });
     }

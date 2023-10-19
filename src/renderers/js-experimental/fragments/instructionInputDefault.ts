@@ -109,7 +109,7 @@ export function getInstructionInputDefaultFragment(
         pdaArgs.push(pdaSeedsFragment.render);
       }
       const pdaFragment = defaultFragment(
-        `${pdaFunction}(${pdaArgs.join(', ')})`
+        `await ${pdaFunction}(${pdaArgs.join(', ')})`
       )
         .mergeImportsWith(pdaSeedsFragment)
         .addImports(pdaImportFrom, pdaFunction);

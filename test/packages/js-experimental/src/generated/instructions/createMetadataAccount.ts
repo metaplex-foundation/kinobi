@@ -514,7 +514,7 @@ export async function createMetadataAccount<
 
   // Resolve default values.
   if (!accounts.metadata.value) {
-    accounts.metadata.value = findMetadataPda(context, {
+    accounts.metadata.value = await findMetadataPda(context, {
       mint: expectAddress(accounts.mint.value),
     });
   }
