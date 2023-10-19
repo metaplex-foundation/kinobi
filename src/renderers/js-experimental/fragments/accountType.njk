@@ -1,10 +1,6 @@
 {% import "templates/macros.njk" as macros %}
 
 {{ macros.docblock(docs) }}
-{% if link %}
-  export type {{ name }}<TAddress extends string = string> = Account<{{ link.name | pascalCase }}, TAddress>;
-{% else %}
-  export type {{ name }}<TAddress extends string = string> = Account<{{ dataName }}, TAddress>;
+export type {{ name }}<TAddress extends string = string> = Account<{{ dataName }}, TAddress>;
 
-  {{ typeWithCodecFragment }}
-{% endif %}
+{{ typeWithCodec }}

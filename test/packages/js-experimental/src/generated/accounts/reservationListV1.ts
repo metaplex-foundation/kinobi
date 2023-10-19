@@ -7,7 +7,10 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { getReservationListV1AccountDataDecoder } from '../../hooked';
+import {
+  ReservationListV1AccountData,
+  getReservationListV1AccountDataDecoder,
+} from '../../hooked';
 import {
   Account,
   Context,

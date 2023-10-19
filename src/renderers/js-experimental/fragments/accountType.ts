@@ -1,28 +1,27 @@
 import * as nodes from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { TypeManifest } from '../TypeManifest';
-import { Fragment, fragmentFromTemplate } from './common';
+import { Fragment, fragment, fragmentFromTemplate } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getAccountTypeFragment(
   accountNode: nodes.AccountNode,
   manifest: TypeManifest
 ): Fragment {
-  const typeWithCodecFragment = getTypeWithCodecFragment(
-    accountNode.data.name,
-    manifest
-  );
+  const typeWithCodecFragment = accountNode.data.link
+    ? fragment('')
+    : getTypeWithCodecFragment(accountNode.data.name, manifest);
 
-  const accountTypeFragment = fragmentFromTemplate('accountType.njk', {
+  const dataNameFragment = accountNode.data.link
+    ? manifest.strictType.clone()
+    : fragment(pascalCase(accountNode.data.name));
+
+  return fragmentFromTemplate('accountType.njk', {
     name: pascalCase(accountNode.name),
-    dataName: pascalCase(accountNode.data.name),
+    dataName: dataNameFragment.render,
     link: accountNode.data.link,
-    typeWithCodecFragment,
-  }).addImports('shared', 'Account');
-
-  if (!accountNode.data.link) {
-    accountTypeFragment.mergeImportsWith(typeWithCodecFragment);
-  }
-
-  return accountTypeFragment;
+    typeWithCodec: typeWithCodecFragment,
+  })
+    .mergeImportsWith(dataNameFragment, typeWithCodecFragment)
+    .addImports('shared', 'Account');
 }
