@@ -35,8 +35,8 @@ import {
   Account,
   Context,
   EncodedAccount,
-  RpcGetAccountOptions,
-  RpcGetAccountsOptions,
+  FetchEncodedAccountOptions,
+  FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
 } from '../shared';
@@ -129,7 +129,7 @@ export function decodeReservationListV2<TAddress extends string = string>(
 export async function fetchReservationListV2<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<ReservationListV2<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -141,7 +141,7 @@ export async function safeFetchReservationListV2<
 >(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<ReservationListV2<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists ? decodeReservationListV2(maybeAccount) : null;
@@ -150,7 +150,7 @@ export async function safeFetchReservationListV2<
 export async function fetchAllReservationListV2(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<ReservationListV2[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -162,7 +162,7 @@ export async function fetchAllReservationListV2(
 export async function safeFetchAllReservationListV2(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<ReservationListV2[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts

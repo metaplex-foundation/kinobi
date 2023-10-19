@@ -155,6 +155,8 @@ export type CustomGeneratedInstruction<TInstruction extends IInstruction, TRetur
 };
 
 export type Context = {
+  fetchEncodedAccount: <TAddress extends string = string>(address: Base58EncodedAddress<TAddress>, options?: FetchEncodedAccountOptions) => Promise<MaybeEncodedAccount<TAddress>>;
+  fetchEncodedAccounts: (addresses: Base58EncodedAddress[], options?: FetchEncodedAccountsOptions) => Promise<MaybeEncodedAccount[]>;
   getProgramAddress?: (program: { name: string; address: Base58EncodedAddress }) => Promise<Base58EncodedAddress>;
   getProgramDerivedAddress?: (programAddress: Base58EncodedAddress, seeds: Uint8Array[]) => Promise<ProgramDerivedAddress>;
 };
@@ -211,7 +213,15 @@ export function assertAccountExists<TData extends object | Uint8Array, TAddress 
   }
 }
 
-// TODO: implement.
-export type RpcGetAccountOptions = {};
-export type RpcGetAccountsOptions = {};
+export type Commitment = 'confirmed' | 'finalized' | 'processed';
+
+export type FetchEncodedAccountOptions = {
+  commitment?: Commitment;
+  abortSignal?: AbortSignal;
+};
+
+export type FetchEncodedAccountsOptions = {
+  commitment?: Commitment;
+  abortSignal?: AbortSignal;
+};
 {% endblock %}

@@ -35,8 +35,8 @@ import {
   Account,
   Context,
   EncodedAccount,
-  RpcGetAccountOptions,
-  RpcGetAccountsOptions,
+  FetchEncodedAccountOptions,
+  FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
 } from '../shared';
@@ -117,7 +117,7 @@ export function decodeMasterEditionV1<TAddress extends string = string>(
 export async function fetchMasterEditionV1<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -129,7 +129,7 @@ export async function safeFetchMasterEditionV1<
 >(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists ? decodeMasterEditionV1(maybeAccount) : null;
@@ -138,7 +138,7 @@ export async function safeFetchMasterEditionV1<
 export async function fetchAllMasterEditionV1(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -150,7 +150,7 @@ export async function fetchAllMasterEditionV1(
 export async function safeFetchAllMasterEditionV1(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
@@ -181,7 +181,7 @@ export function findMasterEditionV1Pda(
 export async function fetchMasterEditionV1FromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1> {
   return fetchMasterEditionV1(
     context,
@@ -193,7 +193,7 @@ export async function fetchMasterEditionV1FromSeeds(
 export async function safeFetchMasterEditionV1FromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1 | null> {
   return safeFetchMasterEditionV1(
     context,

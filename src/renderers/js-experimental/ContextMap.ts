@@ -1,6 +1,10 @@
 import { Fragment, fragment } from './fragments';
 
-export type ContextInterface = 'getProgramAddress' | 'getProgramDerivedAddress';
+export type ContextInterface =
+  | 'fetchEncodedAccount'
+  | 'fetchEncodedAccounts'
+  | 'getProgramAddress'
+  | 'getProgramDerivedAddress';
 
 export class ContextMap {
   protected readonly _interfaces: Set<ContextInterface> = new Set();

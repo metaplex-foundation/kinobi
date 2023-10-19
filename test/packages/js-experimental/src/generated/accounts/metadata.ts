@@ -44,8 +44,8 @@ import {
   Account,
   Context,
   EncodedAccount,
-  RpcGetAccountOptions,
-  RpcGetAccountsOptions,
+  FetchEncodedAccountOptions,
+  FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
 } from '../shared';
@@ -202,7 +202,7 @@ export function decodeMetadata<TAddress extends string = string>(
 export async function fetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<Metadata<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -212,7 +212,7 @@ export async function fetchMetadata<TAddress extends string = string>(
 export async function safeFetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<Metadata<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists ? decodeMetadata(maybeAccount) : null;
@@ -221,7 +221,7 @@ export async function safeFetchMetadata<TAddress extends string = string>(
 export async function fetchAllMetadata(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -233,7 +233,7 @@ export async function fetchAllMetadata(
 export async function safeFetchAllMetadata(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
@@ -266,7 +266,7 @@ export function findMetadataPda(
 export async function fetchMetadataFromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMetadataPda>[1],
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<Metadata> {
   return fetchMetadata(context, findMetadataPda(context, seeds)[0], options);
 }
@@ -274,7 +274,7 @@ export async function fetchMetadataFromSeeds(
 export async function safeFetchMetadataFromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findMetadataPda>[1],
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<Metadata | null> {
   return safeFetchMetadata(
     context,

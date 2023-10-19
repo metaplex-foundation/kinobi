@@ -25,8 +25,8 @@ import {
   Account,
   Context,
   EncodedAccount,
-  RpcGetAccountOptions,
-  RpcGetAccountsOptions,
+  FetchEncodedAccountOptions,
+  FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
 } from '../shared';
@@ -84,7 +84,7 @@ export function decodeEditionMarker<TAddress extends string = string>(
 export async function fetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<EditionMarker<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -94,7 +94,7 @@ export async function fetchEditionMarker<TAddress extends string = string>(
 export async function safeFetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<EditionMarker<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists ? decodeEditionMarker(maybeAccount) : null;
@@ -103,7 +103,7 @@ export async function safeFetchEditionMarker<TAddress extends string = string>(
 export async function fetchAllEditionMarker(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<EditionMarker[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -115,7 +115,7 @@ export async function fetchAllEditionMarker(
 export async function safeFetchAllEditionMarker(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<EditionMarker[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts

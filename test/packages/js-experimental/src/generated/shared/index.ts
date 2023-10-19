@@ -218,6 +218,14 @@ export type CustomGeneratedInstruction<
 };
 
 export type Context = {
+  fetchEncodedAccount: <TAddress extends string = string>(
+    address: Base58EncodedAddress<TAddress>,
+    options?: FetchEncodedAccountOptions
+  ) => Promise<MaybeEncodedAccount<TAddress>>;
+  fetchEncodedAccounts: (
+    addresses: Base58EncodedAddress[],
+    options?: FetchEncodedAccountsOptions
+  ) => Promise<MaybeEncodedAccount[]>;
   getProgramAddress?: (program: {
     name: string;
     address: Base58EncodedAddress;
@@ -323,6 +331,14 @@ export function assertAccountExists<
   }
 }
 
-// TODO: implement.
-export type RpcGetAccountOptions = {};
-export type RpcGetAccountsOptions = {};
+export type Commitment = 'confirmed' | 'finalized' | 'processed';
+
+export type FetchEncodedAccountOptions = {
+  commitment?: Commitment;
+  abortSignal?: AbortSignal;
+};
+
+export type FetchEncodedAccountsOptions = {
+  commitment?: Commitment;
+  abortSignal?: AbortSignal;
+};

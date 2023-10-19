@@ -28,8 +28,8 @@ import {
   Account,
   Context,
   EncodedAccount,
-  RpcGetAccountOptions,
-  RpcGetAccountsOptions,
+  FetchEncodedAccountOptions,
+  FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
 } from '../shared';
@@ -103,7 +103,7 @@ export function decodeDelegateRecord<TAddress extends string = string>(
 export async function fetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -113,7 +113,7 @@ export async function fetchDelegateRecord<TAddress extends string = string>(
 export async function safeFetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists ? decodeDelegateRecord(maybeAccount) : null;
@@ -122,7 +122,7 @@ export async function safeFetchDelegateRecord<TAddress extends string = string>(
 export async function fetchAllDelegateRecord(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -134,7 +134,7 @@ export async function fetchAllDelegateRecord(
 export async function safeFetchAllDelegateRecord(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
@@ -169,7 +169,7 @@ export function findDelegateRecordPda(
 export async function fetchDelegateRecordFromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord> {
   return fetchDelegateRecord(
     context,
@@ -181,7 +181,7 @@ export async function fetchDelegateRecordFromSeeds(
 export async function safeFetchDelegateRecordFromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord | null> {
   return safeFetchDelegateRecord(
     context,

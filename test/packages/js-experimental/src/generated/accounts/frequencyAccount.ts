@@ -33,8 +33,8 @@ import {
   Account,
   Context,
   EncodedAccount,
-  RpcGetAccountOptions,
-  RpcGetAccountsOptions,
+  FetchEncodedAccountOptions,
+  FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
 } from '../shared';
@@ -110,7 +110,7 @@ export function decodeFrequencyAccount<TAddress extends string = string>(
 export async function fetchFrequencyAccount<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -122,7 +122,7 @@ export async function safeFetchFrequencyAccount<
 >(
   context: Pick<Context, 'rpc'>,
   address: Base58EncodedAddress<TAddress>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists ? decodeFrequencyAccount(maybeAccount) : null;
@@ -131,7 +131,7 @@ export async function safeFetchFrequencyAccount<
 export async function fetchAllFrequencyAccount(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -143,7 +143,7 @@ export async function fetchAllFrequencyAccount(
 export async function safeFetchAllFrequencyAccount(
   context: Pick<Context, 'rpc'>,
   addresses: Array<Base58EncodedAddress>,
-  options?: RpcGetAccountsOptions
+  options?: FetchEncodedAccountsOptions
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
@@ -172,7 +172,7 @@ export function findFrequencyAccountPda(
 
 export async function fetchFrequencyAccountFromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount> {
   return fetchFrequencyAccount(
     context,
@@ -183,7 +183,7 @@ export async function fetchFrequencyAccountFromSeeds(
 
 export async function safeFetchFrequencyAccountFromSeeds(
   context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
-  options?: RpcGetAccountOptions
+  options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount | null> {
   return safeFetchFrequencyAccount(
     context,

@@ -22,7 +22,7 @@ export function getAccountFetchHelpersFragment(
       'Context',
       'decodeAccount',
       'EncodedAccount',
-      'RpcGetAccountOptions',
-      'RpcGetAccountsOptions',
+      'FetchEncodedAccountOptions',
+      'FetchEncodedAccountsOptions',
     ]);
 }
