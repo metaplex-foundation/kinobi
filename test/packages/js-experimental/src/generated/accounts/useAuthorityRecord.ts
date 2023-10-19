@@ -100,11 +100,11 @@ export function decodeUseAuthorityRecord<TAddress extends string = string>(
 }
 
 export async function fetchUseAuthorityRecord<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<UseAuthorityRecord<TAddress>> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
   return decodeUseAuthorityRecord(maybeAccount);
 }
@@ -112,20 +112,20 @@ export async function fetchUseAuthorityRecord<TAddress extends string = string>(
 export async function safeFetchUseAuthorityRecord<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<UseAuthorityRecord<TAddress> | null> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeUseAuthorityRecord(maybeAccount) : null;
 }
 
 export async function fetchAllUseAuthorityRecord(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeUseAuthorityRecord(maybeAccount);
@@ -133,11 +133,11 @@ export async function fetchAllUseAuthorityRecord(
 }
 
 export async function safeFetchAllUseAuthorityRecord(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<UseAuthorityRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

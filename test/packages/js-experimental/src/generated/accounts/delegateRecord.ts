@@ -32,6 +32,8 @@ import {
   FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
+  getProgramAddress,
+  getProgramDerivedAddress,
 } from '../shared';
 import {
   DelegateRole,
@@ -101,30 +103,30 @@ export function decodeDelegateRecord<TAddress extends string = string>(
 }
 
 export async function fetchDelegateRecord<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord<TAddress>> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
   return decodeDelegateRecord(maybeAccount);
 }
 
 export async function safeFetchDelegateRecord<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord<TAddress> | null> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeDelegateRecord(maybeAccount) : null;
 }
 
 export async function fetchAllDelegateRecord(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<DelegateRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeDelegateRecord(maybeAccount);
@@ -132,11 +134,11 @@ export async function fetchAllDelegateRecord(
 }
 
 export async function safeFetchAllDelegateRecord(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<DelegateRecord[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
@@ -148,44 +150,51 @@ export function getDelegateRecordSize(): number {
   return 282;
 }
 
-export function findDelegateRecordPda(
-  context: Pick<Context, 'eddsa' | 'programs'>,
+export async function findDelegateRecordPda(
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   seeds: {
     /** The delegate role */
     role: DelegateRoleArgs;
   }
 ): ProgramDerivedAddress {
-  const programId = context.programs.getPublicKey(
+  const programAddress = await getProgramAddress(
+    context,
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
-  return context.eddsa.findPda(programId, [
+  return getProgramDerivedAddress(context, programAddress, [
     getStringEncoder({ size: 'variable' }).encode('delegate_record'),
-    getAddressEncoder().encode(programId),
+    getAddressEncoder().encode(programAddress),
     getDelegateRoleEncoder().encode(seeds.role),
   ]);
 }
 
 export async function fetchDelegateRecordFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<
+    Context,
+    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
+  >,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord> {
   return fetchDelegateRecord(
     context,
-    findDelegateRecordPda(context, seeds)[0],
+    await findDelegateRecordPda(context, seeds)[0],
     options
   );
 }
 
 export async function safeFetchDelegateRecordFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<
+    Context,
+    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
+  >,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord | null> {
   return safeFetchDelegateRecord(
     context,
-    findDelegateRecordPda(context, seeds)[0],
+    await findDelegateRecordPda(context, seeds)[0],
     options
   );
 }

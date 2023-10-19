@@ -105,11 +105,11 @@ export function decodeTokenOwnedEscrow<TAddress extends string = string>(
 }
 
 export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<TokenOwnedEscrow<TAddress>> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
   return decodeTokenOwnedEscrow(maybeAccount);
 }
@@ -117,20 +117,20 @@ export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
 export async function safeFetchTokenOwnedEscrow<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<TokenOwnedEscrow<TAddress> | null> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeTokenOwnedEscrow(maybeAccount) : null;
 }
 
 export async function fetchAllTokenOwnedEscrow(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeTokenOwnedEscrow(maybeAccount);
@@ -138,11 +138,11 @@ export async function fetchAllTokenOwnedEscrow(
 }
 
 export async function safeFetchAllTokenOwnedEscrow(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

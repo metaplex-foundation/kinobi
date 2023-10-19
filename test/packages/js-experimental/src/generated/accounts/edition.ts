@@ -92,30 +92,30 @@ export function decodeEdition<TAddress extends string = string>(
 }
 
 export async function fetchEdition<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<Edition<TAddress>> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
   return decodeEdition(maybeAccount);
 }
 
 export async function safeFetchEdition<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<Edition<TAddress> | null> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeEdition(maybeAccount) : null;
 }
 
 export async function fetchAllEdition(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<Edition[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeEdition(maybeAccount);
@@ -123,11 +123,11 @@ export async function fetchAllEdition(
 }
 
 export async function safeFetchAllEdition(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<Edition[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => decodeEdition(maybeAccount as EncodedAccount));

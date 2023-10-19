@@ -297,10 +297,8 @@ export type EncodedAccount<TAddress extends string = string> = Account<
   Uint8Array,
   TAddress
 >;
-export type MaybeEncodedAccount<TAddress extends string = string> = Account<
-  Uint8Array,
-  TAddress
->;
+export type MaybeEncodedAccount<TAddress extends string = string> =
+  MaybeAccount<Uint8Array, TAddress>;
 
 export function decodeAccount<
   TData extends object,

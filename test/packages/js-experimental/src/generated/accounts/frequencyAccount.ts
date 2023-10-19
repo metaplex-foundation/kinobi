@@ -37,6 +37,8 @@ import {
   FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
+  getProgramAddress,
+  getProgramDerivedAddress,
 } from '../shared';
 import { TaKey } from '../types';
 
@@ -108,11 +110,11 @@ export function decodeFrequencyAccount<TAddress extends string = string>(
 }
 
 export async function fetchFrequencyAccount<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount<TAddress>> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
   return decodeFrequencyAccount(maybeAccount);
 }
@@ -120,20 +122,20 @@ export async function fetchFrequencyAccount<TAddress extends string = string>(
 export async function safeFetchFrequencyAccount<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount<TAddress> | null> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeFrequencyAccount(maybeAccount) : null;
 }
 
 export async function fetchAllFrequencyAccount(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<FrequencyAccount[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeFrequencyAccount(maybeAccount);
@@ -141,11 +143,11 @@ export async function fetchAllFrequencyAccount(
 }
 
 export async function safeFetchAllFrequencyAccount(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<FrequencyAccount[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
@@ -157,37 +159,44 @@ export function getFrequencyAccountSize(): number {
   return 24;
 }
 
-export function findFrequencyAccountPda(
-  context: Pick<Context, 'eddsa' | 'programs'>
+export async function findFrequencyAccountPda(
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
 ): ProgramDerivedAddress {
-  const programId = context.programs.getPublicKey(
+  const programAddress = await getProgramAddress(
+    context,
     'mplTokenAuthRules',
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
   );
-  return context.eddsa.findPda(programId, [
+  return getProgramDerivedAddress(context, programAddress, [
     getStringEncoder({ size: 'variable' }).encode('frequency_pda'),
-    getAddressEncoder().encode(programId),
+    getAddressEncoder().encode(programAddress),
   ]);
 }
 
 export async function fetchFrequencyAccountFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<
+    Context,
+    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
+  >,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount> {
   return fetchFrequencyAccount(
     context,
-    findFrequencyAccountPda(context)[0],
+    await findFrequencyAccountPda(context)[0],
     options
   );
 }
 
 export async function safeFetchFrequencyAccountFromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<
+    Context,
+    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
+  >,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount | null> {
   return safeFetchFrequencyAccount(
     context,
-    findFrequencyAccountPda(context)[0],
+    await findFrequencyAccountPda(context)[0],
     options
   );
 }

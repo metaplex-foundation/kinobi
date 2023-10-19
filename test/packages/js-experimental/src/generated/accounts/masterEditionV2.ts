@@ -38,6 +38,8 @@ import {
   FetchEncodedAccountsOptions,
   assertAccountExists,
   decodeAccount,
+  getProgramAddress,
+  getProgramDerivedAddress,
 } from '../shared';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
@@ -100,11 +102,11 @@ export function decodeMasterEditionV2<TAddress extends string = string>(
 }
 
 export async function fetchMasterEditionV2<TAddress extends string = string>(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2<TAddress>> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
   return decodeMasterEditionV2(maybeAccount);
 }
@@ -112,20 +114,20 @@ export async function fetchMasterEditionV2<TAddress extends string = string>(
 export async function safeFetchMasterEditionV2<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount'>,
   address: Base58EncodedAddress<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2<TAddress> | null> {
-  const maybeAccount = await context.rpc.getAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeMasterEditionV2(maybeAccount) : null;
 }
 
 export async function fetchAllMasterEditionV2(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV2[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeMasterEditionV2(maybeAccount);
@@ -133,11 +135,11 @@ export async function fetchAllMasterEditionV2(
 }
 
 export async function safeFetchAllMasterEditionV2(
-  context: Pick<Context, 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Base58EncodedAddress>,
   options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV2[]> {
-  const maybeAccounts = await context.rpc.getAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
@@ -149,45 +151,52 @@ export function getMasterEditionV2Size(): number {
   return 282;
 }
 
-export function findMasterEditionV2Pda(
-  context: Pick<Context, 'eddsa' | 'programs'>,
+export async function findMasterEditionV2Pda(
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   seeds: {
     /** The address of the mint account */
     mint: Base58EncodedAddress;
   }
 ): ProgramDerivedAddress {
-  const programId = context.programs.getPublicKey(
+  const programAddress = await getProgramAddress(
+    context,
     'mplTokenMetadata',
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
   );
-  return context.eddsa.findPda(programId, [
+  return getProgramDerivedAddress(context, programAddress, [
     getStringEncoder({ size: 'variable' }).encode('metadata'),
-    getAddressEncoder().encode(programId),
+    getAddressEncoder().encode(programAddress),
     getAddressEncoder().encode(seeds.mint),
     getStringEncoder({ size: 'variable' }).encode('edition'),
   ]);
 }
 
 export async function fetchMasterEditionV2FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<
+    Context,
+    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
+  >,
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2> {
   return fetchMasterEditionV2(
     context,
-    findMasterEditionV2Pda(context, seeds)[0],
+    await findMasterEditionV2Pda(context, seeds)[0],
     options
   );
 }
 
 export async function safeFetchMasterEditionV2FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<
+    Context,
+    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
+  >,
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2 | null> {
   return safeFetchMasterEditionV2(
     context,
-    findMasterEditionV2Pda(context, seeds)[0],
+    await findMasterEditionV2Pda(context, seeds)[0],
     options
   );
 }

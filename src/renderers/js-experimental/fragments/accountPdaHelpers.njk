@@ -1,7 +1,7 @@
 {% import "templates/macros.njk" as macros %}
 
-export function find{{ pascalCaseName }}Pda(
-  context: Pick<Context, 'eddsa' | 'programs'>,
+export async function find{{ pascalCaseName }}Pda(
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   {% if hasVariableSeeds %}
     seeds: {
       {% for seed in seeds %}
@@ -13,11 +13,11 @@ export function find{{ pascalCaseName }}Pda(
     }
   {% endif %}
 ): ProgramDerivedAddress {
-  const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
-  return context.eddsa.findPda(programId, [
+  const programAddress = await getProgramAddress(context, '{{ program.name | camelCase }}', '{{ program.publicKey }}');
+  return getProgramDerivedAddress(context, programAddress, [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}
-        getAddressEncoder().encode(programId),
+        getAddressEncoder().encode(programAddress),
       {% elif seed.kind === 'constant' %}
         {{ seed.typeManifest.encoder.render }}.encode({{ seed.value.render }}),
       {% else %}
@@ -28,21 +28,21 @@ export function find{{ pascalCaseName }}Pda(
 }
 
 export async function fetch{{ pascalCaseName }}FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'>,
   {% if hasVariableSeeds %}
     seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
   {% endif %}
   options?: FetchEncodedAccountOptions,
 ): Promise<{{ pascalCaseName }}> {
-  return fetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
+  return fetch{{ pascalCaseName }}(context, await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
 }
 
 export async function safeFetch{{ pascalCaseName }}FromSeeds(
-  context: Pick<Context, 'eddsa' | 'programs' | 'rpc'>,
+  context: Pick<Context, 'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'>,
   {% if hasVariableSeeds %}
     seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
   {% endif %}
   options?: FetchEncodedAccountOptions,
 ): Promise<{{ pascalCaseName }} | null> {
-  return safeFetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
+  return safeFetch{{ pascalCaseName }}(context, await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
 }

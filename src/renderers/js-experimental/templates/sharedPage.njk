@@ -190,7 +190,7 @@ export type MaybeAccount<TData extends object | Uint8Array, TAddress extends str
   | { exists: false; address: Base58EncodedAddress<TAddress> };
 
 export type EncodedAccount<TAddress extends string = string> = Account<Uint8Array, TAddress>;
-export type MaybeEncodedAccount<TAddress extends string = string> = Account<Uint8Array, TAddress>;
+export type MaybeEncodedAccount<TAddress extends string = string> = MaybeAccount<Uint8Array, TAddress>;
 
 export function decodeAccount<TData extends object, TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>,
