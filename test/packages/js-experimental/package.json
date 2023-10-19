@@ -11,15 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@solana/addresses": "^2.0.0-experimental",
-    "@solana/codecs-core": "^2.0.0-experimental",
-    "@solana/codecs-data-structures": "^2.0.0-experimental",
-    "@solana/codecs-numbers": "^2.0.0-experimental",
-    "@solana/codecs-strings": "^2.0.0-experimental",
-    "@solana/instructions": "^2.0.0-experimental",
-    "@solana/keys": "^2.0.0-experimental",
-    "@solana/options": "^2.0.0-experimental",
-    "@solana/transactions": "^2.0.0-experimental"
+    "@solana/addresses": "^2.0.0-experimental.c7ef49c",
+    "@solana/codecs-core": "^2.0.0-experimental.c7ef49c",
+    "@solana/codecs-data-structures": "^2.0.0-experimental.c7ef49c",
+    "@solana/codecs-numbers": "^2.0.0-experimental.c7ef49c",
+    "@solana/codecs-strings": "^2.0.0-experimental.c7ef49c",
+    "@solana/instructions": "^2.0.0-experimental.c7ef49c",
+    "@solana/keys": "^2.0.0-experimental.c7ef49c",
+    "@solana/options": "^2.0.0-experimental.c7ef49c",
+    "@solana/transactions": "^2.0.0-experimental.c7ef49c"
   },
   "devDependencies": {
     "typescript": "^4.9.4"
