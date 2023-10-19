@@ -85,7 +85,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   visitRoot(root: nodes.RootNode): RenderMap {
     this.byteSizeVisitor.registerDefinedTypes?.(nodes.getAllDefinedTypes(root));
 
-    const programsToExport = root.programs.filter((p) => !p.internal);
+    const programsToExport = [] as any[]; // root.programs.filter((p) => !p.internal);
     const accountsToExport = nodes
       .getAllAccounts(root)
       .filter((a) => !a.internal);
@@ -139,8 +139,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitProgram(program: nodes.ProgramNode): RenderMap {
     this.program = program;
-    const { name } = program;
-    const pascalCaseName = pascalCase(name);
+    // const { name } = program;
+    // const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
       .mergeWith(...program.accounts.map((account) => visit(account, this)))
       .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
@@ -153,41 +153,40 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       return renderMap;
     }
 
-    renderMap
-      .mergeWith(
-        ...nodes
-          .getAllInstructionsWithSubs(
-            program,
-            !this.options.renderParentInstructions
-          )
-          .map((ix) => visit(ix, this))
-      )
-      .add(
-        `errors/${camelCase(name)}.ts`,
-        this.render('errorsPage.njk', {
-          imports: new ImportMap()
-            .add('umi', ['ProgramError', 'Program'])
-            .toString(this.options.dependencyMap),
+    renderMap.mergeWith(
+      ...nodes
+        .getAllInstructionsWithSubs(
           program,
-          errors: program.errors.map((error) => ({
-            ...error,
-            prefixedName: pascalCase(program.prefix) + pascalCase(error.name),
-          })),
-        })
-      )
-      .add(
-        `programs/${camelCase(name)}.ts`,
-        this.render('programsPage.njk', {
-          imports: new ImportMap()
-            .add('umi', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
-            .add('errors', [
-              `get${pascalCaseName}ErrorFromCode`,
-              `get${pascalCaseName}ErrorFromName`,
-            ])
-            .toString(this.options.dependencyMap),
-          program,
-        })
-      );
+          !this.options.renderParentInstructions
+        )
+        .map((ix) => visit(ix, this))
+    );
+    // .add(
+    //   `errors/${camelCase(name)}.ts`,
+    //   this.render('errorsPage.njk', {
+    //     imports: new ImportMap()
+    //       .add('umi', ['ProgramError', 'Program'])
+    //       .toString(this.options.dependencyMap),
+    //     program,
+    //     errors: program.errors.map((error) => ({
+    //       ...error,
+    //       prefixedName: pascalCase(program.prefix) + pascalCase(error.name),
+    //     })),
+    //   })
+    // )
+    // .add(
+    //   `programs/${camelCase(name)}.ts`,
+    //   this.render('programsPage.njk', {
+    //     imports: new ImportMap()
+    //       .add('umi', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
+    //       .add('errors', [
+    //         `get${pascalCaseName}ErrorFromCode`,
+    //         `get${pascalCaseName}ErrorFromName`,
+    //       ])
+    //       .toString(this.options.dependencyMap),
+    //     program,
+    //   })
+    // );
     this.program = null;
     return renderMap;
   }
