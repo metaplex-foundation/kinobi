@@ -618,29 +618,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-            TProgram,
-            TAccountNewMetadata,
-            TAccountNewEdition,
-            TAccountMasterEdition,
-            TAccountNewMint,
-            TAccountEditionMarkPda,
-            TAccountNewMintAuthority,
-            TAccountPayer,
-            TAccountVaultAuthority,
-            TAccountSafetyDepositStore,
-            TAccountSafetyDepositBox,
-            TAccountVault,
-            TAccountNewMetadataUpdateAuthority,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountTokenVaultProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MintNewEditionFromMasterEditionViaVaultProxyInput<
         TAccountNewMetadata,
         TAccountNewEdition,
@@ -679,58 +657,12 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-        TProgram,
-        TAccountNewMetadata,
-        TAccountNewEdition,
-        TAccountMasterEdition,
-        TAccountNewMint,
-        TAccountEditionMarkPda,
-        TAccountNewMintAuthority,
-        TAccountPayer,
-        TAccountVaultAuthority,
-        TAccountSafetyDepositStore,
-        TAccountSafetyDepositBox,
-        TAccountVault,
-        TAccountNewMetadataUpdateAuthority,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountTokenVaultProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-            TProgram,
-            TAccountNewMetadata,
-            TAccountNewEdition,
-            TAccountMasterEdition,
-            TAccountNewMint,
-            TAccountEditionMarkPda,
-            TAccountNewMintAuthority,
-            TAccountPayer,
-            TAccountVaultAuthority,
-            TAccountSafetyDepositStore,
-            TAccountSafetyDepositBox,
-            TAccountVault,
-            TAccountNewMetadataUpdateAuthority,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountTokenVaultProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MintNewEditionFromMasterEditionViaVaultProxyInput<

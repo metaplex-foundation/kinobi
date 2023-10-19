@@ -412,19 +412,7 @@ export async function createMetadataAccount<
   rawContext:
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          CreateMetadataAccountInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateMetadataAccountInput<
         TAccountMetadata,
         TAccountMint,
@@ -443,38 +431,12 @@ export async function createMetadataAccount<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateMetadataAccountInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          CreateMetadataAccountInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateMetadataAccountInput<

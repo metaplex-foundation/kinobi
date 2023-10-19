@@ -276,17 +276,7 @@ export async function thawDelegatedAccount<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ThawDelegatedAccountInstruction<
-            TProgram,
-            TAccountDelegate,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountMint,
-            TAccountTokenProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ThawDelegatedAccountInput<
         TAccountDelegate,
         TAccountTokenAccount,
@@ -301,34 +291,12 @@ export async function thawDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      ThawDelegatedAccountInstruction<
-        TProgram,
-        TAccountDelegate,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountMint,
-        TAccountTokenProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ThawDelegatedAccountInstruction<
-            TProgram,
-            TAccountDelegate,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountMint,
-            TAccountTokenProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ThawDelegatedAccountInput<

@@ -197,34 +197,15 @@ export async function setAuthority<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetAuthorityInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetAuthorityInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>;

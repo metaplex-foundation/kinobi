@@ -353,20 +353,7 @@ export async function closeEscrowAccount<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CloseEscrowAccountInstruction<
-            TProgram,
-            TAccountEscrow,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountPayer,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CloseEscrowAccountInput<
         TAccountEscrow,
         TAccountMetadata,
@@ -387,40 +374,12 @@ export async function closeEscrowAccount<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CloseEscrowAccountInstruction<
-        TProgram,
-        TAccountEscrow,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountPayer,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CloseEscrowAccountInstruction<
-            TProgram,
-            TAccountEscrow,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountPayer,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CloseEscrowAccountInput<

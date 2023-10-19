@@ -358,19 +358,7 @@ export async function deprecatedMintPrintingTokens<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          DeprecatedMintPrintingTokensInstruction<
-            TProgram,
-            TAccountDestination,
-            TAccountPrintingMint,
-            TAccountUpdateAuthority,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountTokenProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | DeprecatedMintPrintingTokensInput<
         TAccountDestination,
         TAccountPrintingMint,
@@ -389,38 +377,12 @@ export async function deprecatedMintPrintingTokens<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      DeprecatedMintPrintingTokensInstruction<
-        TProgram,
-        TAccountDestination,
-        TAccountPrintingMint,
-        TAccountUpdateAuthority,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountTokenProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          DeprecatedMintPrintingTokensInstruction<
-            TProgram,
-            TAccountDestination,
-            TAccountPrintingMint,
-            TAccountUpdateAuthority,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountTokenProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as DeprecatedMintPrintingTokensInput<

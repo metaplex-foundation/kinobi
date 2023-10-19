@@ -185,34 +185,15 @@ export async function initializeMultisig2<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeMultisig2Instruction<
-            TProgram,
-            TAccountMultisig,
-            TAccountSigner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | InitializeMultisig2Input<TAccountMultisig, TAccountSigner>,
   rawInput?: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      InitializeMultisig2Instruction<TProgram, TAccountMultisig, TAccountSigner>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeMultisig2Instruction<
-            TProgram,
-            TAccountMultisig,
-            TAccountSigner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeMultisig2Input<TAccountMultisig, TAccountSigner>;

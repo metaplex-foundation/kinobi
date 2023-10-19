@@ -384,21 +384,7 @@ export async function createEscrowAccount<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateEscrowAccountInstruction<
-            TProgram,
-            TAccountEscrow,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountPayer,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateEscrowAccountInput<
         TAccountEscrow,
         TAccountMetadata,
@@ -421,42 +407,12 @@ export async function createEscrowAccount<
     TAccountSysvarInstructions,
     TAccountAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateEscrowAccountInstruction<
-        TProgram,
-        TAccountEscrow,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountPayer,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateEscrowAccountInstruction<
-            TProgram,
-            TAccountEscrow,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountPayer,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateEscrowAccountInput<

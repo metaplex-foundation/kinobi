@@ -222,15 +222,7 @@ export async function setMintAuthority<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetMintAuthorityInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority,
-            TAccountMintAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetMintAuthorityInput<
         TAccountCandyMachine,
         TAccountAuthority,
@@ -241,30 +233,12 @@ export async function setMintAuthority<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SetMintAuthorityInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthority,
-        TAccountMintAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetMintAuthorityInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority,
-            TAccountMintAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetMintAuthorityInput<

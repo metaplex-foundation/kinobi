@@ -202,41 +202,15 @@ export async function freezeToken<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          FreezeTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountMint,
-            TAccountOwner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>,
   rawInput?: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      FreezeTokenInstruction<
-        TProgram,
-        TAccountAccount,
-        TAccountMint,
-        TAccountOwner
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          FreezeTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountMint,
-            TAccountOwner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>;

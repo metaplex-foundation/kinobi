@@ -1,9 +1,9 @@
 export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} & {{ customGeneratedInstruction }}, input: {{ inputType }}): Promise<TReturn>;
 export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
 export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
-export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & {{ customGeneratedInstruction }} | {{ inputType }}, rawInput?: {{ inputType }}): Promise<TReturn | WrappedInstruction<{{ instructionType }}>> {
+export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn> | {{ inputType }}, rawInput?: {{ inputType }}): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawInput) as {{ context }} | {{ context }} & {{ customGeneratedInstruction }};
+  const context = (rawInput === undefined ? {} : rawInput) as {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn>;
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
 
   // Program address.

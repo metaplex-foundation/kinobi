@@ -251,16 +251,7 @@ export async function setTokenStandard<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetTokenStandardInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountUpdateAuthority,
-            TAccountMint,
-            TAccountEdition
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetTokenStandardInput<
         TAccountMetadata,
         TAccountUpdateAuthority,
@@ -273,32 +264,12 @@ export async function setTokenStandard<
     TAccountMint,
     TAccountEdition
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SetTokenStandardInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountUpdateAuthority,
-        TAccountMint,
-        TAccountEdition
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetTokenStandardInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountUpdateAuthority,
-            TAccountMint,
-            TAccountEdition
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetTokenStandardInput<

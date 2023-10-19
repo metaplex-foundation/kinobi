@@ -297,18 +297,7 @@ export async function verifyCollection<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          VerifyCollectionInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | VerifyCollectionInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -325,36 +314,12 @@ export async function verifyCollection<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      VerifyCollectionInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountPayer,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          VerifyCollectionInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as VerifyCollectionInput<

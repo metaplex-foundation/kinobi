@@ -130,15 +130,15 @@ export async function requestUnits<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<RequestUnitsInstruction<TProgram>, TReturn>)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RequestUnitsInput,
   rawInput?: RequestUnitsInput
-): Promise<TReturn | WrappedInstruction<RequestUnitsInstruction<TProgram>>> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<RequestUnitsInstruction<TProgram>, TReturn>);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RequestUnitsInput;

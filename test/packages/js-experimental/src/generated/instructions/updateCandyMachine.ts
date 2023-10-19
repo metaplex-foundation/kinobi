@@ -207,38 +207,15 @@ export async function updateCandyMachine<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdateCandyMachineInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UpdateCandyMachineInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdateCandyMachineInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>;

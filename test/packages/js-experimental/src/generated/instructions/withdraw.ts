@@ -172,34 +172,15 @@ export async function withdraw<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          WithdrawInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          WithdrawInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as WithdrawInput<TAccountCandyMachine, TAccountAuthority>;

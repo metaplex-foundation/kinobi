@@ -311,20 +311,7 @@ export async function createReservationList<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateReservationListInstruction<
-            TProgram,
-            TAccountReservationList,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountMasterEdition,
-            TAccountResource,
-            TAccountMetadata,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateReservationListInput<
         TAccountReservationList,
         TAccountPayer,
@@ -345,40 +332,12 @@ export async function createReservationList<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateReservationListInstruction<
-        TProgram,
-        TAccountReservationList,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountMasterEdition,
-        TAccountResource,
-        TAccountMetadata,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateReservationListInstruction<
-            TProgram,
-            TAccountReservationList,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountMasterEdition,
-            TAccountResource,
-            TAccountMetadata,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateReservationListInput<

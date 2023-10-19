@@ -592,29 +592,7 @@ export async function mintFromCandyMachine<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintFromCandyMachineInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthorityPda,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountNftMint,
-            TAccountNftMintAuthority,
-            TAccountNftMetadata,
-            TAccountNftMasterEdition,
-            TAccountCollectionAuthorityRecord,
-            TAccountCollectionMint,
-            TAccountCollectionMetadata,
-            TAccountCollectionMasterEdition,
-            TAccountCollectionUpdateAuthority,
-            TAccountTokenMetadataProgram,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRecentSlothashes
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MintFromCandyMachineInput<
         TAccountCandyMachine,
         TAccountAuthorityPda,
@@ -653,58 +631,12 @@ export async function mintFromCandyMachine<
     TAccountSystemProgram,
     TAccountRecentSlothashes
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      MintFromCandyMachineInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthorityPda,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountNftMint,
-        TAccountNftMintAuthority,
-        TAccountNftMetadata,
-        TAccountNftMasterEdition,
-        TAccountCollectionAuthorityRecord,
-        TAccountCollectionMint,
-        TAccountCollectionMetadata,
-        TAccountCollectionMasterEdition,
-        TAccountCollectionUpdateAuthority,
-        TAccountTokenMetadataProgram,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRecentSlothashes
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintFromCandyMachineInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthorityPda,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountNftMint,
-            TAccountNftMintAuthority,
-            TAccountNftMetadata,
-            TAccountNftMasterEdition,
-            TAccountCollectionAuthorityRecord,
-            TAccountCollectionMint,
-            TAccountCollectionMetadata,
-            TAccountCollectionMasterEdition,
-            TAccountCollectionUpdateAuthority,
-            TAccountTokenMetadataProgram,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRecentSlothashes
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MintFromCandyMachineInput<

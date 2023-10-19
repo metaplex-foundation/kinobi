@@ -141,23 +141,15 @@ export async function syncNative<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SyncNativeInstruction<TProgram, TAccountAccount>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SyncNativeInput<TAccountAccount>,
   rawInput?: SyncNativeInput<TAccountAccount>
-): Promise<
-  TReturn | WrappedInstruction<SyncNativeInstruction<TProgram, TAccountAccount>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SyncNativeInstruction<TProgram, TAccountAccount>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SyncNativeInput<TAccountAccount>;

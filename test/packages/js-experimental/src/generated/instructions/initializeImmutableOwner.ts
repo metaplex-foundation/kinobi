@@ -149,26 +149,15 @@ export async function initializeImmutableOwner<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | InitializeImmutableOwnerInput<TAccountAccount>,
   rawInput?: InitializeImmutableOwnerInput<TAccountAccount>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeImmutableOwnerInput<TAccountAccount>;

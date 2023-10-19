@@ -277,17 +277,7 @@ export async function revokeCollectionAuthority<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeCollectionAuthorityInstruction<
-            TProgram,
-            TAccountCollectionAuthorityRecord,
-            TAccountDelegateAuthority,
-            TAccountRevokeAuthority,
-            TAccountMetadata,
-            TAccountMint
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeCollectionAuthorityInput<
         TAccountCollectionAuthorityRecord,
         TAccountDelegateAuthority,
@@ -302,34 +292,12 @@ export async function revokeCollectionAuthority<
     TAccountMetadata,
     TAccountMint
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      RevokeCollectionAuthorityInstruction<
-        TProgram,
-        TAccountCollectionAuthorityRecord,
-        TAccountDelegateAuthority,
-        TAccountRevokeAuthority,
-        TAccountMetadata,
-        TAccountMint
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeCollectionAuthorityInstruction<
-            TProgram,
-            TAccountCollectionAuthorityRecord,
-            TAccountDelegateAuthority,
-            TAccountRevokeAuthority,
-            TAccountMetadata,
-            TAccountMint
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeCollectionAuthorityInput<

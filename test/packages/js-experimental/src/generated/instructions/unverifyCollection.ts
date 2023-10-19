@@ -308,18 +308,7 @@ export async function unverifyCollection<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UnverifyCollectionInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UnverifyCollectionInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -336,36 +325,12 @@ export async function unverifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UnverifyCollectionInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount,
-        TAccountCollectionAuthorityRecord
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UnverifyCollectionInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UnverifyCollectionInput<

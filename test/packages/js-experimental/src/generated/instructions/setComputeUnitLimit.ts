@@ -127,23 +127,15 @@ export async function setComputeUnitLimit<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetComputeUnitLimitInstruction<TProgram>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetComputeUnitLimitInput,
   rawInput?: SetComputeUnitLimitInput
-): Promise<
-  TReturn | WrappedInstruction<SetComputeUnitLimitInstruction<TProgram>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetComputeUnitLimitInstruction<TProgram>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetComputeUnitLimitInput;

@@ -458,23 +458,7 @@ export async function initialize<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthorityPda,
-            TAccountAuthority,
-            TAccountPayer,
-            TAccountCollectionMetadata,
-            TAccountCollectionMint,
-            TAccountCollectionMasterEdition,
-            TAccountCollectionUpdateAuthority,
-            TAccountCollectionAuthorityRecord,
-            TAccountTokenMetadataProgram,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | InitializeInput<
         TAccountCandyMachine,
         TAccountAuthorityPda,
@@ -501,46 +485,12 @@ export async function initialize<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      InitializeInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthorityPda,
-        TAccountAuthority,
-        TAccountPayer,
-        TAccountCollectionMetadata,
-        TAccountCollectionMint,
-        TAccountCollectionMasterEdition,
-        TAccountCollectionUpdateAuthority,
-        TAccountCollectionAuthorityRecord,
-        TAccountTokenMetadataProgram,
-        TAccountSystemProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthorityPda,
-            TAccountAuthority,
-            TAccountPayer,
-            TAccountCollectionMetadata,
-            TAccountCollectionMint,
-            TAccountCollectionMasterEdition,
-            TAccountCollectionUpdateAuthority,
-            TAccountCollectionAuthorityRecord,
-            TAccountTokenMetadataProgram,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeInput<

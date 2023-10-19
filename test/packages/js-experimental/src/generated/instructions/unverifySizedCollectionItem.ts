@@ -337,19 +337,7 @@ export async function unverifySizedCollectionItem<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UnverifySizedCollectionItemInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UnverifySizedCollectionItemInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -368,38 +356,12 @@ export async function unverifySizedCollectionItem<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UnverifySizedCollectionItemInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountPayer,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount,
-        TAccountCollectionAuthorityRecord
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UnverifySizedCollectionItemInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UnverifySizedCollectionItemInput<

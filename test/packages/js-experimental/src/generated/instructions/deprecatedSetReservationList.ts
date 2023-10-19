@@ -267,15 +267,7 @@ export async function deprecatedSetReservationList<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          DeprecatedSetReservationListInstruction<
-            TProgram,
-            TAccountMasterEdition,
-            TAccountReservationList,
-            TAccountResource
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | DeprecatedSetReservationListInput<
         TAccountMasterEdition,
         TAccountReservationList,
@@ -286,30 +278,12 @@ export async function deprecatedSetReservationList<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      DeprecatedSetReservationListInstruction<
-        TProgram,
-        TAccountMasterEdition,
-        TAccountReservationList,
-        TAccountResource
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          DeprecatedSetReservationListInstruction<
-            TProgram,
-            TAccountMasterEdition,
-            TAccountReservationList,
-            TAccountResource
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as DeprecatedSetReservationListInput<

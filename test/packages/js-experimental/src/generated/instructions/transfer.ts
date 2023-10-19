@@ -590,27 +590,7 @@ export async function transfer<
   rawContext:
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          TransferInstruction<
-            TProgram,
-            TAccountAuthority,
-            TAccountDelegateRecord,
-            TAccountToken,
-            TAccountTokenOwner,
-            TAccountDestination,
-            TAccountDestinationOwner,
-            TAccountMint,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountSplTokenProgram,
-            TAccountSplAtaProgram,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferInput<
         TAccountAuthority,
         TAccountDelegateRecord,
@@ -645,54 +625,12 @@ export async function transfer<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      TransferInstruction<
-        TProgram,
-        TAccountAuthority,
-        TAccountDelegateRecord,
-        TAccountToken,
-        TAccountTokenOwner,
-        TAccountDestination,
-        TAccountDestinationOwner,
-        TAccountMint,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountSplTokenProgram,
-        TAccountSplAtaProgram,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          TransferInstruction<
-            TProgram,
-            TAccountAuthority,
-            TAccountDelegateRecord,
-            TAccountToken,
-            TAccountTokenOwner,
-            TAccountDestination,
-            TAccountDestinationOwner,
-            TAccountMint,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountSplTokenProgram,
-            TAccountSplAtaProgram,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferInput<

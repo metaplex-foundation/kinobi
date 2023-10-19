@@ -240,15 +240,7 @@ export async function mintTokensToChecked<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintTokensToCheckedInstruction<
-            TProgram,
-            TAccountMint,
-            TAccountToken,
-            TAccountMintAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MintTokensToCheckedInput<
         TAccountMint,
         TAccountToken,
@@ -259,30 +251,12 @@ export async function mintTokensToChecked<
     TAccountToken,
     TAccountMintAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      MintTokensToCheckedInstruction<
-        TProgram,
-        TAccountMint,
-        TAccountToken,
-        TAccountMintAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintTokensToCheckedInstruction<
-            TProgram,
-            TAccountMint,
-            TAccountToken,
-            TAccountMintAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MintTokensToCheckedInput<

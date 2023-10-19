@@ -233,15 +233,7 @@ export async function approveTokenDelegate<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ApproveTokenDelegateInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountDelegate,
-            TAccountOwner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ApproveTokenDelegateInput<
         TAccountSource,
         TAccountDelegate,
@@ -252,30 +244,12 @@ export async function approveTokenDelegate<
     TAccountDelegate,
     TAccountOwner
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      ApproveTokenDelegateInstruction<
-        TProgram,
-        TAccountSource,
-        TAccountDelegate,
-        TAccountOwner
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ApproveTokenDelegateInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountDelegate,
-            TAccountOwner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ApproveTokenDelegateInput<

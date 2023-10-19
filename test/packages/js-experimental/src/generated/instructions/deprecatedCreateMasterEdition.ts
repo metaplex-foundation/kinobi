@@ -523,25 +523,7 @@ export async function deprecatedCreateMasterEdition<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          DeprecatedCreateMasterEditionInstruction<
-            TProgram,
-            TAccountEdition,
-            TAccountMint,
-            TAccountPrintingMint,
-            TAccountOneTimePrintingAuthorizationMint,
-            TAccountUpdateAuthority,
-            TAccountPrintingMintAuthority,
-            TAccountMintAuthority,
-            TAccountMetadata,
-            TAccountPayer,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent,
-            TAccountOneTimePrintingAuthorizationMintAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | DeprecatedCreateMasterEditionInput<
         TAccountEdition,
         TAccountMint,
@@ -572,50 +554,12 @@ export async function deprecatedCreateMasterEdition<
     TAccountRent,
     TAccountOneTimePrintingAuthorizationMintAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      DeprecatedCreateMasterEditionInstruction<
-        TProgram,
-        TAccountEdition,
-        TAccountMint,
-        TAccountPrintingMint,
-        TAccountOneTimePrintingAuthorizationMint,
-        TAccountUpdateAuthority,
-        TAccountPrintingMintAuthority,
-        TAccountMintAuthority,
-        TAccountMetadata,
-        TAccountPayer,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent,
-        TAccountOneTimePrintingAuthorizationMintAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          DeprecatedCreateMasterEditionInstruction<
-            TProgram,
-            TAccountEdition,
-            TAccountMint,
-            TAccountPrintingMint,
-            TAccountOneTimePrintingAuthorizationMint,
-            TAccountUpdateAuthority,
-            TAccountPrintingMintAuthority,
-            TAccountMintAuthority,
-            TAccountMetadata,
-            TAccountPayer,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent,
-            TAccountOneTimePrintingAuthorizationMintAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as DeprecatedCreateMasterEditionInput<

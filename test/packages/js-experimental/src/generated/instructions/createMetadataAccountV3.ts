@@ -377,19 +377,7 @@ export async function createMetadataAccountV3<
   rawContext:
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          CreateMetadataAccountV3Instruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateMetadataAccountV3Input<
         TAccountMetadata,
         TAccountMint,
@@ -408,38 +396,12 @@ export async function createMetadataAccountV3<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateMetadataAccountV3Instruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          CreateMetadataAccountV3Instruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateMetadataAccountV3Input<

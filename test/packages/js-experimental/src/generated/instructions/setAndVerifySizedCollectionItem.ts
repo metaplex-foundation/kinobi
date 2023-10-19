@@ -360,20 +360,7 @@ export async function setAndVerifySizedCollectionItem<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetAndVerifySizedCollectionItemInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetAndVerifySizedCollectionItemInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -394,40 +381,12 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SetAndVerifySizedCollectionItemInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount,
-        TAccountCollectionAuthorityRecord
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetAndVerifySizedCollectionItemInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetAndVerifySizedCollectionItemInput<

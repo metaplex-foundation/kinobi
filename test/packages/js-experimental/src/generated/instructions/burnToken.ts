@@ -217,41 +217,15 @@ export async function burnToken<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountMint,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>,
   rawInput?: BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      BurnTokenInstruction<
-        TProgram,
-        TAccountAccount,
-        TAccountMint,
-        TAccountAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountMint,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as BurnTokenInput<TAccountAccount, TAccountMint, TAccountAuthority>;

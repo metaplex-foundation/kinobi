@@ -543,26 +543,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintNewEditionFromMasterEditionViaTokenInstruction<
-            TProgram,
-            TAccountNewMetadata,
-            TAccountNewEdition,
-            TAccountMasterEdition,
-            TAccountNewMint,
-            TAccountEditionMarkPda,
-            TAccountNewMintAuthority,
-            TAccountPayer,
-            TAccountTokenAccountOwner,
-            TAccountTokenAccount,
-            TAccountNewMetadataUpdateAuthority,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MintNewEditionFromMasterEditionViaTokenInput<
         TAccountNewMetadata,
         TAccountNewEdition,
@@ -595,52 +576,12 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      MintNewEditionFromMasterEditionViaTokenInstruction<
-        TProgram,
-        TAccountNewMetadata,
-        TAccountNewEdition,
-        TAccountMasterEdition,
-        TAccountNewMint,
-        TAccountEditionMarkPda,
-        TAccountNewMintAuthority,
-        TAccountPayer,
-        TAccountTokenAccountOwner,
-        TAccountTokenAccount,
-        TAccountNewMetadataUpdateAuthority,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintNewEditionFromMasterEditionViaTokenInstruction<
-            TProgram,
-            TAccountNewMetadata,
-            TAccountNewEdition,
-            TAccountMasterEdition,
-            TAccountNewMint,
-            TAccountEditionMarkPda,
-            TAccountNewMintAuthority,
-            TAccountPayer,
-            TAccountTokenAccountOwner,
-            TAccountTokenAccount,
-            TAccountNewMetadataUpdateAuthority,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MintNewEditionFromMasterEditionViaTokenInput<

@@ -516,25 +516,7 @@ export async function transferOutOfEscrow<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferOutOfEscrowInstruction<
-            TProgram,
-            TAccountEscrow,
-            TAccountMetadata,
-            TAccountPayer,
-            TAccountAttributeMint,
-            TAccountAttributeSrc,
-            TAccountAttributeDst,
-            TAccountEscrowMint,
-            TAccountEscrowAccount,
-            TAccountSystemProgram,
-            TAccountAtaProgram,
-            TAccountTokenProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferOutOfEscrowInput<
         TAccountEscrow,
         TAccountMetadata,
@@ -565,50 +547,12 @@ export async function transferOutOfEscrow<
     TAccountSysvarInstructions,
     TAccountAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      TransferOutOfEscrowInstruction<
-        TProgram,
-        TAccountEscrow,
-        TAccountMetadata,
-        TAccountPayer,
-        TAccountAttributeMint,
-        TAccountAttributeSrc,
-        TAccountAttributeDst,
-        TAccountEscrowMint,
-        TAccountEscrowAccount,
-        TAccountSystemProgram,
-        TAccountAtaProgram,
-        TAccountTokenProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferOutOfEscrowInstruction<
-            TProgram,
-            TAccountEscrow,
-            TAccountMetadata,
-            TAccountPayer,
-            TAccountAttributeMint,
-            TAccountAttributeSrc,
-            TAccountAttributeDst,
-            TAccountEscrowMint,
-            TAccountEscrowAccount,
-            TAccountSystemProgram,
-            TAccountAtaProgram,
-            TAccountTokenProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferOutOfEscrowInput<

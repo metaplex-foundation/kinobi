@@ -446,23 +446,7 @@ export async function createV2<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateV2Instruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            typeof input['mint'] extends Signer<TAccountMint>
-              ? WritableSignerAccount<TAccountMint>
-              : TAccountMint,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountSplTokenProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateV2Input<
         TAccountMetadata,
         TAccountMasterEdition,
@@ -485,46 +469,12 @@ export async function createV2<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateV2Instruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        typeof input['mint'] extends Signer<TAccountMint>
-          ? WritableSignerAccount<TAccountMint>
-          : TAccountMint,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountSplTokenProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateV2Instruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            typeof input['mint'] extends Signer<TAccountMint>
-              ? WritableSignerAccount<TAccountMint>
-              : TAccountMint,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountSplTokenProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateV2Input<

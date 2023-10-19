@@ -225,15 +225,7 @@ export async function updatePrimarySaleHappenedViaToken<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdatePrimarySaleHappenedViaTokenInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountToken
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdatePrimarySaleHappenedViaTokenInput<
         TAccountMetadata,
         TAccountOwner,
@@ -244,30 +236,12 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountOwner,
     TAccountToken
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UpdatePrimarySaleHappenedViaTokenInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountToken
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdatePrimarySaleHappenedViaTokenInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountToken
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UpdatePrimarySaleHappenedViaTokenInput<

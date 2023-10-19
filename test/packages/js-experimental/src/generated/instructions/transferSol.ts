@@ -182,26 +182,15 @@ export async function transferSol<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferSolInput<TAccountSource, TAccountDestination>,
   rawInput?: TransferSolInput<TAccountSource, TAccountDestination>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferSolInput<TAccountSource, TAccountDestination>;

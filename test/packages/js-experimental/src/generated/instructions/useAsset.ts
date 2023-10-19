@@ -480,23 +480,7 @@ export async function useAsset<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UseAssetInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountTokenAccount,
-            TAccountMint,
-            TAccountUseAuthority,
-            TAccountOwner,
-            TAccountSplTokenProgram,
-            TAccountAtaProgram,
-            TAccountSystemProgram,
-            TAccountUseAuthorityRecord,
-            TAccountAuthorizationRules,
-            TAccountAuthorizationRulesProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UseAssetInput<
         TAccountMetadata,
         TAccountTokenAccount,
@@ -523,46 +507,12 @@ export async function useAsset<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UseAssetInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountTokenAccount,
-        TAccountMint,
-        TAccountUseAuthority,
-        TAccountOwner,
-        TAccountSplTokenProgram,
-        TAccountAtaProgram,
-        TAccountSystemProgram,
-        TAccountUseAuthorityRecord,
-        TAccountAuthorizationRules,
-        TAccountAuthorizationRulesProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UseAssetInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountTokenAccount,
-            TAccountMint,
-            TAccountUseAuthority,
-            TAccountOwner,
-            TAccountSplTokenProgram,
-            TAccountAtaProgram,
-            TAccountSystemProgram,
-            TAccountUseAuthorityRecord,
-            TAccountAuthorizationRules,
-            TAccountAuthorizationRulesProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UseAssetInput<

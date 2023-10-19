@@ -154,24 +154,15 @@ export async function uiAmountToAmount<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UiAmountToAmountInstruction<TProgram, TAccountMint>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UiAmountToAmountInput<TAccountMint>,
   rawInput?: UiAmountToAmountInput<TAccountMint>
-): Promise<
-  | TReturn
-  | WrappedInstruction<UiAmountToAmountInstruction<TProgram, TAccountMint>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UiAmountToAmountInstruction<TProgram, TAccountMint>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UiAmountToAmountInput<TAccountMint>;

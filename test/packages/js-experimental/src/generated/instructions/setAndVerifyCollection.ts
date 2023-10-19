@@ -354,20 +354,7 @@ export async function setAndVerifyCollection<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetAndVerifyCollectionInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetAndVerifyCollectionInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -388,40 +375,12 @@ export async function setAndVerifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SetAndVerifyCollectionInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount,
-        TAccountCollectionAuthorityRecord
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetAndVerifyCollectionInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCollectionAuthority,
-            TAccountPayer,
-            TAccountUpdateAuthority,
-            TAccountCollectionMint,
-            TAccountCollection,
-            TAccountCollectionMasterEditionAccount,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetAndVerifyCollectionInput<

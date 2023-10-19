@@ -192,41 +192,15 @@ export async function thawToken<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ThawTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountMint,
-            TAccountOwner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>,
   rawInput?: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      ThawTokenInstruction<
-        TProgram,
-        TAccountAccount,
-        TAccountMint,
-        TAccountOwner
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ThawTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountMint,
-            TAccountOwner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>;

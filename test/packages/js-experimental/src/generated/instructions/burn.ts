@@ -409,21 +409,7 @@ export async function burn<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountMasterEditionAccount,
-            TAccountSplTokenProgram,
-            TAccountCollectionMetadata,
-            TAccountAuthorizationRules,
-            TAccountAuthorizationRulesProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | BurnInput<
         TAccountMetadata,
         TAccountOwner,
@@ -446,42 +432,12 @@ export async function burn<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      BurnInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountMasterEditionAccount,
-        TAccountSplTokenProgram,
-        TAccountCollectionMetadata,
-        TAccountAuthorizationRules,
-        TAccountAuthorizationRulesProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountMasterEditionAccount,
-            TAccountSplTokenProgram,
-            TAccountCollectionMetadata,
-            TAccountAuthorizationRules,
-            TAccountAuthorizationRulesProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (rawInput === undefined ? rawContext : rawInput) as BurnInput<
     TAccountMetadata,
     TAccountOwner,

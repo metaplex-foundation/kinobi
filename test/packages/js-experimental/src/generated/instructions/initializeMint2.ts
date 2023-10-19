@@ -171,24 +171,15 @@ export async function initializeMint2<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeMint2Instruction<TProgram, TAccountMint>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | InitializeMint2Input<TAccountMint>,
   rawInput?: InitializeMint2Input<TAccountMint>
-): Promise<
-  | TReturn
-  | WrappedInstruction<InitializeMint2Instruction<TProgram, TAccountMint>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeMint2Instruction<TProgram, TAccountMint>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeMint2Input<TAccountMint>;

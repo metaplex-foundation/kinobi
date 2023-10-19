@@ -475,23 +475,7 @@ export async function utilize<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UtilizeInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountTokenAccount,
-            TAccountMint,
-            TAccountUseAuthority,
-            TAccountOwner,
-            TAccountTokenProgram,
-            TAccountAtaProgram,
-            TAccountSystemProgram,
-            TAccountRent,
-            TAccountUseAuthorityRecord,
-            TAccountBurner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UtilizeInput<
         TAccountMetadata,
         TAccountTokenAccount,
@@ -518,46 +502,12 @@ export async function utilize<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UtilizeInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountTokenAccount,
-        TAccountMint,
-        TAccountUseAuthority,
-        TAccountOwner,
-        TAccountTokenProgram,
-        TAccountAtaProgram,
-        TAccountSystemProgram,
-        TAccountRent,
-        TAccountUseAuthorityRecord,
-        TAccountBurner
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UtilizeInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountTokenAccount,
-            TAccountMint,
-            TAccountUseAuthority,
-            TAccountOwner,
-            TAccountTokenProgram,
-            TAccountAtaProgram,
-            TAccountSystemProgram,
-            TAccountRent,
-            TAccountUseAuthorityRecord,
-            TAccountBurner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UtilizeInput<

@@ -517,26 +517,7 @@ export async function setCollection<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetCollectionInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority,
-            TAccountAuthorityPda,
-            TAccountPayer,
-            TAccountCollectionMint,
-            TAccountCollectionMetadata,
-            TAccountCollectionAuthorityRecord,
-            TAccountNewCollectionUpdateAuthority,
-            TAccountNewCollectionMetadata,
-            TAccountNewCollectionMint,
-            TAccountNewCollectionMasterEdition,
-            TAccountNewCollectionAuthorityRecord,
-            TAccountTokenMetadataProgram,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetCollectionInput<
         TAccountCandyMachine,
         TAccountAuthority,
@@ -569,52 +550,12 @@ export async function setCollection<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SetCollectionInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthority,
-        TAccountAuthorityPda,
-        TAccountPayer,
-        TAccountCollectionMint,
-        TAccountCollectionMetadata,
-        TAccountCollectionAuthorityRecord,
-        TAccountNewCollectionUpdateAuthority,
-        TAccountNewCollectionMetadata,
-        TAccountNewCollectionMint,
-        TAccountNewCollectionMasterEdition,
-        TAccountNewCollectionAuthorityRecord,
-        TAccountTokenMetadataProgram,
-        TAccountSystemProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetCollectionInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority,
-            TAccountAuthorityPda,
-            TAccountPayer,
-            TAccountCollectionMint,
-            TAccountCollectionMetadata,
-            TAccountCollectionAuthorityRecord,
-            TAccountNewCollectionUpdateAuthority,
-            TAccountNewCollectionMetadata,
-            TAccountNewCollectionMint,
-            TAccountNewCollectionMasterEdition,
-            TAccountNewCollectionAuthorityRecord,
-            TAccountTokenMetadataProgram,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetCollectionInput<

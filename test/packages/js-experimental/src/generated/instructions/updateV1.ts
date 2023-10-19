@@ -616,22 +616,7 @@ export async function updateV1<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdateV1Instruction<
-            TProgram,
-            TAccountAuthority,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountMint,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountToken,
-            TAccountDelegateRecord,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdateV1Input<
         TAccountAuthority,
         TAccountMetadata,
@@ -656,44 +641,12 @@ export async function updateV1<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UpdateV1Instruction<
-        TProgram,
-        TAccountAuthority,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountMint,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountToken,
-        TAccountDelegateRecord,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdateV1Instruction<
-            TProgram,
-            TAccountAuthority,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountMint,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountToken,
-            TAccountDelegateRecord,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UpdateV1Input<

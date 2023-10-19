@@ -197,26 +197,15 @@ export async function createAccount<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateAccountInput<TAccountPayer, TAccountNewAccount>,
   rawInput?: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateAccountInput<TAccountPayer, TAccountNewAccount>;

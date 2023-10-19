@@ -384,21 +384,7 @@ export async function revokeUseAuthority<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeUseAuthorityInstruction<
-            TProgram,
-            TAccountUseAuthorityRecord,
-            TAccountOwner,
-            TAccountUser,
-            TAccountOwnerTokenAccount,
-            TAccountMint,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeUseAuthorityInput<
         TAccountUseAuthorityRecord,
         TAccountOwner,
@@ -421,42 +407,12 @@ export async function revokeUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      RevokeUseAuthorityInstruction<
-        TProgram,
-        TAccountUseAuthorityRecord,
-        TAccountOwner,
-        TAccountUser,
-        TAccountOwnerTokenAccount,
-        TAccountMint,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeUseAuthorityInstruction<
-            TProgram,
-            TAccountUseAuthorityRecord,
-            TAccountOwner,
-            TAccountUser,
-            TAccountOwnerTokenAccount,
-            TAccountMint,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeUseAuthorityInput<

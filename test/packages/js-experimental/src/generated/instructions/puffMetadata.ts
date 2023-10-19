@@ -142,24 +142,15 @@ export async function puffMetadata<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          PuffMetadataInstruction<TProgram, TAccountMetadata>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | PuffMetadataInput<TAccountMetadata>,
   rawInput?: PuffMetadataInput<TAccountMetadata>
-): Promise<
-  | TReturn
-  | WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          PuffMetadataInstruction<TProgram, TAccountMetadata>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as PuffMetadataInput<TAccountMetadata>;

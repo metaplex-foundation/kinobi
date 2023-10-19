@@ -130,23 +130,15 @@ export async function requestHeapFrame<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RequestHeapFrameInstruction<TProgram>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RequestHeapFrameInput,
   rawInput?: RequestHeapFrameInput
-): Promise<
-  TReturn | WrappedInstruction<RequestHeapFrameInstruction<TProgram>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RequestHeapFrameInstruction<TProgram>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RequestHeapFrameInput;

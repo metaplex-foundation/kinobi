@@ -331,19 +331,7 @@ export async function burnNft<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnNftInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountMasterEditionAccount,
-            TAccountSplTokenProgram,
-            TAccountCollectionMetadata
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | BurnNftInput<
         TAccountMetadata,
         TAccountOwner,
@@ -362,38 +350,12 @@ export async function burnNft<
     TAccountSplTokenProgram,
     TAccountCollectionMetadata
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      BurnNftInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountMasterEditionAccount,
-        TAccountSplTokenProgram,
-        TAccountCollectionMetadata
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnNftInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountMint,
-            TAccountTokenAccount,
-            TAccountMasterEditionAccount,
-            TAccountSplTokenProgram,
-            TAccountCollectionMetadata
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as BurnNftInput<

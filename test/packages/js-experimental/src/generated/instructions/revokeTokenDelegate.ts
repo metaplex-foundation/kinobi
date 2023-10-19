@@ -167,34 +167,15 @@ export async function revokeTokenDelegate<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeTokenDelegateInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountOwner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeTokenDelegateInput<TAccountSource, TAccountOwner>,
   rawInput?: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeTokenDelegateInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountOwner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeTokenDelegateInput<TAccountSource, TAccountOwner>;

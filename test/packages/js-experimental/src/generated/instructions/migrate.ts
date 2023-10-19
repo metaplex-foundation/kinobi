@@ -436,22 +436,7 @@ export async function migrate<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MigrateInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountTokenAccount,
-            TAccountMint,
-            TAccountUpdateAuthority,
-            TAccountCollectionMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MigrateInput<
         TAccountMetadata,
         TAccountMasterEdition,
@@ -476,44 +461,12 @@ export async function migrate<
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      MigrateInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountTokenAccount,
-        TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountCollectionMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthorizationRules
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MigrateInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountTokenAccount,
-            TAccountMint,
-            TAccountUpdateAuthority,
-            TAccountCollectionMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MigrateInput<

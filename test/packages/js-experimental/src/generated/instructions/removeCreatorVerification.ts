@@ -190,38 +190,15 @@ export async function removeCreatorVerification<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RemoveCreatorVerificationInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCreator
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
   rawInput?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      RemoveCreatorVerificationInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountCreator
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RemoveCreatorVerificationInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountCreator
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>;

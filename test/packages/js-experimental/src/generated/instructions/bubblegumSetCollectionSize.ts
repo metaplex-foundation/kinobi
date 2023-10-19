@@ -304,17 +304,7 @@ export async function bubblegumSetCollectionSize<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BubblegumSetCollectionSizeInstruction<
-            TProgram,
-            TAccountCollectionMetadata,
-            TAccountCollectionAuthority,
-            TAccountCollectionMint,
-            TAccountBubblegumSigner,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | BubblegumSetCollectionSizeInput<
         TAccountCollectionMetadata,
         TAccountCollectionAuthority,
@@ -329,34 +319,12 @@ export async function bubblegumSetCollectionSize<
     TAccountBubblegumSigner,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      BubblegumSetCollectionSizeInstruction<
-        TProgram,
-        TAccountCollectionMetadata,
-        TAccountCollectionAuthority,
-        TAccountCollectionMint,
-        TAccountBubblegumSigner,
-        TAccountCollectionAuthorityRecord
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BubblegumSetCollectionSizeInstruction<
-            TProgram,
-            TAccountCollectionMetadata,
-            TAccountCollectionAuthority,
-            TAccountCollectionMint,
-            TAccountBubblegumSigner,
-            TAccountCollectionAuthorityRecord
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as BubblegumSetCollectionSizeInput<

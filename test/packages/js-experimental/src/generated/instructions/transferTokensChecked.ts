@@ -260,16 +260,7 @@ export async function transferTokensChecked<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferTokensCheckedInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountMint,
-            TAccountDestination,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferTokensCheckedInput<
         TAccountSource,
         TAccountMint,
@@ -282,32 +273,12 @@ export async function transferTokensChecked<
     TAccountDestination,
     TAccountAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      TransferTokensCheckedInstruction<
-        TProgram,
-        TAccountSource,
-        TAccountMint,
-        TAccountDestination,
-        TAccountAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferTokensCheckedInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountMint,
-            TAccountDestination,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferTokensCheckedInput<

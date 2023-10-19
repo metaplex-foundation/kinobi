@@ -264,15 +264,7 @@ export async function createFrequencyRule<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateFrequencyRuleInstruction<
-            TProgram,
-            TAccountPayer,
-            TAccountFrequencyPda,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateFrequencyRuleInput<
         TAccountPayer,
         TAccountFrequencyPda,
@@ -283,30 +275,12 @@ export async function createFrequencyRule<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateFrequencyRuleInstruction<
-        TProgram,
-        TAccountPayer,
-        TAccountFrequencyPda,
-        TAccountSystemProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateFrequencyRuleInstruction<
-            TProgram,
-            TAccountPayer,
-            TAccountFrequencyPda,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateFrequencyRuleInput<

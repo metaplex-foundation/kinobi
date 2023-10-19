@@ -277,41 +277,18 @@ export async function updateMetadataAccount<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdateMetadataAccountInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountUpdateAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>,
   rawInput?: UpdateMetadataAccountInput<
     TAccountMetadata,
     TAccountUpdateAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      UpdateMetadataAccountInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountUpdateAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          UpdateMetadataAccountInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountUpdateAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>;

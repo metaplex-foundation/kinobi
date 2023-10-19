@@ -168,26 +168,15 @@ export async function signMetadata<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SignMetadataInput<TAccountMetadata, TAccountCreator>,
   rawInput?: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SignMetadataInput<TAccountMetadata, TAccountCreator>;

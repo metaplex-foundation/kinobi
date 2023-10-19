@@ -127,23 +127,15 @@ export async function setComputeUnitPrice<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetComputeUnitPriceInstruction<TProgram>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetComputeUnitPriceInput,
   rawInput?: SetComputeUnitPriceInput
-): Promise<
-  TReturn | WrappedInstruction<SetComputeUnitPriceInstruction<TProgram>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetComputeUnitPriceInstruction<TProgram>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetComputeUnitPriceInput;

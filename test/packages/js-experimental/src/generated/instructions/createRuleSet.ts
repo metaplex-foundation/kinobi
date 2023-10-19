@@ -254,15 +254,7 @@ export async function createRuleSet<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateRuleSetInstruction<
-            TProgram,
-            TAccountPayer,
-            TAccountRuleSetPda,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateRuleSetInput<
         TAccountPayer,
         TAccountRuleSetPda,
@@ -273,30 +265,12 @@ export async function createRuleSet<
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateRuleSetInstruction<
-        TProgram,
-        TAccountPayer,
-        TAccountRuleSetPda,
-        TAccountSystemProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateRuleSetInstruction<
-            TProgram,
-            TAccountPayer,
-            TAccountRuleSetPda,
-            TAccountSystemProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateRuleSetInput<

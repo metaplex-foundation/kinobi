@@ -181,26 +181,15 @@ export async function initializeToken3<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | InitializeToken3Input<TAccountAccount, TAccountMint>,
   rawInput?: InitializeToken3Input<TAccountAccount, TAccountMint>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeToken3Input<TAccountAccount, TAccountMint>;

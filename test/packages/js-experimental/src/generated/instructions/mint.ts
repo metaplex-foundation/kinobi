@@ -506,24 +506,7 @@ export async function mint<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintInstruction<
-            TProgram,
-            TAccountToken,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountMint,
-            TAccountPayer,
-            TAccountAuthority,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountSplTokenProgram,
-            TAccountSplAtaProgram,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MintInput<
         TAccountToken,
         TAccountMetadata,
@@ -552,48 +535,12 @@ export async function mint<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      MintInstruction<
-        TProgram,
-        TAccountToken,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountMint,
-        TAccountPayer,
-        TAccountAuthority,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountSplTokenProgram,
-        TAccountSplAtaProgram,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          MintInstruction<
-            TProgram,
-            TAccountToken,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountMint,
-            TAccountPayer,
-            TAccountAuthority,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountSplTokenProgram,
-            TAccountSplAtaProgram,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (rawInput === undefined ? rawContext : rawInput) as MintInput<
     TAccountToken,
     TAccountMetadata,

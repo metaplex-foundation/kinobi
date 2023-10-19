@@ -220,44 +220,15 @@ export async function setTokenAuthority<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetTokenAuthorityInstruction<
-            TProgram,
-            TAccountOwned,
-            typeof input['owner'] extends Signer<TAccountOwner>
-              ? ReadonlySignerAccount<TAccountOwner>
-              : TAccountOwner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetTokenAuthorityInput<TAccountOwned, TAccountOwner>,
   rawInput?: SetTokenAuthorityInput<TAccountOwned, TAccountOwner>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      SetTokenAuthorityInstruction<
-        TProgram,
-        TAccountOwned,
-        typeof input['owner'] extends Signer<TAccountOwner>
-          ? ReadonlySignerAccount<TAccountOwner>
-          : TAccountOwner
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          SetTokenAuthorityInstruction<
-            TProgram,
-            TAccountOwned,
-            typeof input['owner'] extends Signer<TAccountOwner>
-              ? ReadonlySignerAccount<TAccountOwner>
-              : TAccountOwner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetTokenAuthorityInput<TAccountOwned, TAccountOwner>;

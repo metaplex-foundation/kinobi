@@ -96,15 +96,15 @@ export async function addMemo<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | AddMemoInput,
   rawInput?: AddMemoInput
-): Promise<TReturn | WrappedInstruction<AddMemoInstruction<TProgram>>> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<AddMemoInstruction<TProgram>, TReturn>);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as AddMemoInput;

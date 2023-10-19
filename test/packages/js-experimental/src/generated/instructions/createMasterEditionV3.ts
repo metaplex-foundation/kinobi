@@ -410,21 +410,7 @@ export async function createMasterEditionV3<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateMasterEditionV3Instruction<
-            TProgram,
-            TAccountEdition,
-            TAccountMint,
-            TAccountUpdateAuthority,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateMasterEditionV3Input<
         TAccountEdition,
         TAccountMint,
@@ -447,42 +433,12 @@ export async function createMasterEditionV3<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CreateMasterEditionV3Instruction<
-        TProgram,
-        TAccountEdition,
-        TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CreateMasterEditionV3Instruction<
-            TProgram,
-            TAccountEdition,
-            TAccountMint,
-            TAccountUpdateAuthority,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountMetadata,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateMasterEditionV3Input<

@@ -276,17 +276,7 @@ export async function freezeDelegatedAccount<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          FreezeDelegatedAccountInstruction<
-            TProgram,
-            TAccountDelegate,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountMint,
-            TAccountTokenProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | FreezeDelegatedAccountInput<
         TAccountDelegate,
         TAccountTokenAccount,
@@ -301,34 +291,12 @@ export async function freezeDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      FreezeDelegatedAccountInstruction<
-        TProgram,
-        TAccountDelegate,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountMint,
-        TAccountTokenProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          FreezeDelegatedAccountInstruction<
-            TProgram,
-            TAccountDelegate,
-            TAccountTokenAccount,
-            TAccountEdition,
-            TAccountMint,
-            TAccountTokenProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as FreezeDelegatedAccountInput<

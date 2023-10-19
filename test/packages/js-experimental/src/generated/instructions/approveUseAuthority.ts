@@ -448,23 +448,7 @@ export async function approveUseAuthority<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ApproveUseAuthorityInstruction<
-            TProgram,
-            TAccountUseAuthorityRecord,
-            TAccountOwner,
-            TAccountPayer,
-            TAccountUser,
-            TAccountOwnerTokenAccount,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountBurner,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ApproveUseAuthorityInput<
         TAccountUseAuthorityRecord,
         TAccountOwner,
@@ -491,46 +475,12 @@ export async function approveUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      ApproveUseAuthorityInstruction<
-        TProgram,
-        TAccountUseAuthorityRecord,
-        TAccountOwner,
-        TAccountPayer,
-        TAccountUser,
-        TAccountOwnerTokenAccount,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountBurner,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ApproveUseAuthorityInstruction<
-            TProgram,
-            TAccountUseAuthorityRecord,
-            TAccountOwner,
-            TAccountPayer,
-            TAccountUser,
-            TAccountOwnerTokenAccount,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountBurner,
-            TAccountTokenProgram,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ApproveUseAuthorityInput<

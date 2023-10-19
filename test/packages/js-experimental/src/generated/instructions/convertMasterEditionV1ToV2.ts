@@ -220,15 +220,7 @@ export async function convertMasterEditionV1ToV2<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ConvertMasterEditionV1ToV2Instruction<
-            TProgram,
-            TAccountMasterEdition,
-            TAccountOneTimeAuth,
-            TAccountPrintingMint
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ConvertMasterEditionV1ToV2Input<
         TAccountMasterEdition,
         TAccountOneTimeAuth,
@@ -239,30 +231,12 @@ export async function convertMasterEditionV1ToV2<
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      ConvertMasterEditionV1ToV2Instruction<
-        TProgram,
-        TAccountMasterEdition,
-        TAccountOneTimeAuth,
-        TAccountPrintingMint
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ConvertMasterEditionV1ToV2Instruction<
-            TProgram,
-            TAccountMasterEdition,
-            TAccountOneTimeAuth,
-            TAccountPrintingMint
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ConvertMasterEditionV1ToV2Input<

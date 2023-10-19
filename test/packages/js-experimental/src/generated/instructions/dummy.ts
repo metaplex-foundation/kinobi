@@ -424,22 +424,7 @@ export async function dummy<
   rawContext:
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          DummyInstruction<
-            TProgram,
-            TAccountEdition,
-            TAccountMint,
-            TAccountUpdateAuthority,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountFoo,
-            TAccountBar,
-            TAccountDelegate,
-            TAccountDelegateRecord,
-            TAccountTokenOrAtaProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | DummyInput<
         TAccountEdition,
         TAccountMint,
@@ -464,44 +449,12 @@ export async function dummy<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      DummyInstruction<
-        TProgram,
-        TAccountEdition,
-        TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountFoo,
-        TAccountBar,
-        TAccountDelegate,
-        TAccountDelegateRecord,
-        TAccountTokenOrAtaProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<
-          DummyInstruction<
-            TProgram,
-            TAccountEdition,
-            TAccountMint,
-            TAccountUpdateAuthority,
-            TAccountMintAuthority,
-            TAccountPayer,
-            TAccountFoo,
-            TAccountBar,
-            TAccountDelegate,
-            TAccountDelegateRecord,
-            TAccountTokenOrAtaProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (rawInput === undefined ? rawContext : rawInput) as DummyInput<
     TAccountEdition,
     TAccountMint,

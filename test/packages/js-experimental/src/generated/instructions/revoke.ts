@@ -524,25 +524,7 @@ export async function revoke<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeInstruction<
-            TProgram,
-            TAccountDelegateRecord,
-            TAccountDelegate,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountMint,
-            TAccountToken,
-            TAccountAuthority,
-            TAccountPayer,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountSplTokenProgram,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeInput<
         TAccountDelegateRecord,
         TAccountDelegate,
@@ -573,50 +555,12 @@ export async function revoke<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      RevokeInstruction<
-        TProgram,
-        TAccountDelegateRecord,
-        TAccountDelegate,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountMint,
-        TAccountToken,
-        TAccountAuthority,
-        TAccountPayer,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountSplTokenProgram,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          RevokeInstruction<
-            TProgram,
-            TAccountDelegateRecord,
-            TAccountDelegate,
-            TAccountMetadata,
-            TAccountMasterEdition,
-            TAccountMint,
-            TAccountToken,
-            TAccountAuthority,
-            TAccountPayer,
-            TAccountSystemProgram,
-            TAccountSysvarInstructions,
-            TAccountSplTokenProgram,
-            TAccountAuthorizationRulesProgram,
-            TAccountAuthorizationRules
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (rawInput === undefined ? rawContext : rawInput) as RevokeInput<
     TAccountDelegateRecord,
     TAccountDelegate,

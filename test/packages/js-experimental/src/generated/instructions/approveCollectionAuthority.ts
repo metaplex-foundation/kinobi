@@ -368,20 +368,7 @@ export async function approveCollectionAuthority<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ApproveCollectionAuthorityInstruction<
-            TProgram,
-            TAccountCollectionAuthorityRecord,
-            TAccountNewCollectionAuthority,
-            TAccountUpdateAuthority,
-            TAccountPayer,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ApproveCollectionAuthorityInput<
         TAccountCollectionAuthorityRecord,
         TAccountNewCollectionAuthority,
@@ -402,40 +389,12 @@ export async function approveCollectionAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      ApproveCollectionAuthorityInstruction<
-        TProgram,
-        TAccountCollectionAuthorityRecord,
-        TAccountNewCollectionAuthority,
-        TAccountUpdateAuthority,
-        TAccountPayer,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountSystemProgram,
-        TAccountRent
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ApproveCollectionAuthorityInstruction<
-            TProgram,
-            TAccountCollectionAuthorityRecord,
-            TAccountNewCollectionAuthority,
-            TAccountUpdateAuthority,
-            TAccountPayer,
-            TAccountMetadata,
-            TAccountMint,
-            TAccountSystemProgram,
-            TAccountRent
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ApproveCollectionAuthorityInput<

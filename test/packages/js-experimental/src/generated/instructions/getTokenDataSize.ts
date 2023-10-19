@@ -138,24 +138,15 @@ export async function getTokenDataSize<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          GetTokenDataSizeInstruction<TProgram, TAccountMint>,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | GetTokenDataSizeInput<TAccountMint>,
   rawInput?: GetTokenDataSizeInput<TAccountMint>
-): Promise<
-  | TReturn
-  | WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>>
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          GetTokenDataSizeInstruction<TProgram, TAccountMint>,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as GetTokenDataSizeInput<TAccountMint>;

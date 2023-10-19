@@ -414,22 +414,7 @@ export async function burnEditionNft<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnEditionNftInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountPrintEditionMint,
-            TAccountMasterEditionMint,
-            TAccountPrintEditionTokenAccount,
-            TAccountMasterEditionTokenAccount,
-            TAccountMasterEditionAccount,
-            TAccountPrintEditionAccount,
-            TAccountEditionMarkerAccount,
-            TAccountSplTokenProgram
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | BurnEditionNftInput<
         TAccountMetadata,
         TAccountOwner,
@@ -454,44 +439,12 @@ export async function burnEditionNft<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      BurnEditionNftInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountPrintEditionMint,
-        TAccountMasterEditionMint,
-        TAccountPrintEditionTokenAccount,
-        TAccountMasterEditionTokenAccount,
-        TAccountMasterEditionAccount,
-        TAccountPrintEditionAccount,
-        TAccountEditionMarkerAccount,
-        TAccountSplTokenProgram
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          BurnEditionNftInstruction<
-            TProgram,
-            TAccountMetadata,
-            TAccountOwner,
-            TAccountPrintEditionMint,
-            TAccountMasterEditionMint,
-            TAccountPrintEditionTokenAccount,
-            TAccountMasterEditionTokenAccount,
-            TAccountMasterEditionAccount,
-            TAccountPrintEditionAccount,
-            TAccountEditionMarkerAccount,
-            TAccountSplTokenProgram
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as BurnEditionNftInput<

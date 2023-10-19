@@ -613,27 +613,7 @@ export async function validate<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ValidateInstruction<
-            TProgram,
-            TAccountPayer,
-            TAccountRuleSet,
-            TAccountSystemProgram,
-            typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-              ? ReadonlySignerAccount<TAccountOptRuleSigner1>
-              : TAccountOptRuleSigner1,
-            TAccountOptRuleSigner2,
-            TAccountOptRuleSigner3,
-            TAccountOptRuleSigner4,
-            TAccountOptRuleSigner5,
-            TAccountOptRuleNonsigner1,
-            TAccountOptRuleNonsigner2,
-            TAccountOptRuleNonsigner3,
-            TAccountOptRuleNonsigner4,
-            TAccountOptRuleNonsigner5
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ValidateInput<
         TAccountPayer,
         TAccountRuleSet,
@@ -664,54 +644,12 @@ export async function validate<
     TAccountOptRuleNonsigner4,
     TAccountOptRuleNonsigner5
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      ValidateInstruction<
-        TProgram,
-        TAccountPayer,
-        TAccountRuleSet,
-        TAccountSystemProgram,
-        typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-          ? ReadonlySignerAccount<TAccountOptRuleSigner1>
-          : TAccountOptRuleSigner1,
-        TAccountOptRuleSigner2,
-        TAccountOptRuleSigner3,
-        TAccountOptRuleSigner4,
-        TAccountOptRuleSigner5,
-        TAccountOptRuleNonsigner1,
-        TAccountOptRuleNonsigner2,
-        TAccountOptRuleNonsigner3,
-        TAccountOptRuleNonsigner4,
-        TAccountOptRuleNonsigner5
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          ValidateInstruction<
-            TProgram,
-            TAccountPayer,
-            TAccountRuleSet,
-            TAccountSystemProgram,
-            typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-              ? ReadonlySignerAccount<TAccountOptRuleSigner1>
-              : TAccountOptRuleSigner1,
-            TAccountOptRuleSigner2,
-            TAccountOptRuleSigner3,
-            TAccountOptRuleSigner4,
-            TAccountOptRuleSigner5,
-            TAccountOptRuleNonsigner1,
-            TAccountOptRuleNonsigner2,
-            TAccountOptRuleNonsigner3,
-            TAccountOptRuleNonsigner4,
-            TAccountOptRuleNonsigner5
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ValidateInput<

@@ -209,38 +209,15 @@ export async function addConfigLines<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          AddConfigLinesInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      AddConfigLinesInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          AddConfigLinesInstruction<
-            TProgram,
-            TAccountCandyMachine,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>;

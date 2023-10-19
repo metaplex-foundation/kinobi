@@ -201,45 +201,19 @@ export async function closeToken<
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CloseTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountDestination,
-            TAccountOwner
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>,
   rawInput?: CloseTokenInput<
     TAccountAccount,
     TAccountDestination,
     TAccountOwner
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      CloseTokenInstruction<
-        TProgram,
-        TAccountAccount,
-        TAccountDestination,
-        TAccountOwner
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          CloseTokenInstruction<
-            TProgram,
-            TAccountAccount,
-            TAccountDestination,
-            TAccountOwner
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CloseTokenInput<TAccountAccount, TAccountDestination, TAccountOwner>;
