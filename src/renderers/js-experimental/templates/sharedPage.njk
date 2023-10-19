@@ -149,19 +149,12 @@ export function isSigner<TAddress extends string = string>(value: Base58EncodedA
   return !!value && typeof value === 'object' && 'address' in value && ('signTransaction' in value || 'signAndSendTransaction' in value);
 }
 
-export type CustomGeneratedInstruction<
-  TInstruction extends IInstruction,
-  TReturn
-> = {
-  getGeneratedInstruction: (
-    wrappedInstruction: WrappedInstruction<TInstruction>
-  ) => TReturn;
+export type CustomGeneratedInstruction<TInstruction extends IInstruction, TReturn> = {
+  getGeneratedInstruction: (wrappedInstruction: WrappedInstruction<TInstruction>) => TReturn;
 };
 
 export type Context = {
-  getProgramAddress?: (program: {
-    name: string;
-    address: Base58EncodedAddress;
-  }) => Promise<Base58EncodedAddress>;
+  getProgramAddress?: (program: { name: string; address: Base58EncodedAddress }) => Promise<Base58EncodedAddress>;
+  getProgramDerivedAddress?: (programAddress: Base58EncodedAddress, seeds: Uint8Array[]) => Promise<ProgramDerivedAddress>;
 };
 {% endblock %}

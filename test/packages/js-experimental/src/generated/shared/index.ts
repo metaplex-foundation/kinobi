@@ -220,4 +220,8 @@ export type Context = {
     name: string;
     address: Base58EncodedAddress;
   }) => Promise<Base58EncodedAddress>;
+  getProgramDerivedAddress?: (
+    programAddress: Base58EncodedAddress,
+    seeds: Uint8Array[]
+  ) => Promise<ProgramDerivedAddress>;
 };

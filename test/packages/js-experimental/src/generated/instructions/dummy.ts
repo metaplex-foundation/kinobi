@@ -571,9 +571,11 @@ export async function dummy<
     args.proof = [];
   }
   if (!accounts.tokenOrAtaProgram.value) {
-    if (resolveTokenOrAta(context, accounts, args, programAddress, false)) {
+    if (
+      await resolveTokenOrAta(context, accounts, args, programAddress, false)
+    ) {
       accounts.tokenOrAtaProgram.value = context.getProgramAddress
-        ? context.getProgramAddress({
+        ? await context.getProgramAddress({
             name: 'splToken',
             address:
               'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
@@ -582,7 +584,7 @@ export async function dummy<
       accounts.tokenOrAtaProgram.isWritable = false;
     } else {
       accounts.tokenOrAtaProgram.value = context.getProgramAddress
-        ? context.getProgramAddress({
+        ? await context.getProgramAddress({
             name: 'splAssociatedToken',
             address:
               'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,

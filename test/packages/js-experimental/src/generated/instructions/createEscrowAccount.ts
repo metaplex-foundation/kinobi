@@ -502,7 +502,7 @@ export async function createEscrowAccount<
   // Resolve default values.
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value = context.getProgramAddress
-      ? context.getProgramAddress({
+      ? await context.getProgramAddress({
           name: 'splSystem',
           address:
             '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,

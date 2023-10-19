@@ -573,7 +573,7 @@ export async function migrate<
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value = context.getProgramAddress
-      ? context.getProgramAddress({
+      ? await context.getProgramAddress({
           name: 'splToken',
           address:
             'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
@@ -583,7 +583,7 @@ export async function migrate<
   }
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value = context.getProgramAddress
-      ? context.getProgramAddress({
+      ? await context.getProgramAddress({
           name: 'splSystem',
           address:
             '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,

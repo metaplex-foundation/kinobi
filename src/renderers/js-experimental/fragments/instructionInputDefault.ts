@@ -115,19 +115,22 @@ export function getInstructionInputDefaultFragment(
         .addImports(pdaImportFrom, pdaFunction);
       pdaFragment.interfaces.add('getProgramDerivedAddress');
       return pdaFragment;
+
     case 'publicKey':
       return defaultFragment(
         `'${defaultsTo.publicKey}' as Base58EncodedAddress<'${defaultsTo.publicKey}'>`
       ).addImports('solanaAddresses', 'Base58EncodedAddress');
+
     case 'program':
       const programFragment = defaultFragment(
         `context.getProgramAddress ` +
-          `? context.getProgramAddress({ name: '${defaultsTo.program.name}', address: '${defaultsTo.program.publicKey}' as Base58EncodedAddress<'${defaultsTo.program.publicKey}'> })` +
+          `? await context.getProgramAddress({ name: '${defaultsTo.program.name}', address: '${defaultsTo.program.publicKey}' as Base58EncodedAddress<'${defaultsTo.program.publicKey}'> })` +
           `: '${defaultsTo.program.publicKey}' as Base58EncodedAddress<'${defaultsTo.program.publicKey}'>`,
         false
       ).addImports('solanaAddresses', ['Base58EncodedAddress']);
       programFragment.interfaces.add('getProgramAddress');
       return programFragment;
+
     case 'programId':
       if (
         optionalAccountStrategy === 'programId' &&
@@ -137,36 +140,42 @@ export function getInstructionInputDefaultFragment(
         return fragmentWithContextMap('');
       }
       return defaultFragment('programAddress', false);
+
     case 'identity':
     case 'payer':
       return fragmentWithContextMap('');
+
     case 'accountBump':
       return defaultFragment(
         `expectProgramDerivedAddress(${accountObject}.${camelCase(
           defaultsTo.name
         )}.value)[1]`
       ).addImports('shared', 'expectProgramDerivedAddress');
+
     case 'arg':
       return defaultFragment(
         `expectSome(${argObject}.${camelCase(defaultsTo.name)})`
       ).addImports('shared', 'expectSome');
+
     case 'value':
       const valueManifest = getValueNodeFragment(defaultsTo.value);
       return defaultFragment(valueManifest.render).mergeImportsWith(
         valueManifest
       );
+
     case 'resolver':
       const resolverName = camelCase(defaultsTo.name);
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
       const resolverFragment = defaultFragment(
-        `${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
+        `await ${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
       ).addImports(defaultsTo.importFrom, resolverName);
       resolverFragment.interfaces.add([
         'getProgramAddress',
         'getProgramDerivedAddress',
       ]);
       return resolverFragment;
+
     case 'conditional':
     case 'conditionalResolver':
       const ifTrueRenderer = renderNestedInstructionDefault(
@@ -225,7 +234,7 @@ export function getInstructionInputDefaultFragment(
           'getProgramAddress',
           'getProgramDerivedAddress',
         ]);
-        condition = `${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
+        condition = `await ${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 

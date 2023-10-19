@@ -655,7 +655,7 @@ export async function mint<
   // Resolve default values.
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value = context.getProgramAddress
-      ? context.getProgramAddress({
+      ? await context.getProgramAddress({
           name: 'splSystem',
           address:
             '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
@@ -669,7 +669,7 @@ export async function mint<
   }
   if (!accounts.splTokenProgram.value) {
     accounts.splTokenProgram.value = context.getProgramAddress
-      ? context.getProgramAddress({
+      ? await context.getProgramAddress({
           name: 'splToken',
           address:
             'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
@@ -679,7 +679,7 @@ export async function mint<
   }
   if (!accounts.splAtaProgram.value) {
     accounts.splAtaProgram.value = context.getProgramAddress
-      ? context.getProgramAddress({
+      ? await context.getProgramAddress({
           name: 'splAssociatedToken',
           address:
             'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,

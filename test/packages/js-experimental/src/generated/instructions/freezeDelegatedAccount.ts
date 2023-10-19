@@ -363,7 +363,7 @@ export async function freezeDelegatedAccount<
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value = context.getProgramAddress
-      ? context.getProgramAddress({
+      ? await context.getProgramAddress({
           name: 'splToken',
           address:
             'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
