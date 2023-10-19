@@ -29,7 +29,6 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
 
 export type Multisig = Account<MultisigAccountData>;
@@ -121,28 +120,6 @@ export async function safeFetchAllMultisig(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserializeMultisig(maybeAccount as RpcAccount));
-}
-
-export function getMultisigGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'splToken',
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      m: number;
-      n: number;
-      isInitialized: boolean;
-      signers: Array<Base58EncodedAddress>;
-    }>({
-      m: [0, getU8Encoder()],
-      n: [1, getU8Encoder()],
-      isInitialized: [2, getBooleanEncoder()],
-      signers: [3, getArrayEncoder(getAddressEncoder(), { size: 11 })],
-    })
-    .deserializeUsing<Multisig>((account) => deserializeMultisig(account));
 }
 
 export function getMultisigSize(): number {

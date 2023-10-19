@@ -39,12 +39,10 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
 import {
   DelegateRoleArgs,
   TmKey,
-  TmKeyArgs,
   getDelegateRoleEncoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
@@ -155,33 +153,6 @@ export async function safeFetchAllMasterEditionV1(
     .map((maybeAccount) =>
       deserializeMasterEditionV1(maybeAccount as RpcAccount)
     );
-}
-
-export function getMasterEditionV1GpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      key: TmKeyArgs;
-      supply: number | bigint;
-      maxSupply: OptionOrNullable<number | bigint>;
-      printingMint: Base58EncodedAddress;
-      oneTimePrintingAuthorizationMint: Base58EncodedAddress;
-    }>({
-      key: [0, getTmKeyEncoder()],
-      supply: [1, getU64Encoder()],
-      maxSupply: [9, getOptionEncoder(getU64Encoder())],
-      printingMint: [null, getAddressEncoder()],
-      oneTimePrintingAuthorizationMint: [null, getAddressEncoder()],
-    })
-    .deserializeUsing<MasterEditionV1>((account) =>
-      deserializeMasterEditionV1(account)
-    )
-    .whereField('key', TmKey.MasterEditionV1);
 }
 
 export function findMasterEditionV1Pda(

@@ -38,7 +38,6 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
 import {
   CandyMachineData,
@@ -171,35 +170,4 @@ export async function safeFetchAllCandyMachine(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserializeCandyMachine(maybeAccount as RpcAccount));
-}
-
-export function getCandyMachineGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      discriminator: Array<number>;
-      features: number | bigint;
-      authority: Base58EncodedAddress;
-      mintAuthority: Base58EncodedAddress;
-      collectionMint: Base58EncodedAddress;
-      itemsRedeemed: number | bigint;
-      data: CandyMachineDataArgs;
-    }>({
-      discriminator: [0, getArrayEncoder(getU8Encoder(), { size: 8 })],
-      features: [8, getU64Encoder()],
-      authority: [16, getAddressEncoder()],
-      mintAuthority: [48, getAddressEncoder()],
-      collectionMint: [80, getAddressEncoder()],
-      itemsRedeemed: [112, getU64Encoder()],
-      data: [120, getCandyMachineDataEncoder()],
-    })
-    .deserializeUsing<CandyMachine>((account) =>
-      deserializeCandyMachine(account)
-    )
-    .whereField('discriminator', [51, 173, 177, 113, 25, 241, 109, 189]);
 }

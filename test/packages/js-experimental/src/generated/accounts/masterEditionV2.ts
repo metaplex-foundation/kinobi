@@ -38,9 +38,8 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2 = Account<MasterEditionV2AccountData>;
 
@@ -139,29 +138,6 @@ export async function safeFetchAllMasterEditionV2(
     .map((maybeAccount) =>
       deserializeMasterEditionV2(maybeAccount as RpcAccount)
     );
-}
-
-export function getMasterEditionV2GpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      key: TmKeyArgs;
-      supply: number | bigint;
-      maxSupply: OptionOrNullable<number | bigint>;
-    }>({
-      key: [0, getTmKeyEncoder()],
-      supply: [1, getU64Encoder()],
-      maxSupply: [9, getOptionEncoder(getU64Encoder())],
-    })
-    .deserializeUsing<MasterEditionV2>((account) =>
-      deserializeMasterEditionV2(account)
-    )
-    .whereField('key', TmKey.MasterEditionV2);
 }
 
 export function getMasterEditionV2Size(): number {

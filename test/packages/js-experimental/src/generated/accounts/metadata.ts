@@ -48,7 +48,6 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
 import {
   Collection,
@@ -62,7 +61,6 @@ import {
   ProgrammableConfig,
   ProgrammableConfigArgs,
   TmKey,
-  TmKeyArgs,
   TokenStandard,
   TokenStandardArgs,
   Uses,
@@ -236,61 +234,6 @@ export async function safeFetchAllMetadata(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserializeMetadata(maybeAccount as RpcAccount));
-}
-
-export function getMetadataGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      key: TmKeyArgs;
-      updateAuthority: Base58EncodedAddress;
-      mint: Base58EncodedAddress;
-      name: string;
-      symbol: string;
-      uri: string;
-      sellerFeeBasisPoints: number;
-      creators: OptionOrNullable<Array<CreatorArgs>>;
-      primarySaleHappened: boolean;
-      isMutable: boolean;
-      editionNonce: OptionOrNullable<number>;
-      tokenStandard: OptionOrNullable<TokenStandardArgs>;
-      collection: OptionOrNullable<CollectionArgs>;
-      uses: OptionOrNullable<UsesArgs>;
-      collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
-      programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
-      delegateState: OptionOrNullable<DelegateStateArgs>;
-    }>({
-      key: [0, getTmKeyEncoder()],
-      updateAuthority: [1, getAddressEncoder()],
-      mint: [33, getAddressEncoder()],
-      name: [65, getStringEncoder()],
-      symbol: [null, getStringEncoder()],
-      uri: [null, getStringEncoder()],
-      sellerFeeBasisPoints: [null, getU16Encoder()],
-      creators: [null, getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
-      primarySaleHappened: [null, getBooleanEncoder()],
-      isMutable: [null, getBooleanEncoder()],
-      editionNonce: [null, getOptionEncoder(getU8Encoder())],
-      tokenStandard: [null, getOptionEncoder(getTokenStandardEncoder())],
-      collection: [null, getOptionEncoder(getCollectionEncoder())],
-      uses: [null, getOptionEncoder(getUsesEncoder())],
-      collectionDetails: [
-        null,
-        getOptionEncoder(getCollectionDetailsEncoder()),
-      ],
-      programmableConfig: [
-        null,
-        getOptionEncoder(getProgrammableConfigEncoder()),
-      ],
-      delegateState: [null, getOptionEncoder(getDelegateStateEncoder())],
-    })
-    .deserializeUsing<Metadata>((account) => deserializeMetadata(account))
-    .whereField('key', TmKey.MetadataV1);
 }
 
 export function getMetadataSize(): number {

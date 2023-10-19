@@ -40,7 +40,6 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
 
 export type Mint = Account<MintAccountData>;
@@ -162,40 +161,6 @@ export async function safeFetchAllMint(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => deserializeMint(maybeAccount as RpcAccount));
-}
-
-export function getMintGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
-  const programId = context.programs.getPublicKey(
-    'splToken',
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      mintAuthority: OptionOrNullable<Base58EncodedAddress>;
-      supply: number | bigint;
-      decimals: number;
-      isInitialized: boolean;
-      freezeAuthority: OptionOrNullable<Base58EncodedAddress>;
-    }>({
-      mintAuthority: [
-        0,
-        getOptionEncoder(getAddressEncoder(), {
-          prefix: getU32Encoder(),
-          fixed: true,
-        }),
-      ],
-      supply: [36, getU64Encoder()],
-      decimals: [44, getU8Encoder()],
-      isInitialized: [45, getBooleanEncoder()],
-      freezeAuthority: [
-        46,
-        getOptionEncoder(getAddressEncoder(), {
-          prefix: getU32Encoder(),
-          fixed: true,
-        }),
-      ],
-    })
-    .deserializeUsing<Mint>((account) => deserializeMint(account));
 }
 
 export function getMintSize(): number {

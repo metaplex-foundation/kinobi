@@ -6,10 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress, getAddressEncoder } from '@solana/addresses';
-import { getArrayEncoder } from '@solana/codecs-data-structures';
-import { getU64Encoder } from '@solana/codecs-numbers';
-import { OptionOrNullable, getOptionEncoder } from '@solana/options';
+import { Base58EncodedAddress } from '@solana/addresses';
 import {
   Account,
   Context,
@@ -18,15 +15,7 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
-import {
-  ReservationV1Args,
-  TmKey,
-  TmKeyArgs,
-  getReservationV1Encoder,
-  getTmKeyEncoder,
-} from '../types';
 
 export type ReservationListV1 = Account<ReservationListV1AccountData>;
 
@@ -83,29 +72,4 @@ export async function safeFetchAllReservationListV1(
     .map((maybeAccount) =>
       deserializeReservationListV1(maybeAccount as RpcAccount)
     );
-}
-
-export function getReservationListV1GpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      key: TmKeyArgs;
-      masterEdition: Base58EncodedAddress;
-      supplySnapshot: OptionOrNullable<number | bigint>;
-      reservations: Array<ReservationV1Args>;
-    }>({
-      key: [0, getTmKeyEncoder()],
-      masterEdition: [1, getAddressEncoder()],
-      supplySnapshot: [33, getOptionEncoder(getU64Encoder())],
-      reservations: [null, getArrayEncoder(getReservationV1Encoder())],
-    })
-    .deserializeUsing<ReservationListV1>((account) =>
-      deserializeReservationListV1(account)
-    )
-    .whereField('key', TmKey.ReservationListV1);
 }

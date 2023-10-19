@@ -29,9 +29,8 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker = Account<EditionMarkerAccountData>;
 
@@ -121,24 +120,6 @@ export async function safeFetchAllEditionMarker(
     .map((maybeAccount) =>
       deserializeEditionMarker(maybeAccount as RpcAccount)
     );
-}
-
-export function getEditionMarkerGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{ key: TmKeyArgs; ledger: Array<number> }>({
-      key: [0, getTmKeyEncoder()],
-      ledger: [1, getArrayEncoder(getU8Encoder(), { size: 31 })],
-    })
-    .deserializeUsing<EditionMarker>((account) =>
-      deserializeEditionMarker(account)
-    )
-    .whereField('key', TmKey.EditionMarker);
 }
 
 export function getEditionMarkerSize(): number {

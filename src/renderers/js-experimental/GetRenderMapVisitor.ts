@@ -17,7 +17,6 @@ import { resolveTemplate } from '../utils';
 import { ContextMap } from './ContextMap';
 import {
   getAccountFetchHelpersFragment,
-  getAccountGpaHelpersFragment,
   getAccountPdaHelpersFragment,
   getAccountSizeHelpersFragment,
   getAccountTypeFragment,
@@ -196,12 +195,12 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const program = this.program as nodes.ProgramNode;
     const accountTypeFragment = getAccountTypeFragment(account, typeManifest);
     const accountFetchHelpersFragment = getAccountFetchHelpersFragment(account);
-    const accountGpaHelpersFragment = getAccountGpaHelpersFragment(
-      account,
-      program,
-      this.typeManifestVisitor,
-      this.byteSizeVisitor
-    );
+    // const accountGpaHelpersFragment = getAccountGpaHelpersFragment(
+    //   account,
+    //   program,
+    //   this.typeManifestVisitor,
+    //   this.byteSizeVisitor
+    // );
     const accountSizeHelpersFragment = getAccountSizeHelpersFragment(account);
     const accountPdaHelpersFragment = getAccountPdaHelpersFragment(
       account,
@@ -211,7 +210,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const imports = new ImportMap().mergeWith(
       accountTypeFragment,
       accountFetchHelpersFragment,
-      accountGpaHelpersFragment,
+      // accountGpaHelpersFragment,
       accountSizeHelpersFragment,
       accountPdaHelpersFragment
     );
@@ -222,7 +221,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         accountTypeFragment,
         accountFetchHelpersFragment,
-        accountGpaHelpersFragment,
+        // accountGpaHelpersFragment,
         accountSizeHelpersFragment,
         accountPdaHelpersFragment,
       })

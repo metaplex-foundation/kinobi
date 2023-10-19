@@ -31,13 +31,11 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
 import {
   EscrowAuthority,
   EscrowAuthorityArgs,
   TmKey,
-  TmKeyArgs,
   getEscrowAuthorityDecoder,
   getEscrowAuthorityEncoder,
   getTmKeyDecoder,
@@ -148,29 +146,4 @@ export async function safeFetchAllTokenOwnedEscrow(
     .map((maybeAccount) =>
       deserializeTokenOwnedEscrow(maybeAccount as RpcAccount)
     );
-}
-
-export function getTokenOwnedEscrowGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{
-      key: TmKeyArgs;
-      baseToken: Base58EncodedAddress;
-      authority: EscrowAuthorityArgs;
-      bump: number;
-    }>({
-      key: [0, getTmKeyEncoder()],
-      baseToken: [1, getAddressEncoder()],
-      authority: [33, getEscrowAuthorityEncoder()],
-      bump: [null, getU8Encoder()],
-    })
-    .deserializeUsing<TokenOwnedEscrow>((account) =>
-      deserializeTokenOwnedEscrow(account)
-    )
-    .whereField('key', TmKey.TokenOwnedEscrow);
 }

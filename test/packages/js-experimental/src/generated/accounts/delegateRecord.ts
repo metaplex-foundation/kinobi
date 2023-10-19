@@ -32,13 +32,11 @@ import {
   RpcGetAccountsOptions,
   assertAccountExists,
   deserializeAccount,
-  gpaBuilder,
 } from 'some-magical-place';
 import {
   DelegateRole,
   DelegateRoleArgs,
   TmKey,
-  TmKeyArgs,
   getDelegateRoleDecoder,
   getDelegateRoleEncoder,
   getTmKeyDecoder,
@@ -141,25 +139,6 @@ export async function safeFetchAllDelegateRecord(
     .map((maybeAccount) =>
       deserializeDelegateRecord(maybeAccount as RpcAccount)
     );
-}
-
-export function getDelegateRecordGpaBuilder(
-  context: Pick<Context, 'rpc' | 'programs'>
-) {
-  const programId = context.programs.getPublicKey(
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return gpaBuilder(context, programId)
-    .registerFields<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>({
-      key: [0, getTmKeyEncoder()],
-      role: [1, getDelegateRoleEncoder()],
-      bump: [2, getU8Encoder()],
-    })
-    .deserializeUsing<DelegateRecord>((account) =>
-      deserializeDelegateRecord(account)
-    )
-    .whereField('key', TmKey.Delegate);
 }
 
 export function getDelegateRecordSize(): number {
