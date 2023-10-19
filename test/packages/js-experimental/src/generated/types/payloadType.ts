@@ -52,7 +52,7 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
       [
         'Pubkey',
         getStructEncoder<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
-          ['fields', getTupleEncoder([[getAddressEncoder()]])],
+          ['fields', getTupleEncoder([getAddressEncoder()])],
         ]),
       ],
       [
@@ -74,7 +74,7 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
       [
         'Number',
         getStructEncoder<GetDataEnumKindContent<PayloadType, 'Number'>>([
-          ['fields', getTupleEncoder([[getU64Encoder()]])],
+          ['fields', getTupleEncoder([getU64Encoder()])],
         ]),
       ],
     ],
@@ -88,7 +88,7 @@ export function getPayloadTypeDecoder(): Decoder<PayloadType> {
       [
         'Pubkey',
         getStructDecoder<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
-          ['fields', getTupleDecoder([[getAddressDecoder()]])],
+          ['fields', getTupleDecoder([getAddressDecoder()])],
         ]),
       ],
       [
@@ -110,7 +110,7 @@ export function getPayloadTypeDecoder(): Decoder<PayloadType> {
       [
         'Number',
         getStructDecoder<GetDataEnumKindContent<PayloadType, 'Number'>>([
-          ['fields', getTupleDecoder([[getU64Decoder()]])],
+          ['fields', getTupleDecoder([getU64Decoder()])],
         ]),
       ],
     ],

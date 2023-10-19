@@ -488,10 +488,10 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
       (codecs) => `[${codecs.join(', ')}]`
     );
     mergedManifest.encoder
-      .mapRender((render) => `getTupleEncoder([${render}])`)
+      .mapRender((render) => `getTupleEncoder(${render})`)
       .addImports('solanaCodecsDataStructures', 'getTupleEncoder');
     mergedManifest.decoder
-      .mapRender((render) => `getTupleDecoder([${render}])`)
+      .mapRender((render) => `getTupleDecoder(${render})`)
       .addImports('solanaCodecsDataStructures', 'getTupleDecoder');
     return mergedManifest;
   }

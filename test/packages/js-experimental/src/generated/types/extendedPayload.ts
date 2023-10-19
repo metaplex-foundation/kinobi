@@ -42,7 +42,7 @@ export function getExtendedPayloadEncoder(): Encoder<ExtendedPayloadArgs> {
   return getStructEncoder<ExtendedPayload>(
     [
       ['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())],
-      ['args', getTupleEncoder([[getU8Encoder(), getStringEncoder()]])],
+      ['args', getTupleEncoder([getU8Encoder(), getStringEncoder()])],
     ],
     { description: 'ExtendedPayload' }
   ) as Encoder<ExtendedPayloadArgs>;
@@ -52,7 +52,7 @@ export function getExtendedPayloadDecoder(): Decoder<ExtendedPayload> {
   return getStructDecoder<ExtendedPayload>(
     [
       ['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())],
-      ['args', getTupleDecoder([[getU8Decoder(), getStringDecoder()]])],
+      ['args', getTupleDecoder([getU8Decoder(), getStringDecoder()])],
     ],
     { description: 'ExtendedPayload' }
   ) as Decoder<ExtendedPayload>;
